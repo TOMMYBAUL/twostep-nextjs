@@ -258,7 +258,7 @@ function Hero() {
                             margin: "0 0 36px",
                         }}
                     >
-                        Pas une chaussure — <strong style={{ color: "#2C2018" }}>cette</strong> chaussure, cette marque, cette pointure.
+                        Pas une chaussure — cette chaussure, cette marque, cette pointure.
                         Two-Step vous dit quelle boutique de votre quartier l'a en stock. Et à combien de minutes.
                     </motion.p>
 
@@ -390,8 +390,8 @@ function Statement() {
                     marginBottom: isMobile ? 48 : 80,
                 }}>
                     {[
-                        { val: 70, label: "des Français achètent en ligne", delay: 0 },
-                        { val: 79, label: "préfèrent acheter local", delay: 0.15 },
+                        { val: 80, label: "se renseignent en ligne avant d'acheter en magasin", delay: 0 },
+                        { val: 79, label: "veulent soutenir le commerce local en priorité", delay: 0.15 },
                     ].map((stat, i) => (
                         <>
                             {i === 1 && !isMobile && (
@@ -436,7 +436,7 @@ function Statement() {
                     }}
                 >
                     Le problème ?{" "}
-                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>Ils ne vous trouvent pas.</em>
+                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>Votre stock local est invisible.</em>
                 </motion.p>
             </div>
         </section>
