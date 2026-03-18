@@ -3,6 +3,28 @@
 import { animate, motion, useInView, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
+/* ── Boomerang video hook ─────────────────────────────────────────────── */
+
+function useBounceVideo(ref: React.RefObject<HTMLVideoElement | null>) {
+    useEffect(() => {
+        const v = ref.current;
+        if (!v) return;
+        let forward = true;
+        const STEP = 0.03;
+        let raf: number;
+        const tick = () => {
+            if (!v.duration) { raf = requestAnimationFrame(tick); return; }
+            v.currentTime += forward ? STEP : -STEP;
+            if (v.currentTime >= v.duration - STEP) forward = false;
+            if (v.currentTime <= STEP) forward = true;
+            raf = requestAnimationFrame(tick);
+        };
+        v.pause();
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [ref]);
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const E = [0.22, 1, 0.36, 1] as any;
 
@@ -110,6 +132,36 @@ function Marquee() {
                 ))}
             </motion.div>
         </div>
+    );
+}
+
+/* ── Mascot video (boomerang) ────────────────────────────────────────── */
+
+function MascotVideo() {
+    const ref = useRef<HTMLVideoElement>(null);
+    useBounceVideo(ref);
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.82, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.2, ease: E }}
+            style={{ width: "100%", maxWidth: 480, position: "relative" }}
+        >
+            <video
+                ref={ref}
+                muted
+                playsInline
+                preload="auto"
+                style={{
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                    filter: "drop-shadow(0 40px 72px rgba(44,32,24,0.18))",
+                }}
+            >
+                <source src="/mascot.mp4" type="video/mp4" />
+            </video>
+        </motion.div>
     );
 }
 
@@ -290,12 +342,14 @@ function Hero() {
                             margin: "0 0 36px",
                         }}
                     >
-                        Vos clients veulent
+                        Le produit exact
                         <br />
-                        acheter{" "}
+                        que vous cherchez{" "}
                         <em style={{ fontStyle: "italic", color: "#C8813A" }}>
-                            chez vous.
+                            est là,
                         </em>
+                        <br />
+                        près de chez vous.
                     </motion.h1>
 
                     <motion.p
@@ -310,8 +364,8 @@ function Hero() {
                             margin: "0 0 40px",
                         }}
                     >
-                        Two-Step rend votre stock visible aux consommateurs de votre
-                        quartier. En temps réel, sans site e-commerce, sans livraison.
+                        Pas une chaussure — <strong style={{ color: "#2C2018" }}>cette</strong> chaussure, cette marque, cette pointure.
+                        Two-Step vous dit en temps réel quelle boutique de votre quartier l'a en stock. Et à combien de minutes.
                     </motion.p>
 
                     <motion.div
@@ -367,165 +421,62 @@ function Hero() {
                         alignItems: "center",
                     }}
                 >
-                    {/* Floating card — top left of illustration */}
-                    <FloatCard top="4%" left="-6%" delay={0.7} floatDuration={4.3}>
-                        <span style={{ fontSize: 22 }}>📦</span>
+                    {/* Card — résultat de recherche */}
+                    <FloatCard top="2%" left="-8%" delay={0.7} floatDuration={4.3}>
+                        <span style={{ fontSize: 20 }}>🔍</span>
                         <div>
-                            <div
-                                style={{
-                                    fontSize: 13,
-                                    fontWeight: 800,
-                                    color: "#2C2018",
-                                    letterSpacing: "-0.02em",
-                                    lineHeight: 1.2,
-                                }}
-                            >
-                                Stock en ligne
+                            <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+                                Nike Air Max 90 · T.42
                             </div>
-                            <div
-                                style={{
-                                    fontSize: 11,
-                                    color: "#6B4F38",
-                                    fontWeight: 500,
-                                    marginTop: 2,
-                                }}
-                            >
-                                Visible en temps réel
+                            <div style={{ fontSize: 11, color: "#7A9E7E", fontWeight: 600, marginTop: 2 }}>
+                                ✓ En stock · 8 min
                             </div>
                         </div>
                     </FloatCard>
 
-                    {/* Floating card — top right */}
-                    <FloatCard top="12%" right="-10%" delay={0.95} floatDuration={3.7}>
-                        <div
-                            style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: "50%",
-                                background: "rgba(200,129,58,0.12)",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: 18,
-                                flexShrink: 0,
-                            }}
-                        >
+                    {/* Card — distance */}
+                    <FloatCard top="18%" right="-10%" delay={0.95} floatDuration={3.7}>
+                        <div style={{ width: 34, height: 34, borderRadius: "50%", background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>
                             📍
                         </div>
                         <div>
-                            <div
-                                style={{
-                                    fontSize: 22,
-                                    fontWeight: 900,
-                                    color: "#C8813A",
-                                    letterSpacing: "-0.04em",
-                                    lineHeight: 1,
-                                }}
-                            >
-                                79%
+                            <div style={{ fontSize: 20, fontWeight: 900, color: "#C8813A", letterSpacing: "-0.04em", lineHeight: 1 }}>
+                                8 min
                             </div>
-                            <div
-                                style={{
-                                    fontSize: 11,
-                                    color: "#6B4F38",
-                                    fontWeight: 500,
-                                    marginTop: 2,
-                                }}
-                            >
-                                préfèrent acheter local
+                            <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>
+                                de chez vous
                             </div>
                         </div>
                     </FloatCard>
 
-                    {/* Floating card — bottom left */}
-                    <FloatCard bottom="8%" left="-8%" delay={1.15} floatDuration={5.1}>
-                        <div
-                            style={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: 8,
-                                background: "#2C2018",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: 16,
-                                flexShrink: 0,
-                            }}
-                        >
+                    {/* Card — stock */}
+                    <FloatCard bottom="10%" left="-6%" delay={1.15} floatDuration={5.1}>
+                        <div style={{ width: 30, height: 30, borderRadius: 8, background: "#2C2018", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>
                             🛍️
                         </div>
                         <div>
-                            <div
-                                style={{
-                                    fontSize: 13,
-                                    fontWeight: 800,
-                                    color: "#2C2018",
-                                    letterSpacing: "-0.02em",
-                                    lineHeight: 1.2,
-                                }}
-                            >
-                                0 e-commerce
+                            <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+                                2 en stock
                             </div>
-                            <div
-                                style={{
-                                    fontSize: 11,
-                                    color: "#6B4F38",
-                                    fontWeight: 500,
-                                    marginTop: 2,
-                                }}
-                            >
-                                Aucune livraison requise
+                            <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>
+                                Boutique Carmes
                             </div>
                         </div>
                     </FloatCard>
 
-                    {/* Floating card — bottom right */}
-                    <FloatCard bottom="22%" right="-6%" delay={1.35} floatDuration={3.9}>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 6,
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: "50%",
-                                    background: "#7A9E7E",
-                                    flexShrink: 0,
-                                }}
-                            />
-                            <span
-                                style={{
-                                    fontSize: 13,
-                                    fontWeight: 700,
-                                    color: "#2C2018",
-                                    letterSpacing: "-0.01em",
-                                }}
-                            >
-                                Lancement à Toulouse
-                            </span>
-                        </div>
+                    {/* Card — live */}
+                    <FloatCard bottom="28%" right="-7%" delay={1.35} floatDuration={3.9}>
+                        <motion.div style={{ width: 8, height: 8, borderRadius: "50%", background: "#7A9E7E", flexShrink: 0 }}
+                            animate={{ opacity: [1, 0.3, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#2C2018", letterSpacing: "-0.01em" }}>
+                            Temps réel · Toulouse
+                        </span>
                     </FloatCard>
 
-                    {/* Main illustration */}
-                    <motion.img
-                        src="/hero.png"
-                        alt="Commerce local"
-                        initial={{ opacity: 0, scale: 0.82, y: 30 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ duration: 1.1, delay: 0.2, ease: E }}
-                        style={{
-                            width: "100%",
-                            maxWidth: 520,
-                            height: "auto",
-                            display: "block",
-                            filter:
-                                "drop-shadow(0 40px 72px rgba(44,32,24,0.18))",
-                        }}
-                    />
+                    {/* Mascot video — boomerang */}
+                    <MascotVideo />
                 </motion.div>
             </div>
         </section>
@@ -662,7 +613,7 @@ function How() {
         {
             num: "01",
             title: "Vous renseignez votre stock",
-            desc: "En quelques minutes sur votre téléphone. Pas de site e-commerce, pas de logistique.",
+            desc: "Référence, marque, taille, quantité. En quelques minutes depuis votre téléphone. Sans site e-commerce, sans logistique.",
             bg: "#EDE0C4",
             numColor: "rgba(44,32,24,0.1)",
             titleColor: "#2C2018",
@@ -670,8 +621,8 @@ function How() {
         },
         {
             num: "02",
-            title: "Vos clients cherchent près de chez eux",
-            desc: "En temps réel, sur l'appli Two-Step. Ils voient exactement ce que vous avez en rayon.",
+            title: "Un client cherche ce produit exact",
+            desc: "Il tape la référence précise dans Two-Step. Il voit votre boutique apparaître — avec la distance et le stock disponible.",
             bg: "#2C2018",
             numColor: "#C8813A",
             titleColor: "#F5EDD6",
@@ -679,8 +630,8 @@ function How() {
         },
         {
             num: "03",
-            title: "Ils entrent dans votre boutique",
-            desc: "Le trafic en magasin augmente. Vous les fidélisez durablement, loin d'Amazon.",
+            title: "Il entre. Il achète.",
+            desc: "Un client qui vient sait déjà ce qu'il veut. Il n'hésite pas. Vous le fidélisez — là où Amazon ne peut pas.",
             bg: "#C8813A",
             numColor: "rgba(245,237,214,0.18)",
             titleColor: "#F5EDD6",
