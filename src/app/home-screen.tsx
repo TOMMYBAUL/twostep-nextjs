@@ -282,48 +282,20 @@ function Hero() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.18, ease: E }}
                         style={{
-                            fontSize: "clamp(40px, 5.5vw, 78px)",
+                            fontSize: "clamp(48px, 6.5vw, 92px)",
                             fontWeight: 800,
-                            lineHeight: 1.04,
+                            lineHeight: 1.08,
                             letterSpacing: "-0.035em",
                             color: "#2C2018",
-                            margin: "0 0 10px",
+                            margin: "0 0 36px",
                         }}
                     >
                         Vos clients veulent
-                    </motion.h1>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 36 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.24, ease: E }}
-                        style={{
-                            fontSize: "clamp(40px, 5.5vw, 78px)",
-                            fontWeight: 800,
-                            lineHeight: 1.04,
-                            letterSpacing: "-0.035em",
-                            color: "#2C2018",
-                            margin: "0 0 10px",
-                        }}
-                    >
+                        <br />
                         acheter{" "}
                         <em style={{ fontStyle: "italic", color: "#C8813A" }}>
                             chez vous.
                         </em>
-                    </motion.h1>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 36 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.3, ease: E }}
-                        style={{
-                            fontSize: "clamp(40px, 5.5vw, 78px)",
-                            fontWeight: 800,
-                            lineHeight: 1.04,
-                            letterSpacing: "-0.035em",
-                            color: "rgba(44,32,24,0.28)",
-                            margin: "0 0 32px",
-                        }}
-                    >
-                        Ils finissent sur Amazon.
                     </motion.h1>
 
                     <motion.p
