@@ -3,7 +3,10 @@
 import { animate, motion, useInView, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-/* ── Counter animation ──────────────────────────────── */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const E = [0.22, 1, 0.36, 1] as any;
+
+/* ── Counter ──────────────────────────────────────────────────────────── */
 
 function Counter({ to, inView }: { to: number; inView: boolean }) {
     const [val, setVal] = useState(0);
@@ -19,22 +22,98 @@ function Counter({ to, inView }: { to: number; inView: boolean }) {
     return <>{val}</>;
 }
 
-/* ── Shared variants ────────────────────────────────── */
+/* ── Floating stat card (Chirpley-style) ─────────────────────────────── */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EASE = [0.22, 1, 0.36, 1] as any;
+interface FloatCardProps {
+    top?: string | number;
+    bottom?: string | number;
+    left?: string | number;
+    right?: string | number;
+    delay?: number;
+    floatDuration?: number;
+    children: React.ReactNode;
+}
 
-const up = {
-    hidden: { opacity: 0, y: 48 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
-};
+function FloatCard({
+    top,
+    bottom,
+    left,
+    right,
+    delay = 0,
+    floatDuration = 4,
+    children,
+}: FloatCardProps) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.72, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: [0, -13, 0] }}
+            transition={{
+                opacity: { duration: 0.45, delay },
+                scale: { duration: 0.6, delay, ease: E },
+                y: {
+                    duration: floatDuration,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: delay + 0.6,
+                },
+            }}
+            style={{
+                position: "absolute",
+                top,
+                bottom,
+                left,
+                right,
+                background: "#FFFFFF",
+                borderRadius: 18,
+                padding: "12px 18px",
+                boxShadow:
+                    "0 8px 32px rgba(44,32,24,0.13), 0 2px 8px rgba(44,32,24,0.06)",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                zIndex: 10,
+                userSelect: "none",
+                whiteSpace: "nowrap",
+            }}
+        >
+            {children}
+        </motion.div>
+    );
+}
 
-const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.13 } },
-};
+/* ── Scrolling marquee ───────────────────────────────────────────────── */
 
-/* ── Nav ─────────────────────────────────────────────── */
+function Marquee() {
+    const base =
+        "COMMERCE LOCAL  ·  STOCK VISIBLE  ·  TEMPS RÉEL  ·  TOULOUSE  ·  SANS LIVRAISON  ·  SANS E-COMMERCE  ·  ";
+    return (
+        <div
+            style={{ overflow: "hidden", background: "#C8813A", padding: "13px 0" }}
+        >
+            <motion.div
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+                style={{ display: "inline-flex", whiteSpace: "nowrap" }}
+            >
+                {[0, 1, 2, 3].map((i) => (
+                    <span
+                        key={i}
+                        style={{
+                            color: "#F5EDD6",
+                            fontWeight: 700,
+                            fontSize: 11,
+                            letterSpacing: "0.14em",
+                        }}
+                    >
+                        {base}
+                    </span>
+                ))}
+            </motion.div>
+        </div>
+    );
+}
+
+/* ── Nav ─────────────────────────────────────────────────────────────── */
 
 function Nav() {
     return (
@@ -61,7 +140,7 @@ function Nav() {
         >
             <span
                 style={{
-                    fontSize: 18,
+                    fontSize: 19,
                     fontWeight: 800,
                     color: "#2C2018",
                     letterSpacing: "-0.03em",
@@ -70,35 +149,53 @@ function Nav() {
                 Two-Step
             </span>
 
-            <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.05, boxShadow: "0 6px 24px rgba(200,129,58,0.3)" }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "10px 22px",
-                    borderRadius: 999,
-                    background: "#C8813A",
-                    color: "#fff",
-                    fontWeight: 700,
-                    fontSize: 14,
-                    textDecoration: "none",
-                    letterSpacing: "-0.01em",
-                }}
-            >
-                Être contacté →
-            </motion.a>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <a
+                    href="#comment"
+                    style={{
+                        padding: "8px 18px",
+                        borderRadius: 999,
+                        border: "1.5px solid rgba(44,32,24,0.15)",
+                        color: "#2C2018",
+                        fontWeight: 600,
+                        fontSize: 13,
+                        textDecoration: "none",
+                        letterSpacing: "-0.01em",
+                    }}
+                >
+                    Comment ça marche
+                </a>
+                <motion.a
+                    href="#contact"
+                    whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 6px 24px rgba(200,129,58,0.35)",
+                    }}
+                    whileTap={{ scale: 0.96 }}
+                    style={{
+                        padding: "10px 22px",
+                        borderRadius: 999,
+                        background: "#C8813A",
+                        color: "#fff",
+                        fontWeight: 700,
+                        fontSize: 13,
+                        textDecoration: "none",
+                        letterSpacing: "-0.01em",
+                    }}
+                >
+                    Être contacté →
+                </motion.a>
+            </div>
         </motion.nav>
     );
 }
 
-/* ── Hero ─────────────────────────────────────────────── */
+/* ── Hero ────────────────────────────────────────────────────────────── */
 
 function Hero() {
     const { scrollY } = useScroll();
-    const imgY = useTransform(scrollY, [0, 600], [0, -40]);
+    const imgY = useTransform(scrollY, [0, 700], [0, -60]);
+    const textY = useTransform(scrollY, [0, 700], [0, -25]);
 
     return (
         <section
@@ -107,180 +204,363 @@ function Hero() {
                 background: "#F5EDD6",
                 display: "flex",
                 alignItems: "center",
-                padding: "120px 48px 80px",
+                padding: "100px 48px 80px",
                 position: "relative",
                 overflow: "hidden",
             }}
         >
-            {/* Background watermark */}
-            <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.035 }}
-                transition={{ duration: 2, delay: 0.8 }}
+            {/* Soft radial glow */}
+            <div
                 style={{
                     position: "absolute",
-                    right: -40,
-                    bottom: -80,
-                    fontSize: "clamp(200px, 32vw, 380px)",
-                    fontWeight: 900,
-                    color: "#2C2018",
-                    lineHeight: 1,
-                    userSelect: "none",
-                    letterSpacing: "-0.05em",
+                    top: "30%",
+                    right: "20%",
+                    width: 600,
+                    height: 600,
+                    borderRadius: "50%",
+                    background:
+                        "radial-gradient(circle, rgba(200,129,58,0.12) 0%, transparent 70%)",
                     pointerEvents: "none",
                 }}
-            >
-                TS
-            </motion.span>
+            />
 
-            <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto",
-                        gap: 40,
-                        alignItems: "center",
-                    }}
-                >
-                    {/* Left — text */}
-                    <motion.div variants={stagger} initial="hidden" animate="visible" style={{ maxWidth: 680 }}>
-                        {/* Pill label */}
-                        <motion.div
-                            variants={up}
+            <div
+                style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    width: "100%",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 48,
+                    alignItems: "center",
+                }}
+            >
+                {/* Left — headline */}
+                <motion.div style={{ y: textY }}>
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.55, delay: 0.1, ease: E }}
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 8,
+                            marginBottom: 32,
+                            padding: "6px 16px",
+                            borderRadius: 999,
+                            background: "rgba(200, 129, 58, 0.12)",
+                            border: "1px solid rgba(200, 129, 58, 0.28)",
+                        }}
+                    >
+                        <motion.span
+                            animate={{ opacity: [1, 0.3, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                            style={{
+                                width: 7,
+                                height: 7,
+                                borderRadius: "50%",
+                                background: "#C8813A",
+                                flexShrink: 0,
+                                display: "block",
+                            }}
+                        />
+                        <span
+                            style={{
+                                fontSize: 12,
+                                fontWeight: 700,
+                                color: "#C8813A",
+                                letterSpacing: "0.06em",
+                                textTransform: "uppercase",
+                            }}
+                        >
+                            Disponible à Toulouse
+                        </span>
+                    </motion.div>
+
+                    <motion.h1
+                        initial={{ opacity: 0, y: 36 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.18, ease: E }}
+                        style={{
+                            fontSize: "clamp(40px, 5.5vw, 78px)",
+                            fontWeight: 800,
+                            lineHeight: 1.04,
+                            letterSpacing: "-0.035em",
+                            color: "#2C2018",
+                            margin: "0 0 10px",
+                        }}
+                    >
+                        Vos clients veulent
+                    </motion.h1>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 36 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.24, ease: E }}
+                        style={{
+                            fontSize: "clamp(40px, 5.5vw, 78px)",
+                            fontWeight: 800,
+                            lineHeight: 1.04,
+                            letterSpacing: "-0.035em",
+                            color: "#2C2018",
+                            margin: "0 0 10px",
+                        }}
+                    >
+                        acheter{" "}
+                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>
+                            chez vous.
+                        </em>
+                    </motion.h1>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 36 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.3, ease: E }}
+                        style={{
+                            fontSize: "clamp(40px, 5.5vw, 78px)",
+                            fontWeight: 800,
+                            lineHeight: 1.04,
+                            letterSpacing: "-0.035em",
+                            color: "rgba(44,32,24,0.28)",
+                            margin: "0 0 32px",
+                        }}
+                    >
+                        Ils finissent sur Amazon.
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.38, ease: E }}
+                        style={{
+                            fontSize: "clamp(15px, 1.6vw, 18px)",
+                            color: "#6B4F38",
+                            lineHeight: 1.65,
+                            maxWidth: 430,
+                            margin: "0 0 40px",
+                        }}
+                    >
+                        Two-Step rend votre stock visible aux consommateurs de votre
+                        quartier. En temps réel, sans site e-commerce, sans livraison.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.46, ease: E }}
+                        style={{ display: "flex", gap: 16, alignItems: "center" }}
+                    >
+                        <motion.a
+                            href="#contact"
+                            whileHover={{
+                                scale: 1.05,
+                                boxShadow: "0 12px 40px rgba(200,129,58,0.42)",
+                            }}
+                            whileTap={{ scale: 0.97 }}
                             style={{
                                 display: "inline-flex",
                                 alignItems: "center",
-                                gap: 8,
-                                marginBottom: 32,
-                                padding: "6px 16px",
+                                padding: "15px 32px",
                                 borderRadius: 999,
-                                background: "rgba(200, 129, 58, 0.12)",
-                                border: "1px solid rgba(200, 129, 58, 0.28)",
+                                background: "#C8813A",
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: 15,
+                                textDecoration: "none",
+                                letterSpacing: "-0.01em",
                             }}
                         >
-                            <span
+                            Je veux être pionnier →
+                        </motion.a>
+                        <a
+                            href="#comment"
+                            style={{
+                                fontSize: 14,
+                                color: "#6B4F38",
+                                fontWeight: 600,
+                                textDecoration: "none",
+                                opacity: 0.8,
+                            }}
+                        >
+                            Comment ça marche ↓
+                        </a>
+                    </motion.div>
+                </motion.div>
+
+                {/* Right — illustration + floating cards */}
+                <motion.div
+                    style={{
+                        y: imgY,
+                        position: "relative",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    {/* Floating card — top left of illustration */}
+                    <FloatCard top="4%" left="-6%" delay={0.7} floatDuration={4.3}>
+                        <span style={{ fontSize: 22 }}>📦</span>
+                        <div>
+                            <div
                                 style={{
-                                    width: 6,
-                                    height: 6,
+                                    fontSize: 13,
+                                    fontWeight: 800,
+                                    color: "#2C2018",
+                                    letterSpacing: "-0.02em",
+                                    lineHeight: 1.2,
+                                }}
+                            >
+                                Stock en ligne
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: 11,
+                                    color: "#6B4F38",
+                                    fontWeight: 500,
+                                    marginTop: 2,
+                                }}
+                            >
+                                Visible en temps réel
+                            </div>
+                        </div>
+                    </FloatCard>
+
+                    {/* Floating card — top right */}
+                    <FloatCard top="12%" right="-10%" delay={0.95} floatDuration={3.7}>
+                        <div
+                            style={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: "50%",
+                                background: "rgba(200,129,58,0.12)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 18,
+                                flexShrink: 0,
+                            }}
+                        >
+                            📍
+                        </div>
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: 22,
+                                    fontWeight: 900,
+                                    color: "#C8813A",
+                                    letterSpacing: "-0.04em",
+                                    lineHeight: 1,
+                                }}
+                            >
+                                79%
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: 11,
+                                    color: "#6B4F38",
+                                    fontWeight: 500,
+                                    marginTop: 2,
+                                }}
+                            >
+                                préfèrent acheter local
+                            </div>
+                        </div>
+                    </FloatCard>
+
+                    {/* Floating card — bottom left */}
+                    <FloatCard bottom="8%" left="-8%" delay={1.15} floatDuration={5.1}>
+                        <div
+                            style={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 8,
+                                background: "#2C2018",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 16,
+                                flexShrink: 0,
+                            }}
+                        >
+                            🛍️
+                        </div>
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: 13,
+                                    fontWeight: 800,
+                                    color: "#2C2018",
+                                    letterSpacing: "-0.02em",
+                                    lineHeight: 1.2,
+                                }}
+                            >
+                                0 e-commerce
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: 11,
+                                    color: "#6B4F38",
+                                    fontWeight: 500,
+                                    marginTop: 2,
+                                }}
+                            >
+                                Aucune livraison requise
+                            </div>
+                        </div>
+                    </FloatCard>
+
+                    {/* Floating card — bottom right */}
+                    <FloatCard bottom="22%" right="-6%" delay={1.35} floatDuration={3.9}>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: 8,
+                                    height: 8,
                                     borderRadius: "50%",
-                                    background: "#C8813A",
+                                    background: "#7A9E7E",
                                     flexShrink: 0,
                                 }}
                             />
                             <span
                                 style={{
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: 700,
-                                    color: "#C8813A",
-                                    letterSpacing: "0.06em",
-                                    textTransform: "uppercase",
-                                }}
-                            >
-                                Commerce local · Toulouse
-                            </span>
-                        </motion.div>
-
-                        {/* Headline */}
-                        <motion.h1
-                            variants={up}
-                            style={{
-                                fontSize: "clamp(44px, 6.5vw, 84px)",
-                                fontWeight: 800,
-                                lineHeight: 1.04,
-                                letterSpacing: "-0.035em",
-                                color: "#2C2018",
-                                margin: "0 0 28px",
-                            }}
-                        >
-                            Vos clients veulent
-                            <br />
-                            acheter{" "}
-                            <em style={{ fontStyle: "italic", color: "#C8813A" }}>chez vous.</em>
-                        </motion.h1>
-
-                        {/* Subtext */}
-                        <motion.p
-                            variants={up}
-                            style={{
-                                fontSize: "clamp(16px, 1.8vw, 19px)",
-                                color: "#6B4F38",
-                                lineHeight: 1.65,
-                                maxWidth: 500,
-                                margin: "0 0 48px",
-                            }}
-                        >
-                            Two-Step rend votre stock visible aux consommateurs de votre quartier.
-                            En temps réel, sans site e-commerce, sans livraison.
-                        </motion.p>
-
-                        {/* CTA row */}
-                        <motion.div
-                            variants={up}
-                            style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}
-                        >
-                            <motion.a
-                                href="#contact"
-                                whileHover={{ scale: 1.04, boxShadow: "0 10px 36px rgba(200,129,58,0.38)" }}
-                                whileTap={{ scale: 0.97 }}
-                                style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    padding: "16px 32px",
-                                    borderRadius: 999,
-                                    background: "#2C2018",
-                                    color: "#F5EDD6",
-                                    fontWeight: 700,
-                                    fontSize: 16,
-                                    textDecoration: "none",
+                                    color: "#2C2018",
                                     letterSpacing: "-0.01em",
                                 }}
                             >
-                                Je veux être pionnier →
-                            </motion.a>
+                                Lancement à Toulouse
+                            </span>
+                        </div>
+                    </FloatCard>
 
-                            <motion.a
-                                href="#comment"
-                                whileHover={{ color: "#C8813A" }}
-                                style={{
-                                    fontSize: 15,
-                                    color: "#6B4F38",
-                                    textDecoration: "none",
-                                    fontWeight: 600,
-                                    transition: "color 0.2s",
-                                }}
-                            >
-                                Comment ça marche ↓
-                            </motion.a>
-                        </motion.div>
-                    </motion.div>
-
-                    {/* Right — floating illustration */}
-                    <motion.div
-                        style={{ y: imgY, flexShrink: 0 }}
-                        initial={{ opacity: 0, scale: 0.88, x: 40 }}
-                        animate={{ opacity: 1, scale: 1, x: 0 }}
-                        transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        <motion.img
-                            src="/hero.png"
-                            alt="Deux personnes découvrant une boutique locale"
-                            animate={{ y: [0, -14, 0] }}
-                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                            style={{
-                                width: "clamp(220px, 30vw, 440px)",
-                                height: "auto",
-                                display: "block",
-                                filter: "drop-shadow(0 24px 48px rgba(44,32,24,0.18))",
-                            }}
-                        />
-                    </motion.div>
-                </div>
+                    {/* Main illustration */}
+                    <motion.img
+                        src="/hero.png"
+                        alt="Commerce local"
+                        initial={{ opacity: 0, scale: 0.82, y: 30 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 1.1, delay: 0.2, ease: E }}
+                        style={{
+                            width: "100%",
+                            maxWidth: 520,
+                            height: "auto",
+                            display: "block",
+                            filter:
+                                "drop-shadow(0 40px 72px rgba(44,32,24,0.18))",
+                        }}
+                    />
+                </motion.div>
             </div>
         </section>
     );
 }
 
-/* ── Statement ───────────────────────────────────────── */
+/* ── Statement ───────────────────────────────────────────────────────── */
 
 function Statement() {
     const ref = useRef<HTMLElement>(null);
@@ -296,51 +576,62 @@ function Statement() {
                 overflow: "hidden",
             }}
         >
-            {/* Glow */}
             <div
                 style={{
                     position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 700,
-                    height: 700,
-                    borderRadius: "50%",
-                    background: "radial-gradient(circle, rgba(200,129,58,0.09) 0%, transparent 65%)",
+                    inset: 0,
+                    background:
+                        "radial-gradient(ellipse at 50% 50%, rgba(200,129,58,0.1) 0%, transparent 65%)",
                     pointerEvents: "none",
                 }}
             />
-
-            <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+            <div
+                style={{
+                    maxWidth: 1100,
+                    margin: "0 auto",
+                    position: "relative",
+                }}
+            >
                 {/* Stats */}
                 <div
                     style={{
                         display: "grid",
                         gridTemplateColumns: "1fr 1px 1fr",
-                        marginBottom: 72,
+                        marginBottom: 80,
                     }}
                 >
                     {[
                         { val: 70, label: "des Français achètent en ligne", delay: 0 },
-                        { val: 79, label: "préfèrent acheter local", delay: 0.15 },
+                        {
+                            val: 79,
+                            label: "préfèrent acheter local",
+                            delay: 0.15,
+                        },
                     ].map((stat, i) => (
                         <>
                             {i === 1 && (
                                 <div
-                                    key="divider"
-                                    style={{ background: "rgba(255,255,255,0.07)", margin: "8px 0" }}
+                                    key="sep"
+                                    style={{
+                                        background: "rgba(255,255,255,0.07)",
+                                        margin: "8px 0",
+                                    }}
                                 />
                             )}
                             <motion.div
                                 key={stat.val}
                                 initial={{ opacity: 0, y: 40 }}
                                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                                transition={{ duration: 0.75, delay: stat.delay, ease: [0.22, 1, 0.36, 1] }}
+                                transition={{
+                                    duration: 0.75,
+                                    delay: stat.delay,
+                                    ease: E,
+                                }}
                                 style={{ textAlign: "center", padding: "0 40px" }}
                             >
                                 <div
                                     style={{
-                                        fontSize: "clamp(72px, 11vw, 136px)",
+                                        fontSize: "clamp(72px, 11vw, 144px)",
                                         fontWeight: 900,
                                         color: "#C8813A",
                                         lineHeight: 1,
@@ -352,8 +643,8 @@ function Statement() {
                                 <div
                                     style={{
                                         marginTop: 16,
-                                        fontSize: 16,
-                                        color: "rgba(245,237,214,0.65)",
+                                        fontSize: 15,
+                                        color: "rgba(245,237,214,0.55)",
                                         lineHeight: 1.5,
                                     }}
                                 >
@@ -368,26 +659,28 @@ function Statement() {
                 <motion.p
                     initial={{ opacity: 0, y: 28 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.75, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.75, delay: 0.32, ease: E }}
                     style={{
                         textAlign: "center",
-                        fontSize: "clamp(22px, 3.5vw, 42px)",
+                        fontSize: "clamp(22px, 3.5vw, 46px)",
                         fontWeight: 700,
                         color: "#F5EDD6",
-                        lineHeight: 1.25,
+                        lineHeight: 1.2,
                         letterSpacing: "-0.025em",
                         margin: 0,
                     }}
                 >
                     Le problème ?{" "}
-                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>Ils ne vous trouvent pas.</em>
+                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>
+                        Ils ne vous trouvent pas.
+                    </em>
                 </motion.p>
             </div>
         </section>
     );
 }
 
-/* ── How ─────────────────────────────────────────────── */
+/* ── How ─────────────────────────────────────────────────────────────── */
 
 function How() {
     const ref = useRef<HTMLElement>(null);
@@ -399,27 +692,27 @@ function How() {
             title: "Vous renseignez votre stock",
             desc: "En quelques minutes sur votre téléphone. Pas de site e-commerce, pas de logistique.",
             bg: "#EDE0C4",
-            numColor: "rgba(44,32,24,0.12)",
+            numColor: "rgba(44,32,24,0.1)",
             titleColor: "#2C2018",
-            textColor: "#6B4F38",
+            descColor: "#6B4F38",
         },
         {
             num: "02",
             title: "Vos clients cherchent près de chez eux",
-            desc: "En temps réel, sur l'application Two-Step. Ils voient ce que vous avez en rayon.",
+            desc: "En temps réel, sur l'appli Two-Step. Ils voient exactement ce que vous avez en rayon.",
             bg: "#2C2018",
             numColor: "#C8813A",
             titleColor: "#F5EDD6",
-            textColor: "rgba(245,237,214,0.7)",
+            descColor: "rgba(245,237,214,0.6)",
         },
         {
             num: "03",
             title: "Ils entrent dans votre boutique",
-            desc: "Le trafic en magasin augmente. Vous les fidélisez durablement.",
+            desc: "Le trafic en magasin augmente. Vous les fidélisez durablement, loin d'Amazon.",
             bg: "#C8813A",
-            numColor: "rgba(245,237,214,0.2)",
+            numColor: "rgba(245,237,214,0.18)",
             titleColor: "#F5EDD6",
-            textColor: "rgba(245,237,214,0.8)",
+            descColor: "rgba(245,237,214,0.8)",
         },
     ];
 
@@ -430,11 +723,10 @@ function How() {
             style={{ background: "#F5EDD6", padding: "120px 48px" }}
         >
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 72 }}
                 >
                     <div
@@ -442,7 +734,7 @@ function How() {
                             fontSize: 11,
                             fontWeight: 700,
                             color: "#C8813A",
-                            letterSpacing: "0.12em",
+                            letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             marginBottom: 16,
                         }}
@@ -451,33 +743,39 @@ function How() {
                     </div>
                     <h2
                         style={{
-                            fontSize: "clamp(36px, 5vw, 62px)",
+                            fontSize: "clamp(36px, 5vw, 64px)",
                             fontWeight: 800,
                             color: "#2C2018",
-                            lineHeight: 1.08,
+                            lineHeight: 1.06,
                             letterSpacing: "-0.03em",
                             margin: 0,
-                            maxWidth: 580,
+                            maxWidth: 560,
                         }}
                     >
                         Simple comme{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>deux pas.</em>
+                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>
+                            deux pas.
+                        </em>
                     </h2>
                 </motion.div>
 
-                {/* Cards */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: 20,
+                    }}
+                >
                     {steps.map((step, i) => (
                         <motion.div
                             key={step.num}
                             initial={{ opacity: 0, y: 56 }}
                             animate={inView ? { opacity: 1, y: 0 } : {}}
-                            transition={{
-                                duration: 0.75,
-                                delay: i * 0.14,
-                                ease: [0.22, 1, 0.36, 1],
+                            transition={{ duration: 0.75, delay: i * 0.13, ease: E }}
+                            whileHover={{
+                                y: -8,
+                                transition: { duration: 0.28, ease: "easeOut" },
                             }}
-                            whileHover={{ y: -6, transition: { duration: 0.3, ease: "easeOut" } }}
                             style={{
                                 background: step.bg,
                                 borderRadius: 28,
@@ -490,7 +788,7 @@ function How() {
                         >
                             <span
                                 style={{
-                                    fontSize: 52,
+                                    fontSize: 56,
                                     fontWeight: 900,
                                     color: step.numColor,
                                     lineHeight: 1,
@@ -502,7 +800,7 @@ function How() {
                             <div>
                                 <h3
                                     style={{
-                                        fontSize: 19,
+                                        fontSize: 18,
                                         fontWeight: 700,
                                         color: step.titleColor,
                                         lineHeight: 1.3,
@@ -514,8 +812,8 @@ function How() {
                                 </h3>
                                 <p
                                     style={{
-                                        fontSize: 15,
-                                        color: step.textColor,
+                                        fontSize: 14,
+                                        color: step.descColor,
                                         lineHeight: 1.65,
                                         margin: 0,
                                     }}
@@ -531,7 +829,7 @@ function How() {
     );
 }
 
-/* ── About ───────────────────────────────────────────── */
+/* ── About ───────────────────────────────────────────────────────────── */
 
 function About() {
     const ref = useRef<HTMLElement>(null);
@@ -541,34 +839,15 @@ function About() {
         <section
             ref={ref}
             style={{
-                background: "#7A9E7E",
+                background: "#EDE0C4",
                 padding: "120px 48px",
                 overflow: "hidden",
                 position: "relative",
             }}
         >
-            {/* Large background text */}
-            <motion.span
-                initial={{ opacity: 0, x: 80 }}
-                animate={inView ? { opacity: 0.08, x: 0 } : {}}
-                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                    position: "absolute",
-                    right: -20,
-                    bottom: -60,
-                    fontSize: "clamp(160px, 24vw, 300px)",
-                    fontWeight: 900,
-                    color: "#2C2018",
-                    lineHeight: 1,
-                    userSelect: "none",
-                    letterSpacing: "-0.05em",
-                    pointerEvents: "none",
-                }}
+            <div
+                style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}
             >
-                bauland
-            </motion.span>
-
-            <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
                 <div
                     style={{
                         display: "grid",
@@ -581,14 +860,14 @@ function About() {
                     <motion.div
                         initial={{ opacity: 0, x: -40 }}
                         animate={inView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.8, ease: E }}
                     >
                         <div
                             style={{
                                 fontSize: 11,
                                 fontWeight: 700,
-                                color: "rgba(245,237,214,0.75)",
-                                letterSpacing: "0.12em",
+                                color: "#C8813A",
+                                letterSpacing: "0.14em",
                                 textTransform: "uppercase",
                                 marginBottom: 20,
                             }}
@@ -597,17 +876,21 @@ function About() {
                         </div>
                         <h2
                             style={{
-                                fontSize: "clamp(40px, 6vw, 72px)",
+                                fontSize: "clamp(36px, 5.5vw, 68px)",
                                 fontWeight: 800,
-                                color: "#F5EDD6",
+                                color: "#2C2018",
                                 lineHeight: 1.04,
                                 letterSpacing: "-0.03em",
                                 margin: 0,
                             }}
                         >
-                            Deux frères.
+                            Nés à Toulouse,
                             <br />
-                            <em style={{ fontStyle: "italic" }}>Une mission.</em>
+                            <em style={{ fontStyle: "italic", color: "#C8813A" }}>
+                                fondateurs
+                            </em>
+                            <br />
+                            de Two-Step.
                         </h2>
                     </motion.div>
 
@@ -615,30 +898,31 @@ function About() {
                     <motion.div
                         initial={{ opacity: 0, x: 40 }}
                         animate={inView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.8, delay: 0.15, ease: E }}
                     >
                         <p
                             style={{
                                 fontSize: "clamp(15px, 1.7vw, 18px)",
-                                color: "#F5EDD6",
+                                color: "#2C2018",
                                 lineHeight: 1.72,
                                 margin: "0 0 20px",
                             }}
                         >
-                            Thomas est kiné. Il voyait ses patients commander leurs produits en ligne
-                            plutôt que chez le pharmacien du quartier — pas parce qu'ils préféraient
-                            Amazon, mais parce qu'ils ne savaient pas que la pharmacie les avait en stock.
+                            Deux frères qui ont vu leurs commerçants préférés perdre
+                            des ventes au profit d'Amazon — non pas parce que les
+                            clients préféraient commander en ligne, mais parce qu'ils
+                            ne savaient pas que le stock existait en boutique.
                         </p>
                         <p
                             style={{
                                 fontSize: "clamp(15px, 1.7vw, 18px)",
-                                color: "rgba(245,237,214,0.75)",
+                                color: "#6B4F38",
                                 lineHeight: 1.72,
                                 margin: 0,
                             }}
                         >
-                            Avec son frère, ils ont décidé de régler ce problème. Two-Step, c'est
-                            l'outil que les commerçants n'avaient pas encore.
+                            Two-Step, c'est l'outil que les commerçants locaux
+                            n'avaient pas encore.
                         </p>
                     </motion.div>
                 </div>
@@ -647,12 +931,14 @@ function About() {
     );
 }
 
-/* ── Contact ─────────────────────────────────────────── */
+/* ── Contact ─────────────────────────────────────────────────────────── */
 
 function Contact() {
     const ref = useRef<HTMLElement>(null);
     const inView = useInView(ref, { once: true, margin: "-8%" });
-    const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+    const [status, setStatus] = useState<
+        "idle" | "sending" | "sent" | "error"
+    >("idle");
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -679,13 +965,13 @@ function Contact() {
         <section
             id="contact"
             ref={ref}
-            style={{ background: "#EDE0C4", padding: "120px 48px" }}
+            style={{ background: "#F5EDD6", padding: "120px 48px" }}
         >
             <div style={{ maxWidth: 600, margin: "0 auto" }}>
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 56 }}
                 >
                     <div
@@ -693,7 +979,7 @@ function Contact() {
                             fontSize: 11,
                             fontWeight: 700,
                             color: "#C8813A",
-                            letterSpacing: "0.12em",
+                            letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             marginBottom: 16,
                         }}
@@ -711,7 +997,9 @@ function Contact() {
                         }}
                     >
                         Rejoignez les{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>pionniers.</em>
+                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>
+                            pionniers.
+                        </em>
                     </h2>
                 </motion.div>
 
@@ -729,7 +1017,12 @@ function Contact() {
                         <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 260,
+                                damping: 20,
+                                delay: 0.1,
+                            }}
                             style={{
                                 width: 56,
                                 height: 56,
@@ -739,12 +1032,21 @@ function Contact() {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 margin: "0 auto 20px",
-                                fontSize: 24,
+                                fontSize: 22,
+                                color: "#fff",
+                                fontWeight: 700,
                             }}
                         >
                             ✓
                         </motion.div>
-                        <p style={{ color: "#F5EDD6", fontWeight: 600, fontSize: 18, margin: 0 }}>
+                        <p
+                            style={{
+                                color: "#F5EDD6",
+                                fontWeight: 600,
+                                fontSize: 18,
+                                margin: 0,
+                            }}
+                        >
                             Message reçu. On vous contacte sous 48h.
                         </p>
                     </motion.div>
@@ -753,13 +1055,28 @@ function Contact() {
                         onSubmit={handleSubmit}
                         initial={{ opacity: 0, y: 24 }}
                         animate={inView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.7, delay: 0.15, ease: E }}
                         style={{ display: "flex", flexDirection: "column", gap: 32 }}
                     >
                         {[
-                            { name: "name", label: "Votre nom", type: "text", placeholder: "Marie Dupont" },
-                            { name: "shop", label: "Votre boutique", type: "text", placeholder: "Librairie Les Mots Voyageurs" },
-                            { name: "email", label: "Votre email", type: "email", placeholder: "marie@maboutique.fr" },
+                            {
+                                name: "name",
+                                label: "Votre nom",
+                                type: "text",
+                                placeholder: "Marie Dupont",
+                            },
+                            {
+                                name: "shop",
+                                label: "Votre boutique",
+                                type: "text",
+                                placeholder: "Librairie Les Mots Voyageurs",
+                            },
+                            {
+                                name: "email",
+                                label: "Votre email",
+                                type: "email",
+                                placeholder: "marie@maboutique.fr",
+                            },
                         ].map((field, i) => (
                             <motion.div
                                 key={field.name}
@@ -768,7 +1085,7 @@ function Contact() {
                                 transition={{
                                     duration: 0.5,
                                     delay: 0.22 + i * 0.09,
-                                    ease: [0.22, 1, 0.36, 1],
+                                    ease: E,
                                 }}
                                 style={{ display: "flex", flexDirection: "column", gap: 8 }}
                             >
@@ -803,7 +1120,8 @@ function Contact() {
                                         e.target.style.borderBottomColor = "#C8813A";
                                     }}
                                     onBlur={(e) => {
-                                        e.target.style.borderBottomColor = "rgba(44,32,24,0.18)";
+                                        e.target.style.borderBottomColor =
+                                            "rgba(44,32,24,0.18)";
                                     }}
                                 />
                             </motion.div>
@@ -814,7 +1132,7 @@ function Contact() {
                             disabled={status === "sending"}
                             whileHover={{
                                 scale: 1.04,
-                                boxShadow: "0 10px 36px rgba(44,32,24,0.28)",
+                                boxShadow: "0 10px 36px rgba(44,32,24,0.25)",
                             }}
                             whileTap={{ scale: 0.97 }}
                             style={{
@@ -832,17 +1150,19 @@ function Contact() {
                                 fontFamily: "inherit",
                             }}
                         >
-                            {status === "sending" ? "Envoi en cours…" : "Je veux être contacté →"}
+                            {status === "sending"
+                                ? "Envoi en cours…"
+                                : "Je veux être contacté →"}
                         </motion.button>
 
                         {status === "error" && (
                             <p style={{ color: "#C8813A", fontSize: 14, margin: 0 }}>
-                                Une erreur s'est produite. Écrivez-nous directement à{" "}
+                                Une erreur s'est produite. Écrivez-nous à{" "}
                                 <a
-                                    href="mailto:bauland@twostep.fr"
+                                    href="mailto:contact@twostep.fr"
                                     style={{ color: "#C8813A" }}
                                 >
-                                    bauland@twostep.fr
+                                    contact@twostep.fr
                                 </a>
                             </p>
                         )}
@@ -853,7 +1173,7 @@ function Contact() {
     );
 }
 
-/* ── Footer ───────────────────────────────────────────── */
+/* ── Footer ──────────────────────────────────────────────────────────── */
 
 function Footer() {
     return (
@@ -866,17 +1186,24 @@ function Footer() {
                 justifyContent: "space-between",
             }}
         >
-            <span style={{ fontSize: 18, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
+            <span
+                style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: "#F5EDD6",
+                    letterSpacing: "-0.03em",
+                }}
+            >
                 Two-Step
             </span>
-            <span style={{ fontSize: 13, color: "rgba(245,237,214,0.4)" }}>
-                © 2025 · bauland@twostep.fr
+            <span style={{ fontSize: 13, color: "rgba(245,237,214,0.38)" }}>
+                © 2025 · Toulouse, France
             </span>
         </footer>
     );
 }
 
-/* ── Page ─────────────────────────────────────────────── */
+/* ── Page ────────────────────────────────────────────────────────────── */
 
 export default function HomeScreen() {
     return (
@@ -884,7 +1211,9 @@ export default function HomeScreen() {
             <Nav />
             <main>
                 <Hero />
+                <Marquee />
                 <Statement />
+                <Marquee />
                 <How />
                 <About />
                 <Contact />
