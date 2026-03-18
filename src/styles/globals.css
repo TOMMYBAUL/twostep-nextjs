@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./typography.css";
+
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-react-aria-components";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@custom-variant label (& [data-label]);
+@custom-variant focus-input-within (&:has(input:focus));
+
+@utility scrollbar-hide {
+    /* For Webkit-based browsers (Chrome, Safari and Opera) */
+    &::-webkit-scrollbar {
+        display: none;
+        -webkit-appearance: none;
+    }
+
+    /* For IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+@utility transition-inherit-all {
+    transition-property: inherit;
+    transition-duration: inherit;
+    transition-timing-function: inherit;
+}
+
+/* ── Two-Step brand overrides ── */
+:root {
+    --ts-cream:      #F5EDD6;
+    --ts-cream-dark: #EDE0C4;
+    --ts-ochre:      #C8813A;
+    --ts-ochre-dark: #A86828;
+    --ts-sage:       #7A9E7E;
+    --ts-brown:      #2C2018;
+    --ts-brown-mid:  #6B4F38;
+    --ts-white:      #FFFFFF;
+
+    /* Override UntitledUI brand palette → ochre */
+    --color-brand-25:  #fdf8f3;
+    --color-brand-50:  #faf0e4;
+    --color-brand-100: #f4dcbf;
+    --color-brand-200: #ebc494;
+    --color-brand-300: #dfa668;
+    --color-brand-400: #d4904a;
+    --color-brand-500: #c8813a;
+    --color-brand-600: #a86828;
+    --color-brand-700: #8a531e;
+    --color-brand-800: #6b3f17;
+    --color-brand-900: #4a2c0f;
+    --color-brand-950: #2c1a09;
+}
+
+html,
+body {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-variant-ligatures: contextual;
+    font-variant-ligatures: contextual;
+    -webkit-font-kerning: normal;
+    font-kerning: normal;
+}
+
+/* Hide the default expand arrow on Safari.  */
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Hide default arrows from number inputs. */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Hide the default clear button (X) from search inputs. */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+/* Hide the default outline on chart elements. */
+.recharts-surface,
+.recharts-surface g,
+.recharts-surface path {
+    outline: none;
+}
