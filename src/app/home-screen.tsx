@@ -231,18 +231,18 @@ function Hero() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.18, ease: E }}
                         style={{
-                            fontSize: isMobile ? "clamp(40px, 10vw, 56px)" : "clamp(44px, 4.8vw, 72px)",
+                            fontSize: isMobile ? "clamp(38px, 9vw, 52px)" : "clamp(48px, 5.5vw, 80px)",
                             fontWeight: 800,
                             lineHeight: 1.1,
-                            letterSpacing: "-0.03em",
+                            letterSpacing: "-0.035em",
                             color: "#2C2018",
                             margin: "0 0 24px",
                         }}
                     >
                         Votre produit exact{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>est là,</em>
+                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>est là.</em>
                         <br />
-                        à deux pas de chez vous.
+                        À deux pas de chez vous.
                     </motion.h1>
 
                     {/* Subtext */}
