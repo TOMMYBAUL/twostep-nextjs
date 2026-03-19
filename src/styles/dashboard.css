@@ -1,0 +1,140 @@
+/* ── Two-Step Dashboard DA ── */
+
+:root {
+    --ts-sidebar-bg: #3D2200;
+    --ts-accent: #E8832A;
+    --ts-accent-hover: #D4721F;
+    --ts-accent-text: #C96A10;
+    --ts-bg-warm: #f5f5f0;
+    --ts-bg-card: #eeeee8;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger delay utility classes */
+.animate-fade-up {
+    animation: fadeUp 400ms ease both;
+}
+
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+.stagger-7 { animation-delay: 350ms; }
+.stagger-8 { animation-delay: 400ms; }
+.stagger-9 { animation-delay: 450ms; }
+.stagger-10 { animation-delay: 500ms; }
+
+/* Dashboard button style */
+.btn-ts {
+    background: var(--ts-accent);
+    color: var(--ts-sidebar-bg);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    transition: transform 150ms, background 150ms;
+}
+.btn-ts:hover {
+    background: var(--ts-accent-hover);
+    transform: translateY(-1px);
+}
+.btn-ts:active {
+    transform: scale(0.97);
+}
+
+/* Sidebar */
+.sidebar-ts {
+    width: 68px;
+    min-width: 68px;
+    background: var(--ts-sidebar-bg);
+    transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                min-width 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+.sidebar-ts:hover {
+    width: 180px;
+    min-width: 180px;
+}
+
+.sidebar-ts .nav-label {
+    opacity: 0;
+    transition: opacity 200ms ease 80ms;
+}
+.sidebar-ts:hover .nav-label {
+    opacity: 1;
+}
+
+.sidebar-ts .logo-text {
+    opacity: 0;
+    transition: opacity 200ms ease 80ms;
+}
+.sidebar-ts:hover .logo-text {
+    opacity: 1;
+}
+
+/* Sidebar tooltip (shown only when sidebar is collapsed) */
+.sidebar-ts .nav-tooltip {
+    opacity: 0;
+    transition: opacity 150ms;
+    pointer-events: none;
+}
+.sidebar-ts:not(:hover) .nav-item:hover .nav-tooltip {
+    opacity: 1;
+}
+
+/* Active nav item bar */
+.nav-item-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    background: var(--ts-accent);
+    border-radius: 0 3px 3px 0;
+}
+
+/* Search input */
+.search-ts {
+    background: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #1a1a1a;
+    outline: none;
+    width: 280px;
+}
+.search-ts::placeholder {
+    color: #9ca3af;
+}
+.search-ts:focus {
+    box-shadow: 0 0 0 2px rgba(232, 131, 42, 0.3);
+}
+
+/* Product row hover */
+.product-row-ts {
+    transition: background 150ms, box-shadow 150ms;
+}
+.product-row-ts:hover {
+    background: #faf9f5;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+.product-row-ts:hover .row-arrow {
+    opacity: 1;
+}
