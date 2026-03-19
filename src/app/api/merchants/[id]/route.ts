@@ -8,7 +8,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
     const { data, error } = await supabase
         .from("merchants")
-        .select("id, name, address, city, pos_type, pos_last_sync, created_at")
+        .select("*")
         .eq("id", id)
         .single();
 
@@ -29,12 +29,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
 
     const body = await request.json();
-    const { name, address, city, lat, lng } = body;
+    const { name, address, city, lat, lng, phone, description, photo_url, opening_hours } = body;
 
     const updates: Record<string, unknown> = {};
-    if (name) updates.name = name;
-    if (address) updates.address = address;
-    if (city) updates.city = city;
+    if (name !== undefined) updates.name = name;
+    if (address !== undefined) updates.address = address;
+    if (city !== undefined) updates.city = city;
+    if (phone !== undefined) updates.phone = phone;
+    if (description !== undefined) updates.description = description;
+    if (photo_url !== undefined) updates.photo_url = photo_url;
+    if (opening_hours !== undefined) updates.opening_hours = opening_hours;
     if (lat != null && lng != null) {
         if (typeof lat !== "number" || typeof lng !== "number" || !isFinite(lat) || !isFinite(lng)) {
             return NextResponse.json({ error: "lat and lng must be valid numbers" }, { status: 400 });

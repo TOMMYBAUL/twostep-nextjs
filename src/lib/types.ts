@@ -4,6 +4,12 @@ export type Merchant = {
     name: string;
     address: string;
     city: string;
+    status: "pending" | "active" | "suspended";
+    siret: string | null;
+    phone: string | null;
+    description: string | null;
+    photo_url: string | null;
+    opening_hours: Record<string, { open: string; close: string } | null> | null;
     pos_type: "square" | "sumup" | "zettle" | "clover" | "lightspeed" | null;
     pos_last_sync: string | null;
     created_at: string;

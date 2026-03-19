@@ -12,7 +12,7 @@ export async function GET() {
 
     const { data, error } = await supabase
         .from("merchants")
-        .select("id, name, address, city, pos_type, pos_last_sync, created_at")
+        .select("*")
         .eq("user_id", user.id)
         .single();
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, address, city, lat, lng } = body;
+    const { name, address, city, lat, lng, siret, phone, description, photo_url, opening_hours, status } = body;
 
     if (!name || !address || !city || lat == null || lng == null) {
         return NextResponse.json(
@@ -56,6 +56,12 @@ export async function POST(request: Request) {
             address,
             city,
             location: `SRID=4326;POINT(${lng} ${lat})`,
+            siret: siret ?? null,
+            phone: phone ?? null,
+            description: description ?? null,
+            photo_url: photo_url ?? null,
+            opening_hours: opening_hours ?? null,
+            status: status ?? "active",
         })
         .select()
         .single();
