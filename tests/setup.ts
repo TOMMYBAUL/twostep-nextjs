@@ -14,7 +14,7 @@ vi.mock("@/lib/supabase/server", () => ({
             limit: vi.fn().mockReturnThis(),
         })),
         auth: {
-            getUser: vi.fn(),
+            getUser: vi.fn().mockResolvedValue({ data: { user: null } }),
         },
         rpc: vi.fn(),
     })),

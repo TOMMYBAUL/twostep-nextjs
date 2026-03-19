@@ -1,0 +1,63 @@
+import { NextResponse } from "next/server";
+
+import { createClient } from "@/lib/supabase/server";
+
+export async function GET(request: Request) {
+    const supabase = await createClient();
+    const { searchParams } = new URL(request.url);
+    const merchantId = searchParams.get("merchant_id");
+
+    if (!merchantId) {
+        return NextResponse.json({ error: "merchant_id required" }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+        .from("products")
+        .select("*, stock(quantity)")
+        .eq("merchant_id", merchantId)
+        .order("name");
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ products: data });
+}
+
+export async function POST(request: Request) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { merchant_id, name, ean, description, category, price, photo_url, initial_quantity } = body;
+
+    if (!merchant_id || !name) {
+        return NextResponse.json({ error: "Missing required fields: merchant_id, name" }, { status: 400 });
+    }
+
+    // Insert product
+    const { data: product, error: productError } = await supabase
+        .from("products")
+        .insert({ merchant_id, name, ean, description, category, price, photo_url })
+        .select()
+        .single();
+
+    if (productError) {
+        return NextResponse.json({ error: productError.message }, { status: 500 });
+    }
+
+    // Insert initial stock
+    const { error: stockError } = await supabase
+        .from("stock")
+        .insert({ product_id: product.id, quantity: initial_quantity ?? 0 });
+
+    if (stockError) {
+        return NextResponse.json({ error: stockError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ product }, { status: 201 });
+}
