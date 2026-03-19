@@ -1,12 +1,20 @@
 /* ── Two-Step Dashboard DA ── */
 
 :root {
-    --ts-sidebar-bg: #3D2200;
-    --ts-accent: #E8832A;
-    --ts-accent-hover: #D4721F;
-    --ts-accent-text: #C96A10;
-    --ts-bg-warm: #f5f5f0;
-    --ts-bg-card: #eeeee8;
+    --ts-terracotta: #E07A5F;
+    --ts-terracotta-hover: #c96a50;
+    --ts-sage: #81B29A;
+    --ts-sage-light: #e8f3ee;
+    --ts-cream: #F4F1DE;
+    --ts-cream-dark: #ebe7d0;
+    --ts-dark: #2C2018;
+    --ts-dark-hover: #1e1610;
+    --ts-dark-light: rgba(44, 32, 24, 0.08);
+    --ts-sidebar-bg: #E07A5F;
+    --ts-accent: #E07A5F;
+    --ts-accent-hover: #c96a50;
+    --ts-bg-warm: #F4F1DE;
+    --ts-bg-card: #ebe7d0;
 }
 
 @keyframes fadeUp {
@@ -38,8 +46,8 @@
 
 /* Dashboard button style */
 .btn-ts {
-    background: var(--ts-accent);
-    color: var(--ts-sidebar-bg);
+    background: var(--ts-dark);
+    color: white;
     font-weight: 500;
     padding: 10px 20px;
     border-radius: 10px;
@@ -49,7 +57,7 @@
     transition: transform 150ms, background 150ms;
 }
 .btn-ts:hover {
-    background: var(--ts-accent-hover);
+    background: var(--ts-dark-hover);
     transform: translateY(-1px);
 }
 .btn-ts:active {
@@ -105,7 +113,7 @@
     transform: translateY(-50%);
     width: 3px;
     height: 24px;
-    background: var(--ts-accent);
+    background: white;
     border-radius: 0 3px 3px 0;
 }
 
@@ -124,7 +132,7 @@
     color: #9ca3af;
 }
 .search-ts:focus {
-    box-shadow: 0 0 0 2px rgba(232, 131, 42, 0.3);
+    box-shadow: 0 0 0 2px rgba(44, 32, 24, 0.2);
 }
 
 /* Product row hover */

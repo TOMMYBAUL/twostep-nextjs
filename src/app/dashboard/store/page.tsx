@@ -83,7 +83,7 @@ export default function StorePage() {
             {/* SIRET status */}
             {merchant && (
                 <div className="animate-fade-up stagger-2 mb-8 flex items-center gap-3 rounded-xl bg-white px-5 py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-amber-50 text-amber-700"}`}>
                         {merchant.status === "active" ? "Vérifié" : "En attente"}
                     </span>
                     {merchant.siret && (
@@ -125,7 +125,7 @@ export default function StorePage() {
                                     <button
                                         type="button"
                                         onClick={() => toggleDay(day.key)}
-                                        className={`w-24 rounded-lg px-3 py-1.5 text-xs font-medium ${h ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-400"}`}
+                                        className={`w-24 rounded-lg px-3 py-1.5 text-xs font-medium ${h ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-gray-100 text-gray-400"}`}
                                     >
                                         {day.label}
                                     </button>

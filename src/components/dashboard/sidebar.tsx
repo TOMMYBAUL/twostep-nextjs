@@ -61,8 +61,8 @@ function NavItem({ href, label, icon, isActive }: { href: string; label: string;
             className={cx(
                 "nav-item relative flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 whitespace-nowrap transition-colors",
                 isActive
-                    ? "nav-item-active bg-[rgba(232,131,42,0.18)] text-[var(--ts-accent)]"
-                    : "text-white/50 hover:bg-[rgba(232,131,42,0.1)]",
+                    ? "nav-item-active bg-white/20 text-white"
+                    : "text-white/60 hover:bg-white/10",
             )}
         >
             {icon}
@@ -81,10 +81,8 @@ export function DashboardSidebar() {
         <aside className="sidebar-ts flex h-screen flex-col shrink-0">
             {/* Logo */}
             <div className="flex h-[60px] items-center gap-2.5 px-4">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[var(--ts-accent)] text-lg font-extrabold text-[var(--ts-sidebar-bg)]">
-                    T
-                </div>
-                <span className="logo-text text-[15px] font-bold text-[var(--ts-accent)] whitespace-nowrap">
+                <img src="/logo-icon.webp" alt="Two-Step" className="size-9 shrink-0 rounded-[10px]" />
+                <span className="logo-text font-display text-[15px] font-bold text-white whitespace-nowrap">
                     Two-Step
                 </span>
             </div>

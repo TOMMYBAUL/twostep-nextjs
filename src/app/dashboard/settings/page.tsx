@@ -109,7 +109,7 @@ export default function SettingsPage() {
             <section className="animate-fade-up stagger-6 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
-                    <p className="text-sm font-semibold" style={{ color: "var(--ts-accent)" }}>Gratuit (beta)</p>
+                    <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>Gratuit (beta)</p>
                     <p className="mt-1 text-xs text-gray-400">L&apos;abonnement sera disponible au lancement officiel.</p>
                 </div>
             </section>

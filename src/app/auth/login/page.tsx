@@ -33,10 +33,8 @@ export default function LoginPage() {
             <div className="w-full max-w-sm">
                 {/* Logo */}
                 <div className="mb-8 text-center">
-                    <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-[var(--ts-accent)] text-xl font-extrabold text-[var(--ts-sidebar-bg)]">
-                        T
-                    </div>
-                    <h1 className="text-xl font-semibold text-gray-900">Connexion</h1>
+                    <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
+                    <h1 className="font-display text-xl font-semibold" style={{ color: "var(--ts-dark)" }}>Connexion</h1>
                     <p className="mt-1 text-sm text-gray-400">Accédez à votre dashboard marchand</p>
                 </div>
 
@@ -73,7 +71,7 @@ export default function LoginPage() {
 
                 <p className="mt-6 text-center text-sm text-gray-400">
                     Pas encore de compte ?{" "}
-                    <Link href="/auth/signup" className="font-medium" style={{ color: "var(--ts-accent)" }}>
+                    <Link href="/auth/signup" className="font-medium" style={{ color: "var(--ts-terracotta)" }}>
                         Inscrivez-vous
                     </Link>
                 </p>

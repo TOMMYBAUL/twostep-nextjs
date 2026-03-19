@@ -81,7 +81,11 @@ export default function SignupPage() {
         try {
             // 1. Create Supabase account
             const supabase = createClient();
-            const { error: signUpError } = await supabase.auth.signUp({ email, password });
+            const { error: signUpError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+            });
             if (signUpError) throw signUpError;
 
             // 2. Create merchant profile
@@ -120,18 +124,16 @@ export default function SignupPage() {
             <div className="w-full max-w-sm">
                 {/* Logo */}
                 <div className="mb-8 text-center">
-                    <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-[var(--ts-accent)] text-xl font-extrabold text-[var(--ts-sidebar-bg)]">
-                        T
-                    </div>
-                    <h1 className="text-xl font-semibold text-gray-900">Inscription marchand</h1>
+                    <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
+                    <h1 className="font-display text-xl font-semibold" style={{ color: "var(--ts-dark)" }}>Inscription marchand</h1>
                     {/* Step indicator */}
                     <div className="mt-4 flex justify-center gap-2">
                         {(["account", "siret", "profile"] as Step[]).map((s, i) => (
                             <div
                                 key={s}
                                 className={`h-1.5 w-12 rounded-full ${
-                                    step === s ? "bg-[var(--ts-accent)]"
-                                    : (["account", "siret", "profile"].indexOf(step) > i) ? "bg-[var(--ts-accent)]/40"
+                                    step === s ? "bg-[var(--ts-terracotta)]"
+                                    : (["account", "siret", "profile"].indexOf(step) > i) ? "bg-[var(--ts-terracotta)]/40"
                                     : "bg-gray-200"
                                 }`}
                             />
@@ -223,7 +225,7 @@ export default function SignupPage() {
 
                 <p className="mt-6 text-center text-sm text-gray-400">
                     Déjà inscrit ?{" "}
-                    <Link href="/auth/login" className="font-medium" style={{ color: "var(--ts-accent)" }}>
+                    <Link href="/auth/login" className="font-medium" style={{ color: "var(--ts-terracotta)" }}>
                         Connectez-vous
                     </Link>
                 </p>

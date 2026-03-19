@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { RouteProvider } from "@/providers/router-provider";
 import { Theme } from "@/providers/theme";
 import "@/styles/globals.css";
@@ -9,6 +9,12 @@ const plusJakartaSans = Plus_Jakarta_Sans({
     subsets: ["latin"],
     display: "swap",
     variable: "--font-plus-jakarta-sans",
+});
+
+const fraunces = Fraunces({
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-fraunces",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-    themeColor: "#C8813A",
+    themeColor: "#E07A5F",
     colorScheme: "light",
 };
 
@@ -36,7 +42,7 @@ export default function RootLayout({
     return (
         <html lang="fr" suppressHydrationWarning>
             <body
-                className={cx(plusJakartaSans.variable, "antialiased")}
+                className={cx(plusJakartaSans.variable, fraunces.variable, "antialiased")}
                 style={{
                     fontFamily: "var(--font-plus-jakarta-sans), Inter, sans-serif",
                     background: "var(--ts-cream)",

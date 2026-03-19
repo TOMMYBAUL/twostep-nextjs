@@ -27,7 +27,7 @@ export function TabNav({ tabs, activeTab, onTabChange }: TabNavProps) {
                     className={cx(
                         "relative px-4 py-3 text-[13px] font-semibold transition-colors",
                         activeTab === tab.id
-                            ? "text-[var(--ts-accent)]"
+                            ? "text-[var(--ts-dark)]"
                             : tab.disabled
                               ? "cursor-not-allowed text-gray-300"
                               : "text-gray-400 hover:text-gray-600",
@@ -40,7 +40,7 @@ export function TabNav({ tabs, activeTab, onTabChange }: TabNavProps) {
                         </span>
                     )}
                     {activeTab === tab.id && (
-                        <span className="absolute bottom-0 left-0 h-0.5 w-full" style={{ background: "var(--ts-accent)" }} />
+                        <span className="absolute bottom-0 left-0 h-0.5 w-full" style={{ background: "var(--ts-dark)" }} />
                     )}
                 </button>
             ))}

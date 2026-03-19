@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, motion, useInView, useScroll, useTransform } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const E = [0.22, 1, 0.36, 1] as any;
@@ -122,9 +122,12 @@ function Nav() {
                 borderBottom: "1px solid rgba(200, 129, 58, 0.1)",
             }}
         >
-            <span style={{ fontSize: 17, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.03em" }}>
-                Two-Step
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img src="/logo-icon.webp" alt="" style={{ height: 32, width: 32, borderRadius: 8 }} />
+                <span style={{ fontSize: 17, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.03em" }}>
+                    Two-Step
+                </span>
+            </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 {!isMobile && (
                     <a href="#comment" style={{
@@ -393,12 +396,11 @@ function Statement() {
                         { val: 80, label: "se renseignent en ligne avant d'acheter en magasin", delay: 0 },
                         { val: 79, label: "veulent soutenir le commerce local en priorité", delay: 0.15 },
                     ].map((stat, i) => (
-                        <>
+                        <Fragment key={stat.val}>
                             {i === 1 && !isMobile && (
-                                <div key="sep" style={{ background: "rgba(255,255,255,0.07)", margin: "8px 0" }} />
+                                <div style={{ background: "rgba(255,255,255,0.07)", margin: "8px 0" }} />
                             )}
                             <motion.div
-                                key={stat.val}
                                 initial={{ opacity: 0, y: 40 }}
                                 animate={inView ? { opacity: 1, y: 0 } : {}}
                                 transition={{ duration: 0.75, delay: stat.delay, ease: E }}
@@ -417,7 +419,7 @@ function Statement() {
                                     {stat.label}
                                 </div>
                             </motion.div>
-                        </>
+                        </Fragment>
                     ))}
                 </div>
 
@@ -757,9 +759,12 @@ function Footer() {
             justifyContent: "space-between",
             gap: isMobile ? 8 : 0,
         }}>
-            <span style={{ fontSize: 17, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
-                Two-Step
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img src="/logo-icon.webp" alt="" style={{ height: 28, width: 28, borderRadius: 6, filter: "brightness(0) invert(1)" }} />
+                <span style={{ fontSize: 17, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
+                    Two-Step
+                </span>
+            </div>
             <span style={{ fontSize: 13, color: "rgba(245,237,214,0.38)" }}>
                 © 2025 · Toulouse, France
             </span>

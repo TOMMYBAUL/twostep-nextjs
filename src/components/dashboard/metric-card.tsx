@@ -10,8 +10,8 @@ export function MetricCard({ label, value, variant = "default", staggerIndex = 0
         variant === "danger"
             ? "text-red-600"
             : variant === "warn"
-              ? "text-[var(--ts-accent)]"
-              : "text-gray-900";
+              ? "text-[var(--ts-terracotta)]"
+              : "text-[var(--ts-dark)]";
 
     return (
         <div
