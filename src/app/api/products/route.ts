@@ -58,7 +58,7 @@ export async function POST(request: Request) {
         .single();
 
     if (productError) {
-        return NextResponse.json({ error: productError.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
     }
 
     // Insert initial stock
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
         .insert({ product_id: product.id, quantity: initial_quantity ?? 0 });
 
     if (stockError) {
-        return NextResponse.json({ error: stockError.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to initialize stock" }, { status: 500 });
     }
 
     return NextResponse.json({ product }, { status: 201 });

@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         .order("created_at", { ascending: false });
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Operation failed" }, { status: 500 });
     }
 
     return NextResponse.json({ promotions: data });
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
         .single();
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create promotion" }, { status: 500 });
     }
 
     return NextResponse.json({ promotion: data }, { status: 201 });
