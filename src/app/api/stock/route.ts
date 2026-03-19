@@ -17,6 +17,17 @@ export async function PATCH(request: Request) {
         return NextResponse.json({ error: "product_id required" }, { status: 400 });
     }
 
+    // Verify ownership: product must belong to a merchant owned by this user
+    const { data: product } = await supabase
+        .from("products")
+        .select("merchant_id, merchants!inner(user_id)")
+        .eq("id", product_id)
+        .single();
+
+    if (!product || (product as any).merchants?.user_id !== user.id) {
+        return NextResponse.json({ error: "Not found or unauthorized" }, { status: 404 });
+    }
+
     if (delta !== undefined) {
         // Atomic relative update via RPC (prevents race conditions from concurrent webhooks)
         const { data: newQty, error } = await supabase.rpc("update_stock_delta", {
@@ -24,7 +35,7 @@ export async function PATCH(request: Request) {
             p_delta: delta,
         });
 
-        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
         return NextResponse.json({ stock: { product_id, quantity: newQty } });
     }
 
@@ -36,7 +47,7 @@ export async function PATCH(request: Request) {
             .select()
             .single();
 
-        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
         return NextResponse.json({ stock: data });
     }
 

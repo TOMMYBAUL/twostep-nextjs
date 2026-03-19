@@ -17,7 +17,7 @@ export async function GET() {
         .single();
 
     if (error && error.code !== "PGRST116") {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch merchant" }, { status: 500 });
     }
 
     return NextResponse.json({ merchant: data });
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         .single();
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create merchant" }, { status: 500 });
     }
 
     return NextResponse.json({ merchant: data }, { status: 201 });

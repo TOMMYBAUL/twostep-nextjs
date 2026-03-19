@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     });
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Search failed" }, { status: 500 });
     }
 
     return NextResponse.json({ results: data, count: data?.length ?? 0 });

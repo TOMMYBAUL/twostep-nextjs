@@ -14,7 +14,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     const { data, error } = await supabase.from("promotions").delete().eq("id", id).select();
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Operation failed" }, { status: 500 });
     }
 
     if (!data || data.length === 0) {

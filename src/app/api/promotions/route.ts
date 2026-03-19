@@ -24,7 +24,7 @@ export async function GET(request: Request) {
             .order("created_at", { ascending: false });
 
         if (error) {
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            return NextResponse.json({ error: "Operation failed" }, { status: 500 });
         }
 
         return NextResponse.json({ promotions: data });
@@ -56,6 +56,10 @@ export async function POST(request: Request) {
 
     if (!product_id || sale_price == null) {
         return NextResponse.json({ error: "product_id and sale_price required" }, { status: 400 });
+    }
+
+    if (typeof sale_price !== "number" || sale_price <= 0) {
+        return NextResponse.json({ error: "sale_price must be a positive number" }, { status: 400 });
     }
 
     const { data, error } = await supabase
