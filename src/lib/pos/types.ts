@@ -14,7 +14,7 @@ export type POSStockUpdate = {
 };
 
 export interface IPOSAdapter {
-    /** Nom du POS (square, sumup, etc.) */
+    /** Nom du POS (square, lightspeed, shopify) */
     name: string;
 
     /** Génère l'URL d'autorisation OAuth */
@@ -34,4 +34,7 @@ export interface IPOSAdapter {
 
     /** Parse un événement webhook en mise à jour de stock */
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null;
+
+    /** Pousse les nouveaux produits dans le POS du commerçant */
+    pushCatalog(accessToken: string, products: POSProduct[]): Promise<void>;
 }
