@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(request: Request) {
     const supabase = await createClient();
@@ -75,6 +76,22 @@ export async function POST(request: Request) {
 
     if (error) {
         return NextResponse.json({ error: "Failed to create promotion" }, { status: 500 });
+    }
+
+    // Emit feed_event for new promo
+    const { data: product } = await supabase
+        .from("products")
+        .select("merchant_id")
+        .eq("id", product_id)
+        .single();
+
+    if (product) {
+        const adminSupabase = createAdminClient();
+        await adminSupabase.from("feed_events").insert({
+            merchant_id: product.merchant_id,
+            product_id,
+            event_type: "new_promo",
+        });
     }
 
     return NextResponse.json({ promotion: data }, { status: 201 });

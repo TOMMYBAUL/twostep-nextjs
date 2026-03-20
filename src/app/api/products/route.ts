@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(request: Request) {
     const supabase = await createClient();
@@ -69,6 +70,14 @@ export async function POST(request: Request) {
     if (stockError) {
         return NextResponse.json({ error: "Failed to initialize stock" }, { status: 500 });
     }
+
+    // Emit feed_event for new product
+    const adminSupabase = createAdminClient();
+    await adminSupabase.from("feed_events").insert({
+        merchant_id: merchant.id,
+        product_id: product.id,
+        event_type: "new_product",
+    });
 
     return NextResponse.json({ product }, { status: 201 });
 }
