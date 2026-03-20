@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductRow } from "@/components/dashboard/product-row";
 import { useMerchant } from "@/hooks/use-merchant";
@@ -28,6 +29,7 @@ export default function ProductsPage() {
 
     return (
         <>
+            <OnboardingChecklist merchant={merchant} />
             <PageHeader
                 storeName={merchant?.name}
                 title="Mes"

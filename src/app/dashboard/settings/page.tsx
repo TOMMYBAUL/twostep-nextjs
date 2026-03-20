@@ -4,15 +4,21 @@ import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
+import { usePOS } from "@/hooks/use-pos";
+import { useEmail } from "@/hooks/use-email";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsPage() {
-    const { merchant } = useMerchant();
+    const { merchant, refetch } = useMerchant();
     const { toast } = useToast();
+    const { isConnected, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
+    const emailHook = useEmail(merchant?.id ?? null);
     const [email, setEmail] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [imapForm, setImapForm] = useState({ host: "", port: "993", user: "", pass: "" });
+    const [showImap, setShowImap] = useState(false);
 
     useEffect(() => {
         const supabase = createClient();
@@ -46,11 +52,34 @@ export default function SettingsPage() {
         }
     };
 
-    const posProviders = [
-        { name: "Square", status: "Bientôt" },
-        { name: "SumUp", status: "Bientôt" },
-        { name: "Zettle", status: "Bientôt" },
-    ];
+    const handleConnect = async () => {
+        try {
+            await connect();
+            toast("Square connecté !");
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur de connexion", "error");
+        }
+    };
+
+    const handleDisconnect = async () => {
+        try {
+            await disconnect();
+            toast("Square déconnecté");
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur", "error");
+        }
+    };
+
+    const handleSync = async () => {
+        try {
+            const result = await sync();
+            if (result) {
+                toast(`Sync : ${result.products_created} créés, ${result.products_updated} mis à jour, ${result.stock_updated} stocks`);
+            }
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur de synchronisation", "error");
+        }
+    };
 
     return (
         <>
@@ -90,15 +119,147 @@ export default function SettingsPage() {
                 </form>
             </section>
 
+            {/* Email Connection */}
+            <section className="animate-fade-up stagger-3 mb-10 max-w-xl">
+                <h2 className="mb-4 text-base font-semibold text-gray-900">Email (import factures)</h2>
+                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
+                    {emailHook.isConnected ? (
+                        <>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-semibold text-gray-900">
+                                        {emailHook.connection?.provider === "gmail" ? "Gmail" : emailHook.connection?.provider === "outlook" ? "Outlook" : "IMAP"}
+                                    </p>
+                                    <p className="text-xs text-gray-400">{emailHook.connection?.email_address}</p>
+                                </div>
+                                <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
+                                    Connecté
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => emailHook.disconnect().then(() => toast("Email déconnecté")).catch(() => toast("Erreur", "error"))}
+                                className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
+                            >
+                                Déconnecter
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-xs text-gray-400">Connectez votre email pour importer automatiquement les factures fournisseur.</p>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => emailHook.connectGmail().then(() => toast("Gmail connecté !")).catch(() => toast("Erreur", "error"))}
+                                    className="btn-ts flex-1"
+                                    disabled={emailHook.connecting}
+                                >
+                                    {emailHook.connecting ? "..." : "Connecter Gmail"}
+                                </button>
+                                <button
+                                    onClick={() => emailHook.connectOutlook().then(() => toast("Outlook connecté !")).catch(() => toast("Erreur", "error"))}
+                                    className="btn-ts flex-1"
+                                    disabled={emailHook.connecting}
+                                >
+                                    Outlook
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => setShowImap(!showImap)}
+                                className="text-xs text-gray-400 hover:text-gray-600 transition"
+                            >
+                                {showImap ? "Masquer IMAP" : "Connexion IMAP manuelle"}
+                            </button>
+                            {showImap && (
+                                <div className="space-y-2">
+                                    <input className="search-ts w-full" placeholder="Hôte IMAP" value={imapForm.host} onChange={(e) => setImapForm({ ...imapForm, host: e.target.value })} />
+                                    <input className="search-ts w-full" placeholder="Port (993)" value={imapForm.port} onChange={(e) => setImapForm({ ...imapForm, port: e.target.value })} />
+                                    <input className="search-ts w-full" placeholder="Utilisateur" value={imapForm.user} onChange={(e) => setImapForm({ ...imapForm, user: e.target.value })} />
+                                    <input className="search-ts w-full" type="password" placeholder="Mot de passe" value={imapForm.pass} onChange={(e) => setImapForm({ ...imapForm, pass: e.target.value })} />
+                                    <button
+                                        onClick={() => emailHook.connectImap({ host: imapForm.host, port: parseInt(imapForm.port), user: imapForm.user, pass: imapForm.pass }).then(() => toast("IMAP connecté !")).catch(() => toast("Erreur", "error"))}
+                                        className="btn-ts w-full"
+                                        disabled={emailHook.connecting}
+                                    >
+                                        Connecter IMAP
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </section>
+
             {/* POS */}
             <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Caisse (POS)</h2>
-                <div className="space-y-2">
-                    {posProviders.map((pos) => (
-                        <div key={pos.name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
-                            <span className="text-sm font-medium text-gray-900">{pos.name}</span>
+
+                {/* Square */}
+                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100">
+                                <svg className="size-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm3 3h6v6H9V9z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-sm font-semibold text-gray-900">Square</p>
+                                <p className="text-xs text-gray-400">
+                                    {isConnected
+                                        ? merchant?.pos_last_sync
+                                            ? `Dernière sync : ${new Date(merchant.pos_last_sync).toLocaleString("fr-FR")}`
+                                            : "Connecté — jamais synchronisé"
+                                        : "Synchronisez votre catalogue et stock"}
+                                </p>
+                            </div>
+                        </div>
+
+                        {isConnected ? (
+                            <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
+                                Connecté
+                            </span>
+                        ) : (
+                            <span className="rounded-full px-2.5 py-1 text-[11px] font-medium bg-gray-100 text-gray-400">
+                                Déconnecté
+                            </span>
+                        )}
+                    </div>
+
+                    {isConnected ? (
+                        <div className="flex gap-2">
+                            <button onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
+                                {syncing ? "Synchronisation..." : "Synchroniser"}
+                            </button>
+                            <button
+                                onClick={handleDisconnect}
+                                className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
+                                disabled={connecting}
+                            >
+                                Déconnecter
+                            </button>
+                        </div>
+                    ) : (
+                        <button onClick={handleConnect} className="btn-ts w-full" disabled={connecting}>
+                            {connecting ? "Connexion..." : "Connecter Square (Sandbox)"}
+                        </button>
+                    )}
+
+                    {syncResult && (
+                        <div className="rounded-lg bg-[var(--ts-sage-light)] px-4 py-3 text-xs text-[#5a9474]">
+                            <p className="font-semibold">Synchronisation terminée</p>
+                            <p className="mt-1">
+                                {syncResult.products_created} produit(s) créé(s) · {syncResult.products_updated} mis à jour · {syncResult.stock_updated} stock(s)
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Other POS providers */}
+                <div className="mt-2 space-y-2">
+                    {["SumUp", "Zettle"].map((name) => (
+                        <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
+                            <span className="text-sm font-medium text-gray-900">{name}</span>
                             <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
-                                {pos.status}
+                                Bientôt
                             </span>
                         </div>
                     ))}
@@ -109,8 +270,12 @@ export default function SettingsPage() {
             <section className="animate-fade-up stagger-6 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
-                    <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>Gratuit (beta)</p>
-                    <p className="mt-1 text-xs text-gray-400">L&apos;abonnement sera disponible au lancement officiel.</p>
+                    <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>
+                        {merchant?.plan === "standard" ? "Standard" : merchant?.plan === "premium" ? "Premium" : "Gratuit"}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">
+                        Two-Step est gratuit jusqu&apos;à 1 000 utilisateurs à Toulouse.
+                    </p>
                 </div>
             </section>
         </>

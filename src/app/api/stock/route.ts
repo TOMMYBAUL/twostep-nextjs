@@ -29,14 +29,24 @@ export async function PATCH(request: Request) {
     }
 
     if (delta !== undefined) {
-        // Atomic relative update via RPC (prevents race conditions from concurrent webhooks)
-        const { data: newQty, error } = await supabase.rpc("update_stock_delta", {
-            p_product_id: product_id,
-            p_delta: delta,
-        });
+        // Read current stock (may not exist yet for POS-synced products)
+        const { data: current } = await supabase
+            .from("stock")
+            .select("quantity")
+            .eq("product_id", product_id)
+            .maybeSingle();
+
+        const newQty = Math.max(0, (current?.quantity ?? 0) + delta);
+
+        // Upsert: creates the row if missing, updates if exists
+        const { data, error } = await supabase
+            .from("stock")
+            .upsert({ product_id, quantity: newQty })
+            .select()
+            .single();
 
         if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
-        return NextResponse.json({ stock: { product_id, quantity: newQty } });
+        return NextResponse.json({ stock: data });
     }
 
     if (quantity !== undefined) {

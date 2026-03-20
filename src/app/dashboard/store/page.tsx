@@ -16,7 +16,7 @@ const DAYS = [
 ];
 
 export default function StorePage() {
-    const { merchant, refetch } = useMerchant();
+    const { merchant, loading, refetch } = useMerchant();
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,17 +40,35 @@ export default function StorePage() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!merchant) return;
+        if (!name || !address || !city) {
+            toast("Nom, adresse et ville sont obligatoires", "error");
+            return;
+        }
         setIsLoading(true);
         try {
-            const res = await window.fetch(`/api/merchants/${merchant.id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, address, city, phone, description, opening_hours: hours }),
-            });
-            if (!res.ok) throw new Error("Échec de la mise à jour");
+            if (merchant) {
+                // Update existing merchant
+                const res = await window.fetch(`/api/merchants/${merchant.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, address, city, phone, description, opening_hours: hours }),
+                });
+                if (!res.ok) throw new Error("Échec de la mise à jour");
+                toast("Boutique mise à jour");
+            } else {
+                // Create new merchant
+                const res = await window.fetch("/api/merchants", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, address, city, phone, description, opening_hours: hours, status: "active" }),
+                });
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || "Échec de la création");
+                }
+                toast("Boutique créée !");
+            }
             await refetch();
-            toast("Boutique mise à jour");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         } finally {
@@ -72,6 +90,8 @@ export default function StorePage() {
         }));
     };
 
+    const isCreating = !loading && !merchant;
+
     return (
         <>
             <PageHeader
@@ -79,6 +99,16 @@ export default function StorePage() {
                 title="Ma"
                 titleAccent="boutique"
             />
+
+            {/* Creation banner */}
+            {isCreating && (
+                <div className="animate-fade-up stagger-2 mb-6 rounded-xl px-5 py-4" style={{ background: "var(--ts-sage-light)" }}>
+                    <p className="text-sm font-semibold text-[#5a9474]">Créez votre profil boutique</p>
+                    <p className="mt-0.5 text-xs text-[#5a9474]/70">
+                        Remplissez les informations ci-dessous pour activer votre compte marchand.
+                    </p>
+                </div>
+            )}
 
             {/* SIRET status */}
             {merchant && (
@@ -95,15 +125,15 @@ export default function StorePage() {
             <form onSubmit={handleSubmit} className="animate-fade-up stagger-3 space-y-5 max-w-xl">
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">Nom de la boutique</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="search-ts w-full" />
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="search-ts w-full" placeholder="Ma Boutique" />
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">Adresse</label>
-                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="search-ts w-full" />
+                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="search-ts w-full" placeholder="12 rue du Commerce" />
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">Ville</label>
-                    <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="search-ts w-full" />
+                    <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="search-ts w-full" placeholder="Paris" />
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">Téléphone</label>
@@ -132,7 +162,7 @@ export default function StorePage() {
                                     {h ? (
                                         <>
                                             <input type="time" value={h.open} onChange={(e) => updateHour(day.key, "open", e.target.value)} className="search-ts w-28 text-sm" />
-                                            <span className="text-xs text-gray-400">→</span>
+                                            <span className="text-xs text-gray-400">&rarr;</span>
                                             <input type="time" value={h.close} onChange={(e) => updateHour(day.key, "close", e.target.value)} className="search-ts w-28 text-sm" />
                                         </>
                                     ) : (
@@ -145,7 +175,7 @@ export default function StorePage() {
                 </div>
 
                 <button type="submit" className="btn-ts" disabled={isLoading}>
-                    {isLoading ? "..." : "Enregistrer"}
+                    {isLoading ? "..." : isCreating ? "Créer ma boutique" : "Enregistrer"}
                 </button>
             </form>
         </>

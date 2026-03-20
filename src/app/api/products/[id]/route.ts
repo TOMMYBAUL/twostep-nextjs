@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -47,7 +48,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     // Verify ownership: product must belong to a merchant owned by this user
     const { data: product } = await supabase
         .from("products")
-        .select("merchant_id, merchants!inner(user_id)")
+        .select("merchant_id, price, merchants!inner(user_id)")
         .eq("id", id)
         .single();
 
@@ -59,6 +60,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     if (error) {
         return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
+    }
+
+    // Emit price_drop event if price decreased
+    if (product && body.price && product.price && body.price < product.price) {
+        const adminSupabase = createAdminClient();
+        await adminSupabase.from("feed_events").insert({
+            merchant_id: product.merchant_id,
+            product_id: id,
+            event_type: "price_drop",
+        });
     }
 
     return NextResponse.json({ product: data });

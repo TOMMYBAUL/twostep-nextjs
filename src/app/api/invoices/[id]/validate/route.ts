@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { lookupEan } from "@/lib/ean/lookup";
 
 export async function POST(
     request: NextRequest,
@@ -128,6 +129,11 @@ export async function POST(
                     product_id: newProduct.id,
                     event_type: "new_product",
                 });
+
+                // Fire-and-forget: enrich product with EAN data
+                if (item.ean) {
+                    lookupEan(item.ean, newProduct.id).catch(console.error);
+                }
             }
         }
     }

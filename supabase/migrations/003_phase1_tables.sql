@@ -10,6 +10,7 @@ ALTER TABLE merchants ADD COLUMN IF NOT EXISTS plan text DEFAULT 'free'
     CHECK (plan IN ('free', 'standard', 'premium'));
 ALTER TABLE merchants ADD COLUMN IF NOT EXISTS free_until timestamptz;
 ALTER TABLE merchants ADD COLUMN IF NOT EXISTS launch_cohort integer;
+ALTER TABLE merchants ADD COLUMN IF NOT EXISTS stripe_customer_id text;
 
 -- products: add brand, purchase_price, category_auto
 ALTER TABLE products ADD COLUMN IF NOT EXISTS brand text;

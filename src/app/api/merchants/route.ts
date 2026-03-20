@@ -32,16 +32,18 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, address, city, lat, lng, siret, phone, description, photo_url, opening_hours, status } = body;
+    const { name, address, city, siret, phone, description, photo_url, opening_hours, status } = body;
+    const lat: number = typeof body.lat === "number" ? body.lat : 48.8566;
+    const lng: number = typeof body.lng === "number" ? body.lng : 2.3522;
 
-    if (!name || !address || !city || lat == null || lng == null) {
+    if (!name || !address || !city) {
         return NextResponse.json(
-            { error: "Missing required fields: name, address, city, lat, lng" },
+            { error: "Missing required fields: name, address, city" },
             { status: 400 },
         );
     }
 
-    if (typeof lat !== "number" || typeof lng !== "number" || !isFinite(lat) || !isFinite(lng)) {
+    if (!isFinite(lat) || !isFinite(lng)) {
         return NextResponse.json({ error: "lat and lng must be valid numbers" }, { status: 400 });
     }
     if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {

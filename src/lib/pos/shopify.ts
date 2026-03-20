@@ -41,14 +41,14 @@ export const shopifyAdapter: IPOSAdapter = {
         let pageInfo: string | null = null;
 
         do {
-            const url = pageInfo
+            const fetchUrl: string = pageInfo
                 ? `https://shopify.dev/admin/api/2024-01/products.json?page_info=${pageInfo}&limit=250`
                 : "https://shopify.dev/admin/api/2024-01/products.json?limit=250";
 
-            const res = await fetch(url, {
+            const fetchRes: Response = await fetch(fetchUrl, {
                 headers: { "X-Shopify-Access-Token": accessToken },
             });
-            const data = await res.json();
+            const data = await fetchRes.json();
 
             for (const product of data.products ?? []) {
                 for (const variant of product.variants ?? []) {
@@ -66,8 +66,8 @@ export const shopifyAdapter: IPOSAdapter = {
             }
 
             // Parse Link header for pagination
-            const link = res.headers.get("link");
-            const nextMatch = link?.match(/<[^>]*page_info=([^&>]+)[^>]*>;\s*rel="next"/);
+            const linkHeader: string | null = fetchRes.headers.get("link");
+            const nextMatch: RegExpMatchArray | null | undefined = linkHeader?.match(/<[^>]*page_info=([^&>]+)[^>]*>;\s*rel="next"/);
             pageInfo = nextMatch?.[1] ?? null;
         } while (pageInfo);
 

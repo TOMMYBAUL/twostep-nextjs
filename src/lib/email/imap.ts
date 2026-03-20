@@ -71,9 +71,9 @@ export const imapProvider: IEmailProvider = {
 
                 emails.push({
                     messageId: msg.uid.toString(),
-                    from: msg.envelope.from?.[0]?.address ?? "",
-                    subject: msg.envelope.subject ?? "",
-                    date: msg.envelope.date ?? new Date(),
+                    from: msg.envelope?.from?.[0]?.address ?? "",
+                    subject: msg.envelope?.subject ?? "",
+                    date: msg.envelope?.date ?? new Date(),
                     attachments,
                 });
             }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { gmailProvider } from "@/lib/email/gmail";
+import { outlookProvider } from "@/lib/email/outlook";
 import { imapProvider } from "@/lib/email/imap";
 import { decrypt } from "@/lib/email/encryption";
 import { parseInvoice } from "@/lib/parser";
@@ -8,6 +9,7 @@ import type { IEmailProvider } from "@/lib/email/types";
 
 const providers: Record<string, IEmailProvider> = {
     gmail: gmailProvider,
+    outlook: outlookProvider,
     imap: imapProvider,
 };
 
