@@ -50,7 +50,9 @@ export default function ExplorePage() {
 
     return (
         <div className="relative h-[calc(100dvh-4rem)]">
-            <MapView merchants={merchants} userPosition={position} className="absolute inset-0" />
+            <div className="absolute inset-0">
+                <MapView merchants={merchants} userPosition={position} className="h-full w-full" />
+            </div>
             <BottomSheet>
                 <FilterPills options={CATEGORIES} selected={category} onSelect={setCategory} />
                 <div className="space-y-3 px-4 pb-4">
