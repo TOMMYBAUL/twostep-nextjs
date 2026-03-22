@@ -37,6 +37,12 @@ export function MapView({ merchants, userPosition, className, recenterTrigger }:
             center: DEFAULT_CENTER,
             zoom: DEFAULT_ZOOM,
             attributionControl: false,
+            logoPosition: "top-left",
+        });
+        // Hide Mapbox logo (attribution kept in footer per TOS)
+        map.on("load", () => {
+            const logo = containerRef.current?.querySelector(".mapboxgl-ctrl-logo");
+            if (logo) (logo as HTMLElement).style.display = "none";
         });
         map.on("style.load", () => {
             // Two-Step branded map colors

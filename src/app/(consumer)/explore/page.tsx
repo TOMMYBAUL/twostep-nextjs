@@ -135,9 +135,9 @@ export default function ExplorePage() {
                 <MarkerPin01 className="size-5 text-[var(--ts-ochre)]" aria-hidden="true" />
             </button>
 
-            {/* Two-Step watermark — bottom left on map */}
-            <div className="pointer-events-none absolute bottom-3 left-16 z-10">
-                <span className="font-display text-sm font-semibold opacity-30 text-primary">Two-Step</span>
+            {/* Two-Step logo — top left on map, offset past side panel */}
+            <div className="pointer-events-none absolute left-14 top-2.5 z-10">
+                <img src="/logo-horizontal.png" alt="Two-Step" className="h-7 opacity-70 drop-shadow-sm" />
             </div>
 
             <SidePanel merchants={merchants} isLoading={isLoading} />
