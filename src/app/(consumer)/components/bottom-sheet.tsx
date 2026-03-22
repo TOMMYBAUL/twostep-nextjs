@@ -14,7 +14,7 @@ export function BottomSheet({ children }: BottomSheetProps) {
             open
             modal={false}
             snapPoints={[...SNAP_POINTS]}
-            defaultSnap="180px"
+            activeSnapPoint="180px"
             dismissible={false}
         >
             <Drawer.Portal>
