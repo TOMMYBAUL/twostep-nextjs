@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { QueryProvider } from "./query-provider";
 import { TabBar } from "./components/tab-bar";
+import { ToastProvider } from "./components/toast";
 
 export const metadata: Metadata = {
     title: "Two-Step — Découvrez le stock local",
@@ -14,10 +15,12 @@ export default function ConsumerLayout({
 }) {
     return (
         <QueryProvider>
-            <div className="flex min-h-dvh flex-col">
-                <main className="flex-1 pb-16">{children}</main>
-                <TabBar />
-            </div>
+            <ToastProvider>
+                <div className="flex min-h-dvh flex-col">
+                    <main className="flex-1 pb-16">{children}</main>
+                    <TabBar />
+                </div>
+            </ToastProvider>
         </QueryProvider>
     );
 }
