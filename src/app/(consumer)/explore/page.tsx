@@ -67,8 +67,8 @@ export default function ExplorePage() {
                 <MapView merchants={merchants} userPosition={position} className="h-full w-full" />
             </div>
 
-            {/* Filter button — top left on map */}
-            <div ref={filterRef} className="absolute left-3 top-3 z-10">
+            {/* Filter button — top right on map */}
+            <div ref={filterRef} className="absolute right-3 top-3 z-10">
                 <button
                     type="button"
                     onClick={() => setFilterOpen((v) => !v)}

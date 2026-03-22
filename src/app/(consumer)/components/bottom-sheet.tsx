@@ -23,15 +23,12 @@ export function BottomSheet({ children }: BottomSheetProps) {
         >
             <Drawer.Portal>
                 <Drawer.Content
-                    className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-2xl border-t border-secondary bg-primary shadow-xl outline-none"
-                    style={{ maxHeight: "90dvh" }}
+                    className="fixed bottom-0 left-0 right-0 z-40 flex max-h-[90dvh] flex-col rounded-t-2xl border-t border-secondary bg-primary shadow-xl outline-none"
                     aria-describedby={undefined}
                 >
                     <Drawer.Title className="sr-only">Boutiques à proximité</Drawer.Title>
-                    <div className="flex justify-center py-3">
-                        <div className="h-1 w-10 rounded-full bg-quaternary" />
-                    </div>
-                    <div className="flex-1 overflow-y-auto">{children}</div>
+                    <Drawer.Handle className="mx-auto mt-3 mb-1 h-1.5 w-12 shrink-0 rounded-full bg-quaternary" />
+                    <div className="flex-1 overflow-y-auto pb-4">{children}</div>
                 </Drawer.Content>
             </Drawer.Portal>
         </Drawer.Root>
