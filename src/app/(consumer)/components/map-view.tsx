@@ -66,15 +66,23 @@ export function MapView({ merchants, userPosition, className }: MapViewProps) {
             const el = document.createElement("div");
             el.className = "flex size-8 items-center justify-center rounded-full border-2 border-white shadow-md cursor-pointer";
             el.style.backgroundColor = getCategoryColor(null);
-            el.innerHTML = `<span style="color:white;font-size:10px;font-weight:700">${merchant.product_count}</span>`;
-            const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
-                <div style="font-family:var(--font-plus-jakarta-sans),sans-serif;padding:4px">
-                    <strong style="font-size:13px">${merchant.merchant_name}</strong>
-                    <div style="font-size:11px;color:#666;margin-top:2px">
-                        ${merchant.product_count} produits · ${merchant.distance_km < 1 ? `${Math.round(merchant.distance_km * 1000)}m` : `${merchant.distance_km}km`}
-                    </div>
-                </div>
-            `);
+            const countSpan = document.createElement("span");
+            countSpan.style.cssText = "color:white;font-size:10px;font-weight:700";
+            countSpan.textContent = String(merchant.product_count);
+            el.appendChild(countSpan);
+
+            const popupEl = document.createElement("div");
+            popupEl.style.cssText = "font-family:var(--font-plus-jakarta-sans),sans-serif;padding:4px";
+            const nameEl = document.createElement("strong");
+            nameEl.style.fontSize = "13px";
+            nameEl.textContent = merchant.merchant_name;
+            const infoEl = document.createElement("div");
+            infoEl.style.cssText = "font-size:11px;color:#666;margin-top:2px";
+            const dist = merchant.distance_km < 1 ? `${Math.round(merchant.distance_km * 1000)}m` : `${merchant.distance_km}km`;
+            infoEl.textContent = `${merchant.product_count} produits · ${dist}`;
+            popupEl.appendChild(nameEl);
+            popupEl.appendChild(infoEl);
+            const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setDOMContent(popupEl);
             const marker = new mapboxgl.Marker({ element: el })
                 .setLngLat([merchant.merchant_lng, merchant.merchant_lat])
                 .setPopup(popup)

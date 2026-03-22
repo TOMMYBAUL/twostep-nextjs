@@ -22,7 +22,7 @@ export function useGeolocation(): UseGeolocationReturn {
     const [isLoading, setIsLoading] = useState(true);
 
     const requestPosition = useCallback(() => {
-        if (!navigator.geolocation) {
+        if (typeof window === "undefined" || !navigator.geolocation) {
             setError("Géolocalisation non supportée");
             setPosition(TOULOUSE_DEFAULT);
             setIsLoading(false);

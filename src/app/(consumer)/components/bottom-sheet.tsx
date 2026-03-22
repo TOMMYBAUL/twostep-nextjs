@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Drawer } from "vaul";
 
 interface BottomSheetProps {
@@ -9,12 +10,15 @@ interface BottomSheetProps {
 const SNAP_POINTS = ["180px", "50%", 1] as const;
 
 export function BottomSheet({ children }: BottomSheetProps) {
+    const [snap, setSnap] = useState<string | number | null>("180px");
+
     return (
         <Drawer.Root
             open
             modal={false}
             snapPoints={[...SNAP_POINTS]}
-            activeSnapPoint="180px"
+            activeSnapPoint={snap}
+            setActiveSnapPoint={setSnap}
             dismissible={false}
         >
             <Drawer.Portal>

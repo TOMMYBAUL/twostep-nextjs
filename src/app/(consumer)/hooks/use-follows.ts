@@ -8,6 +8,7 @@ export function useFollows() {
         queryKey: ["follows"],
         queryFn: async () => {
             const res = await fetch("/api/follows");
+            if (res.status === 401) return [];
             if (!res.ok) throw new Error("Failed to fetch follows");
             const data = await res.json();
             return data.follows as Array<{ merchant_id: string; [key: string]: unknown }>;
