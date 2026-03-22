@@ -1,12 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { FilterLines } from "@untitledui/icons";
 import { BottomSheet } from "../components/bottom-sheet";
-import { FilterPills } from "../components/filter-pills";
 import { MapView } from "../components/map-view";
 import { ShopCard } from "../components/shop-card";
 import { useGeolocation } from "../hooks/use-geolocation";
+import { cx } from "@/utils/cx";
 
 const CATEGORIES = ["Mode", "Tech", "Sport", "Maison", "Alimentation"];
 
@@ -28,6 +29,18 @@ interface NearbyMerchant {
 export default function ExplorePage() {
     const { position } = useGeolocation();
     const [category, setCategory] = useState<string | null>(null);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const filterRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown on outside click
+    useEffect(() => {
+        if (!filterOpen) return;
+        const handler = (e: MouseEvent) => {
+            if (filterRef.current && !filterRef.current.contains(e.target as Node)) setFilterOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [filterOpen]);
 
     const { data, isLoading } = useQuery<NearbyMerchant[]>({
         queryKey: ["merchants-nearby", position?.lat, position?.lng, category],
@@ -53,8 +66,52 @@ export default function ExplorePage() {
             <div className="absolute inset-0">
                 <MapView merchants={merchants} userPosition={position} className="h-full w-full" />
             </div>
+
+            {/* Filter button — top left on map */}
+            <div ref={filterRef} className="absolute left-3 top-3 z-10">
+                <button
+                    type="button"
+                    onClick={() => setFilterOpen((v) => !v)}
+                    className={cx(
+                        "flex items-center gap-1.5 rounded-full border border-white/60 px-3 py-2 text-xs font-medium shadow-lg backdrop-blur-md transition duration-100",
+                        category
+                            ? "bg-[var(--ts-ochre)] text-white"
+                            : "bg-white/80 text-primary",
+                    )}
+                >
+                    <FilterLines className="size-3.5" aria-hidden="true" />
+                    {category ?? "Filtrer"}
+                </button>
+                {filterOpen && (
+                    <div className="mt-1.5 overflow-hidden rounded-xl border border-secondary bg-primary shadow-xl">
+                        <button
+                            type="button"
+                            onClick={() => { setCategory(null); setFilterOpen(false); }}
+                            className={cx(
+                                "w-full px-4 py-2.5 text-left text-xs font-medium transition duration-100",
+                                !category ? "bg-[var(--ts-ochre)]/10 text-[var(--ts-ochre)]" : "text-secondary hover:bg-secondary",
+                            )}
+                        >
+                            Toutes catégories
+                        </button>
+                        {CATEGORIES.map((cat) => (
+                            <button
+                                key={cat}
+                                type="button"
+                                onClick={() => { setCategory(cat); setFilterOpen(false); }}
+                                className={cx(
+                                    "w-full px-4 py-2.5 text-left text-xs font-medium transition duration-100",
+                                    category === cat ? "bg-[var(--ts-ochre)]/10 text-[var(--ts-ochre)]" : "text-secondary hover:bg-secondary",
+                                )}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <BottomSheet>
-                <FilterPills options={CATEGORIES} selected={category} onSelect={setCategory} />
                 <div className="space-y-3 px-4 pb-4">
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, i) => (

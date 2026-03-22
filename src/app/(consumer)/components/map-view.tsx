@@ -37,7 +37,34 @@ export function MapView({ merchants, userPosition, className }: MapViewProps) {
             zoom: DEFAULT_ZOOM,
             attributionControl: false,
         });
-        map.addControl(new mapboxgl.NavigationControl(), "top-right");
+        map.on("style.load", () => {
+            // Two-Step branded map colors
+            const layers = map.getStyle().layers ?? [];
+            layers.forEach((layer) => {
+                const id = layer.id;
+                const type = layer.type;
+                // Background & land
+                if (type === "background") {
+                    map.setPaintProperty(id, "background-color", "#F5F0E8");
+                }
+                // Water
+                if (id.includes("water") && type === "fill") {
+                    map.setPaintProperty(id, "fill-color", "#c5d5c0");
+                }
+                // Parks & green areas
+                if ((id.includes("landuse") || id.includes("park") || id.includes("land-structure")) && type === "fill") {
+                    try { map.setPaintProperty(id, "fill-color", "#dde8d5"); } catch {}
+                }
+                // Roads
+                if (id.includes("road") && type === "line") {
+                    try { map.setPaintProperty(id, "line-color", "#e0d5c4"); } catch {}
+                }
+                // Buildings
+                if (id.includes("building") && type === "fill") {
+                    try { map.setPaintProperty(id, "fill-color", "#ebe3d6"); } catch {}
+                }
+            });
+        });
         mapRef.current = map;
         return () => { map.remove(); mapRef.current = null; };
     }, []);
