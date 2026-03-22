@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
-import { FilterLines } from "@untitledui/icons";
+import { FilterLines, MarkerPin01 } from "@untitledui/icons";
 import { MapView } from "../components/map-view";
 import { SidePanel } from "../components/side-panel";
 import { useGeolocation } from "../hooks/use-geolocation";
@@ -29,6 +29,7 @@ export default function ExplorePage() {
     const { position } = useGeolocation();
     const [category, setCategory] = useState<string | null>(null);
     const [filterOpen, setFilterOpen] = useState(false);
+    const [recenterTrigger, setRecenterTrigger] = useState(0);
     const filterRef = useRef<HTMLDivElement>(null);
 
     // Close dropdown on outside click
@@ -63,7 +64,21 @@ export default function ExplorePage() {
     return (
         <div className="relative h-[calc(100dvh-4rem)]">
             <div className="absolute inset-0">
-                <MapView merchants={merchants} userPosition={position} className="h-full w-full" />
+                <MapView merchants={merchants} userPosition={position} className="h-full w-full" recenterTrigger={recenterTrigger} />
+            </div>
+
+            {/* Context bar — top center on map */}
+            <div className="pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2">
+                <div className="flex items-center gap-1.5 rounded-full bg-white/80 px-4 py-1.5 shadow-lg backdrop-blur-md">
+                    {isLoading ? (
+                        <span className="text-xs text-tertiary">Recherche en cours...</span>
+                    ) : (
+                        <span className="text-xs font-medium text-primary">
+                            <span className="font-semibold text-[var(--ts-ochre)]">{merchants.length}</span>
+                            {" boutique"}{merchants.length !== 1 ? "s" : ""} autour de toi
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Filter button — top right on map */}
@@ -108,6 +123,21 @@ export default function ExplorePage() {
                         ))}
                     </div>
                 )}
+            </div>
+
+            {/* Recenter button — bottom right on map */}
+            <button
+                type="button"
+                onClick={() => setRecenterTrigger((n) => n + 1)}
+                className="absolute bottom-4 right-3 z-10 flex size-10 items-center justify-center rounded-full bg-white/90 shadow-lg backdrop-blur-sm transition duration-100 hover:bg-white active:scale-95"
+                aria-label="Recentrer sur ma position"
+            >
+                <MarkerPin01 className="size-5 text-[var(--ts-ochre)]" aria-hidden="true" />
+            </button>
+
+            {/* Two-Step watermark — bottom left on map */}
+            <div className="pointer-events-none absolute bottom-3 left-16 z-10">
+                <span className="font-display text-sm font-semibold opacity-30 text-primary">Two-Step</span>
             </div>
 
             <SidePanel merchants={merchants} isLoading={isLoading} />

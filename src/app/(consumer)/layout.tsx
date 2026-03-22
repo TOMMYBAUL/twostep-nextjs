@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { QueryProvider } from "./query-provider";
 import { TabBar } from "./components/tab-bar";
 import { ToastProvider } from "./components/toast";
+import { WelcomeGate } from "./components/welcome-gate";
 
 export const metadata: Metadata = {
     title: "Two-Step — Découvrez le stock local",
@@ -20,6 +21,7 @@ export default function ConsumerLayout({
                     <main className="flex-1 pb-16">{children}</main>
                     <TabBar />
                 </div>
+                <WelcomeGate />
             </ToastProvider>
         </QueryProvider>
     );

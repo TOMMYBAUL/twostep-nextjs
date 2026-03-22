@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MarkerPin01, Tag01 } from "@untitledui/icons";
+import { MarkerPin01, Tag01, SearchLg } from "@untitledui/icons";
 
 interface Merchant {
     merchant_id: string;
@@ -49,7 +49,11 @@ export function SidePanel({ merchants, isLoading }: SidePanelProps) {
                 ) : merchants.length === 0 ? (
                     <div className="flex h-full items-center justify-center">
                         {expanded ? (
-                            <p className="px-4 text-center text-xs text-tertiary">Aucune boutique à proximité</p>
+                            <div className="flex flex-col items-center gap-2 px-4 text-center">
+                                <SearchLg className="size-6 text-quaternary" aria-hidden="true" />
+                                <p className="text-xs font-semibold text-secondary">Aucune boutique trouvée</p>
+                                <p className="text-[11px] text-tertiary">Essaie d&apos;élargir ta zone ou de changer de catégorie</p>
+                            </div>
                         ) : (
                             <div className="h-8 w-0.5 rounded-full bg-quaternary" />
                         )}

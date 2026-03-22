@@ -18,9 +18,10 @@ interface MapViewProps {
     merchants: Merchant[];
     userPosition?: { lat: number; lng: number } | null;
     className?: string;
+    recenterTrigger?: number;
 }
 
-export function MapView({ merchants, userPosition, className }: MapViewProps) {
+export function MapView({ merchants, userPosition, className, recenterTrigger }: MapViewProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -83,6 +84,11 @@ export function MapView({ merchants, userPosition, className }: MapViewProps) {
             .setLngLat([userPosition.lng, userPosition.lat])
             .addTo(map);
     }, [userPosition]);
+
+    useEffect(() => {
+        if (!recenterTrigger || !mapRef.current || !userPosition) return;
+        mapRef.current.flyTo({ center: [userPosition.lng, userPosition.lat], zoom: DEFAULT_ZOOM });
+    }, [recenterTrigger]);
 
     useEffect(() => {
         const map = mapRef.current;
