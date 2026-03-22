@@ -3,9 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { FilterLines } from "@untitledui/icons";
-import { BottomSheet } from "../components/bottom-sheet";
 import { MapView } from "../components/map-view";
-import { ShopCard } from "../components/shop-card";
+import { SidePanel } from "../components/side-panel";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
 
@@ -111,31 +110,7 @@ export default function ExplorePage() {
                 )}
             </div>
 
-            <BottomSheet>
-                <div className="space-y-3 px-4 pb-4">
-                    {isLoading ? (
-                        Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="h-48 animate-pulse rounded-2xl bg-secondary" />
-                        ))
-                    ) : merchants.length === 0 ? (
-                        <p className="py-8 text-center text-sm text-tertiary">Aucune boutique trouvée à proximité</p>
-                    ) : (
-                        merchants.map((m) => (
-                            <ShopCard
-                                key={m.merchant_id}
-                                id={m.merchant_id}
-                                name={m.merchant_name}
-                                description={m.merchant_description}
-                                photo={m.merchant_photo}
-                                address={m.merchant_address}
-                                distance={m.distance_km}
-                                productCount={m.product_count}
-                                promoCount={m.promo_count}
-                            />
-                        ))
-                    )}
-                </div>
-            </BottomSheet>
+            <SidePanel merchants={merchants} isLoading={isLoading} />
         </div>
     );
 }
