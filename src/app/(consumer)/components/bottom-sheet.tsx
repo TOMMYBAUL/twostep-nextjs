@@ -25,7 +25,9 @@ export function BottomSheet({ children }: BottomSheetProps) {
                 <Drawer.Content
                     className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-2xl border-t border-secondary bg-primary shadow-xl outline-none"
                     style={{ maxHeight: "90dvh" }}
+                    aria-describedby={undefined}
                 >
+                    <Drawer.Title className="sr-only">Boutiques à proximité</Drawer.Title>
                     <div className="flex justify-center py-3">
                         <div className="h-1 w-10 rounded-full bg-quaternary" />
                     </div>
