@@ -5,7 +5,7 @@ import { ToastProvider } from "./components/toast";
 import { WelcomeGate } from "./components/welcome-gate";
 
 export const metadata: Metadata = {
-    title: "Two-Step — Découvrez le stock local",
+    title: "Two-Step — Le stock de ton quartier",
     description: "Le produit exact que tu cherches, à deux pas de chez toi.",
 };
 

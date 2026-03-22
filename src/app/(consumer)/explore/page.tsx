@@ -96,7 +96,7 @@ export default function ExplorePage() {
                             onFocus={() => setSearchFocused(true)}
                             onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
                             onKeyDown={(e) => { if (e.key === "Enter") handleSearch(searchQuery); }}
-                            placeholder="Rechercher un produit..."
+                            placeholder="Trouver un produit..."
                             className="min-w-0 flex-1 bg-transparent text-sm text-primary outline-none placeholder:text-placeholder"
                         />
                         {!searchFocused && !searchQuery && merchants.length > 0 && (

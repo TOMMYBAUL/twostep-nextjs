@@ -26,7 +26,7 @@ export default function SearchPage() {
 
             {!query && (
                 <p className="py-12 text-center text-sm text-tertiary">
-                    Recherchez un produit par nom, marque ou code-barres
+                    Tape un nom, une marque ou un code-barres
                 </p>
             )}
 

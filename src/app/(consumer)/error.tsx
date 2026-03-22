@@ -9,8 +9,8 @@ export default function ConsumerError({
 }) {
     return (
         <div className="flex min-h-[60dvh] flex-col items-center justify-center gap-4 px-6 text-center">
-            <p className="text-lg font-semibold text-primary">Quelque chose a mal tourné</p>
-            <p className="text-sm text-tertiary">{error.message || "Erreur inattendue"}</p>
+            <p className="text-lg font-semibold text-primary">Ça n'a pas marché</p>
+            <p className="text-sm text-tertiary">{error.message || "Réessaie dans quelques secondes."}</p>
             <button
                 type="button"
                 onClick={reset}

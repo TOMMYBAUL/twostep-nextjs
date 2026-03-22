@@ -23,7 +23,7 @@ export default function ProfilePage() {
             <div className="space-y-4">
                 <div className="rounded-xl border border-secondary p-4">
                     <h2 className="text-sm font-semibold text-primary">Préférences de notification</h2>
-                    <p className="mt-1 text-xs text-tertiary">Bientôt disponible — Phase 2</p>
+                    <p className="mt-1 text-xs text-tertiary">Bientôt disponible</p>
                 </div>
 
                 <div className="rounded-xl border border-secondary p-4">

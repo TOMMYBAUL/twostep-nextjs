@@ -60,7 +60,7 @@ export default function DiscoverPage() {
             <div>
                 <h1 className="font-display text-xl font-bold text-primary">Découvrir</h1>
                 <p className="mt-0.5 text-sm text-tertiary">
-                    Les meilleurs produits autour de toi
+                    Ce que tes boutiques ont en stock maintenant
                 </p>
             </div>
 
@@ -68,7 +68,7 @@ export default function DiscoverPage() {
             <Section
                 icon={<Tag01 className="size-4 text-[var(--ts-ochre)]" />}
                 title="Promotions"
-                subtitle="Les bons plans du moment"
+                subtitle="Les promos près de chez toi"
                 products={promos}
                 isLoading={loadingPromos}
                 favoriteIds={favoriteIds}
@@ -79,7 +79,7 @@ export default function DiscoverPage() {
             <Section
                 icon={<TrendUp01 className="size-4 text-[var(--ts-sage)]" />}
                 title="Tendances"
-                subtitle="Les plus populaires autour de toi"
+                subtitle="Ce qui se vend le plus dans ton quartier"
                 products={trending}
                 isLoading={loadingTrending}
                 favoriteIds={favoriteIds}
@@ -89,8 +89,8 @@ export default function DiscoverPage() {
             {/* Nearby section */}
             <Section
                 icon={<ShoppingBag01 className="size-4 text-[var(--ts-brown)]" />}
-                title="À côté de toi"
-                subtitle="Stock disponible maintenant"
+                title="Dans ton quartier"
+                subtitle="En boutique aujourd'hui"
                 products={nearby}
                 isLoading={loadingNearby}
                 favoriteIds={favoriteIds}
@@ -156,7 +156,7 @@ function Section({
                 </div>
             ) : (
                 <div className="rounded-xl border border-secondary bg-secondary/50 px-4 py-6 text-center">
-                    <p className="text-xs text-tertiary">Pas encore de contenu dans cette section</p>
+                    <p className="text-xs text-tertiary">Rien pour le moment — ça arrive vite.</p>
                 </div>
             )}
         </section>

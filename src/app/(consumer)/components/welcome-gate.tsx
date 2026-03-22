@@ -83,7 +83,7 @@ export function WelcomeGate() {
                                         <MarkerPin01 className="size-4 text-[var(--ts-ochre)]" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-primary">Découvre les boutiques autour de toi</p>
+                                        <p className="text-sm font-medium text-primary">Découvre les boutiques de ton quartier</p>
                                         <p className="text-xs text-tertiary">Stock réel, mis à jour par les commerçants</p>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@ export function WelcomeGate() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium text-primary">Sauvegarde tes favoris</p>
-                                        <p className="text-xs text-tertiary">Suis les boutiques et sois alerté des nouveautés</p>
+                                        <p className="text-xs text-tertiary">Suis tes boutiques préférées — on te prévient des nouveautés</p>
                                     </div>
                                 </div>
                             </div>

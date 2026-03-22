@@ -33,7 +33,7 @@ export function BottomSheet({ children }: BottomSheetProps) {
                     className="fixed bottom-0 left-0 right-0 z-40 flex max-h-[90dvh] flex-col rounded-t-2xl border-t border-secondary bg-primary shadow-xl outline-none"
                     aria-describedby={undefined}
                 >
-                    <Drawer.Title className="sr-only">Boutiques à proximité</Drawer.Title>
+                    <Drawer.Title className="sr-only">Boutiques près de chez toi</Drawer.Title>
                     {/* Large touch target — always visible, easy to grab */}
                     <div
                         className="flex shrink-0 cursor-grab touch-none items-center justify-center py-4 active:cursor-grabbing"
