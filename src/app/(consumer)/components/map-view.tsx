@@ -19,9 +19,10 @@ interface MapViewProps {
     userPosition?: { lat: number; lng: number } | null;
     className?: string;
     recenterTrigger?: number;
+    is3D?: boolean;
 }
 
-export function MapView({ merchants, userPosition, className, recenterTrigger }: MapViewProps) {
+export function MapView({ merchants, userPosition, className, recenterTrigger, is3D }: MapViewProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -95,6 +96,42 @@ export function MapView({ merchants, userPosition, className, recenterTrigger }:
         if (!recenterTrigger || !mapRef.current || !userPosition) return;
         mapRef.current.flyTo({ center: [userPosition.lng, userPosition.lat], zoom: DEFAULT_ZOOM });
     }, [recenterTrigger]);
+
+    useEffect(() => {
+        const map = mapRef.current;
+        if (!map) return;
+        if (is3D) {
+            map.easeTo({ pitch: 45, bearing: -17, duration: 1000 });
+            // Show 3D buildings if available
+            const layers = map.getStyle().layers ?? [];
+            const buildingLayer = layers.find((l) => l.id.includes("building") && l.type === "fill-extrusion");
+            if (!buildingLayer) {
+                const fillLayer = layers.find((l) => l.id.includes("building") && l.type === "fill");
+                if (fillLayer) {
+                    try {
+                        map.addLayer({
+                            id: "3d-buildings",
+                            source: fillLayer.source,
+                            "source-layer": fillLayer["source-layer"],
+                            type: "fill-extrusion",
+                            minzoom: 14,
+                            paint: {
+                                "fill-extrusion-color": "#ebe3d6",
+                                "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 16, ["get", "height"]],
+                                "fill-extrusion-base": ["get", "min_height"],
+                                "fill-extrusion-opacity": 0.7,
+                            },
+                        });
+                    } catch {}
+                }
+            }
+        } else {
+            map.easeTo({ pitch: 0, bearing: 0, duration: 1000 });
+            if (map.getLayer("3d-buildings")) {
+                try { map.removeLayer("3d-buildings"); } catch {}
+            }
+        }
+    }, [is3D]);
 
     useEffect(() => {
         const map = mapRef.current;

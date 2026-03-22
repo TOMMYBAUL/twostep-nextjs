@@ -2,12 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { MarkerPin01, SearchMd, Heart, User01 } from "@untitledui/icons";
+import { MarkerPin01, Compass03, Heart, User01 } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 
 const tabs = [
     { href: "/explore", label: "Explorer", icon: MarkerPin01 },
-    { href: "/search", label: "Rechercher", icon: SearchMd },
+    { href: "/discover", label: "Découvrir", icon: Compass03 },
     { href: "/favorites", label: "Favoris", icon: Heart },
     { href: "/profile", label: "Profil", icon: User01 },
 ] as const;
