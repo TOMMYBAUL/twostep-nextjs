@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Step — Design Direction</title>
+<style>
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: #f5f5f0; color: #1a1a1a; }
+
+  .demo-container {
+    display: flex; height: 100vh; overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 68px; min-width: 68px;
+    background: #3D2200;
+    transition: width 280ms cubic-bezier(.4,0,.2,1), min-width 280ms cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .sidebar:hover { width: 180px; min-width: 180px; }
+
+  .sidebar-logo {
+    padding: 16px; height: 60px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px; background: #E8832A; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #3D2200; flex-shrink: 0;
+  }
+  .logo-text {
+    font-weight: 700; font-size: 15px; color: #E8832A;
+    white-space: nowrap; opacity: 0; transition: opacity 200ms ease 80ms;
+  }
+  .sidebar:hover .logo-text { opacity: 1; }
+
+  .sidebar-nav { padding: 8px 6px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    cursor: pointer; transition: background 150ms; white-space: nowrap;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(232,131,42,0.1); }
+  .nav-item.active {
+    background: rgba(232,131,42,0.18);
+  }
+  .nav-item.active::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 24px; background: #E8832A; border-radius: 0 3px 3px 0;
+  }
+
+  .nav-icon {
+    width: 20px; height: 20px; flex-shrink: 0;
+    stroke: rgba(255,255,255,0.5); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-item.active .nav-icon { stroke: #E8832A; }
+
+  .nav-label {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    opacity: 0; transition: opacity 200ms ease 80ms;
+  }
+  .nav-item.active .nav-label { color: #E8832A; font-weight: 600; }
+  .sidebar:hover .nav-label { opacity: 1; }
+
+  .nav-item .tooltip {
+    position: absolute; left: 60px; top: 50%; transform: translateY(-50%);
+    background: #1a1a1a; color: white; padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity 150ms; z-index: 10;
+  }
+  .sidebar:not(:hover) .nav-item:hover .tooltip { opacity: 1; }
+
+  .sidebar-footer { padding: 8px 6px 16px; }
+
+  /* ── Main ── */
+  .main { flex: 1; overflow-y: auto; padding: 32px 40px; }
+
+  .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #9ca3af; font-weight: 600; margin-bottom: 4px;
+    animation: fadeUp 400ms ease both;
+  }
+  .page-title {
+    font-size: 26px; font-weight: 500; color: #1a1a1a; margin-bottom: 24px;
+    animation: fadeUp 400ms ease 50ms both;
+  }
+  .page-title .accent { color: #E8832A; }
+
+  /* ── Metrics ── */
+  .metrics {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 32px;
+  }
+  .metric-card {
+    background: #eeeee8; border-radius: 10px; padding: 20px;
+    animation: fadeUp 400ms ease both;
+  }
+  .metric-card:nth-child(1) { animation-delay: 100ms; }
+  .metric-card:nth-child(2) { animation-delay: 150ms; }
+  .metric-card:nth-child(3) { animation-delay: 200ms; }
+  .metric-card:nth-child(4) { animation-delay: 250ms; }
+
+  .metric-label { font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 6px; }
+  .metric-value { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+  .metric-value.warn { color: #E8832A; }
+  .metric-value.danger { color: #dc2626; }
+
+  /* ── Action bar ── */
+  .action-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+    animation: fadeUp 400ms ease 300ms both;
+  }
+  .search-input {
+    background: white; border: none; padding: 10px 16px; border-radius: 10px;
+    font-size: 13px; width: 280px; color: #1a1a1a; outline: none;
+  }
+  .search-input::placeholder { color: #9ca3af; }
+  .search-input:focus { box-shadow: 0 0 0 2px rgba(232,131,42,0.3); }
+
+  .btn-add {
+    background: #E8832A; color: #3D2200; border: none;
+    padding: 10px 20px; border-radius: 10px; font-size: 13px;
+    font-weight: 600; cursor: pointer;
+    transition: transform 150ms, background 150ms;
+  }
+  .btn-add:hover { background: #D4721F; transform: translateY(-1px); }
+  .btn-add:active { transform: scale(0.97); }
+
+  /* ── Product rows ── */
+  .product-list { display: flex; flex-direction: column; gap: 6px; }
+
+  .product-row {
+    display: flex; align-items: center; gap: 16px;
+    background: white; padding: 14px 18px; border-radius: 12px;
+    cursor: pointer; transition: background 150ms, box-shadow 150ms;
+    animation: fadeUp 400ms ease both;
+    position: relative;
+  }
+  .product-row:nth-child(1) { animation-delay: 350ms; }
+  .product-row:nth-child(2) { animation-delay: 400ms; }
+  .product-row:nth-child(3) { animation-delay: 450ms; }
+  .product-row:nth-child(4) { animation-delay: 500ms; }
+  .product-row:nth-child(5) { animation-delay: 550ms; }
+  .product-row:nth-child(6) { animation-delay: 600ms; }
+
+  .product-row:hover {
+    background: #faf9f5;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .product-row:hover .row-arrow { opacity: 1; }
+
+  .product-thumb {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .thumb-green { background: #dcfce7; }
+  .thumb-purple { background: #ede9fe; }
+  .thumb-amber { background: #fef3c7; }
+  .thumb-blue { background: #dbeafe; }
+  .thumb-pink { background: #fce7f3; }
+  .thumb-orange { background: #ffedd5; }
+
+  .product-info { flex: 1; }
+  .product-name { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .product-cat { font-size: 12px; color: #9ca3af; margin-top: 1px; }
+
+  .product-price { font-size: 14px; font-weight: 600; color: #1a1a1a; width: 80px; text-align: right; }
+
+  .badge-stock {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    width: 100px; justify-content: center;
+  }
+  .badge-ok { background: #dcfce7; color: #166534; }
+  .badge-low { background: #fef3c7; color: #92400e; }
+  .badge-out { background: #fee2e2; color: #991b1b; }
+
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-ok .badge-dot { background: #22c55e; }
+  .badge-low .badge-dot { background: #f59e0b; }
+  .badge-out .badge-dot { background: #ef4444; }
+
+  .row-arrow {
+    opacity: 0; transition: opacity 150ms;
+    font-size: 16px; color: #9ca3af;
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">T</div>
+      <span class="logo-text">Two-Step</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.5 7.28L12 2 3.5 7.28M20.5 7.28V16.72L12 22M20.5 7.28L12 12.56M3.5 7.28V16.72L12 22M3.5 7.28L12 12.56M12 22V12.56"/></svg>
+        <span class="nav-label">Produits</span>
+        <span class="tooltip">Produits</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20V14"/></svg>
+        <span class="nav-label">Stock</span>
+        <span class="tooltip">Stock</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2ZM9 8L4 22H20L15 8H9Z"/></svg>
+        <span class="nav-label">Promotions</span>
+        <span class="tooltip">Promotions</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21H21M5 21V7L13 3V21M13 7H19V21M9 9H9.01M9 13H9.01M9 17H9.01M17 11H17.01M17 15H17.01"/></svg>
+        <span class="nav-label">Ma boutique</span>
+        <span class="tooltip">Ma boutique</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7ZM19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.03 7.03 0 0 0-1.69-.98l-.38-2.65A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.49.49 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.05.24.26.42.49.42h4c.24 0 .44-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1a.5.5 0 0 0 .61-.22l2-3.46a.49.49 0 0 0-.12-.64l-2.11-1.65Z"/></svg>
+        <span class="nav-label">Réglages</span>
+        <span class="tooltip">Réglages</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <div class="eyebrow">Boulangerie du Marché</div>
+    <div class="page-title">Mes <span class="accent">produits</span></div>
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">Total produits</div>
+        <div class="metric-value">47</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">En stock</div>
+        <div class="metric-value">41</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Stock bas</div>
+        <div class="metric-value warn">4</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Ruptures</div>
+        <div class="metric-value danger">2</div>
+      </div>
+    </div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <input type="text" class="search-input" placeholder="Rechercher un produit...">
+      <button class="btn-add">+ Ajouter un produit</button>
+    </div>
+
+    <!-- Product list -->
+    <div class="product-list">
+      <div class="product-row">
+        <div class="product-thumb thumb-amber">🥐</div>
+        <div class="product-info">
+          <div class="product-name">Croissant beurre AOP</div>
+          <div class="product-cat">Viennoiserie</div>
+        </div>
+        <div class="product-price">1,40 €</div>
+        <div class="badge-stock badge-ok"><span class="badge-dot"></span> 120</div>
+        <div class="row-arrow">→</div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-thumb thumb-orange">🍞</div>
+        <div class="product-info">
+          <div class="product-name">Pain de campagne 500g</div>
+          <div class="product-cat">Pain</div>
+        </div>
+        <div class="product-price">3,20 €</div>
+        <div class="badge-stock badge-ok"><span class="badge-dot"></span> 35</div>
+        <div class="row-arrow">→</div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-thumb thumb-pink">🎂</div>
+        <div class="product-info">
+          <div class="product-name">Tarte aux fraises</div>
+          <div class="product-cat">Pâtisserie</div>
+        </div>
+        <div class="product-price">24,00 €</div>
+        <div class="badge-stock badge-low"><span class="badge-dot"></span> 3</div>
+        <div class="row-arrow">→</div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-thumb thumb-green">🥖</div>
+        <div class="product-info">
+          <div class="product-name">Baguette tradition</div>
+          <div class="product-cat">Pain</div>
+        </div>
+        <div class="product-price">1,30 €</div>
+        <div class="badge-stock badge-ok"><span class="badge-dot"></span> 84</div>
+        <div class="row-arrow">→</div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-thumb thumb-purple">🍫</div>
+        <div class="product-info">
+          <div class="product-name">Éclair au chocolat</div>
+          <div class="product-cat">Pâtisserie</div>
+        </div>
+        <div class="product-price">4,50 €</div>
+        <div class="badge-stock badge-out"><span class="badge-dot"></span> Rupture</div>
+        <div class="row-arrow">→</div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-thumb thumb-blue">🧁</div>
+        <div class="product-info">
+          <div class="product-name">Muffin myrtilles</div>
+          <div class="product-cat">Viennoiserie</div>
+        </div>
+        <div class="product-price">3,80 €</div>
+        <div class="badge-stock badge-low"><span class="badge-dot"></span> 5</div>
+        <div class="row-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

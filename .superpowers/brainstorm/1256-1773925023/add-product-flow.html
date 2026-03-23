@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajout produit — 3 méthodes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f3f4f6; padding: 24px; }
+
+  h1 { text-align: center; font-size: 22px; color: #111827; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #9ca3af; font-size: 14px; margin-bottom: 32px; }
+
+  .methods {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
+  }
+
+  .method {
+    background: white; border-radius: 12px; border: 2px solid #e5e7eb;
+    overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .method:hover { border-color: #C8813A; transform: translateY(-2px); }
+
+  .method-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .method-icon { font-size: 32px; margin-bottom: 8px; }
+  .method-header h3 { font-size: 16px; color: #111827; margin-bottom: 4px; }
+  .method-header .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-recommended { background: #d1fae5; color: #065f46; }
+  .badge-quick { background: #dbeafe; color: #1e40af; }
+  .badge-manual { background: #f3f4f6; color: #6b7280; }
+
+  .method-body { padding: 16px 20px 20px; }
+
+  .step {
+    display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%; background: #C8813A;
+    color: white; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-text { font-size: 13px; color: #374151; line-height: 1.4; }
+  .step-text strong { color: #111827; }
+
+  .method-footer {
+    padding: 12px 20px 16px;
+    border-top: 1px solid #f3f4f6;
+    font-size: 12px; color: #9ca3af;
+  }
+
+  /* Mockup screens */
+  .mockup-screen {
+    max-width: 900px; margin: 40px auto 0;
+  }
+  .mockup-screen h2 {
+    font-size: 18px; color: #111827; margin-bottom: 16px;
+    padding-left: 4px;
+  }
+
+  .screen-container {
+    background: white; border-radius: 12px; border: 1px solid #e5e7eb;
+    overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .screen-topbar {
+    background: #f9fafb; padding: 12px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: #6b7280;
+  }
+  .screen-topbar .back { color: #C8813A; font-weight: 600; cursor: pointer; }
+
+  /* Tab selector */
+  .tab-bar {
+    display: flex; border-bottom: 1px solid #e5e7eb;
+  }
+  .tab {
+    padding: 12px 24px; font-size: 13px; font-weight: 600;
+    color: #9ca3af; border-bottom: 2px solid transparent;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .tab.active { color: #C8813A; border-bottom-color: #C8813A; }
+  .tab:hover { color: #374151; }
+
+  /* Invoice upload zone */
+  .upload-zone {
+    border: 2px dashed #d1d5db; border-radius: 12px;
+    padding: 40px; text-align: center; margin: 20px;
+    transition: border-color 0.2s;
+  }
+  .upload-zone:hover { border-color: #C8813A; }
+  .upload-icon { font-size: 40px; margin-bottom: 8px; }
+  .upload-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+  .upload-sub { font-size: 13px; color: #9ca3af; }
+  .upload-btn {
+    margin-top: 12px; display: inline-block;
+    background: #C8813A; color: white; padding: 8px 20px;
+    border-radius: 8px; font-size: 13px; font-weight: 600;
+  }
+
+  /* Parsed results preview */
+  .parsed-results { padding: 0 20px 20px; }
+  .parsed-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .parsed-header h4 { font-size: 14px; color: #111827; }
+  .parsed-count { font-size: 12px; color: #C8813A; font-weight: 600; }
+
+  .parsed-row {
+    display: grid; grid-template-columns: 1fr 80px 60px 40px;
+    padding: 10px 12px; font-size: 13px; color: #374151;
+    border: 1px solid #f3f4f6; border-radius: 8px; margin-bottom: 6px;
+    align-items: center;
+  }
+  .parsed-row .name { font-weight: 600; color: #111827; }
+  .check { color: #10b981; font-weight: 700; }
+
+  .confirm-bar {
+    padding: 16px 20px; background: #f9fafb; border-top: 1px solid #e5e7eb;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .confirm-bar .info { font-size: 13px; color: #6b7280; }
+  .confirm-bar .btn {
+    background: #C8813A; color: white; border: none; padding: 10px 24px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Ajouter un produit — 3 méthodes</h1>
+<p class="subtitle">Le marchand choisit la méthode qui lui convient selon sa situation</p>
+
+<div class="methods">
+  <!-- Method 1: Invoice -->
+  <div class="method">
+    <div class="method-header">
+      <div class="method-icon">📄</div>
+      <h3>Import facture</h3>
+      <span class="badge badge-recommended">⭐ Recommandé</span>
+    </div>
+    <div class="method-body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Upload</strong> le PDF de ta facture fournisseur / grossiste</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>L'IA lit</strong> le document et extrait tous les produits, prix, quantités</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Tu vérifies</strong> la liste extraite et corriges si besoin</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Valide</strong> → tous les produits + stock sont créés d'un coup</div>
+      </div>
+    </div>
+    <div class="method-footer">
+      📦 50 produits en 2 minutes · Idéal au démarrage
+    </div>
+  </div>
+
+  <!-- Method 2: EAN -->
+  <div class="method">
+    <div class="method-header">
+      <div class="method-icon">📱</div>
+      <h3>Scan EAN</h3>
+      <span class="badge badge-quick">Rapide</span>
+    </div>
+    <div class="method-body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Saisis ou scanne</strong> le code-barres EAN du produit</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Auto-remplissage</strong> : nom, description, catégorie depuis la base EAN</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Complète</strong> le prix de vente et la quantité en stock</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Valide</strong> → produit créé avec stock initial</div>
+      </div>
+    </div>
+    <div class="method-footer">
+      🎯 1 produit en 15 secondes · Ajout ponctuel
+    </div>
+  </div>
+
+  <!-- Method 3: Manual -->
+  <div class="method">
+    <div class="method-header">
+      <div class="method-icon">✏️</div>
+      <h3>Saisie manuelle</h3>
+      <span class="badge badge-manual">Flexible</span>
+    </div>
+    <div class="method-body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Remplis</strong> le formulaire : nom, description, catégorie</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Ajoute</strong> une photo (upload ou appareil photo)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Fixe</strong> ton prix de vente et la quantité initiale</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Valide</strong> → produit créé</div>
+      </div>
+    </div>
+    <div class="method-footer">
+      🔧 Pour les produits sans code-barres (artisanat, fait-maison)
+    </div>
+  </div>
+</div>
+
+<!-- Mockup: Invoice flow -->
+<div class="mockup-screen">
+  <h2>Aperçu — Flow import facture</h2>
+  <div class="screen-container">
+    <div class="screen-topbar">
+      <span class="back">← Produits</span>
+      <span>Ajouter des produits</span>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active">📄 Import facture</div>
+      <div class="tab">📱 Scan EAN</div>
+      <div class="tab">✏️ Manuel</div>
+    </div>
+
+    <!-- Upload zone -->
+    <div class="upload-zone">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Dépose ta facture fournisseur ici</div>
+      <div class="upload-sub">PDF, JPG ou PNG — max 10 Mo</div>
+      <div class="upload-btn">Choisir un fichier</div>
+    </div>
+
+    <!-- Parsed results -->
+    <div class="parsed-results">
+      <div class="parsed-header">
+        <h4>Produits extraits de la facture</h4>
+        <span class="parsed-count">5 produits trouvés</span>
+      </div>
+      <div class="parsed-row">
+        <div class="name">Crème hydratante Bio 50ml</div>
+        <div>24,90 €</div>
+        <div>x 24</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="parsed-row">
+        <div class="name">Huile essentielle Lavande 10ml</div>
+        <div>12,50 €</div>
+        <div>x 36</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="parsed-row">
+        <div class="name">Savon artisanal Miel 100g</div>
+        <div>8,90 €</div>
+        <div>x 48</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="parsed-row">
+        <div class="name">Baume à lèvres Karité 15ml</div>
+        <div>5,50 €</div>
+        <div>x 60</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="parsed-row">
+        <div class="name">Shampoing solide Ortie 80g</div>
+        <div>9,90 €</div>
+        <div>x 30</div>
+        <div class="check">✓</div>
+      </div>
+    </div>
+
+    <div class="confirm-bar">
+      <div class="info">5 produits · Stock total : 198 unités</div>
+      <div class="btn">Tout importer →</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<h2>Pages du Dashboard — Qu'est-ce qu'on met dans chaque section ?</h2>
+<p class="subtitle">Clique sur les sections que tu valides. Dis-moi si tu veux ajouter ou retirer quelque chose.</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="produits" onclick="toggleSelect(this)">
+    <div class="letter">📦</div>
+    <div class="content">
+      <h3>Produits</h3>
+      <p><strong>Liste des produits</strong> — tableau avec nom, photo, prix, stock, catégorie, EAN<br>
+      <strong>Ajouter/modifier un produit</strong> — formulaire avec upload photo<br>
+      <strong>Supprimer un produit</strong> — confirmation avant suppression<br>
+      <strong>Import en masse</strong> — upload PDF facture fournisseur (Plan 4, plus tard)</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="stock" onclick="toggleSelect(this)">
+    <div class="letter">📊</div>
+    <div class="content">
+      <h3>Stock</h3>
+      <p><strong>Vue d'ensemble</strong> — stock par produit, alertes rupture (badge rouge/orange/vert)<br>
+      <strong>Ajustement manuel</strong> — modifier la quantité directement (+/- ou valeur absolue)<br>
+      <strong>Historique</strong> — log des mouvements de stock (ventes POS, ajustements manuels, imports)<br>
+      <em>Note : le stock se met à jour automatiquement via POS (Plan 2) et import facture (Plan 4)</em></p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="promos" onclick="toggleSelect(this)">
+    <div class="letter">🏷️</div>
+    <div class="content">
+      <h3>Promotions</h3>
+      <p><strong>Liste des promos actives</strong> — produit, prix barré → prix promo, dates<br>
+      <strong>Créer une promo</strong> — choisir produit, prix soldé, date début/fin<br>
+      <strong>Supprimer une promo</strong> — fin anticipée</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="boutique" onclick="toggleSelect(this)">
+    <div class="letter">🏪</div>
+    <div class="content">
+      <h3>Ma boutique</h3>
+      <p><strong>Profil public</strong> — nom, adresse, téléphone, horaires, photo de la boutique<br>
+      <strong>Géolocalisation</strong> — carte avec pin de la boutique (latitude/longitude)<br>
+      <strong>Statut SIRET</strong> — badge vérifié / en attente<br>
+      <strong>Aperçu</strong> — comment les consommateurs voient ta boutique dans l'app</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="reglages" onclick="toggleSelect(this)">
+    <div class="letter">⚙️</div>
+    <div class="content">
+      <h3>Réglages</h3>
+      <p><strong>Connexion POS</strong> — connecter Square/SumUp/Zettle (OAuth, Plan 2)<br>
+      <strong>Compte</strong> — email, mot de passe, suppression de compte<br>
+      <strong>Abonnement</strong> — plan actuel, facturation (Stripe, plus tard)</p>
+    </div>
+  </div>
+
+</div>

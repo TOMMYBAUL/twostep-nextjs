@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec — Dashboard Marchand Two-Step</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; color: #111827; line-height: 1.6; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+
+  h1 { font-size: 28px; margin-bottom: 8px; color: #111827; }
+  h2 { font-size: 20px; margin: 32px 0 12px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #C8813A; }
+  h2:first-of-type { border-top: none; margin-top: 16px; }
+  h3 { font-size: 16px; margin: 20px 0 8px; color: #374151; }
+
+  p, li { font-size: 14px; color: #374151; margin-bottom: 6px; }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 4px; }
+
+  strong { color: #111827; }
+  em { color: #6b7280; font-style: italic; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', monospace; color: #C8813A; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge-new { background: #dbeafe; color: #1e40af; }
+  .badge-exist { background: #d1fae5; color: #065f46; }
+  .badge-later { background: #f3f4f6; color: #6b7280; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #f3f4f6; text-align: left; padding: 8px 12px; font-weight: 600; color: #374151; }
+  td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; }
+
+  .route-tree { background: #1a1a2e; color: #e5e7eb; padding: 16px 20px; border-radius: 8px; font-family: 'SF Mono', monospace; font-size: 13px; line-height: 1.8; margin: 12px 0; overflow-x: auto; }
+  .route-tree .comment { color: #6b7280; }
+  .route-tree .highlight { color: #C8813A; font-weight: 600; }
+
+  .section-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin: 16px 0; }
+  .section-card h3 { margin-top: 0; }
+
+  .flow-steps { display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+  .flow-step { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; flex: 1; min-width: 160px; }
+  .flow-step .step-num { font-size: 20px; font-weight: 800; color: #C8813A; }
+  .flow-step .step-title { font-size: 13px; font-weight: 600; margin-top: 4px; }
+  .flow-step .step-desc { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+  .api-change { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin: 8px 0; }
+  .api-change h4 { font-size: 13px; color: #92400e; margin-bottom: 4px; }
+  .api-change p { font-size: 12px; color: #78350f; margin: 0; }
+
+  .out-scope { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; }
+  .out-scope li { color: #6b7280; font-size: 13px; }
+
+  .toc { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; margin: 16px 0; }
+  .toc-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+  .toc a { color: #C8813A; text-decoration: none; font-size: 13px; display: block; padding: 3px 0; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Dashboard Marchand Two-Step</h1>
+<p>Spec de design complète — <strong>Plan 3</strong></p>
+
+<div class="toc">
+  <div class="toc-title">Sommaire</div>
+  <a href="#s1">S1 — Authentification (login, signup, SIRET)</a>
+  <a href="#s2">S2 — Layout Dashboard (sidebar slim + expand)</a>
+  <a href="#s3">S3 — Page Produits (liste, ajout, édition)</a>
+  <a href="#s4">S4 — Page Stock (vue d'ensemble, ajustement)</a>
+  <a href="#s5">S5 — Page Promotions (liste, création)</a>
+  <a href="#s6">S6 — Page Ma boutique (profil, géoloc)</a>
+  <a href="#s7">S7 — Page Réglages (compte, POS, abo)</a>
+  <a href="#s8">S8 — Composants partagés, upload, feedback</a>
+  <a href="#api">Modifications API requises</a>
+  <a href="#migration">Migration base de données</a>
+</div>
+
+<!-- ROUTES -->
+<h2>Architecture des routes</h2>
+<div class="route-tree">
+src/app/<br>
+├── <span class="highlight">auth/</span><br>
+│&nbsp;&nbsp; ├── login/page.tsx <span class="comment">&nbsp;&nbsp;# Connexion</span><br>
+│&nbsp;&nbsp; └── signup/page.tsx <span class="comment"># Inscription + SIRET</span><br>
+├── <span class="highlight">dashboard/</span><br>
+│&nbsp;&nbsp; ├── layout.tsx <span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Sidebar slim + expand</span><br>
+│&nbsp;&nbsp; ├── page.tsx <span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# → /dashboard/products</span><br>
+│&nbsp;&nbsp; ├── products/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── page.tsx <span class="comment">&nbsp;&nbsp;&nbsp;# Liste produits</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── new/page.tsx <span class="comment"># Ajout (3 onglets)</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── [id]/edit/page.tsx <span class="comment"># Modification</span><br>
+│&nbsp;&nbsp; ├── stock/page.tsx <span class="comment">&nbsp;&nbsp;# Stock + ajustement</span><br>
+│&nbsp;&nbsp; ├── promotions/page.tsx <span class="comment"># Promos</span><br>
+│&nbsp;&nbsp; ├── store/page.tsx <span class="comment">&nbsp;&nbsp;# Ma boutique</span><br>
+│&nbsp;&nbsp; └── settings/page.tsx <span class="comment"># Réglages</span><br>
+</div>
+
+<!-- S1 -->
+<h2 id="s1">S1 — Authentification</h2>
+
+<h3>S1.1 — Connexion <code>/auth/login</code></h3>
+<ul>
+  <li>Formulaire email + mot de passe</li>
+  <li>Lien "Pas encore de compte ?" → signup</li>
+  <li>Lien "Mot de passe oublié" → Supabase reset flow</li>
+  <li>Succès → redirect <code>/dashboard</code></li>
+  <li>Déjà connecté → redirect <code>/dashboard</code></li>
+</ul>
+
+<h3>S1.2 — Inscription <code>/auth/signup</code></h3>
+<div class="flow-steps">
+  <div class="flow-step">
+    <div class="step-num">1</div>
+    <div class="step-title">Compte</div>
+    <div class="step-desc">Email + mot de passe + confirmation. Min 8 caractères.</div>
+  </div>
+  <div class="flow-step">
+    <div class="step-num">2</div>
+    <div class="step-title">SIRET</div>
+    <div class="step-desc">14 chiffres → vérification API INSEE via <code>POST /api/verify-siret</code>. Pré-remplit le profil.</div>
+  </div>
+  <div class="flow-step">
+    <div class="step-num">3</div>
+    <div class="step-title">Boutique</div>
+    <div class="step-desc">Nom, adresse, téléphone, géoloc. Pré-rempli depuis INSEE.</div>
+  </div>
+</div>
+
+<h3>S1.3 — Statuts du compte</h3>
+<table>
+  <tr><th>Statut</th><th>Signification</th><th>Accès</th></tr>
+  <tr><td><span class="badge badge-later">pending</span></td><td>SIRET en attente</td><td>Lecture seule</td></tr>
+  <tr><td><span class="badge badge-exist">active</span></td><td>SIRET vérifié</td><td>Accès complet</td></tr>
+  <tr><td><span style="background:#fee2e2;color:#991b1b" class="badge">suspended</span></td><td>Suspendu par admin</td><td>Aucun</td></tr>
+</table>
+
+<!-- S2 -->
+<h2 id="s2">S2 — Layout Dashboard</h2>
+
+<div class="section-card">
+  <h3>Sidebar slim + expand on hover</h3>
+  <table>
+    <tr><th>État</th><th>Largeur</th><th>Contenu</th></tr>
+    <tr><td>Fermé (défaut)</td><td>64px</td><td>Logo "T" + icônes + tooltips</td></tr>
+    <tr><td>Ouvert (survol)</td><td>220px</td><td>Logo "Two-Step" + icônes + labels</td></tr>
+  </table>
+  <p style="margin-top:8px"><strong>Transition :</strong> 250ms cubic-bezier. <strong>Mobile :</strong> hamburger menu + slideout.</p>
+  <p><strong>Icônes :</strong> Package, BarChart07, Tag01, Building07, Settings01 (Untitled UI)</p>
+</div>
+
+<!-- S3 -->
+<h2 id="s3">S3 — Page Produits</h2>
+
+<h3>S3.1 — Liste <code>/dashboard/products</code></h3>
+<ul>
+  <li><strong>Colonnes :</strong> Photo, Nom, Prix (€), Stock (badge couleur), Catégorie, Actions (...)</li>
+  <li><strong>Recherche</strong> par nom (client-side), <strong>tri</strong> par colonne</li>
+  <li><strong>État vide :</strong> illustration + "Aucun produit" + CTA</li>
+  <li><strong>Data :</strong> <code>GET /api/products?merchant_id={id}</code> (inclut stock)</li>
+</ul>
+
+<h3>S3.2 — Ajout <code>/dashboard/products/new</code></h3>
+<table>
+  <tr><th>Onglet</th><th>Statut</th><th>Contenu</th></tr>
+  <tr><td>Import facture</td><td><span class="badge badge-later">Bientôt</span></td><td>Zone de drop grisée (Plan 4)</td></tr>
+  <tr><td>Scan EAN</td><td><span class="badge badge-later">Bientôt</span></td><td>Champ grisé (Open Food Facts)</td></tr>
+  <tr><td>Saisie manuelle</td><td><span class="badge badge-exist">Actif</span></td><td>Nom*, description, EAN, catégorie, prix*, stock, photo</td></tr>
+</table>
+<p><strong>Photo :</strong> upload Supabase Storage, max 5Mo, JPEG/PNG/WebP, preview locale</p>
+
+<h3>S3.3 — Modification <code>/dashboard/products/[id]/edit</code></h3>
+<ul>
+  <li>Même formulaire que saisie manuelle (composant <code>ProductForm</code> partagé)</li>
+  <li>Bouton "Supprimer" avec confirmation modale</li>
+</ul>
+
+<!-- S4 -->
+<h2 id="s4">S4 — Page Stock</h2>
+
+<h3>S4.1 — Vue d'ensemble <code>/dashboard/stock</code></h3>
+<div class="flow-steps">
+  <div class="flow-step" style="text-align:center">
+    <div class="step-num" style="font-size:24px">152</div>
+    <div class="step-desc">Total produits</div>
+  </div>
+  <div class="flow-step" style="text-align:center">
+    <div class="step-num" style="font-size:24px; color:#10b981">140</div>
+    <div class="step-desc">En stock</div>
+  </div>
+  <div class="flow-step" style="text-align:center">
+    <div class="step-num" style="font-size:24px; color:#f59e0b">8</div>
+    <div class="step-desc">Stock bas</div>
+  </div>
+  <div class="flow-step" style="text-align:center">
+    <div class="step-num" style="font-size:24px; color:#ef4444">4</div>
+    <div class="step-desc">Ruptures</div>
+  </div>
+</div>
+<ul>
+  <li>Tableau avec boutons <strong>+/-</strong> inline et input absolu</li>
+  <li><strong>Data :</strong> via <code>GET /api/products</code> (stock inclus)</li>
+  <li><strong>Ajustement :</strong> <code>PATCH /api/stock</code> (delta ou absolu)</li>
+</ul>
+
+<!-- S5 -->
+<h2 id="s5">S5 — Page Promotions</h2>
+
+<h3>S5.1 — Liste et création <code>/dashboard/promotions</code></h3>
+<ul>
+  <li><strong>Liste :</strong> produit, <s>prix original</s> → prix promo, dates, statut (Active / Programmée)</li>
+  <li>Promotions <strong>non modifiables</strong> — supprimer et recréer pour changer</li>
+  <li><strong>Formulaire :</strong> select produit, prix promo (<code>sale_price</code> &lt; prix original, &gt; 0), dates début/fin</li>
+</ul>
+
+<!-- S6 -->
+<h2 id="s6">S6 — Page Ma boutique</h2>
+
+<h3>S6.1 — Profil <code>/dashboard/store</code></h3>
+<ul>
+  <li>Nom, adresse, téléphone, description, photo (upload), horaires (7 jours)</li>
+  <li>Badge SIRET vérifié / en attente</li>
+  <li>Géoloc : lat/lng + bouton "Ma position actuelle"</li>
+  <li><strong>Submit :</strong> <code>PATCH /api/merchants/{id}</code></li>
+</ul>
+
+<!-- S7 -->
+<h2 id="s7">S7 — Page Réglages</h2>
+
+<h3>S7.1 — Réglages <code>/dashboard/settings</code></h3>
+<table>
+  <tr><th>Section</th><th>Contenu</th><th>Statut</th></tr>
+  <tr><td>Compte</td><td>Email (lecture), changer mot de passe</td><td><span class="badge badge-exist">Actif</span></td></tr>
+  <tr><td>Caisse (POS)</td><td>Connecter Square / SumUp / Zettle</td><td><span class="badge badge-later">Plan 2</span></td></tr>
+  <tr><td>Abonnement</td><td>"Gratuit (beta)"</td><td><span class="badge badge-later">Plus tard</span></td></tr>
+</table>
+
+<!-- S8 -->
+<h2 id="s8">S8 — Composants partagés</h2>
+
+<h3>S8.1 — Composants</h3>
+<table>
+  <tr><th>Composant</th><th>Usage</th></tr>
+  <tr><td><code>DashboardSidebar</code></td><td>Sidebar slim + expand</td></tr>
+  <tr><td><code>PageHeader</code></td><td>Titre + action + breadcrumb</td></tr>
+  <tr><td><code>DataTable</code></td><td>Tableau avec tri et recherche</td></tr>
+  <tr><td><code>StockBadge</code></td><td>Badge stock (vert/orange/rouge)</td></tr>
+  <tr><td><code>ProductForm</code></td><td>Formulaire new + edit</td></tr>
+  <tr><td><code>EmptyState</code></td><td>Illustration + CTA</td></tr>
+  <tr><td><code>TabNav</code></td><td>Onglets ajout produit</td></tr>
+</table>
+
+<h3>S8.3 — Upload photos</h3>
+<ul>
+  <li><strong>Storage :</strong> Supabase Storage — buckets <code>product-photos</code> et <code>store-photos</code></li>
+  <li><strong>Limites :</strong> 5 Mo max, JPEG/PNG/WebP</li>
+  <li><strong>Flow :</strong> preview locale → upload → URL publique → sauvegarde</li>
+</ul>
+
+<h3>S8.4 — Feedback</h3>
+<ul>
+  <li><strong>Toast</strong> : succès / erreur après chaque action</li>
+  <li><strong>Loading</strong> : boutons <code>isLoading</code>, skeletons au chargement</li>
+  <li><strong>Validation</strong> : client-side, messages inline</li>
+</ul>
+
+<!-- API changes -->
+<h2 id="api">Modifications API requises</h2>
+
+<div class="api-change">
+  <h4>NOUVEAU — POST /api/verify-siret</h4>
+  <p>Proxy backend vers API INSEE. Reçoit <code>{ siret }</code>, retourne infos entreprise.</p>
+</div>
+<div class="api-change">
+  <h4>MODIFIER — Routes merchants (GET, POST, PATCH)</h4>
+  <p>Ajouter champs : <code>siret</code>, <code>phone</code>, <code>description</code>, <code>photo_url</code>, <code>opening_hours</code>, <code>status</code></p>
+</div>
+<div class="api-change">
+  <h4>MODIFIER — src/lib/types.ts</h4>
+  <p>Ajouter les nouveaux champs au type <code>Merchant</code></p>
+</div>
+
+<!-- Migration -->
+<h2 id="migration">Migration DB</h2>
+<div class="route-tree">
+<span class="comment">-- 002_dashboard_fields.sql</span><br>
+ALTER TABLE merchants ADD COLUMN status TEXT DEFAULT 'active'<br>
+&nbsp;&nbsp;CHECK (status IN ('pending', 'active', 'suspended'));<br>
+ALTER TABLE merchants ADD COLUMN siret TEXT;<br>
+ALTER TABLE merchants ADD COLUMN phone TEXT;<br>
+ALTER TABLE merchants ADD COLUMN description TEXT;<br>
+ALTER TABLE merchants ADD COLUMN photo_url TEXT;<br>
+ALTER TABLE merchants ADD COLUMN opening_hours JSONB;<br>
+</div>
+
+<!-- Hors scope -->
+<h2>Hors périmètre</h2>
+<div class="out-scope">
+  <ul>
+    <li>Import facture IA (Plan 4)</li>
+    <li>Scan EAN / Open Food Facts</li>
+    <li>Connexion POS (Plan 2)</li>
+    <li>Abonnement Stripe</li>
+    <li>Dashboard admin</li>
+    <li>App consommateur</li>
+    <li>Suppression de compte</li>
+    <li>Pagination serveur</li>
+    <li>Dark mode</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>
