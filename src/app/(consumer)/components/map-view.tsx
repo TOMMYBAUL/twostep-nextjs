@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, MAPBOX_STYLE, DEFAULT_CENTER, DEFAULT_ZOOM } from "../lib/mapbox";
@@ -59,6 +59,9 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
     const userMarkerRef = useRef<mapboxgl.Marker | null>(null);
     const hasFittedRef = useRef(false);
 
+    // Stable key to avoid React warning about deps array size changing
+    const merchantIds = useMemo(() => merchants.map(m => m.merchant_id).join(","), [merchants]);
+
     useEffect(() => {
         if (!containerRef.current || mapRef.current) return;
         mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -107,7 +110,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
         map.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
         hasFittedRef.current = true;
-    }, [merchants, userPosition]);
+    }, [merchantIds, userPosition]);
 
     // User position dot
     useEffect(() => {
@@ -226,7 +229,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
             markersRef.current.push(marker);
         });
-    }, [merchants, selectedMerchantId]);
+    }, [merchantIds, selectedMerchantId]);
 
     return <div ref={containerRef} className={className} />;
 }

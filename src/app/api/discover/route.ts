@@ -35,17 +35,26 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Query failed" }, { status: 500 });
         }
 
-        const products = (data ?? []).map((row: any) => ({
-            product_id: row.product_id,
-            product_name: row.product_name,
-            product_price: row.product_price,
-            product_photo: row.product_photo,
-            stock_quantity: row.stock_quantity,
-            merchant_id: row.merchant_id,
-            merchant_name: row.merchant_name,
-            distance_km: row.distance_km,
-            sale_price: row.sale_price,
-        }));
+        // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
+        const seen = new Set<string>();
+        const products = (data ?? [])
+            .filter((row: any) => {
+                const key = `${row.product_id}::${row.merchant_id}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            })
+            .map((row: any) => ({
+                product_id: row.product_id,
+                product_name: row.product_name,
+                product_price: row.product_price,
+                product_photo: row.product_photo,
+                stock_quantity: row.stock_quantity,
+                merchant_id: row.merchant_id,
+                merchant_name: row.merchant_name,
+                distance_km: row.distance_km,
+                sale_price: row.sale_price,
+            }));
 
         return NextResponse.json({ products });
     }
@@ -66,10 +75,10 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
-    // Deduplicate by product_id (feed can return same product for new_product + new_promo events)
+    // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
     const seen = new Set<string>();
     items = items.filter((row: any) => {
-        const key = row.product_id;
+        const key = `${row.product_id}::${row.merchant_id}`;
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
