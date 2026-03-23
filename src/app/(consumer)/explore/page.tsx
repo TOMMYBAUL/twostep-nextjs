@@ -64,7 +64,7 @@ export default function ExplorePage() {
             });
             if (category) params.set("category", category.toLowerCase());
             if (openNow) params.set("open_now", "true");
-            const res = await fetch(`/api/merchants/nearby?${params}`);
+            const res = await fetch(`/api/nearby?${params}`);
             if (!res.ok) throw new Error("Failed");
             const json = await res.json();
             return json.merchants;

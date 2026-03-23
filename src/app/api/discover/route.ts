@@ -66,6 +66,15 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
+    // Deduplicate by product_id (feed can return same product for new_product + new_promo events)
+    const seen = new Set<string>();
+    items = items.filter((row: any) => {
+        const key = row.product_id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+
     // For "nearby", re-sort by distance instead of feed_score
     if (section === "nearby") {
         items = [...items].sort((a: any, b: any) => a.distance_km - b.distance_km);
