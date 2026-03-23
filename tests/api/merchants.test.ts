@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 const mockGetUser = vi.fn();
@@ -24,7 +25,7 @@ describe("Merchants API", () => {
         mockGetUser.mockResolvedValue({ data: { user: null } });
 
         const { POST } = await import("@/app/api/merchants/route");
-        const req = new Request("http://localhost/api/merchants", {
+        const req = new NextRequest("http://localhost/api/merchants", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ address: "1 rue test", city: "Toulouse" }),
@@ -37,7 +38,7 @@ describe("Merchants API", () => {
         mockGetUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
 
         const { POST } = await import("@/app/api/merchants/route");
-        const req = new Request("http://localhost/api/merchants", {
+        const req = new NextRequest("http://localhost/api/merchants", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ address: "1 rue test", city: "Toulouse" }),
