@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Invoice } from "@/lib/types";
+import { DEMO_MODE, demoInvoices } from "@/lib/demo-data";
 
 type InvoiceWithItems = Invoice & { invoice_items: Array<{
     id: string; name: string; quantity: number; unit_price_ht: number | null;
@@ -9,10 +10,11 @@ type InvoiceWithItems = Invoice & { invoice_items: Array<{
 }> };
 
 export function useInvoices(merchantId: string | null) {
-    const [invoices, setInvoices] = useState<InvoiceWithItems[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [invoices, setInvoices] = useState<InvoiceWithItems[]>(DEMO_MODE ? demoInvoices : []);
+    const [loading, setLoading] = useState(!DEMO_MODE);
 
     const fetchInvoices = useCallback(async () => {
+        if (DEMO_MODE) { setInvoices(demoInvoices); setLoading(false); return; }
         setLoading(true);
         try {
             const res = await fetch("/api/invoices");

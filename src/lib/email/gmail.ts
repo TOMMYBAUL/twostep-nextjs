@@ -1,6 +1,20 @@
 import { google } from "googleapis";
 import type { EmailMessage, IEmailProvider } from "./types";
 
+const ACCEPTED_MIME_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+    "application/vnd.ms-excel", // .xls
+    "text/csv",
+];
+
+const ACCEPTED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".csv"];
+
+function hasAcceptedExtension(filename: string): boolean {
+    const ext = filename.slice(filename.lastIndexOf(".")).toLowerCase();
+    return ACCEPTED_EXTENSIONS.includes(ext);
+}
+
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 
 const oauth2Client = new google.auth.OAuth2(
@@ -39,7 +53,7 @@ export const gmailProvider: IEmailProvider = {
         oauth2Client.setCredentials({ access_token: accessToken });
         const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
-        let query = "has:attachment filename:pdf";
+        let query = "has:attachment {filename:pdf filename:xlsx filename:xls filename:csv}";
         if (since) {
             const afterDate = since.toISOString().split("T")[0].replace(/-/g, "/");
             query += ` after:${afterDate}`;
@@ -75,8 +89,8 @@ export const gmailProvider: IEmailProvider = {
             for (const part of parts) {
                 if (
                     part.filename &&
-                    part.mimeType === "application/pdf" &&
-                    part.body?.attachmentId
+                    part.body?.attachmentId &&
+                    (ACCEPTED_MIME_TYPES.includes(part.mimeType ?? "") || hasAcceptedExtension(part.filename))
                 ) {
                     const attachment = await gmail.users.messages.attachments.get({
                         userId: "me",
@@ -86,7 +100,7 @@ export const gmailProvider: IEmailProvider = {
 
                     attachments.push({
                         filename: part.filename,
-                        mimeType: part.mimeType,
+                        mimeType: part.mimeType ?? "application/octet-stream",
                         content: Buffer.from(attachment.data.data!, "base64"),
                     });
                 }

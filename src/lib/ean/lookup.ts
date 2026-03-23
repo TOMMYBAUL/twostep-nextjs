@@ -4,6 +4,7 @@ type EanResult = {
     name: string;
     brand: string | null;
     photo_url: string | null;
+    category: string | null;
     source: string;
 };
 
@@ -12,6 +13,7 @@ export function parseOpenEanResponse(data: Record<string, unknown>): Omit<EanRes
         name: String(data.name ?? "Unknown"),
         brand: data.brand ? String(data.brand) : null,
         photo_url: data.image ? String(data.image) : null,
+        category: data.category_name ? String(data.category_name) : null,
     };
 }
 
@@ -38,6 +40,7 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
             name: item.title ?? "Unknown",
             brand: item.brand ?? null,
             photo_url: item.images?.[0] ?? null,
+            category: item.category ?? null,
             source: "upc_database",
         };
     } catch {
@@ -60,11 +63,16 @@ export async function lookupEan(ean: string, productId: string): Promise<void> {
         .single();
 
     if (cached) {
-        // Update product with cached data
-        await supabase.from("products").update({
+        const updateData: Record<string, unknown> = {
             photo_url: cached.photo_url,
             brand: cached.brand,
-        }).eq("id", productId);
+            category: cached.category,
+        };
+        // Replace product name with canonical name if the cached name is richer
+        if (cached.name && cached.name !== "Unknown") {
+            updateData.canonical_name = cached.name;
+        }
+        await supabase.from("products").update(updateData).eq("id", productId);
         return;
     }
 
@@ -78,14 +86,20 @@ export async function lookupEan(ean: string, productId: string): Promise<void> {
             name: result.name,
             brand: result.brand,
             photo_url: result.photo_url,
+            category: result.category,
             source: result.source,
             fetched_at: new Date().toISOString(),
         });
 
-        // Update product
-        await supabase.from("products").update({
+        // Update product — canonical_name is the authoritative EAN-sourced name
+        const updateData: Record<string, unknown> = {
             photo_url: result.photo_url,
             brand: result.brand,
-        }).eq("id", productId);
+            category: result.category,
+        };
+        if (result.name && result.name !== "Unknown") {
+            updateData.canonical_name = result.name;
+        }
+        await supabase.from("products").update(updateData).eq("id", productId);
     }
 }

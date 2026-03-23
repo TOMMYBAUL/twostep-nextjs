@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { gmailProvider } from "@/lib/email/gmail";
 import { outlookProvider } from "@/lib/email/outlook";
 import { encrypt } from "@/lib/email/encryption";
+import { signState } from "@/lib/auth/state-token";
 
 export async function POST(request: NextRequest) {
     const supabase = await createClient();
@@ -80,12 +81,12 @@ export async function GET(request: NextRequest) {
     const provider = request.nextUrl.searchParams.get("provider") ?? "gmail";
 
     if (provider === "gmail") {
-        const url = gmailProvider.getAuthUrl(merchant.id);
+        const url = gmailProvider.getAuthUrl(signState(merchant.id));
         return NextResponse.json({ auth_url: url });
     }
 
     if (provider === "outlook") {
-        const url = outlookProvider.getAuthUrl(merchant.id);
+        const url = outlookProvider.getAuthUrl(signState(`outlook:${merchant.id}`));
         return NextResponse.json({ auth_url: url });
     }
 

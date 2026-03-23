@@ -131,8 +131,23 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null {
-        const event = body as { topic?: string };
+        const event = body as {
+            topic?: string;
+            Sale?: {
+                SaleLines?: {
+                    SaleLine?: Array<{ itemID: string; qty: string; timeStamp: string }>;
+                };
+            };
+        };
         if (event.topic !== "sale.completed") return null;
-        return null; // Triggers full sync instead
+
+        const lines = event.Sale?.SaleLines?.SaleLine;
+        if (!lines || lines.length === 0) return null;
+
+        return lines.map((line) => ({
+            pos_item_id: line.itemID,
+            quantity: -Math.abs(parseInt(line.qty, 10)), // Negative = stock decrease
+            updated_at: line.timeStamp || new Date().toISOString(),
+        }));
     },
 };

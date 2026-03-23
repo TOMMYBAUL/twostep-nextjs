@@ -4,6 +4,7 @@ import { squareAdapter } from "@/lib/pos/square";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST() {
+    try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -21,7 +22,7 @@ export async function POST() {
         return NextResponse.json({ error: "No merchant profile" }, { status: 403 });
     }
 
-    if (merchant.pos_type !== "square") {
+    if (!merchant.pos_type) {
         return NextResponse.json({ error: "No POS connected" }, { status: 400 });
     }
 
@@ -121,10 +122,13 @@ export async function POST() {
                 stock_updated: stockUpdated,
             },
         });
-    } catch (err) {
+    } catch {
         return NextResponse.json(
-            { error: err instanceof Error ? err.message : "Sync failed" },
+            { error: "Sync failed" },
             { status: 500 },
         );
+    }
+    } catch {
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

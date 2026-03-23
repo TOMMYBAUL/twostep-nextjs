@@ -1,6 +1,20 @@
 import { ImapFlow } from "imapflow";
 import type { EmailMessage, IEmailProvider } from "./types";
 
+const ACCEPTED_MIME_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-excel",
+    "text/csv",
+];
+
+const ACCEPTED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".csv"];
+
+function hasAcceptedExtension(filename: string): boolean {
+    const ext = filename.slice(filename.lastIndexOf(".")).toLowerCase();
+    return ACCEPTED_EXTENSIONS.includes(ext);
+}
+
 export const imapProvider: IEmailProvider = {
     name: "imap",
 
@@ -49,22 +63,26 @@ export const imapProvider: IEmailProvider = {
             for await (const msg of messages) {
                 if (!msg.bodyStructure?.childNodes) continue;
 
-                const pdfParts = msg.bodyStructure.childNodes.filter(
-                    (part) => part.type === "application/pdf"
+                const invoiceParts = msg.bodyStructure.childNodes.filter(
+                    (part) => {
+                        const filename = part.dispositionParameters?.filename ?? "";
+                        return ACCEPTED_MIME_TYPES.includes(part.type ?? "") || hasAcceptedExtension(filename);
+                    }
                 );
 
-                if (pdfParts.length === 0) continue;
+                if (invoiceParts.length === 0) continue;
 
                 const attachments: { filename: string; mimeType: string; content: Buffer }[] = [];
-                for (const part of pdfParts) {
+                for (const part of invoiceParts) {
                     const { content } = await client.download(msg.seq.toString(), part.part);
                     const chunks: Buffer[] = [];
                     for await (const chunk of content) {
                         chunks.push(Buffer.from(chunk));
                     }
+                    const partFilename = part.dispositionParameters?.filename ?? "invoice";
                     attachments.push({
-                        filename: part.dispositionParameters?.filename ?? "invoice.pdf",
-                        mimeType: "application/pdf",
+                        filename: partFilename,
+                        mimeType: part.type ?? "application/octet-stream",
                         content: Buffer.concat(chunks),
                     });
                 }

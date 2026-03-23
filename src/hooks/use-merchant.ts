@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Merchant } from "@/lib/types";
+import { DEMO_MODE, demoMerchant } from "@/lib/demo-data";
 
 export function useMerchant() {
-    const [merchant, setMerchant] = useState<Merchant | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [merchant, setMerchant] = useState<Merchant | null>(DEMO_MODE ? demoMerchant : null);
+    const [loading, setLoading] = useState(!DEMO_MODE);
     const [error, setError] = useState<string | null>(null);
 
     const fetchMerchant = useCallback(async () => {
+        if (DEMO_MODE) { setMerchant(demoMerchant); setLoading(false); return; }
         setLoading(true);
         setError(null);
         try {

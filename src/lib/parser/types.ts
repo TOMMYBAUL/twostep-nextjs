@@ -1,6 +1,7 @@
 export type ParsedInvoiceItem = {
     name: string;
     ean: string | null;
+    sku: string | null;
     quantity: number;
     unit_price: number | null;
 };

@@ -6,7 +6,7 @@ export const claudeFallbackParser: IInvoiceParser = {
 
     async parse(pdfBuffer: Buffer): Promise<ParsedInvoice> {
         const apiKey = process.env.ANTHROPIC_API_KEY;
-        if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+        if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not set. Claude vision is required for scanned/image-based PDFs.");
 
         const response = await fetch("https://api.anthropic.com/v1/messages", {
             method: "POST",

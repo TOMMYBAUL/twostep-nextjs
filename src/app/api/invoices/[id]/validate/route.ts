@@ -3,11 +3,62 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { lookupEan } from "@/lib/ean/lookup";
 
+// ── Fuzzy matching utilities ──────────────────────────────────────────
+
+/** Remove special chars, collapse whitespace, lowercase */
+function normalize(s: string): string {
+    return s
+        .toLowerCase()
+        .replace(/[''`\-/().,"]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+/** Levenshtein distance between two strings */
+function levenshtein(a: string, b: string): number {
+    const m = a.length, n = b.length;
+    const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+        let prev = dp[0];
+        dp[0] = i;
+        for (let j = 1; j <= n; j++) {
+            const tmp = dp[j];
+            dp[j] = a[i - 1] === b[j - 1]
+                ? prev
+                : 1 + Math.min(prev, dp[j], dp[j - 1]);
+            prev = tmp;
+        }
+    }
+    return dp[n];
+}
+
+/** Similarity ratio 0..1 based on Levenshtein distance */
+function similarity(a: string, b: string): number {
+    const maxLen = Math.max(a.length, b.length);
+    if (maxLen === 0) return 1;
+    return 1 - levenshtein(a, b) / maxLen;
+}
+
+const FUZZY_THRESHOLD = 0.7; // Raised — precision matters more than recall
+
+type MatchResult = {
+    productId: string;
+    matchType: "exact_ean" | "exact_sku" | "exact_name" | "fuzzy";
+};
+
+// ── Route handler ────────────────────────────────────────────────────
+
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    try {
     const { id } = await params;
+
+    if (!id || typeof id !== "string") {
+        return NextResponse.json({ error: "Invalid invoice ID" }, { status: 400 });
+    }
+
     const supabase = await createClient();
     const adminSupabase = createAdminClient();
 
@@ -34,20 +85,32 @@ export async function POST(
         return NextResponse.json({ error: "Already imported" }, { status: 400 });
     }
 
-    const body = await request.json();
-    const sellingPrices: Record<string, number> = body.selling_prices ?? {};
+    let body: Record<string, unknown>;
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    if (body.selling_prices !== undefined && (typeof body.selling_prices !== "object" || Array.isArray(body.selling_prices))) {
+        return NextResponse.json({ error: "selling_prices must be an object" }, { status: 400 });
+    }
+
+    const sellingPrices: Record<string, number> = (body.selling_prices as Record<string, number>) ?? {};
 
     let productsCreated = 0;
     let productsUpdated = 0;
     let stockUpdated = 0;
+    let fuzzyMatched = 0;
 
     const validItems = invoice.invoice_items.filter(
         (item: { status: string }) => item.status !== "rejected"
     );
 
     for (const item of validItems) {
-        let productId: string | null = null;
+        let match: MatchResult | null = null;
 
+        // 1) Exact EAN match — BEST: guaranteed same physical product
         if (item.ean) {
             const { data: existing } = await supabase
                 .from("products")
@@ -56,10 +119,23 @@ export async function POST(
                 .eq("ean", item.ean)
                 .single();
 
-            if (existing) productId = existing.id;
+            if (existing) match = { productId: existing.id, matchType: "exact_ean" };
         }
 
-        if (!productId) {
+        // 2) Exact SKU match — supplier reference
+        if (!match && item.sku) {
+            const { data: existing } = await supabase
+                .from("products")
+                .select("id")
+                .eq("merchant_id", merchant.id)
+                .eq("sku", item.sku)
+                .single();
+
+            if (existing) match = { productId: existing.id, matchType: "exact_sku" };
+        }
+
+        // 3) Exact name match (case-insensitive)
+        if (!match) {
             const { data: existing } = await supabase
                 .from("products")
                 .select("id")
@@ -67,36 +143,102 @@ export async function POST(
                 .ilike("name", item.name)
                 .single();
 
-            if (existing) productId = existing.id;
+            if (existing) match = { productId: existing.id, matchType: "exact_name" };
+        }
+
+        // 4) Fuzzy name match — NEVER auto-validates, always requires human review
+        if (!match) {
+            const normalizedItem = normalize(item.name);
+
+            const { data: allProducts } = await supabase
+                .from("products")
+                .select("id, name")
+                .eq("merchant_id", merchant.id);
+
+            if (allProducts && allProducts.length > 0) {
+                let bestId: string | null = null;
+                let bestScore = 0;
+                let bestName = "";
+
+                for (const product of allProducts) {
+                    const normalizedProduct = normalize(product.name);
+
+                    // Check containment (one name contains the other)
+                    if (
+                        normalizedItem.includes(normalizedProduct) ||
+                        normalizedProduct.includes(normalizedItem)
+                    ) {
+                        const score = Math.min(normalizedItem.length, normalizedProduct.length) /
+                            Math.max(normalizedItem.length, normalizedProduct.length);
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestId = product.id;
+                            bestName = product.name;
+                        }
+                        continue;
+                    }
+
+                    // Levenshtein similarity
+                    const score = similarity(normalizedItem, normalizedProduct);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestId = product.id;
+                        bestName = product.name;
+                    }
+                }
+
+                if (bestId && bestScore >= FUZZY_THRESHOLD) {
+                    match = { productId: bestId, matchType: "fuzzy" };
+                    fuzzyMatched++;
+                }
+            }
         }
 
         const sellingPrice = sellingPrices[item.id] ?? null;
 
-        if (productId) {
+        if (match) {
+            // Fuzzy matches require human review — don't auto-update stock
+            if (match.matchType === "fuzzy") {
+                await supabase
+                    .from("invoice_items")
+                    .update({
+                        product_id: match.productId,
+                        status: "pending_review",
+                        match_type: "fuzzy",
+                    })
+                    .eq("id", item.id);
+                // Don't update stock or product — wait for human confirmation
+                continue;
+            }
+
+            // Exact matches (EAN, SKU, name) — safe to auto-validate
             await supabase.from("products").update({
                 purchase_price: item.unit_price_ht,
                 ...(sellingPrice && { price: sellingPrice }),
                 ...(item.ean && { ean: item.ean }),
-            }).eq("id", productId);
+                ...(item.sku && { sku: item.sku }),
+            }).eq("id", match.productId);
 
-            await supabase.rpc("update_stock_delta", {
-                p_product_id: productId,
-                p_delta: item.quantity,
+            // Stock goes to "incoming" — NOT available yet.
+            // The merchant confirms receipt, or POS sale triggers availability.
+            await supabase.from("stock_incoming").insert({
+                product_id: match.productId,
+                quantity: item.quantity,
+                invoice_id: id,
+                status: "incoming",
             });
 
             await supabase
                 .from("invoice_items")
-                .update({ product_id: productId, status: "validated" })
+                .update({
+                    product_id: match.productId,
+                    status: "validated",
+                    match_type: match.matchType,
+                })
                 .eq("id", item.id);
 
             productsUpdated++;
             stockUpdated++;
-
-            await adminSupabase.from("feed_events").insert({
-                merchant_id: merchant.id,
-                product_id: productId,
-                event_type: "restock",
-            });
         } else {
             const { data: newProduct } = await supabase
                 .from("products")
@@ -104,6 +246,7 @@ export async function POST(
                     merchant_id: merchant.id,
                     name: item.name,
                     ean: item.ean,
+                    sku: item.sku,
                     price: sellingPrice,
                     purchase_price: item.unit_price_ht,
                 })
@@ -111,9 +254,18 @@ export async function POST(
                 .single();
 
             if (newProduct) {
+                // Create product with zero stock — not available yet
                 await supabase.from("stock").insert({
                     product_id: newProduct.id,
+                    quantity: 0,
+                });
+
+                // Stock goes to incoming — merchant confirms when received
+                await supabase.from("stock_incoming").insert({
+                    product_id: newProduct.id,
                     quantity: item.quantity,
+                    invoice_id: id,
+                    status: "incoming",
                 });
 
                 await supabase
@@ -123,12 +275,6 @@ export async function POST(
 
                 productsCreated++;
                 stockUpdated++;
-
-                await adminSupabase.from("feed_events").insert({
-                    merchant_id: merchant.id,
-                    product_id: newProduct.id,
-                    event_type: "new_product",
-                });
 
                 // Fire-and-forget: enrich product with EAN data
                 if (item.ean) {
@@ -147,5 +293,9 @@ export async function POST(
         products_created: productsCreated,
         products_updated: productsUpdated,
         stock_updated: stockUpdated,
+        pending_review: fuzzyMatched,
     });
+    } catch {
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
 }

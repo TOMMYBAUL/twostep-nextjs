@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { gmailProvider } from "@/lib/email/gmail";
 import { outlookProvider } from "@/lib/email/outlook";
 import { imapProvider } from "@/lib/email/imap";
-import { decrypt } from "@/lib/email/encryption";
+import { decrypt, encrypt } from "@/lib/email/encryption";
 import { parseInvoice } from "@/lib/parser";
 import type { IEmailProvider } from "@/lib/email/types";
+
+const MIME_BY_EXT: Record<string, string> = {
+    ".pdf": "application/pdf",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xls": "application/vnd.ms-excel",
+    ".csv": "text/csv",
+};
+
+/** Deterministic hash for deduplication: messageId + attachment filename */
+function emailHash(messageId: string, filename: string): string {
+    return crypto
+        .createHash("sha256")
+        .update(`${messageId}::${filename}`)
+        .digest("hex");
+}
 
 const providers: Record<string, IEmailProvider> = {
     gmail: gmailProvider,
@@ -30,7 +46,26 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ scanned: 0 });
     }
 
+    // Keywords that indicate an invoice/order email (with attachment)
+    const INVOICE_KEYWORDS = ["facture", "invoice", "commande", "bon de livraison", "order confirmation"];
+
+    // Keywords that indicate a delivery confirmation email (no attachment needed)
+    const DELIVERY_KEYWORDS = [
+        "livré", "livre", "delivered", "livraison effectuée", "livraison effectuee",
+        "remis au destinataire", "colis distribué", "colis distribue",
+        "has been delivered", "successfully delivered", "package delivered",
+        "shipment delivered", "votre colis a été livré",
+    ];
+
+    // Known carrier email domains
+    const CARRIER_DOMAINS = [
+        "laposte.fr", "chronopost.fr", "colissimo.fr",
+        "ups.com", "dhl.com", "gls-group.com", "dpd.fr",
+        "fedex.com", "tnt.com", "mondialrelay.fr",
+    ];
+
     let totalInvoices = 0;
+    let totalDeliveries = 0;
 
     for (const conn of connections) {
         const provider = providers[conn.provider];
@@ -45,7 +80,7 @@ export async function POST(request: NextRequest) {
                     accessToken = refreshed.access_token;
                     await supabase
                         .from("email_connections")
-                        .update({ access_token: accessToken })
+                        .update({ access_token: encrypt(accessToken) })
                         .eq("merchant_id", conn.merchant_id);
                 } catch {
                     await supabase
@@ -59,19 +94,77 @@ export async function POST(request: NextRequest) {
             const since = conn.last_sync_at ? new Date(conn.last_sync_at) : null;
             const emails = await provider.fetchInvoiceEmails(accessToken, since);
 
+            // ── Phase A: Detect delivery confirmation emails ──
+            for (const email of emails) {
+                const text = `${email.subject} ${email.from}`.toLowerCase();
+                const senderDomain = email.from.split("@").pop()?.toLowerCase() ?? "";
+
+                const isFromCarrier = CARRIER_DOMAINS.some((d) => senderDomain.includes(d));
+                const hasDeliveryKeyword = DELIVERY_KEYWORDS.some((kw) => text.includes(kw));
+
+                if (isFromCarrier && hasDeliveryKeyword) {
+                    // This looks like a delivery confirmation — activate all incoming stock
+                    const { data: incoming } = await supabase
+                        .from("stock_incoming")
+                        .select("id, product_id, quantity")
+                        .eq("status", "incoming")
+                        .in("product_id",
+                            (await supabase
+                                .from("products")
+                                .select("id")
+                                .eq("merchant_id", conn.merchant_id)
+                            ).data?.map((p: { id: string }) => p.id) ?? []
+                        );
+
+                    if (incoming?.length) {
+                        for (const item of incoming) {
+                            await supabase.rpc("update_stock_delta", {
+                                p_product_id: item.product_id,
+                                p_delta: item.quantity,
+                            });
+
+                            await supabase
+                                .from("stock_incoming")
+                                .update({ status: "received", received_at: new Date().toISOString() })
+                                .eq("id", item.id);
+
+                            await supabase.from("feed_events").insert({
+                                merchant_id: conn.merchant_id,
+                                product_id: item.product_id,
+                                event_type: "restock",
+                            });
+                        }
+                        totalDeliveries += incoming.length;
+                    }
+                }
+            }
+
+            // ── Phase B: Detect invoice emails (with attachments) ──
             for (const email of emails) {
                 for (const attachment of email.attachments) {
-                    const keywords = ["facture", "invoice", "commande", "bon de livraison"];
                     const text = `${email.subject} ${email.from}`.toLowerCase();
-                    const isLikelyInvoice = keywords.some((kw) => text.includes(kw));
+                    const isLikelyInvoice = INVOICE_KEYWORDS.some((kw) => text.includes(kw));
 
                     if (!isLikelyInvoice) continue;
 
+                    // Dedup: skip if this exact email+attachment was already processed
+                    const hash = emailHash(email.messageId, attachment.filename);
+                    const { data: existing } = await supabase
+                        .from("invoices")
+                        .select("id")
+                        .eq("merchant_id", conn.merchant_id)
+                        .eq("email_hash", hash)
+                        .maybeSingle();
+
+                    if (existing) continue;
+
                     const filename = `${conn.merchant_id}/${Date.now()}_${attachment.filename}`;
+                    const ext = attachment.filename.slice(attachment.filename.lastIndexOf(".")).toLowerCase();
+                    const contentType = MIME_BY_EXT[ext] ?? "application/octet-stream";
                     await supabase.storage
                         .from("invoices")
                         .upload(filename, attachment.content, {
-                            contentType: "application/pdf",
+                            contentType,
                         });
 
                     const { data: signedUrlData } = await supabase.storage
@@ -88,6 +181,7 @@ export async function POST(request: NextRequest) {
                             file_url: fileUrl,
                             sender_email: email.from,
                             received_at: email.date.toISOString(),
+                            email_hash: hash,
                         })
                         .select()
                         .single();
@@ -95,7 +189,7 @@ export async function POST(request: NextRequest) {
                     if (!invoice) continue;
 
                     try {
-                        const parsed = await parseInvoice(attachment.content);
+                        const parsed = await parseInvoice(attachment.content, attachment.filename);
 
                         await supabase
                             .from("invoices")
@@ -114,6 +208,7 @@ export async function POST(request: NextRequest) {
                                     quantity: item.quantity,
                                     unit_price_ht: item.unit_price,
                                     ean: item.ean,
+                                    sku: item.sku,
                                     status: "detected",
                                 }))
                             );
@@ -138,5 +233,9 @@ export async function POST(request: NextRequest) {
         }
     }
 
-    return NextResponse.json({ scanned: connections.length, invoices_found: totalInvoices });
+    return NextResponse.json({
+        scanned: connections.length,
+        invoices_found: totalInvoices,
+        deliveries_confirmed: totalDeliveries,
+    });
 }

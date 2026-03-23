@@ -98,6 +98,7 @@ export type InvoiceItem = {
     ean: string | null;
     status: "detected" | "enriched" | "validated" | "rejected";
     product_id: string | null;
+    match_type: "exact_ean" | "exact_name" | "fuzzy" | null;
 };
 
 export type EmailConnection = {

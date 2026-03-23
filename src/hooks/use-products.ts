@@ -2,15 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
+import { DEMO_MODE, demoProducts } from "@/lib/demo-data";
 
 type ProductWithStock = Product & { stock: { quantity: number }[] };
 
 export function useProducts(merchantId: string | undefined) {
-    const [products, setProducts] = useState<ProductWithStock[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState<ProductWithStock[]>(DEMO_MODE ? demoProducts : []);
+    const [loading, setLoading] = useState(!DEMO_MODE);
     const [error, setError] = useState<string | null>(null);
 
     const fetchProducts = useCallback(async () => {
+        if (DEMO_MODE) { setProducts(demoProducts); setLoading(false); return; }
         if (!merchantId) return;
         setLoading(true);
         setError(null);

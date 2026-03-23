@@ -25,7 +25,7 @@ export interface IEmailProvider {
         email_address: string;
     }>;
 
-    /** Fetch unread emails with PDF attachments since last sync */
+    /** Fetch unread emails with invoice attachments (PDF, XLSX, XLS, CSV) since last sync */
     fetchInvoiceEmails(
         accessToken: string,
         since: Date | null

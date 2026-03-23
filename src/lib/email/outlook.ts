@@ -2,6 +2,20 @@ import type { EmailMessage, IEmailProvider } from "./types";
 
 const GRAPH_API = "https://graph.microsoft.com/v1.0";
 
+const ACCEPTED_CONTENT_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-excel",
+    "text/csv",
+];
+
+const ACCEPTED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".csv"];
+
+function hasAcceptedExtension(filename: string): boolean {
+    const ext = filename.slice(filename.lastIndexOf(".")).toLowerCase();
+    return ACCEPTED_EXTENSIONS.includes(ext);
+}
+
 export const outlookProvider: IEmailProvider = {
     name: "outlook",
 
@@ -58,25 +72,26 @@ export const outlookProvider: IEmailProvider = {
         const emails: EmailMessage[] = [];
 
         for (const msg of messages) {
-            // Get attachments
+            // Get attachments (no server-side filter — we filter client-side for multiple types)
             const attRes = await fetch(
-                `${GRAPH_API}/me/messages/${msg.id}/attachments?$filter=contentType eq 'application/pdf'`,
+                `${GRAPH_API}/me/messages/${msg.id}/attachments`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
             const attData = await attRes.json();
-            const pdfAttachments = (attData.value ?? []).filter(
-                (a: { contentType: string }) => a.contentType === "application/pdf"
+            const invoiceAttachments = (attData.value ?? []).filter(
+                (a: { contentType: string; name: string }) =>
+                    ACCEPTED_CONTENT_TYPES.includes(a.contentType) || hasAcceptedExtension(a.name ?? "")
             );
 
-            if (pdfAttachments.length > 0) {
+            if (invoiceAttachments.length > 0) {
                 emails.push({
                     messageId: msg.id,
                     from: msg.from?.emailAddress?.address ?? "",
                     subject: msg.subject ?? "",
                     date: new Date(msg.receivedDateTime),
-                    attachments: pdfAttachments.map((a: { name: string; contentBytes: string }) => ({
+                    attachments: invoiceAttachments.map((a: { name: string; contentType: string; contentBytes: string }) => ({
                         filename: a.name,
-                        mimeType: "application/pdf",
+                        mimeType: a.contentType,
                         content: Buffer.from(a.contentBytes, "base64"),
                     })),
                 });
