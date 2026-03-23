@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { updateSession } from "@/lib/supabase/middleware";
-
 export async function middleware(request: NextRequest) {
     // Demo mode: skip auth ONLY in development — never in production
     if (
@@ -10,6 +8,8 @@ export async function middleware(request: NextRequest) {
     ) {
         return NextResponse.next();
     }
+    // Dynamic import to avoid Turbopack compilation issues with @supabase/ssr
+    const { updateSession } = await import("@/lib/supabase/middleware");
     return await updateSession(request);
 }
 

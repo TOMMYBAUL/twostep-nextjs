@@ -179,26 +179,27 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
             const isSelected = selectedMerchantId === merchant.merchant_id;
             const logo = merchant.merchant_logo || merchant.merchant_photo;
 
-            // Pin container
+            // Pin container — no position/transform/transition here, Mapbox controls these
             const wrapper = document.createElement("div");
-            wrapper.style.cssText = `position:relative;cursor:pointer;transition:transform 0.15s;${isSelected ? "transform:scale(1.25);z-index:10;" : ""}`;
+            wrapper.style.cssText = `cursor:pointer;${isSelected ? "z-index:10;" : ""}`;
 
-            // Pin body
+            // Pin body — scale applied here so it doesn't conflict with Mapbox's transform
             const el = document.createElement("div");
+            const selectedScale = isSelected ? "transform:scale(1.25);" : "";
             if (logo) {
-                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});overflow:hidden;background:white;`;
+                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});overflow:hidden;background:white;${selectedScale}`;
                 const img = document.createElement("img");
                 img.src = logo;
                 img.alt = merchant.merchant_name;
                 img.style.cssText = "width:100%;height:100%;object-fit:cover;";
                 img.onerror = () => {
                     el.innerHTML = "";
-                    el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;`;
+                    el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;${selectedScale}`;
                     el.textContent = getInitials(merchant.merchant_name);
                 };
                 el.appendChild(img);
             } else {
-                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;`;
+                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;${selectedScale}`;
                 el.textContent = getInitials(merchant.merchant_name);
             }
             wrapper.appendChild(el);

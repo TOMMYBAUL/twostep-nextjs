@@ -39,17 +39,17 @@ function SearchPageInner() {
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
 
     return (
-        <div className="min-h-dvh bg-[var(--ts-cream)]">
+        <div className="min-h-dvh bg-[#2C1A0E]">
             {/* Search header */}
-            <div className="bg-white px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+            <div className="bg-[#2C1A0E] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="relative">
                     <div
                         className={cx(
                             "flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 transition duration-150",
-                            isFocused ? "border-[var(--ts-ochre)] shadow-[0_0_0_4px_rgba(200,129,58,0.1)]" : "border-[var(--ts-cream-dark)]",
+                            isFocused ? "border-[#C17B2F] shadow-[0_0_0_4px_rgba(193,123,47,0.15)]" : "border-[#3D2A1A]",
                         )}
                     >
-                        <SearchMd className="size-5 text-[var(--ts-brown-mid)]/40" aria-hidden="true" />
+                        <SearchMd className="size-5 text-[#F5EDD8]/40" aria-hidden="true" />
                         <input
                             type="text"
                             value={query}
@@ -57,7 +57,7 @@ function SearchPageInner() {
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                             placeholder="Nike Air Max, iPhone 15, Levi's 501..."
-                            className="flex-1 bg-transparent text-sm text-[var(--ts-brown)] outline-none placeholder:text-[var(--ts-brown-mid)]/30"
+                            className="flex-1 bg-transparent text-sm text-[#F5EDD8] outline-none placeholder:text-[#F5EDD8]/30"
                             aria-label="Rechercher un produit"
                             autoFocus
                         />
@@ -65,7 +65,7 @@ function SearchPageInner() {
                             <button
                                 type="button"
                                 onClick={() => setQuery("")}
-                                className="rounded-full bg-[var(--ts-cream)] p-1 text-[var(--ts-brown-mid)]/40"
+                                className="rounded-full bg-[#3D2A1A] p-1 text-[#F5EDD8]/40"
                                 aria-label="Effacer"
                             >
                                 <XClose className="size-3.5" />
@@ -78,19 +78,19 @@ function SearchPageInner() {
                                 initial={{ opacity: 0, y: -4 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -4 }}
-                                className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-white shadow-xl"
+                                className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-[#3D2A1A] shadow-xl ring-1 ring-[#F5EDD8]/5"
                             >
                                 {suggestions.map((s, i) => (
                                     <button
                                         key={`${s.suggestion_type}-${s.suggestion}-${i}`}
                                         type="button"
-                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[var(--ts-brown)] hover:bg-[var(--ts-cream)]/50"
+                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#F5EDD8] hover:bg-[#2C1A0E]/50"
                                         onMouseDown={(e) => {
                                             e.preventDefault();
                                             setQuery(s.suggestion);
                                         }}
                                     >
-                                        <span className="rounded-lg bg-[var(--ts-cream)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ts-brown-mid)]">
+                                        <span className="rounded-lg bg-[#2C1A0E] px-2 py-0.5 text-[10px] font-semibold text-[#F5EDD8]/50">
                                             {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
                                         </span>
                                         <span>{s.suggestion}</span>
@@ -114,8 +114,8 @@ function SearchPageInner() {
                             className={cx(
                                 "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
                                 activeCategory === cat
-                                    ? "bg-[var(--ts-ochre)] text-white"
-                                    : "bg-[var(--ts-cream)] text-[var(--ts-brown-mid)]",
+                                    ? "bg-[#C17B2F] text-white shadow-sm"
+                                    : "bg-[#3D2A1A] text-[#F5EDD8]/60",
                             )}
                         >
                             {cat}
@@ -128,8 +128,8 @@ function SearchPageInner() {
             <div className="p-4">
                 {!query && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <SearchMd className="size-10 text-[var(--ts-brown-mid)]/15" />
-                        <p className="text-sm font-medium text-[var(--ts-brown-mid)]/40">
+                        <SearchMd className="size-10 text-[#F5EDD8]/15" />
+                        <p className="text-sm font-medium text-[#F5EDD8]/40">
                             Tape un nom, une marque ou un code-barres
                         </p>
                     </div>
@@ -138,14 +138,14 @@ function SearchPageInner() {
                 {isLoading && query.length >= 2 && (
                     <div className="grid grid-cols-2 gap-3">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-white" />
+                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-[#3D2A1A]" />
                         ))}
                     </div>
                 )}
 
                 {results && results.length > 0 && (
                     <>
-                        <p className="mb-3 text-xs font-medium text-[var(--ts-brown-mid)]/50">
+                        <p className="mb-3 text-xs font-medium text-[#F5EDD8]/50">
                             {results.length} résultat{results.length > 1 ? "s" : ""}
                         </p>
                         <div className="grid grid-cols-2 gap-3">
@@ -173,10 +173,10 @@ function SearchPageInner() {
 
                 {results && results.length === 0 && query.length >= 2 && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <p className="text-sm font-medium text-[var(--ts-brown-mid)]/40">
-                            Aucun résultat pour "{query}"
+                        <p className="text-sm font-medium text-[#F5EDD8]/40">
+                            Aucun résultat pour &ldquo;{query}&rdquo;
                         </p>
-                        <p className="text-xs text-[var(--ts-brown-mid)]/30">
+                        <p className="text-xs text-[#F5EDD8]/30">
                             Essaie avec un autre terme
                         </p>
                     </div>

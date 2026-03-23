@@ -1,12 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, useEffect } from "react";
-import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock } from "@untitledui/icons";
+import { useState, useEffect } from "react";
+import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock, FilterLines, SearchLg, NavigationPointer01 } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MapView } from "../components/map-view";
-import { BottomSheet } from "../components/bottom-sheet";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
@@ -38,7 +37,7 @@ interface NearbyMerchant {
 }
 
 function walkingMinutes(km: number): number {
-    return Math.max(1, Math.round(km / 0.08)); // ~5km/h = 83m/min
+    return Math.max(1, Math.round((km * 1.6) / 0.08));
 }
 
 export default function ExplorePage() {
@@ -50,6 +49,10 @@ export default function ExplorePage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchFocused, setSearchFocused] = useState(false);
     const [selectedMerchant, setSelectedMerchant] = useState<NearbyMerchant | null>(null);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<"carte" | "liste">("carte");
+    const [radius, setRadius] = useState(5);
+    const [radiusOpen, setRadiusOpen] = useState(false);
 
     const { data: suggestions } = useAutocomplete(searchFocused ? searchQuery : "");
 
@@ -58,12 +61,12 @@ export default function ExplorePage() {
     };
 
     const { data, isLoading } = useQuery<NearbyMerchant[]>({
-        queryKey: ["merchants-nearby", position?.lat, position?.lng, category],
+        queryKey: ["merchants-nearby", position?.lat, position?.lng, category, radius],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: position!.lat.toString(),
                 lng: position!.lng.toString(),
-                radius: "10",
+                radius: radius.toString(),
             });
             if (category) params.set("category", category);
             const res = await fetch(`/api/nearby?${params}`);
@@ -76,21 +79,17 @@ export default function ExplorePage() {
 
     const merchants = data ?? [];
 
-    // Max distance for contextual text
-    const maxDist = merchants.length > 0 ? Math.max(...merchants.map(m => m.distance_km)) : 0;
-    const distLabel = maxDist < 1 ? `${Math.round(maxDist * 1000)}m` : `${Math.ceil(maxDist)}km`;
-
-    // Dismiss mini-fiche when clicking elsewhere on map
     useEffect(() => {
-        const handler = () => setSelectedMerchant(null);
+        const handler = () => { setSelectedMerchant(null); setFilterOpen(false); setRadiusOpen(false); };
         const map = document.querySelector("[class*='mapboxgl-canvas']");
         map?.addEventListener("click", handler);
         return () => map?.removeEventListener("click", handler);
     }, []);
 
     return (
-        <div className="relative h-[calc(100dvh-4rem)]">
-            <div className="absolute inset-0">
+        <div className="relative h-dvh">
+            {/* Map — always mounted, hidden in liste mode */}
+            <div className={cx("absolute inset-0", viewMode === "liste" && "invisible")}>
                 <MapView
                     merchants={merchants}
                     userPosition={position}
@@ -100,130 +99,246 @@ export default function ExplorePage() {
                     selectedMerchantId={selectedMerchant?.merchant_id ?? null}
                     onMerchantSelect={(m) => setSelectedMerchant(m as NearbyMerchant)}
                 />
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-[var(--ts-cream)] to-transparent" />
             </div>
 
-            {/* Search bar — top */}
-            <div className="absolute left-0 right-0 top-3 z-10 px-4">
-                <div className="mx-auto max-w-md">
-                    <div className="relative">
-                        <div className={cx(
-                            "flex items-center gap-2.5 rounded-2xl px-4 py-3 shadow-lg backdrop-blur-md transition-all duration-200",
-                            searchFocused ? "bg-white shadow-xl ring-2 ring-[var(--ts-ochre)]/20" : "bg-white/95",
-                        )}>
-                            <SearchMd className="size-[18px] shrink-0 text-[var(--ts-brown-mid)]/40" aria-hidden="true" />
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onFocus={() => setSearchFocused(true)}
-                                onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-                                onKeyDown={(e) => { if (e.key === "Enter") handleSearch(searchQuery); }}
-                                placeholder="Trouver un produit, une marque..."
-                                className="min-w-0 flex-1 bg-transparent text-sm text-[var(--ts-brown)] outline-none placeholder:text-[var(--ts-brown-mid)]/30"
-                            />
-                            {searchQuery && (
-                                <button type="button" onClick={() => setSearchQuery("")} className="text-[var(--ts-brown-mid)]/30 hover:text-[var(--ts-brown-mid)]">
-                                    <XClose className="size-4" />
-                                </button>
-                            )}
-                        </div>
-                        {searchFocused && suggestions && suggestions.length > 0 && (
-                            <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-white shadow-xl">
-                                {suggestions.map((s, i) => (
-                                    <button
-                                        key={`${s.suggestion_type}-${s.suggestion}-${i}`}
-                                        type="button"
-                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[var(--ts-brown)] transition duration-100 hover:bg-[var(--ts-cream)]/50"
-                                        onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
-                                    >
-                                        <span className="rounded-lg bg-[var(--ts-cream)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ts-brown-mid)]">
-                                            {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
-                                        </span>
-                                        {s.suggestion}
-                                    </button>
+            {/* Liste view — dark fullscreen */}
+            {viewMode === "liste" && (
+                <div
+                    className="absolute inset-0 z-20 overflow-y-auto bg-[#2C1A0E]"
+                    style={{ paddingTop: "calc(env(safe-area-inset-top) + 140px)" }}
+                >
+                    <div className="px-4 pb-24">
+                        <p className="mb-3 text-sm font-bold text-[#F5EDD8]">
+                            {isLoading
+                                ? "Recherche..."
+                                : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""} à proximité`}
+                        </p>
+
+                        {isLoading ? (
+                            <div className="flex flex-col gap-2">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-[#3D2A1A]" />
+                                ))}
+                            </div>
+                        ) : merchants.length === 0 ? (
+                            <div className="flex flex-col items-center gap-2 py-20 text-center">
+                                <SearchLg className="size-7 text-[#F5EDD8]/15" />
+                                <p className="text-sm font-medium text-[#F5EDD8]/40">Aucune boutique trouvée</p>
+                                <p className="text-[11px] text-[#F5EDD8]/30">Essaie d'élargir ta zone ou de changer de catégorie</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                {merchants.map((m) => (
+                                    <MerchantListCard key={m.merchant_id} merchant={m} />
                                 ))}
                             </div>
                         )}
                     </div>
+                </div>
+            )}
 
-                    {/* Category filter chips — always visible */}
-                    <div className="mt-2 flex gap-1.5 overflow-x-auto scrollbar-hide">
+            {/* ── Floating top bar (TGTG layout) ── */}
+            <div
+                className="absolute left-0 right-0 top-0 z-30 px-4"
+                style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}
+            >
+                {/* Search row: input + location + filter */}
+                <div className="flex gap-2">
+                    <div className={cx(
+                        "flex min-w-0 flex-1 items-center gap-2.5 rounded-xl bg-white px-4 py-3 shadow-md transition-all duration-200",
+                        searchFocused && "shadow-lg ring-2 ring-[#C17B2F]/20",
+                    )}>
+                        <SearchMd className="size-[18px] shrink-0 text-gray-400" aria-hidden="true" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => setSearchFocused(true)}
+                            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(searchQuery); }}
+                            placeholder="Rechercher"
+                            className="min-w-0 flex-1 bg-transparent text-sm text-[#2C1A0E] outline-none placeholder:text-gray-400"
+                        />
+                        {searchQuery && (
+                            <button type="button" onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-600">
+                                <XClose className="size-4" />
+                            </button>
+                        )}
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => { setRadiusOpen((v) => !v); setFilterOpen(false); }}
+                        className={cx(
+                            "flex shrink-0 items-center gap-1 rounded-xl px-3 shadow-md transition duration-150 active:scale-95",
+                            radiusOpen ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                        )}
+                        aria-label="Rayon de recherche"
+                    >
+                        <MarkerPin01 className="size-4" aria-hidden="true" />
+                        <span className="text-xs font-semibold">{radius} km</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => { setFilterOpen((v) => !v); setRadiusOpen(false); }}
+                        className={cx(
+                            "flex size-12 shrink-0 items-center justify-center rounded-xl shadow-md transition duration-150 active:scale-95",
+                            category ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                        )}
+                        aria-label="Filtres"
+                    >
+                        <FilterLines className="size-5" aria-hidden="true" />
+                    </button>
+                </div>
+
+                {/* Liste / Carte toggle */}
+                <div className="mt-3 flex justify-center">
+                    <div className="flex rounded-full bg-white p-1 shadow-md">
+                        <button
+                            type="button"
+                            onClick={() => { setViewMode("liste"); setSelectedMerchant(null); }}
+                            className={cx(
+                                "rounded-full px-6 py-2 text-sm font-semibold transition duration-150",
+                                viewMode === "liste" ? "bg-[#C17B2F] text-white" : "text-[#2C1A0E]",
+                            )}
+                        >
+                            Liste
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setViewMode("carte")}
+                            className={cx(
+                                "rounded-full px-6 py-2 text-sm font-semibold transition duration-150",
+                                viewMode === "carte" ? "bg-[#C17B2F] text-white" : "text-[#2C1A0E]",
+                            )}
+                        >
+                            Carte
+                        </button>
+                    </div>
+                </div>
+
+                {/* Search suggestions */}
+                {searchFocused && suggestions && suggestions.length > 0 && (
+                    <div className="mt-2 overflow-hidden rounded-2xl bg-white shadow-xl">
+                        {suggestions.map((s, i) => (
+                            <button
+                                key={`${s.suggestion_type}-${s.suggestion}-${i}`}
+                                type="button"
+                                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#2C1A0E] transition duration-100 hover:bg-gray-50"
+                                onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
+                            >
+                                <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                                    {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
+                                </span>
+                                {s.suggestion}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Radius selector dropdown */}
+                {radiusOpen && (
+                    <div className="mt-2 overflow-hidden rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5">
+                        <p className="text-xs font-semibold text-[#2C1A0E]">Rayon de recherche</p>
+                        <div className="mt-3 flex items-center gap-3">
+                            <input
+                                type="range"
+                                min={1}
+                                max={10}
+                                step={1}
+                                value={radius}
+                                onChange={(e) => setRadius(Number(e.target.value))}
+                                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-[#C17B2F] [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C17B2F] [&::-webkit-slider-thumb]:shadow-md"
+                            />
+                            <span className="w-12 shrink-0 text-right text-sm font-bold text-[#C17B2F]">{radius} km</span>
+                        </div>
+                        <div className="mt-1.5 flex justify-between text-[10px] text-gray-400">
+                            <span>1 km</span>
+                            <span>5 km</span>
+                            <span>10 km</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Category filter dropdown */}
+                {filterOpen && (
+                    <div className="ml-auto mt-2 w-52 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
                         {CATEGORIES.map((cat) => (
                             <button
                                 key={cat.label}
                                 type="button"
-                                onClick={() => { setCategory(cat.value); setSelectedMerchant(null); }}
+                                onClick={() => { setCategory(cat.value); setSelectedMerchant(null); setFilterOpen(false); }}
                                 className={cx(
-                                    "flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm backdrop-blur-sm transition duration-150",
+                                    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition duration-100",
                                     category === cat.value
-                                        ? "bg-[var(--ts-ochre)] text-white shadow-md"
-                                        : "bg-white/90 text-[var(--ts-brown)] active:bg-white",
+                                        ? "bg-[#C17B2F]/10 font-semibold text-[#C17B2F]"
+                                        : "text-[#2C1A0E] hover:bg-gray-50",
                                 )}
                             >
                                 {cat.emoji && <span>{cat.emoji}</span>}
-                                {cat.label}
+                                <span className="font-medium">{cat.label}</span>
                             </button>
                         ))}
                     </div>
+                )}
+            </div>
+
+            {/* Map controls — carte mode only */}
+            {viewMode === "carte" && (
+                <div className="absolute right-3 z-10 flex flex-col gap-2" style={{ bottom: "calc(env(safe-area-inset-bottom) + 62px)" }}>
+                    <button
+                        type="button"
+                        onClick={() => setIs3D((v) => !v)}
+                        className={cx(
+                            "flex size-11 items-center justify-center rounded-xl shadow-md transition duration-150 active:scale-95",
+                            is3D ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                        )}
+                        aria-label={is3D ? "Vue 2D" : "Vue 3D"}
+                    >
+                        <span className="text-xs font-bold">3D</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setRecenterTrigger((n) => n + 1)}
+                        className="flex size-11 items-center justify-center rounded-xl bg-white shadow-md transition duration-150 active:scale-95"
+                        aria-label="Recentrer"
+                    >
+                        <NavigationPointer01 className="size-5 text-[#C17B2F]" aria-hidden="true" />
+                    </button>
                 </div>
-            </div>
+            )}
 
-            {/* Map controls — right side */}
-            <div className="absolute bottom-44 right-3 z-10 flex flex-col gap-2">
-                <button
-                    type="button"
-                    onClick={() => setIs3D((v) => !v)}
-                    className={cx(
-                        "flex size-11 items-center justify-center rounded-xl shadow-lg backdrop-blur-sm transition duration-150 active:scale-95",
-                        is3D ? "bg-[var(--ts-ochre)] text-white" : "bg-white/95 text-[var(--ts-brown)]",
-                    )}
-                    aria-label={is3D ? "Vue 2D" : "Vue 3D"}
-                >
-                    <span className="text-xs font-bold">3D</span>
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setRecenterTrigger((n) => n + 1)}
-                    className="flex size-11 items-center justify-center rounded-xl bg-white/95 shadow-lg backdrop-blur-sm transition duration-150 active:scale-95"
-                    aria-label="Recentrer"
-                >
-                    <MarkerPin01 className="size-5 text-[var(--ts-ochre)]" aria-hidden="true" />
-                </button>
-            </div>
-
-            {/* Mini-fiche — appears when a pin is tapped */}
-            {selectedMerchant && (
-                <div className="absolute bottom-40 left-4 right-4 z-30 mx-auto max-w-md animate-in slide-in-from-bottom-4 fade-in duration-200">
-                    <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+            {/* Mini-fiche — carte mode, when a pin is tapped */}
+            {viewMode === "carte" && selectedMerchant && (
+                <div className="absolute left-4 right-4 z-30 mx-auto max-w-md animate-in slide-in-from-bottom-4 fade-in duration-200" style={{ bottom: "calc(env(safe-area-inset-bottom) + 62px)" }}>
+                    <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
                         <div className="flex items-center gap-3 p-4">
-                            {/* Avatar */}
-                            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--ts-cream)] shadow-sm">
+                            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
                                 {selectedMerchant.merchant_photo || selectedMerchant.merchant_logo ? (
                                     <img src={selectedMerchant.merchant_logo || selectedMerchant.merchant_photo || ""} alt="" className="h-full w-full object-cover" />
                                 ) : (
-                                    <span className="text-lg font-bold text-[var(--ts-ochre)]">
+                                    <span className="text-lg font-bold text-[#C17B2F]">
                                         {selectedMerchant.merchant_name.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2)}
                                     </span>
                                 )}
                             </div>
 
-                            {/* Info */}
                             <div className="min-w-0 flex-1">
-                                <h3 className="truncate text-sm font-bold text-[var(--ts-brown)]">{selectedMerchant.merchant_name}</h3>
-                                <p className="mt-0.5 truncate text-xs text-[var(--ts-brown-mid)]/60">{selectedMerchant.merchant_address}</p>
+                                <h3 className="truncate text-sm font-bold text-[#2C1A0E]">{selectedMerchant.merchant_name}</h3>
+                                <p className="mt-0.5 truncate text-xs text-gray-500">{selectedMerchant.merchant_address}</p>
                                 <div className="mt-1.5 flex flex-wrap items-center gap-2">
                                     <span className="flex items-center gap-1 text-[11px] font-medium text-[var(--ts-sage)]">
                                         <Clock className="size-3" aria-hidden="true" />
                                         {walkingMinutes(selectedMerchant.distance_km)} min à pied
                                     </span>
-                                    <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/40">·</span>
-                                    <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/60">
+                                    <span className="text-[11px] text-gray-300">·</span>
+                                    <span className="text-[11px] font-medium text-gray-500">
                                         {selectedMerchant.product_count} produit{selectedMerchant.product_count > 1 ? "s" : ""} en stock
                                     </span>
                                     {selectedMerchant.promo_count > 0 && (
                                         <>
-                                            <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/40">·</span>
+                                            <span className="text-[11px] text-gray-300">·</span>
                                             <span className="flex items-center gap-0.5 text-[11px] font-semibold text-[var(--ts-red)]">
                                                 <Tag01 className="size-2.5" aria-hidden="true" />
                                                 {selectedMerchant.promo_count} promo{selectedMerchant.promo_count > 1 ? "s" : ""}
@@ -233,10 +348,9 @@ export default function ExplorePage() {
                                 </div>
                             </div>
 
-                            {/* CTA */}
                             <Link
                                 href={`/shop/${selectedMerchant.merchant_id}`}
-                                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ts-ochre)] text-white shadow-sm transition duration-150 active:scale-95"
+                                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#C17B2F] text-white shadow-sm transition duration-150 active:scale-95"
                             >
                                 <ChevronRight className="size-5" />
                             </Link>
@@ -244,9 +358,52 @@ export default function ExplorePage() {
                     </div>
                 </div>
             )}
-
-            {/* Bottom sheet — merchant list */}
-            <BottomSheet merchants={merchants} isLoading={isLoading} distLabel={distLabel} />
         </div>
+    );
+}
+
+/* ── Merchant card for Liste view ── */
+function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
+    const minutes = walkingMinutes(merchant.distance_km);
+    const logo = merchant.merchant_logo || merchant.merchant_photo;
+
+    return (
+        <Link
+            href={`/shop/${merchant.merchant_id}`}
+            className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:bg-[#3D2A1A]/80"
+        >
+            <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
+                {logo ? (
+                    <img src={logo} alt="" className="h-full w-full object-cover" />
+                ) : (
+                    <span className="text-lg font-bold text-[#C17B2F]">
+                        {merchant.merchant_name.charAt(0).toUpperCase()}
+                    </span>
+                )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-semibold text-[#F5EDD8]">{merchant.merchant_name}</p>
+                <p className="mt-0.5 truncate text-xs text-[#F5EDD8]/50">{merchant.merchant_address}</p>
+                <div className="mt-1 flex items-center gap-2">
+                    <span className="flex items-center gap-1 text-[11px] text-[#F5EDD8]/50">
+                        <Clock className="size-3 shrink-0" aria-hidden="true" />
+                        {minutes} min
+                    </span>
+                    <span className="text-[#F5EDD8]/20">·</span>
+                    <span className="text-[11px] font-medium text-[var(--ts-sage)]">
+                        {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
+                    </span>
+                    {merchant.promo_count > 0 && (
+                        <span className="flex items-center gap-0.5 rounded-full bg-[var(--ts-red)]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--ts-red)]">
+                            <Tag01 className="size-2.5" aria-hidden="true" />
+                            {merchant.promo_count} promo{merchant.promo_count > 1 ? "s" : ""}
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            <ChevronRight className="size-4 shrink-0 text-[#F5EDD8]/15" />
+        </Link>
     );
 }

@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createClient();
 
+    const category = searchParams.get("category") || null;
+
     if (section === "promos") {
         const { data, error } = await supabase.rpc("get_promos_nearby", {
             user_lat: lat,
@@ -35,6 +37,10 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Query failed" }, { status: 500 });
         }
 
+        // Resolve categories for returned product IDs
+        const productIds = (data ?? []).map((r: any) => r.product_id);
+        const categoryMap = await resolveCategories(supabase, productIds);
+
         // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
         const seen = new Set<string>();
         const products = (data ?? [])
@@ -44,6 +50,7 @@ export async function GET(request: NextRequest) {
                 seen.add(key);
                 return true;
             })
+            .filter((row: any) => !category || categoryMap.get(row.product_id) === category)
             .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
@@ -54,6 +61,7 @@ export async function GET(request: NextRequest) {
                 merchant_name: row.merchant_name,
                 distance_km: row.distance_km,
                 sale_price: row.sale_price,
+                category: categoryMap.get(row.product_id) ?? null,
             }));
 
         return NextResponse.json({ products });
@@ -75,6 +83,10 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
+    // Resolve categories for returned product IDs
+    const productIds = items.map((r: any) => r.product_id);
+    const categoryMap = await resolveCategories(supabase, productIds);
+
     // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
     const seen = new Set<string>();
     items = items.filter((row: any) => {
@@ -83,6 +95,11 @@ export async function GET(request: NextRequest) {
         seen.add(key);
         return true;
     });
+
+    // Filter by category if provided
+    if (category) {
+        items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
+    }
 
     // For "nearby", re-sort by distance instead of feed_score
     if (section === "nearby") {
@@ -99,7 +116,26 @@ export async function GET(request: NextRequest) {
         merchant_name: row.merchant_name,
         distance_km: row.distance_km,
         sale_price: null,
+        category: categoryMap.get(row.product_id) ?? null,
     }));
 
     return NextResponse.json({ products });
+}
+
+/** Fetch categories for a list of product IDs in one query */
+async function resolveCategories(
+    supabase: any,
+    productIds: string[],
+): Promise<Map<string, string>> {
+    if (productIds.length === 0) return new Map();
+    const unique = [...new Set(productIds)];
+    const { data } = await supabase
+        .from("products")
+        .select("id, category")
+        .in("id", unique);
+    const map = new Map<string, string>();
+    for (const row of data ?? []) {
+        if (row.category) map.set(row.id, row.category);
+    }
+    return map;
 }

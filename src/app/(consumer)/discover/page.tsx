@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Tag01, TrendUp01, ShoppingBag01, ChevronRight, MarkerPin01 } from "@untitledui/icons";
+import { Tag01, TrendUp01, ShoppingBag01, ChevronRight, MarkerPin01, Heart } from "@untitledui/icons";
 import Link from "next/link";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
@@ -25,15 +25,20 @@ interface DiscoverProduct {
 const CATEGORIES = [
     { label: "Tout", value: null },
     { label: "Mode", value: "mode" },
+    { label: "Chaussures", value: "chaussures" },
     { label: "Tech", value: "tech" },
+    { label: "Bijoux", value: "bijoux" },
+    { label: "Beauté", value: "beaute" },
     { label: "Sport", value: "sport" },
     { label: "Maison", value: "maison" },
-    { label: "Beauté", value: "beaute" },
+    { label: "Jouets", value: "jouets" },
+    { label: "Accessoires", value: "accessoires" },
+    { label: "Bricolage", value: "bricolage" },
 ] as const;
 
-function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby") {
+function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby", category: string | null) {
     return useQuery<DiscoverProduct[]>({
-        queryKey: ["discover", section, lat, lng],
+        queryKey: ["discover", section, lat, lng, category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: lat.toString(),
@@ -41,6 +46,7 @@ function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending
                 section,
                 radius: "10",
             });
+            if (category) params.set("category", category);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) return [];
             const data = await res.json();
@@ -56,9 +62,9 @@ export default function DiscoverPage() {
     const lng = position?.lng ?? 1.4442;
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-    const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos");
-    const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending");
-    const { data: nearby, isLoading: loadingNearby } = useDiscoverFeed(lat, lng, "nearby");
+    const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory);
+    const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory);
+    const { data: nearby, isLoading: loadingNearby } = useDiscoverFeed(lat, lng, "nearby", activeCategory);
 
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
@@ -71,20 +77,20 @@ export default function DiscoverPage() {
     };
 
     return (
-        <div className="min-h-dvh bg-[var(--ts-cream)]">
+        <div className="min-h-dvh bg-[#2C1A0E]">
             {/* Header */}
-            <div className="bg-white px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="font-display text-2xl font-bold text-[var(--ts-brown)]">
+            <div className="px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+                <div>
+                    <div className="flex items-center gap-2">
+                        <img src="/logo-icon.webp" alt="" className="size-7" />
+                        <h1 className="font-display text-2xl font-bold text-[#F5EDD8]">
                             Two-Step
                         </h1>
-                        <p className="flex items-center gap-1 text-xs text-[var(--ts-brown-mid)]/60">
-                            <MarkerPin01 className="size-3" aria-hidden="true" />
-                            {position ? "Autour de toi" : "Toulouse"}
-                        </p>
                     </div>
-                    <img src="/logo-horizontal.png" alt="" className="h-7 opacity-60" />
+                    <p className="mt-0.5 flex items-center gap-1 text-xs text-[#F5EDD8]/50">
+                        <MarkerPin01 className="size-3" aria-hidden="true" />
+                        {position ? "Autour de toi" : "Toulouse"}
+                    </p>
                 </div>
 
                 {/* Category chips */}
@@ -97,8 +103,8 @@ export default function DiscoverPage() {
                             className={cx(
                                 "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition duration-150",
                                 activeCategory === cat.value
-                                    ? "bg-[var(--ts-ochre)] text-white shadow-sm"
-                                    : "bg-[var(--ts-cream)] text-[var(--ts-brown-mid)]",
+                                    ? "bg-[#C17B2F] text-white shadow-sm"
+                                    : "bg-[#3D2A1A] text-[#F5EDD8]/60",
                             )}
                         >
                             {cat.label}
@@ -112,7 +118,7 @@ export default function DiscoverPage() {
                 {/* Promos */}
                 <FeedSection
                     icon={<Tag01 className="size-4" />}
-                    iconColor="bg-[var(--ts-red)]/10 text-[var(--ts-red)]"
+                    iconColor="bg-[#C17B2F]/15 text-[#C17B2F]"
                     title="Promos du moment"
                     subtitle="Les bons plans près de chez toi"
                     seeAllHref="/search?filter=promos"
@@ -125,7 +131,7 @@ export default function DiscoverPage() {
                 {/* Trending */}
                 <FeedSection
                     icon={<TrendUp01 className="size-4" />}
-                    iconColor="bg-[var(--ts-ochre)]/10 text-[var(--ts-ochre)]"
+                    iconColor="bg-[#F5EDD8]/10 text-[#F5EDD8]/70"
                     title="Tendances"
                     subtitle="Ce qui se vend le plus dans ton quartier"
                     products={trending}
@@ -151,7 +157,7 @@ export default function DiscoverPage() {
                     <section className="px-4">
                         <SectionHeader
                             icon={<Heart className="size-4" />}
-                            iconColor="bg-[var(--ts-red)]/10 text-[var(--ts-red)]"
+                            iconColor="bg-[#C17B2F]/15 text-[#C17B2F]"
                             title="Tes boutiques"
                             subtitle="Les dernières nouveautés de tes favoris"
                         />
@@ -165,16 +171,16 @@ export default function DiscoverPage() {
                                         href={`/shop/${f.merchant_id}`}
                                         className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                                     >
-                                        <div className="size-16 overflow-hidden rounded-full bg-white shadow-sm ring-2 ring-[var(--ts-cream-dark)]">
+                                        <div className="size-16 overflow-hidden rounded-full bg-[#3D2A1A] shadow-sm ring-2 ring-[#C17B2F]/30">
                                             {merchant.photo_url ? (
                                                 <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[var(--ts-ochre)]">
+                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#C17B2F]">
                                                     {merchant.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="w-full truncate text-center text-[11px] font-medium text-[var(--ts-brown)]">
+                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#F5EDD8]/70">
                                             {merchant.name}
                                         </span>
                                     </Link>
@@ -187,9 +193,6 @@ export default function DiscoverPage() {
         </div>
     );
 }
-
-/* ── Heart import for followed shops ── */
-import { Heart } from "@untitledui/icons";
 
 /* ── Section header ── */
 function SectionHeader({
@@ -212,12 +215,12 @@ function SectionHeader({
                     {icon}
                 </div>
                 <div>
-                    <h2 className="text-sm font-bold text-[var(--ts-brown)]">{title}</h2>
-                    <p className="text-[11px] text-[var(--ts-brown-mid)]/50">{subtitle}</p>
+                    <h2 className="text-sm font-bold text-[#F5EDD8]">{title}</h2>
+                    <p className="text-[11px] text-[#F5EDD8]/40">{subtitle}</p>
                 </div>
             </div>
             {seeAllHref && (
-                <Link href={seeAllHref} className="flex items-center gap-0.5 text-xs font-semibold text-[var(--ts-ochre)]">
+                <Link href={seeAllHref} className="flex items-center gap-0.5 text-xs font-semibold text-[#C17B2F]">
                     Voir tout
                     <ChevronRight className="size-3.5" />
                 </Link>
@@ -257,7 +260,7 @@ function FeedSection({
             {isLoading ? (
                 <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-2xl bg-white" />
+                        <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#3D2A1A]" />
                     ))}
                 </div>
             ) : products && products.length > 0 ? (
@@ -280,8 +283,8 @@ function FeedSection({
                     ))}
                 </div>
             ) : (
-                <div className="mx-4 mt-3 rounded-2xl bg-white px-4 py-8 text-center">
-                    <p className="text-xs font-medium text-[var(--ts-brown-mid)]/40">Rien pour le moment — ça arrive vite.</p>
+                <div className="mx-4 mt-3 rounded-lg border border-[#3D2A1A] px-4 py-8 text-center">
+                    <p className="text-xs font-medium text-[#F5EDD8]/30">Rien pour le moment — ça arrive vite.</p>
                 </div>
             )}
         </section>

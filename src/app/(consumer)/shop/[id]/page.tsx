@@ -3,11 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, LinkExternal01, MarkerPin01 } from "@untitledui/icons";
+import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown } from "@untitledui/icons";
 import { useState } from "react";
 import { ProductCard } from "../../components/product-card";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
+import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
 import { cx } from "@/utils/cx";
 
 interface MerchantProfile {
@@ -32,7 +33,14 @@ interface Product {
     price: number;
     photo_url: string | null;
     category: string | null;
-    stock: { quantity: number }[];
+    created_at: string;
+    stock: { quantity: number } | null;
+}
+
+interface Promotion {
+    id: string;
+    product_id: string;
+    sale_price: number;
 }
 
 const SUB_TABS = ["Catalogue", "Nouveautés", "Promos"];
@@ -61,6 +69,16 @@ export default function ShopProfilePage() {
         },
     });
 
+    const { data: promotions } = useQuery<Promotion[]>({
+        queryKey: ["merchant-promos", id],
+        queryFn: async () => {
+            const res = await fetch(`/api/promotions?merchant_id=${id}`);
+            if (!res.ok) throw new Error("Failed");
+            const json = await res.json();
+            return json.promotions;
+        },
+    });
+
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
     const { data: follows } = useFollows();
@@ -68,6 +86,21 @@ export default function ShopProfilePage() {
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
     const isFollowing = follows?.some((f) => f.merchant_id === id) ?? false;
+
+    const promoMap = new Map((promotions ?? []).map((p) => [p.product_id, p.sale_price]));
+
+    const filteredProducts = (products ?? []).filter((p) => {
+        if (activeTab === "Nouveautés") {
+            const created = new Date(p.created_at);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            return created >= thirtyDaysAgo;
+        }
+        if (activeTab === "Promos") {
+            return promoMap.has(p.id);
+        }
+        return true;
+    });
 
     if (!profile) {
         return (
@@ -85,8 +118,8 @@ export default function ShopProfilePage() {
 
     return (
         <div className="min-h-dvh bg-[var(--ts-cream)]">
-            {/* Cover photo */}
-            <div className="relative h-52 w-full overflow-hidden">
+            {/* Cover photo — TGTG style */}
+            <div className="relative h-[45vh] min-h-[300px] max-h-[420px] w-full">
                 {profile.merchant_cover ? (
                     <img src={profile.merchant_cover} alt="" className="h-full w-full object-cover" />
                 ) : profile.merchant_photo ? (
@@ -96,67 +129,94 @@ export default function ShopProfilePage() {
                         <span className="text-6xl font-bold text-white/30">{profile.merchant_name.charAt(0)}</span>
                     </div>
                 )}
+
+                {/* Dark gradient — stronger bottom half like TGTG */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 via-40% to-transparent" />
+
+                {/* Back button — circle, semi-transparent */}
                 <Link
                     href="/explore"
-                    className="absolute left-4 top-4 flex size-10 items-center justify-center rounded-xl bg-white/80 shadow-sm backdrop-blur-sm"
+                    className="absolute left-4 top-4 z-20 flex size-11 items-center justify-center rounded-full bg-white/90 shadow-sm"
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"
                 >
                     <ArrowLeft className="size-5 text-[var(--ts-brown)]" />
                 </Link>
-            </div>
 
-            {/* Profile info — overlaps cover */}
-            <div className="-mt-6 rounded-t-3xl bg-[var(--ts-cream)] px-5 pt-1">
-                {/* Logo + name */}
-                <div className="-mt-8 flex items-end gap-3">
-                    <div className="flex size-18 items-center justify-center overflow-hidden rounded-2xl border-[3px] border-[var(--ts-cream)] bg-white shadow-md">
+                {/* Heart button — circle, top-right like TGTG */}
+                <button
+                    type="button"
+                    onClick={() => isFollowing ? unfollow.mutate(id) : follow.mutate(id)}
+                    className={cx(
+                        "absolute right-4 top-4 z-20 flex size-11 items-center justify-center rounded-full shadow-sm",
+                        isFollowing ? "bg-[var(--ts-ochre)] text-white" : "bg-white/90 text-[var(--ts-brown-mid)]",
+                    )}
+                    style={{ marginTop: "env(safe-area-inset-top)" }}
+                    aria-label={isFollowing ? "Ne plus suivre" : "Suivre"}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFollowing ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} className="size-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                </button>
+
+                {/* Logo + name at bottom of cover — TGTG exact layout */}
+                <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end px-4 pb-4">
+                    <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-[2.5px] border-white/90 bg-white shadow-lg">
                         {profile.merchant_logo ? (
                             <img src={profile.merchant_logo} alt={profile.merchant_name} className="h-full w-full object-cover" />
                         ) : (
-                            <span className="text-2xl font-bold text-[var(--ts-ochre)]">{profile.merchant_name.charAt(0)}</span>
+                            <span className="text-lg font-bold text-[var(--ts-ochre)]">{profile.merchant_name.charAt(0)}</span>
                         )}
                     </div>
-                    <div className="pb-1 flex-1 min-w-0">
-                        <h1 className="truncate font-display text-lg font-bold text-[var(--ts-brown)]">{profile.merchant_name}</h1>
-                        <p className="flex items-center gap-1 text-[11px] text-[var(--ts-brown-mid)]/50">
-                            <MarkerPin01 className="size-3" aria-hidden="true" />
-                            {profile.merchant_address}, {profile.merchant_city}
-                        </p>
+                    <div className="ml-3 mb-0.5 min-w-0 flex-1">
+                        <h1 className="font-display text-[22px] font-bold leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">{profile.merchant_name}</h1>
                     </div>
                 </div>
+            </div>
 
-                {/* Stats */}
-                <p className="mt-3 text-xs text-[var(--ts-brown-mid)]/50">
-                    <span className="font-semibold text-[var(--ts-brown)]">{profile.follower_count}</span> abonné{profile.follower_count !== 1 ? "s" : ""}
-                    {" · "}
-                    <span className="font-semibold text-[var(--ts-brown)]">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
-                </p>
+            {/* Info zone — clean beige below cover */}
+            <div className="bg-[var(--ts-cream)] px-5 pt-4">
+                {/* Address row — clickable like TGTG */}
+                <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(profile.merchant_address + ", " + profile.merchant_city)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 border-b border-[var(--ts-cream-dark)] pb-3"
+                >
+                    <MarkerPin01 className="size-5 shrink-0 text-[var(--ts-ochre)]" aria-hidden="true" />
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-[var(--ts-ochre)]">{profile.merchant_address}, {profile.merchant_city}</p>
+                        <p className="text-[11px] text-[var(--ts-brown-mid)]/50">Plus d&apos;informations sur le commerce</p>
+                    </div>
+                    <ChevronDown className="-rotate-90 size-5 text-[var(--ts-brown-mid)]/40" aria-hidden="true" />
+                </a>
 
-                {/* Action buttons */}
-                <div className="mt-4 flex gap-3">
-                    <button
-                        type="button"
-                        onClick={() => isFollowing ? unfollow.mutate(id) : follow.mutate(id)}
-                        className={cx(
-                            "flex-1 rounded-2xl py-3 text-sm font-bold transition duration-150",
-                            isFollowing
-                                ? "border-2 border-[var(--ts-cream-dark)] bg-white text-[var(--ts-brown-mid)]"
-                                : "bg-[var(--ts-ochre)] text-white shadow-sm",
-                        )}
-                    >
-                        {isFollowing ? "Suivi ✓" : "Suivre"}
-                    </button>
-                    <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(profile.merchant_address + ", " + profile.merchant_city)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 rounded-2xl border-2 border-[var(--ts-cream-dark)] bg-white px-5 py-3 text-sm font-semibold text-[var(--ts-brown)] transition duration-150 active:bg-[var(--ts-cream)]"
-                    >
-                        <MarkerPin01 className="size-4" aria-hidden="true" />
-                        Itinéraire
-                    </a>
+                {/* Stats + opening hours */}
+                <div className="mt-3 flex items-center gap-2">
+                    <p className="text-xs text-[var(--ts-brown-mid)]/50">
+                        <span className="font-semibold text-[var(--ts-brown)]">{profile.follower_count}</span> abonné{profile.follower_count !== 1 ? "s" : ""}
+                        {" · "}
+                        <span className="font-semibold text-[var(--ts-brown)]">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
+                    </p>
+                    {(() => {
+                        const status = getOpenStatus(profile.merchant_opening_hours);
+                        if (!status) return null;
+                        return (
+                            <span className={cx(
+                                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                                status.isOpen
+                                    ? "bg-[var(--ts-sage)]/15 text-[var(--ts-sage)]"
+                                    : "bg-[var(--ts-red)]/10 text-[var(--ts-red)]",
+                            )}>
+                                <Clock className="size-2.5" aria-hidden="true" />
+                                {status.isOpen ? "Ouvert" : "Fermé"}
+                            </span>
+                        );
+                    })()}
                 </div>
+
+                {/* Opening hours detail */}
+                <OpeningHoursSection hours={profile.merchant_opening_hours} />
 
                 {/* Bio + links */}
                 {profile.merchant_description && (
@@ -203,27 +263,68 @@ export default function ShopProfilePage() {
 
             {/* Product grid */}
             <div className="grid grid-cols-2 gap-3 p-4 pb-24">
-                {(products ?? []).map((p) => (
-                    <ProductCard
-                        key={p.id}
-                        id={p.id}
-                        name={p.name}
-                        price={p.price}
-                        photo={p.photo_url}
-                        merchantName={profile.merchant_name}
-                        distance={0}
-                        stockQuantity={p.stock?.[0]?.quantity ?? 0}
-                        isFavorite={favoriteIds.has(p.id)}
-                        onToggleFavorite={() => {
-                            if (favoriteIds.has(p.id)) {
-                                remove.mutate(p.id);
-                            } else {
-                                add.mutate(p.id);
-                            }
-                        }}
-                    />
-                ))}
+                {filteredProducts.length === 0 ? (
+                    <p className="col-span-2 py-12 text-center text-sm text-[var(--ts-brown-mid)]/40">
+                        {activeTab === "Promos" ? "Aucune promo en cours" : activeTab === "Nouveautés" ? "Pas de nouveautés récentes" : "Aucun produit"}
+                    </p>
+                ) : (
+                    filteredProducts.map((p) => (
+                        <ProductCard
+                            key={p.id}
+                            id={p.id}
+                            name={p.name}
+                            price={p.price}
+                            photo={p.photo_url}
+                            merchantName={profile.merchant_name}
+                            distance={0}
+                            stockQuantity={p.stock?.quantity ?? 0}
+                            salePrice={promoMap.get(p.id) ?? null}
+                            isFavorite={favoriteIds.has(p.id)}
+                            onToggleFavorite={() => {
+                                if (favoriteIds.has(p.id)) {
+                                    remove.mutate(p.id);
+                                } else {
+                                    add.mutate(p.id);
+                                }
+                            }}
+                        />
+                    ))
+                )}
             </div>
+        </div>
+    );
+}
+
+function OpeningHoursSection({ hours }: { hours: unknown }) {
+    const [expanded, setExpanded] = useState(false);
+    const status = getOpenStatus(hours);
+    const weekly = formatWeeklyHours(hours);
+
+    if (!status || weekly.length === 0) return null;
+
+    return (
+        <div className="mt-2">
+            <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                className="flex items-center gap-1.5 text-xs text-[var(--ts-brown-mid)]/60 transition duration-100 hover:text-[var(--ts-brown)]"
+            >
+                <Clock className="size-3" aria-hidden="true" />
+                <span>{status.label}</span>
+                <ChevronDown className={cx("size-3 transition duration-200", expanded && "rotate-180")} aria-hidden="true" />
+            </button>
+            {expanded && (
+                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 rounded-xl bg-white/60 px-3 py-2.5">
+                    {weekly.map((row) => (
+                        <div key={row.day} className="flex justify-between text-[11px]">
+                            <span className="font-medium text-[var(--ts-brown)]">{row.day}</span>
+                            <span className={cx(
+                                row.hours === "Fermé" ? "text-[var(--ts-red)]/60" : "text-[var(--ts-brown-mid)]/50",
+                            )}>{row.hours}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

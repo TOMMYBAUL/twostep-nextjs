@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home02, MarkerPin01, Heart, User01 } from "@untitledui/icons";
+import { motion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const tabs = [
@@ -17,7 +18,7 @@ export function TabBar() {
 
     return (
         <nav
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--ts-cream-dark)] bg-white/95 backdrop-blur-md"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#3D2A1A] bg-[#2C1A0E]/95 backdrop-blur-md"
             role="tablist"
             aria-label="Navigation principale"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
@@ -40,11 +41,15 @@ export function TabBar() {
                                 "relative flex flex-1 flex-col items-center gap-0.5 pb-1 pt-2 text-[10px] font-medium transition duration-150 ease-out",
                                 isActive
                                     ? "text-[var(--ts-ochre)]"
-                                    : "text-[var(--ts-brown-mid)]/50 active:text-[var(--ts-ochre)]",
+                                    : "text-[#F5EDD8]/40 active:text-[#C17B2F]",
                             )}
                         >
                             {isActive && (
-                                <span className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-[var(--ts-ochre)]" />
+                                <motion.span
+                                    layoutId="tab-indicator"
+                                    className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-[var(--ts-ochre)]"
+                                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                />
                             )}
                             <Icon
                                 className="size-[22px]"
