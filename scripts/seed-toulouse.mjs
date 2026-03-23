@@ -499,13 +499,14 @@ async function seed() {
     console.log("Cleaning up previous seed data...");
     const { data: existingMerchants } = await supabase
         .from("merchants")
-        .select("id")
+        .select("id, user_id")
         .eq("city", "Toulouse")
         .eq("status", "active")
         .like("phone", "05 61%");
 
     if (existingMerchants && existingMerchants.length > 0) {
         const merchantIds = existingMerchants.map((m) => m.id);
+        const userIds = existingMerchants.map((m) => m.user_id);
 
         // Get product IDs
         const { data: existingProducts } = await supabase
@@ -522,14 +523,40 @@ async function seed() {
         }
 
         await supabase.from("merchants").delete().in("id", merchantIds);
+
+        // Clean up seed auth users
+        for (const uid of userIds) {
+            await supabase.auth.admin.deleteUser(uid);
+        }
+
         console.log(`  Cleaned ${merchantIds.length} merchants and their data.\n`);
     }
 
+    // Create auth users for each merchant (FK requirement)
+    console.log("Creating auth users for merchants...");
+    const userIds = [];
+    for (let i = 0; i < MERCHANTS.length; i++) {
+        const m = MERCHANTS[i];
+        const email = `seed-${m.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}@demo.twostep.local`;
+        const { data: user, error: userErr } = await supabase.auth.admin.createUser({
+            email,
+            password: `seed-demo-${uuid().slice(0, 8)}`,
+            email_confirm: true,
+            user_metadata: { role: "merchant", seed: true },
+        });
+        if (userErr) {
+            console.error(`  Failed to create user for ${m.name}:`, userErr.message);
+            process.exit(1);
+        }
+        userIds.push(user.user.id);
+    }
+    console.log(`  ✓ ${userIds.length} auth users created\n`);
+
     // Insert merchants
     console.log("Inserting merchants...");
-    const merchantRows = MERCHANTS.map((m) => ({
+    const merchantRows = MERCHANTS.map((m, i) => ({
         id: uuid(),
-        user_id: uuid(), // Fake user_id — not tied to real auth user
+        user_id: userIds[i],
         name: m.name,
         address: m.address,
         city: m.city,
