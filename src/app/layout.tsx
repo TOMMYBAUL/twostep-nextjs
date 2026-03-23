@@ -23,7 +23,7 @@ export const metadata: Metadata = {
         "Two-Step rend votre stock visible aux consommateurs de votre quartier. En temps réel, sans site e-commerce, sans livraison.",
     openGraph: {
         title: "Two-Step — Le stock local, visible en temps réel",
-        description: "Vos clients veulent acheter chez vous. Ils finissent sur Amazon. On règle ça.",
+        description: "Vos clients veulent acheter chez vous. Ils finissent sur des boutiques en ligne. On règle ça.",
         locale: "fr_FR",
         type: "website",
     },
