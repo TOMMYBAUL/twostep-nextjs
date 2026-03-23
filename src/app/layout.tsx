@@ -27,11 +27,20 @@ export const metadata: Metadata = {
         locale: "fr_FR",
         type: "website",
     },
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "black-translucent",
+        title: "Two-Step",
+    },
+    formatDetection: {
+        telephone: false,
+    },
 };
 
 export const viewport: Viewport = {
-    themeColor: "#E07A5F",
-    colorScheme: "light",
+    themeColor: "#2C1A0E",
+    colorScheme: "dark light",
+    viewportFit: "cover",
 };
 
 export default function RootLayout({

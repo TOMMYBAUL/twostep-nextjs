@@ -3,6 +3,7 @@ import { QueryProvider } from "./query-provider";
 import { TabBar } from "./components/tab-bar";
 import { ToastProvider } from "./components/toast";
 import { WelcomeGate } from "./components/welcome-gate";
+import { ServiceWorkerRegistration } from "./components/sw-register";
 
 export const metadata: Metadata = {
     title: "Two-Step — Le stock de ton quartier",
@@ -22,6 +23,7 @@ export default function ConsumerLayout({
                     <TabBar />
                 </div>
                 <WelcomeGate />
+                <ServiceWorkerRegistration />
             </ToastProvider>
         </QueryProvider>
     );
