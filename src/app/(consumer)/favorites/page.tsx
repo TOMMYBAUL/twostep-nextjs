@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { MarkerPin01 } from "@untitledui/icons";
 import { HeartButton } from "../components/heart-button";
 import { StockBadge } from "../components/stock-badge";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
@@ -18,34 +19,38 @@ export default function FavoritesPage() {
     const { unfollow } = useToggleFollow();
 
     return (
-        <div className="flex flex-col">
-            <div className="flex border-b border-secondary">
-                {(["produits", "boutiques"] as Tab[]).map((tab) => (
-                    <button
-                        key={tab}
-                        type="button"
-                        onClick={() => setActiveTab(tab)}
-                        className={cx(
-                            "flex-1 border-b-2 py-3 text-center text-sm font-medium transition duration-100",
-                            activeTab === tab
-                                ? "border-[var(--ts-ochre)] text-[var(--ts-ochre)]"
-                                : "border-transparent text-tertiary",
-                        )}
-                    >
-                        {tab === "produits" ? "Produits" : "Boutiques"}
-                    </button>
-                ))}
+        <div className="min-h-dvh bg-[var(--ts-cream)]">
+            {/* Header */}
+            <div className="bg-white" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+                <h1 className="px-4 pb-2 font-display text-xl font-bold text-[var(--ts-brown)]">Favoris</h1>
+                <div className="flex border-b border-[var(--ts-cream-dark)]">
+                    {(["produits", "boutiques"] as Tab[]).map((tab) => (
+                        <button
+                            key={tab}
+                            type="button"
+                            onClick={() => setActiveTab(tab)}
+                            className={cx(
+                                "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition duration-150",
+                                activeTab === tab
+                                    ? "border-[var(--ts-ochre)] text-[var(--ts-ochre)]"
+                                    : "border-transparent text-[var(--ts-brown-mid)]/40",
+                            )}
+                        >
+                            {tab === "produits" ? `Produits${favorites?.length ? ` (${favorites.length})` : ""}` : `Boutiques${follows?.length ? ` (${follows.length})` : ""}`}
+                        </button>
+                    ))}
+                </div>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 pb-24">
                 {activeTab === "produits" && (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         {loadingFavs ? (
                             Array.from({ length: 3 }).map((_, i) => (
-                                <div key={i} className="h-24 animate-pulse rounded-xl bg-secondary" />
+                                <div key={i} className="h-24 animate-pulse rounded-2xl bg-white" />
                             ))
                         ) : !favorites || favorites.length === 0 ? (
-                            <p className="py-12 text-center text-sm text-tertiary">Aucun produit en favoris</p>
+                            <EmptyState emoji="❤️" title="Aucun favori" description="Ajoute des produits en appuyant sur le cœur" />
                         ) : (
                             favorites.map((fav: any) => {
                                 const product = fav.products;
@@ -57,30 +62,34 @@ export default function FavoritesPage() {
                                     <Link
                                         key={fav.product_id}
                                         href={`/product/${fav.product_id}`}
-                                        className="flex gap-3 rounded-xl border border-secondary p-3 transition duration-100 hover:shadow-sm"
+                                        className="flex gap-3 rounded-2xl bg-white p-3 shadow-sm transition duration-150 active:scale-[0.98]"
                                     >
-                                        <div className="size-20 shrink-0 overflow-hidden rounded-lg bg-tertiary">
+                                        <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-[var(--ts-cream)]">
                                             {product.photo_url ? (
                                                 <img src={product.photo_url} alt={product.name} className="h-full w-full object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-sm font-bold text-quaternary">
+                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[var(--ts-brown-mid)]/20">
                                                     {product.name?.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex flex-1 flex-col justify-between">
+                                        <div className="flex flex-1 flex-col justify-between py-0.5">
                                             <div>
-                                                <h3 className="text-sm font-semibold text-primary">{product.name}</h3>
-                                                <p className="text-sm font-bold text-primary">{product.price?.toFixed(2)} €</p>
-                                                {merchant && <p className="text-xs text-tertiary">{merchant.name}</p>}
+                                                <h3 className="text-[13px] font-semibold text-[var(--ts-brown)]">{product.name}</h3>
+                                                <p className="mt-0.5 text-sm font-bold text-[var(--ts-brown)]">{product.price?.toFixed(2)} €</p>
+                                                {merchant && (
+                                                    <p className="mt-0.5 text-[11px] text-[var(--ts-brown-mid)]/50">{merchant.name}</p>
+                                                )}
                                             </div>
                                             <StockBadge quantity={quantity} />
                                         </div>
-                                        <HeartButton
-                                            isFavorite
-                                            onToggle={() => remove.mutate(fav.product_id)}
-                                            ariaLabel={`Retirer ${product.name} des favoris`}
-                                        />
+                                        <div className="shrink-0 pt-0.5">
+                                            <HeartButton
+                                                isFavorite
+                                                onToggle={() => remove.mutate(fav.product_id)}
+                                                ariaLabel={`Retirer ${product.name} des favoris`}
+                                            />
+                                        </div>
                                     </Link>
                                 );
                             })
@@ -89,13 +98,13 @@ export default function FavoritesPage() {
                 )}
 
                 {activeTab === "boutiques" && (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         {loadingFollows ? (
                             Array.from({ length: 3 }).map((_, i) => (
-                                <div key={i} className="h-20 animate-pulse rounded-xl bg-secondary" />
+                                <div key={i} className="h-20 animate-pulse rounded-2xl bg-white" />
                             ))
                         ) : !follows || follows.length === 0 ? (
-                            <p className="py-12 text-center text-sm text-tertiary">Aucune boutique suivie</p>
+                            <EmptyState emoji="🏪" title="Aucune boutique suivie" description="Suis tes boutiques préférées pour ne rien rater" />
                         ) : (
                             follows.map((f: any) => {
                                 const merchant = f.merchants;
@@ -104,20 +113,23 @@ export default function FavoritesPage() {
                                     <Link
                                         key={f.merchant_id}
                                         href={`/shop/${f.merchant_id}`}
-                                        className="flex items-center gap-3 rounded-xl border border-secondary p-3 transition duration-100 hover:shadow-sm"
+                                        className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm transition duration-150 active:scale-[0.98]"
                                     >
-                                        <div className="size-12 shrink-0 overflow-hidden rounded-full bg-tertiary">
+                                        <div className="size-13 shrink-0 overflow-hidden rounded-full bg-[var(--ts-cream)]">
                                             {merchant.photo_url ? (
                                                 <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-sm font-bold text-quaternary">
+                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[var(--ts-ochre)]">
                                                     {merchant.name?.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="text-sm font-semibold text-primary">{merchant.name}</h3>
-                                            <p className="text-xs text-tertiary">{merchant.city}</p>
+                                            <h3 className="text-[13px] font-semibold text-[var(--ts-brown)]">{merchant.name}</h3>
+                                            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[var(--ts-brown-mid)]/50">
+                                                <MarkerPin01 className="size-3" aria-hidden="true" />
+                                                {merchant.city}
+                                            </p>
                                         </div>
                                         <button
                                             type="button"
@@ -125,7 +137,7 @@ export default function FavoritesPage() {
                                                 e.preventDefault();
                                                 unfollow.mutate(f.merchant_id);
                                             }}
-                                            className="rounded-lg border border-secondary px-3 py-1.5 text-xs font-medium text-secondary transition duration-100 hover:bg-secondary"
+                                            className="shrink-0 rounded-xl border border-[var(--ts-cream-dark)] px-3 py-1.5 text-xs font-semibold text-[var(--ts-brown-mid)] transition duration-150 active:bg-[var(--ts-cream)]"
                                         >
                                             Suivi ✓
                                         </button>
@@ -136,6 +148,16 @@ export default function FavoritesPage() {
                     </div>
                 )}
             </div>
+        </div>
+    );
+}
+
+function EmptyState({ emoji, title, description }: { emoji: string; title: string; description: string }) {
+    return (
+        <div className="flex flex-col items-center gap-2 py-20 text-center">
+            <span className="text-3xl">{emoji}</span>
+            <p className="text-sm font-semibold text-[var(--ts-brown-mid)]/40">{title}</p>
+            <p className="text-xs text-[var(--ts-brown-mid)]/30">{description}</p>
         </div>
     );
 }

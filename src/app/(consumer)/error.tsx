@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 export default function ConsumerError({
     error,
     reset,
@@ -7,14 +9,25 @@ export default function ConsumerError({
     error: Error & { digest?: string };
     reset: () => void;
 }) {
+    useEffect(() => {
+        console.error("Consumer app error:", error);
+    }, [error]);
+
     return (
         <div className="flex min-h-[60dvh] flex-col items-center justify-center gap-4 px-6 text-center">
-            <p className="text-lg font-semibold text-primary">Ça n'a pas marché</p>
-            <p className="text-sm text-tertiary">{error.message || "Réessaie dans quelques secondes."}</p>
+            <div className="flex size-16 items-center justify-center rounded-2xl bg-[var(--ts-cream-dark)]">
+                <span className="text-2xl font-bold text-[var(--ts-brown-mid)]/30">!</span>
+            </div>
+            <h2 className="font-display text-lg font-bold text-[var(--ts-brown)]">
+                Oups, quelque chose a planté
+            </h2>
+            <p className="max-w-xs text-sm text-[var(--ts-brown-mid)]/60">
+                Pas de panique — tes données sont en sécurité. Réessaie ou reviens plus tard.
+            </p>
             <button
                 type="button"
                 onClick={reset}
-                className="rounded-xl bg-[var(--ts-ochre)] px-6 py-2.5 text-sm font-semibold text-white transition duration-100 hover:opacity-90"
+                className="mt-2 rounded-2xl bg-[var(--ts-ochre)] px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
             >
                 Réessayer
             </button>

@@ -26,7 +26,7 @@ export function How() {
         {
             num: "03",
             title: "Ils viennent chez vous",
-            desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Amazon perd une vente.",
+            desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Les boutiques en ligne perdent une vente et vous en gagnez une.",
             bg: "#C8813A", numColor: "rgba(245,237,214,0.18)", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.8)",
         },
     ];

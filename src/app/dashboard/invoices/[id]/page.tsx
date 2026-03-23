@@ -13,6 +13,7 @@ type InvoiceItem = {
     ean: string | null;
     status: string;
     product_id: string | null;
+    match_type: "exact_ean" | "exact_name" | "fuzzy" | null;
 };
 
 type InvoiceDetail = {
@@ -33,7 +34,7 @@ export default function InvoiceDetailPage() {
     const [loading, setLoading] = useState(true);
     const [sellingPrices, setSellingPrices] = useState<Record<string, string>>({});
     const [validating, setValidating] = useState(false);
-    const [result, setResult] = useState<{ products_created: number; products_updated: number; stock_updated: number } | null>(null);
+    const [result, setResult] = useState<{ products_created: number; products_updated: number; stock_updated: number; fuzzy_matched?: number } | null>(null);
 
     const fetchInvoice = useCallback(async () => {
         const res = await fetch(`/api/invoices/${id}`);
@@ -113,7 +114,10 @@ export default function InvoiceDetailPage() {
             {result && (
                 <div className="bg-success-secondary mb-6 rounded-lg p-4 text-sm">
                     <p className="text-success-primary font-medium">Import terminé !</p>
-                    <p className="text-primary">{result.products_created} produits créés, {result.products_updated} mis à jour, {result.stock_updated} stocks ajustés</p>
+                    <p className="text-primary">
+                        {result.products_created} produits créés, {result.products_updated} mis à jour, {result.stock_updated} stocks ajustés
+                        {result.fuzzy_matched ? ` (dont ${result.fuzzy_matched} correspondances approximatives)` : ""}
+                    </p>
                 </div>
             )}
 
@@ -141,6 +145,11 @@ export default function InvoiceDetailPage() {
                                     <span className={`badge-ts ${item.status === "rejected" ? "badge-danger" : item.status === "validated" ? "badge-success" : "badge-info"}`}>
                                         {item.status}
                                     </span>
+                                    {item.match_type === "fuzzy" && (
+                                        <span className="badge-ts badge-warning ml-1" title="Correspondance approximative — vérifiez le produit associé">
+                                            fuzzy
+                                        </span>
+                                    )}
                                 </td>
                                 {!isImported && (
                                     <td className="px-4 py-3">

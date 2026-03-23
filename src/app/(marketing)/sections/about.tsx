@@ -16,7 +16,7 @@ export function About() {
                     display: "grid",
                     gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                     gap: isMobile ? 40 : 80,
-                    alignItems: "center",
+                    alignItems: "start",
                 }}>
                     <motion.div
                         initial={{ opacity: 0, x: isMobile ? 0 : -40, y: isMobile ? 24 : 0 }}
@@ -45,7 +45,7 @@ export function About() {
                         transition={{ duration: 0.8, delay: 0.15, ease: E }}
                     >
                         <p style={{ fontSize: isMobile ? 15 : 17, color: "#2C2018", lineHeight: 1.72, margin: "0 0 20px" }}>
-                            Deux frères qui ont vu leurs commerçants préférés perdre des ventes au profit d'Amazon — non pas parce que les clients préféraient commander en ligne, mais parce qu'ils ne savaient pas que le produit exact existait en boutique, à deux pas de chez eux.
+                            Deux frères qui ont vu leurs commerçants préférés perdre des ventes au profit des boutiques en ligne — non pas parce que les clients préféraient commander en ligne, mais parce qu'ils ne savaient pas que le produit exact existait en boutique, à deux pas de chez eux.
                         </p>
                         <p style={{ fontSize: isMobile ? 15 : 17, color: "#6B4F38", lineHeight: 1.72, margin: 0 }}>
                             Two-Step, c'est l'outil que les commerçants locaux n'avaient pas encore.

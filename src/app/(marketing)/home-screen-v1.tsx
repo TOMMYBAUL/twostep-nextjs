@@ -261,8 +261,8 @@ function Hero() {
                             margin: "0 0 36px",
                         }}
                     >
-                        Pas une chaussure — cette chaussure, cette marque, cette pointure.
-                        Two-Step vous dit quelle boutique de votre quartier l'a en stock. Et à combien de minutes.
+                        Cet article qui te fait envie depuis des jours ? Une boutique du quartier l'a en stock.
+                        Two-Step te dit laquelle. Et dans combien de minutes tu peux y être.
                     </motion.p>
 
                     {/* CTA */}
@@ -468,7 +468,7 @@ function How() {
         {
             num: "03",
             title: "Ils viennent chez vous",
-            desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Amazon perd une vente.",
+            desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Les boutiques en ligne perdent une vente et vous en gagnez une.",
             bg: "#C8813A", numColor: "rgba(245,237,214,0.18)", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.8)",
         },
     ];
@@ -578,7 +578,7 @@ function About() {
                         transition={{ duration: 0.8, delay: 0.15, ease: E }}
                     >
                         <p style={{ fontSize: isMobile ? 15 : 17, color: "#2C2018", lineHeight: 1.72, margin: "0 0 20px" }}>
-                            Deux frères qui ont vu leurs commerçants préférés perdre des ventes au profit d'Amazon — non pas parce que les clients préféraient commander en ligne, mais parce qu'ils ne savaient pas que le produit exact existait en boutique, à deux pas de chez eux.
+                            Deux frères qui ont vu leurs commerçants préférés perdre des ventes au profit des boutiques en ligne — non pas parce que les clients préféraient commander en ligne, mais parce qu'ils ne savaient pas que le produit exact existait en boutique, à deux pas de chez eux.
                         </p>
                         <p style={{ fontSize: isMobile ? 15 : 17, color: "#6B4F38", lineHeight: 1.72, margin: 0 }}>
                             Two-Step, c'est l'outil que les commerçants locaux n'avaient pas encore.

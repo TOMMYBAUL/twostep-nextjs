@@ -82,8 +82,8 @@ export function Hero() {
                             margin: "0 0 36px",
                         }}
                     >
-                        Pas une chaussure — cette chaussure, cette marque, cette pointure.
-                        Two-Step vous dit quelle boutique de votre quartier l'a en stock. Et à combien de minutes.
+                        Cet article qui te fait envie depuis des jours ? Une boutique du quartier l'a en stock.
+                        Two-Step te dit laquelle. Et dans combien de minutes tu peux y être.
                     </motion.p>
 
                     {/* CTA */}

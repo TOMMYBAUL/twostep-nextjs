@@ -255,6 +255,14 @@ export default function SettingsPage() {
 
                 {/* Other POS providers */}
                 <div className="mt-2 space-y-2">
+                    {["Lightspeed", "Shopify"].map((name) => (
+                        <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
+                            <span className="text-sm font-medium text-gray-900">{name}</span>
+                            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
+                                Disponible
+                            </span>
+                        </div>
+                    ))}
                     {["SumUp", "Zettle"].map((name) => (
                         <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
                             <span className="text-sm font-medium text-gray-900">{name}</span>
