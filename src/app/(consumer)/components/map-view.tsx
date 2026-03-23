@@ -184,7 +184,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
             // Pin container
             const wrapper = document.createElement("div");
-            wrapper.style.cssText = `position:relative;cursor:pointer;transition:transform 0.15s;${isSelected ? "transform:scale(1.25);z-index:10;" : ""}`;
+            wrapper.style.cssText = `position:relative;display:inline-block;width:42px;height:42px;cursor:pointer;transition:transform 0.15s;${isSelected ? "transform:scale(1.25);z-index:10;" : ""}`;
 
             // Pin body
             const el = document.createElement("div");
