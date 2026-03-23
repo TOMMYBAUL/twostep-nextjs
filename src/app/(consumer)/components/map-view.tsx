@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, MAPBOX_STYLE, DEFAULT_CENTER, DEFAULT_ZOOM } from "../lib/mapbox";
@@ -59,9 +59,6 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
     const userMarkerRef = useRef<mapboxgl.Marker | null>(null);
     const hasFittedRef = useRef(false);
 
-    // Stable key to avoid React warning about deps array size changing
-    const merchantIds = useMemo(() => merchants.map(m => m.merchant_id).join(","), [merchants]);
-
     useEffect(() => {
         if (!containerRef.current || mapRef.current) return;
         mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -110,7 +107,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
         map.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
         hasFittedRef.current = true;
-    }, [merchantIds, userPosition]);
+    }, [merchants, userPosition]);
 
     // User position dot
     useEffect(() => {
@@ -184,7 +181,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
             // Pin container
             const wrapper = document.createElement("div");
-            wrapper.style.cssText = `position:relative;display:inline-block;width:42px;height:42px;cursor:pointer;transition:transform 0.15s;${isSelected ? "transform:scale(1.25);z-index:10;" : ""}`;
+            wrapper.style.cssText = `position:relative;cursor:pointer;transition:transform 0.15s;${isSelected ? "transform:scale(1.25);z-index:10;" : ""}`;
 
             // Pin body
             const el = document.createElement("div");
@@ -229,7 +226,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
             markersRef.current.push(marker);
         });
-    }, [merchantIds, selectedMerchantId]);
+    }, [merchants, selectedMerchantId]);
 
     return <div ref={containerRef} className={className} />;
 }
