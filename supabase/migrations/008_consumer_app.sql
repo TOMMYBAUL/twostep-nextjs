@@ -143,20 +143,20 @@ CREATE OR REPLACE FUNCTION autocomplete_suggestions(
     suggestion TEXT,
     suggestion_type TEXT
 ) LANGUAGE sql STABLE AS $$
-    SELECT DISTINCT p.name AS suggestion, 'product'::TEXT AS suggestion_type
+    (SELECT DISTINCT p.name AS suggestion, 'product'::TEXT AS suggestion_type
     FROM products p JOIN stock s ON s.product_id = p.id
     WHERE s.quantity > 0 AND p.name ILIKE '%' || query_text || '%'
-    LIMIT result_limit
+    LIMIT result_limit)
     UNION ALL
-    SELECT DISTINCT p.brand AS suggestion, 'brand'::TEXT AS suggestion_type
+    (SELECT DISTINCT p.brand AS suggestion, 'brand'::TEXT AS suggestion_type
     FROM products p JOIN stock s ON s.product_id = p.id
     WHERE s.quantity > 0 AND p.brand IS NOT NULL AND p.brand ILIKE '%' || query_text || '%'
-    LIMIT 5
+    LIMIT 5)
     UNION ALL
-    SELECT DISTINCT p.category AS suggestion, 'category'::TEXT AS suggestion_type
+    (SELECT DISTINCT p.category AS suggestion, 'category'::TEXT AS suggestion_type
     FROM products p JOIN stock s ON s.product_id = p.id
     WHERE s.quantity > 0 AND p.category IS NOT NULL AND p.category ILIKE '%' || query_text || '%'
-    LIMIT 5;
+    LIMIT 5);
 $$;
 
 -- ─── RPC: get_merchant_profile ───

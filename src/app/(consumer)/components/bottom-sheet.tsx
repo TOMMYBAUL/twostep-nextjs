@@ -3,13 +3,14 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { Drawer } from "vaul";
-import { MarkerPin01, Tag01, ChevronRight, SearchLg } from "@untitledui/icons";
+import { MarkerPin01, Tag01, ChevronRight, SearchLg, Clock } from "@untitledui/icons";
 
 interface Merchant {
     merchant_id: string;
     merchant_name: string;
     merchant_description?: string | null;
     merchant_photo?: string | null;
+    merchant_logo?: string | null;
     merchant_address: string;
     merchant_city?: string;
     distance_km: number;
@@ -20,12 +21,17 @@ interface Merchant {
 interface BottomSheetProps {
     merchants: Merchant[];
     isLoading: boolean;
+    distLabel?: string;
 }
 
 const SNAP_POINTS = ["148px", "50%", 1] as const;
 const MIN_SNAP = SNAP_POINTS[0];
 
-export function BottomSheet({ merchants, isLoading }: BottomSheetProps) {
+function walkingMinutes(km: number): number {
+    return Math.max(1, Math.round(km / 0.08));
+}
+
+export function BottomSheet({ merchants, isLoading, distLabel }: BottomSheetProps) {
     const [snap, setSnap] = useState<string | number | null>(MIN_SNAP);
 
     const handleSnapChange = useCallback((point: string | number | null) => {
@@ -59,11 +65,18 @@ export function BottomSheet({ merchants, isLoading }: BottomSheetProps) {
 
                     {/* Header */}
                     <div className="flex shrink-0 items-center justify-between px-5 pb-3">
-                        <h2 className="text-sm font-bold text-[var(--ts-brown)]">
-                            {isLoading
-                                ? "Recherche..."
-                                : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""} à proximité`}
-                        </h2>
+                        <div>
+                            <h2 className="text-sm font-bold text-[var(--ts-brown)]">
+                                {isLoading
+                                    ? "Recherche..."
+                                    : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""}`}
+                            </h2>
+                            {!isLoading && merchants.length > 0 && distLabel && (
+                                <p className="text-[11px] text-[var(--ts-brown-mid)]/50">
+                                    dans un rayon de {distLabel}
+                                </p>
+                            )}
+                        </div>
                         {snap === MIN_SNAP && merchants.length > 0 && (
                             <button
                                 type="button"
@@ -104,9 +117,8 @@ export function BottomSheet({ merchants, isLoading }: BottomSheetProps) {
 }
 
 function MerchantCard({ merchant }: { merchant: Merchant }) {
-    const formattedDistance = merchant.distance_km < 1
-        ? `${Math.round(merchant.distance_km * 1000)}m`
-        : `${merchant.distance_km.toFixed(1)}km`;
+    const minutes = walkingMinutes(merchant.distance_km);
+    const logo = merchant.merchant_logo || merchant.merchant_photo;
 
     return (
         <Link
@@ -115,8 +127,8 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
         >
             {/* Avatar */}
             <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm">
-                {merchant.merchant_photo ? (
-                    <img src={merchant.merchant_photo} alt="" className="h-full w-full object-cover" />
+                {logo ? (
+                    <img src={logo} alt="" className="h-full w-full object-cover" />
                 ) : (
                     <span className="text-lg font-bold text-[var(--ts-ochre)]">
                         {merchant.merchant_name.charAt(0).toUpperCase()}
@@ -128,17 +140,20 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
             <div className="min-w-0 flex-1">
                 <p className="truncate text-[13px] font-semibold text-[var(--ts-brown)]">{merchant.merchant_name}</p>
                 <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[var(--ts-brown-mid)]/50">
+                    <Clock className="size-3 shrink-0" aria-hidden="true" />
+                    {minutes} min à pied
+                    <span className="text-[var(--ts-brown-mid)]/30">·</span>
                     <MarkerPin01 className="size-3 shrink-0" aria-hidden="true" />
-                    {formattedDistance}
+                    {merchant.distance_km < 1 ? `${Math.round(merchant.distance_km * 1000)}m` : `${merchant.distance_km.toFixed(1)}km`}
                 </p>
                 <div className="mt-1 flex items-center gap-2">
                     <span className="text-[11px] font-medium text-[var(--ts-sage)]">
-                        {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
+                        {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""} en stock
                     </span>
                     {merchant.promo_count > 0 && (
                         <span className="flex items-center gap-0.5 rounded-full bg-[var(--ts-red)]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--ts-red)]">
                             <Tag01 className="size-2.5" aria-hidden="true" />
-                            {merchant.promo_count}
+                            {merchant.promo_count} promo{merchant.promo_count > 1 ? "s" : ""}
                         </span>
                     )}
                 </div>

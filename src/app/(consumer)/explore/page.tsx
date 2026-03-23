@@ -2,15 +2,25 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
-import { FilterLines, MarkerPin01, SearchMd, XClose, Check } from "@untitledui/icons";
+import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { MapView } from "../components/map-view";
 import { BottomSheet } from "../components/bottom-sheet";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
 
-const CATEGORIES = ["Mode", "Tech", "Sport", "Maison", "Beauté"];
+const CATEGORIES = [
+    { label: "Tout", value: null, emoji: "" },
+    { label: "Mode", value: "mode", emoji: "👗" },
+    { label: "Chaussures", value: "chaussures", emoji: "👟" },
+    { label: "Sport", value: "sport", emoji: "⚽" },
+    { label: "Tech", value: "tech", emoji: "📱" },
+    { label: "Beauté", value: "beaute", emoji: "💄" },
+    { label: "Bijoux", value: "bijoux", emoji: "💍" },
+    { label: "Jouets", value: "jouets", emoji: "🧸" },
+] as const;
 
 interface NearbyMerchant {
     merchant_id: string;
@@ -27,17 +37,19 @@ interface NearbyMerchant {
     promo_count: number;
 }
 
+function walkingMinutes(km: number): number {
+    return Math.max(1, Math.round(km / 0.08)); // ~5km/h = 83m/min
+}
+
 export default function ExplorePage() {
     const router = useRouter();
     const { position } = useGeolocation();
     const [category, setCategory] = useState<string | null>(null);
-    const [filterOpen, setFilterOpen] = useState(false);
-    const [openNow, setOpenNow] = useState(false);
     const [recenterTrigger, setRecenterTrigger] = useState(0);
     const [is3D, setIs3D] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchFocused, setSearchFocused] = useState(false);
-    const filterRef = useRef<HTMLDivElement>(null);
+    const [selectedMerchant, setSelectedMerchant] = useState<NearbyMerchant | null>(null);
 
     const { data: suggestions } = useAutocomplete(searchFocused ? searchQuery : "");
 
@@ -45,25 +57,15 @@ export default function ExplorePage() {
         if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
     };
 
-    useEffect(() => {
-        if (!filterOpen) return;
-        const handler = (e: MouseEvent) => {
-            if (filterRef.current && !filterRef.current.contains(e.target as Node)) setFilterOpen(false);
-        };
-        document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
-    }, [filterOpen]);
-
     const { data, isLoading } = useQuery<NearbyMerchant[]>({
-        queryKey: ["merchants-nearby", position?.lat, position?.lng, category, openNow],
+        queryKey: ["merchants-nearby", position?.lat, position?.lng, category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: position!.lat.toString(),
                 lng: position!.lng.toString(),
                 radius: "10",
             });
-            if (category) params.set("category", category.toLowerCase());
-            if (openNow) params.set("open_now", "true");
+            if (category) params.set("category", category);
             const res = await fetch(`/api/nearby?${params}`);
             if (!res.ok) throw new Error("Failed");
             const json = await res.json();
@@ -74,19 +76,37 @@ export default function ExplorePage() {
 
     const merchants = data ?? [];
 
+    // Max distance for contextual text
+    const maxDist = merchants.length > 0 ? Math.max(...merchants.map(m => m.distance_km)) : 0;
+    const distLabel = maxDist < 1 ? `${Math.round(maxDist * 1000)}m` : `${Math.ceil(maxDist)}km`;
+
+    // Dismiss mini-fiche when clicking elsewhere on map
+    useEffect(() => {
+        const handler = () => setSelectedMerchant(null);
+        const map = document.querySelector("[class*='mapboxgl-canvas']");
+        map?.addEventListener("click", handler);
+        return () => map?.removeEventListener("click", handler);
+    }, []);
+
     return (
         <div className="relative h-[calc(100dvh-4rem)]">
             <div className="absolute inset-0">
-                <MapView merchants={merchants} userPosition={position} className="h-full w-full" recenterTrigger={recenterTrigger} is3D={is3D} />
-                {/* Gradient fade — blends map edge into bottom sheet */}
+                <MapView
+                    merchants={merchants}
+                    userPosition={position}
+                    className="h-full w-full"
+                    recenterTrigger={recenterTrigger}
+                    is3D={is3D}
+                    selectedMerchantId={selectedMerchant?.merchant_id ?? null}
+                    onMerchantSelect={(m) => setSelectedMerchant(m as NearbyMerchant)}
+                />
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-[var(--ts-cream)] to-transparent" />
             </div>
 
-            {/* Search bar + filter — top */}
+            {/* Search bar — top */}
             <div className="absolute left-0 right-0 top-3 z-10 px-4">
-                <div className="mx-auto flex max-w-md items-center gap-2">
-                    {/* Search input */}
-                    <div className="relative flex-1">
+                <div className="mx-auto max-w-md">
+                    <div className="relative">
                         <div className={cx(
                             "flex items-center gap-2.5 rounded-2xl px-4 py-3 shadow-lg backdrop-blur-md transition-all duration-200",
                             searchFocused ? "bg-white shadow-xl ring-2 ring-[var(--ts-ochre)]/20" : "bg-white/95",
@@ -99,129 +119,57 @@ export default function ExplorePage() {
                                 onFocus={() => setSearchFocused(true)}
                                 onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
                                 onKeyDown={(e) => { if (e.key === "Enter") handleSearch(searchQuery); }}
-                                placeholder="Trouver un produit..."
+                                placeholder="Trouver un produit, une marque..."
                                 className="min-w-0 flex-1 bg-transparent text-sm text-[var(--ts-brown)] outline-none placeholder:text-[var(--ts-brown-mid)]/30"
                             />
-                            {!searchFocused && !searchQuery && merchants.length > 0 && (
-                                <span className="shrink-0 rounded-full bg-[var(--ts-cream)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ts-brown-mid)]/60">
-                                    {merchants.length}
-                                </span>
-                            )}
                             {searchQuery && (
                                 <button type="button" onClick={() => setSearchQuery("")} className="text-[var(--ts-brown-mid)]/30 hover:text-[var(--ts-brown-mid)]">
                                     <XClose className="size-4" />
                                 </button>
                             )}
                         </div>
-                        {searchFocused && (
+                        {searchFocused && suggestions && suggestions.length > 0 && (
                             <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-white shadow-xl">
-                                {!searchQuery && (
-                                    <div className="flex flex-wrap gap-2 px-4 pt-3 pb-2">
-                                        {CATEGORIES.map((cat) => (
-                                            <button
-                                                key={cat}
-                                                type="button"
-                                                className="rounded-full bg-[var(--ts-cream)] px-3 py-1.5 text-xs font-semibold text-[var(--ts-brown)] transition duration-100 active:bg-[var(--ts-cream-dark)]"
-                                                onMouseDown={(e) => { e.preventDefault(); handleSearch(cat); }}
-                                            >
-                                                {cat}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                                {suggestions && suggestions.length > 0 && (
-                                    <div className={!searchQuery ? "border-t border-[var(--ts-cream)]" : ""}>
-                                        {suggestions.map((s, i) => (
-                                            <button
-                                                key={`${s.suggestion_type}-${s.suggestion}-${i}`}
-                                                type="button"
-                                                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[var(--ts-brown)] transition duration-100 hover:bg-[var(--ts-cream)]/50"
-                                                onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
-                                            >
-                                                <span className="rounded-lg bg-[var(--ts-cream)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ts-brown-mid)]">
-                                                    {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
-                                                </span>
-                                                {s.suggestion}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                                {!searchQuery && (!suggestions || suggestions.length === 0) && (
-                                    <p className="px-4 pb-3 text-[11px] text-[var(--ts-brown-mid)]/40">
-                                        Cherche un produit, une marque ou une catégorie
-                                    </p>
-                                )}
+                                {suggestions.map((s, i) => (
+                                    <button
+                                        key={`${s.suggestion_type}-${s.suggestion}-${i}`}
+                                        type="button"
+                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[var(--ts-brown)] transition duration-100 hover:bg-[var(--ts-cream)]/50"
+                                        onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
+                                    >
+                                        <span className="rounded-lg bg-[var(--ts-cream)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ts-brown-mid)]">
+                                            {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
+                                        </span>
+                                        {s.suggestion}
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </div>
 
-                    {/* Filter button — inline with search */}
-                    <div ref={filterRef} className="relative">
-                        <button
-                            type="button"
-                            onClick={() => setFilterOpen((v) => !v)}
-                            className={cx(
-                                "flex size-12 items-center justify-center rounded-2xl shadow-lg backdrop-blur-md transition duration-150",
-                                category || openNow
-                                    ? "bg-[var(--ts-ochre)] text-white"
-                                    : "bg-white/95 text-[var(--ts-brown)]",
-                            )}
-                            aria-label="Filtrer"
-                        >
-                            <FilterLines className="size-5" aria-hidden="true" />
-                        </button>
-                        {filterOpen && (
-                            <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-2xl bg-white shadow-xl">
-                                <button
-                                    type="button"
-                                    onClick={() => { setCategory(null); setFilterOpen(false); }}
-                                    className={cx(
-                                        "w-full px-4 py-3 text-left text-xs font-medium transition duration-100",
-                                        !category ? "bg-[var(--ts-ochre)]/10 text-[var(--ts-ochre)]" : "text-[var(--ts-brown-mid)] hover:bg-[var(--ts-cream)]/50",
-                                    )}
-                                >
-                                    Toutes catégories
-                                </button>
-                                <div className="border-t border-[var(--ts-cream)]">
-                                    <button
-                                        type="button"
-                                        onClick={() => setOpenNow((v) => !v)}
-                                        className={cx(
-                                            "flex w-full items-center justify-between px-4 py-3 text-xs font-medium transition duration-100",
-                                            openNow ? "text-[var(--ts-ochre)]" : "text-[var(--ts-brown-mid)] hover:bg-[var(--ts-cream)]/50",
-                                        )}
-                                    >
-                                        Ouvert maintenant
-                                        <div className={cx(
-                                            "flex size-5 items-center justify-center rounded-lg border-2 transition duration-100",
-                                            openNow ? "border-[var(--ts-ochre)] bg-[var(--ts-ochre)]" : "border-gray-200",
-                                        )}>
-                                            {openNow && <Check className="size-3 text-white" />}
-                                        </div>
-                                    </button>
-                                </div>
-                                <div className="border-t border-[var(--ts-cream)]">
-                                    {CATEGORIES.map((cat) => (
-                                        <button
-                                            key={cat}
-                                            type="button"
-                                            onClick={() => { setCategory(cat); setFilterOpen(false); }}
-                                            className={cx(
-                                                "w-full px-4 py-3 text-left text-xs font-medium transition duration-100",
-                                                category === cat ? "bg-[var(--ts-ochre)]/10 text-[var(--ts-ochre)]" : "text-[var(--ts-brown-mid)] hover:bg-[var(--ts-cream)]/50",
-                                            )}
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                    {/* Category filter chips — always visible */}
+                    <div className="mt-2 flex gap-1.5 overflow-x-auto scrollbar-hide">
+                        {CATEGORIES.map((cat) => (
+                            <button
+                                key={cat.label}
+                                type="button"
+                                onClick={() => { setCategory(cat.value); setSelectedMerchant(null); }}
+                                className={cx(
+                                    "flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm backdrop-blur-sm transition duration-150",
+                                    category === cat.value
+                                        ? "bg-[var(--ts-ochre)] text-white shadow-md"
+                                        : "bg-white/90 text-[var(--ts-brown)] active:bg-white",
+                                )}
+                            >
+                                {cat.emoji && <span>{cat.emoji}</span>}
+                                {cat.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Map controls — stacked right */}
+            {/* Map controls — right side */}
             <div className="absolute bottom-44 right-3 z-10 flex flex-col gap-2">
                 <button
                     type="button"
@@ -238,14 +186,67 @@ export default function ExplorePage() {
                     type="button"
                     onClick={() => setRecenterTrigger((n) => n + 1)}
                     className="flex size-11 items-center justify-center rounded-xl bg-white/95 shadow-lg backdrop-blur-sm transition duration-150 active:scale-95"
-                    aria-label="Recentrer sur ma position"
+                    aria-label="Recentrer"
                 >
                     <MarkerPin01 className="size-5 text-[var(--ts-ochre)]" aria-hidden="true" />
                 </button>
             </div>
 
-            {/* Bottom sheet — replaces side panel */}
-            <BottomSheet merchants={merchants} isLoading={isLoading} />
+            {/* Mini-fiche — appears when a pin is tapped */}
+            {selectedMerchant && (
+                <div className="absolute bottom-40 left-4 right-4 z-30 mx-auto max-w-md animate-in slide-in-from-bottom-4 fade-in duration-200">
+                    <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+                        <div className="flex items-center gap-3 p-4">
+                            {/* Avatar */}
+                            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--ts-cream)] shadow-sm">
+                                {selectedMerchant.merchant_photo || selectedMerchant.merchant_logo ? (
+                                    <img src={selectedMerchant.merchant_logo || selectedMerchant.merchant_photo || ""} alt="" className="h-full w-full object-cover" />
+                                ) : (
+                                    <span className="text-lg font-bold text-[var(--ts-ochre)]">
+                                        {selectedMerchant.merchant_name.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2)}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Info */}
+                            <div className="min-w-0 flex-1">
+                                <h3 className="truncate text-sm font-bold text-[var(--ts-brown)]">{selectedMerchant.merchant_name}</h3>
+                                <p className="mt-0.5 truncate text-xs text-[var(--ts-brown-mid)]/60">{selectedMerchant.merchant_address}</p>
+                                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                                    <span className="flex items-center gap-1 text-[11px] font-medium text-[var(--ts-sage)]">
+                                        <Clock className="size-3" aria-hidden="true" />
+                                        {walkingMinutes(selectedMerchant.distance_km)} min à pied
+                                    </span>
+                                    <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/40">·</span>
+                                    <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/60">
+                                        {selectedMerchant.product_count} produit{selectedMerchant.product_count > 1 ? "s" : ""} en stock
+                                    </span>
+                                    {selectedMerchant.promo_count > 0 && (
+                                        <>
+                                            <span className="text-[11px] font-medium text-[var(--ts-brown-mid)]/40">·</span>
+                                            <span className="flex items-center gap-0.5 text-[11px] font-semibold text-[var(--ts-red)]">
+                                                <Tag01 className="size-2.5" aria-hidden="true" />
+                                                {selectedMerchant.promo_count} promo{selectedMerchant.promo_count > 1 ? "s" : ""}
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* CTA */}
+                            <Link
+                                href={`/shop/${selectedMerchant.merchant_id}`}
+                                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ts-ochre)] text-white shadow-sm transition duration-150 active:scale-95"
+                            >
+                                <ChevronRight className="size-5" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bottom sheet — merchant list */}
+            <BottomSheet merchants={merchants} isLoading={isLoading} distLabel={distLabel} />
         </div>
     );
 }
