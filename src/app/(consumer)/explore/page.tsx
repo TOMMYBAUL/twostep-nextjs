@@ -42,7 +42,7 @@ function walkingMinutes(km: number): number {
 
 export default function ExplorePage() {
     const router = useRouter();
-    const { position } = useGeolocation();
+    const { position, refresh: refreshGeo } = useGeolocation();
     const [category, setCategory] = useState<string | null>(null);
     const [recenterTrigger, setRecenterTrigger] = useState(0);
     const [is3D, setIs3D] = useState(false);
@@ -69,9 +69,14 @@ export default function ExplorePage() {
                 radius: radius.toString(),
             });
             if (category) params.set("category", category);
+            console.log("[explore] Fetching nearby:", { lat: position!.lat, lng: position!.lng, radius, category });
             const res = await fetch(`/api/nearby?${params}`);
-            if (!res.ok) throw new Error("Failed");
+            if (!res.ok) {
+                console.error("[explore] API error:", res.status, await res.text().catch(() => ""));
+                throw new Error("Failed");
+            }
             const json = await res.json();
+            console.log("[explore] Got merchants:", json.merchants?.length ?? 0);
             return json.merchants;
         },
         enabled: !!position,
@@ -300,7 +305,7 @@ export default function ExplorePage() {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setRecenterTrigger((n) => n + 1)}
+                        onClick={() => { refreshGeo(); setRecenterTrigger((n) => n + 1); }}
                         className="flex size-11 items-center justify-center rounded-xl bg-white shadow-md transition duration-150 active:scale-95"
                         aria-label="Recentrer"
                     >
