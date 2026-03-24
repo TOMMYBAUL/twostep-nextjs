@@ -188,6 +188,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
         const zoom = Math.floor(map.getZoom());
         const bounds = map.getBounds();
+        if (!bounds) return;
         const bbox: [number, number, number, number] = [
             bounds.getWest(),
             bounds.getSouth(),
@@ -200,13 +201,14 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
         clusters.forEach((feature) => {
             const [lng, lat] = feature.geometry.coordinates;
 
-            if (feature.properties.cluster) {
-                const count = feature.properties.point_count;
+            if ("cluster" in feature.properties && feature.properties.cluster) {
+                const props = feature.properties as Supercluster.ClusterProperties;
+                const count = props.point_count;
                 const el = createClusterElement(count);
 
                 el.addEventListener("click", () => {
                     const expansionZoom = Math.min(
-                        index.getClusterExpansionZoom(feature.properties.cluster_id),
+                        index.getClusterExpansionZoom(props.cluster_id),
                         20
                     );
                     map.easeTo({ center: [lng, lat], zoom: expansionZoom, duration: 500 });
