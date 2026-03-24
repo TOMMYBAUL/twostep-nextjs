@@ -189,11 +189,14 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
         const zoom = Math.floor(map.getZoom());
         const bounds = map.getBounds();
         if (!bounds) return;
+        const latRange = bounds.getNorth() - bounds.getSouth();
+        const lngRange = bounds.getEast() - bounds.getWest();
+        const buffer = 0.3;
         const bbox: [number, number, number, number] = [
-            bounds.getWest(),
-            bounds.getSouth(),
-            bounds.getEast(),
-            bounds.getNorth(),
+            bounds.getWest() - lngRange * buffer,
+            bounds.getSouth() - latRange * buffer,
+            bounds.getEast() + lngRange * buffer,
+            bounds.getNorth() + latRange * buffer,
         ];
 
         const clusters = index.getClusters(bbox, zoom);
