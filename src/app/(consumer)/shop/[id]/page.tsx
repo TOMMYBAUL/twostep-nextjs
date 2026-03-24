@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown } from "@untitledui/icons";
 import { useState } from "react";
-import { ProductCard } from "../../components/product-card";
+import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
@@ -268,27 +268,68 @@ export default function ShopProfilePage() {
                         {activeTab === "Promos" ? "Aucune promo en cours" : activeTab === "Nouveautés" ? "Pas de nouveautés récentes" : "Aucun produit"}
                     </p>
                 ) : (
-                    filteredProducts.map((p) => (
-                        <ProductCard
-                            key={p.id}
-                            id={p.id}
-                            name={p.name}
-                            price={p.price}
-                            photo={p.photo_url}
-                            merchantName={profile.merchant_name}
-                            distance={0}
-                            stockQuantity={p.stock?.quantity ?? 0}
-                            salePrice={promoMap.get(p.id) ?? null}
-                            isFavorite={favoriteIds.has(p.id)}
-                            onToggleFavorite={() => {
-                                if (favoriteIds.has(p.id)) {
-                                    remove.mutate(p.id);
-                                } else {
-                                    add.mutate(p.id);
-                                }
-                            }}
-                        />
-                    ))
+                    filteredProducts.map((p) => {
+                        const sale = promoMap.get(p.id) ?? null;
+                        const isFav = favoriteIds.has(p.id);
+                        const isOut = (p.stock?.quantity ?? 0) === 0;
+                        return (
+                            <Link key={p.id} href={`/product/${p.id}`} className="group block">
+                                {/* Photo */}
+                                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[var(--ts-cream-dark)]">
+                                    {p.photo_url ? (
+                                        <img
+                                            src={p.photo_url}
+                                            alt={p.name}
+                                            className={cx(
+                                                "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",
+                                                isOut && "opacity-40",
+                                            )}
+                                        />
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center">
+                                            <span className="text-3xl font-light text-[var(--ts-brown-mid)]/15">{p.name.charAt(0)}</span>
+                                        </div>
+                                    )}
+
+                                    <div className="absolute right-2 top-2">
+                                        <HeartButton
+                                            isFavorite={isFav}
+                                            onToggle={() => isFav ? remove.mutate(p.id) : add.mutate(p.id)}
+                                            ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.name} des favoris`}
+                                            className="bg-white/80 backdrop-blur-sm"
+                                        />
+                                    </div>
+
+                                    {sale && (
+                                        <div className="absolute bottom-2 left-2 rounded-md bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                                            -{Math.round(((p.price - sale) / p.price) * 100)}%
+                                        </div>
+                                    )}
+
+                                    {isOut && (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <span className="rounded-md bg-black/50 px-2 py-1 text-[11px] font-medium text-white">Indisponible</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Info */}
+                                <div className="mt-2 px-0.5">
+                                    <p className="truncate text-[13px] font-medium text-[var(--ts-brown)]">{p.name}</p>
+                                    <div className="mt-0.5 flex items-baseline gap-2">
+                                        {sale ? (
+                                            <>
+                                                <span className="text-[13px] font-semibold text-[var(--ts-ochre)]">{sale.toFixed(2)} €</span>
+                                                <span className="text-[11px] text-[var(--ts-brown-mid)]/40 line-through">{p.price.toFixed(2)} €</span>
+                                            </>
+                                        ) : (
+                                            <span className="text-[13px] font-semibold text-[var(--ts-brown)]">{p.price.toFixed(2)} €</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </Link>
+                        );
+                    })
                 )}
             </div>
         </div>
