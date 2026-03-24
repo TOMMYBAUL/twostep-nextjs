@@ -1,15 +1,25 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Zap, Package, SlashCircle01 } from "@untitledui/icons";
 import { useIsMobile, E, Counter } from "../utils";
 import { SpotlightCard } from "../components/spotlight-card";
 
-const PIONEER_COUNT = 0;
+function usePioneerCount() {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        fetch("/api/pioneers")
+            .then((r) => r.json())
+            .then((d) => setCount(d.count ?? 0))
+            .catch(() => {});
+    }, []);
+    return count;
+}
 
 export function Pioneers() {
     const isMobile = useIsMobile();
+    const pioneerCount = usePioneerCount();
     const ref = useRef<HTMLElement>(null);
     const inView = useInView(ref, { once: true, margin: "-8%" });
 
@@ -97,7 +107,7 @@ export function Pioneers() {
                 >
                     <div style={{ display: "flex", gap: 4, alignItems: "baseline" }}>
                         <span style={{ fontSize: 28, fontWeight: 900, color: "#C8813A", letterSpacing: "-0.03em", lineHeight: 1 }}>
-                            <Counter to={PIONEER_COUNT} inView={inView} />
+                            <Counter to={pioneerCount} inView={inView} />
                         </span>
                         <span style={{ fontSize: 13, fontWeight: 600, color: "rgba(245,237,214,0.5)" }}>/30</span>
                     </div>

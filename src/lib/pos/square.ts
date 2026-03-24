@@ -62,6 +62,26 @@ export const squareAdapter: IPOSAdapter = {
         };
     },
 
+    async refreshToken(refreshToken: string) {
+        const res = await fetch(`${getBaseUrl()}/oauth2/token`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Square-Version": "2025-01-23" },
+            body: JSON.stringify({
+                client_id: process.env.SQUARE_APP_ID,
+                client_secret: process.env.SQUARE_APP_SECRET,
+                refresh_token: refreshToken,
+                grant_type: "refresh_token",
+            }),
+        });
+        const data = await res.json();
+        if (!res.ok) return null;
+        return {
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            expires_at: data.expires_at,
+        };
+    },
+
     async getCatalog(accessToken: string): Promise<POSProduct[]> {
         const products: POSProduct[] = [];
         let cursor: string | undefined;

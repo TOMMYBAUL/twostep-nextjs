@@ -23,6 +23,9 @@ export interface IPOSAdapter {
     /** Échange le code OAuth contre des tokens */
     exchangeCode(code: string): Promise<{ access_token: string; refresh_token: string; expires_at: string }>;
 
+    /** Rafraîchit un token expiré via refresh_token. Retourne null si non supporté. */
+    refreshToken(refreshToken: string): Promise<{ access_token: string; refresh_token: string; expires_at: string } | null>;
+
     /** Récupère le catalogue complet du marchand */
     getCatalog(accessToken: string): Promise<POSProduct[]>;
 

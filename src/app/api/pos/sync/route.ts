@@ -4,6 +4,7 @@ import { squareAdapter } from "@/lib/pos/square";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { shopifyAdapter } from "@/lib/pos/shopify";
 import { createClient } from "@/lib/supabase/server";
+import { encrypt, decrypt } from "@/lib/email/encryption";
 import type { IPOSAdapter } from "@/lib/pos/types";
 
 const adapters: Record<string, IPOSAdapter> = {
@@ -43,7 +44,7 @@ export async function POST() {
     // Get stored credentials
     const { data: creds } = await supabase
         .from("merchant_pos_credentials")
-        .select("access_token")
+        .select("access_token, refresh_token, expires_at")
         .eq("merchant_id", merchant.id)
         .single();
 
@@ -51,9 +52,29 @@ export async function POST() {
         return NextResponse.json({ error: "No POS credentials found" }, { status: 400 });
     }
 
+    // Decrypt and refresh token if expired (or expiring within 5 min)
+    let accessToken = decrypt(creds.access_token);
+    const expiresAt = creds.expires_at ? new Date(creds.expires_at).getTime() : Infinity;
+    const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
+
+    if (expiresAt < fiveMinFromNow && creds.refresh_token) {
+        const refreshed = await adapter.refreshToken(decrypt(creds.refresh_token));
+        if (refreshed) {
+            accessToken = refreshed.access_token;
+            await supabase.from("merchant_pos_credentials").update({
+                access_token: encrypt(refreshed.access_token),
+                refresh_token: refreshed.refresh_token ? encrypt(refreshed.refresh_token) : creds.refresh_token,
+                expires_at: refreshed.expires_at,
+                updated_at: new Date().toISOString(),
+            }).eq("merchant_id", merchant.id);
+        } else {
+            return NextResponse.json({ error: "POS token expired — please reconnect" }, { status: 401 });
+        }
+    }
+
     try {
         // --- 1. Catalog sync ---
-        const catalog = await adapter.getCatalog(creds.access_token);
+        const catalog = await adapter.getCatalog(accessToken);
 
         // Get existing POS-linked products for this merchant
         const { data: existing } = await supabase
@@ -109,7 +130,7 @@ export async function POST() {
 
         // --- 2. Stock sync ---
         const posItemIds = catalog.map((p) => p.pos_item_id);
-        const stockUpdates = await adapter.getStock(creds.access_token, posItemIds);
+        const stockUpdates = await adapter.getStock(accessToken, posItemIds);
 
         let stockUpdated = 0;
         for (const update of stockUpdates) {

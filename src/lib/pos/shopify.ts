@@ -36,6 +36,11 @@ export const shopifyAdapter: IPOSAdapter = {
         };
     },
 
+    async refreshToken(_refreshToken: string) {
+        // Shopify offline tokens don't expire — no refresh needed
+        return null;
+    },
+
     async getCatalog(accessToken: string) {
         const products: POSProduct[] = [];
         let pageInfo: string | null = null;

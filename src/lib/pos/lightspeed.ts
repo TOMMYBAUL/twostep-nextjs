@@ -35,6 +35,26 @@ export const lightspeedAdapter: IPOSAdapter = {
         };
     },
 
+    async refreshToken(refreshToken: string) {
+        const res = await fetch("https://cloud.lightspeedapp.com/oauth/access_token.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                client_id: process.env.LIGHTSPEED_CLIENT_ID!,
+                client_secret: process.env.LIGHTSPEED_CLIENT_SECRET!,
+                refresh_token: refreshToken,
+                grant_type: "refresh_token",
+            }),
+        });
+        const data = await res.json();
+        if (!res.ok) return null;
+        return {
+            access_token: data.access_token,
+            refresh_token: data.refresh_token ?? refreshToken,
+            expires_at: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+        };
+    },
+
     async getCatalog(accessToken: string) {
         const accountRes = await fetch(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
