@@ -33,7 +33,7 @@ export function Nav() {
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 {!isMobile && (
-                    <a href="#comment" style={{
+                    <a href="/discover" style={{
                         padding: "8px 18px",
                         borderRadius: 999,
                         border: "1.5px solid rgba(44,32,24,0.15)",
@@ -42,11 +42,11 @@ export function Nav() {
                         fontSize: 13,
                         textDecoration: "none",
                     }}>
-                        Comment ça marche
+                        Explorer les boutiques
                     </a>
                 )}
                 <motion.a
-                    href="#contact"
+                    href="/auth/login"
                     whileHover={{ scale: 1.05, boxShadow: "0 6px 24px rgba(200,129,58,0.35)" }}
                     whileTap={{ scale: 0.96 }}
                     style={{
@@ -59,7 +59,7 @@ export function Nav() {
                         textDecoration: "none",
                     }}
                 >
-                    Être contacté →
+                    Espace commerçant
                 </motion.a>
             </div>
         </motion.nav>

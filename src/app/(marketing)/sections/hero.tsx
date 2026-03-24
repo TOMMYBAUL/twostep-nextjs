@@ -94,7 +94,7 @@ export function Hero() {
                         style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}
                     >
                         <motion.a
-                            href="#contact"
+                            href="/discover"
                             whileHover={{ scale: 1.05, boxShadow: "0 12px 40px rgba(200,129,58,0.42)" }}
                             whileTap={{ scale: 0.97 }}
                             style={{
@@ -110,13 +110,11 @@ export function Hero() {
                                 letterSpacing: "-0.01em",
                             }}
                         >
-                            Je veux être pionnier →
+                            Explorer les boutiques →
                         </motion.a>
-                        {!isMobile && (
-                            <a href="#comment" style={{ fontSize: 14, color: "#6B4F38", fontWeight: 600, textDecoration: "none", opacity: 0.8 }}>
-                                Comment ça marche ↓
-                            </a>
-                        )}
+                        <a href="/auth/login" style={{ fontSize: 14, color: "#6B4F38", fontWeight: 600, textDecoration: "none", opacity: 0.8 }}>
+                            Espace commerçant
+                        </a>
                     </motion.div>
                 </motion.div>
 
