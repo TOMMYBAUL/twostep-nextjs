@@ -1,8 +1,10 @@
+/* v4-clustering */
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import Supercluster from "supercluster";
 import { MAPBOX_TOKEN, MAPBOX_STYLE, DEFAULT_CENTER, DEFAULT_ZOOM } from "../lib/mapbox";
 
 interface Merchant {
@@ -27,29 +29,70 @@ interface MapViewProps {
     onMerchantSelect?: (merchant: Merchant) => void;
 }
 
+type MerchantPoint = Supercluster.PointFeature<{ merchant: Merchant }>;
+
 function getInitials(name: string): string {
     return name.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-    mode: "#E07A5F",
-    chaussures: "#C97C5D",
-    bijoux: "#B56576",
-    tech: "#355070",
-    beaute: "#6B4E71",
-    sport: "#81B29A",
-    jouets: "#F2CC8F",
-    accessoires: "#3D405B",
-    bricolage: "#5B8C5A",
-};
+// Individual merchant pin — proven GPS-fixed from test-map
+function createPinElement(merchant: Merchant, isSelected: boolean): HTMLElement {
+    const size = 42;
+    const logo = merchant.merchant_logo || merchant.merchant_photo;
 
-function getPinColor(merchant: Merchant): string {
-    // Try to infer category from description or name
-    const desc = (merchant.merchant_name + " " + (merchant as any).merchant_description || "").toLowerCase();
-    for (const [cat, color] of Object.entries(CATEGORY_COLORS)) {
-        if (desc.includes(cat)) return color;
+    const el = document.createElement("div");
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.marginLeft = -(size / 2) + "px";
+    el.style.marginTop = -(size / 2) + "px";
+    el.style.cursor = "pointer";
+
+    const circle = document.createElement("div");
+    circle.style.cssText = `width:100%;height:100%;border-radius:50%;border:2.5px solid ${isSelected ? "#E07A5F" : "white"};box-shadow:0 1px 6px rgba(0,0,0,0.15);overflow:hidden;display:flex;align-items:center;justify-content:center;`;
+
+    if (logo) {
+        circle.style.background = "white";
+        const img = document.createElement("img");
+        img.src = logo;
+        img.style.cssText = "width:100%;height:100%;object-fit:cover;";
+        img.onerror = () => {
+            img.remove();
+            circle.style.background = "#C8813A";
+            circle.style.color = "white";
+            circle.style.fontSize = "13px";
+            circle.style.fontWeight = "800";
+            circle.textContent = getInitials(merchant.merchant_name);
+        };
+        circle.appendChild(img);
+    } else {
+        circle.style.background = "#C8813A";
+        circle.style.color = "white";
+        circle.style.fontSize = "13px";
+        circle.style.fontWeight = "800";
+        circle.textContent = getInitials(merchant.merchant_name);
     }
-    return "#E07A5F"; // default ochre
+
+    el.appendChild(circle);
+    return el;
+}
+
+// Cluster bubble — ochre circle with white count
+function createClusterElement(count: number): HTMLElement {
+    const size = count >= 100 ? 56 : count >= 10 ? 48 : 42;
+
+    const el = document.createElement("div");
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.marginLeft = -(size / 2) + "px";
+    el.style.marginTop = -(size / 2) + "px";
+    el.style.cursor = "pointer";
+
+    const circle = document.createElement("div");
+    circle.style.cssText = `width:100%;height:100%;border-radius:50%;background:#C8813A;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;color:white;font-size:${size >= 56 ? 16 : 14}px;font-weight:800;`;
+    circle.textContent = String(count);
+
+    el.appendChild(circle);
+    return el;
 }
 
 export function MapView({ merchants, userPosition, className, recenterTrigger, is3D, selectedMerchantId, onMerchantSelect }: MapViewProps) {
@@ -57,8 +100,18 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const markersRef = useRef<mapboxgl.Marker[]>([]);
     const userMarkerRef = useRef<mapboxgl.Marker | null>(null);
+    const clusterRef = useRef<Supercluster<{ merchant: Merchant }> | null>(null);
     const hasFittedRef = useRef(false);
 
+    // Stable callback ref for onMerchantSelect
+    const onSelectRef = useRef(onMerchantSelect);
+    onSelectRef.current = onMerchantSelect;
+
+    // Stable ref for selectedMerchantId (used inside updateMarkers)
+    const selectedIdRef = useRef(selectedMerchantId);
+    selectedIdRef.current = selectedMerchantId;
+
+    // Init map
     useEffect(() => {
         if (!containerRef.current || mapRef.current) return;
         mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -96,18 +149,117 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
         return () => { map.remove(); mapRef.current = null; };
     }, []);
 
-    // Fit map to show all merchants (smart centering)
+    // Build supercluster index when merchants change
+    useEffect(() => {
+        if (merchants.length === 0) return;
+
+        const points: MerchantPoint[] = merchants.map((m) => ({
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [m.merchant_lng, m.merchant_lat] },
+            properties: { merchant: m },
+        }));
+
+        const index = new Supercluster<{ merchant: Merchant }>({
+            radius: 18,
+            maxZoom: 12,
+        });
+        index.load(points);
+        clusterRef.current = index;
+
+        // Fit bounds once
+        const map = mapRef.current;
+        if (map && !hasFittedRef.current) {
+            const bounds = new mapboxgl.LngLatBounds();
+            merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
+            if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
+            map.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
+            hasFittedRef.current = true;
+        }
+    }, [merchants, userPosition]);
+
+    // Render clusters/pins based on current zoom + bounds
+    const updateMarkers = useCallback(() => {
+        const map = mapRef.current;
+        const index = clusterRef.current;
+        if (!map || !index) return;
+
+        markersRef.current.forEach((m) => m.remove());
+        markersRef.current = [];
+
+        const zoom = Math.floor(map.getZoom());
+        const bounds = map.getBounds();
+        const bbox: [number, number, number, number] = [
+            bounds.getWest(),
+            bounds.getSouth(),
+            bounds.getEast(),
+            bounds.getNorth(),
+        ];
+
+        const clusters = index.getClusters(bbox, zoom);
+
+        clusters.forEach((feature) => {
+            const [lng, lat] = feature.geometry.coordinates;
+
+            if (feature.properties.cluster) {
+                const count = feature.properties.point_count;
+                const el = createClusterElement(count);
+
+                el.addEventListener("click", () => {
+                    const expansionZoom = Math.min(
+                        index.getClusterExpansionZoom(feature.properties.cluster_id),
+                        20
+                    );
+                    map.easeTo({ center: [lng, lat], zoom: expansionZoom, duration: 500 });
+                });
+
+                const marker = new mapboxgl.Marker({ element: el })
+                    .setLngLat([lng, lat])
+                    .addTo(map);
+                markersRef.current.push(marker);
+            } else {
+                const merchant = (feature.properties as { merchant: Merchant }).merchant;
+                const isSelected = selectedIdRef.current === merchant.merchant_id;
+                const el = createPinElement(merchant, isSelected);
+
+                el.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    onSelectRef.current?.(merchant);
+                });
+
+                const marker = new mapboxgl.Marker({ element: el })
+                    .setLngLat([lng, lat])
+                    .addTo(map);
+                markersRef.current.push(marker);
+            }
+        });
+    }, []);
+
+    // Hook map events to update clusters on zoom/pan
     useEffect(() => {
         const map = mapRef.current;
-        if (!map || merchants.length === 0 || hasFittedRef.current) return;
+        if (!map || merchants.length === 0) return;
 
-        const bounds = new mapboxgl.LngLatBounds();
-        merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
-        if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
+        const onMove = () => updateMarkers();
 
-        map.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
-        hasFittedRef.current = true;
-    }, [merchants, userPosition]);
+        if (map.loaded()) {
+            updateMarkers();
+        } else {
+            map.on("load", onMove);
+        }
+        map.on("moveend", onMove);
+        map.on("zoomend", onMove);
+
+        return () => {
+            map.off("load", onMove);
+            map.off("moveend", onMove);
+            map.off("zoomend", onMove);
+        };
+    }, [merchants, updateMarkers]);
+
+    // Re-render markers when selection changes
+    useEffect(() => {
+        if (mapRef.current && clusterRef.current) updateMarkers();
+    }, [selectedMerchantId]);
 
     // User position dot
     useEffect(() => {
@@ -123,18 +275,12 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
     // Recenter
     useEffect(() => {
-        if (!recenterTrigger || !mapRef.current) return;
-
-        if (merchants.length > 0) {
-            const bounds = new mapboxgl.LngLatBounds();
-            merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
-            if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
-            mapRef.current.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
-        } else if (userPosition) {
-            // No merchants — at least center on user position
-            mapRef.current.flyTo({ center: [userPosition.lng, userPosition.lat], zoom: 14, duration: 800 });
-        }
-    }, [recenterTrigger, merchants, userPosition]);
+        if (!recenterTrigger || !mapRef.current || merchants.length === 0) return;
+        const bounds = new mapboxgl.LngLatBounds();
+        merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
+        if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
+        mapRef.current.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
+    }, [recenterTrigger]);
 
     // 3D toggle
     useEffect(() => {
@@ -168,73 +314,6 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
             }
         }
     }, [is3D]);
-
-    // Stable callback ref
-    const onSelectRef = useRef(onMerchantSelect);
-    onSelectRef.current = onMerchantSelect;
-
-    // Render merchant pins
-    useEffect(() => {
-        const map = mapRef.current;
-        if (!map) { console.warn("[map] No map instance for pins"); return; }
-        markersRef.current.forEach((m) => m.remove());
-        markersRef.current = [];
-
-        console.log(`[map] Rendering ${merchants.length} merchant pins`);
-        merchants.forEach((merchant) => {
-            const color = getPinColor(merchant);
-            const isSelected = selectedMerchantId === merchant.merchant_id;
-            const logo = merchant.merchant_logo || merchant.merchant_photo;
-
-            // Pin container — no position/transform/transition here, Mapbox controls these
-            const wrapper = document.createElement("div");
-            wrapper.style.cssText = `cursor:pointer;${isSelected ? "z-index:10;" : ""}`;
-
-            // Pin body — scale applied here so it doesn't conflict with Mapbox's transform
-            const el = document.createElement("div");
-            const selectedScale = isSelected ? "transform:scale(1.25);" : "";
-            if (logo) {
-                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});overflow:hidden;background:white;${selectedScale}`;
-                const img = document.createElement("img");
-                img.src = logo;
-                img.alt = merchant.merchant_name;
-                img.style.cssText = "width:100%;height:100%;object-fit:cover;";
-                img.onerror = () => {
-                    el.innerHTML = "";
-                    el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;${selectedScale}`;
-                    el.textContent = getInitials(merchant.merchant_name);
-                };
-                el.appendChild(img);
-            } else {
-                el.style.cssText = `width:42px;height:42px;border-radius:50%;border:3px solid ${isSelected ? "var(--ts-ochre, #E07A5F)" : "white"};box-shadow:0 2px 10px rgba(0,0,0,${isSelected ? "0.3" : "0.15"});display:flex;align-items:center;justify-content:center;background:${color};color:white;font-size:13px;font-weight:800;font-family:var(--font-plus-jakarta-sans),sans-serif;${selectedScale}`;
-                el.textContent = getInitials(merchant.merchant_name);
-            }
-            wrapper.appendChild(el);
-
-            // Promo badge
-            if (merchant.promo_count > 0) {
-                const badge = document.createElement("div");
-                badge.style.cssText = "position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:#E07A5F;border:2px solid white;display:flex;align-items:center;justify-content:center;";
-                const badgeText = document.createElement("span");
-                badgeText.style.cssText = "color:white;font-size:8px;font-weight:800;";
-                badgeText.textContent = "%";
-                badge.appendChild(badgeText);
-                wrapper.appendChild(badge);
-            }
-
-            // Click → select merchant (show mini-fiche)
-            wrapper.addEventListener("click", (e) => {
-                e.stopPropagation();
-                onSelectRef.current?.(merchant);
-            });
-
-            const marker = new mapboxgl.Marker({ element: wrapper, anchor: "center" })
-                .setLngLat([merchant.merchant_lng, merchant.merchant_lat])
-                .addTo(map);
-
-            markersRef.current.push(marker);
-        });
-    }, [merchants, selectedMerchantId]);
 
     return <div ref={containerRef} className={className} />;
 }
