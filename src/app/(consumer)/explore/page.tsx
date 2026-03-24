@@ -5,7 +5,9 @@ import { useState, useEffect } from "react";
 import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock, FilterLines, SearchLg, NavigationPointer01 } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapView } from "../components/map-view";
+import dynamic from "next/dynamic";
+
+const MapView = dynamic(() => import("../components/map-view").then(m => m.MapView), { ssr: false });
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";

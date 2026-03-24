@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        optimizePackageImports: ["@untitledui/icons"],
+        optimizePackageImports: [
+            "@untitledui/icons",
+            "react-aria-components",
+            "motion",
+            "recharts",
+        ],
     },
 };
 
