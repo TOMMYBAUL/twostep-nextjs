@@ -5,12 +5,12 @@ export const shopifyAdapter: IPOSAdapter = {
     name: "shopify",
 
     getAuthUrl(merchantId: string): string {
-        // Shopify requires the shop domain — stored in merchant extra data
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
         const params = new URLSearchParams({
             client_id: process.env.SHOPIFY_CLIENT_ID!,
             scope: "read_products,write_products,read_inventory,write_inventory",
-            redirect_uri: `${process.env.NEXT_PUBLIC_SUPABASE_URL ? "" : "http://localhost:3000"}/api/pos/connect`,
-            state: merchantId,
+            redirect_uri: `${baseUrl}/api/pos/connect`,
+            state: `shopify:${merchantId}`,
         });
         return `https://accounts.shopify.com/oauth/authorize?${params}`;
     },

@@ -56,5 +56,20 @@ export function useInvoices(merchantId: string | null) {
         if (res.ok) await fetchInvoices();
     }, [fetchInvoices]);
 
-    return { invoices, loading, fetchInvoices, validateInvoice, updateItems };
+    const uploadInvoice = useCallback(async (file: File, supplierName?: string) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (supplierName) formData.append("supplier_name", supplierName);
+
+        const res = await fetch("/api/invoices/upload", {
+            method: "POST",
+            body: formData,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+        await fetchInvoices();
+        return data as { id: string; status: string; items_count?: number; error?: string };
+    }, [fetchInvoices]);
+
+    return { invoices, loading, fetchInvoices, validateInvoice, updateItems, uploadInvoice };
 }

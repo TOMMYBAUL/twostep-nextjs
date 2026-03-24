@@ -90,6 +90,52 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
+        const code = request.nextUrl.searchParams.get("code");
+        const state = request.nextUrl.searchParams.get("state");
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+        // --- OAuth callback (POS redirects back with code + state) ---
+        if (code && state) {
+            const colonIdx = state.indexOf(":");
+            if (colonIdx === -1) {
+                return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_state`);
+            }
+
+            const provider = state.slice(0, colonIdx);
+            const merchantId = state.slice(colonIdx + 1);
+            const adapter = adapters[provider];
+
+            if (!adapter) {
+                return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=unknown_provider`);
+            }
+
+            try {
+                const tokens = await adapter.exchangeCode(code);
+
+                const supabase = await createClient();
+
+                await supabase
+                    .from("merchant_pos_credentials")
+                    .upsert({
+                        merchant_id: merchantId,
+                        access_token: encrypt(tokens.access_token),
+                        refresh_token: tokens.refresh_token ? encrypt(tokens.refresh_token) : null,
+                        expires_at: tokens.expires_at,
+                        extra: {},
+                    });
+
+                await supabase
+                    .from("merchants")
+                    .update({ pos_type: provider })
+                    .eq("id", merchantId);
+
+                return NextResponse.redirect(`${baseUrl}/dashboard/settings?pos=connected`);
+            } catch {
+                return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=oauth_failed`);
+            }
+        }
+
+        // --- Generate auth URL (frontend requests it) ---
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

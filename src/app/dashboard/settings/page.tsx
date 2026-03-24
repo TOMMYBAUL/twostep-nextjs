@@ -8,10 +8,18 @@ import { usePOS } from "@/hooks/use-pos";
 import { useEmail } from "@/hooks/use-email";
 import { createClient } from "@/lib/supabase/client";
 
+const POS_PROVIDERS = [
+    { id: "square" as const, name: "Square", icon: "□" },
+    { id: "lightspeed" as const, name: "Lightspeed", icon: "⚡" },
+    { id: "shopify" as const, name: "Shopify", icon: "🛍" },
+] as const;
+
+const COMING_SOON_POS = ["SumUp", "Zettle"];
+
 export default function SettingsPage() {
     const { merchant, refetch } = useMerchant();
     const { toast } = useToast();
-    const { isConnected, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
+    const { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
     const emailHook = useEmail(merchant?.id ?? null);
     const [email, setEmail] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState("");
@@ -52,10 +60,9 @@ export default function SettingsPage() {
         }
     };
 
-    const handleConnect = async () => {
+    const handleConnect = async (provider: "square" | "lightspeed" | "shopify") => {
         try {
-            await connect();
-            toast("Square connecté !");
+            await connect(provider);
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur de connexion", "error");
         }
@@ -64,7 +71,7 @@ export default function SettingsPage() {
     const handleDisconnect = async () => {
         try {
             await disconnect();
-            toast("Square déconnecté");
+            toast("POS déconnecté");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         }
@@ -192,56 +199,68 @@ export default function SettingsPage() {
             <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Caisse (POS)</h2>
 
-                {/* Square */}
-                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100">
-                                <svg className="size-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm3 3h6v6H9V9z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold text-gray-900">Square</p>
-                                <p className="text-xs text-gray-400">
-                                    {isConnected
-                                        ? merchant?.pos_last_sync
-                                            ? `Dernière sync : ${new Date(merchant.pos_last_sync).toLocaleString("fr-FR")}`
-                                            : "Connecté — jamais synchronisé"
-                                        : "Synchronisez votre catalogue et stock"}
-                                </p>
-                            </div>
-                        </div>
+                <div className="space-y-2">
+                    {POS_PROVIDERS.map(({ id, name, icon }) => {
+                        const isThisConnected = connectedProvider === id;
+                        const isOtherConnected = isConnected && !isThisConnected;
 
-                        {isConnected ? (
-                            <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
-                                Connecté
-                            </span>
-                        ) : (
-                            <span className="rounded-full px-2.5 py-1 text-[11px] font-medium bg-gray-100 text-gray-400">
-                                Déconnecté
-                            </span>
-                        )}
-                    </div>
+                        return (
+                            <div key={id} className="rounded-xl bg-white px-5 py-5 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100 text-lg">
+                                            {icon}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">{name}</p>
+                                            <p className="text-xs text-gray-400">
+                                                {isThisConnected
+                                                    ? merchant?.pos_last_sync
+                                                        ? `Dernière sync : ${new Date(merchant.pos_last_sync).toLocaleString("fr-FR")}`
+                                                        : "Connecté — jamais synchronisé"
+                                                    : isOtherConnected
+                                                        ? "Un autre POS est déjà connecté"
+                                                        : "Synchronisez votre catalogue et stock"}
+                                            </p>
+                                        </div>
+                                    </div>
 
-                    {isConnected ? (
-                        <div className="flex gap-2">
-                            <button onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
-                                {syncing ? "Synchronisation..." : "Synchroniser"}
-                            </button>
-                            <button
-                                onClick={handleDisconnect}
-                                className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
-                                disabled={connecting}
-                            >
-                                Déconnecter
-                            </button>
-                        </div>
-                    ) : (
-                        <button onClick={handleConnect} className="btn-ts w-full" disabled={connecting}>
-                            {connecting ? "Connexion..." : "Connecter Square (Sandbox)"}
-                        </button>
-                    )}
+                                    {isThisConnected ? (
+                                        <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
+                                            Connecté
+                                        </span>
+                                    ) : (
+                                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
+                                            Disponible
+                                        </span>
+                                    )}
+                                </div>
+
+                                {isThisConnected ? (
+                                    <div className="flex gap-2">
+                                        <button onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
+                                            {syncing ? "Synchronisation..." : "Synchroniser"}
+                                        </button>
+                                        <button
+                                            onClick={handleDisconnect}
+                                            className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
+                                            disabled={connecting}
+                                        >
+                                            Déconnecter
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => handleConnect(id)}
+                                        className="btn-ts w-full"
+                                        disabled={connecting || isOtherConnected}
+                                    >
+                                        {connecting ? "Connexion..." : `Connecter ${name}`}
+                                    </button>
+                                )}
+                            </div>
+                        );
+                    })}
 
                     {syncResult && (
                         <div className="rounded-lg bg-[var(--ts-sage-light)] px-4 py-3 text-xs text-[#5a9474]">
@@ -251,19 +270,9 @@ export default function SettingsPage() {
                             </p>
                         </div>
                     )}
-                </div>
 
-                {/* Other POS providers */}
-                <div className="mt-2 space-y-2">
-                    {["Lightspeed", "Shopify"].map((name) => (
-                        <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
-                            <span className="text-sm font-medium text-gray-900">{name}</span>
-                            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
-                                Disponible
-                            </span>
-                        </div>
-                    ))}
-                    {["SumUp", "Zettle"].map((name) => (
+                    {/* Coming soon */}
+                    {COMING_SOON_POS.map((name) => (
                         <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
                             <span className="text-sm font-medium text-gray-900">{name}</span>
                             <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">

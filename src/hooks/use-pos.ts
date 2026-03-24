@@ -10,26 +10,31 @@ type SyncResult = {
     stock_updated: number;
 };
 
+const SUPPORTED_POS = ["square", "lightspeed", "shopify"] as const;
+type POSProvider = (typeof SUPPORTED_POS)[number];
+
 export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
     const [connecting, setConnecting] = useState(false);
     const [syncing, setSyncing] = useState(false);
     const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
 
-    const isConnected = merchant?.pos_type === "square";
+    const connectedProvider = merchant?.pos_type as POSProvider | null;
+    const isConnected = !!connectedProvider && SUPPORTED_POS.includes(connectedProvider);
 
-    const connect = useCallback(async () => {
+    const connect = useCallback(async (provider: POSProvider = "square") => {
         setConnecting(true);
         try {
-            const res = await fetch("/api/pos/connect", { method: "POST" });
+            const res = await fetch(`/api/pos/connect?provider=${provider}`);
             if (!res.ok) {
                 const data = await res.json();
                 throw new Error(data.error || "Connection failed");
             }
-            onUpdate();
+            const { auth_url } = await res.json();
+            window.location.href = auth_url;
         } finally {
             setConnecting(false);
         }
-    }, [onUpdate]);
+    }, []);
 
     const disconnect = useCallback(async () => {
         setConnecting(true);
@@ -61,5 +66,5 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         }
     }, [onUpdate]);
 
-    return { isConnected, connecting, syncing, syncResult, connect, disconnect, sync };
+    return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync };
 }

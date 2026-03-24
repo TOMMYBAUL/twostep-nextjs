@@ -24,12 +24,12 @@ export async function parseInvoice(
             return await spreadsheetParser.parse(fileBuffer);
         } catch (spreadsheetError) {
             console.warn("Spreadsheet parsing failed:", spreadsheetError);
-            // Don't fall through to PDF parsers — they can't handle spreadsheets
             throw new Error("Spreadsheet parsing failed. Invoice cannot be processed.");
         }
     }
 
-    // PDF path: try Ollama first, then Claude fallback
+    // PDF path: try Ollama first (free, local), then Claude API (paid, reliable)
+    let ollamaAvailable = true;
     let isScannedPdf = false;
 
     try {
@@ -38,9 +38,12 @@ export async function parseInvoice(
         const msg = ollamaError instanceof Error ? ollamaError.message : String(ollamaError);
         if (msg.startsWith("SCANNED_PDF")) {
             isScannedPdf = true;
-            console.warn("Scanned/image PDF detected — Ollama cannot extract text. Falling back to Claude vision.");
+            console.warn("Scanned/image PDF detected — falling back to Claude vision.");
+        } else if (msg.includes("ECONNREFUSED") || msg.includes("fetch failed") || msg.includes("Ollama error")) {
+            ollamaAvailable = false;
+            console.warn("Ollama unavailable — falling back to Claude API.");
         } else {
-            console.warn("Ollama parsing failed, trying Claude fallback:", ollamaError);
+            console.warn("Ollama parsing failed:", ollamaError);
         }
     }
 
@@ -49,6 +52,11 @@ export async function parseInvoice(
         return await claudeFallbackParser.parse(fileBuffer);
     } catch (claudeError) {
         console.error("Claude fallback also failed:", claudeError);
+        if (!ollamaAvailable) {
+            throw new Error(
+                "Invoice parsing failed: Ollama is not running and ANTHROPIC_API_KEY is not set. Install Ollama (ollama.com) or set ANTHROPIC_API_KEY in .env.local."
+            );
+        }
         if (isScannedPdf) {
             throw new Error(
                 "This invoice appears to be a scanned image. Please set ANTHROPIC_API_KEY for Claude vision, or ask the supplier for a text-based PDF."

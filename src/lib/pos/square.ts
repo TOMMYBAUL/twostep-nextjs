@@ -35,7 +35,7 @@ export const squareAdapter: IPOSAdapter = {
             client_id: process.env.SQUARE_APP_ID!,
             scope: "MERCHANT_PROFILE_READ ITEMS_READ ITEMS_WRITE INVENTORY_READ INVENTORY_WRITE",
             session: "false",
-            state: merchantId,
+            state: `square:${merchantId}`,
         });
         return `${getBaseUrl()}/oauth2/authorize?${params}`;
     },

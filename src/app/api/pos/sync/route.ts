@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 
 import { squareAdapter } from "@/lib/pos/square";
+import { lightspeedAdapter } from "@/lib/pos/lightspeed";
+import { shopifyAdapter } from "@/lib/pos/shopify";
 import { createClient } from "@/lib/supabase/server";
+import type { IPOSAdapter } from "@/lib/pos/types";
+
+const adapters: Record<string, IPOSAdapter> = {
+    square: squareAdapter,
+    lightspeed: lightspeedAdapter,
+    shopify: shopifyAdapter,
+};
 
 export async function POST() {
     try {
@@ -26,6 +35,11 @@ export async function POST() {
         return NextResponse.json({ error: "No POS connected" }, { status: 400 });
     }
 
+    const adapter = adapters[merchant.pos_type];
+    if (!adapter) {
+        return NextResponse.json({ error: `Unsupported POS: ${merchant.pos_type}` }, { status: 400 });
+    }
+
     // Get stored credentials
     const { data: creds } = await supabase
         .from("merchant_pos_credentials")
@@ -39,7 +53,7 @@ export async function POST() {
 
     try {
         // --- 1. Catalog sync ---
-        const catalog = await squareAdapter.getCatalog(creds.access_token);
+        const catalog = await adapter.getCatalog(creds.access_token);
 
         // Get existing POS-linked products for this merchant
         const { data: existing } = await supabase
@@ -95,7 +109,7 @@ export async function POST() {
 
         // --- 2. Stock sync ---
         const posItemIds = catalog.map((p) => p.pos_item_id);
-        const stockUpdates = await squareAdapter.getStock(creds.access_token, posItemIds);
+        const stockUpdates = await adapter.getStock(creds.access_token, posItemIds);
 
         let stockUpdated = 0;
         for (const update of stockUpdates) {

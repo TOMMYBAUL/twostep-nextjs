@@ -11,7 +11,7 @@ export const lightspeedAdapter: IPOSAdapter = {
             response_type: "code",
             client_id: process.env.LIGHTSPEED_CLIENT_ID!,
             scope: "employee:all",
-            state: merchantId,
+            state: `lightspeed:${merchantId}`,
         });
         return `https://cloud.lightspeedapp.com/oauth/authorize.php?${params}`;
     },
