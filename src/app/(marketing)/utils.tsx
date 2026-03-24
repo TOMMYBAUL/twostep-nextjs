@@ -50,6 +50,7 @@ export function Counter({ to, inView }: { to: number; inView: boolean }) {
 /* ── Floating card ──────────────────────────────────────────────────── */
 
 interface FloatCardProps {
+    className?: string;
     top?: string | number;
     bottom?: string | number;
     left?: string | number;
@@ -59,9 +60,10 @@ interface FloatCardProps {
     children: React.ReactNode;
 }
 
-export function FloatCard({ top, bottom, left, right, delay = 0, floatDuration = 4, children }: FloatCardProps) {
+export function FloatCard({ className, top, bottom, left, right, delay = 0, floatDuration = 4, children }: FloatCardProps) {
     return (
         <motion.div
+            className={className}
             initial={{ opacity: 0, scale: 0.72, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: [0, -13, 0] }}
             transition={{
