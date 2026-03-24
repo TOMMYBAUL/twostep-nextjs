@@ -22,7 +22,10 @@ export default function FavoritesPage() {
         <div className="min-h-dvh bg-[#2C1A0E]">
             {/* Header */}
             <div className="bg-[#2C1A0E]" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <h1 className="px-4 pb-2 font-display text-xl font-bold text-[#F5EDD8]">Favoris</h1>
+                <div className="flex items-center gap-2.5 px-4 pb-2">
+                    <img src="/logo-icon.webp" alt="" className="size-7" />
+                    <h1 className="font-display text-xl font-bold text-[#F5EDD8]">Favoris</h1>
+                </div>
                 <div className="flex border-b border-[#3D2A1A]">
                     {(["produits", "boutiques"] as Tab[]).map((tab) => (
                         <button

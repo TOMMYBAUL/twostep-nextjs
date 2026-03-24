@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchMd, XClose } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
+import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
@@ -11,6 +12,12 @@ import { useSearch, useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
 
 const CATEGORIES = ["Mode", "Tech", "Sport", "Maison", "Beauté", "Jouets", "Bijoux"];
+
+const FILTER_LABELS: Record<string, string> = {
+    promos: "Promos du moment",
+    trending: "Tendances",
+    nearby: "Disponible maintenant",
+};
 
 export default function SearchPage() {
     return (
@@ -23,25 +30,58 @@ export default function SearchPage() {
 function SearchPageInner() {
     const searchParams = useSearchParams();
     const initialQuery = searchParams.get("q") ?? "";
+    const filterParam = searchParams.get("filter");
     const [query, setQuery] = useState(initialQuery);
     const [isFocused, setIsFocused] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const { position } = useGeolocation();
-    const { data: results, isLoading } = useSearch(
-        query,
-        position?.lat ?? 43.6047,
-        position?.lng ?? 1.4442,
-    );
+    const lat = position?.lat ?? 43.6047;
+    const lng = position?.lng ?? 1.4442;
+
+    // Search mode: standard text search
+    const { data: results, isLoading } = useSearch(query, lat, lng);
+
+    // Filter mode: discover section (promos, trending, nearby)
+    const isFilterMode = !!filterParam && !query;
+    const { data: filterResults, isLoading: filterLoading } = useQuery<any[]>({
+        queryKey: ["discover-filter", filterParam, lat, lng],
+        queryFn: async () => {
+            const params = new URLSearchParams({
+                section: filterParam!,
+                lat: lat.toString(),
+                lng: lng.toString(),
+                radius: "10",
+            });
+            const res = await fetch(`/api/discover?${params}`);
+            if (!res.ok) throw new Error("Failed to fetch");
+            const data = await res.json();
+            return data.products;
+        },
+        enabled: isFilterMode,
+    });
+
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
     const { data: suggestions } = useAutocomplete(isFocused ? query : "");
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
 
+    // Which products to display
+    const displayProducts = isFilterMode ? filterResults : results;
+    const displayLoading = isFilterMode ? filterLoading : isLoading;
+    const showPlaceholder = !query && !isFilterMode;
+
     return (
         <div className="min-h-dvh bg-[#2C1A0E]">
             {/* Search header */}
             <div className="bg-[#2C1A0E] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+                {/* Filter title */}
+                {isFilterMode && filterParam && FILTER_LABELS[filterParam] && (
+                    <p className="mb-3 font-display text-lg font-bold text-[#F5EDD8]">
+                        {FILTER_LABELS[filterParam]}
+                    </p>
+                )}
+
                 <div className="relative">
                     <div
                         className={cx(
@@ -59,7 +99,6 @@ function SearchPageInner() {
                             placeholder="Nike Air Max, iPhone 15, Levi's 501..."
                             className="flex-1 bg-transparent text-sm text-[#F5EDD8] outline-none placeholder:text-[#F5EDD8]/30"
                             aria-label="Rechercher un produit"
-                            autoFocus
                         />
                         {query && (
                             <button
@@ -126,7 +165,7 @@ function SearchPageInner() {
 
             {/* Results */}
             <div className="p-4">
-                {!query && (
+                {showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
                         <SearchMd className="size-10 text-[#F5EDD8]/15" />
                         <p className="text-sm font-medium text-[#F5EDD8]/40">
@@ -135,7 +174,7 @@ function SearchPageInner() {
                     </div>
                 )}
 
-                {isLoading && query.length >= 2 && (
+                {displayLoading && (
                     <div className="grid grid-cols-2 gap-3">
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-[#3D2A1A]" />
@@ -143,13 +182,13 @@ function SearchPageInner() {
                     </div>
                 )}
 
-                {results && results.length > 0 && (
+                {displayProducts && displayProducts.length > 0 && (
                     <>
                         <p className="mb-3 text-xs font-medium text-[#F5EDD8]/50">
-                            {results.length} résultat{results.length > 1 ? "s" : ""}
+                            {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
                         <div className="grid grid-cols-2 gap-3">
-                            {results.map((r) => (
+                            {displayProducts.map((r: any) => (
                                 <ProductCard
                                     key={`${r.product_id}-${r.merchant_id}`}
                                     id={r.product_id}
@@ -171,14 +210,18 @@ function SearchPageInner() {
                     </>
                 )}
 
-                {results && results.length === 0 && query.length >= 2 && (
+                {displayProducts && displayProducts.length === 0 && !showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
                         <p className="text-sm font-medium text-[#F5EDD8]/40">
-                            Aucun résultat pour &ldquo;{query}&rdquo;
+                            {isFilterMode
+                                ? "Aucune promo disponible pour le moment"
+                                : `Aucun résultat pour \u201c${query}\u201d`}
                         </p>
-                        <p className="text-xs text-[#F5EDD8]/30">
-                            Essaie avec un autre terme
-                        </p>
+                        {!isFilterMode && (
+                            <p className="text-xs text-[#F5EDD8]/30">
+                                Essaie avec un autre terme
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
