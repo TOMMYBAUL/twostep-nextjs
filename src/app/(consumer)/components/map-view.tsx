@@ -123,12 +123,18 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
 
     // Recenter
     useEffect(() => {
-        if (!recenterTrigger || !mapRef.current || merchants.length === 0) return;
-        const bounds = new mapboxgl.LngLatBounds();
-        merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
-        if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
-        mapRef.current.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
-    }, [recenterTrigger]);
+        if (!recenterTrigger || !mapRef.current) return;
+
+        if (merchants.length > 0) {
+            const bounds = new mapboxgl.LngLatBounds();
+            merchants.forEach(m => bounds.extend([m.merchant_lng, m.merchant_lat]));
+            if (userPosition) bounds.extend([userPosition.lng, userPosition.lat]);
+            mapRef.current.fitBounds(bounds, { padding: { top: 80, bottom: 200, left: 40, right: 40 }, maxZoom: 15, duration: 800 });
+        } else if (userPosition) {
+            // No merchants — at least center on user position
+            mapRef.current.flyTo({ center: [userPosition.lng, userPosition.lat], zoom: 14, duration: 800 });
+        }
+    }, [recenterTrigger, merchants, userPosition]);
 
     // 3D toggle
     useEffect(() => {
@@ -170,10 +176,11 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
     // Render merchant pins
     useEffect(() => {
         const map = mapRef.current;
-        if (!map) return;
+        if (!map) { console.warn("[map] No map instance for pins"); return; }
         markersRef.current.forEach((m) => m.remove());
         markersRef.current = [];
 
+        console.log(`[map] Rendering ${merchants.length} merchant pins`);
         merchants.forEach((merchant) => {
             const color = getPinColor(merchant);
             const isSelected = selectedMerchantId === merchant.merchant_id;
