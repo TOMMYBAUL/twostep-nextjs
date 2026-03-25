@@ -58,10 +58,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
     const { id } = await params;
 
+    let breadcrumbLd = null;
     let jsonLd = null;
     try {
         const data = await getMerchant(id);
         if (data) {
+            breadcrumbLd = {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", position: 1, name: "Accueil", item: BASE_URL },
+                    { "@type": "ListItem", position: 2, name: "Boutiques", item: `${BASE_URL}/discover` },
+                    { "@type": "ListItem", position: 3, name: data.name, item: `${BASE_URL}/shop/${id}` },
+                ],
+            };
             jsonLd = {
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
@@ -82,6 +92,12 @@ export default async function Page({ params }: Props) {
 
     return (
         <>
+            {breadcrumbLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+                />
+            )}
             {jsonLd && (
                 <script
                     type="application/ld+json"

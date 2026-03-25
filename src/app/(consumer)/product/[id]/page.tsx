@@ -12,7 +12,7 @@ async function getProduct(id: string) {
     const supabase = createAdminClient();
     const { data } = await supabase
         .from("products")
-        .select("name, price, photo_url, category, description, ean, merchants(name, city, address)")
+        .select("name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address)")
         .eq("id", id)
         .single();
     return data;
@@ -56,11 +56,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
     const { id } = await params;
 
+    let breadcrumbLd = null;
     let jsonLd = null;
     try {
         const data = await getProduct(id);
         if (data) {
             const merchant = (data as any).merchants;
+            breadcrumbLd = {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", position: 1, name: "Accueil", item: BASE_URL },
+                    { "@type": "ListItem", position: 2, name: "Boutiques", item: `${BASE_URL}/discover` },
+                    ...(merchant ? [{ "@type": "ListItem", position: 3, name: merchant.name, item: `${BASE_URL}/shop/${(data as any).merchant_id}` }] : []),
+                    { "@type": "ListItem", position: merchant ? 4 : 3, name: data.name, item: `${BASE_URL}/product/${id}` },
+                ],
+            };
             jsonLd = {
                 "@context": "https://schema.org",
                 "@type": "Product",
@@ -96,6 +107,12 @@ export default async function Page({ params }: Props) {
 
     return (
         <>
+            {breadcrumbLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+                />
+            )}
             {jsonLd && (
                 <script
                     type="application/ld+json"
