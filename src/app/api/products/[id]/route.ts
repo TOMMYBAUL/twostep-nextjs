@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { resolveProductId } from "@/lib/slug";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -11,12 +12,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
         }
 
+        const productId = await resolveProductId(id);
+        if (!productId) {
+            return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        }
+
         const supabase = await createClient();
 
         const { data, error } = await supabase
             .from("products")
             .select("*, stock(quantity), promotions(*)")
-            .eq("id", id)
+            .eq("id", productId)
             .single();
 
         if (error) {

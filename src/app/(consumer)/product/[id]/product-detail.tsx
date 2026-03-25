@@ -41,7 +41,8 @@ export default function ProductDetailClient() {
     const { add, remove } = useToggleFavorite();
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
-    const isFavorite = favoriteIds.has(id);
+    const productUuid = product?.id;
+    const isFavorite = productUuid ? favoriteIds.has(productUuid) : false;
 
     const quantity = product?.stock?.[0]?.quantity ?? 0;
     const activePromo = product?.promotions?.find(
@@ -81,8 +82,9 @@ export default function ProductDetailClient() {
                     <HeartButton
                         isFavorite={isFavorite}
                         onToggle={() => {
-                            if (isFavorite) remove.mutate(id);
-                            else add.mutate(id);
+                            if (!productUuid) return;
+                            if (isFavorite) remove.mutate(productUuid);
+                            else add.mutate(productUuid);
                         }}
                         ariaLabel={`${isFavorite ? "Retirer" : "Ajouter"} ${product?.name ?? "produit"} des favoris`}
                         className="bg-white/80 shadow-sm backdrop-blur-sm"

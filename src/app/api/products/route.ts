@@ -3,15 +3,21 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { productBody, parseBody } from "@/lib/validation";
+import { resolveMerchantId } from "@/lib/slug";
 
 export async function GET(request: Request) {
     try {
         const supabase = await createClient();
         const { searchParams } = new URL(request.url);
-        const merchantId = searchParams.get("merchant_id");
+        const merchantIdParam = searchParams.get("merchant_id");
 
-        if (!merchantId || typeof merchantId !== "string") {
+        if (!merchantIdParam || typeof merchantIdParam !== "string") {
             return NextResponse.json({ error: "merchant_id required" }, { status: 400 });
+        }
+
+        const merchantId = await resolveMerchantId(merchantIdParam);
+        if (!merchantId) {
+            return NextResponse.json({ products: [] });
         }
 
         const { data, error } = await supabase

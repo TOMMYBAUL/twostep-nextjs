@@ -86,7 +86,8 @@ export default function ShopProfileClient() {
     const { follow, unfollow } = useToggleFollow();
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
-    const isFollowing = follows?.some((f) => f.merchant_id === id) ?? false;
+    const merchantUuid = profile?.merchant_id;
+    const isFollowing = follows?.some((f) => f.merchant_id === merchantUuid) ?? false;
 
     const promoMap = new Map((promotions ?? []).map((p) => [p.product_id, p.sale_price]));
 
@@ -147,7 +148,7 @@ export default function ShopProfileClient() {
                 {/* Heart button — circle, top-right like TGTG */}
                 <button
                     type="button"
-                    onClick={() => isFollowing ? unfollow.mutate(id) : follow.mutate(id)}
+                    onClick={() => merchantUuid && (isFollowing ? unfollow.mutate(merchantUuid) : follow.mutate(merchantUuid))}
                     className={cx(
                         "absolute right-4 top-4 z-20 flex size-11 items-center justify-center rounded-full shadow-sm",
                         isFollowing ? "bg-[var(--ts-ochre)] text-white" : "bg-white/90 text-[var(--ts-brown-mid)]",
