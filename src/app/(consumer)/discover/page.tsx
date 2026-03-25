@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Tag01, TrendUp01, ShoppingBag01, ChevronRight, MarkerPin01, Heart } from "@untitledui/icons";
+import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
@@ -82,7 +83,7 @@ export default function DiscoverPage() {
             <div className="px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div>
                     <div className="flex items-center gap-2">
-                        <img src="/logo-icon.webp" alt="" className="size-7" />
+                        <Image src="/logo-icon.webp" alt="" width={28} height={28} className="size-7" />
                         <h1 className="font-display text-2xl font-bold text-[#F5EDD8]">
                             Two-Step
                         </h1>
@@ -171,9 +172,9 @@ export default function DiscoverPage() {
                                         href={`/shop/${f.merchant_id}`}
                                         className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                                     >
-                                        <div className="size-16 overflow-hidden rounded-full bg-[#3D2A1A] shadow-sm ring-2 ring-[#C17B2F]/30">
+                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#3D2A1A] shadow-sm ring-2 ring-[#C17B2F]/30">
                                             {merchant.photo_url ? (
-                                                <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
+                                                <Image src={merchant.photo_url} alt={merchant.name} fill className="object-cover" />
                                             ) : (
                                                 <div className="flex h-full items-center justify-center text-lg font-bold text-[#C17B2F]">
                                                     {merchant.name.charAt(0)}

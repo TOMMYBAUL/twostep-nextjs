@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useIsMobile } from "../utils";
 
 export function Footer() {
@@ -15,7 +16,7 @@ export function Footer() {
             gap: isMobile ? 8 : 0,
         }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <img src="/logo-icon.webp" alt="" style={{ height: 28, width: 28, borderRadius: 6 }} />
+                <Image src="/logo-icon.webp" alt="" width={28} height={28} style={{ borderRadius: 6 }} />
                 <span style={{ fontSize: 17, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
                     Two-Step
                 </span>

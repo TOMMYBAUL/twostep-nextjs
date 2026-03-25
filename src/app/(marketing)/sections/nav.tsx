@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 
 const navCSS = `
@@ -26,7 +27,7 @@ export function Nav() {
                 transition={{ duration: 0.55, ease: "easeOut" }}
             >
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <img src="/logo-icon.webp" alt="" style={{ height: 32, width: 32, borderRadius: 8 }} />
+                    <Image src="/logo-icon.webp" alt="" width={32} height={32} style={{ borderRadius: 8 }} />
                     <span style={{ fontSize: 17, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.03em" }}>
                         Two-Step
                     </span>

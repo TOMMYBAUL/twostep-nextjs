@@ -28,7 +28,9 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Search failed" }, { status: 500 });
         }
 
-        return NextResponse.json({ results: data ?? [], count: data?.length ?? 0 });
+        return NextResponse.json({ results: data ?? [], count: data?.length ?? 0 }, {
+            headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" },
+        });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

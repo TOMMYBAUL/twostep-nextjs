@@ -30,7 +30,9 @@ export async function GET(request: NextRequest) {
             ? data[data.length - 1].feed_score
             : null;
 
-        return NextResponse.json({ items: data ?? [], next_cursor: nextCursor });
+        return NextResponse.json({ items: data ?? [], next_cursor: nextCursor }, {
+            headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" },
+        });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

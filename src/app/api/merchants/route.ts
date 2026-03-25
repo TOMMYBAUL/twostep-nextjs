@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Failed to fetch merchant" }, { status: 500 });
         }
 
-        return NextResponse.json({ merchant: data });
+        return NextResponse.json({ merchant: data }, {
+            headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" },
+        });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

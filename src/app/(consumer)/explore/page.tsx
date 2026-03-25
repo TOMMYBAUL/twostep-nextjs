@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock, FilterLines, SearchLg, NavigationPointer01 } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 
 const MapView = dynamic(() => import("../components/map-view").then(m => m.MapView), { ssr: false });
@@ -325,9 +326,9 @@ export default function ExplorePage() {
                 <div className="absolute left-4 right-4 z-30 mx-auto max-w-md animate-in slide-in-from-bottom-4 fade-in duration-200" style={{ bottom: "calc(env(safe-area-inset-bottom) + 62px)" }}>
                     <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
                         <div className="flex items-center gap-3 p-4">
-                            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+                            <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
                                 {selectedMerchant.merchant_photo || selectedMerchant.merchant_logo ? (
-                                    <img src={selectedMerchant.merchant_logo || selectedMerchant.merchant_photo || ""} alt="" className="h-full w-full object-cover" />
+                                    <Image src={selectedMerchant.merchant_logo || selectedMerchant.merchant_photo || ""} alt="" fill className="object-cover" />
                                 ) : (
                                     <span className="text-lg font-bold text-[#C17B2F]">
                                         {selectedMerchant.merchant_name.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2)}
@@ -383,9 +384,9 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
             href={`/shop/${merchant.merchant_id}`}
             className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:bg-[#3D2A1A]/80"
         >
-            <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
+            <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
                 {logo ? (
-                    <img src={logo} alt="" className="h-full w-full object-cover" />
+                    <Image src={logo} alt="" fill className="object-cover" />
                 ) : (
                     <span className="text-lg font-bold text-[#C17B2F]">
                         {merchant.merchant_name.charAt(0).toUpperCase()}

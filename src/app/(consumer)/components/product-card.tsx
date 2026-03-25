@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MarkerPin01 } from "@untitledui/icons";
 import { motion, useInView } from "motion/react";
 import { HeartButton } from "./heart-button";
@@ -47,9 +48,11 @@ export function ProductCard({
             {/* Photo — square, neutral bg, no border/shadow */}
             <div className="relative aspect-square w-full overflow-hidden bg-[#F0EDE8]">
                 {photo ? (
-                    <img
+                    <Image
                         src={photo}
                         alt={name}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
                         className={cx(
                             "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",
                             isOut && "opacity-50",

@@ -54,7 +54,9 @@ export async function GET(request: NextRequest) {
                 category: categoryMap.get(row.product_id) ?? null,
             }));
 
-        return NextResponse.json({ products });
+        return NextResponse.json({ products }, {
+            headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+        });
     }
 
     // trending & nearby both use the feed RPC — trending sorts by score, nearby by distance
@@ -109,7 +111,9 @@ export async function GET(request: NextRequest) {
         category: categoryMap.get(row.product_id) ?? null,
     }));
 
-    return NextResponse.json({ products });
+    return NextResponse.json({ products }, {
+        headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+    });
 }
 
 /** Fetch categories for a list of product IDs in one query */
