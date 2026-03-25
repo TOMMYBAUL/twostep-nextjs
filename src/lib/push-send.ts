@@ -7,12 +7,23 @@ import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { captureError } from "@/lib/error";
 
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? "";
 const VAPID_SUBJECT = `mailto:contact@twostep.fr`;
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
-    webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+let vapidConfigured = false;
+
+function ensureVapid(): boolean {
+    if (vapidConfigured) return true;
+    const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
+    const priv = process.env.VAPID_PRIVATE_KEY ?? "";
+    if (!pub || !priv) return false;
+    try {
+        // Strip trailing "=" padding — web-push requires URL-safe Base64 without padding
+        webpush.setVapidDetails(VAPID_SUBJECT, pub.replace(/=+$/, ""), priv.replace(/=+$/, ""));
+        vapidConfigured = true;
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 type PushPayload = {
@@ -25,6 +36,7 @@ type PushPayload = {
  * Send a push notification to a specific user.
  */
 export async function sendPushToUser(userId: string, payload: PushPayload): Promise<number> {
+    if (!ensureVapid()) return 0;
     const supabase = createAdminClient();
     const { data: subscriptions } = await supabase
         .from("push_subscriptions")
