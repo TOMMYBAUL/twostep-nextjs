@@ -264,24 +264,25 @@ function FeedSection({
                     ))}
                 </div>
             ) : products && products.length > 0 ? (
-                <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide pb-1">
+                <ul role="list" className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide pb-1">
                     {products.map((p) => (
-                        <ProductCard
-                            key={`${p.product_id}-${p.merchant_id}`}
-                            id={p.product_id}
-                            name={p.product_name}
-                            price={p.product_price}
-                            photo={p.product_photo}
-                            merchantName={p.merchant_name}
-                            distance={p.distance_km}
-                            stockQuantity={p.stock_quantity}
-                            salePrice={p.sale_price}
-                            isFavorite={favoriteIds.has(p.product_id)}
-                            onToggleFavorite={() => onToggleFavorite(p.product_id)}
-                            className="w-44 shrink-0"
-                        />
+                        <li key={`${p.product_id}-${p.merchant_id}`}>
+                            <ProductCard
+                                id={p.product_id}
+                                name={p.product_name}
+                                price={p.product_price}
+                                photo={p.product_photo}
+                                merchantName={p.merchant_name}
+                                distance={p.distance_km}
+                                stockQuantity={p.stock_quantity}
+                                salePrice={p.sale_price}
+                                isFavorite={favoriteIds.has(p.product_id)}
+                                onToggleFavorite={() => onToggleFavorite(p.product_id)}
+                                className="w-44 shrink-0"
+                            />
+                        </li>
                     ))}
-                </div>
+                </ul>
             ) : (
                 <div className="mx-4 mt-3 rounded-lg border border-[#3D2A1A] px-4 py-8 text-center">
                     <p className="text-xs font-medium text-[#F5EDD8]/30">Rien pour le moment — ça arrive vite.</p>

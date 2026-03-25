@@ -115,7 +115,7 @@ export default function ExplorePage() {
                     style={{ paddingTop: "calc(env(safe-area-inset-top) + 140px)" }}
                 >
                     <div className="px-4 pb-24">
-                        <p className="mb-3 text-sm font-bold text-[#F5EDD8]">
+                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-sm font-bold text-[#F5EDD8]">
                             {isLoading
                                 ? "Recherche..."
                                 : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""} à proximité`}
@@ -134,11 +134,13 @@ export default function ExplorePage() {
                                 <p className="text-[11px] text-[#F5EDD8]/30">Essaie d'élargir ta zone ou de changer de catégorie</p>
                             </div>
                         ) : (
-                            <div className="flex flex-col gap-2">
+                            <ul role="list" className="flex flex-col gap-2">
                                 {merchants.map((m) => (
-                                    <MerchantListCard key={m.merchant_id} merchant={m} />
+                                    <li key={m.merchant_id}>
+                                        <MerchantListCard merchant={m} />
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         )}
                     </div>
                 </div>
@@ -227,11 +229,13 @@ export default function ExplorePage() {
 
                 {/* Search suggestions */}
                 {searchFocused && suggestions && suggestions.length > 0 && (
-                    <div className="mt-2 overflow-hidden rounded-2xl bg-white shadow-xl">
+                    <div role="listbox" aria-label="Suggestions" className="mt-2 overflow-hidden rounded-2xl bg-white shadow-xl">
                         {suggestions.map((s, i) => (
                             <button
                                 key={`${s.suggestion_type}-${s.suggestion}-${i}`}
                                 type="button"
+                                role="option"
+                                aria-selected={false}
                                 className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#2C1A0E] transition duration-100 hover:bg-gray-50"
                                 onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
                             >

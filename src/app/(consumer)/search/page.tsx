@@ -118,11 +118,15 @@ function SearchPageInner() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -4 }}
                                 className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-[#3D2A1A] shadow-xl ring-1 ring-[#F5EDD8]/5"
+                                role="listbox"
+                                aria-label="Suggestions"
                             >
                                 {suggestions.map((s, i) => (
                                     <button
                                         key={`${s.suggestion_type}-${s.suggestion}-${i}`}
                                         type="button"
+                                        role="option"
+                                        aria-selected={false}
                                         className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#F5EDD8] hover:bg-[#2C1A0E]/50"
                                         onMouseDown={(e) => {
                                             e.preventDefault();
@@ -184,13 +188,13 @@ function SearchPageInner() {
 
                 {displayProducts && displayProducts.length > 0 && (
                     <>
-                        <p className="mb-3 text-xs font-medium text-[#F5EDD8]/50">
+                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-xs font-medium text-[#F5EDD8]/50">
                             {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
-                        <div className="grid grid-cols-2 gap-3">
+                        <ul role="list" className="grid grid-cols-2 gap-3">
                             {displayProducts.map((r: any) => (
+                                <li key={`${r.product_id}-${r.merchant_id}`}>
                                 <ProductCard
-                                    key={`${r.product_id}-${r.merchant_id}`}
                                     id={r.product_id}
                                     name={r.product_name}
                                     price={r.product_price}
@@ -205,8 +209,9 @@ function SearchPageInner() {
                                         else add.mutate(r.product_id);
                                     }}
                                 />
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                     </>
                 )}
 
