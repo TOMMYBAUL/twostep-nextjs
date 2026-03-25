@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { productBody, parseBody } from "@/lib/validation";
 
 export async function GET(request: Request) {
     try {
@@ -45,26 +46,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "No merchant profile found. Create one first." }, { status: 403 });
         }
 
-        let body: Record<string, unknown>;
-        try {
-            body = await request.json();
-        } catch {
-            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-        }
-
-        const { name, ean, description, category, price, photo_url, initial_quantity } = body;
-
-        if (!name || typeof name !== "string") {
-            return NextResponse.json({ error: "name is required and must be a string" }, { status: 400 });
-        }
-
-        if (price !== undefined && price !== null && (typeof price !== "number" || price < 0)) {
-            return NextResponse.json({ error: "price must be a non-negative number" }, { status: 400 });
-        }
-
-        if (initial_quantity !== undefined && initial_quantity !== null && (typeof initial_quantity !== "number" || initial_quantity < 0 || !Number.isInteger(initial_quantity))) {
-            return NextResponse.json({ error: "initial_quantity must be a non-negative integer" }, { status: 400 });
-        }
+        const parsed = await parseBody(request, productBody);
+        if ("error" in parsed) return parsed.error;
+        const { name, ean, description, category, price, photo_url, initial_quantity } = parsed.data;
 
         // Insert product
         const { data: product, error: productError } = await supabase

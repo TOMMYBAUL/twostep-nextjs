@@ -1,31 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
-
-const VALID_SECTIONS = ["promos", "trending", "nearby"] as const;
-type Section = (typeof VALID_SECTIONS)[number];
+import { discoverQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
     const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
     if (limited) return limited;
 
-    const { searchParams } = request.nextUrl;
-    const lat = parseFloat(searchParams.get("lat") ?? "0");
-    const lng = parseFloat(searchParams.get("lng") ?? "0");
-    const radius = Math.min(parseInt(searchParams.get("radius") ?? "10", 10), 50);
-    const section = searchParams.get("section") as Section | null;
-
-    if (!lat || !lng) {
-        return NextResponse.json({ error: "lat and lng required" }, { status: 400 });
-    }
-
-    if (!section || !VALID_SECTIONS.includes(section)) {
-        return NextResponse.json({ error: "section must be one of: promos, trending, nearby" }, { status: 400 });
-    }
+    const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
+    if ("error" in parsed) return parsed.error;
+    const { lat, lng, radius, section, category } = parsed.data;
 
     const supabase = await createClient();
-
-    const category = searchParams.get("category") || null;
 
     if (section === "promos") {
         const { data, error } = await supabase.rpc("get_promos_nearby", {

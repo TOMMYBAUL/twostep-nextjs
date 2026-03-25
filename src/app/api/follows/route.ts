@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { followBody, parseBody } from "@/lib/validation";
 
 export async function GET() {
     try {
@@ -35,18 +36,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        let body: Record<string, unknown>;
-        try {
-            body = await request.json();
-        } catch {
-            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-        }
-
-        const { merchant_id } = body;
-
-        if (!merchant_id || typeof merchant_id !== "string") {
-            return NextResponse.json({ error: "merchant_id required and must be a string" }, { status: 400 });
-        }
+        const parsed = await parseBody(request, followBody);
+        if ("error" in parsed) return parsed.error;
+        const { merchant_id } = parsed.data;
 
         const { data, error } = await supabase
             .from("user_follows")

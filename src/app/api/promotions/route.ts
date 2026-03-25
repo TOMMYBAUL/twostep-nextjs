@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { promotionBody, parseBody } from "@/lib/validation";
 
 export async function GET(request: Request) {
     try {
@@ -57,30 +58,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        let body: Record<string, unknown>;
-        try {
-            body = await request.json();
-        } catch {
-            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-        }
-
-        const { product_id, sale_price, starts_at, ends_at } = body;
-
-        if (!product_id || typeof product_id !== "string") {
-            return NextResponse.json({ error: "product_id is required and must be a string" }, { status: 400 });
-        }
-
-        if (sale_price == null || typeof sale_price !== "number" || sale_price <= 0) {
-            return NextResponse.json({ error: "sale_price must be a positive number" }, { status: 400 });
-        }
-
-        if (starts_at !== undefined && typeof starts_at !== "string") {
-            return NextResponse.json({ error: "starts_at must be an ISO date string" }, { status: 400 });
-        }
-
-        if (ends_at !== undefined && ends_at !== null && typeof ends_at !== "string") {
-            return NextResponse.json({ error: "ends_at must be an ISO date string or null" }, { status: 400 });
-        }
+        const parsed = await parseBody(request, promotionBody);
+        if ("error" in parsed) return parsed.error;
+        const { product_id, sale_price, starts_at, ends_at } = parsed.data;
 
         // Verify ownership: product must belong to user's merchant
         const { data: product } = await supabase

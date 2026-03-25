@@ -1,30 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { feedQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
     const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "feed", 30);
     if (limited) return limited;
 
     try {
-        const { searchParams } = request.nextUrl;
-        const lat = parseFloat(searchParams.get("lat") ?? "");
-        const lng = parseFloat(searchParams.get("lng") ?? "");
-        const radius = Math.min(parseInt(searchParams.get("radius") ?? "10", 10), 50); // Cap at 50km
-        const cursor = parseFloat(searchParams.get("cursor") ?? "999999");
-        const limit = Math.min(Math.max(parseInt(searchParams.get("limit") ?? "20", 10), 1), 100); // 1-100
-
-        if (isNaN(lat) || isNaN(lng)) {
-            return NextResponse.json({ error: "lat and lng required" }, { status: 400 });
-        }
-
-        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-            return NextResponse.json({ error: "lat must be [-90,90], lng must be [-180,180]" }, { status: 400 });
-        }
-
-        if (isNaN(cursor)) {
-            return NextResponse.json({ error: "cursor must be a valid number" }, { status: 400 });
-        }
+        const parsed = parseQuery(request.nextUrl.searchParams, feedQuery);
+        if ("error" in parsed) return parsed.error;
+        const { lat, lng, radius, cursor, limit } = parsed.data;
 
         const supabase = await createClient();
 
