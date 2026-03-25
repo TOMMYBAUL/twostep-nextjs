@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { squareAdapter } from "@/lib/pos/square";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { captureError } from "@/lib/error";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -54,7 +55,8 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json({ ok: true });
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "webhooks/square" });
         return NextResponse.json({ error: "Processing failed" }, { status: 500 });
     }
 }

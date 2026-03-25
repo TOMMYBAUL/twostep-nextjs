@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { parseInvoice } from "@/lib/parser";
+import { captureError } from "@/lib/error";
 
 const ACCEPTED_TYPES = new Set([
     "application/pdf",
@@ -127,7 +128,8 @@ export async function POST(request: NextRequest) {
                 error: parseError instanceof Error ? parseError.message : "Parsing failed",
             }, { status: 201 });
         }
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "invoices/upload" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

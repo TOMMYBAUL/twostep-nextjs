@@ -5,6 +5,7 @@ import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { shopifyAdapter } from "@/lib/pos/shopify";
 import { createClient } from "@/lib/supabase/server";
 import { encrypt, decrypt } from "@/lib/email/encryption";
+import { captureError } from "@/lib/error";
 import type { IPOSAdapter } from "@/lib/pos/types";
 
 const adapters: Record<string, IPOSAdapter> = {
@@ -150,13 +151,15 @@ export async function POST() {
                 stock_updated: stockUpdated,
             },
         });
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "pos/sync", merchantId: merchant?.id });
         return NextResponse.json(
             { error: "Sync failed" },
             { status: 500 },
         );
     }
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "pos/sync" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

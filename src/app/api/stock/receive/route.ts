@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { captureError } from "@/lib/error";
 
 /**
  * POST /api/stock/receive
@@ -86,7 +87,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ received });
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "stock/receive" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

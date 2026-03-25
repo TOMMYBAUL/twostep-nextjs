@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
+import { captureError } from "@/lib/error";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -58,7 +59,8 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ ok: true });
-    } catch {
+    } catch (e) {
+        captureError(e, { route: "webhooks/lightspeed" });
         return NextResponse.json({ error: "Processing failed" }, { status: 500 });
     }
 }

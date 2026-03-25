@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { gmailProvider } from "@/lib/email/gmail";
 import { outlookProvider } from "@/lib/email/outlook";
+import { captureError } from "@/lib/error";
 import { imapProvider } from "@/lib/email/imap";
 import { decrypt, encrypt } from "@/lib/email/encryption";
 import { parseInvoice } from "@/lib/parser";
@@ -82,7 +83,8 @@ export async function POST(request: NextRequest) {
                         .from("email_connections")
                         .update({ access_token: encrypt(accessToken) })
                         .eq("merchant_id", conn.merchant_id);
-                } catch {
+                } catch (e) {
+                    captureError(e, { route: "cron/scan-emails", phase: "token-refresh", merchantId: conn.merchant_id });
                     await supabase
                         .from("email_connections")
                         .update({ status: "expired" })
@@ -215,7 +217,8 @@ export async function POST(request: NextRequest) {
                         }
 
                         totalInvoices++;
-                    } catch {
+                    } catch (e) {
+                        captureError(e, { route: "cron/scan-emails", phase: "invoice-parse", merchantId: conn.merchant_id });
                         await supabase
                             .from("invoices")
                             .update({ status: "failed" })
