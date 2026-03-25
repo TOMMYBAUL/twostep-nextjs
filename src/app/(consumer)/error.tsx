@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { RefreshCcw01 } from "@untitledui/icons";
+import { captureError } from "@/lib/error";
 
 export default function ConsumerError({
     error,
@@ -10,7 +12,7 @@ export default function ConsumerError({
     reset: () => void;
 }) {
     useEffect(() => {
-        console.error("Consumer app error:", error);
+        captureError(error, { boundary: "consumer" });
     }, [error]);
 
     return (
@@ -27,8 +29,9 @@ export default function ConsumerError({
             <button
                 type="button"
                 onClick={reset}
-                className="mt-2 rounded-2xl bg-[var(--ts-ochre)] px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                className="mt-2 inline-flex items-center gap-2 rounded-2xl bg-[var(--ts-ochre)] px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
             >
+                <RefreshCcw01 className="size-4" />
                 Réessayer
             </button>
         </div>

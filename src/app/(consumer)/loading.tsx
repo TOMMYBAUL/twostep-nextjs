@@ -1,9 +1,38 @@
 export default function ConsumerLoading() {
     return (
-        <div className="flex min-h-[60dvh] items-center justify-center">
-            <div className="flex flex-col items-center gap-3">
-                <div className="size-8 animate-spin rounded-full border-2 border-[var(--ts-cream-dark)] border-t-[var(--ts-ochre)]" />
-                <p className="text-xs font-medium text-[var(--ts-brown-mid)]/40">Chargement...</p>
+        <div className="min-h-[60dvh] bg-[var(--ts-cream)] px-4 pt-6">
+            {/* Header skeleton */}
+            <div className="flex items-center gap-3">
+                <div className="size-8 animate-pulse rounded-lg bg-[var(--ts-cream-dark)]" />
+                <div className="h-5 w-32 animate-pulse rounded-lg bg-[var(--ts-cream-dark)]" />
+            </div>
+
+            {/* Horizontal scroll section skeleton */}
+            <div className="mt-6 space-y-3">
+                <div className="h-4 w-40 animate-pulse rounded-lg bg-[var(--ts-cream-dark)]" />
+                <div className="flex gap-3 overflow-hidden">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="w-40 shrink-0 space-y-2">
+                            <div className="aspect-square w-full animate-pulse rounded-xl bg-[var(--ts-cream-dark)]" />
+                            <div className="h-3 w-24 animate-pulse rounded bg-[var(--ts-cream-dark)]" />
+                            <div className="h-3 w-16 animate-pulse rounded bg-[var(--ts-cream-dark)]" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Grid section skeleton */}
+            <div className="mt-8 space-y-3">
+                <div className="h-4 w-36 animate-pulse rounded-lg bg-[var(--ts-cream-dark)]" />
+                <div className="grid grid-cols-2 gap-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="space-y-2">
+                            <div className="aspect-square w-full animate-pulse rounded-xl bg-[var(--ts-cream-dark)]" />
+                            <div className="h-3 w-20 animate-pulse rounded bg-[var(--ts-cream-dark)]" />
+                            <div className="h-3 w-14 animate-pulse rounded bg-[var(--ts-cream-dark)]" />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
