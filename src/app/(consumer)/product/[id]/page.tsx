@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
         const merchant = (data as any).merchants;
         const title = data.name;
-        const description = `${data.name}${data.price ? ` — ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? `, ${merchant.city}` : ""}. Disponible en boutique.`;
+        const description = `${data.name}${data.price ? ` à ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? ` à ${merchant.city}` : ""}. Vérifiez le stock en temps réel sur Two-Step.`;
 
         return {
             title,

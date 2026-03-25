@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
         const title = data.name;
         const description = data.description
-            ? `${data.name} — ${data.description.slice(0, 150)}`
-            : `${data.name}, ${data.address}, ${data.city}. Découvrez les produits disponibles en boutique sur Two-Step.`;
+            ? `${data.name} à ${data.city} — ${data.description.slice(0, 120)}. Stock en temps réel sur Two-Step.`
+            : `${data.name}, ${data.address}, ${data.city}. Consultez les produits disponibles en boutique et le stock en temps réel sur Two-Step.`;
         const image = data.logo_url || data.photo_url;
 
         return {
@@ -53,6 +53,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     } catch {
         return {};
     }
+}
+
+function parseOpeningHours(hours: any): any[] | undefined {
+    if (!hours || typeof hours !== "object") return undefined;
+    const dayMap: Record<string, string> = {
+        lundi: "Monday", mardi: "Tuesday", mercredi: "Wednesday",
+        jeudi: "Thursday", vendredi: "Friday", samedi: "Saturday", dimanche: "Sunday",
+    };
+    const specs: any[] = [];
+    for (const [day, value] of Object.entries(hours)) {
+        const mapped = dayMap[day.toLowerCase()];
+        if (!mapped || !value) continue;
+        if (typeof value === "string" && value.includes("-")) {
+            const [opens, closes] = value.split("-").map((s: string) => s.trim());
+            specs.push({ "@type": "OpeningHoursSpecification", dayOfWeek: mapped, opens, closes });
+        }
+    }
+    return specs.length > 0 ? specs : undefined;
 }
 
 export default async function Page({ params }: Props) {
@@ -86,6 +104,9 @@ export default async function Page({ params }: Props) {
                     addressLocality: data.city,
                     addressCountry: "FR",
                 },
+                ...(data.opening_hours && {
+                    openingHoursSpecification: parseOpeningHours(data.opening_hours),
+                }),
             };
         }
     } catch { /* non-critical */ }
