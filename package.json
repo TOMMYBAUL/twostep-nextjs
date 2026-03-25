@@ -51,6 +51,7 @@
         "tailwindcss-react-aria-components": "^2.0.1",
         "use-supercluster": "^1.2.0",
         "vaul": "^1.1.2",
+        "web-push": "^3.6.7",
         "xlsx": "^0.18.5",
         "zod": "^4.3.6"
     },

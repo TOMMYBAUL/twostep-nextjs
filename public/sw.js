@@ -3,7 +3,7 @@
  * Bump CACHE_VERSION on each deploy to bust stale caches.
  */
 
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const CACHE_NAME = `twostep-v${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install
@@ -62,7 +62,7 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
-    // For static assets (images, fonts, CSS, JS): cache-first
+    // For static assets: cache-first
     if (
         url.pathname.startsWith("/icons/") ||
         url.pathname.startsWith("/_next/static/") ||
@@ -83,4 +83,41 @@ self.addEventListener("fetch", (event) => {
         );
         return;
     }
+});
+
+// Push notifications
+self.addEventListener("push", (event) => {
+    const defaultData = { title: "Two-Step", body: "Nouvelle notification", url: "/discover" };
+    let data = defaultData;
+
+    try {
+        if (event.data) data = { ...defaultData, ...event.data.json() };
+    } catch {
+        // fallback to default
+    }
+
+    event.waitUntil(
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: "/icons/icon-192.png",
+            badge: "/icons/icon-192.png",
+            data: { url: data.url },
+            vibrate: [100, 50, 100],
+        }),
+    );
+});
+
+// Notification click: open the target URL
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    const url = event.notification.data?.url || "/discover";
+
+    event.waitUntil(
+        clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+            for (const client of windowClients) {
+                if (client.url.includes(url) && "focus" in client) return client.focus();
+            }
+            return clients.openWindow(url);
+        }),
+    );
 });

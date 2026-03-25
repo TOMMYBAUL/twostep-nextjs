@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Bell01, Heart, ShoppingBag01, Tag01 } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
+import { subscribePush, unsubscribePush, isPushSubscribed } from "@/lib/push";
 
 type NotifSetting = {
     id: string;
@@ -35,7 +36,34 @@ export default function NotificationsPage() {
         setMounted(true);
     }, []);
 
-    const toggle = (id: string) => {
+    // Check actual push subscription state on mount
+    useEffect(() => {
+        isPushSubscribed().then((subscribed) => {
+            if (subscribed !== prefs.push) {
+                setPrefs((prev) => ({ ...prev, push: subscribed }));
+            }
+        });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const toggle = async (id: string) => {
+        if (id === "push") {
+            try {
+                if (prefs.push) {
+                    await unsubscribePush();
+                    const updated = { ...prefs, push: false };
+                    setPrefs(updated);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+                } else {
+                    const sub = await subscribePush();
+                    const updated = { ...prefs, push: !!sub };
+                    setPrefs(updated);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+                }
+            } catch {
+                // Permission denied or error — keep current state
+            }
+            return;
+        }
         const updated = { ...prefs, [id]: !prefs[id] };
         setPrefs(updated);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
