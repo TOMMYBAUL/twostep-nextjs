@@ -8,6 +8,7 @@ import { StockBadge } from "../components/stock-badge";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../hooks/use-follows";
 import { cx } from "@/utils/cx";
+import { generateSlug } from "@/lib/slug";
 
 type Tab = "produits" | "boutiques";
 
@@ -64,7 +65,7 @@ export default function FavoritesPage() {
                                 return (
                                     <Link
                                         key={fav.product_id}
-                                        href={`/product/${fav.product_id}`}
+                                        href={`/product/${generateSlug(product.name || "", fav.product_id)}`}
                                         className="flex gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:scale-[0.98]"
                                     >
                                         <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-[#2C1A0E]">
@@ -115,7 +116,7 @@ export default function FavoritesPage() {
                                 return (
                                     <Link
                                         key={f.merchant_id}
-                                        href={`/shop/${f.merchant_id}`}
+                                        href={`/shop/${generateSlug(f.merchants?.name || "", f.merchant_id)}`}
                                         className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:scale-[0.98]"
                                     >
                                         <div className="size-13 shrink-0 overflow-hidden rounded-full bg-[#2C1A0E]">

@@ -51,7 +51,7 @@ export default async function CategoryPage({ params }: Props) {
         const supabase = createAdminClient();
         const { data: products } = await supabase
             .from("products")
-            .select("merchant_id, merchants(id, name, address, city, photo_url, logo_url)")
+            .select("merchant_id, merchants(id, slug, name, address, city, photo_url, logo_url)")
             .ilike("category", `%${cat.dbCategory}%`)
             .limit(100);
 
@@ -97,7 +97,7 @@ export default async function CategoryPage({ params }: Props) {
                             return (
                                 <Link
                                     key={merchant.id}
-                                    href={`/shop/${merchant.id}`}
+                                    href={`/shop/${merchant.slug}`}
                                     className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-4 transition duration-150 active:bg-[#3D2A1A]/80"
                                 >
                                     <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#2C1A0E]">

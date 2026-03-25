@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, MarkerPin01, ChevronRight } from "@untitledui/icons";
+import { generateSlug } from "@/lib/slug";
 import { HeartButton } from "../../components/heart-button";
 import { StockBadge } from "../../components/stock-badge";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
@@ -142,7 +143,7 @@ export default function ProductDetailClient() {
 
                         {/* Merchant card */}
                         <Link
-                            href={`/shop/${product.merchant_id}`}
+                            href={`/shop/${generateSlug(product.merchants?.name || "", product.merchant_id)}`}
                             className="mt-5 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition duration-150 active:scale-[0.98]"
                         >
                             <div className="flex size-12 items-center justify-center overflow-hidden rounded-xl bg-[var(--ts-cream)]">

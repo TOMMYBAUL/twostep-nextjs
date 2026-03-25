@@ -10,6 +10,7 @@ import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
 import { cx } from "@/utils/cx";
+import { generateSlug } from "@/lib/slug";
 
 interface MerchantProfile {
     merchant_id: string;
@@ -273,7 +274,7 @@ export default function ShopProfileClient() {
                         const isFav = favoriteIds.has(p.id);
                         const isOut = (p.stock?.quantity ?? 0) === 0;
                         return (
-                            <Link key={p.id} href={`/product/${p.id}`} className="group block">
+                            <Link key={p.id} href={`/product/${generateSlug(p.name, p.id)}`} className="group block">
                                 {/* Photo */}
                                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[var(--ts-cream-dark)]">
                                     {p.photo_url ? (

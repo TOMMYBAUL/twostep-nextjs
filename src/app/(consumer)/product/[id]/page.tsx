@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { resolveProductId } from "@/lib/slug";
 import ProductDetailClient from "./product-detail";
 
 const BASE_URL = "https://www.twostep.fr";
@@ -8,12 +9,14 @@ interface Props {
     params: Promise<{ id: string }>;
 }
 
-async function getProduct(id: string) {
+async function getProduct(slugOrId: string) {
+    const resolvedId = await resolveProductId(slugOrId);
+    if (!resolvedId) return null;
     const supabase = createAdminClient();
     const { data } = await supabase
         .from("products")
-        .select("name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address)")
-        .eq("id", id)
+        .select("slug, name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
+        .eq("id", resolvedId)
         .single();
     return data;
 }
@@ -28,15 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const merchant = (data as any).merchants;
         const title = data.name;
         const description = `${data.name}${data.price ? ` à ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? ` à ${merchant.city}` : ""}. Vérifiez le stock en temps réel sur Two-Step.`;
+        const productSlug = data.slug;
 
         return {
             title,
             description,
-            alternates: { canonical: `${BASE_URL}/product/${id}` },
+            alternates: { canonical: `${BASE_URL}/product/${productSlug}` },
             openGraph: {
                 title: `${data.name} | Two-Step`,
                 description,
-                url: `${BASE_URL}/product/${id}`,
+                url: `${BASE_URL}/product/${productSlug}`,
                 ...(data.photo_url && {
                     images: [{ url: data.photo_url, width: 800, height: 800, alt: data.name }],
                 }),
@@ -68,8 +72,8 @@ export default async function Page({ params }: Props) {
                 "itemListElement": [
                     { "@type": "ListItem", position: 1, name: "Accueil", item: BASE_URL },
                     { "@type": "ListItem", position: 2, name: "Boutiques", item: `${BASE_URL}/discover` },
-                    ...(merchant ? [{ "@type": "ListItem", position: 3, name: merchant.name, item: `${BASE_URL}/shop/${(data as any).merchant_id}` }] : []),
-                    { "@type": "ListItem", position: merchant ? 4 : 3, name: data.name, item: `${BASE_URL}/product/${id}` },
+                    ...(merchant ? [{ "@type": "ListItem", position: 3, name: merchant.name, item: `${BASE_URL}/shop/${merchant.slug}` }] : []),
+                    { "@type": "ListItem", position: merchant ? 4 : 3, name: data.name, item: `${BASE_URL}/product/${data.slug}` },
                 ],
             };
             jsonLd = {
@@ -80,7 +84,7 @@ export default async function Page({ params }: Props) {
                 image: data.photo_url ?? undefined,
                 sku: data.ean ?? undefined,
                 category: data.category ?? undefined,
-                url: `${BASE_URL}/product/${id}`,
+                url: `${BASE_URL}/product/${data.slug}`,
                 ...(data.price && {
                     offers: {
                         "@type": "Offer",

@@ -1,5 +1,21 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
+const ACCENT_MAP = "àáâãäåèéêëìíîïòóôõöùúûüýÿñçÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝŸÑÇ";
+const ASCII_MAP = "aaaaaaeeeeiiiioooooouuuuyyncAAAAAAEEEEIIIIOOOOOUUUUYYNC";
+
+/**
+ * Generate a slug from name + id, matching the DB trigger exactly.
+ * Pure function — safe for client and server.
+ */
+export function generateSlug(name: string, id: string): string {
+    let s = name;
+    for (let i = 0; i < ACCENT_MAP.length; i++) {
+        s = s.replaceAll(ACCENT_MAP[i], ASCII_MAP[i]);
+    }
+    s = s.replace(/[^a-zA-Z0-9\s-]/g, "").replace(/\s+/g, "-").toLowerCase();
+    return `${s}-${id.slice(0, 8)}`;
+}
+
 /**
  * Resolve a slug or UUID to a merchant ID.
  * Returns the UUID if found, null otherwise.

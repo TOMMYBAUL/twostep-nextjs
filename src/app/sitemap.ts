@@ -28,19 +28,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const supabase = createAdminClient();
 
         const [{ data: products }, { data: merchants }] = await Promise.all([
-            supabase.from("products").select("id, updated_at").order("updated_at", { ascending: false }).limit(1000),
-            supabase.from("merchants").select("id, updated_at").order("updated_at", { ascending: false }).limit(500),
+            supabase.from("products").select("slug, updated_at").order("updated_at", { ascending: false }).limit(1000),
+            supabase.from("merchants").select("slug, updated_at").order("updated_at", { ascending: false }).limit(500),
         ]);
 
         const productRoutes: MetadataRoute.Sitemap = (products ?? []).map((p) => ({
-            url: `${BASE_URL}/product/${p.id}`,
+            url: `${BASE_URL}/product/${p.slug}`,
             lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
             changeFrequency: "daily" as const,
             priority: 0.6,
         }));
 
         const merchantRoutes: MetadataRoute.Sitemap = (merchants ?? []).map((m) => ({
-            url: `${BASE_URL}/shop/${m.id}`,
+            url: `${BASE_URL}/shop/${m.slug}`,
             lastModified: m.updated_at ? new Date(m.updated_at) : new Date(),
             changeFrequency: "weekly" as const,
             priority: 0.7,

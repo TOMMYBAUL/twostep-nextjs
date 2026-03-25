@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MarkerPin01, Tag01, SearchLg } from "@untitledui/icons";
+import { generateSlug } from "@/lib/slug";
 
 interface Merchant {
     merchant_id: string;
@@ -94,7 +95,7 @@ export function SidePanel({ merchants, isLoading }: SidePanelProps) {
 function CollapsedPill({ merchant }: { merchant: Merchant }) {
     return (
         <Link
-            href={`/shop/${merchant.merchant_id}`}
+            href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
             className="flex size-9 items-center justify-center rounded-full bg-[var(--ts-ochre)] text-xs font-bold text-white shadow-sm transition duration-100 hover:scale-110"
             title={merchant.merchant_name}
         >
@@ -106,7 +107,7 @@ function CollapsedPill({ merchant }: { merchant: Merchant }) {
 function ExpandedCard({ merchant }: { merchant: Merchant }) {
     return (
         <Link
-            href={`/shop/${merchant.merchant_id}`}
+            href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
             className="group flex gap-2.5 rounded-xl p-2 transition duration-100 hover:bg-secondary"
         >
             {/* Avatar */}

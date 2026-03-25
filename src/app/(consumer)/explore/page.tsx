@@ -12,6 +12,7 @@ const MapView = dynamic(() => import("../components/map-view").then(m => m.MapVi
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
+import { generateSlug } from "@/lib/slug";
 
 const CATEGORIES = [
     { label: "Tout", value: null, emoji: "" },
@@ -361,7 +362,7 @@ export default function ExplorePage() {
                             </div>
 
                             <Link
-                                href={`/shop/${selectedMerchant.merchant_id}`}
+                                href={`/shop/${generateSlug(selectedMerchant.merchant_name, selectedMerchant.merchant_id)}`}
                                 className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#C17B2F] text-white shadow-sm transition duration-150 active:scale-95"
                             >
                                 <ChevronRight className="size-5" />
@@ -381,7 +382,7 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
 
     return (
         <Link
-            href={`/shop/${merchant.merchant_id}`}
+            href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
             className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:bg-[#3D2A1A]/80"
         >
             <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">

@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { Drawer } from "vaul";
 import { MarkerPin01, Tag01, ChevronRight, SearchLg, Clock } from "@untitledui/icons";
+import { generateSlug } from "@/lib/slug";
 
 interface Merchant {
     merchant_id: string;
@@ -122,7 +123,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
 
     return (
         <Link
-            href={`/shop/${merchant.merchant_id}`}
+            href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
             className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:bg-[#3D2A1A]/80"
         >
             {/* Avatar */}

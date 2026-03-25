@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows } from "../hooks/use-follows";
+import { generateSlug } from "@/lib/slug";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
 
@@ -169,7 +170,7 @@ export default function DiscoverPage() {
                                 return (
                                     <Link
                                         key={f.merchant_id}
-                                        href={`/shop/${f.merchant_id}`}
+                                        href={`/shop/${generateSlug(f.merchants?.name || f.merchant_name || "", f.merchant_id)}`}
                                         className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                                     >
                                         <div className="relative size-16 overflow-hidden rounded-full bg-[#3D2A1A] shadow-sm ring-2 ring-[#C17B2F]/30">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MarkerPin01, Tag01 } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
+import { generateSlug } from "@/lib/slug";
 
 interface ShopCardProps {
     id: string;
@@ -22,7 +23,7 @@ export function ShopCard({
 }: ShopCardProps) {
     return (
         <Link
-            href={`/shop/${id}`}
+            href={`/shop/${generateSlug(name, id)}`}
             className={cx(
                 "group block overflow-hidden rounded-2xl border border-secondary bg-primary shadow-xs transition duration-100 hover:shadow-md",
                 className,

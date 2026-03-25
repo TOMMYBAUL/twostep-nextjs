@@ -7,6 +7,7 @@ import { MarkerPin01 } from "@untitledui/icons";
 import { motion, useInView } from "motion/react";
 import { HeartButton } from "./heart-button";
 import { cx } from "@/utils/cx";
+import { generateSlug } from "@/lib/slug";
 
 interface ProductCardProps {
     id: string;
@@ -42,7 +43,7 @@ export function ProductCard({
         >
         <Link
             ref={ref}
-            href={`/product/${id}`}
+            href={`/product/${generateSlug(name, id)}`}
             className={cx("group block", className)}
         >
             {/* Photo — square, neutral bg, no border/shadow */}
