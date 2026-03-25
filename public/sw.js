@@ -1,18 +1,21 @@
 /**
  * Two-Step Service Worker — Offline-first caching for PWA
+ * Bump CACHE_VERSION on each deploy to bust stale caches.
  */
 
-const CACHE_NAME = "twostep-v1";
+const CACHE_VERSION = 2;
+const CACHE_NAME = `twostep-v${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = [
     "/discover",
+    "/offline.html",
     "/icons/icon-192.png",
     "/icons/icon-512.png",
     "/logo-icon.webp",
 ];
 
-// Install: pre-cache shell
+// Install: pre-cache shell + offline page
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)),
@@ -20,7 +23,7 @@ self.addEventListener("install", (event) => {
     self.skipWaiting();
 });
 
-// Activate: clean old caches
+// Activate: clean old caches (any that don't match current version)
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((keys) =>
@@ -32,7 +35,7 @@ self.addEventListener("activate", (event) => {
     self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for static assets
+// Fetch: network-first for pages, cache-first for static assets
 self.addEventListener("fetch", (event) => {
     const { request } = event;
     const url = new URL(request.url);
@@ -52,7 +55,9 @@ self.addEventListener("fetch", (event) => {
                     caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
                     return response;
                 })
-                .catch(() => caches.match(request).then((cached) => cached || caches.match("/discover"))),
+                .catch(() =>
+                    caches.match(request).then((cached) => cached || caches.match("/offline.html")),
+                ),
         );
         return;
     }
