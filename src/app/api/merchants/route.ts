@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
-    const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "merchants", 30);
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "merchants", 30);
     if (limited) return limited;
 
     try {
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-    const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "merchants", 30);
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "merchants", 30);
     if (limited) return limited;
 
     try {

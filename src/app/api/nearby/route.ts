@@ -4,7 +4,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { nearbyQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
-    const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "nearby", 30);
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "nearby", 30);
     if (limited) return limited;
 
     try {

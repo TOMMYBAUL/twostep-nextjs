@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
-    const limited = rateLimit(request.headers.get("x-forwarded-for") ?? null, "feed-promos", 30);
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "feed-promos", 30);
     if (limited) return limited;
 
     try {

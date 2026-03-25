@@ -1,11 +1,12 @@
 import crypto from "crypto";
+import { getSiteUrl } from "@/lib/url";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
 export const shopifyAdapter: IPOSAdapter = {
     name: "shopify",
 
     getAuthUrl(merchantId: string): string {
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+        const baseUrl = getSiteUrl();
         const params = new URLSearchParams({
             client_id: process.env.SHOPIFY_CLIENT_ID!,
             scope: "read_products,write_products,read_inventory,write_inventory",

@@ -69,7 +69,12 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-sm text-gray-400">
+                <p className="mt-3 text-center">
+                    <Link href="/auth/forgot-password" className="text-sm text-gray-400 hover:text-gray-600">
+                        Mot de passe oublié ?
+                    </Link>
+                </p>
+                <p className="mt-4 text-center text-sm text-gray-400">
                     Pas encore de compte ?{" "}
                     <Link href="/auth/signup" className="font-medium" style={{ color: "var(--ts-terracotta)" }}>
                         Inscrivez-vous

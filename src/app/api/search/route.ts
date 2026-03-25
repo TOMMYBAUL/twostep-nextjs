@@ -6,7 +6,7 @@ import { searchQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: Request) {
     try {
-        const limited = rateLimit(request.headers.get("x-forwarded-for"), "search", 30);
+        const limited = await rateLimit(request.headers.get("x-forwarded-for"), "search", 30);
         if (limited) return limited;
 
         const supabase = await createClient();

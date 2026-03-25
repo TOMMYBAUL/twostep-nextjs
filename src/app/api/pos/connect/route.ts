@@ -4,6 +4,7 @@ import { squareAdapter } from "@/lib/pos/square";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { shopifyAdapter } from "@/lib/pos/shopify";
 import { encrypt } from "@/lib/email/encryption";
+import { getSiteUrl } from "@/lib/url";
 import type { IPOSAdapter } from "@/lib/pos/types";
 
 const adapters: Record<string, IPOSAdapter> = {
@@ -92,7 +93,7 @@ export async function GET(request: NextRequest) {
     try {
         const code = request.nextUrl.searchParams.get("code");
         const state = request.nextUrl.searchParams.get("state");
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+        const baseUrl = getSiteUrl();
 
         // --- OAuth callback (POS redirects back with code + state) ---
         if (code && state) {
