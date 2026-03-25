@@ -74,26 +74,12 @@ export async function POST(request: NextRequest) {
     let received = 0;
 
     for (const item of incomingItems) {
-        // Add to actual stock
-        await supabase.rpc("update_stock_delta", {
+        // Atomic: update stock + mark received + create feed event
+        await adminSupabase.rpc("receive_stock_incoming", {
+            p_incoming_id: item.id,
             p_product_id: item.product_id,
             p_delta: item.quantity,
-        });
-
-        // Mark as received
-        await adminSupabase
-            .from("stock_incoming")
-            .update({
-                status: "received",
-                received_at: new Date().toISOString(),
-            })
-            .eq("id", item.id);
-
-        // NOW emit the feed event — product is truly available
-        await adminSupabase.from("feed_events").insert({
-            merchant_id: merchant.id,
-            product_id: item.product_id,
-            event_type: "restock",
+            p_merchant_id: merchant.id,
         });
 
         received++;

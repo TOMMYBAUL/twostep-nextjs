@@ -104,25 +104,18 @@ export async function POST() {
                     .eq("id", existingMap.get(item.pos_item_id));
                 productsUpdated++;
             } else {
-                // Create new product + stock entry
-                const { data: newProduct } = await supabase
-                    .from("products")
-                    .insert({
-                        merchant_id: merchant.id,
-                        pos_item_id: item.pos_item_id,
-                        name: item.name,
-                        price: item.price,
-                        ean: item.ean,
-                        photo_url: item.photo_url,
-                    })
-                    .select("id")
-                    .single();
+                // Atomic: create product + stock row in one transaction
+                const { data: newProductId } = await supabase.rpc("create_product_with_stock", {
+                    p_merchant_id: merchant.id,
+                    p_name: item.name,
+                    p_price: item.price,
+                    p_ean: item.ean,
+                    p_photo_url: item.photo_url,
+                    p_pos_item_id: item.pos_item_id,
+                });
 
-                if (newProduct) {
-                    await supabase
-                        .from("stock")
-                        .insert({ product_id: newProduct.id, quantity: 0 });
-                    existingMap.set(item.pos_item_id, newProduct.id);
+                if (newProductId) {
+                    existingMap.set(item.pos_item_id, newProductId);
                 }
                 productsCreated++;
             }
