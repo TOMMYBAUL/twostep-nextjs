@@ -24,10 +24,6 @@ interface Props {
     params: Promise<{ category: string }>;
 }
 
-export async function generateStaticParams() {
-    return Object.keys(CATEGORIES).map((category) => ({ category }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { category } = await params;
     const cat = CATEGORIES[category];
@@ -50,24 +46,24 @@ export default async function CategoryPage({ params }: Props) {
     const cat = CATEGORIES[category];
     if (!cat) notFound();
 
-    const supabase = createAdminClient();
+    let merchants: any[] = [];
+    try {
+        const supabase = createAdminClient();
+        const { data: products } = await supabase
+            .from("products")
+            .select("merchant_id, merchants(id, name, address, city, photo_url, logo_url)")
+            .ilike("category", `%${cat.dbCategory}%`)
+            .limit(100);
 
-    // Get merchants that have products in this category
-    const { data: products } = await supabase
-        .from("products")
-        .select("merchant_id, merchants(id, name, address, city, photo_url, logo_url)")
-        .ilike("category", `%${cat.dbCategory}%`)
-        .limit(100);
-
-    // Deduplicate merchants
-    const seen = new Set<string>();
-    const merchants = (products ?? [])
-        .map((p: any) => p.merchants)
-        .filter((m: any) => {
-            if (!m || seen.has(m.id)) return false;
-            seen.add(m.id);
-            return m.city?.toLowerCase().includes("toulouse");
-        });
+        const seen = new Set<string>();
+        merchants = (products ?? [])
+            .map((p: any) => p.merchants)
+            .filter((m: any) => {
+                if (!m || seen.has(m.id)) return false;
+                seen.add(m.id);
+                return m.city?.toLowerCase().includes("toulouse");
+            });
+    } catch { /* graceful: show empty state if DB unavailable */ }
 
     const breadcrumbLd = {
         "@context": "https://schema.org",
