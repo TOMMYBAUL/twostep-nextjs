@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { squareAdapter } from "@/lib/pos/square";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { captureError } from "@/lib/error";
+import { notifyProductFavorites } from "@/lib/push-send";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -52,6 +53,20 @@ export async function POST(request: Request) {
                 product_id: product.id,
                 event_type: "restock",
             });
+
+            // Push notification to users who favorited this product
+            if (update.quantity > 0) {
+                const { data: productInfo } = await supabase
+                    .from("products")
+                    .select("name")
+                    .eq("id", product.id)
+                    .single();
+                notifyProductFavorites(product.id, {
+                    title: "De retour en stock !",
+                    body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
+                    url: `/product/${product.id}`,
+                }).catch(() => {});
+            }
         }
 
         return NextResponse.json({ ok: true });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { captureError } from "@/lib/error";
+import { notifyProductFavorites } from "@/lib/push-send";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -56,6 +57,20 @@ export async function POST(request: NextRequest) {
                 product_id: product.id,
                 event_type: "sale",
             });
+
+            // Notify favorites when product restocked (quantity went up)
+            if (update.quantity > 0 && newQty > 0 && currentQty === 0) {
+                const { data: productInfo } = await supabase
+                    .from("products")
+                    .select("name")
+                    .eq("id", product.id)
+                    .single();
+                notifyProductFavorites(product.id, {
+                    title: "De retour en stock !",
+                    body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
+                    url: `/product/${product.id}`,
+                }).catch(() => {});
+            }
         }
 
         return NextResponse.json({ ok: true });

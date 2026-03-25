@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { promotionBody, parseBody } from "@/lib/validation";
+import { notifyMerchantFollowers } from "@/lib/push-send";
 
 export async function GET(request: Request) {
     try {
@@ -97,6 +98,19 @@ export async function POST(request: Request) {
                 event_type: "new_promo",
             });
         }
+
+        // Push notification to merchant followers
+        const adminSupabase2 = createAdminClient();
+        const { data: productInfo } = await adminSupabase2
+            .from("products")
+            .select("name")
+            .eq("id", product_id)
+            .single();
+        notifyMerchantFollowers(product.merchant_id, {
+            title: "Nouvelle promo !",
+            body: `${productInfo?.name ?? "Un produit"} à ${sale_price}€`,
+            url: `/product/${product_id}`,
+        }).catch(() => {});
 
         return NextResponse.json({ promotion: data }, { status: 201 });
     } catch {
