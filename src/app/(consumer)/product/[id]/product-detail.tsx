@@ -251,7 +251,7 @@ export default function ProductDetailClient() {
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
                             className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-[#1c1209]"
-                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
                             {/* Handle + header */}
                             <div className="sticky top-0 z-10 bg-[#1c1209] px-5 pb-3 pt-3">
@@ -299,7 +299,7 @@ export default function ProductDetailClient() {
                             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
                             className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-[#1c1209]"
-                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
                             <div className="sticky top-0 z-10 bg-[#1c1209] px-5 pb-3 pt-3">
                                 <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#3d2a10]" />
@@ -379,7 +379,7 @@ export default function ProductDetailClient() {
                             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
                             className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-[#1c1209]"
-                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
                             <div className="mx-auto mb-3 mt-3 h-1 w-9 rounded-full bg-white/15" />
 
