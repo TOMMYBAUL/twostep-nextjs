@@ -1,8 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Tag01, TrendUp01, ShoppingBag01, ChevronRight, MarkerPin01, Heart } from "@untitledui/icons";
+import { useMemo, useState, useCallback } from "react";
+import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, Bell01, FilterLines } from "@untitledui/icons";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "../components/product-card";
@@ -11,6 +12,7 @@ import { useFollows } from "../hooks/use-follows";
 import { generateSlug } from "@/lib/slug";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
+import { HeartButton } from "../components/heart-button";
 
 interface DiscoverProduct {
     product_id: string;
@@ -20,22 +22,20 @@ interface DiscoverProduct {
     stock_quantity: number;
     merchant_id: string;
     merchant_name: string;
+    merchant_photo: string | null;
     distance_km: number;
     sale_price: number | null;
 }
 
 const CATEGORIES = [
-    { label: "Tout", value: null },
-    { label: "Mode", value: "mode" },
-    { label: "Chaussures", value: "chaussures" },
-    { label: "Tech", value: "tech" },
-    { label: "Bijoux", value: "bijoux" },
-    { label: "Beauté", value: "beaute" },
-    { label: "Sport", value: "sport" },
-    { label: "Maison", value: "maison" },
-    { label: "Jouets", value: "jouets" },
-    { label: "Accessoires", value: "accessoires" },
-    { label: "Bricolage", value: "bricolage" },
+    { label: "Tout", value: null, emoji: null },
+    { label: "Mode", value: "mode", emoji: "👗" },
+    { label: "Chaussures", value: "chaussures", emoji: "👟" },
+    { label: "Bijoux", value: "bijoux", emoji: "💎" },
+    { label: "Beauté", value: "beaute", emoji: "💄" },
+    { label: "Sport", value: "sport", emoji: "⚽" },
+    { label: "Déco", value: "deco", emoji: "🏠" },
+    { label: "Épicerie", value: "epicerie", emoji: "🧺" },
 ] as const;
 
 function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby", category: string | null) {
@@ -63,6 +63,10 @@ export default function DiscoverPage() {
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [sizeFilter, setSizeFilter] = useState<string | null>(null);
+    const [shoeSizeFilter, setShoeSizeFilter] = useState<number | null>(null);
+    const [showSizeFilters, setShowSizeFilters] = useState(false);
+    const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
 
     const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory);
     const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory);
@@ -78,92 +82,407 @@ export default function DiscoverPage() {
         else add.mutate(id);
     };
 
+    // Hero promo: pick product with highest discount %
+    const heroPromo = useMemo(() => {
+        if (!promos || promos.length === 0) return null;
+        return promos.reduce((best, p) => {
+            if (!p.sale_price) return best;
+            const discount = (p.product_price - p.sale_price) / p.product_price;
+            const bestDiscount = best?.sale_price ? (best.product_price - best.sale_price) / best.product_price : 0;
+            return discount > bestDiscount ? p : best;
+        }, promos.find((p) => p.sale_price) ?? null);
+    }, [promos]);
+
+    // Featured shop: closest merchant from nearby products
+    const featuredShop = useMemo(() => {
+        if (!nearby || nearby.length === 0) return null;
+        const first = nearby[0];
+        return {
+            merchant_id: first.merchant_id,
+            merchant_name: first.merchant_name,
+            merchant_photo: first.merchant_photo,
+            distance_km: first.distance_km,
+        };
+    }, [nearby]);
+
     return (
-        <div className="min-h-dvh bg-[#2C1A0E]">
-            {/* Header */}
+        <div className="min-h-dvh bg-[#1C1209]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
+            {/* ── Header ── */}
             <div className="px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <div>
-                    <div className="flex items-center gap-2">
-                        <Image src="/logo-icon.webp" alt="" width={28} height={28} className="size-7" />
-                        <h1 className="font-display text-2xl font-bold text-[#F5EDD8]">
-                            Two-Step
-                        </h1>
+                <div className="flex items-start justify-between">
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <Image src="/logo-icon.webp" alt="" width={28} height={28} className="size-7" />
+                            <h1 className="font-display text-2xl font-bold text-[#f5deb3]">
+                                Two-Step
+                            </h1>
+                        </div>
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-[#a07840]">
+                            <MarkerPin01 className="size-3" aria-hidden="true" />
+                            {position ? "Autour de toi" : "Toulouse"}
+                        </p>
                     </div>
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-[#F5EDD8]/50">
-                        <MarkerPin01 className="size-3" aria-hidden="true" />
-                        {position ? "Autour de toi" : "Toulouse"}
-                    </p>
+                    <Link
+                        href="/profile/notifications"
+                        className="mt-1 flex size-[30px] items-center justify-center rounded-full bg-[#2a1a08] transition active:bg-[#3d2008]"
+                    >
+                        <Bell01 className="size-4 text-[#a07840]" />
+                    </Link>
                 </div>
 
-                {/* Category chips */}
-                <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                {/* ── Category pills with emoji + size filter button ── */}
+                <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                    {/* Size filter toggle */}
+                    <button
+                        type="button"
+                        onClick={() => setShowSizeFilters((v) => !v)}
+                        className={cx(
+                            "flex shrink-0 items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold transition duration-150",
+                            hasActiveSizeFilter || showSizeFilters
+                                ? "bg-[#c87830] text-[#1C1209] shadow-sm"
+                                : "bg-[#2a1a08] text-[#f5deb3]/60",
+                        )}
+                    >
+                        <FilterLines className="size-3.5" />
+                        Taille
+                        {hasActiveSizeFilter && (
+                            <span className="ml-0.5 flex size-4 items-center justify-center rounded-full bg-[#1C1209]/20 text-[9px]">
+                                {(sizeFilter ? 1 : 0) + (shoeSizeFilter ? 1 : 0)}
+                            </span>
+                        )}
+                    </button>
+
                     {CATEGORIES.map((cat) => (
                         <button
                             key={cat.label}
                             type="button"
                             onClick={() => setActiveCategory(cat.value)}
                             className={cx(
-                                "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition duration-150",
+                                "flex shrink-0 items-center gap-1 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
                                 activeCategory === cat.value
-                                    ? "bg-[#C17B2F] text-white shadow-sm"
-                                    : "bg-[#3D2A1A] text-[#F5EDD8]/60",
+                                    ? "bg-[#c87830] text-[#1C1209] shadow-sm"
+                                    : "bg-[#2a1a08] text-[#f5deb3]/60",
                             )}
                         >
+                            {cat.emoji && <span className="text-xs">{cat.emoji}</span>}
                             {cat.label}
                         </button>
                     ))}
                 </div>
+
+                {/* ── Size filter panel ── */}
+                <AnimatePresence>
+                    {showSizeFilters && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="mt-3 rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] p-3">
+                                {/* Clothing size */}
+                                <p className="mb-2 text-[11px] font-medium text-[#a07840]">Taille vêtements</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {(["XS", "S", "M", "L", "XL", "XXL"] as const).map((s) => (
+                                        <button
+                                            key={s}
+                                            type="button"
+                                            onClick={() => setSizeFilter(sizeFilter === s ? null : s)}
+                                            className={cx(
+                                                "rounded-lg px-3 py-1.5 text-[11px] font-medium transition duration-100",
+                                                sizeFilter === s
+                                                    ? "bg-[#c87830] text-[#1C1209]"
+                                                    : "bg-[#1C1209] text-[#f5deb3]/60",
+                                            )}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Shoe size */}
+                                <p className="mb-2 mt-3 text-[11px] font-medium text-[#a07840]">Pointure</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {([35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const).map((s) => (
+                                        <button
+                                            key={s}
+                                            type="button"
+                                            onClick={() => setShoeSizeFilter(shoeSizeFilter === s ? null : s)}
+                                            className={cx(
+                                                "rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition duration-100",
+                                                shoeSizeFilter === s
+                                                    ? "bg-[#c87830] text-[#1C1209]"
+                                                    : "bg-[#1C1209] text-[#f5deb3]/60",
+                                            )}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Reset */}
+                                {hasActiveSizeFilter && (
+                                    <button
+                                        type="button"
+                                        onClick={() => { setSizeFilter(null); setShoeSizeFilter(null); }}
+                                        className="mt-2.5 text-[11px] font-medium text-[#c87830]"
+                                    >
+                                        Réinitialiser les filtres
+                                    </button>
+                                )}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
-            {/* Feed sections */}
-            <div className="flex flex-col gap-6 pb-24 pt-5">
-                {/* Promos */}
-                <FeedSection
-                    icon={<Tag01 className="size-4" />}
-                    iconColor="bg-[#C17B2F]/15 text-[#C17B2F]"
-                    title="Promos du moment"
-                    subtitle="Les bons plans près de chez toi"
-                    seeAllHref="/search?filter=promos"
-                    products={promos}
-                    isLoading={loadingPromos}
-                    favoriteIds={favoriteIds}
-                    onToggleFavorite={toggleFav}
-                />
+            {/* ── Feed sections ── */}
+            <div className="flex flex-col gap-5 pb-24 pt-4">
 
-                {/* Trending */}
-                <FeedSection
-                    icon={<TrendUp01 className="size-4" />}
-                    iconColor="bg-[#F5EDD8]/10 text-[#F5EDD8]/70"
-                    title="Tendances"
-                    subtitle="Ce qui se vend le plus dans ton quartier"
-                    products={trending}
-                    isLoading={loadingTrending}
-                    favoriteIds={favoriteIds}
-                    onToggleFavorite={toggleFav}
-                />
+                {/* ── 1. Promos du moment — Hero card ── */}
+                <section>
+                    <div className="flex items-center justify-between px-4">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                                <Tag01 className="size-4" />
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Promos du moment</h2>
+                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Les bons plans près de chez toi</p>
+                            </div>
+                        </div>
+                        <Link href="/search?filter=promos" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                            Voir tout
+                            <ChevronRight className="size-3.5" />
+                        </Link>
+                    </div>
 
-                {/* Nearby */}
-                <FeedSection
-                    icon={<ShoppingBag01 className="size-4" />}
-                    iconColor="bg-[var(--ts-sage)]/15 text-[var(--ts-sage)]"
-                    title="Disponible maintenant"
-                    subtitle="En boutique aujourd'hui"
-                    products={nearby}
-                    isLoading={loadingNearby}
-                    favoriteIds={favoriteIds}
-                    onToggleFavorite={toggleFav}
-                />
+                    <div className="mt-3 px-4">
+                        {loadingPromos ? (
+                            <div className="h-[100px] animate-pulse rounded-[14px] bg-[#2a1a08]" />
+                        ) : heroPromo && heroPromo.sale_price ? (
+                            <Link
+                                href={`/product/${generateSlug(heroPromo.product_name, heroPromo.product_id)}`}
+                                className="flex min-h-[120px] overflow-hidden rounded-[14px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] transition active:bg-[#3d2008]"
+                            >
+                                {/* Product image */}
+                                <div className="relative w-[120px] shrink-0 self-stretch bg-[#3d2008]">
+                                    {heroPromo.product_photo ? (
+                                        <Image
+                                            src={heroPromo.product_photo}
+                                            alt={heroPromo.product_name}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/30">
+                                            {heroPromo.product_name.charAt(0)}
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Info */}
+                                <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-4 py-4">
+                                    <span className="inline-flex w-fit items-center gap-1 rounded-full px-2 py-[2px] text-[9px] font-medium text-[#c87830]" style={{ background: "rgba(200,120,48,0.18)", border: "0.5px solid rgba(200,120,48,0.3)" }}>
+                                        −{Math.round(((heroPromo.product_price - heroPromo.sale_price) / heroPromo.product_price) * 100)}% · {heroPromo.merchant_name}
+                                    </span>
+                                    <p className="truncate text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.1px" }}>{heroPromo.product_name}</p>
+                                    <p className="text-[10px] text-[#a07840]">
+                                        {heroPromo.distance_km < 1 ? `${Math.round(heroPromo.distance_km * 1000)}m` : `${heroPromo.distance_km.toFixed(1)}km`}
+                                    </p>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-[13px] font-normal text-[#a07840]">{heroPromo.sale_price.toFixed(2)} €</span>
+                                        <span className="text-[11px] text-[#5a3a18]/60 line-through">{heroPromo.product_price.toFixed(2)} €</span>
+                                    </div>
+                                </div>
+                            </Link>
+                        ) : (
+                            <div className="flex h-[100px] items-center justify-center rounded-[14px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08]">
+                                <p className="text-xs text-[#a07840]/50">Aucune promo pour le moment</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
 
-                {/* Followed shops */}
+                {/* ── 2. Tendances — 2×2 grid ── */}
+                <section>
+                    <div className="flex items-center justify-between px-4">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#f5deb3]/10 text-[#f5deb3]/70">
+                                <TrendUp01 className="size-4" />
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Tendances</h2>
+                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Ce qui se vend le plus dans ton quartier</p>
+                            </div>
+                        </div>
+                        <Link href="/search?filter=trending" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                            Voir tout
+                            <ChevronRight className="size-3.5" />
+                        </Link>
+                    </div>
+
+                    <div className="mt-3 px-4">
+                        {loadingTrending ? (
+                            <div className="grid grid-cols-2 gap-2">
+                                {Array.from({ length: 4 }).map((_, i) => (
+                                    <div key={i} className="h-[160px] animate-pulse rounded-[10px] bg-[#2a1a08]" />
+                                ))}
+                            </div>
+                        ) : trending && trending.length > 0 ? (
+                            <div className="grid grid-cols-2 gap-2">
+                                {trending.slice(0, 4).map((p) => (
+                                    <Link
+                                        key={`${p.product_id}-${p.merchant_id}`}
+                                        href={`/product/${generateSlug(p.product_name, p.product_id)}`}
+                                        className="group overflow-hidden rounded-[10px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] transition active:bg-[#3d2008]"
+                                    >
+                                        {/* Image */}
+                                        <div className="relative h-[220px] w-full bg-[#3d2008]">
+                                            {p.product_photo ? (
+                                                <Image
+                                                    src={p.product_photo}
+                                                    alt={p.product_name}
+                                                    fill
+                                                    sizes="50vw"
+                                                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/20">
+                                                    {p.product_name.charAt(0)}
+                                                </div>
+                                            )}
+                                            {/* Heart overlay */}
+                                            <div className="absolute right-1.5 top-1.5">
+                                                <HeartButton
+                                                    isFavorite={favoriteIds.has(p.product_id)}
+                                                    onToggle={() => toggleFav(p.product_id)}
+                                                    ariaLabel={`${favoriteIds.has(p.product_id) ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Body */}
+                                        <div className="px-2 py-2">
+                                            <p className="truncate text-[13px] font-semibold text-[#f0dfc0]">{p.product_name}</p>
+                                            <p className="mt-0.5 text-xs font-normal text-[#a07840]">{(p.sale_price ?? p.product_price).toFixed(2)} €</p>
+                                            <p className="mt-0.5 text-[10px] text-[#5a4020]">
+                                                {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`} · {p.merchant_name}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="rounded-[10px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-4 py-8 text-center">
+                                <p className="text-xs text-[#a07840]/50">Rien pour le moment</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                {/* ── 3. Boutique à découvrir ── */}
+                {featuredShop && (
+                    <section className="px-4">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                                <MarkerPin01 className="size-4" />
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Boutique à découvrir</h2>
+                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>
+                                    Ouverte maintenant · {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`}
+                                </p>
+                            </div>
+                        </div>
+
+                        <Link
+                            href={`/shop/${generateSlug(featuredShop.merchant_name, featuredShop.merchant_id)}`}
+                            className="mt-3 flex items-center gap-2.5 rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-3 py-2.5 transition active:bg-[#3d2008]"
+                        >
+                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#3d2008] text-sm font-bold text-[#c87830]">
+                                {featuredShop.merchant_photo ? (
+                                    <Image src={featuredShop.merchant_photo} alt={featuredShop.merchant_name} width={36} height={36} className="h-full w-full object-cover" />
+                                ) : (
+                                    featuredShop.merchant_name.charAt(0)
+                                )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="truncate text-xs font-medium text-[#f5deb3]">{featuredShop.merchant_name}</p>
+                                <p className="text-[10px] text-[#a07840]">
+                                    {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
+                                </p>
+                            </div>
+                            <span className="shrink-0 rounded-lg px-[7px] py-[2px] text-[9px] font-medium text-[#6ecf7f]" style={{ background: "rgba(34,90,45,0.35)" }}>
+                                Ouvert
+                            </span>
+                        </Link>
+                    </section>
+                )}
+
+                {/* ── 4. Disponible maintenant — horizontal scroll ── */}
+                <section>
+                    <div className="flex items-center justify-between px-4">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400">
+                                <svg className="size-4" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="5" /></svg>
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Disponible maintenant</h2>
+                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Stock confirmé aujourd'hui</p>
+                            </div>
+                        </div>
+                        <Link href="/search?filter=nearby" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                            Voir tout
+                            <ChevronRight className="size-3.5" />
+                        </Link>
+                    </div>
+
+                    {loadingNearby ? (
+                        <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#2a1a08]" />
+                            ))}
+                        </div>
+                    ) : nearby && nearby.length > 0 ? (
+                        <ul role="list" className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-hide">
+                            {nearby.map((p) => (
+                                <li key={`${p.product_id}-${p.merchant_id}`}>
+                                    <ProductCard
+                                        id={p.product_id}
+                                        name={p.product_name}
+                                        price={p.product_price}
+                                        photo={p.product_photo}
+                                        merchantName={p.merchant_name}
+                                        distance={p.distance_km}
+                                        stockQuantity={p.stock_quantity}
+                                        salePrice={p.sale_price}
+                                        isFavorite={favoriteIds.has(p.product_id)}
+                                        onToggleFavorite={() => toggleFav(p.product_id)}
+                                        className="w-44 shrink-0"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className="mx-4 mt-3 rounded-lg border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-4 py-8 text-center">
+                            <p className="text-xs text-[#a07840]/50">Rien pour le moment — ça arrive vite.</p>
+                        </div>
+                    )}
+                </section>
+
+                {/* ── Followed shops ── */}
                 {follows && follows.length > 0 && (
                     <section className="px-4">
-                        <SectionHeader
-                            icon={<Heart className="size-4" />}
-                            iconColor="bg-[#C17B2F]/15 text-[#C17B2F]"
-                            title="Tes boutiques"
-                            subtitle="Les dernières nouveautés de tes favoris"
-                        />
-                        <div className="mt-3 flex gap-3 overflow-x-auto scrollbar-hide pb-1">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                                <Heart className="size-4" />
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Tes boutiques</h2>
+                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Les dernières nouveautés de tes favoris</p>
+                            </div>
+                        </div>
+                        <div className="mt-3 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
                             {follows.map((f: any) => {
                                 const merchant = f.merchants;
                                 if (!merchant) return null;
@@ -173,16 +492,16 @@ export default function DiscoverPage() {
                                         href={`/shop/${generateSlug(f.merchants?.name || f.merchant_name || "", f.merchant_id)}`}
                                         className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                                     >
-                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#3D2A1A] shadow-sm ring-2 ring-[#C17B2F]/30">
+                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#2a1a08] shadow-sm ring-2 ring-[#c87830]/30">
                                             {merchant.photo_url ? (
                                                 <Image src={merchant.photo_url} alt={merchant.name} fill className="object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#C17B2F]">
+                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#c87830]">
                                                     {merchant.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#F5EDD8]/70">
+                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#f5deb3]/70">
                                             {merchant.name}
                                         </span>
                                     </Link>
@@ -193,103 +512,5 @@ export default function DiscoverPage() {
                 )}
             </div>
         </div>
-    );
-}
-
-/* ── Section header ── */
-function SectionHeader({
-    icon,
-    iconColor,
-    title,
-    subtitle,
-    seeAllHref,
-}: {
-    icon: React.ReactNode;
-    iconColor: string;
-    title: string;
-    subtitle: string;
-    seeAllHref?: string;
-}) {
-    return (
-        <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-                <div className={cx("flex size-8 items-center justify-center rounded-xl", iconColor)}>
-                    {icon}
-                </div>
-                <div>
-                    <h2 className="text-sm font-bold text-[#F5EDD8]">{title}</h2>
-                    <p className="text-[11px] text-[#F5EDD8]/40">{subtitle}</p>
-                </div>
-            </div>
-            {seeAllHref && (
-                <Link href={seeAllHref} className="flex items-center gap-0.5 text-xs font-semibold text-[#C17B2F]">
-                    Voir tout
-                    <ChevronRight className="size-3.5" />
-                </Link>
-            )}
-        </div>
-    );
-}
-
-/* ── Feed section with horizontal scroll ── */
-function FeedSection({
-    icon,
-    iconColor,
-    title,
-    subtitle,
-    seeAllHref,
-    products,
-    isLoading,
-    favoriteIds,
-    onToggleFavorite,
-}: {
-    icon: React.ReactNode;
-    iconColor: string;
-    title: string;
-    subtitle: string;
-    seeAllHref?: string;
-    products?: DiscoverProduct[];
-    isLoading: boolean;
-    favoriteIds: Set<string>;
-    onToggleFavorite: (id: string) => void;
-}) {
-    return (
-        <section>
-            <div className="px-4">
-                <SectionHeader icon={icon} iconColor={iconColor} title={title} subtitle={subtitle} seeAllHref={seeAllHref} />
-            </div>
-
-            {isLoading ? (
-                <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#3D2A1A]" />
-                    ))}
-                </div>
-            ) : products && products.length > 0 ? (
-                <ul role="list" className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide pb-1">
-                    {products.map((p) => (
-                        <li key={`${p.product_id}-${p.merchant_id}`}>
-                            <ProductCard
-                                id={p.product_id}
-                                name={p.product_name}
-                                price={p.product_price}
-                                photo={p.product_photo}
-                                merchantName={p.merchant_name}
-                                distance={p.distance_km}
-                                stockQuantity={p.stock_quantity}
-                                salePrice={p.sale_price}
-                                isFavorite={favoriteIds.has(p.product_id)}
-                                onToggleFavorite={() => onToggleFavorite(p.product_id)}
-                                className="w-44 shrink-0"
-                            />
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <div className="mx-4 mt-3 rounded-lg border border-[#3D2A1A] px-4 py-8 text-center">
-                    <p className="text-xs font-medium text-[#F5EDD8]/30">Rien pour le moment — ça arrive vite.</p>
-                </div>
-            )}
-        </section>
     );
 }

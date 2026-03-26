@@ -27,22 +27,30 @@ export function useToggleFollow() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ merchant_id: merchantId }),
             });
+            if (res.status === 401) throw new Error("auth");
             if (!res.ok) throw new Error("Failed to follow");
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["follows"] });
             show("Boutique suivie");
         },
+        onError: (err) => {
+            if (err.message === "auth") show("Connecte-toi pour suivre cette boutique");
+        },
     });
 
     const unfollow = useMutation({
         mutationFn: async (merchantId: string) => {
             const res = await fetch(`/api/follows/${merchantId}`, { method: "DELETE" });
+            if (res.status === 401) throw new Error("auth");
             if (!res.ok) throw new Error("Failed to unfollow");
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["follows"] });
             show("Boutique retirée");
+        },
+        onError: (err) => {
+            if (err.message === "auth") show("Connecte-toi pour suivre cette boutique");
         },
     });
 

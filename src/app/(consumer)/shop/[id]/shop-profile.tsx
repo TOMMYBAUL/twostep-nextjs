@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown } from "@untitledui/icons";
+import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown, Share07 } from "@untitledui/icons";
 import { useState } from "react";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
@@ -161,6 +161,24 @@ export default function ShopProfileClient() {
                     </svg>
                 </button>
 
+                {/* Share button — below heart */}
+                <button
+                    type="button"
+                    onClick={async () => {
+                        const url = window.location.href;
+                        if (navigator.share) {
+                            try { await navigator.share({ title: profile.merchant_name, text: `Découvre ${profile.merchant_name} sur Two-Step`, url }); } catch {}
+                        } else {
+                            await navigator.clipboard.writeText(url);
+                        }
+                    }}
+                    className="absolute right-4 z-20 flex size-8 items-center justify-center rounded-full shadow-sm"
+                    style={{ top: "calc(env(safe-area-inset-top) + 90px)", background: "rgba(13,9,4,0.5)" }}
+                    aria-label="Partager"
+                >
+                    <Share07 className="size-3.5 text-[#f0dfc0]" />
+                </button>
+
                 {/* Logo + name at bottom of cover — TGTG exact layout */}
                 <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end px-4 pb-4">
                     <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-[2.5px] border-white/90 bg-white shadow-lg">
@@ -310,7 +328,7 @@ export default function ShopProfileClient() {
 
                                     {isOut && (
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <span className="rounded-md bg-black/50 px-2 py-1 text-[11px] font-medium text-white">Indisponible</span>
+                                            <span className="rounded-lg px-2.5 py-[5px] text-[11px] font-medium text-[#e8d4b0]" style={{ background: "rgba(0,0,0,0.55)" }}>Indisponible</span>
                                         </div>
                                     )}
                                 </div>
@@ -321,11 +339,11 @@ export default function ShopProfileClient() {
                                     <div className="mt-0.5 flex items-baseline gap-2">
                                         {sale ? (
                                             <>
-                                                <span className="text-[13px] font-semibold text-[var(--ts-ochre)]">{sale.toFixed(2)} €</span>
-                                                <span className="text-[11px] text-[var(--ts-brown-mid)]/40 line-through">{p.price.toFixed(2)} €</span>
+                                                <span className="text-xs font-normal text-[#a07840]">{sale.toFixed(2)} €</span>
+                                                <span className="text-[11px] text-[#5a3a18]/60 line-through">{p.price.toFixed(2)} €</span>
                                             </>
                                         ) : (
-                                            <span className="text-[13px] font-semibold text-[var(--ts-brown)]">{p.price.toFixed(2)} €</span>
+                                            <span className="text-xs font-normal text-[#a07840]">{p.price.toFixed(2)} €</span>
                                         )}
                                     </div>
                                 </div>

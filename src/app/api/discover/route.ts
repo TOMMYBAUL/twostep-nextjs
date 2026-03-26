@@ -75,9 +75,13 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
-    // Resolve categories for returned product IDs
+    // Resolve categories and merchant photos for returned product IDs
     const productIds = items.map((r: any) => r.product_id);
-    const categoryMap = await resolveCategories(supabase, productIds);
+    const merchantIds = [...new Set(items.map((r: any) => r.merchant_id))];
+    const [categoryMap, merchantPhotoMap] = await Promise.all([
+        resolveCategories(supabase, productIds),
+        resolveMerchantPhotos(supabase, merchantIds),
+    ]);
 
     // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
     const seen = new Set<string>();
@@ -106,6 +110,7 @@ export async function GET(request: NextRequest) {
         stock_quantity: row.stock_quantity,
         merchant_id: row.merchant_id,
         merchant_name: row.merchant_name,
+        merchant_photo: merchantPhotoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
         sale_price: null,
         category: categoryMap.get(row.product_id) ?? null,
@@ -114,6 +119,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ products }, {
         headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
     });
+}
+
+/** Fetch merchant photos for a list of merchant IDs in one query */
+async function resolveMerchantPhotos(
+    supabase: any,
+    merchantIds: string[],
+): Promise<Map<string, string>> {
+    if (merchantIds.length === 0) return new Map();
+    const { data } = await supabase
+        .from("merchants")
+        .select("id, photo_url")
+        .in("id", merchantIds);
+    const map = new Map<string, string>();
+    for (const row of data ?? []) {
+        if (row.photo_url) map.set(row.id, row.photo_url);
+    }
+    return map;
 }
 
 /** Fetch categories for a list of product IDs in one query */

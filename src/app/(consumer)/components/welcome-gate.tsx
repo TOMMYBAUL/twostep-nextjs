@@ -3,16 +3,24 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { MarkerPin01, Heart, ShoppingBag01 } from "@untitledui/icons";
+import { cx } from "@/utils/cx";
 
 const STORAGE_KEY = "ts-welcome-dismissed";
 
+const CLOTHING_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
+const SHOE_SIZES = [35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const;
+
 export function WelcomeGate() {
     const [show, setShow] = useState(false);
-    const [mode, setMode] = useState<"welcome" | "signup" | "login">("welcome");
+    const [mode, setMode] = useState<"welcome" | "signup" | "login" | "sizing">("welcome");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Sizing preferences
+    const [clothingSize, setClothingSize] = useState<string | null>(null);
+    const [shoeSize, setShoeSize] = useState<number | null>(null);
 
     useEffect(() => {
         if (localStorage.getItem(STORAGE_KEY)) return;
@@ -42,6 +50,10 @@ export function WelcomeGate() {
                     options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
                 });
                 if (err) throw err;
+                // After signup, show sizing step
+                setLoading(false);
+                setMode("sizing");
+                return;
             } else {
                 const { error: err } = await supabase.auth.signInWithPassword({ email, password });
                 if (err) throw err;
@@ -52,6 +64,24 @@ export function WelcomeGate() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSizingSave = async () => {
+        if (clothingSize || shoeSize) {
+            try {
+                await fetch("/api/consumer/preferences", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        clothing_size: clothingSize,
+                        shoe_size: shoeSize,
+                    }),
+                });
+            } catch {
+                // Silent fail — preferences are optional
+            }
+        }
+        dismiss();
     };
 
     if (!show) return null;
@@ -118,7 +148,72 @@ export function WelcomeGate() {
                             Passer pour le moment
                         </button>
                     </>
+                ) : mode === "sizing" ? (
+                    /* ── Sizing step (after signup) ── */
+                    <>
+                        <div className="mb-5 text-center">
+                            <h2 className="font-display text-lg font-bold text-[var(--ts-brown)]">
+                                Tes préférences
+                            </h2>
+                            <p className="mt-1 text-xs text-[var(--ts-brown-mid)]/50">
+                                Optionnel — pour te montrer les produits dans ta taille
+                            </p>
+                        </div>
+
+                        {/* Clothing size */}
+                        <div className="mb-5">
+                            <label className="mb-2 block text-xs font-semibold text-[var(--ts-brown)]">Taille vêtements</label>
+                            <div className="flex flex-wrap gap-2">
+                                {CLOTHING_SIZES.map((size) => (
+                                    <button
+                                        key={size}
+                                        type="button"
+                                        onClick={() => setClothingSize(clothingSize === size ? null : size)}
+                                        className={cx(
+                                            "rounded-xl px-4 py-2.5 text-sm font-medium transition duration-100",
+                                            clothingSize === size
+                                                ? "bg-[var(--ts-ochre)] text-white shadow-sm"
+                                                : "border-2 border-[var(--ts-cream-dark)] text-[var(--ts-brown)] active:border-[var(--ts-ochre)]",
+                                        )}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Shoe size */}
+                        <div className="mb-6">
+                            <label className="mb-2 block text-xs font-semibold text-[var(--ts-brown)]">Pointure</label>
+                            <div className="flex flex-wrap gap-1.5">
+                                {SHOE_SIZES.map((size) => (
+                                    <button
+                                        key={size}
+                                        type="button"
+                                        onClick={() => setShoeSize(shoeSize === size ? null : size)}
+                                        className={cx(
+                                            "rounded-lg px-2.5 py-2 text-xs font-medium transition duration-100",
+                                            shoeSize === size
+                                                ? "bg-[var(--ts-ochre)] text-white shadow-sm"
+                                                : "border-2 border-[var(--ts-cream-dark)] text-[var(--ts-brown)] active:border-[var(--ts-ochre)]",
+                                        )}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleSizingSave}
+                            className="w-full rounded-2xl bg-[var(--ts-ochre)] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                        >
+                            {clothingSize || shoeSize ? "Enregistrer" : "Passer cette étape"}
+                        </button>
+                    </>
                 ) : (
+                    /* ── Login / Signup form ── */
                     <>
                         <h2 className="mb-5 text-center font-display text-lg font-bold text-[var(--ts-brown)]">
                             {mode === "signup" ? "Créer un compte" : "Se connecter"}

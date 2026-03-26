@@ -18,7 +18,7 @@ export function TabBar() {
 
     return (
         <nav
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#3D2A1A] bg-[#2C1A0E]/95 backdrop-blur-md"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#3D2A1A] bg-[#0d0904]/95 backdrop-blur-md"
             role="tablist"
             aria-label="Navigation principale"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}

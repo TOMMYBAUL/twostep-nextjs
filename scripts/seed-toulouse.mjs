@@ -1,5 +1,5 @@
 /**
- * Two-Step — Seed script: 25 realistic Toulouse merchants + 250+ products
+ * Two-Step — Seed script: 8 premium Toulouse merchants with HD photos
  *
  * Usage:
  *   node scripts/seed-toulouse.mjs
@@ -78,430 +78,31 @@ function pastDate(daysAgo) {
     return d.toISOString();
 }
 
-// ─── Unsplash photo URLs by category ────────────────────
+// ─── Unsplash HD helpers ─────────────────────────────────
+// Cover photos: 1400x700 for wide banner
+// Store photos: 800x800 square
+// Product photos: 800x800 square, high quality
+const cover = (id) => `https://images.unsplash.com/${id}?w=1400&h=700&fit=crop&q=85`;
+const store = (id) => `https://images.unsplash.com/${id}?w=800&h=800&fit=crop&q=85`;
+const logo  = (id) => `https://images.unsplash.com/${id}?w=200&h=200&fit=crop&q=85`;
+const prod  = (id) => `https://images.unsplash.com/${id}?w=800&h=800&fit=crop&q=85`;
 
-const MERCHANT_PHOTOS = {
-    mode: [
-        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&h=600&fit=crop",
-    ],
-    chaussures: [
-        "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&h=600&fit=crop",
-    ],
-    bijoux: [
-        "https://images.unsplash.com/photo-1515562141589-67f0d569b6fc?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&h=600&fit=crop",
-    ],
-    tech: [
-        "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop",
-    ],
-    beaute: [
-        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800&h=600&fit=crop",
-    ],
-    sport: [
-        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50a?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop",
-    ],
-    jouets: [
-        "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=800&h=600&fit=crop",
-    ],
-    accessoires: [
-        "https://images.unsplash.com/photo-1509695507497-903c140c43b0?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1473188588951-666fce8e7c68?w=800&h=600&fit=crop",
-    ],
-    bricolage: [
-        "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=600&fit=crop",
-    ],
-};
-
-const U = (id) => `https://images.unsplash.com/${id}?w=600&h=600&fit=crop&q=80`;
-
-const PRODUCT_PHOTOS = {
-    // ─── MODE ───
-    "T-shirt col rond":         U("photo-1521572163474-6864f9cf17ab"),
-    "Jean 501 Original":        U("photo-1542272604-787c3835535d"),
-    "Chemise Oxford slim":      U("photo-1596755094514-f87e34085b2c"),
-    "Polo Classic Fit":         U("photo-1626497764746-6dc36546b388"),
-    "Sweat à capuche":          U("photo-1556821840-3a63f95609a7"),
-    "Veste en jean Trucker":    U("photo-1578587018452-892bacefd3f2"),
-    "Robe midi fleurie":        U("photo-1612336307429-8a898d10e223"),
-    "Blouse en soie":           U("photo-1564257631407-4deb1f99d992"),
-    "Pantalon chino slim":      U("photo-1473966968600-fa801b869a1a"),
-    "Pull col V laine mérinos": U("photo-1434389677669-e08b4cda3a14"),
-    "Doudoune légère":          U("photo-1591047139829-d91aecb6caea"),
-    "Parka imperméable":        U("photo-1544923246-77307dd270ff"),
-    "Casquette 9FORTY":         U("photo-1588850561407-ed78c334e67a"),
-    "Hoodie Logo":              U("photo-1620799140408-edc6dcb6d633"),
-    "Bermuda cargo":            U("photo-1591195853828-11db59a44f6b"),
-    // ─── CHAUSSURES ───
-    "Air Force 1 '07":          U("photo-1606107557195-0e29a4b5b4aa"),
-    "Stan Smith":               U("photo-1520256862855-398228c41684"),
-    "574 Classic":              U("photo-1539185441755-769473a23570"),
-    "Gel-1130":                 U("photo-1542291026-7eec264c27ff"),
-    "Old Skool":                U("photo-1525966222134-fcfa99b8ae77"),
-    "Club C 85":                U("photo-1608231387042-66d1773070a5"),
-    "Chuck Taylor All Star":    U("photo-1463100099107-aa0980c362e6"),
-    "Boots Chelsea cuir":       U("photo-1638247025967-b4e38f787b76"),
-    "Sandale compensée":        U("photo-1543163521-1bf539c55dd2"),
-    "Mocassin classique":       U("photo-1533867617858-e7b97e060509"),
-    "Clifton 9":                U("photo-1542838132-92c53300491e"),
-    "Speedcross 6":             U("photo-1603808033192-082d6919d3e1"),
-    "Ghost 15":                 U("photo-1595950653106-6c9ebd614d3a"),
-    // ─── BIJOUX ───
-    "Bracelet Moments":         U("photo-1535632066927-ab7c9ab60908"),
-    "Charm Cœur":               U("photo-1599643478518-a784e5dc4c8f"),
-    "Collier Tennis":           U("photo-1515562141589-67f0d569b6fc"),
-    "Boucles d'oreilles cristal": U("photo-1605100804763-247f67b3557e"),
-    "Montre Neutra Chrono":     U("photo-1524592094714-0f0654e20314"),
-    "Montre Petite":            U("photo-1523170335258-f5ed11844a49"),
-    "Montre Presage":           U("photo-1587836374828-4dbafa94cf0e"),
-    "Montre PRX":               U("photo-1548171915-e79a380a2a4b"),
-    "G-Shock GA-2100":          U("photo-1614164185128-e4ec99c436d7"),
-    "Montre Minuit Mesh":       U("photo-1611591437281-460bfbe1220a"),
-    // ─── TECH ───
-    "Coque iPhone 15 Pro":      U("photo-1601784551446-20c9e07cdbdb"),
-    "Chargeur MagSafe":         U("photo-1618424181497-157f25b6ddd5"),
-    "Écouteurs Tune 770NC":     U("photo-1505740420928-5e560c06d30e"),
-    "Enceinte Flip 6":          U("photo-1608043152269-423dbba4e7e1"),
-    "Galaxy Buds3":             U("photo-1590658268037-6bf12f032f55"),
-    "Webcam Brio 4K":           U("photo-1587826080692-f439cd0b70e0"),
-    "Clavier MX Keys Mini":     U("photo-1587829741301-dc798b83add3"),
-    "Manette DualSense":        U("photo-1606144042614-b2417e99c4e3"),
-    "Joy-Con (paire)":          U("photo-1621259182978-fbf93132d53d"),
-    "Forerunner 265":           U("photo-1523275335684-37898b6baf30"),
-    "Carte microSD 256Go":      U("photo-1531492746076-161ca9bcad09"),
-    // ─── BEAUTÉ ───
-    "Crème Prodigieuse Boost":  U("photo-1570194065650-d99fb4b38b17"),
-    "Eau Micellaire":           U("photo-1556228578-0d85b1a4d571"),
-    "Eau Thermale spray 300ml": U("photo-1619451334792-150fd785ee74"),
-    "Vinosource-Hydra sérum":   U("photo-1608248543803-ba4f8c70ae0b"),
-    "Bougie Baies":             U("photo-1602607537979-282a29a48b49"),
-    "Eau de parfum Gypsy Water":U("photo-1541643600914-78b084683601"),
-    "Eau de parfum Santal 33":  U("photo-1594035910387-fea081ae7196"),
-    "Rose Hand Cream":          U("photo-1571781926291-c477ebfd024b"),
-    "Skin Food crème":          U("photo-1612817288484-6f916006741a"),
-    "Gel douche Verbena":       U("photo-1596462502278-27bfdc403348"),
-    // ─── SPORT ───
-    "Ballon de foot Pro":       U("photo-1614632537423-1e6078b78531"),
-    "Legging Fly Fast":         U("photo-1506629082955-511b1aa562c8"),
-    "Brassière Impact Run":     U("photo-1571019614242-c5c5dee9f50a"),
-    "Gants de musculation":     U("photo-1517344884509-a0c97ec11bcc"),
-    "Sac à dos Trail 15L":      U("photo-1553062407-98eeb64c6a62"),
-    "Tapis de yoga Premium":    U("photo-1592432678016-e910b452f9a2"),
-    "Chaussettes compression":  U("photo-1576566588028-4147f3842f27"),
-    "Skate deck 8.25":          U("photo-1547447134-cd3f5c716030"),
-    "Trucks 149mm":             U("photo-1583115260445-f95fe37202ae"),
-    "Casque vélo Aether":       U("photo-1557803175-2f6588e4a3c3"),
-    // ─── JOUETS ───
-    "Lego Technic Ferrari":     U("photo-1587654780291-39c9404d7dd0"),
-    "Lego City Pompiers":       U("photo-1558060370-d644479cb6f7"),
-    "Playmobil Maison Modern.": U("photo-1596461404969-9ae70f2830c1"),
-    "Puzzle 1000 pièces":       U("photo-1606503153255-59d8b8e0328e"),
-    "Jeu Dixit":                U("photo-1566576912321-d58ddd7a6088"),
-    "Dobble Classic":           U("photo-1611371805429-8b5c1b2c34ba"),
-    "Warhammer Start Set":      U("photo-1612404459571-1dae8fa7d89d"),
-    "Jeu Les Aventuriers du Rail": U("photo-1632501641765-e568d28b0015"),
-    "Poussette Libelle":        U("photo-1586015555751-63bb77f4322a"),
-    "Body coton bio 3-pack":    U("photo-1519689680058-324335c77eba"),
-    // ─── ACCESSOIRES ───
-    "Lunettes Aviator":         U("photo-1572635196237-14b3f281503f"),
-    "Lunettes Frogskins":       U("photo-1511499767150-a48a237f0083"),
-    "Sac Le Pliage M":          U("photo-1548036328-c9fa89d128fa"),
-    "Portefeuille cuir":        U("photo-1627123424574-724758594e93"),
-    "Ceinture réversible":      U("photo-1553062407-98eeb64c6a62"),
-    "Sac bandoulière":          U("photo-1590874103328-eac38a683ce7"),
-    "Sac à dos Campus":         U("photo-1553062407-98eeb64c6a62"),
-    "Lunettes carrées":         U("photo-1577803645773-f96470509666"),
-    "Monture optique":          U("photo-1574258495973-f010dfbb5371"),
-    // ─── BRICOLAGE ───
-    "Perceuse-visseuse 18V":    U("photo-1504148455328-c376907d081c"),
-    "Scie sauteuse":            U("photo-1530124566582-a45a7e3d2fda"),
-    "Coffret tournevis 40 pcs": U("photo-1581783898377-1c85bf937427"),
-    "Mètre laser 30m":         U("photo-1572981779307-38b8cabb2407"),
-    "Chevilles universelles x100": U("photo-1586864387789-628af9feed72"),
-    "Niveau laser croix":       U("photo-1580901368919-7738efb0f228"),
-    "Ponceuse excentrique":     U("photo-1426927308491-6380b6a9936f"),
-    "Gants de travail":         U("photo-1621905252507-b35492cc74b4"),
-};
-
-// ─── Toulouse Merchants ─────────────────────────────────
+// ─── 8 Premium Toulouse Merchants ────────────────────────
 
 const MERCHANTS = [
-    {
-        name: "La Maison Mode",
-        address: "15 rue des Arts",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.601687, lng: 1.446856,
-        description: "Concept store mode femme — marques françaises et scandinaves, sélection pointue de prêt-à-porter et accessoires.",
-        category: "mode",
-        phone: "05 61 23 45 67",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Sneakers District",
-        address: "8 rue Saint-Rome",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.601889, lng: 1.443604,
-        description: "Sneakers premium — Nike, Adidas, New Balance, Asics. Éditions limitées et classiques.",
-        category: "chaussures",
-        phone: "05 61 34 56 78",
-        opening_hours: { monday: { open: "10:30", close: "19:00" }, tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "20:00" } },
-    },
-    {
-        name: "L'Écrin Doré",
-        address: "22 rue de Metz",
-        city: "Toulouse",
-        quartier: "Esquirol",
-        lat: 43.600145, lng: 1.443063,
-        description: "Bijouterie — Pandora, Swarovski, Fossil, Daniel Wellington. Gravure sur place.",
-        category: "bijoux",
-        phone: "05 61 45 67 89",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "19:00" } },
-    },
-    {
-        name: "Tech & Co",
-        address: "45 allées Jean-Jaurès",
-        city: "Toulouse",
-        quartier: "Jean-Jaurès",
-        lat: 43.607479, lng: 1.450755,
-        description: "Accessoires tech et gadgets — coques, chargeurs, écouteurs, montres connectées. Samsung, JBL, Belkin.",
-        category: "tech",
-        phone: "05 61 56 78 90",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Beauté Carmes",
-        address: "3 place des Carmes",
-        city: "Toulouse",
-        quartier: "Carmes",
-        lat: 43.5974, lng: 1.444313,
-        description: "Institut et parfumerie — Nuxe, Caudalie, Bioderma, Avène. Conseil personnalisé.",
-        category: "beaute",
-        phone: "05 61 67 89 01",
-        opening_hours: { tuesday: { open: "09:30", close: "19:00" }, wednesday: { open: "09:30", close: "19:00" }, thursday: { open: "09:30", close: "19:00" }, friday: { open: "09:30", close: "19:00" }, saturday: { open: "09:30", close: "18:00" } },
-    },
-    {
-        name: "Run & Trail Toulouse",
-        address: "12 rue Bayard",
-        city: "Toulouse",
-        quartier: "Jean-Jaurès",
-        lat: 43.608577, lng: 1.447441,
-        description: "Spécialiste running et trail — Salomon, Hoka, Brooks, Garmin. Analyse de foulée.",
-        category: "sport",
-        phone: "05 61 78 90 12",
-        opening_hours: { tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "09:30", close: "19:00" } },
-    },
-    {
-        name: "Le Comptoir des Marques",
-        address: "28 rue Alsace-Lorraine",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.604604, lng: 1.445773,
-        description: "Multimarques homme et femme — Tommy Hilfiger, Calvin Klein, Lacoste, Levi's.",
-        category: "mode",
-        phone: "05 61 89 01 23",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Joué Club Saint-Cyprien",
-        address: "56 rue de la République",
-        city: "Toulouse",
-        quartier: "Saint-Cyprien",
-        lat: 43.598203, lng: 1.433215,
-        description: "Jouets et jeux — Lego, Playmobil, Ravensburger, Djeco. Conseils par âge.",
-        category: "jouets",
-        phone: "05 61 90 12 34",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "09:30", close: "19:30" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "09:30", close: "19:30" } },
-    },
-    {
-        name: "Maison Parfu'M",
-        address: "17 rue Croix-Baragnon",
-        city: "Toulouse",
-        quartier: "Saint-Étienne",
-        lat: 43.599614, lng: 1.446642,
-        description: "Parfumerie de niche — Diptyque, Byredo, Le Labo, Acqua di Parma. Échantillons offerts.",
-        category: "beaute",
-        phone: "05 61 01 23 45",
-        opening_hours: { tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "19:00" } },
-    },
-    {
-        name: "Ô Sport",
-        address: "4 rue Peyrolières",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.600293, lng: 1.440895,
-        description: "Équipement sportif — Nike, Under Armour, Puma. Fitness, musculation, sports collectifs.",
-        category: "sport",
-        phone: "05 61 12 34 56",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Optique Victor Hugo",
-        address: "31 place Victor Hugo",
-        city: "Toulouse",
-        quartier: "Victor Hugo",
-        lat: 43.606552, lng: 1.44692,
-        description: "Lunettes et solaires — Ray-Ban, Oakley, Persol, Tom Ford. Atelier de montage sur place.",
-        category: "accessoires",
-        phone: "05 61 23 45 89",
-        opening_hours: { monday: { open: "09:30", close: "18:30" }, tuesday: { open: "09:30", close: "18:30" }, wednesday: { open: "09:30", close: "18:30" }, thursday: { open: "09:30", close: "18:30" }, friday: { open: "09:30", close: "18:30" }, saturday: { open: "10:00", close: "18:00" } },
-    },
-    {
-        name: "Le Vestiaire",
-        address: "9 rue des Filatiers",
-        city: "Toulouse",
-        quartier: "Carmes",
-        lat: 43.598223, lng: 1.444144,
-        description: "Friperie premium — pièces vintage sélectionnées de marques (Levi's, Carhartt, Ralph Lauren, Burberry).",
-        category: "mode",
-        phone: "05 61 34 56 90",
-        opening_hours: { tuesday: { open: "11:00", close: "19:00" }, wednesday: { open: "11:00", close: "19:00" }, thursday: { open: "11:00", close: "19:00" }, friday: { open: "11:00", close: "19:30" }, saturday: { open: "10:30", close: "19:30" } },
-    },
-    {
-        name: "Board Culture",
-        address: "23 rue Gabriel Péri",
-        city: "Toulouse",
-        quartier: "Arnaud Bernard",
-        lat: 43.606073, lng: 1.453377,
-        description: "Skateshop — decks, trucks, roues Element, Santa Cruz, Vans, Dickies. Culture street.",
-        category: "sport",
-        phone: "05 61 45 67 01",
-        opening_hours: { monday: { open: "11:00", close: "19:00" }, tuesday: { open: "11:00", close: "19:00" }, wednesday: { open: "11:00", close: "19:00" }, thursday: { open: "11:00", close: "19:00" }, friday: { open: "11:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Bébé & Compagnie",
-        address: "14 rue des Lois",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.605305, lng: 1.442204,
-        description: "Puériculture et enfant — Chicco, Babybjörn, Cybex, Petit Bateau. Liste de naissance.",
-        category: "jouets",
-        phone: "05 61 56 78 12",
-        opening_hours: { monday: { open: "10:00", close: "18:30" }, tuesday: { open: "10:00", close: "18:30" }, wednesday: { open: "10:00", close: "18:30" }, thursday: { open: "10:00", close: "18:30" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "19:00" } },
-    },
-    {
-        name: "L'Atelier du Cuir",
-        address: "7 rue Boulbonne",
-        city: "Toulouse",
-        quartier: "Carmes",
-        lat: 43.600137, lng: 1.448405,
-        description: "Maroquinerie — sacs, ceintures, portefeuilles. Longchamp, Lancaster, Fossil, Guess.",
-        category: "accessoires",
-        phone: "05 61 67 89 23",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "19:00" } },
-    },
-    {
-        name: "Cycles Occitans",
-        address: "67 avenue de Muret",
-        city: "Toulouse",
-        quartier: "Saint-Cyprien",
-        lat: 43.582043, lng: 1.425649,
-        description: "Vélos et accessoires — Specialized, Trek, Shimano, Garmin. Atelier réparation.",
-        category: "sport",
-        phone: "05 61 78 90 34",
-        opening_hours: { tuesday: { open: "09:30", close: "12:30" }, wednesday: { open: "09:30", close: "19:00" }, thursday: { open: "09:30", close: "19:00" }, friday: { open: "09:30", close: "19:00" }, saturday: { open: "09:30", close: "18:00" } },
-    },
-    {
-        name: "Pixel Games",
-        address: "19 rue du Taur",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.605466, lng: 1.442652,
-        description: "Jeux vidéo, consoles, manettes, figurines. PlayStation, Nintendo, Xbox. Retrogaming.",
-        category: "tech",
-        phone: "05 61 89 01 45",
-        opening_hours: { monday: { open: "10:30", close: "19:00" }, tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:00", close: "19:30" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "20:00" } },
-    },
     {
         name: "Chez Simone",
         address: "34 rue Pharaon",
         city: "Toulouse",
         quartier: "Saint-Étienne",
         lat: 43.596285, lng: 1.444322,
-        description: "Boutique femme bohème-chic — Bash, Sézane, Des Petits Hauts, Marie Sixtine.",
+        description: "Prêt-à-porter femme — Sézane, Bash, Des Petits Hauts, Marie Sixtine. Sélection bohème-chic dans un écrin de pierre rose, au cœur du quartier des antiquaires.",
         category: "mode",
         phone: "05 61 90 12 56",
         opening_hours: { tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Montres & Style",
-        address: "11 rue de la Pomme",
-        city: "Toulouse",
-        quartier: "Capitole",
-        lat: 43.602412, lng: 1.44643,
-        description: "Horlogerie et bijoux — Seiko, Tissot, Casio G-Shock, Cluse. Réparation horlogère.",
-        category: "bijoux",
-        phone: "05 61 01 23 67",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "18:30" } },
-    },
-    {
-        name: "Green Beauty",
-        address: "5 rue Merlane",
-        city: "Toulouse",
-        quartier: "Saint-Aubin",
-        lat: 43.598723, lng: 1.448122,
-        description: "Cosmétique bio et naturelle — Dr. Hauschka, Weleda, Cattier, Ren Clean Skincare.",
-        category: "beaute",
-        phone: "05 61 12 34 78",
-        opening_hours: { tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "18:30" } },
-    },
-    {
-        name: "Denim Factory",
-        address: "42 rue des Marchands",
-        city: "Toulouse",
-        quartier: "Esquirol",
-        lat: 43.599892, lng: 1.44371,
-        description: "Jeanswear — Levi's, Nudie Jeans, Edwin, Carhartt WIP. Retouches sur place.",
-        category: "mode",
-        phone: "05 61 23 45 90",
-        opening_hours: { monday: { open: "10:30", close: "19:00" }, tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Ludik",
-        address: "27 rue Léon Gambetta",
-        city: "Toulouse",
-        quartier: "Les Chalets",
-        lat: 43.603071, lng: 1.441991,
-        description: "Jeux de société et figurines — Asmodee, Games Workshop, Ravensburger. Soirées jeux.",
-        category: "jouets",
-        phone: "05 61 34 56 01",
-        opening_hours: { tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "20:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "20:00" }, saturday: { open: "10:00", close: "20:00" } },
-    },
-    {
-        name: "So Shoes",
-        address: "16 rue d'Astorg",
-        city: "Toulouse",
-        quartier: "Victor Hugo",
-        lat: 43.601049, lng: 1.448775,
-        description: "Chaussures femme tendance — Steve Madden, Jonak, Minelli, Bocage.",
-        category: "chaussures",
-        phone: "05 61 45 67 12",
-        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
-    },
-    {
-        name: "Le Bon Bricoleur",
-        address: "89 route de Seysses",
-        city: "Toulouse",
-        quartier: "Saint-Cyprien",
-        lat: 43.553302, lng: 1.397496,
-        description: "Outillage et quincaillerie — Bosch, Makita, Stanley, Fischer. Conseils pros.",
-        category: "bricolage",
-        phone: "05 61 56 78 23",
-        opening_hours: { monday: { open: "08:30", close: "12:00" }, tuesday: { open: "08:30", close: "18:30" }, wednesday: { open: "08:30", close: "18:30" }, thursday: { open: "08:30", close: "18:30" }, friday: { open: "08:30", close: "18:30" }, saturday: { open: "09:00", close: "17:00" } },
+        photo_url:       store("photo-1441986300917-64674bd600d8"),
+        cover_photo_url: cover("photo-1490481651871-ab68de25d43d"),
+        logo_url:        logo("photo-1558171813-4c088753af8f"),
     },
     {
         name: "Urban Mix",
@@ -509,32 +110,199 @@ const MERCHANTS = [
         city: "Toulouse",
         quartier: "Matabiau",
         lat: 43.60837, lng: 1.446218,
-        description: "Streetwear — The North Face, Champion, Stüssy, New Era. Casquettes et accessoires.",
+        description: "Streetwear & culture urbaine — The North Face, Stüssy, Carhartt WIP, New Era. Éditions limitées et exclusivités.",
         category: "mode",
         phone: "05 61 67 89 34",
         opening_hours: { monday: { open: "10:30", close: "19:00" }, tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
+        photo_url:       store("photo-1567401893414-76b7b1e5a7a5"),
+        cover_photo_url: cover("photo-1551488831-00ddcb6c6bd3"),
+        logo_url:        logo("photo-1556821840-3a63f95609a7"),
+    },
+    {
+        name: "Sneakers District",
+        address: "8 rue Saint-Rome",
+        city: "Toulouse",
+        quartier: "Capitole",
+        lat: 43.601889, lng: 1.443604,
+        description: "Sneakers premium — Nike, Adidas, New Balance, Asics. Éditions limitées, restocks, et classiques intemporels. Le temple de la sneaker à Toulouse.",
+        category: "chaussures",
+        phone: "05 61 34 56 78",
+        opening_hours: { monday: { open: "10:30", close: "19:00" }, tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "20:00" } },
+        photo_url:       store("photo-1552346154-21d32810aba3"),
+        cover_photo_url: cover("photo-1556906781-9a412961c28c"),
+        logo_url:        logo("photo-1549298916-b41d501d3772"),
+    },
+    {
+        name: "L'Écrin Doré",
+        address: "22 rue de Metz",
+        city: "Toulouse",
+        quartier: "Esquirol",
+        lat: 43.600145, lng: 1.443063,
+        description: "Bijouterie & horlogerie — Pandora, Swarovski, Seiko, Daniel Wellington. Gravure et réparation sur place. Conseil personnalisé depuis 2008.",
+        category: "bijoux",
+        phone: "05 61 45 67 89",
+        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:00" }, saturday: { open: "10:00", close: "19:00" } },
+        photo_url:       store("photo-1573408301185-9146fe634ad0"),
+        cover_photo_url: cover("photo-1611652022419-a9419f74343d"),
+        logo_url:        logo("photo-1599643478518-a784e5dc4c8f"),
+    },
+    {
+        name: "Maison Parfu'M",
+        address: "17 rue Croix-Baragnon",
+        city: "Toulouse",
+        quartier: "Saint-Étienne",
+        lat: 43.599614, lng: 1.446642,
+        description: "Parfumerie de niche & beauté — Diptyque, Byredo, Le Labo, Nuxe, Caudalie. Échantillons offerts, conseil olfactif sur rendez-vous.",
+        category: "beaute",
+        phone: "05 61 01 23 45",
+        opening_hours: { tuesday: { open: "10:30", close: "19:00" }, wednesday: { open: "10:30", close: "19:00" }, thursday: { open: "10:30", close: "19:00" }, friday: { open: "10:30", close: "19:30" }, saturday: { open: "10:00", close: "19:00" } },
+        photo_url:       store("photo-1522335789203-aabd1fc54bc9"),
+        cover_photo_url: cover("photo-1596462502278-27bfdc403348"),
+        logo_url:        logo("photo-1563170351-be82bc888aa4"),
+    },
+    {
+        name: "Run & Trail Toulouse",
+        address: "12 rue Bayard",
+        city: "Toulouse",
+        quartier: "Jean-Jaurès",
+        lat: 43.608577, lng: 1.447441,
+        description: "Spécialiste running & trail — Hoka, Salomon, Brooks, Garmin. Analyse de foulée gratuite. Communauté de coureurs, sorties hebdomadaires.",
+        category: "sport",
+        phone: "05 61 78 90 12",
+        opening_hours: { tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "09:30", close: "19:00" } },
+        photo_url:       store("photo-1460353581641-37baddab0fa2"),
+        cover_photo_url: cover("photo-1476480862126-209bfaa8edc8"),
+        logo_url:        logo("photo-1542291026-7eec264c27ff"),
+    },
+    {
+        name: "Maison Pastel",
+        address: "6 rue des Arts",
+        city: "Toulouse",
+        quartier: "Capitole",
+        lat: 43.601987, lng: 1.445856,
+        description: "Concept store déco & lifestyle — bougies artisanales, céramiques, linge de maison, objets design. Cadeaux et art de vivre dans un lieu lumineux.",
+        category: "deco",
+        phone: "05 61 55 44 33",
+        opening_hours: { monday: { open: "10:00", close: "19:00" }, tuesday: { open: "10:00", close: "19:00" }, wednesday: { open: "10:00", close: "19:00" }, thursday: { open: "10:00", close: "19:00" }, friday: { open: "10:00", close: "19:30" }, saturday: { open: "10:00", close: "19:30" } },
+        photo_url:       store("photo-1616046229478-9901c5536a45"),
+        cover_photo_url: cover("photo-1615529182904-14819c35db37"),
+        logo_url:        logo("photo-1603006905003-be475563bc59"),
+    },
+    {
+        name: "Les Canailles",
+        address: "25 rue des Tourneurs",
+        city: "Toulouse",
+        quartier: "Carmes",
+        lat: 43.598400, lng: 1.444500,
+        description: "Épicerie fine & cave — cafés torréfiés à Toulouse, thés, confitures artisanales, vins naturels, fromages affinés. Paniers cadeaux sur commande.",
+        category: "epicerie",
+        phone: "05 61 22 33 44",
+        opening_hours: { tuesday: { open: "09:30", close: "19:30" }, wednesday: { open: "09:30", close: "19:30" }, thursday: { open: "09:30", close: "19:30" }, friday: { open: "09:30", close: "20:00" }, saturday: { open: "09:00", close: "20:00" }, sunday: { open: "09:00", close: "13:00" } },
+        photo_url:       store("photo-1556742049-0cfed4f6a45d"),
+        cover_photo_url: cover("photo-1543168256-418811576931"),
+        logo_url:        logo("photo-1559056199-641a0ac8b55e"),
     },
 ];
 
-// ─── Products by Category ───────────────────────────────
+// ─── Product photos (hand-curated HD) ────────────────────
+
+const PRODUCT_PHOTOS = {
+    // ─── MODE FEMME (Chez Simone) ───
+    "Robe midi fleurie":        prod("photo-1612336307429-8a898d10e223"),
+    "Blouse en soie":           prod("photo-1564257631407-4deb1f99d992"),
+    "Pull col V cachemire":     prod("photo-1620799140408-edc6dcb6d633"),
+    "Jean flare taille haute":  prod("photo-1541099649105-f69ad21f3246"),
+    "Trench classique":         prod("photo-1591047139829-d91aecb6caea"),
+    "Jupe plissée midi":        prod("photo-1583496661160-fb5886a0aaaa"),
+    "Cardigan oversize":        prod("photo-1578587018452-892bacefd3f2"),
+    "Sac cabas cuir":           prod("photo-1548036328-c9fa89d128fa"),
+    // ─── STREETWEAR (Urban Mix) ───
+    "Hoodie Logo":              prod("photo-1556821840-3a63f95609a7"),
+    "T-shirt oversize":         prod("photo-1521572163474-6864f9cf17ab"),
+    "Cargo pants":              prod("photo-1591195853828-11db59a44f6b"),
+    "Casquette 9FORTY":         prod("photo-1576871337632-b9aef4c17ab9"),
+    "Doudoune sans manches":    prod("photo-1544441893-675973e31985"),
+    "Veste coach":              prod("photo-1609709295948-17d77cb2a69b"),
+    "Sweat col rond":           prod("photo-1626497764746-6dc36546b388"),
+    "Bob bucket hat":           prod("photo-1601637155580-ac6c49428450"),
+    // ─── SNEAKERS ───
+    "Air Force 1 '07":          prod("photo-1606107557195-0e29a4b5b4aa"),
+    "Stan Smith":               prod("photo-1520256862855-398228c41684"),
+    "574 Classic":              prod("photo-1539185441755-769473a23570"),
+    "Gel-1130":                 prod("photo-1542291026-7eec264c27ff"),
+    "Old Skool":                prod("photo-1525966222134-fcfa99b8ae77"),
+    "Chuck Taylor All Star":    prod("photo-1463100099107-aa0980c362e6"),
+    "Clifton 9":                prod("photo-1551107696-a4b0c5a0d9a2"),
+    "Speedcross 6":             prod("photo-1595341888016-a392ef81b7de"),
+    // ─── BIJOUX ───
+    "Bracelet Moments":         prod("photo-1535632066927-ab7c9ab60908"),
+    "Collier Tennis":           prod("photo-1599643478518-a784e5dc4c8f"),
+    "Boucles d'oreilles cristal": prod("photo-1605100804763-247f67b3557e"),
+    "Montre Neutra Chrono":     prod("photo-1524592094714-0f0654e20314"),
+    "Montre Presage":           prod("photo-1587836374828-4dbafa94cf0e"),
+    "Montre Minuit Mesh":       prod("photo-1611591437281-460bfbe1220a"),
+    "G-Shock GA-2100":          prod("photo-1614164185128-e4ec99c436d7"),
+    "Charm Cœur":               prod("photo-1535632787350-4e68ef0ac584"),
+    // ─── BEAUTÉ ───
+    "Bougie Baies":             prod("photo-1572726729207-a78d6feb18d7"),
+    "Eau de parfum Gypsy Water":prod("photo-1541643600914-78b084683601"),
+    "Eau de parfum Santal 33":  prod("photo-1585386959984-a4155224a1ad"),
+    "Crème Prodigieuse Boost":  prod("photo-1611930022073-b7a4ba5fcccd"),
+    "Eau Micellaire":           prod("photo-1556228578-0d85b1a4d571"),
+    "Vinosource-Hydra sérum":   prod("photo-1608248543803-ba4f8c70ae0b"),
+    "Rose Hand Cream":          prod("photo-1571781926291-c477ebfd024b"),
+    "Huile démaquillante":      prod("photo-1619451334792-150fd785ee74"),
+    // ─── SPORT ───
+    "Clifton 9 Running":        prod("photo-1551107696-a4b0c5a0d9a2"),
+    "Speedcross 6 Trail":       prod("photo-1595341888016-a392ef81b7de"),
+    "Ghost 15":                 prod("photo-1460353581641-37baddab0fa2"),
+    "Forerunner 265":           prod("photo-1523275335684-37898b6baf30"),
+    "Sac à dos Trail 15L":      prod("photo-1553062407-98eeb64c6a62"),
+    "Legging Fly Fast":         prod("photo-1506629082955-511b1aa562c8"),
+    "Brassière Impact Run":     prod("photo-1518459031867-a89b944bffe4"),
+    "Chaussettes compression":  prod("photo-1556228453-efd6c1ff04f6"),
+    // ─── DÉCO ───
+    "Bougie artisanale cèdre":  prod("photo-1572726729207-a78d6feb18d7"),
+    "Vase en grès":             prod("photo-1631125915902-d8abe9225ff2"),
+    "Coussin en lin":           prod("photo-1616627561950-9f746e330187"),
+    "Carnet en cuir":           prod("photo-1531346878377-a5be20888e57"),
+    "Tasse céramique":          prod("photo-1514228742587-6b1558fcca3d"),
+    "Plaid en laine":           prod("photo-1600607687644-c7171b42498f"),
+    "Diffuseur de parfum":      prod("photo-1608571423902-eed4a5ad8108"),
+    "Miroir rond laiton":       prod("photo-1618220179428-22790b461013"),
+    // ─── ÉPICERIE ───
+    "Café grain Colombie":      prod("photo-1559056199-641a0ac8b55e"),
+    "Thé matcha cérémonial":    prod("photo-1515823064-d6e0c04616a7"),
+    "Confiture framboise":      prod("photo-1563805042-7684c019e1cb"),
+    "Huile d'olive premium":    prod("photo-1474979266404-7eaacbcd87c5"),
+    "Tablette chocolat noir":   prod("photo-1549007994-cb92caebd54b"),
+    "Vin naturel rosé":         prod("photo-1558001373-7b93ee48ffa0"),
+    "Fromage affiné":           prod("photo-1452195100486-9cc805987862"),
+    "Miel de montagne":         prod("photo-1587049352846-4a222e784d38"),
+};
+
+// ─── Product catalogs per category ───────────────────────
 
 const PRODUCT_CATALOGS = {
     mode: [
-        { name: "T-shirt col rond", brand: "Levi's", priceRange: [25, 45], ean: "5412345678901" },
-        { name: "Jean 501 Original", brand: "Levi's", priceRange: [89, 129], ean: "5412345678902" },
-        { name: "Chemise Oxford slim", brand: "Tommy Hilfiger", priceRange: [69, 99], ean: "5412345678903" },
-        { name: "Polo Classic Fit", brand: "Lacoste", priceRange: [95, 130], ean: "5412345678904" },
-        { name: "Sweat à capuche", brand: "Calvin Klein", priceRange: [79, 119], ean: "5412345678905" },
-        { name: "Veste en jean Trucker", brand: "Levi's", priceRange: [99, 149], ean: "5412345678906" },
         { name: "Robe midi fleurie", brand: "Sézane", priceRange: [120, 180], ean: "5412345678907" },
         { name: "Blouse en soie", brand: "Bash", priceRange: [150, 220], ean: "5412345678908" },
-        { name: "Pantalon chino slim", brand: "Dockers", priceRange: [59, 89], ean: "5412345678909" },
-        { name: "Pull col V laine mérinos", brand: "Ralph Lauren", priceRange: [129, 189], ean: "5412345678910" },
-        { name: "Doudoune légère", brand: "The North Face", priceRange: [180, 250], ean: "5412345678911" },
-        { name: "Parka imperméable", brand: "Carhartt WIP", priceRange: [200, 320], ean: "5412345678912" },
+        { name: "Pull col V cachemire", brand: "Des Petits Hauts", priceRange: [129, 189], ean: "5412345678910" },
+        { name: "Jean flare taille haute", brand: "Sézane", priceRange: [110, 140], ean: "5412345678916" },
+        { name: "Trench classique", brand: "Marie Sixtine", priceRange: [200, 320], ean: "5412345678912" },
+        { name: "Jupe plissée midi", brand: "Bash", priceRange: [95, 130], ean: "5412345678917" },
+        { name: "Cardigan oversize", brand: "Des Petits Hauts", priceRange: [89, 129], ean: "5412345678918" },
+        { name: "Sac cabas cuir", brand: "Polène", priceRange: [180, 280], ean: "5412345678919" },
+    ],
+    streetwear: [
+        { name: "Hoodie Logo", brand: "Stüssy", priceRange: [95, 130], ean: "5412345678914" },
+        { name: "T-shirt oversize", brand: "Carhartt WIP", priceRange: [35, 55], ean: "5412345678901" },
+        { name: "Cargo pants", brand: "Dickies", priceRange: [65, 89], ean: "5412345678915" },
         { name: "Casquette 9FORTY", brand: "New Era", priceRange: [25, 35], ean: "5412345678913" },
-        { name: "Hoodie Logo", brand: "Champion", priceRange: [65, 89], ean: "5412345678914" },
-        { name: "Bermuda cargo", brand: "Dickies", priceRange: [45, 65], ean: "5412345678915" },
+        { name: "Doudoune sans manches", brand: "The North Face", priceRange: [160, 220], ean: "5412345678911" },
+        { name: "Veste coach", brand: "Stüssy", priceRange: [130, 170], ean: "5412345678920" },
+        { name: "Sweat col rond", brand: "Champion", priceRange: [65, 89], ean: "5412345678921" },
+        { name: "Bob bucket hat", brand: "Carhartt WIP", priceRange: [30, 45], ean: "5412345678922" },
     ],
     chaussures: [
         { name: "Air Force 1 '07", brand: "Nike", priceRange: [110, 130], ean: "5412345679001" },
@@ -542,14 +310,9 @@ const PRODUCT_CATALOGS = {
         { name: "574 Classic", brand: "New Balance", priceRange: [90, 120], ean: "5412345679003" },
         { name: "Gel-1130", brand: "Asics", priceRange: [120, 140], ean: "5412345679004" },
         { name: "Old Skool", brand: "Vans", priceRange: [70, 85], ean: "5412345679005" },
-        { name: "Club C 85", brand: "Reebok", priceRange: [80, 95], ean: "5412345679006" },
         { name: "Chuck Taylor All Star", brand: "Converse", priceRange: [60, 80], ean: "5412345679007" },
-        { name: "Boots Chelsea cuir", brand: "Minelli", priceRange: [130, 180], ean: "5412345679008" },
-        { name: "Sandale compensée", brand: "Jonak", priceRange: [89, 119], ean: "5412345679009" },
-        { name: "Mocassin classique", brand: "Bocage", priceRange: [110, 150], ean: "5412345679010" },
         { name: "Clifton 9", brand: "Hoka", priceRange: [140, 160], ean: "5412345679011" },
         { name: "Speedcross 6", brand: "Salomon", priceRange: [130, 150], ean: "5412345679012" },
-        { name: "Ghost 15", brand: "Brooks", priceRange: [130, 150], ean: "5412345679013" },
     ],
     bijoux: [
         { name: "Bracelet Moments", brand: "Pandora", priceRange: [59, 89], ean: "5412345679101" },
@@ -557,101 +320,73 @@ const PRODUCT_CATALOGS = {
         { name: "Collier Tennis", brand: "Swarovski", priceRange: [89, 159], ean: "5412345679103" },
         { name: "Boucles d'oreilles cristal", brand: "Swarovski", priceRange: [49, 79], ean: "5412345679104" },
         { name: "Montre Neutra Chrono", brand: "Fossil", priceRange: [149, 199], ean: "5412345679105" },
-        { name: "Montre Petite", brand: "Daniel Wellington", priceRange: [129, 179], ean: "5412345679106" },
         { name: "Montre Presage", brand: "Seiko", priceRange: [350, 500], ean: "5412345679107" },
-        { name: "Montre PRX", brand: "Tissot", priceRange: [350, 450], ean: "5412345679108" },
         { name: "G-Shock GA-2100", brand: "Casio", priceRange: [99, 129], ean: "5412345679109" },
         { name: "Montre Minuit Mesh", brand: "Cluse", priceRange: [89, 109], ean: "5412345679110" },
     ],
-    tech: [
-        { name: "Coque iPhone 15 Pro", brand: "Otterbox", priceRange: [29, 49], ean: "5412345679201" },
-        { name: "Chargeur MagSafe", brand: "Belkin", priceRange: [39, 59], ean: "5412345679202" },
-        { name: "Écouteurs Tune 770NC", brand: "JBL", priceRange: [79, 99], ean: "5412345679203" },
-        { name: "Enceinte Flip 6", brand: "JBL", priceRange: [109, 139], ean: "5412345679204" },
-        { name: "Galaxy Buds3", brand: "Samsung", priceRange: [149, 179], ean: "5412345679205" },
-        { name: "Webcam Brio 4K", brand: "Logitech", priceRange: [159, 199], ean: "5412345679206" },
-        { name: "Clavier MX Keys Mini", brand: "Logitech", priceRange: [89, 109], ean: "5412345679207" },
-        { name: "Manette DualSense", brand: "PlayStation", priceRange: [59, 69], ean: "5412345679208" },
-        { name: "Joy-Con (paire)", brand: "Nintendo", priceRange: [69, 79], ean: "5412345679209" },
-        { name: "Forerunner 265", brand: "Garmin", priceRange: [399, 449], ean: "5412345679210" },
-        { name: "Carte microSD 256Go", brand: "SanDisk", priceRange: [29, 39], ean: "5412345679211" },
-    ],
     beaute: [
-        { name: "Crème Prodigieuse Boost", brand: "Nuxe", priceRange: [29, 39], ean: "5412345679301" },
-        { name: "Eau Micellaire", brand: "Bioderma", priceRange: [12, 18], ean: "5412345679302" },
-        { name: "Eau Thermale spray 300ml", brand: "Avène", priceRange: [9, 14], ean: "5412345679303" },
-        { name: "Vinosource-Hydra sérum", brand: "Caudalie", priceRange: [28, 38], ean: "5412345679304" },
         { name: "Bougie Baies", brand: "Diptyque", priceRange: [62, 72], ean: "5412345679305" },
         { name: "Eau de parfum Gypsy Water", brand: "Byredo", priceRange: [145, 195], ean: "5412345679306" },
         { name: "Eau de parfum Santal 33", brand: "Le Labo", priceRange: [160, 220], ean: "5412345679307" },
+        { name: "Crème Prodigieuse Boost", brand: "Nuxe", priceRange: [29, 39], ean: "5412345679301" },
+        { name: "Eau Micellaire", brand: "Bioderma", priceRange: [12, 18], ean: "5412345679302" },
+        { name: "Vinosource-Hydra sérum", brand: "Caudalie", priceRange: [28, 38], ean: "5412345679304" },
         { name: "Rose Hand Cream", brand: "Dr. Hauschka", priceRange: [15, 22], ean: "5412345679308" },
-        { name: "Skin Food crème", brand: "Weleda", priceRange: [10, 16], ean: "5412345679309" },
-        { name: "Gel douche Verbena", brand: "L'Occitane", priceRange: [12, 18], ean: "5412345679310" },
+        { name: "Huile démaquillante", brand: "Nuxe", priceRange: [18, 26], ean: "5412345679311" },
     ],
     sport: [
-        { name: "Ballon de foot Pro", brand: "Adidas", priceRange: [30, 45], ean: "5412345679401" },
+        { name: "Clifton 9 Running", brand: "Hoka", priceRange: [140, 160], ean: "5412345679411" },
+        { name: "Speedcross 6 Trail", brand: "Salomon", priceRange: [130, 150], ean: "5412345679412" },
+        { name: "Ghost 15", brand: "Brooks", priceRange: [130, 150], ean: "5412345679413" },
+        { name: "Forerunner 265", brand: "Garmin", priceRange: [399, 449], ean: "5412345679210" },
+        { name: "Sac à dos Trail 15L", brand: "Salomon", priceRange: [89, 120], ean: "5412345679405" },
         { name: "Legging Fly Fast", brand: "Under Armour", priceRange: [60, 80], ean: "5412345679402" },
         { name: "Brassière Impact Run", brand: "New Balance", priceRange: [35, 50], ean: "5412345679403" },
-        { name: "Gants de musculation", brand: "Nike", priceRange: [25, 35], ean: "5412345679404" },
-        { name: "Sac à dos Trail 15L", brand: "Salomon", priceRange: [89, 120], ean: "5412345679405" },
-        { name: "Tapis de yoga Premium", brand: "Manduka", priceRange: [79, 110], ean: "5412345679406" },
         { name: "Chaussettes compression", brand: "Compressport", priceRange: [15, 25], ean: "5412345679407" },
-        { name: "Skate deck 8.25", brand: "Element", priceRange: [55, 70], ean: "5412345679408" },
-        { name: "Trucks 149mm", brand: "Independent", priceRange: [50, 65], ean: "5412345679409" },
-        { name: "Casque vélo Aether", brand: "Giro", priceRange: [180, 250], ean: "5412345679410" },
     ],
-    jouets: [
-        { name: "Lego Technic Ferrari", brand: "Lego", priceRange: [49, 89], ean: "5412345679501" },
-        { name: "Lego City Pompiers", brand: "Lego", priceRange: [29, 49], ean: "5412345679502" },
-        { name: "Playmobil Maison Modern.", brand: "Playmobil", priceRange: [89, 129], ean: "5412345679503" },
-        { name: "Puzzle 1000 pièces", brand: "Ravensburger", priceRange: [14, 19], ean: "5412345679504" },
-        { name: "Jeu Dixit", brand: "Asmodee", priceRange: [29, 35], ean: "5412345679505" },
-        { name: "Dobble Classic", brand: "Asmodee", priceRange: [12, 16], ean: "5412345679506" },
-        { name: "Warhammer Start Set", brand: "Games Workshop", priceRange: [45, 65], ean: "5412345679507" },
-        { name: "Jeu Les Aventuriers du Rail", brand: "Days of Wonder", priceRange: [35, 45], ean: "5412345679508" },
-        { name: "Poussette Libelle", brand: "Cybex", priceRange: [299, 349], ean: "5412345679509" },
-        { name: "Body coton bio 3-pack", brand: "Petit Bateau", priceRange: [25, 39], ean: "5412345679510" },
+    deco: [
+        { name: "Bougie artisanale cèdre", brand: "Cire Trudon", priceRange: [45, 75], ean: "5412345679801" },
+        { name: "Vase en grès", brand: "Jars Céramistes", priceRange: [35, 65], ean: "5412345679802" },
+        { name: "Coussin en lin", brand: "Maison de Vacances", priceRange: [55, 85], ean: "5412345679803" },
+        { name: "Carnet en cuir", brand: "Papier Tigre", priceRange: [18, 32], ean: "5412345679804" },
+        { name: "Tasse céramique", brand: "Jars Céramistes", priceRange: [22, 38], ean: "5412345679805" },
+        { name: "Plaid en laine", brand: "Moismont", priceRange: [89, 145], ean: "5412345679806" },
+        { name: "Diffuseur de parfum", brand: "P.F. Candle Co.", priceRange: [30, 48], ean: "5412345679807" },
+        { name: "Miroir rond laiton", brand: "Atelier", priceRange: [45, 75], ean: "5412345679808" },
     ],
-    accessoires: [
-        { name: "Lunettes Aviator", brand: "Ray-Ban", priceRange: [139, 179], ean: "5412345679601" },
-        { name: "Lunettes Frogskins", brand: "Oakley", priceRange: [110, 140], ean: "5412345679602" },
-        { name: "Sac Le Pliage M", brand: "Longchamp", priceRange: [95, 120], ean: "5412345679603" },
-        { name: "Portefeuille cuir", brand: "Fossil", priceRange: [45, 65], ean: "5412345679604" },
-        { name: "Ceinture réversible", brand: "Tommy Hilfiger", priceRange: [49, 69], ean: "5412345679605" },
-        { name: "Sac bandoulière", brand: "Guess", priceRange: [89, 129], ean: "5412345679606" },
-        { name: "Sac à dos Campus", brand: "Lancaster", priceRange: [110, 150], ean: "5412345679607" },
-        { name: "Lunettes carrées", brand: "Persol", priceRange: [200, 280], ean: "5412345679608" },
-        { name: "Monture optique", brand: "Tom Ford", priceRange: [250, 350], ean: "5412345679609" },
-    ],
-    bricolage: [
-        { name: "Perceuse-visseuse 18V", brand: "Bosch", priceRange: [99, 149], ean: "5412345679701" },
-        { name: "Scie sauteuse", brand: "Makita", priceRange: [89, 129], ean: "5412345679702" },
-        { name: "Coffret tournevis 40 pcs", brand: "Stanley", priceRange: [29, 45], ean: "5412345679703" },
-        { name: "Mètre laser 30m", brand: "Bosch", priceRange: [49, 69], ean: "5412345679704" },
-        { name: "Chevilles universelles x100", brand: "Fischer", priceRange: [12, 18], ean: "5412345679705" },
-        { name: "Niveau laser croix", brand: "Bosch", priceRange: [69, 99], ean: "5412345679706" },
-        { name: "Ponceuse excentrique", brand: "Makita", priceRange: [79, 109], ean: "5412345679707" },
-        { name: "Gants de travail", brand: "Mechanix", priceRange: [25, 35], ean: "5412345679708" },
+    epicerie: [
+        { name: "Café grain Colombie", brand: "Mokaflor", priceRange: [9, 16], ean: "5412345679901" },
+        { name: "Thé matcha cérémonial", brand: "Ippodo", priceRange: [25, 42], ean: "5412345679902" },
+        { name: "Confiture framboise", brand: "Christine Ferber", priceRange: [8, 14], ean: "5412345679903" },
+        { name: "Huile d'olive premium", brand: "Château d'Estoublon", priceRange: [15, 28], ean: "5412345679904" },
+        { name: "Tablette chocolat noir", brand: "Maison Bonnat", priceRange: [6, 12], ean: "5412345679905" },
+        { name: "Vin naturel rosé", brand: "Domaine du Possible", priceRange: [12, 19], ean: "5412345679906" },
+        { name: "Fromage affiné", brand: "Xavier David", priceRange: [8, 18], ean: "5412345679907" },
+        { name: "Miel de montagne", brand: "Miel Martine", priceRange: [10, 18], ean: "5412345679908" },
     ],
 };
 
-// Map merchant category to product catalog key
+// Map merchant category to product catalog
 const CATEGORY_MAP = {
     mode: "mode",
     chaussures: "chaussures",
     bijoux: "bijoux",
-    tech: "tech",
     beaute: "beaute",
     sport: "sport",
-    jouets: "jouets",
-    accessoires: "accessoires",
-    bricolage: "bricolage",
+    deco: "deco",
+    epicerie: "epicerie",
 };
+
+// Urban Mix uses streetwear catalog, not mode
+function getCatalogForMerchant(m) {
+    if (m.name === "Urban Mix") return PRODUCT_CATALOGS.streetwear;
+    return PRODUCT_CATALOGS[CATEGORY_MAP[m.category]] || [];
+}
 
 // ─── Seed Logic ─────────────────────────────────────────
 
 async function seed() {
-    console.log("🌱 Two-Step Seed — Toulouse Demo Data\n");
+    console.log("🌱 Two-Step Seed — 8 Premium Toulouse Merchants\n");
 
     // Cleanup existing seed data (if re-running)
     console.log("Cleaning up previous seed data...");
@@ -680,6 +415,7 @@ async function seed() {
             await supabase.from("products").delete().in("merchant_id", merchantIds);
         }
 
+        await supabase.from("feed_events").delete().in("merchant_id", merchantIds);
         await supabase.from("merchants").delete().in("id", merchantIds);
 
         // Clean up seed auth users
@@ -712,25 +448,23 @@ async function seed() {
 
     // Insert merchants
     console.log("Inserting merchants...");
-    const merchantRows = MERCHANTS.map((m, i) => {
-        const photos = MERCHANT_PHOTOS[m.category] || [];
-        const photoUrl = photos.length > 0 ? photos[i % photos.length] : null;
-        return {
-            id: uuid(),
-            user_id: userIds[i],
-            name: m.name,
-            address: m.address,
-            city: m.city,
-            location: `SRID=4326;POINT(${m.lng} ${m.lat})`,
-            description: m.description,
-            phone: m.phone,
-            photo_url: photoUrl,
-            opening_hours: m.opening_hours,
-            status: "active",
-            plan: "free",
-            launch_cohort: 1,
-        };
-    });
+    const merchantRows = MERCHANTS.map((m, i) => ({
+        id: uuid(),
+        user_id: userIds[i],
+        name: m.name,
+        address: m.address,
+        city: m.city,
+        location: `SRID=4326;POINT(${m.lng} ${m.lat})`,
+        description: m.description,
+        phone: m.phone,
+        photo_url: m.photo_url,
+        cover_photo_url: m.cover_photo_url,
+        logo_url: m.logo_url,
+        opening_hours: m.opening_hours,
+        status: "active",
+        plan: "free",
+        launch_cohort: 1,
+    }));
 
     const { error: merchantError } = await supabase.from("merchants").insert(merchantRows);
     if (merchantError) {
@@ -747,11 +481,10 @@ async function seed() {
 
     for (const merchantRow of merchantRows) {
         const merchantDef = MERCHANTS.find((m) => m.name === merchantRow.name);
-        const catalogKey = CATEGORY_MAP[merchantDef.category];
-        const catalog = PRODUCT_CATALOGS[catalogKey] || [];
+        const catalog = getCatalogForMerchant(merchantDef);
 
-        // Each merchant gets 8-12 products from their category
-        const numProducts = Math.min(catalog.length, randInt(8, 12));
+        // Each merchant gets 6-8 products
+        const numProducts = Math.min(catalog.length, randInt(6, 8));
         const selectedProducts = [...catalog].sort(() => Math.random() - 0.5).slice(0, numProducts);
 
         const productRows = selectedProducts.map((p) => ({
@@ -783,8 +516,8 @@ async function seed() {
             console.error(`  Failed to insert stock for ${merchantRow.name}:`, stockError);
         }
 
-        // 20% of products get a promo
-        const promoProducts = productRows.filter(() => Math.random() < 0.2);
+        // 25% of products get a promo (slightly more than before for a lively demo)
+        const promoProducts = productRows.filter(() => Math.random() < 0.25);
         if (promoProducts.length > 0) {
             const promoRows = promoProducts.map((p) => ({
                 product_id: p.id,

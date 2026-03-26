@@ -21,7 +21,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
         const { data, error } = await supabase
             .from("products")
-            .select("*, stock(quantity), promotions(*)")
+            .select("*, stock(quantity), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours)")
             .eq("id", productId)
             .single();
 

@@ -69,7 +69,7 @@ export default function RootLayout({
                 className={cx(plusJakartaSans.variable, fraunces.variable, "antialiased")}
                 style={{
                     fontFamily: "var(--font-plus-jakarta-sans), Inter, sans-serif",
-                    background: "var(--ts-cream)",
+                    background: "#130e07",
                 }}
             >
                 <RouteProvider>

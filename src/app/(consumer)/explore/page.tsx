@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { MarkerPin01, SearchMd, XClose, ChevronRight, Tag01, Clock, FilterLines, SearchLg, NavigationPointer01 } from "@untitledui/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -48,6 +49,8 @@ export default function ExplorePage() {
     const router = useRouter();
     const { position, refresh: refreshGeo } = useGeolocation();
     const [category, setCategory] = useState<string | null>(null);
+    const [sizeFilterExplore, setSizeFilterExplore] = useState<string | null>(null);
+    const [shoeSizeFilterExplore, setShoeSizeFilterExplore] = useState<number | null>(null);
     const [recenterTrigger, setRecenterTrigger] = useState(0);
     const [is3D, setIs3D] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -274,9 +277,10 @@ export default function ExplorePage() {
                     </div>
                 )}
 
-                {/* Category filter dropdown */}
+                {/* Category + size filter dropdown */}
                 {filterOpen && (
-                    <div className="ml-auto mt-2 w-52 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
+                    <div className="ml-auto mt-2 w-64 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
+                        {/* Categories */}
                         {CATEGORIES.map((cat) => (
                             <button
                                 key={cat.label}
@@ -293,6 +297,29 @@ export default function ExplorePage() {
                                 <span className="font-medium">{cat.label}</span>
                             </button>
                         ))}
+
+                        {/* Separator */}
+                        <div className="mx-2 my-1.5 border-t border-gray-100" />
+
+                        {/* Taille vêtements */}
+                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Taille</p>
+                        <div className="flex flex-wrap gap-1 px-2 pb-2">
+                            {(["XS", "S", "M", "L", "XL", "XXL"] as const).map((s) => (
+                                <button key={s} type="button" onClick={() => setSizeFilterExplore(sizeFilterExplore === s ? null : s)}
+                                    className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", sizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                >{s}</button>
+                            ))}
+                        </div>
+
+                        {/* Pointure */}
+                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Pointure</p>
+                        <div className="flex flex-wrap gap-1 px-2 pb-2">
+                            {([35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const).map((s) => (
+                                <button key={s} type="button" onClick={() => setShoeSizeFilterExplore(shoeSizeFilterExplore === s ? null : s)}
+                                    className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", shoeSizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                >{s}</button>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>

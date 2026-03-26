@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { SearchMd, XClose } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
@@ -75,11 +76,14 @@ function SearchPageInner() {
         <div className="min-h-dvh bg-[#2C1A0E]">
             {/* Search header */}
             <div className="bg-[#2C1A0E] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                {/* Filter title */}
+                {/* Filter title with logo */}
                 {isFilterMode && filterParam && FILTER_LABELS[filterParam] && (
-                    <p className="mb-3 font-display text-lg font-bold text-[#F5EDD8]">
-                        {FILTER_LABELS[filterParam]}
-                    </p>
+                    <div className="mb-3 flex items-center gap-2">
+                        <Image src="/logo-icon.webp" alt="" width={24} height={24} className="size-6" />
+                        <p className="font-display text-lg font-bold text-[var(--ts-ochre)]">
+                            {FILTER_LABELS[filterParam]}
+                        </p>
+                    </div>
                 )}
 
                 <div className="relative">
