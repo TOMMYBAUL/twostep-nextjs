@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, Bell01, FilterLines } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -510,7 +510,147 @@ export default function DiscoverPage() {
                         </div>
                     </section>
                 )}
+                {/* ── 6. Tout près de toi — infinite scroll ── */}
+                <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
         </div>
+    );
+}
+
+/* ── Infinite scroll product grid ── */
+function InfiniteProductGrid({
+    lat, lng, category, favoriteIds, onToggleFav,
+}: {
+    lat: number; lng: number; category: string | null;
+    favoriteIds: Set<string>; onToggleFav: (id: string) => void;
+}) {
+    const [pages, setPages] = useState<any[][]>([]);
+    const [loading, setLoading] = useState(false);
+    const [total, setTotal] = useState(0);
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const pageRef = useRef(1);
+    const loadingRef = useRef(false);
+    const hasMoreRef = useRef(true);
+    const categoryRef = useRef(category);
+
+    // Reset when category changes
+    useEffect(() => {
+        categoryRef.current = category;
+        setPages([]);
+        pageRef.current = 1;
+        hasMoreRef.current = true;
+        setTotal(0);
+    }, [category]);
+
+    // Stable loadMore — no state in dependencies
+    const loadMore = useCallback(async () => {
+        if (loadingRef.current || !hasMoreRef.current) return;
+        loadingRef.current = true;
+        setLoading(true);
+        try {
+            const params = new URLSearchParams({
+                lat: lat.toString(), lng: lng.toString(),
+                page: pageRef.current.toString(), limit: "20",
+            });
+            if (categoryRef.current) params.set("category", categoryRef.current);
+            const res = await fetch(`/api/products/discover?${params}`);
+            if (!res.ok) {
+                hasMoreRef.current = false;
+                return;
+            }
+            const data = await res.json();
+            const items = data.products ?? [];
+            if (items.length === 0) {
+                hasMoreRef.current = false;
+                return;
+            }
+            setPages((prev) => [...prev, items]);
+            hasMoreRef.current = data.hasMore;
+            setTotal(data.total);
+            pageRef.current += 1;
+        } finally {
+            loadingRef.current = false;
+            setLoading(false);
+        }
+    }, [lat, lng]);
+
+    // Stable observer — only depends on lat/lng
+    useEffect(() => {
+        const el = sentinelRef.current;
+        if (!el) return;
+        const observer = new IntersectionObserver(
+            (entries) => { if (entries[0].isIntersecting) loadMore(); },
+            { threshold: 0.1 },
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [loadMore]);
+
+    const allProducts = useMemo(() => pages.flat(), [pages]);
+    const showEmpty = allProducts.length === 0 && !loading && !hasMoreRef.current;
+
+    return (
+        <section className="pb-20">
+            <div className="px-4 pb-3 pt-6">
+                <h2 className="text-base font-semibold text-[#f0dfc0]" style={{ letterSpacing: "-0.2px" }}>Tout près de toi</h2>
+                {total > 0 && <p className="mt-0.5 text-[11px] text-[#5a4020]">{total} produits disponibles</p>}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 px-4 md:grid-cols-4 md:gap-3 md:px-6">
+                {allProducts.map((p: any) => {
+                    const isFav = favoriteIds.has(p.product_id);
+                    const discount = p.sale_price ? Math.round(((p.product_price - p.sale_price) / p.product_price) * 100) : 0;
+                    return (
+                        <Link
+                            key={p.product_id}
+                            href={`/product/${generateSlug(p.product_name, p.product_id)}`}
+                            className="overflow-hidden rounded-xl bg-[#1e1409] transition active:opacity-90"
+                            style={{ border: "0.5px solid rgba(255,255,255,0.05)" }}
+                        >
+                            <div className="relative h-[180px] w-full bg-[#2a1c0a] md:h-[200px]">
+                                {p.product_photo ? (
+                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover" loading="lazy" />
+                                ) : (
+                                    <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/20">
+                                        {p.product_name?.charAt(0)}
+                                    </div>
+                                )}
+                                {discount > 0 && (
+                                    <span className="absolute bottom-2 left-2 text-sm">🏷️</span>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFav(p.product_id); }}
+                                    className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full text-[13px] text-[#f0dfc0]"
+                                    style={{ background: "rgba(19,14,7,0.55)" }}
+                                >
+                                    {isFav ? "♥" : "♡"}
+                                </button>
+                            </div>
+                            <div className="px-2.5 pb-3 pt-2.5">
+                                <p className="text-[10px] tracking-wide text-[#7a5c30]">
+                                    {p.merchant_name} · {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km}km`}
+                                </p>
+                                <p className="mt-1 line-clamp-2 text-xs font-medium leading-tight text-[#e8d4b0]">{p.product_name}</p>
+                                <div className="mt-1.5 flex items-baseline gap-1.5">
+                                    <span className="text-xs text-[#a07840]">{(p.sale_price ?? p.product_price)?.toFixed(2)} €</span>
+                                    {p.sale_price && (
+                                        <span className="text-[10px] text-[#3d2a10] line-through">{p.product_price.toFixed(2)} €</span>
+                                    )}
+                                </div>
+                            </div>
+                        </Link>
+                    );
+                })}
+            </div>
+
+            {/* Sentinel */}
+            <div ref={sentinelRef} className="flex h-10 items-center justify-center">
+                {loading && <p className="text-xs text-[#3d2a10]">Chargement...</p>}
+                {!hasMoreRef.current && !loading && allProducts.length > 0 && (
+                    <p className="text-[11px] tracking-wide text-[#3d2a10]">Le quartier est à sec 📍</p>
+                )}
+            </div>
+        </section>
     );
 }
