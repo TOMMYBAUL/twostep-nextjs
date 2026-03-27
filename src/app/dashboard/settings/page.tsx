@@ -5,7 +5,6 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { usePOS } from "@/hooks/use-pos";
-import { useEmail } from "@/hooks/use-email";
 import { createClient } from "@/lib/supabase/client";
 
 const POS_PROVIDERS = [
@@ -20,13 +19,10 @@ export default function SettingsPage() {
     const { merchant, refetch } = useMerchant();
     const { toast } = useToast();
     const { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
-    const emailHook = useEmail(merchant?.id ?? null);
     const [email, setEmail] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [imapForm, setImapForm] = useState({ host: "", port: "993", user: "", pass: "" });
-    const [showImap, setShowImap] = useState(false);
 
     useEffect(() => {
         const supabase = createClient();
@@ -126,77 +122,8 @@ export default function SettingsPage() {
                 </form>
             </section>
 
-            {/* Email Connection */}
-            <section className="animate-fade-up stagger-3 mb-10 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Email (import factures)</h2>
-                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
-                    {emailHook.isConnected ? (
-                        <>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-semibold text-gray-900">
-                                        {emailHook.connection?.provider === "gmail" ? "Gmail" : emailHook.connection?.provider === "outlook" ? "Outlook" : "IMAP"}
-                                    </p>
-                                    <p className="text-xs text-gray-400">{emailHook.connection?.email_address}</p>
-                                </div>
-                                <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
-                                    Connecté
-                                </span>
-                            </div>
-                            <button
-                                onClick={() => emailHook.disconnect().then(() => toast("Email déconnecté")).catch(() => toast("Erreur", "error"))}
-                                className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
-                            >
-                                Déconnecter
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <p className="text-xs text-gray-400">Connectez votre email pour importer automatiquement les factures fournisseur.</p>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => emailHook.connectGmail().then(() => toast("Gmail connecté !")).catch(() => toast("Erreur", "error"))}
-                                    className="btn-ts flex-1"
-                                    disabled={emailHook.connecting}
-                                >
-                                    {emailHook.connecting ? "..." : "Connecter Gmail"}
-                                </button>
-                                <button
-                                    onClick={() => emailHook.connectOutlook().then(() => toast("Outlook connecté !")).catch(() => toast("Erreur", "error"))}
-                                    className="btn-ts flex-1"
-                                    disabled={emailHook.connecting}
-                                >
-                                    Outlook
-                                </button>
-                            </div>
-                            <button
-                                onClick={() => setShowImap(!showImap)}
-                                className="text-xs text-gray-400 hover:text-gray-600 transition"
-                            >
-                                {showImap ? "Masquer IMAP" : "Connexion IMAP manuelle"}
-                            </button>
-                            {showImap && (
-                                <div className="space-y-2">
-                                    <input className="search-ts w-full" placeholder="Hôte IMAP" value={imapForm.host} onChange={(e) => setImapForm({ ...imapForm, host: e.target.value })} />
-                                    <input className="search-ts w-full" placeholder="Port (993)" value={imapForm.port} onChange={(e) => setImapForm({ ...imapForm, port: e.target.value })} />
-                                    <input className="search-ts w-full" placeholder="Utilisateur" value={imapForm.user} onChange={(e) => setImapForm({ ...imapForm, user: e.target.value })} />
-                                    <input className="search-ts w-full" type="password" placeholder="Mot de passe" value={imapForm.pass} onChange={(e) => setImapForm({ ...imapForm, pass: e.target.value })} />
-                                    <button
-                                        onClick={() => emailHook.connectImap({ host: imapForm.host, port: parseInt(imapForm.port), user: imapForm.user, pass: imapForm.pass }).then(() => toast("IMAP connecté !")).catch(() => toast("Erreur", "error"))}
-                                        className="btn-ts w-full"
-                                        disabled={emailHook.connecting}
-                                    >
-                                        Connecter IMAP
-                                    </button>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-            </section>
-
             {/* POS */}
-            <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
+            <section className="animate-fade-up stagger-3 mb-10 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Caisse (POS)</h2>
 
                 <div className="space-y-2">
@@ -284,7 +211,7 @@ export default function SettingsPage() {
             </section>
 
             {/* Subscription */}
-            <section className="animate-fade-up stagger-6 max-w-xl">
+            <section className="animate-fade-up stagger-4 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
                     <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>
