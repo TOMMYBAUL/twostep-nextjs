@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
+import { useAchievements } from "@/hooks/use-achievements";
+import { AchievementBadgeCard } from "@/components/dashboard/achievement-badge";
+import { ACHIEVEMENTS, ALL_ACHIEVEMENT_TYPES } from "@/lib/achievements";
 import { generateSlug } from "@/lib/slug";
 
 const DAYS = [
@@ -18,6 +22,7 @@ const DAYS = [
 
 export default function StorePage() {
     const { merchant, loading, refetch } = useMerchant();
+    const { achievements, loading: achievementsLoading } = useAchievements(false);
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -198,6 +203,50 @@ export default function StorePage() {
                     {isLoading ? "..." : isCreating ? "Créer ma boutique" : "Enregistrer"}
                 </button>
             </form>
+
+            {/* Trophées section */}
+            {merchant && (
+                <div className="mt-10 max-w-xl">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-sm font-semibold uppercase tracking-wider text-tertiary">
+                            Mes trophées
+                        </h2>
+                        <Link href="/dashboard/achievements" className="text-xs font-medium text-[var(--ts-ochre)] hover:underline no-underline">
+                            Voir tout
+                        </Link>
+                    </div>
+                    {achievementsLoading ? (
+                        <div className="space-y-3">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="animate-pulse rounded-[20px] bg-white/60 h-16" />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {ALL_ACHIEVEMENT_TYPES.slice(0, 5).map((type) => {
+                                const def = ACHIEVEMENTS[type];
+                                const achievement = achievements.find((a) => a.type === type);
+                                return (
+                                    <AchievementBadgeCard
+                                        key={type}
+                                        def={def}
+                                        unlocked={!!achievement}
+                                        unlockedAt={achievement?.unlocked_at}
+                                    />
+                                );
+                            })}
+                            {ALL_ACHIEVEMENT_TYPES.length > 5 && (
+                                <Link
+                                    href="/dashboard/achievements"
+                                    className="block text-center text-xs text-[#8B7355] hover:text-[#D4A574] no-underline py-2 transition"
+                                >
+                                    Voir les {ALL_ACHIEVEMENT_TYPES.length - 5} autres trophées →
+                                </Link>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
         </>
     );
 }
