@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown, Share07 } from "@untitledui/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
@@ -88,6 +88,16 @@ export default function ShopProfileClient() {
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
     const merchantUuid = profile?.merchant_id;
     const isFollowing = follows?.some((f) => f.merchant_id === merchantUuid) ?? false;
+
+    useEffect(() => {
+        if (merchantUuid) {
+            fetch("/api/page-views", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ merchant_id: merchantUuid, page_type: "shop" }),
+            }).catch(() => {});
+        }
+    }, [merchantUuid]);
 
     const promoMap = new Map((promotions ?? []).map((p) => [p.product_id, p.sale_price]));
 
