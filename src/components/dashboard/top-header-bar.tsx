@@ -20,7 +20,9 @@ export function TopHeaderBar() {
     const pathname = usePathname();
     const { merchant } = useMerchant();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [notifOpen, setNotifOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const notifRef = useRef<HTMLDivElement>(null);
 
     const pageLabel = Object.entries(breadcrumbLabels)
         .filter(([path]) => pathname.startsWith(path))
@@ -34,17 +36,20 @@ export function TopHeaderBar() {
         ? (merchant.slug ?? generateSlug(merchant.name, merchant.id))
         : null;
 
-    // Close menu on click outside
+    // Close dropdowns on click outside
     useEffect(() => {
-        if (!menuOpen) return;
+        if (!menuOpen && !notifOpen) return;
         function handleClick(e: MouseEvent) {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+            if (menuOpen && menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 setMenuOpen(false);
+            }
+            if (notifOpen && notifRef.current && !notifRef.current.contains(e.target as Node)) {
+                setNotifOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClick);
         return () => document.removeEventListener("mousedown", handleClick);
-    }, [menuOpen]);
+    }, [menuOpen, notifOpen]);
 
     return (
         <div className="hidden lg:flex h-[52px] items-center border-b border-[#F0EBE3] bg-white px-5 gap-3">
@@ -60,12 +65,24 @@ export function TopHeaderBar() {
             {/* Actions */}
             <div className="flex items-center gap-2">
                 {/* Notification bell */}
-                <button className="flex size-8 items-center justify-center rounded-full bg-[#F5F1EB] transition hover:bg-[#ebe7d0]">
-                    <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                    </svg>
-                </button>
+                <div className="relative" ref={notifRef}>
+                    <button
+                        onClick={() => setNotifOpen(!notifOpen)}
+                        className="flex size-8 items-center justify-center rounded-full bg-[#F5F1EB] transition hover:bg-[#ebe7d0]"
+                    >
+                        <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                    </button>
+                    {notifOpen && (
+                        <div className="absolute right-0 top-10 z-50 w-64 rounded-xl bg-white py-4 px-5 shadow-lg border border-[#F0EBE3] text-center">
+                            <div className="text-2xl mb-2">🔔</div>
+                            <p className="text-xs font-semibold text-[#2C1A0E]">Pas de notification</p>
+                            <p className="text-[10px] text-[#8B7355] mt-1">Vous serez notifié quand un client vous suit ou met un produit en favori.</p>
+                        </div>
+                    )}
+                </div>
 
                 {/* Avatar + dropdown menu */}
                 <div className="relative" ref={menuRef}>
