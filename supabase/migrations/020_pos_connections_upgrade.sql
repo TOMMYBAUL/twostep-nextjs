@@ -54,10 +54,17 @@ ALTER TABLE products ADD COLUMN IF NOT EXISTS pos_item_id text;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS pos_provider text;
 CREATE INDEX IF NOT EXISTS idx_products_pos ON products(merchant_id, pos_item_id) WHERE pos_item_id IS NOT NULL;
 
--- Add POS columns to promotions
+-- Add merchant_id + POS columns to promotions
+ALTER TABLE promotions ADD COLUMN IF NOT EXISTS merchant_id uuid REFERENCES merchants(id) ON DELETE CASCADE;
 ALTER TABLE promotions ADD COLUMN IF NOT EXISTS pos_promo_id text;
 ALTER TABLE promotions ADD COLUMN IF NOT EXISTS pos_provider text;
 ALTER TABLE promotions ADD COLUMN IF NOT EXISTS visible boolean DEFAULT true;
+
+-- Backfill merchant_id from product → merchant relationship
+UPDATE promotions SET merchant_id = p.merchant_id
+FROM products p WHERE promotions.product_id = p.id AND promotions.merchant_id IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_promotions_merchant ON promotions(merchant_id);
 CREATE INDEX IF NOT EXISTS idx_promotions_pos ON promotions(merchant_id, pos_promo_id) WHERE pos_promo_id IS NOT NULL;
 
 -- Add SIRET verification to merchants
