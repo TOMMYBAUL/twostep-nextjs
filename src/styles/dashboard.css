@@ -146,3 +146,11 @@
 .product-row-ts:hover .row-arrow {
     opacity: 1;
 }
+
+/* Safe areas (iOS Dynamic Island / notch / home indicator) */
+.safe-top {
+    padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
