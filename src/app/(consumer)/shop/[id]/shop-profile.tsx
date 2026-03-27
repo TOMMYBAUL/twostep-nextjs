@@ -11,6 +11,7 @@ import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
+import { ShopBadges } from "@/components/shop/shop-badges";
 
 interface MerchantProfile {
     merchant_id: string;
@@ -200,6 +201,7 @@ export default function ShopProfileClient() {
                     </div>
                     <div className="ml-3 mb-0.5 min-w-0 flex-1">
                         <h1 className="font-display text-[22px] font-bold leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">{profile.merchant_name}</h1>
+                        <ShopBadges shopId={profile.merchant_id} />
                     </div>
                 </div>
             </div>

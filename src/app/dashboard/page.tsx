@@ -8,7 +8,9 @@ import { DiscoveryFunnel } from "@/components/dashboard/discovery-funnel";
 import { TwoStepScore } from "@/components/dashboard/twostep-score";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
 import { CoachTips } from "@/components/dashboard/coach-tips";
+import { AchievementWidget } from "@/components/dashboard/achievement-widget";
 import { useCoachTips } from "@/hooks/use-coach-tips";
+import { useAchievements } from "@/hooks/use-achievements";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { createClient } from "@/lib/supabase/client";
@@ -108,6 +110,7 @@ export default function DashboardPage() {
 
     const completed = steps.filter((s) => s.checked).length;
     const allDone = steps.length > 0 && completed === steps.length;
+    const { achievements, loading: achievementsLoading } = useAchievements(allDone);
 
     const viewsTrend =
         stats && stats.funnel.views.previous > 0
@@ -197,6 +200,9 @@ export default function DashboardPage() {
                         </div>
                     </div>
 
+                    {/* Achievement widget */}
+                    <AchievementWidget achievements={achievements} loading={achievementsLoading} />
+
                     {/* Coach tips */}
                     <CoachTips data={tips} loading={tipsLoading} />
                 </div>
@@ -243,6 +249,9 @@ export default function DashboardPage() {
 
                     {/* Coach tips */}
                     <CoachTips data={tips} loading={tipsLoading} />
+
+                    {/* Achievement widget */}
+                    <AchievementWidget achievements={achievements} loading={achievementsLoading} />
 
                     {/* Quick links */}
                     <div className="grid grid-cols-2 gap-4">

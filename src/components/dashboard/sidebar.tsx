@@ -63,6 +63,15 @@ const navItems = [
             </svg>
         ),
     },
+    {
+        href: "/dashboard/achievements",
+        label: "Trophées",
+        icon: (
+            <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 22V10M14 22V10M8 6h8l-1 8H9L8 6Z" />
+            </svg>
+        ),
+    },
 ];
 
 const settingsItem = {
