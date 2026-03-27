@@ -1,17 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Merchant } from "@/lib/types";
 
 type ChecklistItem = {
     label: string;
+    href: string;
+    cta: string;
     checked: boolean;
 };
 
 export function OnboardingChecklist({ merchant }: { merchant: Merchant | null }) {
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
     useEffect(() => {
         if (!merchant) return;
@@ -19,40 +23,26 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
         async function check() {
             const supabase = createClient();
 
-            const hasProfile = !!(merchant!.name && merchant!.address);
             const hasPOS = merchant!.pos_type !== null;
-
-            const { data: emailConn } = await supabase
-                .from("email_connections")
-                .select("id")
-                .eq("merchant_id", merchant!.id)
-                .eq("status", "active")
-                .limit(1);
-            const hasEmail = (emailConn?.length ?? 0) > 0;
-
-            const { data: invoices } = await supabase
-                .from("invoices")
-                .select("id")
-                .eq("merchant_id", merchant!.id)
-                .eq("status", "imported")
-                .limit(1);
-            const hasImport = (invoices?.length ?? 0) > 0;
+            const hasEmail = !!(merchant!.phone);
+            const hasPhoto = !!(merchant!.photo_url);
+            const hasProfile = !!(merchant!.description && merchant!.address && merchant!.opening_hours);
 
             const { data: products } = await supabase
                 .from("products")
-                .select("id, stock(quantity)")
+                .select("id, photo_url")
                 .eq("merchant_id", merchant!.id)
-                .limit(1);
-            const hasProduct = (products?.length ?? 0) > 0 && products!.some(
-                (p: any) => p.stock?.[0]?.quantity > 0 || p.stock?.quantity > 0
-            );
+                .limit(50);
+            const totalProducts = products?.length ?? 0;
+            const withPhoto = products?.filter((p: any) => p.photo_url).length ?? 0;
+            const hasProductPhotos = totalProducts > 0 && withPhoto >= Math.min(totalProducts, 3);
 
             setItems([
-                { label: "Profil boutique complété", checked: hasProfile },
-                { label: "Caisse connectée", checked: hasPOS },
-                { label: "Email connecté", checked: hasEmail },
-                { label: "Premier import de produits", checked: hasImport },
-                { label: "Premier produit visible", checked: hasProduct },
+                { label: "Connecter votre caisse (POS)", href: "/dashboard/settings", cta: "Connecter", checked: hasPOS },
+                { label: "Ajouter votre email de contact", href: "/dashboard/store", cta: "Ajouter", checked: hasEmail },
+                { label: "Ajouter une photo de boutique", href: "/dashboard/store", cta: "Ajouter", checked: hasPhoto },
+                { label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile },
+                { label: "Ajouter des photos à vos produits", href: "/dashboard/products", cta: "Ajouter", checked: hasProductPhotos },
             ]);
             setLoading(false);
         }
@@ -68,27 +58,59 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
     const completed = items.filter((i) => i.checked).length;
 
     return (
-        <div className="mb-8 rounded-xl bg-white px-5 py-5">
-            <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-900">Configuration de votre boutique</h3>
-                <span className="text-xs text-gray-400">{completed}/{items.length}</span>
-            </div>
-            <div className="space-y-2.5">
-                {items.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5">
-                        <div className={`flex size-5 items-center justify-center rounded-full border ${item.checked ? "border-[#5a9474] bg-[var(--ts-sage-light)]" : "border-gray-200"}`}>
-                            {item.checked && (
-                                <svg className="size-3 text-[#5a9474]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M2 6l3 3 5-5" />
-                                </svg>
-                            )}
-                        </div>
-                        <span className={`text-xs ${item.checked ? "text-gray-400 line-through" : "text-gray-700"}`}>
-                            {item.label}
+        <div className="mb-6 rounded-xl bg-white overflow-hidden">
+            <button
+                onClick={() => setExpanded(!expanded)}
+                className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-gray-50"
+            >
+                <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-semibold text-[#2C1A0E]">Configuration boutique</span>
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                            {completed}/{items.length}
                         </span>
                     </div>
-                ))}
-            </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                        <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${(completed / items.length) * 100}%`, background: "var(--ts-ochre)" }}
+                        />
+                    </div>
+                </div>
+                <svg
+                    className={`size-4 shrink-0 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                >
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+            </button>
+            {expanded && (
+                <div className="border-t border-gray-100 px-5 py-3 space-y-2">
+                    {items.map((item, i) => (
+                        <div key={item.label} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition ${item.checked ? "opacity-50" : ""}`}>
+                            <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
+                                item.checked ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-gray-100 text-gray-500"
+                            }`}>
+                                {item.checked ? (
+                                    <svg className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M2 6l3 3 5-5" />
+                                    </svg>
+                                ) : (
+                                    i + 1
+                                )}
+                            </div>
+                            <p className={`flex-1 text-xs font-medium ${item.checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                                {item.label}
+                            </p>
+                            {!item.checked && (
+                                <Link href={item.href} className="shrink-0 text-[10px] font-semibold text-[var(--ts-ochre)] no-underline hover:underline">
+                                    {item.cta}
+                                </Link>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
