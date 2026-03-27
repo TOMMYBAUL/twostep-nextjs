@@ -29,14 +29,6 @@ export function TopHeaderBar() {
 
     return (
         <div className="hidden lg:flex h-[52px] items-center border-b border-[#F0EBE3] bg-white px-5 gap-3">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-                <div className="flex size-7 items-center justify-center rounded-lg bg-[#2C1A0E] text-[12px] font-bold text-white">T</div>
-                <span className="text-sm font-bold text-[#2C1A0E]">Two-Step</span>
-            </div>
-
-            <div className="flex-1" />
-
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-[11px]">
                 <span className="text-[#8B7355]">Dashboard</span>

@@ -23,7 +23,8 @@ export function MobileTopBar() {
 
     return (
         <div className="safe-top bg-[#2C1A0E] md:hidden">
-            <div className="flex h-12 items-center justify-center">
+            <div className="flex h-12 items-center justify-center gap-2 px-4">
+                <img src="/logo-icon.webp" alt="Two-Step" className="size-7 rounded-lg" />
                 <span className="text-[15px] font-semibold text-white">{title}</span>
             </div>
         </div>
