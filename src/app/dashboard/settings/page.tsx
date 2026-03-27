@@ -9,11 +9,11 @@ import { createClient } from "@/lib/supabase/client";
 
 const POS_PROVIDERS = [
     { id: "square" as const, name: "Square", icon: "□" },
-    { id: "lightspeed" as const, name: "Lightspeed", icon: "⚡" },
     { id: "shopify" as const, name: "Shopify", icon: "🛍" },
+    { id: "lightspeed" as const, name: "Lightspeed", icon: "⚡" },
+    { id: "sumup" as const, name: "SumUp", icon: "💳" },
+    { id: "zettle" as const, name: "Zettle", icon: "🅿️" },
 ] as const;
-
-const COMING_SOON_POS = ["SumUp", "Zettle"];
 
 export default function SettingsPage() {
     const { merchant, refetch } = useMerchant();
@@ -56,7 +56,7 @@ export default function SettingsPage() {
         }
     };
 
-    const handleConnect = async (provider: "square" | "lightspeed" | "shopify") => {
+    const handleConnect = async (provider: "square" | "lightspeed" | "shopify" | "sumup" | "zettle") => {
         try {
             await connect(provider);
         } catch (err) {
@@ -77,7 +77,7 @@ export default function SettingsPage() {
         try {
             const result = await sync();
             if (result) {
-                toast(`Sync : ${result.products_created} créés, ${result.products_updated} mis à jour, ${result.stock_updated} stocks`);
+                toast(`Sync : ${result.products_created} créés, ${result.products_updated} mis à jour, ${result.stock_updated} stocks, ${result.promos_imported} promos`);
             }
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur de synchronisation", "error");
@@ -193,21 +193,19 @@ export default function SettingsPage() {
                         <div className="rounded-lg bg-[var(--ts-sage-light)] px-4 py-3 text-xs text-[#5a9474]">
                             <p className="font-semibold">Synchronisation terminée</p>
                             <p className="mt-1">
-                                {syncResult.products_created} produit(s) créé(s) · {syncResult.products_updated} mis à jour · {syncResult.stock_updated} stock(s)
+                                {syncResult.products_created} produit(s) créé(s) · {syncResult.products_updated} mis à jour · {syncResult.stock_updated} stock(s) · {syncResult.promos_imported} promo(s)
                             </p>
                         </div>
                     )}
 
-                    {/* Coming soon */}
-                    {COMING_SOON_POS.map((name) => (
-                        <div key={name} className="flex items-center justify-between rounded-xl bg-white px-5 py-4">
-                            <span className="text-sm font-medium text-gray-900">{name}</span>
-                            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
-                                Bientôt
-                            </span>
-                        </div>
-                    ))}
                 </div>
+
+                <p className="mt-4 text-center text-xs text-gray-400">
+                    Pas de caisse ?{" "}
+                    <a href="https://squareup.com/signup" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--ts-terracotta)" }}>
+                        Créez un compte Square gratuitement
+                    </a>
+                </p>
             </section>
 
             {/* Subscription */}

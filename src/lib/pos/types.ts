@@ -13,8 +13,18 @@ export type POSStockUpdate = {
     updated_at: string;
 };
 
+export type POSPromo = {
+    pos_promo_id: string;
+    name: string;
+    type: "percentage" | "fixed_amount";
+    value: number;
+    product_ids: string[];
+    starts_at: string | null;
+    ends_at: string | null;
+};
+
 export interface IPOSAdapter {
-    /** Nom du POS (square, lightspeed, shopify) */
+    /** Nom du POS (square, lightspeed, shopify, sumup, zettle) */
     name: string;
 
     /** Génère l'URL d'autorisation OAuth */
@@ -31,6 +41,9 @@ export interface IPOSAdapter {
 
     /** Récupère le stock actuel pour une liste de produits */
     getStock(accessToken: string, itemIds: string[]): Promise<POSStockUpdate[]>;
+
+    /** Récupère les promos actives */
+    fetchPromos(accessToken: string): Promise<POSPromo[]>;
 
     /** Vérifie la signature d'un webhook entrant */
     verifyWebhook(body: string, signature: string): boolean;

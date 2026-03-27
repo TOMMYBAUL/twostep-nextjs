@@ -21,14 +21,14 @@ export async function POST() {
             return NextResponse.json({ error: "No merchant profile" }, { status: 403 });
         }
 
-        // Remove credentials
-        const { error: credError } = await supabase
-            .from("merchant_pos_credentials")
+        // Remove from pos_connections
+        const { error: connError } = await supabase
+            .from("pos_connections")
             .delete()
             .eq("merchant_id", merchant.id);
 
-        if (credError) {
-            return NextResponse.json({ error: "Failed to remove credentials" }, { status: 500 });
+        if (connError) {
+            return NextResponse.json({ error: "Failed to remove connection" }, { status: 500 });
         }
 
         // Clear POS fields on merchant

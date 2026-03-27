@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Merchant } from "@/lib/types";
 
@@ -8,9 +8,10 @@ type SyncResult = {
     products_created: number;
     products_updated: number;
     stock_updated: number;
+    promos_imported: number;
 };
 
-const SUPPORTED_POS = ["square", "lightspeed", "shopify"] as const;
+const SUPPORTED_POS = ["square", "lightspeed", "shopify", "sumup", "zettle"] as const;
 type POSProvider = (typeof SUPPORTED_POS)[number];
 
 export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
@@ -24,7 +25,7 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
     const connect = useCallback(async (provider: POSProvider = "square") => {
         setConnecting(true);
         try {
-            const res = await fetch(`/api/pos/connect?provider=${provider}`);
+            const res = await fetch(`/api/pos/${provider}/auth`);
             if (!res.ok) {
                 const data = await res.json();
                 throw new Error(data.error || "Connection failed");
@@ -65,6 +66,36 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
             setSyncing(false);
         }
     }, [onUpdate]);
+
+    // Silent sync (no toast, no setSyncResult)
+    const silentSync = useCallback(async () => {
+        try {
+            const res = await fetch("/api/pos/sync", { method: "POST" });
+            if (res.ok) onUpdate();
+        } catch {
+            // silent — no error surfaced
+        }
+    }, [onUpdate]);
+
+    // Auto-sync every 15 min + initial sync if stale
+    const hasMountedRef = useRef(false);
+    useEffect(() => {
+        if (!isConnected) return;
+
+        // Initial sync on mount if pos_last_sync is null or > 15 min ago
+        if (!hasMountedRef.current) {
+            hasMountedRef.current = true;
+            const lastSync = merchant?.pos_last_sync;
+            const fifteenMin = 15 * 60 * 1000;
+            if (!lastSync || Date.now() - new Date(lastSync).getTime() > fifteenMin) {
+                silentSync();
+            }
+        }
+
+        // Interval: silent sync every 15 min
+        const interval = setInterval(silentSync, 15 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [isConnected, merchant?.pos_last_sync, silentSync]);
 
     return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync };
 }

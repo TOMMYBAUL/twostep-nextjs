@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
+import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 const LS_API = "https://api.lightspeedapp.com/API/V3";
 
@@ -91,6 +91,44 @@ export const lightspeedAdapter: IPOSAdapter = {
         }
 
         return products;
+    },
+
+    async fetchPromos(accessToken: string): Promise<POSPromo[]> {
+        const accountRes = await fetch(`${LS_API}/Account.json`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const { Account } = await accountRes.json();
+        const accountID = Account.accountID;
+
+        const res = await fetch(
+            `${LS_API}/Account/${accountID}/Item.json?load_relations=["SpecialPrices"]&limit=100`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        if (!res.ok) return [];
+
+        const data = await res.json();
+        const items = Array.isArray(data.Item) ? data.Item : data.Item ? [data.Item] : [];
+        const promos: POSPromo[] = [];
+
+        for (const item of items) {
+            const specials = item.SpecialPrices?.SpecialPrice;
+            if (!specials) continue;
+            const priceList = Array.isArray(specials) ? specials : [specials];
+
+            for (const sp of priceList) {
+                promos.push({
+                    pos_promo_id: `${item.itemID}-${sp.specialPriceID}`,
+                    name: `${item.description} — Prix spécial`,
+                    type: "fixed_amount",
+                    value: parseFloat(sp.amount || "0"),
+                    product_ids: [item.itemID],
+                    starts_at: sp.beginDate ?? null,
+                    ends_at: sp.endDate ?? null,
+                });
+            }
+        }
+
+        return promos;
     },
 
     async pushCatalog(accessToken: string, products: POSProduct[]) {

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
+import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function getBaseUrl(): string {
     return process.env.SQUARE_ENVIRONMENT === "sandbox"
@@ -151,6 +151,41 @@ export const squareAdapter: IPOSAdapter = {
         }
 
         return updates;
+    },
+
+    async fetchPromos(accessToken: string): Promise<POSPromo[]> {
+        const promos: POSPromo[] = [];
+        let cursor: string | undefined;
+
+        do {
+            const params = new URLSearchParams({ types: "DISCOUNT" });
+            if (cursor) params.set("cursor", cursor);
+
+            const data = await squareFetch(`/catalog/list?${params}`, accessToken);
+
+            for (const obj of data.objects || []) {
+                if (obj.type !== "DISCOUNT") continue;
+                const d = obj.discount_data;
+                if (!d) continue;
+
+                const isPercentage = d.discount_type === "FIXED_PERCENTAGE";
+                promos.push({
+                    pos_promo_id: obj.id,
+                    name: d.name || "Promotion",
+                    type: isPercentage ? "percentage" : "fixed_amount",
+                    value: isPercentage
+                        ? parseFloat(d.percentage || "0")
+                        : d.amount_money ? Number(d.amount_money.amount) / 100 : 0,
+                    product_ids: d.product_set_data?.product_ids_any || [],
+                    starts_at: null,
+                    ends_at: null,
+                });
+            }
+
+            cursor = data.cursor;
+        } while (cursor);
+
+        return promos;
     },
 
     verifyWebhook(body: string, signature: string): boolean {

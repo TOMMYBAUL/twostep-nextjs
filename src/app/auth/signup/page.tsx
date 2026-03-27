@@ -48,7 +48,7 @@ export default function SignupPage() {
         setError("");
         setIsLoading(true);
         try {
-            const res = await fetch("/api/verify-siret", {
+            const res = await fetch("/api/auth/verify-siret", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ siret }),

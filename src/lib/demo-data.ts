@@ -33,9 +33,12 @@ export const demoMerchant: Merchant = {
     },
     pos_type: "square",
     pos_last_sync: new Date(Date.now() - 3 * 60 * 1000).toISOString(), // 3 min ago
+    siret_verified: true,
+    naf_code: "47.72A",
     plan: "free",
     free_until: null,
     launch_cohort: 1,
+    slug: "sneakers-and-co",
     created_at: "2026-03-20T10:00:00Z",
     updated_at: now,
 };

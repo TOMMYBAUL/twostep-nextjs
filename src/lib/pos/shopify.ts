@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { getSiteUrl } from "@/lib/url";
-import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
+import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 export const shopifyAdapter: IPOSAdapter = {
     name: "shopify",
@@ -10,7 +10,7 @@ export const shopifyAdapter: IPOSAdapter = {
         const params = new URLSearchParams({
             client_id: process.env.SHOPIFY_CLIENT_ID!,
             scope: "read_products,write_products,read_inventory,write_inventory",
-            redirect_uri: `${baseUrl}/api/pos/connect`,
+            redirect_uri: `${baseUrl}/api/pos/shopify/callback`,
             state: `shopify:${merchantId}`,
         });
         return `https://accounts.shopify.com/oauth/authorize?${params}`;
@@ -100,6 +100,31 @@ export const shopifyAdapter: IPOSAdapter = {
                 }),
             });
         }
+    },
+
+    async fetchPromos(accessToken: string): Promise<POSPromo[]> {
+        const res = await fetch("https://shopify.dev/admin/api/2024-01/price_rules.json", {
+            headers: { "X-Shopify-Access-Token": accessToken },
+        });
+        if (!res.ok) return [];
+
+        const data = await res.json();
+        const promos: POSPromo[] = [];
+
+        for (const rule of data.price_rules ?? []) {
+            const isPercentage = rule.value_type === "percentage";
+            promos.push({
+                pos_promo_id: String(rule.id),
+                name: rule.title || "Promotion",
+                type: isPercentage ? "percentage" : "fixed_amount",
+                value: Math.abs(parseFloat(rule.value || "0")),
+                product_ids: rule.entitled_product_ids?.map(String) ?? [],
+                starts_at: rule.starts_at ?? null,
+                ends_at: rule.ends_at ?? null,
+            });
+        }
+
+        return promos;
     },
 
     async getStock(accessToken: string, itemIds: string[]) {
