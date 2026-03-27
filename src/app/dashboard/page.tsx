@@ -40,6 +40,7 @@ export default function DashboardPage() {
             const hasPOS = merchant!.pos_type !== null;
             const hasEmail = !!(merchant!.phone);
             const hasPhoto = !!(merchant!.photo_url);
+            const hasProfile = !!(merchant!.description && merchant!.address && merchant!.opening_hours);
 
             const { data: products } = await supabase
                 .from("products")
@@ -71,6 +72,13 @@ export default function DashboardPage() {
                     href: "/dashboard/store",
                     cta: "Ajouter ma photo",
                     checked: hasPhoto,
+                },
+                {
+                    label: "Compléter votre profil boutique",
+                    description: "Bio, adresse et horaires d'ouverture — les infos qui donnent envie de vous rendre visite.",
+                    href: "/dashboard/store",
+                    cta: "Compléter mon profil",
+                    checked: hasProfile,
                 },
                 {
                     label: "Ajouter des photos à vos produits",
