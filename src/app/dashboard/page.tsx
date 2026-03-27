@@ -126,65 +126,8 @@ export default function DashboardPage() {
                         <TwoStepScore score={stats.score} />
                     ) : null}
 
-                    {/* Onboarding checklist */}
-                    <div>
-                        <div className="mb-6 flex items-center justify-between">
-                            <p className="text-sm text-gray-500">
-                                Configurez votre boutique en {steps.length} étapes pour être visible sur Two-Step.
-                            </p>
-                            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-500">
-                                {completed}/{steps.length}
-                            </span>
-                        </div>
-
-                        <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-gray-100">
-                            <div
-                                className="h-full rounded-full transition-all duration-500"
-                                style={{
-                                    width: `${(completed / steps.length) * 100}%`,
-                                    background: "var(--ts-ochre)",
-                                }}
-                            />
-                        </div>
-
-                        <div className="space-y-3">
-                            {steps.map((step, i) => (
-                                <div
-                                    key={step.label}
-                                    className={`flex items-start gap-4 rounded-xl bg-white px-5 py-4 transition ${
-                                        step.checked ? "opacity-60" : ""
-                                    }`}
-                                >
-                                    <div className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                                        step.checked
-                                            ? "bg-[var(--ts-sage-light)] text-[#5a9474]"
-                                            : "bg-gray-100 text-gray-500"
-                                    }`}>
-                                        {step.checked ? (
-                                            <svg className="size-3.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M2 6l3 3 5-5" />
-                                            </svg>
-                                        ) : (
-                                            i + 1
-                                        )}
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <p className={`text-sm font-medium ${step.checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
-                                            {step.label}
-                                        </p>
-                                        <p className="mt-0.5 text-xs text-gray-400">{step.description}</p>
-                                    </div>
-
-                                    {!step.checked && (
-                                        <Link href={step.href} className="btn-ts shrink-0 text-xs no-underline">
-                                            {step.cta}
-                                        </Link>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Onboarding checklist — collapsible */}
+                    <OnboardingBar steps={steps} completed={completed} />
 
                     {/* Achievement widget */}
                     <AchievementWidget achievements={achievements} loading={achievementsLoading} />
@@ -259,6 +202,89 @@ export default function DashboardPage() {
                 </div>
             )}
         </>
+    );
+}
+
+function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number }) {
+    const [expanded, setExpanded] = useState(false);
+
+    return (
+        <div className="rounded-xl bg-white overflow-hidden">
+            {/* Compact bar — always visible */}
+            <button
+                onClick={() => setExpanded(!expanded)}
+                className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-gray-50"
+            >
+                <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-semibold text-[#2C1A0E]">
+                            Configuration boutique
+                        </span>
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                            {completed}/{steps.length}
+                        </span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                        <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                                width: `${(completed / steps.length) * 100}%`,
+                                background: completed === steps.length ? "#5a9474" : "var(--ts-ochre)",
+                            }}
+                        />
+                    </div>
+                </div>
+                <svg
+                    className={`size-4 shrink-0 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+            </button>
+
+            {/* Expandable steps */}
+            {expanded && (
+                <div className="border-t border-gray-100 px-5 py-3 space-y-2">
+                    {steps.map((step, i) => (
+                        <div
+                            key={step.label}
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition ${
+                                step.checked ? "opacity-50" : ""
+                            }`}
+                        >
+                            <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
+                                step.checked
+                                    ? "bg-[var(--ts-sage-light)] text-[#5a9474]"
+                                    : "bg-gray-100 text-gray-500"
+                            }`}>
+                                {step.checked ? (
+                                    <svg className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M2 6l3 3 5-5" />
+                                    </svg>
+                                ) : (
+                                    i + 1
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-xs font-medium ${step.checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                                    {step.label}
+                                </p>
+                            </div>
+                            {!step.checked && (
+                                <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-[var(--ts-ochre)] no-underline hover:underline">
+                                    {step.cta}
+                                </Link>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 
