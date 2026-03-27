@@ -37,69 +37,47 @@ export default function DashboardPage() {
         async function check() {
             const supabase = createClient();
 
-            const hasProfile = !!(merchant!.name && merchant!.address);
             const hasPOS = merchant!.pos_type !== null;
-
-            const { data: emailConn } = await supabase
-                .from("email_connections")
-                .select("id")
-                .eq("merchant_id", merchant!.id)
-                .eq("status", "active")
-                .limit(1);
-            const hasEmail = (emailConn?.length ?? 0) > 0;
-
-            const { data: invoices } = await supabase
-                .from("invoices")
-                .select("id")
-                .eq("merchant_id", merchant!.id)
-                .eq("status", "imported")
-                .limit(1);
-            const hasImport = (invoices?.length ?? 0) > 0;
+            const hasEmail = !!(merchant!.phone);
+            const hasPhoto = !!(merchant!.photo_url);
 
             const { data: products } = await supabase
                 .from("products")
-                .select("id, stock(quantity)")
+                .select("id, photo_url")
                 .eq("merchant_id", merchant!.id)
-                .limit(1);
-            const hasProduct = (products?.length ?? 0) > 0 && products!.some(
-                (p: any) => p.stock?.[0]?.quantity > 0 || p.stock?.quantity > 0
-            );
+                .limit(50);
+            const totalProducts = products?.length ?? 0;
+            const withPhoto = products?.filter((p: any) => p.photo_url).length ?? 0;
+            const hasProductPhotos = totalProducts > 0 && withPhoto >= Math.min(totalProducts, 3);
 
             setSteps([
                 {
-                    label: "Compléter votre profil boutique",
-                    description: "Nom, adresse, horaires d'ouverture — les infos visibles par les clients.",
-                    href: "/dashboard/store",
-                    cta: "Compléter le profil",
-                    checked: hasProfile,
-                },
-                {
                     label: "Connecter votre caisse (POS)",
-                    description: "Square, Lightspeed ou Shopify — votre stock se synchronise automatiquement.",
+                    description: "Square, Lightspeed ou Shopify — votre stock et vos produits se synchronisent automatiquement.",
                     href: "/dashboard/settings",
                     cta: "Connecter ma caisse",
                     checked: hasPOS,
                 },
                 {
-                    label: "Connecter votre email",
-                    description: "Gmail ou Outlook — vos factures fournisseur sont importées automatiquement.",
-                    href: "/dashboard/settings",
-                    cta: "Connecter mon email",
+                    label: "Ajouter votre email de contact",
+                    description: "Pour que vos clients puissent vous joindre facilement.",
+                    href: "/dashboard/store",
+                    cta: "Ajouter mon email",
                     checked: hasEmail,
                 },
                 {
-                    label: "Importer vos premiers produits",
-                    description: "Via votre caisse, vos factures, ou manuellement.",
-                    href: "/dashboard/invoices",
-                    cta: "Importer des produits",
-                    checked: hasImport,
+                    label: "Ajouter une photo de boutique",
+                    description: "Votre vitrine ou votre intérieur — c'est la première chose que les clients voient.",
+                    href: "/dashboard/store",
+                    cta: "Ajouter ma photo",
+                    checked: hasPhoto,
                 },
                 {
-                    label: "Avoir un produit visible en stock",
-                    description: "Dès qu'un produit a du stock, il apparaît aux consommateurs sur Two-Step.",
+                    label: "Ajouter des photos à vos produits",
+                    description: "Les produits avec photo attirent 3× plus de clics. Complétez ce que le POS ne fournit pas.",
                     href: "/dashboard/products",
-                    cta: "Voir mes produits",
-                    checked: hasProduct,
+                    cta: "Ajouter des photos",
+                    checked: hasProductPhotos,
                 },
             ]);
             setOnboardingLoading(false);
