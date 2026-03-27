@@ -6,6 +6,17 @@ import { cx } from "@/utils/cx";
 
 const navItems = [
     {
+        href: "/dashboard",
+        label: "Accueil",
+        icon: (
+            <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+        ),
+        exact: true,
+    },
+    {
         href: "/dashboard/products",
         label: "Produits",
         icon: (
@@ -103,8 +114,10 @@ export function DashboardSidebar() {
                 {navItems.map((item) => (
                     <NavItem
                         key={item.href}
-                        {...item}
-                        isActive={pathname.startsWith(item.href)}
+                        href={item.href}
+                        label={item.label}
+                        icon={item.icon}
+                        isActive={"exact" in item && item.exact ? pathname === item.href : pathname.startsWith(item.href)}
                     />
                 ))}
             </nav>
