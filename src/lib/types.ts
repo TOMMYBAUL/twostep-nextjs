@@ -15,6 +15,7 @@ export type Merchant = {
     plan: "free" | "standard" | "premium";
     free_until: string | null;
     launch_cohort: number | null;
+    slug: string | null;
     created_at: string;
     updated_at: string;
 };

@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
+import { generateSlug } from "@/lib/slug";
 
 const DAYS = [
     { key: "mon", label: "Lundi" },
@@ -92,6 +93,10 @@ export default function StorePage() {
 
     const isCreating = !loading && !merchant;
 
+    const shopSlug = merchant
+        ? (merchant.slug ?? generateSlug(merchant.name, merchant.id))
+        : null;
+
     return (
         <>
             <PageHeader
@@ -99,6 +104,21 @@ export default function StorePage() {
                 title="Ma"
                 titleAccent="boutique"
             />
+
+            {/* Preview shop button */}
+            {shopSlug && (
+                <div className="animate-fade-up stagger-1 mb-6">
+                    <a
+                        href={`/shop/${shopSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+                        style={{ background: "var(--ts-terracotta)", color: "white" }}
+                    >
+                        👁 Voir ma boutique comme un client
+                    </a>
+                </div>
+            )}
 
             {/* Creation banner */}
             {isCreating && (

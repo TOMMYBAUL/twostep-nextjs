@@ -11,6 +11,7 @@ import { CoachTip } from "@/components/dashboard/coach-tip";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { createClient } from "@/lib/supabase/client";
+import { generateSlug } from "@/lib/slug";
 
 type Step = {
     label: string;
@@ -255,6 +256,13 @@ export default function DashboardPage() {
                         <QuickLink href="/dashboard/stock" label="Stock" description="Voir les niveaux de stock" />
                         <QuickLink href="/dashboard/promotions" label="Promos" description="Créer une promotion" />
                         <QuickLink href="/dashboard/store" label="Ma boutique" description="Modifier votre profil" />
+                        {merchant && (
+                            <ExternalQuickLink
+                                href={`/shop/${merchant.slug ?? generateSlug(merchant.name, merchant.id)}`}
+                                label="Voir ma boutique"
+                                description="Comme un client"
+                            />
+                        )}
                     </div>
                 </div>
             )}
@@ -268,5 +276,20 @@ function QuickLink({ href, label, description }: { href: string; label: string; 
             <p className="text-sm font-semibold text-gray-900 group-hover:text-[var(--ts-ochre)] transition">{label}</p>
             <p className="mt-0.5 text-xs text-gray-400">{description}</p>
         </Link>
+    );
+}
+
+function ExternalQuickLink({ href, label, description }: { href: string; label: string; description: string }) {
+    return (
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-xl px-5 py-4 no-underline transition hover:shadow-sm"
+            style={{ background: "var(--ts-terracotta)" }}
+        >
+            <p className="text-sm font-semibold text-white transition">{label}</p>
+            <p className="mt-0.5 text-xs text-white/70">{description}</p>
+        </a>
     );
 }
