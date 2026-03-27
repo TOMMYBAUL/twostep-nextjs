@@ -7,7 +7,8 @@ import { HeroStat } from "@/components/dashboard/hero-stat";
 import { DiscoveryFunnel } from "@/components/dashboard/discovery-funnel";
 import { TwoStepScore } from "@/components/dashboard/twostep-score";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
-import { CoachTip } from "@/components/dashboard/coach-tip";
+import { CoachTips } from "@/components/dashboard/coach-tips";
+import { useCoachTips } from "@/hooks/use-coach-tips";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { createClient } from "@/lib/supabase/client";
@@ -24,6 +25,7 @@ type Step = {
 export default function DashboardPage() {
     const { merchant } = useMerchant();
     const { data: stats, loading: statsLoading } = useDashboardStats();
+    const { data: tips, loading: tipsLoading } = useCoachTips();
     const [steps, setSteps] = useState<Step[]>([]);
     const [onboardingLoading, setOnboardingLoading] = useState(true);
 
@@ -195,12 +197,8 @@ export default function DashboardPage() {
                         </div>
                     </div>
 
-                    {/* Coach tip */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-20" />
-                    ) : stats ? (
-                        <CoachTip stats={stats} merchantId={merchant?.id} />
-                    ) : null}
+                    {/* Coach tips */}
+                    <CoachTips data={tips} loading={tipsLoading} />
                 </div>
             ) : (
                 /* Mode B — Onboarding complete */
@@ -243,12 +241,8 @@ export default function DashboardPage() {
                         <TodayTasks stats={stats} />
                     ) : null}
 
-                    {/* Coach tip */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-20" />
-                    ) : stats ? (
-                        <CoachTip stats={stats} merchantId={merchant?.id} />
-                    ) : null}
+                    {/* Coach tips */}
+                    <CoachTips data={tips} loading={tipsLoading} />
 
                     {/* Quick links */}
                     <div className="grid grid-cols-2 gap-4">
