@@ -1,11 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 
+type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
 export async function createImageJob(
     productId: string,
     merchantId: string,
     sourceUrl: string,
+    supabaseClient?: SupabaseClient,
 ): Promise<boolean> {
-    const supabase = await createClient();
+    const supabase = supabaseClient ?? await createClient();
 
     // Dédoublonnage : pas de job pending/processing pour ce produit
     const { data: existing } = await supabase
@@ -26,8 +29,8 @@ export async function createImageJob(
     return !error;
 }
 
-export async function createImageJobsForMerchant(merchantId: string): Promise<number> {
-    const supabase = await createClient();
+export async function createImageJobsForMerchant(merchantId: string, supabaseClient?: SupabaseClient): Promise<number> {
+    const supabase = supabaseClient ?? await createClient();
 
     // Produits avec photo_url mais sans photo_processed_url
     const { data: products } = await supabase

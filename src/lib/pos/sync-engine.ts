@@ -2,6 +2,7 @@ import { getAdapter, type POSProduct, type POSPromo } from "@/lib/pos";
 import { createClient } from "@/lib/supabase/server";
 import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
+import { createImageJob } from "@/lib/images/jobs";
 
 export type SyncResult = {
     products_created: number;
@@ -84,6 +85,24 @@ export async function syncMerchantPOS(
         for (const posProduct of catalog) {
             const productId = await upsertProduct(supabase, merchantId, provider, posProduct, result);
             posItemToProductId.set(posProduct.pos_item_id, productId);
+        }
+
+        // ─── Image jobs ────────────────────────────────────────────
+
+        for (const posProduct of catalog) {
+            if (!posProduct.photo_url) continue;
+            const productId = posItemToProductId.get(posProduct.pos_item_id);
+            if (!productId) continue;
+
+            const { data: prod } = await supabase
+                .from("products")
+                .select("photo_processed_url")
+                .eq("id", productId)
+                .single();
+
+            if (!prod?.photo_processed_url) {
+                await createImageJob(productId, merchantId, posProduct.photo_url);
+            }
         }
 
         // ─── Stock sync ──────────────────────────────────────────────

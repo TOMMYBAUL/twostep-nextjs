@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createImageJob } from "@/lib/images/jobs";
 
 type EanResult = {
     name: string;
@@ -73,6 +74,10 @@ export async function lookupEan(ean: string, productId: string): Promise<void> {
             updateData.canonical_name = cached.name;
         }
         await supabase.from("products").update(updateData).eq("id", productId);
+        if (cached.photo_url) {
+            const { data: prod } = await supabase.from("products").select("merchant_id").eq("id", productId).single();
+            if (prod) await createImageJob(productId, prod.merchant_id, cached.photo_url, supabase as any);
+        }
         return;
     }
 
@@ -101,5 +106,9 @@ export async function lookupEan(ean: string, productId: string): Promise<void> {
             updateData.canonical_name = result.name;
         }
         await supabase.from("products").update(updateData).eq("id", productId);
+        if (result.photo_url) {
+            const { data: prod } = await supabase.from("products").select("merchant_id").eq("id", productId).single();
+            if (prod) await createImageJob(productId, prod.merchant_id, result.photo_url, supabase as any);
+        }
     }
 }
