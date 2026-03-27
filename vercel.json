@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/scan-emails",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/images/process",
+      "schedule": "* * * * *"
     }
   ]
 }
