@@ -199,7 +199,7 @@ export default function DashboardPage() {
                     {statsLoading ? (
                         <div className="animate-pulse rounded-xl bg-white/60 h-20" />
                     ) : stats ? (
-                        <CoachTip stats={stats} />
+                        <CoachTip stats={stats} merchantId={merchant?.id} />
                     ) : null}
                 </div>
             ) : (
@@ -247,7 +247,7 @@ export default function DashboardPage() {
                     {statsLoading ? (
                         <div className="animate-pulse rounded-xl bg-white/60 h-20" />
                     ) : stats ? (
-                        <CoachTip stats={stats} />
+                        <CoachTip stats={stats} merchantId={merchant?.id} />
                     ) : null}
 
                     {/* Quick links */}
