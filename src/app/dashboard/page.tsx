@@ -132,7 +132,7 @@ export default function DashboardPage() {
                 </div>
             ) : !allDone ? (
                 /* Mode A — Onboarding incomplete */
-                <div className="max-w-2xl space-y-6">
+                <div className="max-w-2xl lg:max-w-4xl space-y-4">
                     {/* Score */}
                     {statsLoading ? (
                         <div className="animate-pulse rounded-xl bg-white/60 h-20" />
@@ -208,55 +208,58 @@ export default function DashboardPage() {
                 </div>
             ) : (
                 /* Mode B — Onboarding complete */
-                <div className="max-w-2xl space-y-6">
-                    {/* Hero stat — views this week */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-24 flex items-center justify-center" />
-                    ) : stats ? (
-                        <div className="rounded-xl bg-white px-5 py-6">
-                            <HeroStat
-                                value={stats.funnel.views.current}
-                                label="vues cette semaine"
-                                trend={viewsTrend}
-                            />
+                <div className="max-w-2xl lg:max-w-4xl space-y-4">
+                    {/* Row 1: Hero stat + Funnel */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="lg:col-span-1">
+                            {statsLoading ? (
+                                <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                            ) : stats ? (
+                                <div className="rounded-xl bg-white px-5 py-6">
+                                    <HeroStat
+                                        value={stats.funnel.views.current}
+                                        label="vues cette semaine"
+                                        trend={viewsTrend}
+                                    />
+                                </div>
+                            ) : null}
                         </div>
-                    ) : null}
+                        <div className="lg:col-span-2">
+                            {statsLoading ? (
+                                <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                            ) : stats ? (
+                                <DiscoveryFunnel
+                                    views={stats.funnel.views}
+                                    favorites={stats.funnel.favorites}
+                                    follows={stats.funnel.follows}
+                                />
+                            ) : null}
+                        </div>
+                    </div>
 
-                    {/* Score */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-20" />
-                    ) : stats ? (
-                        <TwoStepScore score={stats.score} />
-                    ) : null}
+                    {/* Row 2: Score + Tasks */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {statsLoading ? (
+                            <div className="animate-pulse rounded-xl bg-white/60 h-20" />
+                        ) : stats ? (
+                            <TwoStepScore score={stats.score} />
+                        ) : null}
+                        {statsLoading ? (
+                            <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                        ) : stats ? (
+                            <TodayTasks stats={stats} />
+                        ) : null}
+                    </div>
 
-                    {/* Discovery funnel */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-24" />
-                    ) : stats ? (
-                        <DiscoveryFunnel
-                            views={stats.funnel.views}
-                            favorites={stats.funnel.favorites}
-                            follows={stats.funnel.follows}
-                        />
-                    ) : null}
-
-                    {/* Today tasks */}
-                    {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-24" />
-                    ) : stats ? (
-                        <TodayTasks stats={stats} />
-                    ) : null}
-
-                    {/* Coach tips */}
-                    <CoachTips data={tips} loading={tipsLoading} />
-
-                    {/* Achievement widget */}
-                    <AchievementWidget achievements={achievements} loading={achievementsLoading} />
+                    {/* Row 3: Tips + Trophées */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <CoachTips data={tips} loading={tipsLoading} />
+                        <AchievementWidget achievements={achievements} loading={achievementsLoading} />
+                    </div>
 
                     {/* Quick links */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                         <QuickLink href="/dashboard/products" label="Produits" description="Gérer votre catalogue" />
-                        <QuickLink href="/dashboard/stock" label="Stock" description="Voir les niveaux de stock" />
                         <QuickLink href="/dashboard/promotions" label="Promos" description="Créer une promotion" />
                         <QuickLink href="/dashboard/store" label="Ma boutique" description="Modifier votre profil" />
                         {merchant && (

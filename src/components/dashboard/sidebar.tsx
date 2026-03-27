@@ -37,15 +37,6 @@ const navItems = [
         ),
     },
     {
-        href: "/dashboard/stock",
-        label: "Stock",
-        icon: (
-            <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 20V10M12 20V4M6 20V14" />
-            </svg>
-        ),
-    },
-    {
         href: "/dashboard/promotions",
         label: "Promotions",
         icon: (
@@ -60,15 +51,6 @@ const navItems = [
         icon: (
             <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 21h18M5 21V7l8-4v18M13 7h6v14M9 9h.01M9 13h.01M9 17h.01M17 11h.01M17 15h.01" />
-            </svg>
-        ),
-    },
-    {
-        href: "/dashboard/achievements",
-        label: "Trophées",
-        icon: (
-            <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 22V10M14 22V10M8 6h8l-1 8H9L8 6Z" />
             </svg>
         ),
     },
@@ -109,7 +91,7 @@ export function DashboardSidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="sidebar-ts flex h-screen flex-col shrink-0">
+        <aside className="sidebar-ts hidden md:flex h-screen flex-col shrink-0">
             {/* Logo */}
             <div className="flex h-[60px] items-center gap-2.5 px-4">
                 <img src="/logo-icon.webp" alt="Two-Step" className="size-9 shrink-0 rounded-[10px]" />
