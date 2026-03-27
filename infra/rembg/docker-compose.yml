@@ -1,0 +1,16 @@
+services:
+  rembg:
+    image: danielgatis/rembg
+    command: s --host 0.0.0.0 --port 7000
+    ports:
+      - "7000:7000"
+    volumes:
+      - rembg-models:/home/user/.u2net
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+
+volumes:
+  rembg-models:

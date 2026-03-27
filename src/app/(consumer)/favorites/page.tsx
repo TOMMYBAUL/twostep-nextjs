@@ -89,8 +89,8 @@ export default function FavoritesPage() {
                                         className="flex gap-3 rounded-2xl bg-[#2a1a08] p-3 transition duration-150 active:scale-[0.98]"
                                     >
                                         <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-[#1C1209]">
-                                            {product.photo_url ? (
-                                                <img src={product.photo_url} alt={product.name} className="h-full w-full object-cover" />
+                                            {(product.photo_processed_url ?? product.photo_url) ? (
+                                                <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product.name} className="h-full w-full object-cover" />
                                             ) : (
                                                 <div className="flex h-full items-center justify-center text-lg font-bold text-[#f5deb3]/20">
                                                     {product.name?.charAt(0)}

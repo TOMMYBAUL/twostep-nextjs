@@ -34,6 +34,7 @@ interface Product {
     name: string;
     price: number;
     photo_url: string | null;
+    photo_processed_url: string | null;
     category: string | null;
     created_at: string;
     stock: { quantity: number } | null;
@@ -308,9 +309,9 @@ export default function ShopProfileClient() {
                             <Link key={p.id} href={`/product/${generateSlug(p.name, p.id)}`} className="group block">
                                 {/* Photo */}
                                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[var(--ts-cream-dark)]">
-                                    {p.photo_url ? (
+                                    {(p.photo_processed_url ?? p.photo_url) ? (
                                         <img
-                                            src={p.photo_url}
+                                            src={p.photo_processed_url ?? p.photo_url ?? "/placeholder-product.svg"}
                                             alt={p.name}
                                             className={cx(
                                                 "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",

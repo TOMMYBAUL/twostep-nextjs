@@ -90,7 +90,7 @@ export default function ProductsPage() {
                             category={product.category}
                             price={product.price}
                             stockQuantity={product.stock?.[0]?.quantity ?? 0}
-                            photoUrl={product.photo_url}
+                            photoUrl={product.photo_processed_url ?? product.photo_url}
                             staggerIndex={i}
                         />
                     ))}

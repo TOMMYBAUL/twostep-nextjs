@@ -6,7 +6,7 @@ const OUTPUT_SIZE = 800;
 
 export async function removeBackground(imageBuffer: Buffer): Promise<Buffer> {
     const formData = new FormData();
-    formData.append("file", new Blob([imageBuffer]), "image.png");
+    formData.append("file", new Blob([new Uint8Array(imageBuffer)]), "image.png");
 
     const res = await fetch(`${REMBG_URL}/api/remove`, {
         method: "POST",

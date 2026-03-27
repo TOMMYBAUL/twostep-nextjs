@@ -23,6 +23,8 @@ export default function SettingsPage() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [enhancing, setEnhancing] = useState(false);
+    const [enhanceResult, setEnhanceResult] = useState<number | null>(null);
 
     useEffect(() => {
         const supabase = createClient();
@@ -81,6 +83,26 @@ export default function SettingsPage() {
             }
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur de synchronisation", "error");
+        }
+    };
+
+    const handleEnhancePhotos = async () => {
+        setEnhancing(true);
+        setEnhanceResult(null);
+        try {
+            const res = await fetch("/api/images/enhance", { method: "POST" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setEnhanceResult(data.jobs_created);
+            if (data.jobs_created > 0) {
+                toast(`${data.jobs_created} photo(s) en cours de traitement`);
+            } else {
+                toast("Toutes les photos sont déjà traitées");
+            }
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur", "error");
+        } finally {
+            setEnhancing(false);
         }
     };
 
@@ -208,8 +230,30 @@ export default function SettingsPage() {
                 </p>
             </section>
 
+            {/* Photos */}
+            <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
+                <h2 className="mb-4 text-base font-semibold text-gray-900">Photos produit</h2>
+                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
+                    <p className="text-sm text-gray-600">
+                        Améliorez automatiquement vos photos produit : détourage, fond blanc, format uniforme.
+                    </p>
+                    <button
+                        onClick={handleEnhancePhotos}
+                        className="btn-ts w-full"
+                        disabled={enhancing}
+                    >
+                        {enhancing ? "Traitement en cours..." : "Améliorer les photos"}
+                    </button>
+                    {enhanceResult !== null && (
+                        <p className="text-xs text-[#5a9474]">
+                            {enhanceResult} photo(s) en cours de traitement
+                        </p>
+                    )}
+                </div>
+            </section>
+
             {/* Subscription */}
-            <section className="animate-fade-up stagger-4 max-w-xl">
+            <section className="animate-fade-up stagger-5 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
                     <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>

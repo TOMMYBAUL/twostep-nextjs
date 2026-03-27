@@ -586,7 +586,14 @@ function InfiniteProductGrid({
         return () => observer.disconnect();
     }, [loadMore]);
 
-    const allProducts = useMemo(() => pages.flat(), [pages]);
+    const allProducts = useMemo(() => {
+        const seen = new Set<string>();
+        return pages.flat().filter((p: any) => {
+            if (seen.has(p.product_id)) return false;
+            seen.add(p.product_id);
+            return true;
+        });
+    }, [pages]);
     const showEmpty = allProducts.length === 0 && !loading && !hasMoreRef.current;
 
     return (

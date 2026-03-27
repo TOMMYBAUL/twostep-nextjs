@@ -16,6 +16,7 @@ interface ProductDetail {
     description: string | null;
     price: number;
     photo_url: string | null;
+    photo_processed_url: string | null;
     ean: string | null;
     brand: string | null;
     category: string | null;
@@ -75,8 +76,8 @@ export default function ProductDetailClient() {
         <div className="min-h-dvh bg-[#130e07] md:flex md:min-h-screen md:flex-row">
             {/* ── Image zone ── */}
             <div className="relative h-[300px] w-full overflow-hidden bg-[#1e1409] md:sticky md:top-0 md:h-screen md:w-1/2">
-                {product?.photo_url ? (
-                    <img src={product.photo_url} alt={product?.name ?? ""} className="h-full w-full object-cover object-center" />
+                {(product?.photo_processed_url ?? product?.photo_url) ? (
+                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.name ?? ""} className="h-full w-full object-cover object-center" />
                 ) : (
                     <div className="flex h-full items-center justify-center">
                         {isLoading ? null : (

@@ -40,6 +40,8 @@ export type Product = {
     category: string | null;
     price: number | null;
     photo_url: string | null;
+    photo_processed_url: string | null;
+    photo_source: "pos" | "ean" | "manual" | null;
     pos_item_id: string | null;
     brand: string | null;
     purchase_price: number | null;
@@ -134,6 +136,19 @@ export type PlatformMetric = {
     key: string;
     value: number;
     updated_at: string;
+};
+
+export type ImageJob = {
+    id: string;
+    product_id: string;
+    merchant_id: string;
+    source_url: string;
+    status: "pending" | "processing" | "done" | "failed";
+    result_url: string | null;
+    error: string | null;
+    attempts: number;
+    created_at: string;
+    processed_at: string | null;
 };
 
 export type FeedItem = {
