@@ -64,7 +64,7 @@ export function BottomTabBar() {
     const pathname = usePathname();
     const [moreOpen, setMoreOpen] = useState(false);
 
-    const isMoreActive = pathname.startsWith("/dashboard/invoices") || pathname.startsWith("/dashboard/settings");
+    const isMoreActive = pathname.startsWith("/dashboard/settings");
 
     return (
         <>
