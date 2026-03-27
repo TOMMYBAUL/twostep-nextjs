@@ -25,6 +25,7 @@
         "@upstash/redis": "^1.37.0",
         "@vercel/analytics": "^2.0.1",
         "@vercel/speed-insights": "^2.0.0",
+        "canvas-confetti": "^1.9.4",
         "googleapis": "^171.4.0",
         "groq-sdk": "^1.1.2",
         "imapflow": "^1.2.16",
@@ -57,6 +58,7 @@
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/canvas-confetti": "^1.9.0",
         "@types/mapbox-gl": "^3.4.1",
         "@types/node": "^24.10.9",
         "@types/pdf-parse": "^1.1.5",
