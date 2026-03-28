@@ -544,7 +544,7 @@ export default function DiscoverPage() {
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
             ) : (
-                <FollowedShopsList follows={follows} />
+                <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             )}
         </div>
     );
@@ -695,7 +695,23 @@ function InfiniteProductGrid({
     );
 }
 
-function FollowedShopsList({ follows }: { follows: any[] | undefined }) {
+function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void }) {
+    const merchantIds = follows?.map((f: any) => f.merchant_id) ?? [];
+
+    const { data: products, isLoading } = useQuery<DiscoverProduct[]>({
+        queryKey: ["followed-products", merchantIds],
+        queryFn: async () => {
+            if (merchantIds.length === 0) return [];
+            const params = new URLSearchParams({ merchant_ids: merchantIds.join(",") });
+            const res = await fetch(`/api/products/by-merchants?${params}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.products ?? [];
+        },
+        enabled: merchantIds.length > 0,
+        staleTime: 30_000,
+    });
+
     if (!follows || follows.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
@@ -714,32 +730,68 @@ function FollowedShopsList({ follows }: { follows: any[] | undefined }) {
         );
     }
 
+    if (isLoading) {
+        return (
+            <div className="grid grid-cols-2 gap-3 px-4 pb-24 pt-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#2a1a08]" />
+                ))}
+            </div>
+        );
+    }
+
+    if (!products || products.length === 0) {
+        return (
+            <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
+                <p className="text-[15px] font-semibold text-[#f0dfc0]">Rien de nouveau</p>
+                <p className="mt-1.5 text-[13px] text-[#5a4020]">
+                    Les boutiques que tu suis n'ont pas encore de produits.
+                </p>
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-2 px-4 pb-24 pt-4">
-            {follows.map((f: any) => {
-                const merchant = f.merchants;
-                if (!merchant) return null;
+        <div className="grid grid-cols-2 gap-3 px-4 pb-24 pt-4">
+            {products.map((p) => {
+                const isFav = favoriteIds.has(p.product_id);
                 return (
-                    <Link
-                        key={f.merchant_id}
-                        href={`/shop/${generateSlug(merchant.name || "", f.merchant_id)}`}
-                        className="flex items-center gap-3 rounded-2xl bg-[#2a1a08] p-3 transition duration-150 active:scale-[0.98]"
-                    >
-                        <div className="size-13 shrink-0 overflow-hidden rounded-full bg-[#1C1209]">
-                            {merchant.photo_url ? (
-                                <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
+                    <Link key={p.product_id} href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
+                        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#2a1a08]">
+                            {p.product_photo ? (
+                                <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
                             ) : (
-                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#c87830]">
-                                    {merchant.name?.charAt(0)}
+                                <div className="flex h-full items-center justify-center">
+                                    <span className="text-3xl font-light text-[#5a4020]/30">{p.product_name.charAt(0)}</span>
+                                </div>
+                            )}
+                            <div className="absolute right-2 top-2">
+                                <HeartButton
+                                    isFavorite={isFav}
+                                    onToggle={() => onToggleFav(p.product_id)}
+                                    ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                    className="bg-white/80 backdrop-blur-sm"
+                                />
+                            </div>
+                            {p.sale_price && (
+                                <div className="absolute bottom-2 left-2 rounded-md bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                                    -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
                                 </div>
                             )}
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h3 className="text-[13px] font-medium text-[#f5deb3]">{merchant.name}</h3>
-                            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[#5a4020]">
-                                <MarkerPin01 className="size-3" aria-hidden="true" />
-                                {merchant.city}
-                            </p>
+                        <div className="mt-2 px-0.5">
+                            <p className="text-[11px] text-[#5a4020]">{p.merchant_name}</p>
+                            <p className="truncate text-[13px] font-medium text-[#f5deb3]">{p.product_name}</p>
+                            <div className="mt-0.5 flex items-baseline gap-2">
+                                {p.sale_price ? (
+                                    <>
+                                        <span className="text-xs text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
+                                        <span className="text-[11px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                    </>
+                                ) : (
+                                    <span className="text-xs text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                )}
+                            </div>
                         </div>
                     </Link>
                 );
