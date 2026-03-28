@@ -544,7 +544,7 @@ export default function DiscoverPage() {
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
             ) : (
-                <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
+                <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
             )}
         </div>
     );
@@ -695,14 +695,16 @@ function InfiniteProductGrid({
     );
 }
 
-function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void }) {
+function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void; category: string | null; size: string | null }) {
     const merchantIds = follows?.map((f: any) => f.merchant_id) ?? [];
 
     const { data: products, isLoading } = useQuery<DiscoverProduct[]>({
-        queryKey: ["followed-products", merchantIds],
+        queryKey: ["followed-products", merchantIds, category, size],
         queryFn: async () => {
             if (merchantIds.length === 0) return [];
             const params = new URLSearchParams({ merchant_ids: merchantIds.join(",") });
+            if (category) params.set("category", category);
+            if (size) params.set("size", size);
             const res = await fetch(`/api/products/by-merchants?${params}`);
             if (!res.ok) return [];
             const data = await res.json();

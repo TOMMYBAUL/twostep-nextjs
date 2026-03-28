@@ -12,15 +12,23 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ products: [] });
     }
 
+    const category = request.nextUrl.searchParams.get("category");
+    const size = request.nextUrl.searchParams.get("size");
+
     const supabase = await createClient();
 
     // Only fetch products from the specified merchants
-    const { data: products, error } = await supabase
+    let query = supabase
         .from("products")
-        .select("id, name, price, photo_url, photo_processed_url, category, merchant_id, created_at, merchants!inner(name, photo_url)")
+        .select("id, name, price, photo_url, photo_processed_url, category, size, merchant_id, created_at, merchants!inner(name, photo_url)")
         .in("merchant_id", ids)
         .order("created_at", { ascending: false })
         .limit(60);
+
+    if (category) query = query.eq("category", category);
+    if (size) query = query.eq("size", size);
+
+    const { data: products, error } = await query;
 
     if (error) {
         return NextResponse.json({ error: "Query failed" }, { status: 500 });
