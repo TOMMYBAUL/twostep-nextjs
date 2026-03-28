@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
 
     } catch (err) {
         console.error("[discover] Unhandled error:", err);
-        return NextResponse.json({ error: "Internal error", detail: err instanceof Error ? err.message : String(err) }, { status: 500 });
+        return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }
 
