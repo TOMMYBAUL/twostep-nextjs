@@ -40,7 +40,8 @@ export function SuggestionDrawer({ open, onOpenChange, merchantId }: Props) {
         <Drawer.Root open={open} onOpenChange={onOpenChange}>
             <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 z-[60] bg-black/40" />
-                <Drawer.Content className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-2xl bg-[var(--ts-cream)]" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+                <Drawer.Content className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-2xl bg-[var(--ts-cream)]" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} aria-describedby={undefined}>
+                    <Drawer.Title className="sr-only">Suggérer une amélioration</Drawer.Title>
                     <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-[var(--ts-brown-mid)]/20" />
                     <div className="p-5 pb-6">
                         {sent ? (
