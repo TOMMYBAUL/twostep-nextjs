@@ -15,6 +15,30 @@ const moreItems = [
             </svg>
         ),
     },
+    {
+        href: "/mentions-legales",
+        label: "Mentions légales",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+                <path d="M14 2v6h6" />
+            </svg>
+        ),
+    },
+];
+
+const externalItems = [
+    {
+        href: "mailto:contact@twostep.fr",
+        label: "Support",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+        ),
+    },
 ];
 
 type Props = {
@@ -48,6 +72,34 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                                 </Link>
                             );
                         })}
+
+                        <div className="my-2 border-t border-gray-100" />
+
+                        {externalItems.map((item) => (
+                            <a
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => onOpenChange(false)}
+                                className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-[#2C1A0E] no-underline transition hover:bg-gray-50"
+                            >
+                                {item.icon}
+                                <span className="text-sm font-medium">{item.label}</span>
+                            </a>
+                        ))}
+
+                        <div className="my-2 border-t border-gray-100" />
+
+                        <button
+                            onClick={() => { onOpenChange(false); window.location.href = "/auth/logout"; }}
+                            className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-[#c4553a] transition hover:bg-red-50"
+                        >
+                            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            <span className="text-sm font-medium">Déconnexion</span>
+                        </button>
                     </div>
                 </Drawer.Content>
             </Drawer.Portal>
