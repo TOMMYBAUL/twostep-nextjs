@@ -67,6 +67,7 @@ export default function DiscoverPage() {
     const [shoeSizeFilter, setShoeSizeFilter] = useState<number | null>(null);
     const [showSizeFilters, setShowSizeFilters] = useState(false);
     const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
+    const [feedTab, setFeedTab] = useState<"pour-toi" | "suivis">("pour-toi");
 
     const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory);
     const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory);
@@ -237,7 +238,34 @@ export default function DiscoverPage() {
                 </AnimatePresence>
             </div>
 
+            {/* ── Pour toi / Suivis toggle ── */}
+            <div className="mt-3 flex justify-center px-4">
+                <div className="flex rounded-full p-1" style={{ background: "#2a1a08" }}>
+                    <button
+                        type="button"
+                        onClick={() => setFeedTab("pour-toi")}
+                        className={cx(
+                            "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
+                            feedTab === "pour-toi" ? "bg-[#C17B2F] text-white" : "text-[#f0dfc0]/50",
+                        )}
+                    >
+                        Pour toi
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setFeedTab("suivis")}
+                        className={cx(
+                            "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
+                            feedTab === "suivis" ? "bg-[#C17B2F] text-white" : "text-[#f0dfc0]/50",
+                        )}
+                    >
+                        Suivis
+                    </button>
+                </div>
+            </div>
+
             {/* ── Feed sections ── */}
+            {feedTab === "pour-toi" ? (
             <div className="flex flex-col gap-5 pb-24 pt-4">
 
                 {/* ── 1. Promos du moment — Hero card ── */}
@@ -513,6 +541,9 @@ export default function DiscoverPage() {
                 {/* ── 6. Tout près de toi — infinite scroll ── */}
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
+            ) : (
+                <FollowedShopsList follows={follows} />
+            )}
         </div>
     );
 }
@@ -659,5 +690,58 @@ function InfiniteProductGrid({
                 )}
             </div>
         </section>
+    );
+}
+
+function FollowedShopsList({ follows }: { follows: any[] | undefined }) {
+    if (!follows || follows.length === 0) {
+        return (
+            <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#2a1a08] text-2xl">🏪</div>
+                <p className="mt-4 text-[15px] font-semibold text-[#f0dfc0]">Aucune boutique suivie</p>
+                <p className="mt-1.5 text-[13px] text-[#5a4020]">
+                    Abonne-toi à des boutiques pour les retrouver ici.
+                </p>
+                <Link
+                    href="/explore"
+                    className="mt-4 rounded-full bg-[#c87830] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
+                >
+                    Explorer les boutiques
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-2 px-4 pb-24 pt-4">
+            {follows.map((f: any) => {
+                const merchant = f.merchants;
+                if (!merchant) return null;
+                return (
+                    <Link
+                        key={f.merchant_id}
+                        href={`/shop/${generateSlug(merchant.name || "", f.merchant_id)}`}
+                        className="flex items-center gap-3 rounded-2xl bg-[#2a1a08] p-3 transition duration-150 active:scale-[0.98]"
+                    >
+                        <div className="size-13 shrink-0 overflow-hidden rounded-full bg-[#1C1209]">
+                            {merchant.photo_url ? (
+                                <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
+                            ) : (
+                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#c87830]">
+                                    {merchant.name?.charAt(0)}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-[13px] font-medium text-[#f5deb3]">{merchant.name}</h3>
+                            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[#5a4020]">
+                                <MarkerPin01 className="size-3" aria-hidden="true" />
+                                {merchant.city}
+                            </p>
+                        </div>
+                    </Link>
+                );
+            })}
+        </div>
     );
 }
