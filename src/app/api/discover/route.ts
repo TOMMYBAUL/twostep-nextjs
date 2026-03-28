@@ -4,13 +4,19 @@ import { rateLimit } from "@/lib/rate-limit";
 import { discoverQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
+    try {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
     if (limited) return limited;
+    } catch {
+        // Rate limit failure should not block the request
+    }
 
     const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
     if ("error" in parsed) return parsed.error;
     const { lat, lng, radius, section, category } = parsed.data;
     const size = request.nextUrl.searchParams.get("size");
+
+    try {
 
     const supabase = await createClient();
 
@@ -127,6 +133,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ products }, {
         headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
     });
+
+    } catch (err) {
+        console.error("[discover] Unhandled error:", err);
+        return NextResponse.json({ error: "Internal error", detail: err instanceof Error ? err.message : String(err) }, { status: 500 });
+    }
 }
 
 /** Fetch merchant photos for a list of merchant IDs in one query */
