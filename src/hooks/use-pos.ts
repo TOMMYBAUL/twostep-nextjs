@@ -77,25 +77,25 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         }
     }, [onUpdate]);
 
-    // Auto-sync every 15 min + initial sync if stale
+    // Auto-sync: 5 min for SumUp (no webhook), 15 min for others (webhook-backed)
+    const syncIntervalMs = connectedProvider === "sumup" ? 5 * 60 * 1000 : 15 * 60 * 1000;
+
     const hasMountedRef = useRef(false);
     useEffect(() => {
         if (!isConnected) return;
 
-        // Initial sync on mount if pos_last_sync is null or > 15 min ago
+        // Initial sync on mount if pos_last_sync is stale
         if (!hasMountedRef.current) {
             hasMountedRef.current = true;
             const lastSync = merchant?.pos_last_sync;
-            const fifteenMin = 15 * 60 * 1000;
-            if (!lastSync || Date.now() - new Date(lastSync).getTime() > fifteenMin) {
+            if (!lastSync || Date.now() - new Date(lastSync).getTime() > syncIntervalMs) {
                 silentSync();
             }
         }
 
-        // Interval: silent sync every 15 min
-        const interval = setInterval(silentSync, 15 * 60 * 1000);
+        const interval = setInterval(silentSync, syncIntervalMs);
         return () => clearInterval(interval);
-    }, [isConnected, merchant?.pos_last_sync, silentSync]);
+    }, [isConnected, merchant?.pos_last_sync, silentSync, syncIntervalMs]);
 
     return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync };
 }
