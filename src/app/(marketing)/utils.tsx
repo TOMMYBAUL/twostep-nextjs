@@ -75,16 +75,18 @@ export function FloatCard({ className, top, bottom, left, right, delay = 0, floa
                 position: "absolute",
                 top, bottom, left, right,
                 background: "#fff",
-                borderRadius: 16,
-                padding: "10px 16px",
-                boxShadow: "0 6px 24px rgba(44,32,24,0.1)",
+                borderRadius: 12,
+                padding: "6px 10px",
+                boxShadow: "0 4px 16px rgba(44,32,24,0.08)",
                 border: "1px solid rgba(200,129,58,0.08)",
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
+                gap: 7,
                 zIndex: 10,
                 userSelect: "none",
                 whiteSpace: "nowrap",
+                transform: "scale(0.65)",
+                transformOrigin: "center center",
             }}
         >
             {children}
