@@ -39,6 +39,29 @@ export async function GET(
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=provider_mismatch`);
     }
 
+    const supabase = await createClient();
+
+    // Verify merchant belongs to authenticated user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        const errorUrl = new URL("/dashboard/settings", request.nextUrl.origin);
+        errorUrl.searchParams.set("error", "auth_required");
+        return NextResponse.redirect(errorUrl);
+    }
+
+    const { data: ownedMerchant } = await supabase
+        .from("merchants")
+        .select("id")
+        .eq("id", merchantId)
+        .eq("user_id", user.id)
+        .single();
+
+    if (!ownedMerchant) {
+        const errorUrl = new URL("/dashboard/settings", request.nextUrl.origin);
+        errorUrl.searchParams.set("error", "forbidden");
+        return NextResponse.redirect(errorUrl);
+    }
+
     try {
         const adapter = getAdapter(provider);
 
@@ -48,8 +71,6 @@ export async function GET(
             : null;
 
         const tokens = await adapter.exchangeCode(code, shopDomain ? { shop: shopDomain } : undefined);
-
-        const supabase = await createClient();
 
         // Store in pos_connections table
         const { error: connError } = await supabase
