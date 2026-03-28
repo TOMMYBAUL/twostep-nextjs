@@ -24,6 +24,7 @@ export default function MentionsLegalesPage() {
                             <li><strong>Forme juridique :</strong> Micro-entreprise (Entrepreneur individuel)</li>
                             <li><strong>Siège social :</strong> 30 route de Blagnac, 31200 Toulouse, France</li>
                             <li><strong>Activité :</strong> Édition et exploitation d'une plateforme numérique (SaaS) de mise en relation entre commerces locaux et consommateurs pour la consultation de stocks en temps réel</li>
+                            <li><strong>SIRET :</strong> en cours d'attribution (immatriculation n° J00228703674)</li>
                             <li><strong>Date de création :</strong> 25 mars 2026</li>
                             <li><strong>Directeur de la publication :</strong> Thomas Bauland</li>
                             <li><strong>Email :</strong> contact@twostep.fr</li>
