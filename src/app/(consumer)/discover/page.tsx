@@ -751,55 +751,13 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | 
         );
     }
 
-    // Group products by merchant for Instagram-like display
-    const grouped = new Map<string, { merchant: { id: string; name: string; photo: string | null }; products: typeof products }>();
-    for (const p of products) {
-        if (!grouped.has(p.merchant_id)) {
-            grouped.set(p.merchant_id, {
-                merchant: { id: p.merchant_id, name: p.merchant_name, photo: p.merchant_photo },
-                products: [],
-            });
-        }
-        grouped.get(p.merchant_id)!.products.push(p);
-    }
-
-    // Flatten back: interleave merchants so feed feels varied
-    const feedItems: Array<{ type: "header"; merchant: { id: string; name: string; photo: string | null } } | { type: "product"; product: (typeof products)[0] }> = [];
-    for (const [, group] of grouped) {
-        feedItems.push({ type: "header", merchant: group.merchant });
-        for (const p of group.products) {
-            feedItems.push({ type: "product", product: p });
-        }
-    }
-
     return (
         <div className="pb-24 pt-4">
-            {feedItems.map((item, i) => {
-                if (item.type === "header") {
-                    return (
-                        <Link
-                            key={`h-${item.merchant.id}`}
-                            href={`/shop/${generateSlug(item.merchant.name, item.merchant.id)}`}
-                            className="flex items-center gap-2.5 px-4 pb-2 pt-4 first:pt-0"
-                        >
-                            <div className="size-8 shrink-0 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
-                                {item.merchant.photo ? (
-                                    <img src={item.merchant.photo} alt={item.merchant.name} className="h-full w-full object-cover" />
-                                ) : (
-                                    <div className="flex h-full items-center justify-center text-xs font-bold text-[#c87830]">
-                                        {item.merchant.name.charAt(0)}
-                                    </div>
-                                )}
-                            </div>
-                            <span className="text-[13px] font-semibold text-[#f5deb3]">{item.merchant.name}</span>
-                        </Link>
-                    );
-                }
-
-                const p = item.product;
+            {products.map((p) => {
                 const isFav = favoriteIds.has(p.product_id);
                 return (
-                    <div key={p.product_id} className="px-4 pb-4">
+                    <div key={p.product_id} className="px-4 pb-5">
+                        {/* Product image */}
                         <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
                             <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#2a1a08]">
                                 {p.product_photo ? (
@@ -823,20 +781,39 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | 
                                     </div>
                                 )}
                             </div>
-                            <div className="mt-2">
-                                <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
-                                <div className="mt-0.5 flex items-baseline gap-2">
-                                    {p.sale_price ? (
-                                        <>
-                                            <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
-                                            <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
-                                        </>
+                        </Link>
+
+                        {/* Product info + merchant link below */}
+                        <div className="mt-2">
+                            <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
+                            <div className="mt-0.5 flex items-baseline gap-2">
+                                {p.sale_price ? (
+                                    <>
+                                        <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
+                                        <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                    </>
+                                ) : (
+                                    <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                )}
+                            </div>
+
+                            {/* Merchant provenance — photo + name, clickable */}
+                            <Link
+                                href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
+                                className="mt-2 flex items-center gap-2 transition active:opacity-70"
+                            >
+                                <div className="size-6 shrink-0 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
+                                    {p.merchant_photo ? (
+                                        <img src={p.merchant_photo} alt={p.merchant_name} className="h-full w-full object-cover" />
                                     ) : (
-                                        <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                        <div className="flex h-full items-center justify-center text-[9px] font-bold text-[#c87830]">
+                                            {p.merchant_name.charAt(0)}
+                                        </div>
                                     )}
                                 </div>
-                            </div>
-                        </Link>
+                                <span className="text-[12px] font-medium text-[#5a4020]">{p.merchant_name}</span>
+                            </Link>
+                        </div>
                     </div>
                 );
             })}
