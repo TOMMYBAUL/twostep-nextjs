@@ -189,61 +189,43 @@ function MapIllustration() {
     );
 }
 
-function CookiesIllustration() {
-    /* Deterministic grid of rounded rects — center area left empty for logo */
-    const cells = [
-        { x: 10, y: 2, w: 30, h: 30, o: 0.07 },
-        { x: 48, y: 6, w: 38, h: 26, o: 0.1 },
-        { x: 180, y: 2, w: 34, h: 30, o: 0.08 },
-        { x: 222, y: 6, w: 30, h: 26, o: 0.12 },
-        { x: 6, y: 40, w: 34, h: 34, o: 0.1 },
-        { x: 48, y: 44, w: 26, h: 28, o: 0.06 },
-        { x: 192, y: 40, w: 28, h: 32, o: 0.09 },
-        { x: 228, y: 44, w: 26, h: 28, o: 0.07 },
-        { x: 10, y: 82, w: 30, h: 34, o: 0.08 },
-        { x: 48, y: 86, w: 34, h: 26, o: 0.11 },
-        { x: 188, y: 82, w: 34, h: 30, o: 0.06 },
-        { x: 230, y: 86, w: 26, h: 26, o: 0.1 },
-        { x: 6, y: 132, w: 38, h: 28, o: 0.09 },
-        { x: 52, y: 136, w: 26, h: 26, o: 0.07 },
-        { x: 192, y: 132, w: 30, h: 28, o: 0.1 },
-        { x: 230, y: 136, w: 26, h: 26, o: 0.06 },
-        { x: 10, y: 170, w: 30, h: 32, o: 0.11 },
-        { x: 48, y: 174, w: 34, h: 26, o: 0.06 },
-        { x: 90, y: 170, w: 26, h: 30, o: 0.08 },
-        { x: 160, y: 174, w: 28, h: 26, o: 0.09 },
-        { x: 196, y: 170, w: 30, h: 30, o: 0.07 },
-        { x: 234, y: 174, w: 24, h: 26, o: 0.1 },
-    ];
-
+function PrivacyIllustration() {
     return (
-        <div className="relative mx-auto h-52 w-64 sm:h-56">
-            <svg viewBox="0 0 264 210" fill="none" className="absolute inset-0 h-full w-full">
-                {cells.map((c, i) => (
-                    <rect
-                        key={i}
-                        x={c.x}
-                        y={c.y}
-                        width={c.w}
-                        height={c.h}
-                        rx={8}
-                        fill="#C8813A"
-                        opacity={c.o}
-                    />
+        <div className="mx-auto h-56 w-56 sm:h-64 sm:w-64">
+            <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
+                {/* Outer circle */}
+                <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="120" r="114" fill="#EBE3D3" />
+                {/* Shield shape */}
+                <path
+                    d="M120 40 L170 65 L170 130 C170 165 145 190 120 200 C95 190 70 165 70 130 L70 65 Z"
+                    fill="#E07A5F"
+                    opacity="0.9"
+                />
+                <path
+                    d="M120 50 L162 72 L162 128 C162 158 141 180 120 189 C99 180 78 158 78 128 L78 72 Z"
+                    fill="#E07A5F"
+                />
+                {/* Lock body */}
+                <rect x="103" y="115" width="34" height="28" rx="4" fill="white" />
+                {/* Lock shackle */}
+                <path
+                    d="M109 115 L109 105 C109 97 114 92 120 92 C126 92 131 97 131 105 L131 115"
+                    stroke="white"
+                    strokeWidth="5"
+                    fill="none"
+                    strokeLinecap="round"
+                />
+                {/* Keyhole */}
+                <circle cx="120" cy="126" r="4" fill="#E07A5F" />
+                <rect x="118.5" y="128" width="3" height="6" rx="1.5" fill="#E07A5F" />
+                {/* Decorative dots around shield */}
+                {[
+                    [50, 50], [185, 55], [40, 160], [195, 165], [55, 105], [185, 110],
+                ].map(([px, py], i) => (
+                    <circle key={i} cx={px} cy={py} r={4 + (i % 3)} fill="#E07A5F" opacity={0.1 + (i % 3) * 0.05} />
                 ))}
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-[22px] bg-[var(--ts-ochre)] p-5 shadow-xl sm:p-6">
-                    <Image
-                        src="/logo-icon.webp"
-                        alt="Two-Step"
-                        width={68}
-                        height={68}
-                        className="brightness-0 invert"
-                        priority
-                    />
-                </div>
-            </div>
         </div>
     );
 }
@@ -339,6 +321,9 @@ function SplashScreen() {
    ═══════════════════════════════════════════════════════ */
 
 function LocationScreen({ onNext }: { onNext: () => void }) {
+    const [showAddressInput, setShowAddressInput] = useState(false);
+    const [address, setAddress] = useState("");
+
     const requestLocation = () => {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(() => onNext(), () => onNext(), {
@@ -346,6 +331,12 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
                 timeout: 8000,
             });
         } else {
+            onNext();
+        }
+    };
+
+    const handleAddressSubmit = () => {
+        if (address.trim()) {
             onNext();
         }
     };
@@ -363,7 +354,29 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
             />
             <div className="mt-auto px-6 pb-2 pt-6">
                 <PrimaryButton onClick={requestLocation}>Activer la localisation</PrimaryButton>
-                <TextLink onClick={onNext}>Entrer une adresse manuellement</TextLink>
+
+                {showAddressInput ? (
+                    <div className="mt-4 space-y-3">
+                        <input
+                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="Ex : 12 rue du Taur, Toulouse"
+                            className="w-full rounded-2xl border-2 border-[var(--ts-ochre)]/30 bg-white px-4 py-3.5 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)]"
+                            autoFocus
+                            onKeyDown={(e) => e.key === "Enter" && handleAddressSubmit()}
+                        />
+                        <OutlineButton onClick={handleAddressSubmit}>Valider</OutlineButton>
+                    </div>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => setShowAddressInput(true)}
+                        className="mt-3 w-full rounded-2xl border-2 border-[var(--ts-ochre)] py-3.5 text-base font-bold text-[var(--ts-ochre)] transition duration-150 active:bg-[var(--ts-ochre)]/5"
+                    >
+                        Entrer une adresse manuellement
+                    </button>
+                )}
             </div>
         </ScreenLayout>
     );
@@ -375,20 +388,9 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
 
 function CookiesScreen({ onNext }: { onNext: () => void }) {
     return (
-        <ScreenLayout
-            dots={2}
-            topRight={
-                <button
-                    type="button"
-                    onClick={onNext}
-                    className="py-3 text-sm font-semibold text-[var(--ts-ochre)] transition duration-150 active:opacity-70"
-                >
-                    Tout refuser
-                </button>
-            }
-        >
+        <ScreenLayout dots={2}>
             <div className="flex flex-1 items-end justify-center pb-4">
-                <CookiesIllustration />
+                <PrivacyIllustration />
             </div>
             <TextBlock
                 title="Tes données,"
@@ -397,6 +399,7 @@ function CookiesScreen({ onNext }: { onNext: () => void }) {
             />
             <div className="mt-auto space-y-3 px-6 pb-2 pt-6">
                 <PrimaryButton onClick={onNext}>Tout accepter</PrimaryButton>
+                <PrimaryButton onClick={onNext}>Tout refuser</PrimaryButton>
                 <OutlineButton onClick={onNext}>Personnaliser</OutlineButton>
             </div>
         </ScreenLayout>
@@ -407,34 +410,67 @@ function CookiesScreen({ onNext }: { onNext: () => void }) {
    Screen 3 — Notifications
    ═══════════════════════════════════════════════════════ */
 
-function NotificationsScreen({ onFinish }: { onFinish: () => void }) {
-    const handleActivate = async () => {
-        try {
-            if ("Notification" in window) {
-                await Notification.requestPermission();
-            }
-        } catch {
-            /* ignore */
-        }
-        onFinish();
-    };
-
+function ReadyScreen({ onFinish }: { onFinish: () => void }) {
     return (
         <ScreenLayout dots={3}>
             <div className="flex flex-1 items-end justify-center pb-4 pt-10">
-                <NotificationsIllustration />
+                <ReadyIllustration />
             </div>
             <TextBlock
-                title="Ne rate rien."
-                subtitle="Zéro spam, promis."
-                body="Reçois une alerte quand un produit que tu aimes est en promo, ou quand ta boutique préférée a du nouveau stock."
-                hint="Tu peux modifier ce paramètre à tout moment."
+                title="C'est parti !"
+                subtitle="Tout est prêt."
+                body="Découvre les boutiques autour de toi, explore leurs produits en temps réel, et sauvegarde tes coups de cœur."
             />
             <div className="mt-auto px-6 pb-2 pt-6">
-                <PrimaryButton onClick={handleActivate}>Activer les notifications</PrimaryButton>
-                <TextLink onClick={onFinish}>Plus tard</TextLink>
+                <PrimaryButton onClick={onFinish}>Explorer les boutiques</PrimaryButton>
             </div>
         </ScreenLayout>
+    );
+}
+
+function ReadyIllustration() {
+    return (
+        <div className="mx-auto h-56 w-56 sm:h-64 sm:w-64">
+            <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
+                <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="120" r="114" fill="#EBE3D3" />
+                {/* Shopping bag */}
+                <rect x="80" y="90" width="80" height="85" rx="8" fill="#E07A5F" />
+                <rect x="88" y="98" width="64" height="69" rx="4" fill="white" opacity="0.9" />
+                {/* Bag handles */}
+                <path
+                    d="M100 90 L100 72 C100 60 109 52 120 52 C131 52 140 60 140 72 L140 90"
+                    stroke="#E07A5F"
+                    strokeWidth="6"
+                    fill="none"
+                    strokeLinecap="round"
+                />
+                {/* Checkmark in bag */}
+                <path
+                    d="M104 130 L115 142 L140 115"
+                    stroke="#E07A5F"
+                    strokeWidth="5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                {/* Sparkles */}
+                {[
+                    [55, 65, 6], [175, 60, 5], [50, 160, 4], [185, 155, 6],
+                    [65, 110, 3], [175, 105, 4], [120, 195, 3],
+                ].map(([px, py, r], i) => (
+                    <circle key={i} cx={px} cy={py} r={r} fill="#E07A5F" opacity={0.15 + (i % 3) * 0.05} />
+                ))}
+                {/* Star sparkles */}
+                {[
+                    [60, 80], [170, 75], [55, 145], [180, 140],
+                ].map(([px, py], i) => (
+                    <g key={`s${i}`} transform={`translate(${px},${py})`}>
+                        <path d="M0 -5 L1.5 -1.5 L5 0 L1.5 1.5 L0 5 L-1.5 1.5 L-5 0 L-1.5 -1.5Z" fill="#C8813A" opacity="0.3" />
+                    </g>
+                ))}
+            </svg>
+        </div>
     );
 }
 
@@ -510,13 +546,13 @@ export default function OnboardingPage() {
                 )}
                 {step === 3 && (
                     <motion.div
-                        key="notifications"
+                        key="ready"
                         initial={{ x: "80%", opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: "-30%", opacity: 0 }}
                         transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
                     >
-                        <NotificationsScreen onFinish={finish} />
+                        <ReadyScreen onFinish={finish} />
                     </motion.div>
                 )}
             </AnimatePresence>
