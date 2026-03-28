@@ -4,12 +4,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { discoverQuery, parseQuery } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
-    try {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
     if (limited) return limited;
-    } catch {
-        // Rate limit failure should not block the request
-    }
 
     const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
     if ("error" in parsed) return parsed.error;

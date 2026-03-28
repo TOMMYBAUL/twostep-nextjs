@@ -90,21 +90,25 @@ export async function rateLimit(
         return memoryLimit(identifier, maxRequests);
     }
 
-    const limiter = getLimiter(maxRequests, 60);
-    const { success, reset } = await limiter.limit(identifier);
+    try {
+        const limiter = getLimiter(maxRequests, 60);
+        const { success, reset } = await limiter.limit(identifier);
 
-    if (!success) {
-        const retryAfter = Math.ceil((reset - Date.now()) / 1000);
-        return new Response(
-            JSON.stringify({ error: "Too many requests. Try again later." }),
-            {
-                status: 429,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Retry-After": String(Math.max(1, retryAfter)),
+        if (!success) {
+            const retryAfter = Math.ceil((reset - Date.now()) / 1000);
+            return new Response(
+                JSON.stringify({ error: "Too many requests. Try again later." }),
+                {
+                    status: 429,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Retry-After": String(Math.max(1, retryAfter)),
+                    },
                 },
-            },
-        );
+            );
+        }
+    } catch {
+        // If Upstash is unreachable, allow the request through
     }
 
     return null;
