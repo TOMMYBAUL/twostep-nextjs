@@ -266,10 +266,18 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* ── Footer ── */}
-            <p className="pb-24 pt-6 text-center text-[11px] text-[#a07840]/50">
-                Two-Step · Le stock de ton quartier
-            </p>
+            {/* ── Footer links ── */}
+            <div className="flex items-center justify-center gap-4 pb-24 pt-6">
+                <Link href="/mentions-legales" className="text-[11px] text-[#a07840]/50 transition active:text-[#a07840]">
+                    Mentions légales
+                </Link>
+                <span className="text-[#a07840]/20">·</span>
+                <a href="mailto:contact@twostep.fr" className="text-[11px] text-[#a07840]/50 transition active:text-[#a07840]">
+                    Contact
+                </a>
+                <span className="text-[#a07840]/20">·</span>
+                <span className="text-[11px] text-[#a07840]/30">Two-Step</span>
+            </div>
 
             {/* ── Bottom sheet: Mes boutiques suivies ── */}
             <AnimatePresence>
