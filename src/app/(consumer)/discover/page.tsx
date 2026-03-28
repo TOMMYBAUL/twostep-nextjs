@@ -751,49 +751,93 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | 
         );
     }
 
+    // Group products by merchant for Instagram-like display
+    const grouped = new Map<string, { merchant: { id: string; name: string; photo: string | null }; products: typeof products }>();
+    for (const p of products) {
+        if (!grouped.has(p.merchant_id)) {
+            grouped.set(p.merchant_id, {
+                merchant: { id: p.merchant_id, name: p.merchant_name, photo: p.merchant_photo },
+                products: [],
+            });
+        }
+        grouped.get(p.merchant_id)!.products.push(p);
+    }
+
+    // Flatten back: interleave merchants so feed feels varied
+    const feedItems: Array<{ type: "header"; merchant: { id: string; name: string; photo: string | null } } | { type: "product"; product: (typeof products)[0] }> = [];
+    for (const [, group] of grouped) {
+        feedItems.push({ type: "header", merchant: group.merchant });
+        for (const p of group.products) {
+            feedItems.push({ type: "product", product: p });
+        }
+    }
+
     return (
-        <div className="grid grid-cols-2 gap-3 px-4 pb-24 pt-4">
-            {products.map((p) => {
-                const isFav = favoriteIds.has(p.product_id);
-                return (
-                    <Link key={p.product_id} href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
-                        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#2a1a08]">
-                            {p.product_photo ? (
-                                <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
-                            ) : (
-                                <div className="flex h-full items-center justify-center">
-                                    <span className="text-3xl font-light text-[#5a4020]/30">{p.product_name.charAt(0)}</span>
-                                </div>
-                            )}
-                            <div className="absolute right-2 top-2">
-                                <HeartButton
-                                    isFavorite={isFav}
-                                    onToggle={() => onToggleFav(p.product_id)}
-                                    ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                    className="bg-white/80 backdrop-blur-sm"
-                                />
-                            </div>
-                            {p.sale_price && (
-                                <div className="absolute bottom-2 left-2 rounded-md bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                                    -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
-                                </div>
-                            )}
-                        </div>
-                        <div className="mt-2 px-0.5">
-                            <p className="text-[11px] text-[#5a4020]">{p.merchant_name}</p>
-                            <p className="truncate text-[13px] font-medium text-[#f5deb3]">{p.product_name}</p>
-                            <div className="mt-0.5 flex items-baseline gap-2">
-                                {p.sale_price ? (
-                                    <>
-                                        <span className="text-xs text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
-                                        <span className="text-[11px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
-                                    </>
+        <div className="pb-24 pt-4">
+            {feedItems.map((item, i) => {
+                if (item.type === "header") {
+                    return (
+                        <Link
+                            key={`h-${item.merchant.id}`}
+                            href={`/shop/${generateSlug(item.merchant.name, item.merchant.id)}`}
+                            className="flex items-center gap-2.5 px-4 pb-2 pt-4 first:pt-0"
+                        >
+                            <div className="size-8 shrink-0 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
+                                {item.merchant.photo ? (
+                                    <img src={item.merchant.photo} alt={item.merchant.name} className="h-full w-full object-cover" />
                                 ) : (
-                                    <span className="text-xs text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                    <div className="flex h-full items-center justify-center text-xs font-bold text-[#c87830]">
+                                        {item.merchant.name.charAt(0)}
+                                    </div>
                                 )}
                             </div>
-                        </div>
-                    </Link>
+                            <span className="text-[13px] font-semibold text-[#f5deb3]">{item.merchant.name}</span>
+                        </Link>
+                    );
+                }
+
+                const p = item.product;
+                const isFav = favoriteIds.has(p.product_id);
+                return (
+                    <div key={p.product_id} className="px-4 pb-4">
+                        <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
+                            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#2a1a08]">
+                                {p.product_photo ? (
+                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="100vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                ) : (
+                                    <div className="flex h-full items-center justify-center">
+                                        <span className="text-3xl font-light text-[#5a4020]/30">{p.product_name.charAt(0)}</span>
+                                    </div>
+                                )}
+                                <div className="absolute right-3 top-3">
+                                    <HeartButton
+                                        isFavorite={isFav}
+                                        onToggle={() => onToggleFav(p.product_id)}
+                                        ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                        className="bg-white/80 backdrop-blur-sm"
+                                    />
+                                </div>
+                                {p.sale_price && (
+                                    <div className="absolute bottom-3 left-3 rounded-md bg-[var(--ts-ochre)] px-2 py-0.5 text-[11px] font-semibold text-white">
+                                        -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mt-2">
+                                <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
+                                <div className="mt-0.5 flex items-baseline gap-2">
+                                    {p.sale_price ? (
+                                        <>
+                                            <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
+                                            <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                        </>
+                                    ) : (
+                                        <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                    )}
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
                 );
             })}
         </div>

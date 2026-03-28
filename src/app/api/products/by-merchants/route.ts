@@ -14,9 +14,10 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createClient();
 
+    // Only fetch products from the specified merchants
     const { data: products, error } = await supabase
         .from("products")
-        .select("id, name, price, photo_url, photo_processed_url, category, merchant_id, created_at, merchants(name, photo_url)")
+        .select("id, name, price, photo_url, photo_processed_url, category, merchant_id, created_at, merchants!inner(name, photo_url)")
         .in("merchant_id", ids)
         .order("created_at", { ascending: false })
         .limit(60);

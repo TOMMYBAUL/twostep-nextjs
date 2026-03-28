@@ -8,7 +8,8 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { createClient } from "@/lib/supabase/client";
 import { useFavorites } from "../hooks/use-favorites";
-import { useFollows } from "../hooks/use-follows";
+import { useFollows, useToggleFollow } from "../hooks/use-follows";
+import { generateSlug } from "@/lib/slug";
 
 const INVITE_URL = "https://www.twostep.fr";
 
@@ -48,6 +49,9 @@ export default function ProfilePage() {
         } catch { /* user cancelled */ }
         setShareOpen(false);
     };
+
+    const { unfollow } = useToggleFollow();
+    const [followsOpen, setFollowsOpen] = useState(false);
 
     const favCount = favorites?.length ?? 0;
     const followCount = follows?.length ?? 0;
@@ -148,11 +152,15 @@ export default function ProfilePage() {
                     <p className="text-xl font-medium text-[#f0c080]">{favCount}</p>
                     <p className="text-[10px] text-[#a07840]">Favoris</p>
                 </Link>
-                <Link href="/favorites" className="flex flex-1 flex-col items-center rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] py-2.5 transition active:bg-[#3d2008]">
+                <button
+                    type="button"
+                    onClick={() => setFollowsOpen(true)}
+                    className="flex flex-1 flex-col items-center rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] py-2.5 transition active:bg-[#3d2008]"
+                >
                     <MarkerPin01 className="mb-1 size-4 text-[#c87830]" />
                     <p className="text-xl font-medium text-[#f0c080]">{followCount}</p>
                     <p className="text-[10px] text-[#a07840]">Boutiques</p>
-                </Link>
+                </button>
             </div>
 
             {/* ── Mes tailles ── */}
@@ -262,6 +270,81 @@ export default function ProfilePage() {
             <p className="pb-24 pt-6 text-center text-[11px] text-[#a07840]/50">
                 Two-Step · Le stock de ton quartier
             </p>
+
+            {/* ── Bottom sheet: Mes boutiques suivies ── */}
+            <AnimatePresence>
+                {followsOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[60] bg-black/60"
+                            onClick={() => setFollowsOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ type: "spring", damping: 28, stiffness: 340 }}
+                            className="fixed bottom-0 left-0 right-0 z-[61] max-h-[70vh] overflow-y-auto rounded-t-2xl bg-[#1C1209] px-5 pb-8 pt-4"
+                            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 32px)" }}
+                        >
+                            <div className="mb-4 flex items-center justify-between">
+                                <h3 className="text-[15px] font-semibold text-[#f5deb3]">Boutiques suivies</h3>
+                                <button type="button" onClick={() => setFollowsOpen(false)} className="rounded-full bg-[#2a1a08] p-1.5">
+                                    <XClose className="size-4 text-[#a07840]" />
+                                </button>
+                            </div>
+
+                            {!follows || follows.length === 0 ? (
+                                <p className="py-6 text-center text-[13px] text-[#5a4020]">
+                                    Tu ne suis aucune boutique pour le moment.
+                                </p>
+                            ) : (
+                                <div className="space-y-2">
+                                    {follows.map((f: any) => {
+                                        const merchant = f.merchants;
+                                        if (!merchant) return null;
+                                        return (
+                                            <div key={f.merchant_id} className="flex items-center gap-3 rounded-xl bg-[#2a1a08] p-3">
+                                                <Link
+                                                    href={`/shop/${generateSlug(merchant.name || "", f.merchant_id)}`}
+                                                    onClick={() => setFollowsOpen(false)}
+                                                    className="flex flex-1 items-center gap-3 min-w-0"
+                                                >
+                                                    <div className="size-11 shrink-0 overflow-hidden rounded-full bg-[#1C1209] border border-[#3d2a10]">
+                                                        {merchant.photo_url ? (
+                                                            <img src={merchant.photo_url} alt={merchant.name} className="h-full w-full object-cover" />
+                                                        ) : (
+                                                            <div className="flex h-full items-center justify-center text-sm font-bold text-[#c87830]">
+                                                                {merchant.name?.charAt(0)}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate text-[13px] font-medium text-[#f5deb3]">{merchant.name}</p>
+                                                        {merchant.city && (
+                                                            <p className="text-[11px] text-[#5a4020]">{merchant.city}</p>
+                                                        )}
+                                                    </div>
+                                                </Link>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => unfollow.mutate(f.merchant_id)}
+                                                    className="shrink-0 rounded-lg border border-[#3d2a10] px-3 py-1.5 text-xs font-semibold text-[#a07840] transition active:bg-[#3d2008]"
+                                                >
+                                                    Abonné ✓
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* ── Bottom sheet: Inviter des amis ── */}
             <AnimatePresence>
