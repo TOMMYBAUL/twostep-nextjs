@@ -19,12 +19,15 @@ export default function MentionsLegalesPage() {
                         <h2 className="text-base font-semibold mb-3">1. Éditeur du site</h2>
                         <p>Le site <strong>twostep.fr</strong> est édité par :</p>
                         <ul className="mt-2 space-y-1 list-none pl-0">
-                            <li><strong>Raison sociale :</strong> [À COMPLÉTER — nom micro-entreprise ou SAS]</li>
-                            <li><strong>Forme juridique :</strong> [À COMPLÉTER — Micro-entreprise / SAS]</li>
-                            <li><strong>SIRET :</strong> [À COMPLÉTER]</li>
-                            <li><strong>Siège social :</strong> [À COMPLÉTER — adresse complète]</li>
+                            <li><strong>Nom commercial :</strong> Two-Step (twostep)</li>
+                            <li><strong>Entrepreneur individuel :</strong> Thomas Bauland</li>
+                            <li><strong>Forme juridique :</strong> Micro-entreprise (Entrepreneur individuel)</li>
+                            <li><strong>Siège social :</strong> 30 route de Blagnac, 31200 Toulouse, France</li>
+                            <li><strong>Activité :</strong> Édition et exploitation d'une plateforme numérique (SaaS) de mise en relation entre commerces locaux et consommateurs pour la consultation de stocks en temps réel</li>
+                            <li><strong>Date de création :</strong> 25 mars 2026</li>
                             <li><strong>Directeur de la publication :</strong> Thomas Bauland</li>
                             <li><strong>Email :</strong> contact@twostep.fr</li>
+                            <li><strong>Téléphone :</strong> 07 83 48 87 60</li>
                         </ul>
                     </section>
 
