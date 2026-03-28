@@ -813,7 +813,7 @@ Use background color variables to manage all fill colors for elements in your de
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **twostep-nextjs** (1747 symbols, 3334 relationships, 85 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **twostep-nextjs** (1716 symbols, 3248 relationships, 86 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -911,3 +911,10 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+## Remotion / Motion Design — OBLIGATOIRE
+
+**AVANT toute création de vidéo ou motion design avec Remotion**, lire et suivre OBLIGATOIREMENT :
+`docs/REMOTION-QUALITY-CHECKLIST.md`
+
+Ce document impose l'invocation de skills (brand, ui-ux-pro-max, design-system, viral-hook-generator) et de MCP (firecrawl, playwright, context7) AVANT d'écrire une seule ligne de code Remotion. Aucune exception.
