@@ -47,7 +47,7 @@ interface Promotion {
     sale_price: number;
 }
 
-const SUB_TABS = ["Catalogue", "Nouveautés", "Promos"];
+const SUB_TABS = ["Catalogue", "Nouveautés", "Promos", "Avis"];
 
 export default function ShopProfileClient() {
     const { id } = useParams<{ id: string }>();
@@ -278,12 +278,20 @@ export default function ShopProfileClient() {
                         <button
                             key={tab}
                             type="button"
-                            onClick={() => setActiveTab(tab)}
+                            onClick={() => {
+                                if (tab === "Avis") {
+                                    setSuggestionOpen(true);
+                                } else {
+                                    setActiveTab(tab);
+                                }
+                            }}
                             className={cx(
                                 "border-b-2 px-4 py-3 text-sm font-semibold transition duration-150",
-                                activeTab === tab
-                                    ? "border-[var(--ts-ochre)] text-[var(--ts-ochre)]"
-                                    : "border-transparent text-[var(--ts-brown-mid)]/40",
+                                tab === "Avis"
+                                    ? "border-transparent text-[var(--ts-brown-mid)]/40"
+                                    : activeTab === tab
+                                        ? "border-[var(--ts-ochre)] text-[var(--ts-ochre)]"
+                                        : "border-transparent text-[var(--ts-brown-mid)]/40",
                             )}
                         >
                             {tab}
@@ -364,21 +372,9 @@ export default function ShopProfileClient() {
                 )}
             </div>
 
-            {/* Suggestion button */}
+            {/* Suggestion drawer (triggered by "Avis" tab) */}
             {merchantUuid && (
-                <div className="px-4 pb-24 pt-2">
-                    <button
-                        type="button"
-                        onClick={() => setSuggestionOpen(true)}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--ts-cream-dark)] bg-[var(--ts-cream)] py-3 text-xs font-medium text-[var(--ts-brown-mid)]/60 transition active:bg-[var(--ts-cream-dark)]"
-                    >
-                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                        Suggérer une amélioration
-                    </button>
-                    <SuggestionDrawer open={suggestionOpen} onOpenChange={setSuggestionOpen} merchantId={merchantUuid} />
-                </div>
+                <SuggestionDrawer open={suggestionOpen} onOpenChange={setSuggestionOpen} merchantId={merchantUuid} />
             )}
         </div>
     );
