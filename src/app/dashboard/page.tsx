@@ -98,6 +98,24 @@ export default function DashboardPage() {
     const allDone = steps.length > 0 && completed === steps.length;
     const { achievements, loading: achievementsLoading } = useAchievements(allDone);
 
+    const [suggestions, setSuggestions] = useState<Array<{ id: string; text: string; created_at: string }>>([]);
+
+    useEffect(() => {
+        if (!merchant) return;
+        async function loadSuggestions() {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from("suggestions")
+                .select("id, text, created_at")
+                .eq("merchant_id", merchant!.id)
+                .eq("status", "visible")
+                .order("created_at", { ascending: false })
+                .limit(3);
+            if (data) setSuggestions(data);
+        }
+        loadSuggestions();
+    }, [merchant]);
+
     const viewsTrend =
         stats && stats.funnel.views.previous > 0
             ? Math.round(((stats.funnel.views.current - stats.funnel.views.previous) / stats.funnel.views.previous) * 100)
@@ -185,6 +203,28 @@ export default function DashboardPage() {
                         <CoachTips data={tips} loading={tipsLoading} />
                         <AchievementWidget achievements={achievements} loading={achievementsLoading} />
                     </div>
+
+                    {/* Suggestions widget */}
+                    {suggestions.length > 0 && (
+                        <div className="rounded-xl bg-white px-5 py-4">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-tertiary">
+                                Suggestions de vos clients
+                            </h3>
+                            <div className="mt-3 space-y-2.5">
+                                {suggestions.map((s) => (
+                                    <div key={s.id} className="flex gap-3 rounded-lg bg-gray-50 px-3.5 py-2.5">
+                                        <span className="mt-0.5 text-sm">💬</span>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs text-gray-700 leading-relaxed">{s.text}</p>
+                                            <p className="mt-1 text-[10px] text-gray-400">
+                                                {new Date(s.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Quick links */}
                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
