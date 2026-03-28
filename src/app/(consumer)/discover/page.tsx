@@ -783,36 +783,44 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | 
                             </div>
                         </Link>
 
-                        {/* Product info + merchant link below */}
-                        <div className="mt-2">
-                            <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
-                            <div className="mt-0.5 flex items-baseline gap-2">
-                                {p.sale_price ? (
-                                    <>
-                                        <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
-                                        <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
-                                    </>
-                                ) : (
-                                    <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
-                                )}
-                            </div>
-
-                            {/* Merchant provenance — photo + name, clickable */}
+                        {/* Product info with merchant photo on the left */}
+                        <div className="mt-2 flex items-start gap-2.5">
+                            {/* Merchant photo — clickable to shop */}
                             <Link
                                 href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
-                                className="mt-2 flex items-center gap-2 transition active:opacity-70"
+                                className="mt-0.5 shrink-0 transition active:opacity-70"
                             >
-                                <div className="size-6 shrink-0 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
+                                <div className="size-8 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
                                     {p.merchant_photo ? (
                                         <img src={p.merchant_photo} alt={p.merchant_name} className="h-full w-full object-cover" />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-[9px] font-bold text-[#c87830]">
+                                        <div className="flex h-full items-center justify-center text-[10px] font-bold text-[#c87830]">
                                             {p.merchant_name.charAt(0)}
                                         </div>
                                     )}
                                 </div>
-                                <span className="text-[12px] font-medium text-[#5a4020]">{p.merchant_name}</span>
                             </Link>
+
+                            {/* Name + price */}
+                            <div className="min-w-0 flex-1">
+                                <Link
+                                    href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
+                                    className="text-[12px] font-semibold text-[#5a4020] transition active:opacity-70"
+                                >
+                                    {p.merchant_name}
+                                </Link>
+                                <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
+                                <div className="mt-0.5 flex items-baseline gap-2">
+                                    {p.sale_price ? (
+                                        <>
+                                            <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
+                                            <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                        </>
+                                    ) : (
+                                        <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
