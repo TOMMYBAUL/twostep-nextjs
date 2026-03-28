@@ -35,7 +35,21 @@ Un brief visuel écrit avec : palette, fonts, style d'animation, mood, référen
 
 ---
 
-## Étape 2 — Script & hooks (AVANT de coder)
+## Étape 2 — Contexte structuré + Script (AVANT de coder)
+
+### 2.0 — Prompt contexte structuré (OBLIGATOIRE)
+Avant le script, définir le contexte dans un format structuré :
+```
+- Projet : [description en 1 phrase]
+- Durée : [15s / 30s / 60s]
+- Format : [9:16 vertical / 16:9 horizontal]
+- Audience : [marchands / consommateurs / investisseurs]
+- Concept visuel : [3 mots-clés max — ex: minimaliste, premium, local]
+- Identité sonore : [ambiance musicale souhaitée]
+- Palette : [couleurs principales]
+- Motion feel : [smooth / dynamique / calme]
+- Mots-clés à éviter : [liste]
+```
 
 ### Skills à invoquer OBLIGATOIREMENT :
 
@@ -54,6 +68,33 @@ Un brief visuel écrit avec : palette, fonts, style d'animation, mood, référen
 
 ### Sortie attendue :
 Script complet avec : hook (3s), body (15-20s), CTA (5s). Chaque mot choisi intentionnellement.
+
+---
+
+## Étape 2b — Audio FIRST (AVANT les visuels)
+
+> **RÈGLE ABSOLUE :** L'audio se génère AVANT les visuels. Les visuels se calent sur l'audio, pas l'inverse.
+
+### Processus :
+
+**2b.1 — Générer la voix off**
+- Utiliser **ElevenLabs** (qualité supérieure) ou Edge TTS (gratuit, fallback)
+- ElevenLabs : voix "Adam" ou "Rachel" en français, ou voix clonée de Thomas
+- Le script de l'étape 2 est envoyé à ElevenLabs via API (clé API nécessaire : `ELEVEN_LABS_API_KEY`)
+- Récupérer le fichier audio + les timings mot par mot
+
+**2b.2 — Générer la musique d'ambiance (optionnel)**
+- ElevenLabs sound effects ou musique libre de droits
+- Volume : 15-25% du volume de la voix off
+- Ambiance cohérente avec le contexte (ex: urbain pour commerce local)
+
+**2b.3 — Mesurer la durée réelle**
+- La durée audio dicte la durée de chaque slide
+- Chaque segment du script = un écran visuel
+- Les visuels se calent sur les timings audio, pas l'inverse
+
+### Sortie attendue :
+Fichier(s) audio MP3 + timings par segment pour synchroniser les visuels.
 
 ---
 
@@ -158,28 +199,30 @@ Un fichier HTML magnifique + son équivalent Remotion fidèle.
 
 ## Étape 6 — Assets & enrichissement (PENDANT le code)
 
-### Skill à invoquer :
+### 6.1 — SVG générés par Claude (PRÉFÉRÉ aux images importées)
+> **Méthode clé :** Au lieu d'importer des PNG/JPG statiques, demander à Claude de GÉNÉRER des SVG animables.
+> Claude comprend la structure des SVG qu'il crée → il peut les animer (ailes qui battent, objets qui bougent).
 
-**6.1 — `nano-banana-2` (Gemini image generation)**
-- Générer des visuels de support si nécessaire (illustrations, backgrounds, mockups)
+- Pour chaque élément visuel, générer un SVG avec des parties séparées et nommées
+- Exemple : un sac de courses avec une anse qui bouge, un téléphone avec un écran qui s'allume
+- Les SVG sont plus légers, scalables, et animables que les images
+
+### 6.2 — `nano-banana-2` (Gemini image generation)
+- Pour les visuels réalistes (photos de produits, backgrounds photo)
 - Style : minimaliste, flat design, palette Two-Step
 
-**6.2 — `banner-design`**
+### 6.3 — `banner-design`
 - Pour les écrans de type "carte" ou "badge" dans la vidéo
-- Utiliser un des 22 styles disponibles (recommandé : minimal, corporate, elegant)
 
-### MCP à utiliser :
-
-**6.3 — `playwright`**
+### 6.4 — `playwright`
 - Capturer des screenshots de l'app Two-Step réelle pour les intégrer dans la vidéo
-- Screenshots du dashboard, du feed consommateur, de la carte, etc.
 
 ### Remotion best practices (skill installé) :
 - Utiliser `@remotion/transitions` pour les transitions inter-séquences
 - Utiliser `staticFile()` pour les assets locaux
 - Utiliser `interpolate()` avec `Easing.bezier()` pour les animations custom
-- Utiliser `<Audio>` pour la musique de fond (volume 0.15-0.25)
-- Utiliser `<Sequence>` pour organiser le timing
+- Utiliser `<Audio>` pour la voix off ET la musique de fond
+- Utiliser `<Sequence>` pour organiser le timing calé sur l'audio
 
 ---
 
@@ -217,6 +260,45 @@ Un fichier HTML magnifique + son équivalent Remotion fidèle.
 | 5. Animation | (règles internes) | — |
 | 6. Assets | `nano-banana-2`, `banner-design` | `playwright` |
 | 7. Vérification | `verification-before-completion` | — |
+
+---
+
+## Étape 8 — Préréglage .md (APRÈS validation)
+
+> **Métaphore sculpture :** La V1 est un bloc de marbre. On itère avec les retours de Thomas
+> (modifie ci, change ça, j'aime pas ça). Une fois que le résultat plaît → on sauvegarde le préréglage.
+
+### Processus :
+
+**8.1 — Sauvegarder le style validé**
+
+Une fois que Thomas valide une vidéo, créer un fichier `.md` de préréglage :
+
+```
+docs/remotion-presets/[nom-du-preset].md
+```
+
+Ce fichier doit contenir TOUTES les informations pour reproduire le style :
+- Le prompt contexte utilisé
+- Le script et sa structure
+- Les couleurs, fonts, spacing utilisés
+- Les types d'animations et leurs paramètres (easing, durée, delay)
+- Les types de SVG générés
+- Le style audio (voix, ambiance)
+- Les exemples de ce qui a marché et ce qui n'a pas marché
+
+**8.2 — Réutiliser un préréglage**
+
+Pour créer une nouvelle vidéo basée sur un préréglage existant :
+```
+"En te basant sur le preset [nom-du-preset].md, crée une vidéo sur [nouveau sujet]."
+```
+
+Claude reproduira le même style sans tout réinventer.
+
+**8.3 — Itérer le préréglage**
+
+Chaque correction de Thomas améliore le preset. Mettre à jour le .md après chaque itération.
 
 ---
 
