@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
+import { extractSize } from "@/lib/pos/extract-size";
 
 export type SyncResult = {
     products_created: number;
@@ -220,6 +221,12 @@ async function upsertProduct(
 
     if (createError) throw new Error(`create_product_with_stock failed: ${createError.message}`);
 
+    // Set size after creation
+    const size = extractSize(posProduct.name);
+    if (size) {
+        await supabase.from("products").update({ size }).eq("id", created as string);
+    }
+
     result.products_created++;
     return created as string;
 }
@@ -240,6 +247,7 @@ async function updateProduct(
             pos_item_id: posProduct.pos_item_id,
             pos_provider: provider,
             photo_url: posProduct.photo_url ?? existingPhotoUrl,
+            size: extractSize(posProduct.name),
         })
         .eq("id", productId);
 }
