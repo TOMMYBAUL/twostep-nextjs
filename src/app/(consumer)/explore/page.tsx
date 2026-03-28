@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 const MapView = dynamic(() => import("../components/map-view").then(m => m.MapView), { ssr: false });
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
+import { useFollows, useToggleFollow } from "../hooks/use-follows";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
 
@@ -406,44 +407,60 @@ export default function ExplorePage() {
 function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
     const minutes = walkingMinutes(merchant.distance_km);
     const logo = merchant.merchant_logo || merchant.merchant_photo;
+    const { data: follows } = useFollows();
+    const { follow, unfollow } = useToggleFollow();
+    const isFollowing = follows?.some((f: any) => f.merchant_id === merchant.merchant_id) ?? false;
 
     return (
-        <Link
-            href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
-            className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3 transition duration-150 active:bg-[#3D2A1A]/80"
-        >
-            <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
-                {logo ? (
-                    <Image src={logo} alt="" fill className="object-cover" />
-                ) : (
-                    <span className="text-lg font-bold text-[#C17B2F]">
-                        {merchant.merchant_name.charAt(0).toUpperCase()}
-                    </span>
-                )}
-            </div>
-
-            <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-[#F5EDD8]">{merchant.merchant_name}</p>
-                <p className="mt-0.5 truncate text-xs text-[#F5EDD8]/50">{merchant.merchant_address}</p>
-                <div className="mt-1 flex items-center gap-2">
-                    <span className="flex items-center gap-1 text-[11px] text-[#F5EDD8]/50">
-                        <Clock className="size-3 shrink-0" aria-hidden="true" />
-                        {minutes} min
-                    </span>
-                    <span className="text-[#F5EDD8]/20">·</span>
-                    <span className="text-[11px] font-medium text-[var(--ts-sage)]">
-                        {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
-                    </span>
-                    {merchant.promo_count > 0 && (
-                        <span className="flex items-center gap-0.5 rounded-full bg-[var(--ts-red)]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--ts-red)]">
-                            <Tag01 className="size-2.5" aria-hidden="true" />
-                            {merchant.promo_count} promo{merchant.promo_count > 1 ? "s" : ""}
+        <div className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3">
+            <Link
+                href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
+                className="flex flex-1 items-center gap-3 min-w-0 transition duration-150 active:opacity-80"
+            >
+                <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
+                    {logo ? (
+                        <Image src={logo} alt="" fill className="object-cover" />
+                    ) : (
+                        <span className="text-lg font-bold text-[#C17B2F]">
+                            {merchant.merchant_name.charAt(0).toUpperCase()}
                         </span>
                     )}
                 </div>
-            </div>
 
-            <ChevronRight className="size-4 shrink-0 text-[#F5EDD8]/15" />
-        </Link>
+                <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-semibold text-[#F5EDD8]">{merchant.merchant_name}</p>
+                    <p className="mt-0.5 truncate text-xs text-[#F5EDD8]/50">{merchant.merchant_address}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                        <span className="flex items-center gap-1 text-[11px] text-[#F5EDD8]/50">
+                            <Clock className="size-3 shrink-0" aria-hidden="true" />
+                            {minutes} min
+                        </span>
+                        <span className="text-[#F5EDD8]/20">·</span>
+                        <span className="text-[11px] font-medium text-[var(--ts-sage)]">
+                            {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
+                        </span>
+                        {merchant.promo_count > 0 && (
+                            <span className="flex items-center gap-0.5 rounded-full bg-[var(--ts-red)]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--ts-red)]">
+                                <Tag01 className="size-2.5" aria-hidden="true" />
+                                {merchant.promo_count} promo{merchant.promo_count > 1 ? "s" : ""}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </Link>
+
+            <button
+                type="button"
+                onClick={() => isFollowing ? unfollow.mutate(merchant.merchant_id) : follow.mutate(merchant.merchant_id)}
+                className={cx(
+                    "shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition duration-150 active:scale-[0.97]",
+                    isFollowing
+                        ? "border border-[#F5EDD8]/15 text-[#F5EDD8]/50"
+                        : "bg-[#C17B2F] text-white",
+                )}
+            >
+                {isFollowing ? "Abonné ✓" : "S'abonner"}
+            </button>
+        </div>
     );
 }
