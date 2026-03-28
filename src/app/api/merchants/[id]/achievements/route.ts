@@ -35,6 +35,9 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    const { data: merchant } = await supabase.from("merchants").select("id").eq("id", id).eq("user_id", user.id).single();
+    if (!merchant) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const body = await request.json();
     const type = body.type as AchievementType;
 

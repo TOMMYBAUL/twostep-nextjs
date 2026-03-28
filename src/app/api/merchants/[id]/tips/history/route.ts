@@ -15,6 +15,9 @@ export async function GET(
     } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    const { data: merchant } = await supabase.from("merchants").select("id").eq("id", id).eq("user_id", user.id).single();
+    if (!merchant) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const url = new URL(request.url);
     const category = url.searchParams.get("category");
     const page = Math.max(1, parseInt(url.searchParams.get("page") ?? "1", 10));

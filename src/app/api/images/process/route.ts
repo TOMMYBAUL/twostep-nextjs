@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { processProductImage } from "@/lib/images/process";
 import { uploadToR2 } from "@/lib/r2";
@@ -7,7 +7,11 @@ import { captureError } from "@/lib/error";
 const BATCH_SIZE = 5;
 const MAX_ATTEMPTS = 3;
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     try {
         const supabase = await createClient();
 

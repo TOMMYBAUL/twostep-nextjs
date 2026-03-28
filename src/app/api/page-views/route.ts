@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "page-views", 60);
+    if (limited) return limited;
+
     const body = await request.json();
     const { merchant_id, page_type, product_id } = body;
 
