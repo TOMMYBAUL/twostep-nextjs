@@ -13,20 +13,20 @@ export function How() {
     const steps = [
         {
             num: "01",
-            title: "On se connecte à votre caisse et vos fournisseurs",
-            desc: "Two-Step lit votre caisse automatiquement. Vos factures fournisseurs arrivent par email ? On les détecte et on met votre catalogue à jour. Zéro saisie.",
+            title: "On se branche à votre caisse en un clic",
+            desc: "Square, Shopify, Lightspeed, SumUp ou Zettle — Two-Step se connecte à votre logiciel de caisse en 30 secondes. Vos produits, vos prix, votre stock : tout se synchronise automatiquement. Zéro saisie, zéro effort.",
             bg: "#EDE0C4", numColor: "rgba(44,32,24,0.1)", titleColor: "#2C2018", descColor: "#6B4F38",
         },
         {
             num: "02",
-            title: "Votre stock devient visible en temps réel",
-            desc: "Les consommateurs de votre quartier voient exactement ce que vous avez en boutique. Pas un site e-commerce — vos vrais produits, votre vraie disponibilité.",
+            title: "Votre stock devient votre vitrine",
+            desc: "Vos produits apparaissent avec des photos retouchées automatiquement sur fond blanc professionnel. Les consommateurs de votre quartier voient ce que vous avez en boutique, en temps réel. Pas un site e-commerce à gérer — votre caisse fait le travail.",
             bg: "#2C2018", numColor: "#C8813A", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.6)",
         },
         {
             num: "03",
-            title: "Ils viennent chez vous",
-            desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Les boutiques en ligne perdent une vente et vous en gagnez une.",
+            title: "Votre réseau social, sans créer de contenu",
+            desc: "Sur Instagram, vous passez des heures à créer des stories pour 15 vues. Sur Two-Step, vos clients vous trouvent parce qu'ils cherchent vos produits. Ils s'abonnent, suivent vos nouveautés et vous laissent des retours constructifs. Une communauté locale qui se construit toute seule.",
             bg: "#C8813A", numColor: "rgba(245,237,214,0.18)", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.8)",
         },
     ];

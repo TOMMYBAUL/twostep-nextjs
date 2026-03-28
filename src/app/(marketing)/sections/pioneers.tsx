@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
-import { Zap, Package, SlashCircle01 } from "@untitledui/icons";
+import { Zap, Package, Star01 } from "@untitledui/icons";
 import { useIsMobile, E, Counter } from "../utils";
 import { SpotlightCard } from "../components/spotlight-card";
 
@@ -137,9 +137,9 @@ export function Pioneers() {
                     }}
                 >
                     {[
-                        { Icon: Zap, title: "Connexion automatique", desc: "On se branche sur votre caisse et vos emails fournisseurs" },
-                        { Icon: Package, title: "Stock toujours à jour", desc: "Entrées par facture, sorties par vente — sans rien toucher" },
-                        { Icon: SlashCircle01, title: "Aucune commission", desc: "Pas de % sur vos ventes. Abonnement fixe, uniquement quand ça marche" },
+                        { Icon: Zap, title: "Compatible avec votre caisse", desc: "5 logiciels de caisse supportés. Connexion en un clic, synchronisation en continu." },
+                        { Icon: Package, title: "Stock à jour en temps réel", desc: "Chaque vente en caisse met à jour votre vitrine instantanément. Vos clients voient ce qui est vraiment disponible." },
+                        { Icon: Star01, title: "Un coach dans votre poche", desc: "Conseils personnalisés et retours clients filtrés par IA. Vous progressez chaque jour, sans effort." },
                     ].map((item, i) => (
                         <motion.div
                             key={item.title}
