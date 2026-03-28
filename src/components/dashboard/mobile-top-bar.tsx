@@ -7,7 +7,6 @@ const pageTitles: Record<string, string> = {
     "/dashboard/products": "Produits",
     "/dashboard/promotions": "Promotions",
     "/dashboard/store": "Ma boutique",
-    "/dashboard/invoices": "Factures",
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
     "/dashboard/stock": "Stock",

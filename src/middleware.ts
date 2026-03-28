@@ -13,7 +13,7 @@ export const config = {
         "/product/:path*", "/favorites/:path*", "/profile/:path*",
         "/dashboard/:path*", "/admin/:path*", "/auth/:path*",
         // Protected API routes
-        "/api/pos/:path*", "/api/email/:path*", "/api/invoices/:path*",
+        "/api/pos/:path*", "/api/email/:path*",
         "/api/stripe/:path*", "/api/favorites/:path*", "/api/follows/:path*",
         "/api/consumer/:path*", "/api/admin/:path*",
     ],
