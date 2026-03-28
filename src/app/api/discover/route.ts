@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
     if ("error" in parsed) return parsed.error;
     const { lat, lng, radius, section, category } = parsed.data;
+    const size = request.nextUrl.searchParams.get("size");
 
     const supabase = await createClient();
 
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
         // Resolve categories for returned product IDs
         const productIds = (data ?? []).map((r: any) => r.product_id);
         const categoryMap = await resolveCategories(supabase, productIds);
+        const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
 
         // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
         const seen = new Set<string>();
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
                 return true;
             })
             .filter((row: any) => !category || categoryMap.get(row.product_id) === category)
+            .filter((row: any) => !size || sizeMap.get(row.product_id) === size)
             .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
@@ -82,6 +85,7 @@ export async function GET(request: NextRequest) {
         resolveCategories(supabase, productIds),
         resolveMerchantPhotos(supabase, merchantIds),
     ]);
+    const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
 
     // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
     const seen = new Set<string>();
@@ -95,6 +99,10 @@ export async function GET(request: NextRequest) {
     // Filter by category if provided
     if (category) {
         items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
+    }
+
+    if (size) {
+        items = items.filter((row: any) => sizeMap.get(row.product_id) === size);
     }
 
     // For "nearby", re-sort by distance instead of feed_score
@@ -134,6 +142,23 @@ async function resolveMerchantPhotos(
     const map = new Map<string, string>();
     for (const row of data ?? []) {
         if (row.photo_url) map.set(row.id, row.photo_url);
+    }
+    return map;
+}
+
+async function resolveSizes(
+    supabase: any,
+    productIds: string[],
+): Promise<Map<string, string>> {
+    if (productIds.length === 0) return new Map();
+    const { data } = await supabase
+        .from("products")
+        .select("id, size")
+        .in("id", productIds)
+        .not("size", "is", null);
+    const map = new Map<string, string>();
+    for (const row of data ?? []) {
+        map.set(row.id, row.size);
     }
     return map;
 }
