@@ -124,13 +124,12 @@ export const sumupAdapter: IPOSAdapter = {
         return [];
     },
 
-    // POS-3: webhook verification not yet implemented
+    // SumUp has no inventory webhook — only per-checkout callbacks.
+    // Stock updates rely on 15-minute sync polling via sync-engine.
     verifyWebhook(_body: string, _signature: string): boolean {
-        void crypto; // crypto imported for consistency with other adapters
         return false;
     },
 
-    // POS-3: webhook event parsing not yet implemented
     parseWebhookEvent(_body: unknown): POSStockUpdate[] | null {
         return null;
     },

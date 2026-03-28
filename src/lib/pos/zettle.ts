@@ -138,15 +138,54 @@ export const zettleAdapter: IPOSAdapter = {
         return [];
     },
 
-    // POS-3: webhook verification not yet implemented
-    verifyWebhook(_body: string, _signature: string): boolean {
-        void crypto; // imported for consistency with other adapters
-        return false;
+    verifyWebhook(body: string, signature: string): boolean {
+        const signingKey = process.env.ZETTLE_WEBHOOK_SIGNING_KEY;
+        if (!signingKey || !signature) return false;
+
+        // Zettle signs: {timestamp}.{payload} with HMAC SHA-256 hex
+        let timestamp: string;
+        try {
+            const parsed = JSON.parse(body);
+            timestamp = parsed.timestamp;
+        } catch {
+            return false;
+        }
+        if (!timestamp) return false;
+
+        const expected = crypto
+            .createHmac("sha256", signingKey)
+            .update(`${timestamp}.${body}`)
+            .digest("hex");
+
+        try {
+            return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+        } catch {
+            return false;
+        }
     },
 
-    // POS-3: webhook parsing not yet implemented
-    parseWebhookEvent(_body: unknown): POSStockUpdate[] | null {
-        return null;
+    parseWebhookEvent(body: unknown): POSStockUpdate[] | null {
+        const event = body as Record<string, unknown>;
+        if (event.eventName !== "InventoryBalanceChanged") return null;
+
+        const payload = event.payload as Record<string, unknown> | undefined;
+        const balanceAfter = payload?.balanceAfter;
+        if (!Array.isArray(balanceAfter)) return null;
+
+        const updates: POSStockUpdate[] = [];
+        for (const entry of balanceAfter) {
+            const e = entry as Record<string, unknown>;
+            const variantUuid = e.variantUuid ?? e.productUuid;
+            if (!variantUuid) continue;
+
+            updates.push({
+                pos_item_id: String(variantUuid),
+                quantity: typeof e.balance === "number" ? e.balance : parseInt(String(e.balance), 10) || 0,
+                updated_at: String(event.timestamp ?? new Date().toISOString()),
+            });
+        }
+
+        return updates.length > 0 ? updates : null;
     },
 
     // POS-3: catalog push not yet implemented
