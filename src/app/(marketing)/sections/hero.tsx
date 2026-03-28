@@ -13,7 +13,7 @@ const heroCSS = `
 .hero-p{font-size:18px;color:#6B4F38;line-height:1.65;max-width:480px;margin:0}
 .hero-iw{position:relative;display:flex;justify-content:center;align-items:center;order:0;padding:0}
 .hero-img{width:100%;max-width:440px;height:auto;display:block;filter:drop-shadow(0 32px 64px rgba(44,32,24,0.16))}
-.fc-n{bottom:42%;left:-8%}.fc-m{bottom:28%;right:-10%}.fc-d{bottom:8%;left:-6%}.fc-t{bottom:18%;right:-6%}
+.fc-n{top:2%;left:-12%}.fc-m{top:20%;right:-14%}.fc-d{bottom:12%;left:-10%}.fc-t{bottom:30%;right:-10%}
 @media(max-width:767px){
 .hero-s{padding:76px 24px 48px}
 .hero-g{grid-template-columns:1fr;gap:16px}
@@ -21,10 +21,10 @@ const heroCSS = `
 .hero-p{font-size:16px}
 .hero-iw{padding:32px 0 36px;overflow:hidden}
 .hero-img{max-width:240px;margin:12px auto 8px}
-.fc-n{bottom:38%!important;left:2px!important;top:auto!important}
-.fc-m{bottom:24%!important;right:2px!important;top:auto!important}
-.fc-d{bottom:4px!important;left:2px!important;top:auto!important}
-.fc-t{bottom:14%!important;right:2px!important;top:auto!important}
+.fc-n{top:8%!important;left:4px!important;transform:scale(0.6)!important;transform-origin:left top!important}
+.fc-m{top:22%!important;right:4px!important;left:auto!important;transform:scale(0.6)!important;transform-origin:right top!important}
+.fc-d{bottom:8%!important;left:4px!important;top:auto!important;transform:scale(0.6)!important;transform-origin:left bottom!important}
+.fc-t{bottom:22%!important;right:4px!important;left:auto!important;top:auto!important;transform:scale(0.6)!important;transform-origin:right bottom!important}
 }`;
 
 export function Hero() {
@@ -82,43 +82,43 @@ export function Hero() {
                         className="hero-iw"
                         style={{ y: isMobile ? 0 : imgY }}
                     >
-                        {/* Nike Air Max — bottom-left area */}
-                        <FloatCard className="fc-n" bottom="42%" left="-8%" delay={0.7} floatDuration={4.3}>
-                            <div style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                <SearchMd className="size-3" style={{ color: "#C8813A" }} />
+                        {/* Nike Air Max — top-left */}
+                        <FloatCard className="fc-n" top="2%" left="-12%" delay={0.7} floatDuration={4.3}>
+                            <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <SearchMd className="size-3.5" style={{ color: "#C8813A" }} />
                             </div>
                             <div>
-                                <div style={{ fontSize: 10, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>Nike Air Max 90 · T.42</div>
-                                <div style={{ fontSize: 9, color: "#7A9E7E", fontWeight: 600, marginTop: 1 }}>✓ Disponible · 8 min</div>
+                                <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>Nike Air Max 90 · T.42</div>
+                                <div style={{ fontSize: 11, color: "#7A9E7E", fontWeight: 600, marginTop: 2 }}>✓ Disponible · 8 min</div>
                             </div>
                         </FloatCard>
 
-                        {/* 8 min — bottom-right area */}
-                        <FloatCard className="fc-m" bottom="28%" right="-10%" delay={0.95} floatDuration={3.7}>
-                            <div style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                <MarkerPin01 className="size-3" style={{ color: "#C8813A" }} />
+                        {/* 8 min — right */}
+                        <FloatCard className="fc-m" top="20%" right="-14%" delay={0.95} floatDuration={3.7}>
+                            <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <MarkerPin01 className="size-3.5" style={{ color: "#C8813A" }} />
                             </div>
                             <div>
-                                <div style={{ fontSize: 14, fontWeight: 900, color: "#C8813A", letterSpacing: "-0.04em", lineHeight: 1 }}>8 min</div>
-                                <div style={{ fontSize: 9, color: "#6B4F38", fontWeight: 500, marginTop: 1 }}>de chez vous</div>
+                                <div style={{ fontSize: 20, fontWeight: 900, color: "#C8813A", letterSpacing: "-0.04em", lineHeight: 1 }}>8 min</div>
+                                <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>de chez vous</div>
                             </div>
                         </FloatCard>
 
                         {/* Disponible — bottom-left */}
-                        <FloatCard className="fc-d" bottom="8%" left="-6%" delay={1.15} floatDuration={5.1}>
-                            <div style={{ width: 24, height: 24, borderRadius: 7, background: "#2C2018", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                <ShoppingBag01 className="size-3" style={{ color: "#fff" }} />
+                        <FloatCard className="fc-d" bottom="12%" left="-10%" delay={1.15} floatDuration={5.1}>
+                            <div style={{ width: 32, height: 32, borderRadius: 10, background: "#2C2018", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <ShoppingBag01 className="size-3.5" style={{ color: "#fff" }} />
                             </div>
                             <div>
-                                <div style={{ fontSize: 10, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>Disponible</div>
-                                <div style={{ fontSize: 9, color: "#6B4F38", fontWeight: 500, marginTop: 1 }}>Boutique Carmes</div>
+                                <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>Disponible</div>
+                                <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>Boutique Carmes</div>
                             </div>
                         </FloatCard>
 
                         {/* Temps réel */}
-                        <FloatCard className="fc-t" bottom="18%" right="-6%" delay={1.35} floatDuration={3.9}>
-                            <Wifi className="size-3" style={{ color: "#7A9E7E" }} />
-                            <span style={{ fontSize: 10, fontWeight: 700, color: "#2C2018" }}>Temps réel · Toulouse</span>
+                        <FloatCard className="fc-t" bottom="30%" right="-10%" delay={1.35} floatDuration={3.9}>
+                            <Wifi className="size-3.5" style={{ color: "#7A9E7E" }} />
+                            <span style={{ fontSize: 12, fontWeight: 700, color: "#2C2018" }}>Temps réel · Toulouse</span>
                         </FloatCard>
 
                         <motion.img
