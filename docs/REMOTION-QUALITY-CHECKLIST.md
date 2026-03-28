@@ -77,24 +77,41 @@ Script complet avec : hook (3s), body (15-20s), CTA (5s). Chaque mot choisi inte
 
 ---
 
-## Étape 4 — Storyboard (AVANT de coder)
+## Étape 4 — Page HTML de référence (AVANT de coder Remotion)
 
-### Processus :
+> **MÉTHODE OBLIGATOIRE :** Ne JAMAIS coder Remotion directement.
+> D'abord créer une page HTML statique magnifique, puis la transformer en vidéo.
 
-**4.1 — Dessiner le storyboard en texte**
-Chaque écran de la vidéo doit être décrit :
-- Timing exact (frame de début, frame de fin)
-- Ce qui apparaît à l'écran (texte, image, animation)
-- Type de transition (fade, slide, scale, none)
-- Couleur de fond
-- Position des éléments
+### Processus en 2 phases :
+
+**Phase A — Créer le HTML de référence**
+
+1. Utiliser les skills `design`, `ui-ux-pro-max`, `ui-styling` pour créer une **page HTML statique** qui représente visuellement le contenu de la vidéo
+2. Cette page doit être belle, soignée, avec les bonnes couleurs, typo, spacing
+3. Chaque section de la page = un écran de la vidéo
+4. Utiliser Tailwind, animations CSS, design tokens Two-Step
+5. Ouvrir la page dans le navigateur via `playwright` pour vérifier le rendu
+6. Itérer jusqu'à ce que le HTML soit visuellement parfait
+
+**Phase B — Transformer en Remotion**
+
+1. Donner le fichier HTML à Claude avec le prompt : "Transforme ce HTML en vidéo Remotion, écran par écran, avec des transitions fluides"
+2. Le skill `remotion-best-practices` (déjà installé) guide la génération
+3. Claude a une référence visuelle concrète → le résultat est fidèle au design
+
+**Pourquoi cette méthode fonctionne :**
+- Le design est fait AVANT le code vidéo (séparation des préoccupations)
+- L'IA est meilleure pour créer du beau HTML que du beau Remotion directement
+- On peut valider visuellement le HTML avant de le transformer en vidéo
+- Le skill remotion-best-practices optimise la conversion HTML → vidéo
 
 **4.2 — Validation**
-- Présenter le storyboard à Thomas AVANT de coder
-- Attendre son approbation
+- Montrer le HTML de référence à Thomas AVANT de convertir en Remotion
+- Attendre son approbation sur le design
+- Puis convertir
 
 ### Sortie attendue :
-Storyboard écran par écran avec timing, contenu, et transitions.
+Un fichier HTML magnifique + son équivalent Remotion fidèle.
 
 ---
 
