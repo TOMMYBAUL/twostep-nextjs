@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
 
     // Resolve categories and merchant photos for returned product IDs
     const productIds = items.map((r: any) => r.product_id);
-    const merchantIds = [...new Set(items.map((r: any) => r.merchant_id))];
+    const merchantIds = [...new Set<string>(items.map((r: any) => r.merchant_id))];
     const [categoryMap, merchantPhotoMap] = await Promise.all([
         resolveCategories(supabase, productIds),
         resolveMerchantPhotos(supabase, merchantIds),
