@@ -38,9 +38,9 @@ const CATEGORIES = [
     { label: "Épicerie", value: "epicerie", emoji: "🧺" },
 ] as const;
 
-function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby", category: string | null) {
+function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby", category: string | null, size: string | null) {
     return useQuery<DiscoverProduct[]>({
-        queryKey: ["discover", section, lat, lng, category],
+        queryKey: ["discover", section, lat, lng, category, size],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: lat.toString(),
@@ -49,6 +49,7 @@ function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending
                 radius: "10",
             });
             if (category) params.set("category", category);
+            if (size) params.set("size", size);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) return [];
             const data = await res.json();
@@ -69,9 +70,10 @@ export default function DiscoverPage() {
     const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
     const [feedTab, setFeedTab] = useState<"pour-toi" | "suivis">("pour-toi");
 
-    const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory);
-    const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory);
-    const { data: nearby, isLoading: loadingNearby } = useDiscoverFeed(lat, lng, "nearby", activeCategory);
+    const activeSize = sizeFilter ?? (shoeSizeFilter ? String(shoeSizeFilter) : null);
+    const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory, activeSize);
+    const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory, activeSize);
+    const { data: nearby, isLoading: loadingNearby } = useDiscoverFeed(lat, lng, "nearby", activeCategory, activeSize);
 
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
