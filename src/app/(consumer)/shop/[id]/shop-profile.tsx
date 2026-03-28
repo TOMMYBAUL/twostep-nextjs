@@ -12,6 +12,7 @@ import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
 import { ShopBadges } from "@/components/shop/shop-badges";
+import { SuggestionDrawer } from "../../components/suggestion-drawer";
 
 interface MerchantProfile {
     merchant_id: string;
@@ -51,6 +52,7 @@ const SUB_TABS = ["Catalogue", "Nouveautés", "Promos"];
 export default function ShopProfileClient() {
     const { id } = useParams<{ id: string }>();
     const [activeTab, setActiveTab] = useState("Catalogue");
+    const [suggestionOpen, setSuggestionOpen] = useState(false);
 
     const { data: profile } = useQuery<MerchantProfile>({
         queryKey: ["merchant-profile", id],
@@ -157,40 +159,6 @@ export default function ShopProfileClient() {
                     <ArrowLeft className="size-5 text-[var(--ts-brown)]" />
                 </Link>
 
-                {/* Heart button — circle, top-right like TGTG */}
-                <button
-                    type="button"
-                    onClick={() => merchantUuid && (isFollowing ? unfollow.mutate(merchantUuid) : follow.mutate(merchantUuid))}
-                    className={cx(
-                        "absolute right-4 top-4 z-20 flex size-11 items-center justify-center rounded-full shadow-sm",
-                        isFollowing ? "bg-[var(--ts-ochre)] text-white" : "bg-white/90 text-[var(--ts-brown-mid)]",
-                    )}
-                    style={{ marginTop: "env(safe-area-inset-top)" }}
-                    aria-label={isFollowing ? "Ne plus suivre" : "Suivre"}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFollowing ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} className="size-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                </button>
-
-                {/* Share button — below heart */}
-                <button
-                    type="button"
-                    onClick={async () => {
-                        const url = window.location.href;
-                        if (navigator.share) {
-                            try { await navigator.share({ title: profile.merchant_name, text: `Découvre ${profile.merchant_name} sur Two-Step`, url }); } catch {}
-                        } else {
-                            await navigator.clipboard.writeText(url);
-                        }
-                    }}
-                    className="absolute right-4 z-20 flex size-8 items-center justify-center rounded-full shadow-sm"
-                    style={{ top: "calc(env(safe-area-inset-top) + 90px)", background: "rgba(13,9,4,0.5)" }}
-                    aria-label="Partager"
-                >
-                    <Share07 className="size-3.5 text-[#f0dfc0]" />
-                </button>
-
                 {/* Logo + name at bottom of cover — TGTG exact layout */}
                 <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end px-4 pb-4">
                     <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-[2.5px] border-white/90 bg-white shadow-lg">
@@ -246,6 +214,36 @@ export default function ShopProfileClient() {
                             </span>
                         );
                     })()}
+                </div>
+
+                {/* S'abonner button — Instagram style */}
+                <div className="mt-3 flex gap-2">
+                    <button
+                        type="button"
+                        onClick={() => merchantUuid && (isFollowing ? unfollow.mutate(merchantUuid) : follow.mutate(merchantUuid))}
+                        className={cx(
+                            "flex-1 rounded-lg py-2.5 text-[13px] font-semibold transition duration-150 active:scale-[0.97]",
+                            isFollowing
+                                ? "border border-[var(--ts-brown-mid)]/15 bg-[var(--ts-cream-dark)] text-[var(--ts-brown-mid)]/70"
+                                : "bg-[var(--ts-ochre)] text-white",
+                        )}
+                    >
+                        {isFollowing ? "Abonné ✓" : "S'abonner"}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            const url = window.location.href;
+                            if (navigator.share) {
+                                try { await navigator.share({ title: profile.merchant_name, text: `Découvre ${profile.merchant_name} sur Two-Step`, url }); } catch {}
+                            } else {
+                                await navigator.clipboard.writeText(url);
+                            }
+                        }}
+                        className="flex size-10 items-center justify-center rounded-lg border border-[var(--ts-brown-mid)]/15 bg-[var(--ts-cream-dark)] transition active:scale-[0.97]"
+                    >
+                        <Share07 className="size-4 text-[var(--ts-brown-mid)]" />
+                    </button>
                 </div>
 
                 {/* Opening hours detail */}
@@ -365,6 +363,23 @@ export default function ShopProfileClient() {
                     })
                 )}
             </div>
+
+            {/* Suggestion button */}
+            {merchantUuid && (
+                <div className="px-4 pb-24 pt-2">
+                    <button
+                        type="button"
+                        onClick={() => setSuggestionOpen(true)}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--ts-cream-dark)] bg-[var(--ts-cream)] py-3 text-xs font-medium text-[var(--ts-brown-mid)]/60 transition active:bg-[var(--ts-cream-dark)]"
+                    >
+                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        Suggérer une amélioration
+                    </button>
+                    <SuggestionDrawer open={suggestionOpen} onOpenChange={setSuggestionOpen} merchantId={merchantUuid} />
+                </div>
+            )}
         </div>
     );
 }
