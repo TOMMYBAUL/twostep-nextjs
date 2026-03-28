@@ -11,7 +11,7 @@ export const sumupAdapter: IPOSAdapter = {
             client_id: process.env.SUMUP_CLIENT_ID!,
             redirect_uri: getSiteUrl() + "/api/pos/sumup/callback",
             response_type: "code",
-            scope: "payments products inventory",
+            scope: "products",
             state: `sumup:${merchantId}`,
         });
         return `https://api.sumup.com/authorize?${params}`;

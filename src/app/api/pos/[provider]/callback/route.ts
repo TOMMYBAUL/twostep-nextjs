@@ -41,14 +41,15 @@ export async function GET(
 
     try {
         const adapter = getAdapter(provider);
-        const tokens = await adapter.exchangeCode(code);
 
-        const supabase = await createClient();
-
-        // Extract shop_domain for Shopify from state or null
+        // Extract shop_domain for Shopify from callback params
         const shopDomain = provider === "shopify"
             ? request.nextUrl.searchParams.get("shop") ?? null
             : null;
+
+        const tokens = await adapter.exchangeCode(code, shopDomain ? { shop: shopDomain } : undefined);
+
+        const supabase = await createClient();
 
         // Store in pos_connections table
         const { error: connError } = await supabase

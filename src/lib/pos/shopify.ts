@@ -1,6 +1,16 @@
 import crypto from "crypto";
 import { getSiteUrl } from "@/lib/url";
-import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
+import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
+
+function shopApi(shopDomain: string, path: string): string {
+    return `https://${shopDomain}/admin/api/2024-01${path}`;
+}
+
+function requireShop(options?: POSAdapterOptions): string {
+    const shop = options?.shopDomain;
+    if (!shop) throw new Error("Shopify adapter requires shopDomain in options");
+    return shop;
+}
 
 export const shopifyAdapter: IPOSAdapter = {
     name: "shopify",
@@ -16,24 +26,28 @@ export const shopifyAdapter: IPOSAdapter = {
         return `https://accounts.shopify.com/oauth/authorize?${params}`;
     },
 
-    async exchangeCode(code: string) {
-        const res = await fetch("https://accounts.shopify.com/oauth/token", {
+    async exchangeCode(code: string, params?: Record<string, string>) {
+        const shop = params?.shop;
+        if (!shop) throw new Error("Shopify exchangeCode requires shop param");
+
+        const res = await fetch(`https://${shop}/admin/oauth/access_token`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 client_id: process.env.SHOPIFY_CLIENT_ID,
                 client_secret: process.env.SHOPIFY_CLIENT_SECRET,
                 code,
-                grant_type: "authorization_code",
             }),
         });
+
         const data = await res.json();
+        if (!res.ok) throw new Error(data.errors || data.error || "Shopify OAuth exchange failed");
+
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token ?? null,
-            expires_at: data.expires_in
-                ? new Date(Date.now() + data.expires_in * 1000).toISOString()
-                : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+            // Shopify offline tokens don't expire
+            expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
         };
     },
 
@@ -42,19 +56,20 @@ export const shopifyAdapter: IPOSAdapter = {
         return null;
     },
 
-    async getCatalog(accessToken: string) {
+    async getCatalog(accessToken: string, options?: POSAdapterOptions) {
+        const shop = requireShop(options);
         const products: POSProduct[] = [];
         let pageInfo: string | null = null;
 
         do {
-            const fetchUrl: string = pageInfo
-                ? `https://shopify.dev/admin/api/2024-01/products.json?page_info=${pageInfo}&limit=250`
-                : "https://shopify.dev/admin/api/2024-01/products.json?limit=250";
+            const url: string = pageInfo
+                ? shopApi(shop, `/products.json?page_info=${pageInfo}&limit=250`)
+                : shopApi(shop, "/products.json?limit=250");
 
-            const fetchRes: Response = await fetch(fetchUrl, {
+            const res: Response = await fetch(url, {
                 headers: { "X-Shopify-Access-Token": accessToken },
             });
-            const data = await fetchRes.json();
+            const data = await res.json();
 
             for (const product of data.products ?? []) {
                 for (const variant of product.variants ?? []) {
@@ -72,7 +87,7 @@ export const shopifyAdapter: IPOSAdapter = {
             }
 
             // Parse Link header for pagination
-            const linkHeader: string | null = fetchRes.headers.get("link");
+            const linkHeader: string | null = res.headers.get("link");
             const nextMatch: RegExpMatchArray | null | undefined = linkHeader?.match(/<[^>]*page_info=([^&>]+)[^>]*>;\s*rel="next"/);
             pageInfo = nextMatch?.[1] ?? null;
         } while (pageInfo);
@@ -80,9 +95,10 @@ export const shopifyAdapter: IPOSAdapter = {
         return products;
     },
 
-    async pushCatalog(accessToken: string, products: POSProduct[]) {
+    async pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions) {
+        const shop = requireShop(options);
         for (const p of products) {
-            await fetch("https://shopify.dev/admin/api/2024-01/products.json", {
+            await fetch(shopApi(shop, "/products.json"), {
                 method: "POST",
                 headers: {
                     "X-Shopify-Access-Token": accessToken,
@@ -102,8 +118,9 @@ export const shopifyAdapter: IPOSAdapter = {
         }
     },
 
-    async fetchPromos(accessToken: string): Promise<POSPromo[]> {
-        const res = await fetch("https://shopify.dev/admin/api/2024-01/price_rules.json", {
+    async fetchPromos(accessToken: string, options?: POSAdapterOptions): Promise<POSPromo[]> {
+        const shop = requireShop(options);
+        const res = await fetch(shopApi(shop, "/price_rules.json"), {
             headers: { "X-Shopify-Access-Token": accessToken },
         });
         if (!res.ok) return [];
@@ -127,11 +144,12 @@ export const shopifyAdapter: IPOSAdapter = {
         return promos;
     },
 
-    async getStock(accessToken: string, itemIds: string[]) {
+    async getStock(accessToken: string, itemIds: string[], options?: POSAdapterOptions) {
+        const shop = requireShop(options);
         const updates: POSStockUpdate[] = [];
         for (const itemId of itemIds) {
             const res = await fetch(
-                `https://shopify.dev/admin/api/2024-01/inventory_levels.json?inventory_item_ids=${itemId}`,
+                shopApi(shop, `/inventory_levels.json?inventory_item_ids=${itemId}`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
             const data = await res.json();

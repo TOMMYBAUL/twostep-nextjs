@@ -23,6 +23,10 @@ export type POSPromo = {
     ends_at: string | null;
 };
 
+export type POSAdapterOptions = {
+    shopDomain?: string;
+};
+
 export interface IPOSAdapter {
     /** Nom du POS (square, lightspeed, shopify, sumup, zettle) */
     name: string;
@@ -31,19 +35,19 @@ export interface IPOSAdapter {
     getAuthUrl(merchantId: string): string;
 
     /** Échange le code OAuth contre des tokens */
-    exchangeCode(code: string): Promise<{ access_token: string; refresh_token: string; expires_at: string }>;
+    exchangeCode(code: string, params?: Record<string, string>): Promise<{ access_token: string; refresh_token: string; expires_at: string }>;
 
     /** Rafraîchit un token expiré via refresh_token. Retourne null si non supporté. */
     refreshToken(refreshToken: string): Promise<{ access_token: string; refresh_token: string; expires_at: string } | null>;
 
     /** Récupère le catalogue complet du marchand */
-    getCatalog(accessToken: string): Promise<POSProduct[]>;
+    getCatalog(accessToken: string, options?: POSAdapterOptions): Promise<POSProduct[]>;
 
     /** Récupère le stock actuel pour une liste de produits */
-    getStock(accessToken: string, itemIds: string[]): Promise<POSStockUpdate[]>;
+    getStock(accessToken: string, itemIds: string[], options?: POSAdapterOptions): Promise<POSStockUpdate[]>;
 
     /** Récupère les promos actives */
-    fetchPromos(accessToken: string): Promise<POSPromo[]>;
+    fetchPromos(accessToken: string, options?: POSAdapterOptions): Promise<POSPromo[]>;
 
     /** Vérifie la signature d'un webhook entrant */
     verifyWebhook(body: string, signature: string): boolean;
@@ -52,5 +56,5 @@ export interface IPOSAdapter {
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null;
 
     /** Pousse les nouveaux produits dans le POS du commerçant */
-    pushCatalog(accessToken: string, products: POSProduct[]): Promise<void>;
+    pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions): Promise<void>;
 }

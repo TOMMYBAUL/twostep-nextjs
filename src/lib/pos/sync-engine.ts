@@ -1,4 +1,4 @@
-import { getAdapter, type POSProduct, type POSPromo } from "@/lib/pos";
+import { getAdapter, type POSProduct, type POSPromo, type POSAdapterOptions } from "@/lib/pos";
 import { createClient } from "@/lib/supabase/server";
 import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
@@ -26,7 +26,7 @@ export async function syncMerchantPOS(
 
         const { data: conn, error: connError } = await supabase
             .from("pos_connections")
-            .select("id, access_token, refresh_token, expires_at")
+            .select("id, access_token, refresh_token, expires_at, shop_domain")
             .eq("merchant_id", merchantId)
             .eq("provider", provider)
             .single();
@@ -66,10 +66,14 @@ export async function syncMerchantPOS(
 
         // ─── Fetch POS data ──────────────────────────────────────────
 
-        const catalog = await adapter.getCatalog(accessToken);
+        const adapterOpts: POSAdapterOptions = {
+            shopDomain: conn.shop_domain ?? undefined,
+        };
+
+        const catalog = await adapter.getCatalog(accessToken, adapterOpts);
         const itemIds = catalog.map((p) => p.pos_item_id);
-        const stockUpdates = await adapter.getStock(accessToken, itemIds);
-        const promos = await adapter.fetchPromos(accessToken);
+        const stockUpdates = await adapter.getStock(accessToken, itemIds, adapterOpts);
+        const promos = await adapter.fetchPromos(accessToken, adapterOpts);
 
         // ─── Fusion intelligente ─────────────────────────────────────
 

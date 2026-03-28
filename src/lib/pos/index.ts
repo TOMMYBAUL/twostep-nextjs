@@ -22,4 +22,4 @@ export function getAdapter(provider: string): IPOSAdapter {
     return adapter;
 }
 
-export { type IPOSAdapter, type POSProduct, type POSStockUpdate, type POSPromo } from "./types";
+export { type IPOSAdapter, type POSAdapterOptions, type POSProduct, type POSStockUpdate, type POSPromo } from "./types";

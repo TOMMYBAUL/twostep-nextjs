@@ -31,11 +31,11 @@ export const zettleAdapter: IPOSAdapter = {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error_description || "Zettle OAuth exchange failed");
 
-        const expiresAt = new Date(Date.now() + 7200 * 1000).toISOString();
+        const expiresIn = data.expires_in ?? 7200;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token,
-            expires_at: expiresAt,
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 
@@ -54,11 +54,11 @@ export const zettleAdapter: IPOSAdapter = {
         const data = await res.json();
         if (!res.ok) return null;
 
-        const expiresAt = new Date(Date.now() + 7200 * 1000).toISOString();
+        const expiresIn = data.expires_in ?? 7200;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token,
-            expires_at: expiresAt,
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 
