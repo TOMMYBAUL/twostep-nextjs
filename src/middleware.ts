@@ -14,7 +14,7 @@ export const config = {
         "/dashboard/:path*", "/admin/:path*", "/auth/:path*",
         // Protected API routes
         "/api/pos/:path*", "/api/email/:path*",
-        "/api/stripe/:path*", "/api/favorites/:path*", "/api/follows/:path*",
+        "/api/stripe/:path*",
         "/api/consumer/:path*", "/api/admin/:path*",
     ],
 };

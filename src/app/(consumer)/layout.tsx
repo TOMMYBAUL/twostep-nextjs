@@ -4,7 +4,7 @@ import { TabBar } from "./components/tab-bar";
 import { ToastProvider } from "./components/toast";
 import { WelcomeGate } from "./components/welcome-gate";
 import { ServiceWorkerRegistration } from "./components/sw-register";
-import { OnboardingRedirect } from "./components/onboarding-redirect";
+
 
 export const metadata: Metadata = {
     title: "Two-Step — Le stock de ton quartier",
@@ -23,7 +23,6 @@ export default function ConsumerLayout({
                     <main className="flex-1 pb-16">{children}</main>
                     <TabBar />
                 </div>
-                <OnboardingRedirect />
                 <WelcomeGate />
                 <ServiceWorkerRegistration />
             </ToastProvider>
