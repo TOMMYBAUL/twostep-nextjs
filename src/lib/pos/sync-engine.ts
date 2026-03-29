@@ -5,6 +5,8 @@ import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
 import { extractSize } from "@/lib/pos/extract-size";
 
+type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
 export type SyncResult = {
     products_created: number;
     products_updated: number;
@@ -135,6 +137,10 @@ export async function syncMerchantPOS(
         for (const promo of promos) {
             await upsertPromo(supabase, merchantId, provider, promo, posItemToProductId, result);
         }
+
+        // ─── Variant grouping by EAN ────────────────────────────────
+
+        await groupVariantsByEAN(supabase, merchantId);
 
         // ─── Success bookkeeping ─────────────────────────────────────
 
@@ -297,4 +303,157 @@ async function upsertPromo(
 
         result.promos_imported++;
     }
+}
+
+// ─── Variant grouping by EAN prefix ─────────────────────────────────
+
+/**
+ * After sync, group products by EAN prefix (first 12 chars).
+ * Products sharing the same EAN prefix are size variants of the same model.
+ * Elects a principal product, computes available_sizes, marks others as variants.
+ * Products without EAN are marked as not visible (merchant must complete them).
+ */
+async function groupVariantsByEAN(
+    supabase: SupabaseClient,
+    merchantId: string,
+): Promise<void> {
+    const { data: products } = await supabase
+        .from("products")
+        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, stock(quantity)")
+        .eq("merchant_id", merchantId)
+        .is("variant_of", null);
+
+    if (!products || products.length === 0) return;
+
+    // Mark products without EAN as not visible
+    const noEan = products.filter((p) => !p.ean);
+    if (noEan.length > 0) {
+        await supabase
+            .from("products")
+            .update({ visible: false })
+            .in("id", noEan.map((p) => p.id));
+    }
+
+    // Group products with EAN by prefix (first 12 chars)
+    const withEan = products.filter((p) => p.ean && p.ean.length >= 12);
+    const groups = new Map<string, typeof withEan>();
+
+    for (const product of withEan) {
+        const prefix = product.ean!.slice(0, 12);
+        const group = groups.get(prefix) ?? [];
+        group.push(product);
+        groups.set(prefix, group);
+    }
+
+    for (const [, group] of groups) {
+        if (group.length <= 1) {
+            // Solo product with EAN — ensure visible, set available_sizes if it has a size
+            const p = group[0];
+            const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
+            const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
+            await supabase
+                .from("products")
+                .update({ visible: true, variant_of: null, available_sizes: availableSizes })
+                .eq("id", p.id);
+            continue;
+        }
+
+        // Elect principal: prefer one with photo, then earliest created
+        const principal = group.sort((a, b) => {
+            const aHasPhoto = a.photo_url || a.photo_processed_url ? 1 : 0;
+            const bHasPhoto = b.photo_url || b.photo_processed_url ? 1 : 0;
+            if (bHasPhoto !== aHasPhoto) return bHasPhoto - aHasPhoto;
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        })[0];
+
+        // Compute available_sizes from all members
+        const availableSizes = group
+            .filter((p) => p.size)
+            .map((p) => ({
+                size: p.size!,
+                quantity: (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0,
+            }))
+            .sort((a, b) => {
+                const na = parseFloat(a.size);
+                const nb = parseFloat(b.size);
+                if (!isNaN(na) && !isNaN(nb)) return na - nb;
+                return a.size.localeCompare(b.size);
+            });
+
+        const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
+
+        // Update principal
+        await supabase
+            .from("products")
+            .update({ visible: true, variant_of: null, available_sizes: availableSizes })
+            .eq("id", principal.id);
+
+        // Update stock of principal to reflect total
+        await supabase
+            .from("stock")
+            .upsert({ product_id: principal.id, quantity: totalStock }, { onConflict: "product_id" });
+
+        // Mark other members as variants
+        const variantIds = group.filter((p) => p.id !== principal.id).map((p) => p.id);
+        if (variantIds.length > 0) {
+            await supabase
+                .from("products")
+                .update({ variant_of: principal.id, visible: false })
+                .in("id", variantIds);
+        }
+    }
+}
+
+// ─── Recalculate available_sizes for a product group ─────────────────
+
+/**
+ * Called after a stock update (webhook or manual) to recalculate
+ * the available_sizes JSON on the principal product of a group.
+ */
+export async function recalculateGroupSizes(
+    supabase: SupabaseClient,
+    productId: string,
+): Promise<void> {
+    // Find the principal: either this product IS the principal, or it has variant_of
+    const { data: product } = await supabase
+        .from("products")
+        .select("id, variant_of")
+        .eq("id", productId)
+        .single();
+
+    if (!product) return;
+
+    const principalId = product.variant_of ?? product.id;
+
+    // Get all members of this group (principal + variants)
+    const { data: members } = await supabase
+        .from("products")
+        .select("id, size, stock(quantity)")
+        .or(`id.eq.${principalId},variant_of.eq.${principalId}`);
+
+    if (!members || members.length === 0) return;
+
+    const availableSizes = members
+        .filter((m) => m.size)
+        .map((m) => ({
+            size: m.size!,
+            quantity: (m as any).stock?.[0]?.quantity ?? (m as any).stock?.quantity ?? 0,
+        }))
+        .sort((a, b) => {
+            const na = parseFloat(a.size);
+            const nb = parseFloat(b.size);
+            if (!isNaN(na) && !isNaN(nb)) return na - nb;
+            return a.size.localeCompare(b.size);
+        });
+
+    const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
+
+    await supabase
+        .from("products")
+        .update({ available_sizes: availableSizes })
+        .eq("id", principalId);
+
+    await supabase
+        .from("stock")
+        .upsert({ product_id: principalId, quantity: totalStock }, { onConflict: "product_id" });
 }

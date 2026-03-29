@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { shopifyAdapter } from "@/lib/pos/shopify";
 import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
+import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -50,6 +51,9 @@ export async function POST(request: NextRequest) {
                 product_id: product.id,
                 quantity: newQty,
             });
+
+            // Recalculate available_sizes on the group principal
+            await recalculateGroupSizesAdmin(product.id);
 
             await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,

@@ -1,14 +1,15 @@
 const CLOTHING_REGEX = /(?:^|[\s—–\-\/,()]+|(?:taille|size|t\.)\s*)(XXS|XS|XXL|XXXL|XL|S|M|L)(?:\s*$|[\s—–\-\/,()]+|$)/i;
 
-const SHOE_REGEX = /(?:^|[\s—–\-\/,()]+|(?:taille|size|t\.)\s*)((?:3[5-9]|4[0-8])(?:\.5)?)(?:\s*$|[\s—–\-\/,()]+|$)/;
+// Matches sizes 35-62 (shoes, rings, gloves) with optional .5
+const NUMERIC_SIZE_REGEX = /(?:^|[\s—–\-\/,()]+|(?:taille|size|t\.)\s*)((?:3[5-9]|[4-5][0-9]|6[0-2])(?:\.5)?)(?:\s*$|[\s—–\-\/,()]+|$)/;
 
 export function extractSize(name: string): string | null {
     if (!name) return null;
 
-    // Try shoe size first (more specific — avoids matching "S" in words)
-    const shoeMatch = name.match(SHOE_REGEX);
-    if (shoeMatch?.[1]) {
-        return shoeMatch[1];
+    // Try numeric size first (more specific — avoids matching "S" in words)
+    const numericMatch = name.match(NUMERIC_SIZE_REGEX);
+    if (numericMatch?.[1]) {
+        return numericMatch[1];
     }
 
     // Try clothing size

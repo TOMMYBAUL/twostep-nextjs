@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
         .from("products")
         .select("id, name, price, photo_url, photo_processed_url, category, size, merchant_id, created_at, merchants!inner(name, photo_url)")
         .in("merchant_id", ids)
+        .is("variant_of", null)
+        .eq("visible", true)
         .order("created_at", { ascending: false })
         .limit(60);
 

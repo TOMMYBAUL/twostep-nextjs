@@ -4,6 +4,7 @@ import { squareAdapter } from "@/lib/pos/square";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
+import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -46,6 +47,9 @@ export async function POST(request: Request) {
                 product_id: product.id,
                 quantity: Math.max(0, update.quantity),
             });
+
+            // Recalculate available_sizes on the group principal
+            await recalculateGroupSizesAdmin(product.id);
 
             // Emit restock feed_event
             await supabase.from("feed_events").insert({

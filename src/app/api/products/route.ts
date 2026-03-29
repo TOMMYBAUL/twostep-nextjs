@@ -20,11 +20,22 @@ export async function GET(request: Request) {
             return NextResponse.json({ products: [] });
         }
 
-        const { data, error } = await supabase
+        const incomplete = searchParams.get("incomplete") === "true";
+
+        let query = supabase
             .from("products")
             .select("*, stock(quantity)")
-            .eq("merchant_id", merchantId)
-            .order("name");
+            .eq("merchant_id", merchantId);
+
+        if (incomplete) {
+            // Products without EAN that need manual completion
+            query = query.eq("visible", false).is("ean", null);
+        } else {
+            // Normal listing: exclude variants (merchant sees only principal products)
+            query = query.is("variant_of", null);
+        }
+
+        const { data, error } = await query.order("name");
 
         if (error) {
             return NextResponse.json({ error: "Operation failed" }, { status: 500 });

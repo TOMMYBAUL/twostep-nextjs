@@ -3,18 +3,16 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { ArrowLeft, ChevronRight, Phone01, XClose } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 
-interface SiblingSize {
+interface SizeVariant {
     size: string;
-    product_id: string;
-    slug: string | null;
-    in_stock: boolean;
+    quantity: number;
 }
 
 interface ProductDetail {
@@ -31,7 +29,7 @@ interface ProductDetail {
     merchant_id: string;
     stock: { quantity: number }[];
     promotions: { sale_price: number; ends_at: string | null }[];
-    available_sizes: SiblingSize[];
+    available_sizes: SizeVariant[];
     merchants?: {
         name: string;
         address: string;
@@ -44,7 +42,6 @@ interface ProductDetail {
 
 export default function ProductDetailClient() {
     const { id } = useParams<{ id: string }>();
-    const router = useRouter();
 
     const { data: product, isLoading } = useQuery<ProductDetail>({
         queryKey: ["product", id],
@@ -63,7 +60,8 @@ export default function ProductDetailClient() {
     const productUuid = product?.id;
     const isFavorite = productUuid ? favoriteIds.has(productUuid) : false;
 
-    const quantity = product?.stock?.[0]?.quantity ?? 0;
+    const stockData = product?.stock;
+    const quantity = Array.isArray(stockData) ? (stockData[0]?.quantity ?? 0) : ((stockData as any)?.quantity ?? 0);
     const activePromo = product?.promotions?.find(
         (p) => !p.ends_at || new Date(p.ends_at) > new Date(),
     );
@@ -71,7 +69,8 @@ export default function ProductDetailClient() {
     const displayPrice = activePromo ? activePromo.sale_price : product?.price;
 
     const availableSizes = product?.available_sizes ?? [];
-    const hasMultipleSizes = availableSizes.length > 1;
+    const hasSizes = availableSizes.length > 0;
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
     const [sizeSheetOpen, setSizeSheetOpen] = useState(false);
     const [sizeChartOpen, setSizeChartOpen] = useState(false);
@@ -85,9 +84,9 @@ export default function ProductDetailClient() {
     return (
         <div className="min-h-dvh bg-[#130e07] md:flex md:min-h-screen md:flex-row">
             {/* ── Image zone ── */}
-            <div className="relative h-[300px] w-full overflow-hidden bg-[#1e1409] md:sticky md:top-0 md:h-screen md:w-1/2">
+            <div className={`relative h-[300px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2 ${product?.photo_processed_url ? "bg-white" : "bg-[#1e1409]"}`}>
                 {(product?.photo_processed_url ?? product?.photo_url) ? (
-                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.name ?? ""} className="h-full w-full object-cover object-center" />
+                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.name ?? ""} className={`h-full w-full object-center ${product?.photo_processed_url ? "object-contain p-4" : "object-cover"}`} />
                 ) : (
                     <div className="flex h-full items-center justify-center">
                         {isLoading ? null : (
@@ -173,18 +172,18 @@ export default function ProductDetailClient() {
                     </div>
 
                     {/* ── Size selector line ── */}
-                    {product.size && (
+                    {hasSizes && (
                         <button
                             type="button"
-                            onClick={() => hasMultipleSizes && setSizeSheetOpen(true)}
+                            onClick={() => setSizeSheetOpen(true)}
                             className="flex w-full items-center justify-between border-y-[0.5px] border-[rgba(255,255,255,0.07)] py-4"
                         >
                             <span className="text-[13px] text-[#a07840]">
-                                {/^\d/.test(product.size) ? "Pointure" : "Taille"}
+                                {/^\d/.test(availableSizes[0].size) ? "Pointure" : "Taille"}
                             </span>
                             <span className="flex items-center gap-1.5 text-[13px] font-medium text-[#f0dfc0]">
-                                {product.size}
-                                {hasMultipleSizes && <ChevronRight className="size-4 text-[#3d2a10]" />}
+                                {selectedSize ?? "Sélectionner"}
+                                <ChevronRight className="size-4 text-[#3d2a10]" />
                             </span>
                         </button>
                     )}
@@ -273,7 +272,7 @@ export default function ProductDetailClient() {
                                 <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#3d2a10]" />
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-[15px] font-semibold text-[#f0dfc0]">
-                                        {/^\d/.test(product?.size ?? "") ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
+                                        {/^\d/.test(availableSizes[0]?.size ?? "") ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
                                     </h2>
                                     <button type="button" onClick={() => setSizeSheetOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[#2a1a08]">
                                         <XClose className="size-4 text-[#a07840]" />
@@ -284,22 +283,20 @@ export default function ProductDetailClient() {
                             {/* Size grid */}
                             <div className="grid grid-cols-4 gap-2 px-5 pb-4">
                                 {availableSizes.map((s) => {
-                                    const isCurrent = s.product_id === product?.id;
-                                    const isOos = !s.in_stock;
+                                    const isSelected = selectedSize === s.size;
+                                    const isOos = s.quantity === 0;
 
                                     return (
                                         <button
-                                            key={s.product_id}
+                                            key={s.size}
                                             type="button"
                                             disabled={isOos}
                                             onClick={() => {
+                                                setSelectedSize(s.size);
                                                 setSizeSheetOpen(false);
-                                                if (!isCurrent) {
-                                                    router.push(`/product/${s.slug ?? s.product_id}`);
-                                                }
                                             }}
                                             className={`relative rounded-xl border-[0.5px] py-3 text-[13px] font-medium transition duration-100 ${
-                                                isCurrent
+                                                isSelected
                                                     ? "border-[#c87830] bg-[#c87830] text-[#130e07]"
                                                     : isOos
                                                       ? "border-[#2a1a08] bg-[#1c1209] text-[#3d2a10] line-through"

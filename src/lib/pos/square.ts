@@ -84,6 +84,7 @@ export const squareAdapter: IPOSAdapter = {
 
     async getCatalog(accessToken: string): Promise<POSProduct[]> {
         const products: POSProduct[] = [];
+        const imageIdsToFetch = new Set<string>();
         let cursor: string | undefined;
 
         do {
@@ -95,6 +96,11 @@ export const squareAdapter: IPOSAdapter = {
             for (const obj of data.objects || []) {
                 if (obj.type !== "ITEM") continue;
                 const item = obj.item_data;
+
+                // Collect image IDs for batch fetch
+                for (const imgId of item.image_ids ?? []) {
+                    imageIdsToFetch.add(imgId);
+                }
 
                 for (const variation of item.variations || []) {
                     const v = variation.item_variation_data;
@@ -109,13 +115,45 @@ export const squareAdapter: IPOSAdapter = {
                         ean: v.sku || null,
                         price: v.price_money ? Number(v.price_money.amount) / 100 : null,
                         category: null,
-                        photo_url: null,
+                        // Store parent item ID temporarily to resolve images later
+                        photo_url: item.image_ids?.[0] ? `__square_img__${item.image_ids[0]}` : null,
                     });
                 }
             }
 
             cursor = data.cursor;
         } while (cursor);
+
+        // Batch fetch image URLs from Square
+        if (imageIdsToFetch.size > 0) {
+            const imageMap = new Map<string, string>();
+            const ids = [...imageIdsToFetch];
+
+            for (let i = 0; i < ids.length; i += 100) {
+                const batch = ids.slice(i, i + 100);
+                try {
+                    const data = await squareFetch("/catalog/batch-retrieve", accessToken, {
+                        method: "POST",
+                        body: JSON.stringify({ object_ids: batch }),
+                    });
+                    for (const obj of data.objects ?? []) {
+                        if (obj.type === "IMAGE" && obj.image_data?.url) {
+                            imageMap.set(obj.id, obj.image_data.url);
+                        }
+                    }
+                } catch {
+                    // Non-critical: products will have no photo
+                }
+            }
+
+            // Resolve placeholder URLs to real image URLs
+            for (const product of products) {
+                if (product.photo_url?.startsWith("__square_img__")) {
+                    const imgId = product.photo_url.slice("__square_img__".length);
+                    product.photo_url = imageMap.get(imgId) ?? null;
+                }
+            }
+        }
 
         return products;
     },

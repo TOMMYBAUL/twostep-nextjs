@@ -28,7 +28,20 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Search failed" }, { status: 500 });
         }
 
-        return NextResponse.json({ results: data ?? [], count: data?.length ?? 0 }, {
+        // Filter out variants and non-visible products
+        const productIds = (data ?? []).map((r: any) => r.product_id);
+        let results = data ?? [];
+        if (productIds.length > 0) {
+            const { data: hidden } = await supabase
+                .from("products")
+                .select("id")
+                .in("id", [...new Set(productIds)])
+                .or("variant_of.not.is.null,visible.eq.false");
+            const hiddenSet = new Set((hidden ?? []).map((r: any) => r.id));
+            results = results.filter((r: any) => !hiddenSet.has(r.product_id));
+        }
+
+        return NextResponse.json({ results, count: results.length }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" },
         });
     } catch {

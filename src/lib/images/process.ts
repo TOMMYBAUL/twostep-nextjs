@@ -30,10 +30,17 @@ export async function processProductImage(sourceUrl: string): Promise<Buffer> {
     // 2. Remove background via rembg
     const transparentPng = await removeBackground(sourceBuffer);
 
-    // 3. Trim transparent pixels, get bounding box
-    const trimmed = sharp(transparentPng).trim();
-    const trimmedBuffer = await trimmed.toBuffer();
-    const { width, height } = await sharp(trimmedBuffer).metadata();
+    // 3. Trim transparent pixels on the RGBA image (before flattening)
+    //    This preserves white parts of the product (e.g. white sneakers)
+    const trimmedInfo = await sharp(transparentPng)
+        .trim({ threshold: 0 })
+        .toBuffer({ resolveWithObject: true });
+
+    // Flatten trimmed result to white background
+    const trimmedBuffer = await sharp(trimmedInfo.data)
+        .flatten({ background: { r: 255, g: 255, b: 255 } })
+        .toBuffer();
+    const { width, height } = trimmedInfo.info;
 
     if (!width || !height) throw new Error("Could not read trimmed image dimensions");
 

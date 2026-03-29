@@ -32,12 +32,16 @@ export async function GET(request: NextRequest) {
 
         // Resolve categories for returned product IDs
         const productIds = (data ?? []).map((r: any) => r.product_id);
-        const categoryMap = await resolveCategories(supabase, productIds);
+        const [categoryMap, hiddenIds] = await Promise.all([
+            resolveCategories(supabase, productIds),
+            resolveHiddenIds(supabase, productIds),
+        ]);
         const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
 
         // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
         const seen = new Set<string>();
         const products = (data ?? [])
+            .filter((row: any) => !hiddenIds.has(row.product_id))
             .filter((row: any) => {
                 const key = `${row.product_id}::${row.merchant_id}`;
                 if (seen.has(key)) return false;
@@ -80,14 +84,18 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
-    // Resolve categories and merchant photos for returned product IDs
+    // Resolve categories, merchant photos, and visibility for returned product IDs
     const productIds = items.map((r: any) => r.product_id);
     const merchantIds = [...new Set<string>(items.map((r: any) => r.merchant_id))];
-    const [categoryMap, merchantPhotoMap] = await Promise.all([
+    const [categoryMap, merchantPhotoMap, hiddenIds] = await Promise.all([
         resolveCategories(supabase, productIds),
         resolveMerchantPhotos(supabase, merchantIds),
+        resolveHiddenIds(supabase, productIds),
     ]);
     const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
+
+    // Filter out variants and non-visible products
+    items = items.filter((row: any) => !hiddenIds.has(row.product_id));
 
     // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
     const seen = new Set<string>();
@@ -168,6 +176,20 @@ async function resolveSizes(
         map.set(row.id, row.size);
     }
     return map;
+}
+
+/** Returns a Set of product IDs that should be hidden (variants or not visible) */
+async function resolveHiddenIds(
+    supabase: any,
+    productIds: string[],
+): Promise<Set<string>> {
+    if (productIds.length === 0) return new Set();
+    const { data } = await supabase
+        .from("products")
+        .select("id")
+        .in("id", [...new Set(productIds)])
+        .or("variant_of.not.is.null,visible.eq.false");
+    return new Set((data ?? []).map((r: any) => r.id));
 }
 
 /** Fetch categories for a list of product IDs in one query */

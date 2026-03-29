@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
+import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -51,6 +52,8 @@ export async function POST(request: NextRequest) {
                 product_id: product.id,
                 quantity: newQty,
             });
+
+            await recalculateGroupSizesAdmin(product.id);
 
             await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,
