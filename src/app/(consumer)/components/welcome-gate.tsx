@@ -99,10 +99,10 @@ export function WelcomeGate() {
                         {/* Logo */}
                         <div className="mb-6 text-center">
                             <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
-                            <h1 className="font-display text-xl font-bold text-[var(--ts-brown)]">
+                            <h1 className="font-display text-xl font-bold text-[#1A1F36]">
                                 Bienvenue sur Two-Step
                             </h1>
-                            <p className="mt-1 text-sm text-[var(--ts-brown-mid)]/60">
+                            <p className="mt-1 text-sm text-[#8E96B0]/60">
                                 Le produit exact que tu cherches, à deux pas de chez toi.
                             </p>
                         </div>
@@ -110,14 +110,14 @@ export function WelcomeGate() {
                         {/* Value props */}
                         <div className="mb-8 space-y-4">
                             <ValueProp
-                                icon={<MarkerPin01 className="size-4 text-[var(--ts-ochre)]" />}
-                                iconBg="bg-[var(--ts-ochre)]/10"
+                                icon={<MarkerPin01 className="size-4 text-[#4268FF]" />}
+                                iconBg="bg-[#4268FF]/10"
                                 title="Découvre ton quartier"
                                 description="Stock réel, mis à jour par les commerçants"
                             />
                             <ValueProp
-                                icon={<Heart className="size-4 text-[var(--ts-red)]" />}
-                                iconBg="bg-[var(--ts-red)]/10"
+                                icon={<Heart className="size-4 text-[#D94F4F]" />}
+                                iconBg="bg-[#D94F4F]/10"
                                 title="Sauvegarde tes favoris"
                                 description="On te prévient des nouveautés et des promos"
                             />
@@ -127,21 +127,21 @@ export function WelcomeGate() {
                         <button
                             type="button"
                             onClick={() => setMode("signup")}
-                            className="w-full rounded-2xl bg-[var(--ts-ochre)] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                            className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
                         >
                             Créer un compte
                         </button>
                         <button
                             type="button"
                             onClick={() => setMode("login")}
-                            className="mt-2 w-full rounded-2xl border-2 border-[var(--ts-cream-dark)] py-3.5 text-sm font-semibold text-[var(--ts-brown)] transition duration-150 active:bg-[var(--ts-cream)]"
+                            className="mt-2 w-full rounded-2xl border-2 border-[#E2E5F0] py-3.5 text-sm font-semibold text-[#1A1F36] transition duration-150 active:bg-[#F5F6FA]"
                         >
                             J'ai déjà un compte
                         </button>
                         <button
                             type="button"
                             onClick={dismiss}
-                            className="mt-4 w-full py-2 text-xs text-[var(--ts-brown-mid)]/40 transition duration-150"
+                            className="mt-4 w-full py-2 text-xs text-[#8E96B0]/40 transition duration-150"
                         >
                             Passer pour le moment
                         </button>
@@ -150,17 +150,17 @@ export function WelcomeGate() {
                     /* ── Sizing step (after signup) ── */
                     <>
                         <div className="mb-5 text-center">
-                            <h2 className="font-display text-lg font-bold text-[var(--ts-brown)]">
+                            <h2 className="font-display text-lg font-bold text-[#1A1F36]">
                                 Tes préférences
                             </h2>
-                            <p className="mt-1 text-xs text-[var(--ts-brown-mid)]/50">
+                            <p className="mt-1 text-xs text-[#8E96B0]/50">
                                 Optionnel — pour te montrer les produits dans ta taille
                             </p>
                         </div>
 
                         {/* Clothing size */}
                         <div className="mb-5">
-                            <label className="mb-2 block text-xs font-semibold text-[var(--ts-brown)]">Taille vêtements</label>
+                            <label className="mb-2 block text-xs font-semibold text-[#1A1F36]">Taille vêtements</label>
                             <div className="flex flex-wrap gap-2">
                                 {CLOTHING_SIZES.map((size) => (
                                     <button
@@ -170,8 +170,8 @@ export function WelcomeGate() {
                                         className={cx(
                                             "rounded-xl px-4 py-2.5 text-sm font-medium transition duration-100",
                                             clothingSize === size
-                                                ? "bg-[var(--ts-ochre)] text-white shadow-sm"
-                                                : "border-2 border-[var(--ts-cream-dark)] text-[var(--ts-brown)] active:border-[var(--ts-ochre)]",
+                                                ? "bg-[#4268FF] text-white shadow-sm"
+                                                : "border-2 border-[#E2E5F0] text-[#1A1F36] active:border-[#4268FF]",
                                         )}
                                     >
                                         {size}
@@ -182,7 +182,7 @@ export function WelcomeGate() {
 
                         {/* Shoe size */}
                         <div className="mb-6">
-                            <label className="mb-2 block text-xs font-semibold text-[var(--ts-brown)]">Pointure</label>
+                            <label className="mb-2 block text-xs font-semibold text-[#1A1F36]">Pointure</label>
                             <div className="flex flex-wrap gap-1.5">
                                 {SHOE_SIZES.map((size) => (
                                     <button
@@ -192,8 +192,8 @@ export function WelcomeGate() {
                                         className={cx(
                                             "rounded-lg px-2.5 py-2 text-xs font-medium transition duration-100",
                                             shoeSize === size
-                                                ? "bg-[var(--ts-ochre)] text-white shadow-sm"
-                                                : "border-2 border-[var(--ts-cream-dark)] text-[var(--ts-brown)] active:border-[var(--ts-ochre)]",
+                                                ? "bg-[#4268FF] text-white shadow-sm"
+                                                : "border-2 border-[#E2E5F0] text-[#1A1F36] active:border-[#4268FF]",
                                         )}
                                     >
                                         {size}
@@ -205,7 +205,7 @@ export function WelcomeGate() {
                         <button
                             type="button"
                             onClick={handleSizingSave}
-                            className="w-full rounded-2xl bg-[var(--ts-ochre)] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                            className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
                         >
                             {clothingSize || shoeSize ? "Enregistrer" : "Passer cette étape"}
                         </button>
@@ -213,33 +213,33 @@ export function WelcomeGate() {
                 ) : (
                     /* ── Login / Signup form ── */
                     <>
-                        <h2 className="mb-5 text-center font-display text-lg font-bold text-[var(--ts-brown)]">
+                        <h2 className="mb-5 text-center font-display text-lg font-bold text-[#1A1F36]">
                             {mode === "signup" ? "Créer un compte" : "Se connecter"}
                         </h2>
 
                         {error && (
-                            <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-[var(--ts-red)]">{error}</p>
+                            <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-[#D94F4F]">{error}</p>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-3">
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[var(--ts-brown)]">Email</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder="ton@email.fr"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[var(--ts-brown)]">Mot de passe</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Mot de passe</label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
                                     required
                                     minLength={mode === "signup" ? 8 : undefined}
@@ -248,7 +248,7 @@ export function WelcomeGate() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full rounded-2xl bg-[var(--ts-ochre)] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90 disabled:opacity-50"
+                                className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90 disabled:opacity-50"
                             >
                                 {loading ? "Chargement..." : mode === "signup" ? "S'inscrire" : "Se connecter"}
                             </button>
@@ -258,14 +258,14 @@ export function WelcomeGate() {
                             <button
                                 type="button"
                                 onClick={() => { setMode("welcome"); setError(""); }}
-                                className="text-xs font-medium text-[var(--ts-brown-mid)]/50"
+                                className="text-xs font-medium text-[#8E96B0]/50"
                             >
                                 ← Retour
                             </button>
                             <button
                                 type="button"
                                 onClick={dismiss}
-                                className="text-xs text-[var(--ts-brown-mid)]/40"
+                                className="text-xs text-[#8E96B0]/40"
                             >
                                 Passer
                             </button>
@@ -284,8 +284,8 @@ function ValueProp({ icon, iconBg, title, description }: { icon: React.ReactNode
                 {icon}
             </div>
             <div>
-                <p className="text-sm font-semibold text-[var(--ts-brown)]">{title}</p>
-                <p className="text-xs text-[var(--ts-brown-mid)]/50">{description}</p>
+                <p className="text-sm font-semibold text-[#1A1F36]">{title}</p>
+                <p className="text-xs text-[#8E96B0]/50">{description}</p>
             </div>
         </div>
     );
