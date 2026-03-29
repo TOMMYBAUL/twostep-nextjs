@@ -40,14 +40,14 @@ export function TabBar() {
                             className={cx(
                                 "relative flex flex-1 flex-col items-center gap-0.5 pb-1 pt-2 text-[10px] font-medium transition duration-150 ease-out",
                                 isActive
-                                    ? "text-[var(--ts-ochre)]"
-                                    : "text-gray-400 active:text-[#3558E0]",
+                                    ? "text-[#4268FF]"
+                                    : "text-gray-400 active:text-[#4268FF]",
                             )}
                         >
                             {isActive && (
                                 <motion.span
                                     layoutId="tab-indicator"
-                                    className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-[var(--ts-ochre)]"
+                                    className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-[#4268FF]"
                                     transition={{ type: "spring", stiffness: 500, damping: 35 }}
                                 />
                             )}
