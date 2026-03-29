@@ -47,7 +47,7 @@ export function ProductCard({
             className={cx("group block", className)}
         >
             {/* Photo — square, neutral bg, no border/shadow */}
-            <div className="relative aspect-square w-full overflow-hidden bg-[#F0EDE8]">
+            <div className="relative aspect-square w-full overflow-hidden bg-[#F8F9FC]">
                 {photo ? (
                     <Image
                         src={photo}
@@ -88,38 +88,38 @@ export function ProductCard({
             <div className="mt-3 space-y-0.5">
                 {/* Category — small, muted */}
                 {category && (
-                    <p className="text-[11px] font-light text-[#F5EDD8]/35">{category}</p>
+                    <p className="text-[11px] font-light text-[#1A1F36]/35">{category}</p>
                 )}
 
                 {/* Merchant — bold */}
-                <p className="text-[13px] font-bold text-[#F5EDD8]">{merchantName}</p>
+                <p className="text-[13px] font-bold text-[#1A1F36]">{merchantName}</p>
 
                 {/* Product name — normal weight, allows wrapping */}
-                <p className="text-[13px] leading-snug text-[#F5EDD8]/60">{name}</p>
+                <p className="text-[13px] leading-snug text-[#1A1F36]/60">{name}</p>
 
                 {/* Price */}
                 <div className="flex items-baseline gap-2 pt-0.5">
                     {salePrice ? (
                         <>
-                            <span className="text-[13px] text-[#F5EDD8]">{salePrice.toFixed(2)} €</span>
-                            <span className="text-[11px] text-[#F5EDD8]/30 line-through">{price.toFixed(2)} €</span>
+                            <span className="text-[13px] text-[#1A1F36]">{salePrice.toFixed(2)} €</span>
+                            <span className="text-[11px] text-[#1A1F36]/30 line-through">{price.toFixed(2)} €</span>
                         </>
                     ) : (
-                        <span className="text-[13px] text-[#F5EDD8]">{price.toFixed(2)} €</span>
+                        <span className="text-[13px] text-[#1A1F36]">{price.toFixed(2)} €</span>
                     )}
                 </div>
 
                 {/* Distance + stock — subtle footer */}
                 <div className="flex items-center gap-2 pt-1">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-[#F5EDD8]/30">
+                    <span className="inline-flex items-center gap-0.5 text-[10px] text-[#1A1F36]/30">
                         <MarkerPin01 className="size-2.5" aria-hidden="true" />
                         {formattedDistance}
                     </span>
                     {isOut && (
-                        <span className="text-[10px] text-[#F5EDD8]/30">Indisponible</span>
+                        <span className="text-[10px] text-[#1A1F36]/30">Indisponible</span>
                     )}
                     {isLow && (
-                        <span className="text-[10px] text-[#C17B2F]">Dernières pièces</span>
+                        <span className="text-[10px] text-[#4268FF]">Dernières pièces</span>
                     )}
                 </div>
             </div>

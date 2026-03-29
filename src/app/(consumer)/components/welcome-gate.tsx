@@ -228,7 +228,7 @@ export function WelcomeGate() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(200,129,58,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder="ton@email.fr"
                                     required
                                 />
@@ -239,7 +239,7 @@ export function WelcomeGate() {
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(200,129,58,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[var(--ts-cream-dark)] bg-white px-4 py-3 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
                                     required
                                     minLength={mode === "signup" ? 8 : undefined}

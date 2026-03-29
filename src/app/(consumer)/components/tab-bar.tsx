@@ -18,7 +18,7 @@ export function TabBar() {
 
     return (
         <nav
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#3D2A1A] bg-[#0d0904]/95 backdrop-blur-md"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-md"
             role="tablist"
             aria-label="Navigation principale"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
@@ -41,7 +41,7 @@ export function TabBar() {
                                 "relative flex flex-1 flex-col items-center gap-0.5 pb-1 pt-2 text-[10px] font-medium transition duration-150 ease-out",
                                 isActive
                                     ? "text-[var(--ts-ochre)]"
-                                    : "text-[#F5EDD8]/40 active:text-[#C17B2F]",
+                                    : "text-gray-400 active:text-[#3558E0]",
                             )}
                         >
                             {isActive && (

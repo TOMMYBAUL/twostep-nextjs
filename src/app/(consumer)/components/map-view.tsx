@@ -48,7 +48,7 @@ function createPinElement(merchant: Merchant, isSelected: boolean): HTMLElement 
     el.style.cursor = "pointer";
 
     const circle = document.createElement("div");
-    circle.style.cssText = `width:100%;height:100%;border-radius:50%;border:2.5px solid ${isSelected ? "#E07A5F" : "white"};box-shadow:0 1px 6px rgba(0,0,0,0.15);overflow:hidden;display:flex;align-items:center;justify-content:center;`;
+    circle.style.cssText = `width:100%;height:100%;border-radius:50%;border:2.5px solid ${isSelected ? "#4268FF" : "white"};box-shadow:0 1px 6px rgba(0,0,0,0.15);overflow:hidden;display:flex;align-items:center;justify-content:center;`;
 
     if (logo) {
         circle.style.background = "white";
@@ -57,7 +57,7 @@ function createPinElement(merchant: Merchant, isSelected: boolean): HTMLElement 
         img.style.cssText = "width:100%;height:100%;object-fit:cover;";
         img.onerror = () => {
             img.remove();
-            circle.style.background = "#C8813A";
+            circle.style.background = "#4268FF";
             circle.style.color = "white";
             circle.style.fontSize = "13px";
             circle.style.fontWeight = "800";
@@ -65,7 +65,7 @@ function createPinElement(merchant: Merchant, isSelected: boolean): HTMLElement 
         };
         circle.appendChild(img);
     } else {
-        circle.style.background = "#C8813A";
+        circle.style.background = "#4268FF";
         circle.style.color = "white";
         circle.style.fontSize = "13px";
         circle.style.fontWeight = "800";
@@ -88,7 +88,7 @@ function createClusterElement(count: number): HTMLElement {
     el.style.cursor = "pointer";
 
     const circle = document.createElement("div");
-    circle.style.cssText = `width:100%;height:100%;border-radius:50%;background:#C8813A;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;color:white;font-size:${size >= 56 ? 16 : 14}px;font-weight:800;`;
+    circle.style.cssText = `width:100%;height:100%;border-radius:50%;background:#4268FF;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;color:white;font-size:${size >= 56 ? 16 : 14}px;font-weight:800;`;
     circle.textContent = String(count);
 
     el.appendChild(circle);

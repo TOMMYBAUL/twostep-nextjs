@@ -21,7 +21,7 @@ export function SearchBar({ value, onChange, onSubmit }: SearchBarProps) {
             <div
                 className={cx(
                     "flex items-center gap-2 rounded-xl border px-3 py-2.5 transition duration-100",
-                    isFocused ? "border-[var(--ts-ochre)] shadow-[0_0_0_3px_rgba(200,129,58,0.15)]" : "border-secondary",
+                    isFocused ? "border-[var(--ts-ochre)] shadow-[0_0_0_3px_rgba(66,104,255,0.15)]" : "border-secondary",
                 )}
             >
                 <SearchMd className="size-5 text-quaternary" aria-hidden="true" />
