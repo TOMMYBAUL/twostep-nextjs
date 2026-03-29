@@ -47,7 +47,7 @@ interface Promotion {
     sale_price: number;
 }
 
-const SUB_TABS = ["Catalogue", "Nouveautés", "Promos", "Avis"];
+const SUB_TABS = ["Catalogue", "Promos", "Avis"];
 
 export default function ShopProfileClient() {
     const { id } = useParams<{ id: string }>();
@@ -106,12 +106,6 @@ export default function ShopProfileClient() {
     const promoMap = new Map((promotions ?? []).map((p) => [p.product_id, p.sale_price]));
 
     const filteredProducts = (products ?? []).filter((p) => {
-        if (activeTab === "Nouveautés") {
-            const created = new Date(p.created_at);
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            return created >= thirtyDaysAgo;
-        }
         if (activeTab === "Promos") {
             return promoMap.has(p.id);
         }
@@ -304,7 +298,7 @@ export default function ShopProfileClient() {
             <div className="grid grid-cols-2 gap-3 p-4 pb-24">
                 {filteredProducts.length === 0 ? (
                     <p className="col-span-2 py-12 text-center text-sm text-[#8E96B0]/40">
-                        {activeTab === "Promos" ? "Aucune promo en cours" : activeTab === "Nouveautés" ? "Pas de nouveautés récentes" : "Aucun produit"}
+                        {activeTab === "Promos" ? "Aucune promo en cours" : "Aucun produit"}
                     </p>
                 ) : (
                     filteredProducts.map((p) => {
