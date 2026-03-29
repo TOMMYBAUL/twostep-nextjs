@@ -4,7 +4,7 @@ type ScoreProps = { score: number };
 
 function getScoreColor(score: number) {
     if (score >= 80) return "#5a9474";
-    if (score >= 50) return "#E07A5F";
+    if (score >= 50) return "#4268FF";
     return "#c4553a";
 }
 

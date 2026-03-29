@@ -257,7 +257,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
             >
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-semibold text-[#2C1A0E]">
+                        <span className="text-xs font-semibold text-[#FFFFFF]">
                             Configuration boutique
                         </span>
                         <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">

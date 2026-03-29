@@ -238,7 +238,7 @@ export default function StorePage() {
                             {ALL_ACHIEVEMENT_TYPES.length > 5 && (
                                 <Link
                                     href="/dashboard/achievements"
-                                    className="block text-center text-xs text-[#8B7355] hover:text-[#D4A574] no-underline py-2 transition"
+                                    className="block text-center text-xs text-[#8B7355] hover:text-[#8E96B0] no-underline py-2 transition"
                                 >
                                     Voir les {ALL_ACHIEVEMENT_TYPES.length - 5} autres trophées →
                                 </Link>

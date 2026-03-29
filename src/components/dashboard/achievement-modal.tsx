@@ -7,7 +7,7 @@ import confetti from "canvas-confetti";
 import { useCelebration } from "@/providers/celebration-provider";
 import { AchievementIconRenderer } from "./achievement-icon-renderer";
 
-const CONFETTI_COLORS = ["#D4A574", "#E07A5F", "#81B29A", "#FFD700"];
+const CONFETTI_COLORS = ["#8E96B0", "#4268FF", "#22B86E", "#FFD700"];
 
 function heavyConfetti() {
     const end = Date.now() + 3000;
@@ -51,7 +51,7 @@ export function AchievementModal() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 z-[100] flex items-center justify-center"
-                    style={{ background: "rgba(44,26,14,0.5)" }}
+                    style={{ background: "rgba(26,31,54,0.5)" }}
                     onClick={dismiss}
                 >
                     <motion.div
@@ -60,7 +60,7 @@ export function AchievementModal() {
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
                         className="rounded-3xl bg-white px-8 py-10 text-center"
-                        style={{ maxWidth: 360, boxShadow: "0 8px 40px rgba(44,26,14,0.2)" }}
+                        style={{ maxWidth: 360, boxShadow: "0 8px 40px rgba(26,31,54,0.2)" }}
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div
@@ -78,13 +78,13 @@ export function AchievementModal() {
                         <p className="mt-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: current.color }}>
                             {current.gamifiedLabel}
                         </p>
-                        <p className="mt-2 text-[22px] font-extrabold text-[#2C1A0E]">{current.label}</p>
+                        <p className="mt-2 text-[22px] font-extrabold text-[#FFFFFF]">{current.label}</p>
                         <p className="mt-2 text-sm text-[#8B7355] leading-relaxed">{current.subtitle}</p>
 
                         <button
                             onClick={() => { dismiss(); router.push("/dashboard/achievements"); }}
                             className="mt-6 w-full rounded-xl py-3 text-sm font-bold text-white transition hover:opacity-90"
-                            style={{ background: "linear-gradient(135deg, #D4A574, #C4956A)" }}
+                            style={{ background: "linear-gradient(135deg, #8E96B0, #C4956A)" }}
                         >
                             Voir mes trophées
                         </button>

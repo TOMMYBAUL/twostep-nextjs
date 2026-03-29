@@ -29,14 +29,14 @@ function generateTasks(stats: DashboardStats): Task[] {
     return tasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]).slice(0, 3);
 }
 
-const priorityDot: Record<string, string> = { high: "#c4553a", medium: "#E07A5F", low: "#81B29A" };
+const priorityDot: Record<string, string> = { high: "#c4553a", medium: "#4268FF", low: "#22B86E" };
 
 export function TodayTasks({ stats }: { stats: DashboardStats }) {
     const tasks = generateTasks(stats);
 
     if (tasks.length === 0) {
         return (
-            <div className="rounded-xl bg-[#e8f3ee] px-5 py-4">
+            <div className="rounded-xl bg-[#E8F8EF] px-5 py-4">
                 <p className="text-sm font-semibold text-[#5a9474]">Tout est en ordre !</p>
                 <p className="mt-0.5 text-xs text-[#5a9474]/80">Votre boutique est bien configurée. Continuez comme ça.</p>
             </div>

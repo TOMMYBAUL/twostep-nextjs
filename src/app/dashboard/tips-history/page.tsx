@@ -66,7 +66,7 @@ export default function TipsHistoryPage() {
                 <Link href="/dashboard" className="text-sm text-[#8a7050] hover:text-[var(--ts-terracotta)]">
                     ← Retour au dashboard
                 </Link>
-                <h1 className="mt-2 text-lg font-semibold text-[#2c1a0e]">Historique des conseils</h1>
+                <h1 className="mt-2 text-lg font-semibold text-[#FFFFFF]">Historique des conseils</h1>
                 <p className="text-sm text-[#5a4020]">{total} conseil{total > 1 ? "s" : ""} au total</p>
             </div>
 
@@ -109,7 +109,7 @@ export default function TipsHistoryPage() {
                                 }`}>
                                     {tip.emoji} {tip.type === "insight" ? "Insight" : "Action"}
                                 </span>
-                                <p className="mt-1 text-[13px] leading-relaxed text-[#2c1a0e]">{tip.text}</p>
+                                <p className="mt-1 text-[13px] leading-relaxed text-[#FFFFFF]">{tip.text}</p>
                                 <p className="mt-1 text-[11px] text-[#8a7050]">
                                     {CATEGORIES.find((c) => c.value === tip.category)?.label || tip.category}
                                 </p>

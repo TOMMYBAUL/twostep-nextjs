@@ -6,7 +6,7 @@ import confetti from "canvas-confetti";
 import { useCelebration } from "@/providers/celebration-provider";
 import { AchievementIconRenderer } from "./achievement-icon-renderer";
 
-const CONFETTI_COLORS = ["#D4A574", "#E07A5F", "#81B29A", "#FFD700"];
+const CONFETTI_COLORS = ["#8E96B0", "#4268FF", "#22B86E", "#FFD700"];
 
 export function AchievementToast() {
     const { current, dismiss } = useCelebration();
@@ -41,7 +41,7 @@ export function AchievementToast() {
                         className="flex items-center gap-3.5 rounded-[20px] bg-white px-5 py-4"
                         style={{
                             border: `2px solid ${current.color}`,
-                            boxShadow: `0 4px 20px rgba(44,26,14,0.12)`,
+                            boxShadow: `0 4px 20px rgba(26,31,54,0.12)`,
                             minWidth: 300,
                             maxWidth: 380,
                         }}
@@ -59,7 +59,7 @@ export function AchievementToast() {
                             <p className="text-[11px] font-extrabold uppercase tracking-wide" style={{ color: current.color }}>
                                 {current.gamifiedLabel}
                             </p>
-                            <p className="text-sm font-bold text-[#2C1A0E]">{current.label}</p>
+                            <p className="text-sm font-bold text-[#FFFFFF]">{current.label}</p>
                             <p className="text-[11px] text-[#8B7355] mt-0.5">{current.subtitle}</p>
                         </div>
                         <button
