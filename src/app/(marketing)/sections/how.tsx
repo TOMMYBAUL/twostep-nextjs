@@ -15,24 +15,24 @@ export function How() {
             num: "01",
             title: "On se branche à votre caisse en un clic",
             desc: "Square, Shopify, Lightspeed, SumUp ou Zettle — Two-Step se connecte à votre logiciel de caisse en 30 secondes. Vos produits, vos prix, votre stock : tout se synchronise automatiquement. Zéro saisie, zéro effort.",
-            bg: "#EDE0C4", numColor: "rgba(44,32,24,0.1)", titleColor: "#2C2018", descColor: "#6B4F38",
+            bg: "#F8F9FC", numColor: "rgba(26,31,54,0.1)", titleColor: "#1A1F36", descColor: "#8E96B0",
         },
         {
             num: "02",
             title: "Votre stock devient votre vitrine",
             desc: "Vos produits apparaissent avec des photos retouchées automatiquement sur fond blanc professionnel. Les consommateurs de votre quartier voient ce que vous avez en boutique, en temps réel. Pas un site e-commerce à gérer — votre caisse fait le travail.",
-            bg: "#2C2018", numColor: "#C8813A", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.6)",
+            bg: "#1A1F36", numColor: "#4268FF", titleColor: "#FFFFFF", descColor: "rgba(200,214,240,0.65)",
         },
         {
             num: "03",
             title: "Votre réseau social, sans créer de contenu",
             desc: "Sur Instagram, vous passez des heures à créer des stories pour 15 vues. Sur Two-Step, vos clients vous trouvent parce qu'ils cherchent vos produits. Ils s'abonnent, suivent vos nouveautés et vous laissent des retours constructifs. Une communauté locale qui se construit toute seule.",
-            bg: "#C8813A", numColor: "rgba(245,237,214,0.18)", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.8)",
+            bg: "#4268FF", numColor: "rgba(255,255,255,0.18)", titleColor: "#FFFFFF", descColor: "rgba(255,255,255,0.85)",
         },
     ];
 
     return (
-        <section id="comment" ref={ref} style={{ background: "#F5EDD6", padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <section id="comment" ref={ref} style={{ background: "#FFFFFF", padding: isMobile ? "80px 24px" : "120px 48px" }}>
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
@@ -40,16 +40,16 @@ export function How() {
                     transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 56 }}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#C8813A", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
                         Comment ça marche
                     </div>
                     <h2 style={{
                         fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(36px, 5vw, 64px)",
-                        fontWeight: 800, color: "#2C2018", lineHeight: 1.06,
+                        fontWeight: 800, color: "#1A1F36", lineHeight: 1.06,
                         letterSpacing: "-0.03em", margin: 0, maxWidth: 560,
                     }}>
                         Branché. Visible.{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>Vendu.</em>
+                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>Vendu.</em>
                     </h2>
                 </motion.div>
 

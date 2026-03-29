@@ -36,7 +36,7 @@ export function Contact() {
     }
 
     return (
-        <section id="contact" ref={ref} style={{ background: "#F5EDD6", padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <section id="contact" ref={ref} style={{ background: "#070A10", padding: isMobile ? "80px 24px" : "120px 48px" }}>
             <div style={{ maxWidth: 580, margin: "0 auto" }}>
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
@@ -44,16 +44,16 @@ export function Contact() {
                     transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 48 }}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#C8813A", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
                         Vous êtes commerçant à Toulouse ?
                     </div>
                     <h2 style={{
                         fontSize: isMobile ? "clamp(30px, 8vw, 44px)" : "clamp(32px, 4.5vw, 56px)",
-                        fontWeight: 800, color: "#2C2018", lineHeight: 1.08,
+                        fontWeight: 800, color: "#C8D6F0", lineHeight: 1.08,
                         letterSpacing: "-0.03em", margin: 0,
                     }}>
                         Rejoignez les{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>pionniers.</em>
+                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>pionniers.</em>
                     </h2>
                 </motion.div>
 
@@ -61,7 +61,7 @@ export function Contact() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.93 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        style={{ padding: 48, borderRadius: 24, background: "#2C2018", textAlign: "center", position: "relative", overflow: "hidden" }}
+                        style={{ padding: 48, borderRadius: 24, background: "#1A1F36", textAlign: "center", position: "relative", overflow: "hidden" }}
                     >
                         {/* Confetti */}
                         {Array.from({ length: 8 }).map((_, i) => (
@@ -76,7 +76,7 @@ export function Contact() {
                                     left: `${40 + Math.random() * 20}%`,
                                     width: 4, height: 4,
                                     borderRadius: "50%",
-                                    background: i % 2 === 0 ? "#C8813A" : "#7A9E7E",
+                                    background: i % 2 === 0 ? "#4268FF" : "#7A9E7E",
                                 }}
                             />
                         ))}
@@ -88,7 +88,7 @@ export function Contact() {
                             transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
                             style={{
                                 width: 52, height: 52, borderRadius: "50%",
-                                background: "#C8813A",
+                                background: "#4268FF",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 margin: "0 auto 20px",
                             }}
@@ -103,10 +103,10 @@ export function Contact() {
                             </svg>
                         </motion.div>
 
-                        <p style={{ color: "#F5EDD6", fontWeight: 700, fontSize: 17, margin: "0 0 4px" }}>
+                        <p style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 17, margin: "0 0 4px" }}>
                             C'est envoyé !
                         </p>
-                        <p style={{ color: "rgba(245,237,214,0.5)", fontSize: 13, margin: 0 }}>
+                        <p style={{ color: "rgba(200,214,240,0.5)", fontSize: 13, margin: 0 }}>
                             On vous contacte sous 48h.
                         </p>
                     </motion.div>
@@ -143,7 +143,7 @@ export function Contact() {
                             key={shakeKey}
                             type="submit"
                             disabled={status === "sending"}
-                            whileHover={{ scale: 1.04, boxShadow: "0 12px 36px rgba(44,32,24,0.3)" }}
+                            whileHover={{ scale: 1.04, boxShadow: "0 12px 36px rgba(66,104,255,0.4)" }}
                             whileTap={{ scale: 0.97 }}
                             animate={status === "error" ? { x: [0, -8, 8, -6, 6, 0] } : {}}
                             transition={{ duration: 0.3 }}
@@ -151,8 +151,8 @@ export function Contact() {
                                 marginTop: 8,
                                 padding: "17px 36px",
                                 borderRadius: 999,
-                                background: "#2C2018",
-                                color: "#F5EDD6",
+                                background: "#4268FF",
+                                color: "#FFFFFF",
                                 fontWeight: 700,
                                 fontSize: 15,
                                 border: "none",
@@ -169,10 +169,10 @@ export function Contact() {
                             <motion.p
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                style={{ color: "#C8813A", fontSize: 14, margin: 0 }}
+                                style={{ color: "#4268FF", fontSize: 14, margin: 0 }}
                             >
                                 Une erreur s'est produite. Écrivez-nous à{" "}
-                                <a href="mailto:contact@twostep.fr" style={{ color: "#C8813A" }}>contact@twostep.fr</a>
+                                <a href="mailto:contact@twostep.fr" style={{ color: "#4268FF" }}>contact@twostep.fr</a>
                             </motion.p>
                         )}
                     </motion.form>

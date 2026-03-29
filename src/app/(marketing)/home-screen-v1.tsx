@@ -63,7 +63,7 @@ function FloatCard({ top, bottom, left, right, delay = 0, floatDuration = 4, chi
                 background: "#fff",
                 borderRadius: 16,
                 padding: "10px 16px",
-                boxShadow: "0 8px 32px rgba(44,32,24,0.13), 0 2px 8px rgba(44,32,24,0.06)",
+                boxShadow: "0 8px 32px rgba(26,31,54,0.13), 0 2px 8px rgba(26,31,54,0.06)",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
@@ -82,14 +82,14 @@ function FloatCard({ top, bottom, left, right, delay = 0, floatDuration = 4, chi
 function Marquee() {
     const base = "COMMERCE LOCAL  ·  STOCK VISIBLE  ·  TEMPS RÉEL  ·  TOULOUSE  ·  ZÉRO SAISIE  ·  VOS CLIENTS VIENNENT À VOUS  ·  ";
     return (
-        <div style={{ overflow: "hidden", background: "#C8813A", padding: "13px 0" }}>
+        <div style={{ overflow: "hidden", background: "#4268FF", padding: "13px 0" }}>
             <motion.div
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
                 style={{ display: "inline-flex", whiteSpace: "nowrap" }}
             >
                 {[0, 1, 2, 3].map((i) => (
-                    <span key={i} style={{ color: "#F5EDD6", fontWeight: 700, fontSize: 11, letterSpacing: "0.14em" }}>
+                    <span key={i} style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 11, letterSpacing: "0.14em" }}>
                         {base}
                     </span>
                 ))}
@@ -116,15 +116,15 @@ function Nav() {
                 justifyContent: "space-between",
                 padding: isMobile ? "0 20px" : "0 48px",
                 height: 64,
-                background: "rgba(245, 237, 214, 0.9)",
+                background: "rgba(255,255,255,0.92)",
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",
-                borderBottom: "1px solid rgba(200, 129, 58, 0.1)",
+                borderBottom: "1px solid rgba(66, 104, 255, 0.1)",
             }}
         >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <img src="/logo-icon.webp" alt="" style={{ height: 32, width: 32, borderRadius: 8 }} />
-                <span style={{ fontSize: 17, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.03em" }}>
+                <span style={{ fontSize: 17, fontWeight: 800, color: "#1A1F36", letterSpacing: "-0.03em" }}>
                     Two-Step
                 </span>
             </div>
@@ -133,8 +133,8 @@ function Nav() {
                     <a href="#comment" style={{
                         padding: "8px 18px",
                         borderRadius: 999,
-                        border: "1.5px solid rgba(44,32,24,0.15)",
-                        color: "#2C2018",
+                        border: "1.5px solid rgba(26,31,54,0.15)",
+                        color: "#1A1F36",
                         fontWeight: 600,
                         fontSize: 13,
                         textDecoration: "none",
@@ -144,12 +144,12 @@ function Nav() {
                 )}
                 <motion.a
                     href="#contact"
-                    whileHover={{ scale: 1.05, boxShadow: "0 6px 24px rgba(200,129,58,0.35)" }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 6px 24px rgba(66,104,255,0.35)" }}
                     whileTap={{ scale: 0.96 }}
                     style={{
                         padding: isMobile ? "9px 18px" : "10px 22px",
                         borderRadius: 999,
-                        background: "#C8813A",
+                        background: "#4268FF",
                         color: "#fff",
                         fontWeight: 700,
                         fontSize: 13,
@@ -174,7 +174,7 @@ function Hero() {
     return (
         <section style={{
             minHeight: "100vh",
-            background: "#F5EDD6",
+            background: "#FFFFFF",
             display: "flex",
             alignItems: "center",
             padding: isMobile ? "90px 24px 60px" : "100px 48px 80px",
@@ -187,7 +187,7 @@ function Hero() {
                 top: "30%", right: "15%",
                 width: 500, height: 500,
                 borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(200,129,58,0.11) 0%, transparent 70%)",
+                background: "radial-gradient(circle, rgba(66,104,255,0.11) 0%, transparent 70%)",
                 pointerEvents: "none",
             }} />
 
@@ -214,16 +214,16 @@ function Hero() {
                             marginBottom: 28,
                             padding: "6px 16px",
                             borderRadius: 999,
-                            background: "rgba(200, 129, 58, 0.12)",
-                            border: "1px solid rgba(200, 129, 58, 0.28)",
+                            background: "rgba(66, 104, 255, 0.12)",
+                            border: "1px solid rgba(66, 104, 255, 0.28)",
                         }}
                     >
                         <motion.span
                             animate={{ opacity: [1, 0.3, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
-                            style={{ width: 7, height: 7, borderRadius: "50%", background: "#C8813A", flexShrink: 0, display: "block" }}
+                            style={{ width: 7, height: 7, borderRadius: "50%", background: "#4268FF", flexShrink: 0, display: "block" }}
                         />
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#C8813A", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#4268FF", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                             Disponible à Toulouse
                         </span>
                     </motion.div>
@@ -238,12 +238,12 @@ function Hero() {
                             fontWeight: 800,
                             lineHeight: 1.1,
                             letterSpacing: "-0.035em",
-                            color: "#2C2018",
+                            color: "#1A1F36",
                             margin: "0 0 24px",
                         }}
                     >
                         Votre produit exact{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>est là.</em>
+                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>est là.</em>
                         <br />
                         À deux pas de chez vous.
                     </motion.h1>
@@ -255,7 +255,7 @@ function Hero() {
                         transition={{ duration: 0.7, delay: 0.32, ease: E }}
                         style={{
                             fontSize: isMobile ? 16 : 18,
-                            color: "#6B4F38",
+                            color: "#8E96B0",
                             lineHeight: 1.65,
                             maxWidth: 480,
                             margin: "0 0 36px",
@@ -274,14 +274,14 @@ function Hero() {
                     >
                         <motion.a
                             href="#contact"
-                            whileHover={{ scale: 1.05, boxShadow: "0 12px 40px rgba(200,129,58,0.42)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 12px 40px rgba(66,104,255,0.42)" }}
                             whileTap={{ scale: 0.97 }}
                             style={{
                                 display: "inline-flex",
                                 alignItems: "center",
                                 padding: "15px 32px",
                                 borderRadius: 999,
-                                background: "#C8813A",
+                                background: "#4268FF",
                                 color: "#fff",
                                 fontWeight: 700,
                                 fontSize: 15,
@@ -292,7 +292,7 @@ function Hero() {
                             Je veux être pionnier →
                         </motion.a>
                         {!isMobile && (
-                            <a href="#comment" style={{ fontSize: 14, color: "#6B4F38", fontWeight: 600, textDecoration: "none", opacity: 0.8 }}>
+                            <a href="#comment" style={{ fontSize: 14, color: "#8E96B0", fontWeight: 600, textDecoration: "none", opacity: 0.8 }}>
                                 Comment ça marche ↓
                             </a>
                         )}
@@ -314,24 +314,24 @@ function Hero() {
                             <FloatCard top="2%" left="-12%" delay={0.7} floatDuration={4.3}>
                                 <span style={{ fontSize: 18 }}>🔍</span>
                                 <div>
-                                    <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>Nike Air Max 90 · T.42</div>
+                                    <div style={{ fontSize: 12, fontWeight: 800, color: "#1A1F36", lineHeight: 1.2 }}>Nike Air Max 90 · T.42</div>
                                     <div style={{ fontSize: 11, color: "#7A9E7E", fontWeight: 600, marginTop: 2 }}>✓ En stock · 8 min</div>
                                 </div>
                             </FloatCard>
 
                             <FloatCard top="20%" right="-14%" delay={0.95} floatDuration={3.7}>
-                                <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(200,129,58,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>📍</div>
+                                <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(66,104,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>📍</div>
                                 <div>
-                                    <div style={{ fontSize: 20, fontWeight: 900, color: "#C8813A", letterSpacing: "-0.04em", lineHeight: 1 }}>8 min</div>
-                                    <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>de chez vous</div>
+                                    <div style={{ fontSize: 20, fontWeight: 900, color: "#4268FF", letterSpacing: "-0.04em", lineHeight: 1 }}>8 min</div>
+                                    <div style={{ fontSize: 11, color: "#8E96B0", fontWeight: 500, marginTop: 2 }}>de chez vous</div>
                                 </div>
                             </FloatCard>
 
                             <FloatCard bottom="12%" left="-10%" delay={1.15} floatDuration={5.1}>
-                                <div style={{ width: 28, height: 28, borderRadius: 8, background: "#2C2018", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🛍️</div>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: "#1A1F36", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🛍️</div>
                                 <div>
-                                    <div style={{ fontSize: 12, fontWeight: 800, color: "#2C2018", lineHeight: 1.2 }}>2 en stock</div>
-                                    <div style={{ fontSize: 11, color: "#6B4F38", fontWeight: 500, marginTop: 2 }}>Boutique Carmes</div>
+                                    <div style={{ fontSize: 12, fontWeight: 800, color: "#1A1F36", lineHeight: 1.2 }}>2 en stock</div>
+                                    <div style={{ fontSize: 11, color: "#8E96B0", fontWeight: 500, marginTop: 2 }}>Boutique Carmes</div>
                                 </div>
                             </FloatCard>
 
@@ -341,7 +341,7 @@ function Hero() {
                                     animate={{ opacity: [1, 0.3, 1] }}
                                     transition={{ duration: 2, repeat: Infinity }}
                                 />
-                                <span style={{ fontSize: 12, fontWeight: 700, color: "#2C2018" }}>Temps réel · Toulouse</span>
+                                <span style={{ fontSize: 12, fontWeight: 700, color: "#1A1F36" }}>Temps réel · Toulouse</span>
                             </FloatCard>
                         </>
                     )}
@@ -357,7 +357,7 @@ function Hero() {
                             maxWidth: isMobile ? 280 : 440,
                             height: "auto",
                             display: "block",
-                            filter: "drop-shadow(0 32px 64px rgba(44,32,24,0.16))",
+                            filter: "drop-shadow(0 32px 64px rgba(26,31,54,0.16))",
                         }}
                     />
                 </motion.div>
@@ -375,14 +375,14 @@ function Statement() {
 
     return (
         <section ref={ref} style={{
-            background: "#2C2018",
+            background: "#1A1F36",
             padding: isMobile ? "80px 24px" : "120px 48px",
             position: "relative",
             overflow: "hidden",
         }}>
             <div style={{
                 position: "absolute", inset: 0,
-                background: "radial-gradient(ellipse at 50% 50%, rgba(200,129,58,0.1) 0%, transparent 65%)",
+                background: "radial-gradient(ellipse at 50% 50%, rgba(66,104,255,0.1) 0%, transparent 65%)",
                 pointerEvents: "none",
             }} />
             <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
@@ -409,13 +409,13 @@ function Statement() {
                                 <div style={{
                                     fontSize: isMobile ? "clamp(72px, 20vw, 100px)" : "clamp(72px, 10vw, 136px)",
                                     fontWeight: 900,
-                                    color: "#C8813A",
+                                    color: "#4268FF",
                                     lineHeight: 1,
                                     letterSpacing: "-0.04em",
                                 }}>
                                     <Counter to={stat.val} inView={inView} />%
                                 </div>
-                                <div style={{ marginTop: 14, fontSize: 15, color: "rgba(245,237,214,0.55)", lineHeight: 1.5 }}>
+                                <div style={{ marginTop: 14, fontSize: 15, color: "rgba(200,214,240,0.55)", lineHeight: 1.5 }}>
                                     {stat.label}
                                 </div>
                             </motion.div>
@@ -431,14 +431,14 @@ function Statement() {
                         textAlign: "center",
                         fontSize: isMobile ? "clamp(20px, 5.5vw, 28px)" : "clamp(22px, 3.5vw, 46px)",
                         fontWeight: 700,
-                        color: "#F5EDD6",
+                        color: "#FFFFFF",
                         lineHeight: 1.25,
                         letterSpacing: "-0.025em",
                         margin: 0,
                     }}
                 >
                     Le problème ?{" "}
-                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>Votre stock local est invisible.</em>
+                    <em style={{ fontStyle: "italic", color: "#4268FF" }}>Votre stock local est invisible.</em>
                 </motion.p>
             </div>
         </section>
@@ -457,24 +457,24 @@ function How() {
             num: "01",
             title: "On se connecte à votre caisse et vos fournisseurs",
             desc: "Two-Step lit votre caisse automatiquement. Vos factures fournisseurs arrivent par email ? On les détecte et on met votre catalogue à jour. Zéro saisie.",
-            bg: "#EDE0C4", numColor: "rgba(44,32,24,0.1)", titleColor: "#2C2018", descColor: "#6B4F38",
+            bg: "#F8F9FC", numColor: "rgba(26,31,54,0.1)", titleColor: "#1A1F36", descColor: "#8E96B0",
         },
         {
             num: "02",
             title: "Votre stock devient visible en temps réel",
             desc: "Les consommateurs de votre quartier voient exactement ce que vous avez en boutique. Pas un site e-commerce — vos vrais produits, votre vraie disponibilité.",
-            bg: "#2C2018", numColor: "#C8813A", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.6)",
+            bg: "#1A1F36", numColor: "#4268FF", titleColor: "#FFFFFF", descColor: "rgba(200,214,240,0.65)",
         },
         {
             num: "03",
             title: "Ils viennent chez vous",
             desc: "Pas de livraison, pas de commission sur vos ventes. Le client cherche, il vous trouve, il pousse votre porte. Les boutiques en ligne perdent une vente et vous en gagnez une.",
-            bg: "#C8813A", numColor: "rgba(245,237,214,0.18)", titleColor: "#F5EDD6", descColor: "rgba(245,237,214,0.8)",
+            bg: "#4268FF", numColor: "rgba(255,255,255,0.18)", titleColor: "#FFFFFF", descColor: "rgba(255,255,255,0.85)",
         },
     ];
 
     return (
-        <section id="comment" ref={ref} style={{ background: "#F5EDD6", padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <section id="comment" ref={ref} style={{ background: "#FFFFFF", padding: isMobile ? "80px 24px" : "120px 48px" }}>
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
@@ -482,16 +482,16 @@ function How() {
                     transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 56 }}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#C8813A", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
                         Comment ça marche
                     </div>
                     <h2 style={{
                         fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(36px, 5vw, 64px)",
-                        fontWeight: 800, color: "#2C2018", lineHeight: 1.06,
+                        fontWeight: 800, color: "#1A1F36", lineHeight: 1.06,
                         letterSpacing: "-0.03em", margin: 0, maxWidth: 560,
                     }}>
                         Branché. Visible.{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>Vendu.</em>
+                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>Vendu.</em>
                     </h2>
                 </motion.div>
 
@@ -543,7 +543,7 @@ function About() {
     const inView = useInView(ref, { once: true, margin: "-8%" });
 
     return (
-        <section ref={ref} style={{ background: "#EDE0C4", padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <section ref={ref} style={{ background: "#F8F9FC", padding: isMobile ? "80px 24px" : "120px 48px" }}>
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                 <div style={{
                     display: "grid",
@@ -556,17 +556,17 @@ function About() {
                         animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
                         transition={{ duration: 0.8, ease: E }}
                     >
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#C8813A", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>
                             À propos
                         </div>
                         <h2 style={{
                             fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(36px, 5.5vw, 68px)",
-                            fontWeight: 800, color: "#2C2018", lineHeight: 1.05,
+                            fontWeight: 800, color: "#1A1F36", lineHeight: 1.05,
                             letterSpacing: "-0.03em", margin: 0,
                         }}>
                             Nés à Toulouse,
                             <br />
-                            <em style={{ fontStyle: "italic", color: "#C8813A" }}>fondateurs</em>
+                            <em style={{ fontStyle: "italic", color: "#4268FF" }}>fondateurs</em>
                             <br />
                             de Two-Step.
                         </h2>
@@ -577,10 +577,10 @@ function About() {
                         animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
                         transition={{ duration: 0.8, delay: 0.15, ease: E }}
                     >
-                        <p style={{ fontSize: isMobile ? 15 : 17, color: "#2C2018", lineHeight: 1.72, margin: "0 0 20px" }}>
+                        <p style={{ fontSize: isMobile ? 15 : 17, color: "#1A1F36", lineHeight: 1.72, margin: "0 0 20px" }}>
                             Deux frères qui ont vu leurs commerçants préférés perdre des ventes au profit des boutiques en ligne — non pas parce que les clients préféraient commander en ligne, mais parce qu'ils ne savaient pas que le produit exact existait en boutique, à deux pas de chez eux.
                         </p>
-                        <p style={{ fontSize: isMobile ? 15 : 17, color: "#6B4F38", lineHeight: 1.72, margin: 0 }}>
+                        <p style={{ fontSize: isMobile ? 15 : 17, color: "#8E96B0", lineHeight: 1.72, margin: 0 }}>
                             Two-Step, c'est l'outil que les commerçants locaux n'avaient pas encore.
                         </p>
                     </motion.div>
@@ -599,14 +599,14 @@ function FreePioneers() {
 
     return (
         <section ref={ref} style={{
-            background: "#2C2018",
+            background: "#1A1F36",
             padding: isMobile ? "80px 24px" : "120px 48px",
             position: "relative",
             overflow: "hidden",
         }}>
             <div style={{
                 position: "absolute", inset: 0,
-                background: "radial-gradient(ellipse at 30% 50%, rgba(200,129,58,0.12) 0%, transparent 60%)",
+                background: "radial-gradient(ellipse at 30% 50%, rgba(66,104,255,0.12) 0%, transparent 60%)",
                 pointerEvents: "none",
             }} />
             <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", textAlign: "center" }}>
@@ -622,10 +622,10 @@ function FreePioneers() {
                         marginBottom: 28,
                         padding: "6px 16px",
                         borderRadius: 999,
-                        background: "rgba(200, 129, 58, 0.15)",
-                        border: "1px solid rgba(200, 129, 58, 0.3)",
+                        background: "rgba(66, 104, 255, 0.15)",
+                        border: "1px solid rgba(66, 104, 255, 0.3)",
                     }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#C8813A", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#4268FF", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                             Lancement Toulouse
                         </span>
                     </div>
@@ -638,14 +638,14 @@ function FreePioneers() {
                     style={{
                         fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(36px, 5vw, 64px)",
                         fontWeight: 800,
-                        color: "#F5EDD6",
+                        color: "#FFFFFF",
                         lineHeight: 1.08,
                         letterSpacing: "-0.03em",
                         margin: "0 0 24px",
                     }}
                 >
                     Gratuit pour les{" "}
-                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>30 premiers.</em>
+                    <em style={{ fontStyle: "italic", color: "#4268FF" }}>30 premiers.</em>
                 </motion.h2>
 
                 <motion.p
@@ -654,14 +654,14 @@ function FreePioneers() {
                     transition={{ duration: 0.7, delay: 0.2, ease: E }}
                     style={{
                         fontSize: isMobile ? 16 : 18,
-                        color: "rgba(245,237,214,0.65)",
+                        color: "rgba(200,214,240,0.65)",
                         lineHeight: 1.7,
                         margin: "0 auto 40px",
                         maxWidth: 560,
                     }}
                 >
                     Pas pendant un mois. Pas pendant un trimestre.{" "}
-                    <strong style={{ color: "#F5EDD6" }}>
+                    <strong style={{ color: "#FFFFFF" }}>
                         Tant que Two-Step n'a pas prouvé sa valeur.
                     </strong>{" "}
                     Vous ne payez que quand 1 000 utilisateurs à Toulouse utilisent la plateforme. Zéro risque.
@@ -688,17 +688,17 @@ function FreePioneers() {
                             animate={inView ? { opacity: 1, y: 0 } : {}}
                             transition={{ duration: 0.6, delay: 0.4 + i * 0.1, ease: E }}
                             style={{
-                                background: "rgba(245,237,214,0.06)",
+                                background: "rgba(200,214,240,0.06)",
                                 borderRadius: 20,
                                 padding: "28px 24px",
-                                border: "1px solid rgba(245,237,214,0.08)",
+                                border: "1px solid rgba(200,214,240,0.08)",
                             }}
                         >
                             <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: "#F5EDD6", marginBottom: 8, lineHeight: 1.3 }}>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "#FFFFFF", marginBottom: 8, lineHeight: 1.3 }}>
                                 {item.title}
                             </div>
-                            <div style={{ fontSize: 13, color: "rgba(245,237,214,0.5)", lineHeight: 1.6 }}>
+                            <div style={{ fontSize: 13, color: "rgba(200,214,240,0.5)", lineHeight: 1.6 }}>
                                 {item.desc}
                             </div>
                         </motion.div>
@@ -739,7 +739,7 @@ function Contact() {
     }
 
     return (
-        <section id="contact" ref={ref} style={{ background: "#F5EDD6", padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <section id="contact" ref={ref} style={{ background: "#070A10", padding: isMobile ? "80px 24px" : "120px 48px" }}>
             <div style={{ maxWidth: 580, margin: "0 auto" }}>
                 <motion.div
                     initial={{ opacity: 0, y: 32 }}
@@ -747,16 +747,16 @@ function Contact() {
                     transition={{ duration: 0.7, ease: E }}
                     style={{ marginBottom: 48 }}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#C8813A", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
                         Vous êtes commerçant à Toulouse ?
                     </div>
                     <h2 style={{
                         fontSize: isMobile ? "clamp(30px, 8vw, 44px)" : "clamp(32px, 4.5vw, 56px)",
-                        fontWeight: 800, color: "#2C2018", lineHeight: 1.08,
+                        fontWeight: 800, color: "#C8D6F0", lineHeight: 1.08,
                         letterSpacing: "-0.03em", margin: 0,
                     }}>
                         Rejoignez les{" "}
-                        <em style={{ fontStyle: "italic", color: "#C8813A" }}>pionniers.</em>
+                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>pionniers.</em>
                     </h2>
                 </motion.div>
 
@@ -764,7 +764,7 @@ function Contact() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.93 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        style={{ padding: "48px", borderRadius: 24, background: "#2C2018", textAlign: "center" }}
+                        style={{ padding: "48px", borderRadius: 24, background: "#1A1F36", textAlign: "center" }}
                     >
                         <motion.div
                             initial={{ scale: 0 }}
@@ -772,14 +772,14 @@ function Contact() {
                             transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
                             style={{
                                 width: 52, height: 52, borderRadius: "50%",
-                                background: "#C8813A",
+                                background: "#4268FF",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 margin: "0 auto 20px", fontSize: 20, color: "#fff", fontWeight: 700,
                             }}
                         >
                             ✓
                         </motion.div>
-                        <p style={{ color: "#F5EDD6", fontWeight: 600, fontSize: 17, margin: 0 }}>
+                        <p style={{ color: "#FFFFFF", fontWeight: 600, fontSize: 17, margin: 0 }}>
                             Message reçu. On vous contacte sous 48h.
                         </p>
                     </motion.div>
@@ -803,7 +803,7 @@ function Contact() {
                                 transition={{ duration: 0.5, delay: 0.22 + i * 0.09, ease: E }}
                                 style={{ display: "flex", flexDirection: "column", gap: 8 }}
                             >
-                                <label style={{ fontSize: 10, fontWeight: 700, color: "#C8813A", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                                <label style={{ fontSize: 10, fontWeight: 700, color: "#4268FF", letterSpacing: "0.12em", textTransform: "uppercase" }}>
                                     {field.label}
                                 </label>
                                 <input
@@ -813,17 +813,17 @@ function Contact() {
                                     required
                                     style={{
                                         border: "none",
-                                        borderBottom: "2px solid rgba(44,32,24,0.18)",
+                                        borderBottom: "2px solid rgba(200,214,240,0.25)",
                                         background: "transparent",
                                         padding: "10px 0",
                                         fontSize: 16,
                                         fontFamily: "inherit",
-                                        color: "#2C2018",
+                                        color: "#C8D6F0",
                                         outline: "none",
                                         transition: "border-color 0.2s",
                                     }}
-                                    onFocus={(e) => { e.target.style.borderBottomColor = "#C8813A"; }}
-                                    onBlur={(e) => { e.target.style.borderBottomColor = "rgba(44,32,24,0.18)"; }}
+                                    onFocus={(e) => { e.target.style.borderBottomColor = "#4268FF"; }}
+                                    onBlur={(e) => { e.target.style.borderBottomColor = "rgba(200,214,240,0.25)"; }}
                                 />
                             </motion.div>
                         ))}
@@ -831,14 +831,14 @@ function Contact() {
                         <motion.button
                             type="submit"
                             disabled={status === "sending"}
-                            whileHover={{ scale: 1.04, boxShadow: "0 10px 36px rgba(44,32,24,0.25)" }}
+                            whileHover={{ scale: 1.04, boxShadow: "0 10px 36px rgba(66,104,255,0.4)" }}
                             whileTap={{ scale: 0.97 }}
                             style={{
                                 marginTop: 8,
                                 padding: "17px 36px",
                                 borderRadius: 999,
-                                background: "#2C2018",
-                                color: "#F5EDD6",
+                                background: "#4268FF",
+                                color: "#FFFFFF",
                                 fontWeight: 700,
                                 fontSize: 15,
                                 border: "none",
@@ -852,9 +852,9 @@ function Contact() {
                         </motion.button>
 
                         {status === "error" && (
-                            <p style={{ color: "#C8813A", fontSize: 14, margin: 0 }}>
+                            <p style={{ color: "#4268FF", fontSize: 14, margin: 0 }}>
                                 Une erreur s'est produite. Écrivez-nous à{" "}
-                                <a href="mailto:contact@twostep.fr" style={{ color: "#C8813A" }}>contact@twostep.fr</a>
+                                <a href="mailto:contact@twostep.fr" style={{ color: "#4268FF" }}>contact@twostep.fr</a>
                             </p>
                         )}
                     </motion.form>
@@ -870,7 +870,7 @@ function Footer() {
     const isMobile = useIsMobile();
     return (
         <footer style={{
-            background: "#2C2018",
+            background: "#1A1F36",
             padding: isMobile ? "32px 24px" : "40px 48px",
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
@@ -880,11 +880,11 @@ function Footer() {
         }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <img src="/logo-icon.webp" alt="" style={{ height: 28, width: 28, borderRadius: 6 }} />
-                <span style={{ fontSize: 17, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
+                <span style={{ fontSize: 17, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.03em" }}>
                     Two-Step
                 </span>
             </div>
-            <span style={{ fontSize: 13, color: "rgba(245,237,214,0.38)" }}>
+            <span style={{ fontSize: 13, color: "rgba(200,214,240,0.38)" }}>
                 © 2026 · Toulouse, France
             </span>
         </footer>

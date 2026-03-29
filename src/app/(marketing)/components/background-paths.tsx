@@ -9,7 +9,7 @@ export function BackgroundPaths() {
 
     const paths = [
         { d: "M-50,180 Q100,80 200,180 T450,160", stroke: "#7A9E7E", width: 1.5, dur: "8s", values: "0,0;20,-10;0,0" },
-        { d: "M-50,220 Q150,120 250,220 T500,200", stroke: "#C8813A", width: 1, dur: "10s", values: "0,0;-15,8;0,0" },
+        { d: "M-50,220 Q150,120 250,220 T500,200", stroke: "#4268FF", width: 1, dur: "10s", values: "0,0;-15,8;0,0" },
         { d: "M-30,260 Q120,180 280,260 T480,240", stroke: "#7A9E7E", width: 0.8, dur: "12s", values: "0,0;10,-5;0,0" },
     ].slice(0, pathCount);
 

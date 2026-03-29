@@ -18,7 +18,7 @@ export function GlowInput({ name, label, type = "text", placeholder, required }:
             <label style={{
                 fontSize: 10,
                 fontWeight: 700,
-                color: "#C8813A",
+                color: "#4268FF",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
             }}>
@@ -34,12 +34,12 @@ export function GlowInput({ name, label, type = "text", placeholder, required }:
                     onBlur={() => setFocused(false)}
                     style={{
                         border: "none",
-                        borderBottom: `2px solid ${focused ? "#C8813A" : "rgba(44,32,24,0.18)"}`,
+                        borderBottom: `2px solid ${focused ? "#4268FF" : "rgba(200,214,240,0.25)"}`,
                         background: "transparent",
                         padding: "10px 0",
                         fontSize: 16,
                         fontFamily: "inherit",
-                        color: "#2C2018",
+                        color: "#C8D6F0",
                         outline: "none",
                         transition: "border-color 200ms ease",
                         width: "100%",
@@ -52,7 +52,7 @@ export function GlowInput({ name, label, type = "text", placeholder, required }:
                     left: 0,
                     right: 0,
                     height: 8,
-                    background: "rgba(200,129,58,0.15)",
+                    background: "rgba(66,104,255,0.15)",
                     filter: "blur(6px)",
                     opacity: focused ? 1 : 0,
                     transition: "opacity 200ms ease",

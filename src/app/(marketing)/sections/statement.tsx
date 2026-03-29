@@ -11,14 +11,14 @@ export function Statement() {
 
     return (
         <section ref={ref} style={{
-            background: "#2C2018",
+            background: "#1A1F36",
             padding: isMobile ? "80px 24px" : "120px 48px",
             position: "relative",
             overflow: "hidden",
         }}>
             <div style={{
                 position: "absolute", inset: 0,
-                background: "radial-gradient(ellipse at 50% 50%, rgba(200,129,58,0.1) 0%, transparent 65%)",
+                background: "radial-gradient(ellipse at 50% 50%, rgba(66,104,255,0.1) 0%, transparent 65%)",
                 pointerEvents: "none",
             }} />
             <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
@@ -45,13 +45,13 @@ export function Statement() {
                                 <div style={{
                                     fontSize: isMobile ? "clamp(72px, 20vw, 100px)" : "clamp(72px, 10vw, 136px)",
                                     fontWeight: 900,
-                                    color: "#C8813A",
+                                    color: "#4268FF",
                                     lineHeight: 1,
                                     letterSpacing: "-0.04em",
                                 }}>
                                     <Counter to={stat.val} inView={inView} />%
                                 </div>
-                                <div style={{ marginTop: 14, fontSize: 15, color: "rgba(245,237,214,0.55)", lineHeight: 1.5 }}>
+                                <div style={{ marginTop: 14, fontSize: 15, color: "rgba(200,214,240,0.55)", lineHeight: 1.5 }}>
                                     {stat.label}
                                 </div>
                             </motion.div>
@@ -67,14 +67,14 @@ export function Statement() {
                         textAlign: "center",
                         fontSize: isMobile ? "clamp(20px, 5.5vw, 28px)" : "clamp(22px, 3.5vw, 46px)",
                         fontWeight: 700,
-                        color: "#F5EDD6",
+                        color: "#FFFFFF",
                         lineHeight: 1.25,
                         letterSpacing: "-0.025em",
                         margin: 0,
                     }}
                 >
                     Le problème ?{" "}
-                    <em style={{ fontStyle: "italic", color: "#C8813A" }}>Votre stock local est invisible.</em>
+                    <em style={{ fontStyle: "italic", color: "#4268FF" }}>Votre stock local est invisible.</em>
                 </motion.p>
             </div>
         </section>
