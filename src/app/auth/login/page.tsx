@@ -18,9 +18,15 @@ export default function LoginPage() {
         setIsLoading(true);
         try {
             const supabase = createClient();
-            const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+            const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
             if (authError) throw authError;
-            window.location.href = "/dashboard";
+            // Check if user is a merchant
+            const { data: merchant } = await supabase
+                .from("merchants")
+                .select("id")
+                .eq("user_id", authData.user.id)
+                .single();
+            window.location.href = merchant ? "/dashboard" : "/discover";
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Erreur de connexion";
             setError(msg === "Invalid login credentials" ? "Email ou mot de passe incorrect" : msg);
