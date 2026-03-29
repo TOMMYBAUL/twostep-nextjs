@@ -22,7 +22,8 @@ export default function LoginPage() {
             if (authError) throw authError;
             window.location.href = "/dashboard";
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Erreur de connexion");
+            const msg = err instanceof Error ? err.message : "Erreur de connexion";
+            setError(msg === "Invalid login credentials" ? "Email ou mot de passe incorrect" : msg);
         } finally {
             setIsLoading(false);
         }

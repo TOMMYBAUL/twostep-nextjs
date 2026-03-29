@@ -2,7 +2,19 @@
 
 import { useState, type FormEvent } from "react";
 
-const CATEGORIES = ["Alimentation", "Cosmétique", "Hygiène", "Textile", "Décoration", "Autre"];
+const CATEGORIES = [
+    { value: "mode", label: "Mode" },
+    { value: "chaussures", label: "Chaussures" },
+    { value: "bijoux", label: "Bijoux" },
+    { value: "beaute", label: "Beauté" },
+    { value: "sport", label: "Sport" },
+    { value: "deco", label: "Décoration" },
+    { value: "epicerie", label: "Épicerie" },
+    { value: "textile", label: "Textile" },
+    { value: "cosmetique", label: "Cosmétique" },
+    { value: "hygiene", label: "Hygiène" },
+    { value: "autre", label: "Autre" },
+];
 
 interface ProductFormProps {
     initialValues?: {
@@ -103,7 +115,7 @@ export function ProductForm({ initialValues, onSubmit, submitLabel, isLoading }:
                 >
                     <option value="">Sélectionner...</option>
                     {CATEGORIES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                        <option key={c.value} value={c.value}>{c.label}</option>
                     ))}
                 </select>
             </div>
