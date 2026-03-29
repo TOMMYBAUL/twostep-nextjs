@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             user_lng: lng,
             radius_km: radius,
             result_offset: 0,
-            result_limit: 20,
+            result_limit: size ? 200 : 20,
         });
 
         if (error) {
@@ -69,12 +69,13 @@ export async function GET(request: NextRequest) {
     }
 
     // trending & nearby both use the feed RPC — trending sorts by score, nearby by distance
+    // Fetch more when size filter is active (post-filter reduces results heavily)
     const { data, error } = await supabase.rpc("get_feed_nearby", {
         user_lat: lat,
         user_lng: lng,
         radius_km: radius,
         cursor_score: 999999,
-        result_limit: 20,
+        result_limit: size ? 200 : 20,
     });
 
     if (error) {
