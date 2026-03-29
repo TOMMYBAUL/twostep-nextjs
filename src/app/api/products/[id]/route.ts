@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
+import { stripSize } from "@/lib/pos/extract-size";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -29,7 +30,38 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ product: data });
+        // Fetch sibling sizes (same merchant, same base name, different sizes)
+        let available_sizes: { size: string; product_id: string; slug: string | null; in_stock: boolean }[] = [];
+
+        if (data.size) {
+            const baseName = stripSize(data.name);
+
+            const { data: siblings } = await supabase
+                .from("products")
+                .select("id, name, size, slug, stock(quantity)")
+                .eq("merchant_id", data.merchant_id)
+                .not("size", "is", null)
+                .limit(200);
+
+            if (siblings) {
+                available_sizes = siblings
+                    .filter((s) => stripSize(s.name) === baseName)
+                    .map((s) => ({
+                        size: s.size!,
+                        product_id: s.id,
+                        slug: s.slug,
+                        in_stock: ((s as any).stock?.[0]?.quantity ?? 0) > 0,
+                    }))
+                    .sort((a, b) => {
+                        const na = parseFloat(a.size);
+                        const nb = parseFloat(b.size);
+                        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+                        return a.size.localeCompare(b.size);
+                    });
+            }
+        }
+
+        return NextResponse.json({ product: { ...data, available_sizes } });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
