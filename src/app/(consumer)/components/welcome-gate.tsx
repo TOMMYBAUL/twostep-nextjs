@@ -98,7 +98,7 @@ export function WelcomeGate() {
                     <>
                         {/* Logo */}
                         <div className="mb-6 text-center">
-                            <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
+                            <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
                             <h1 className="font-display text-xl font-bold text-[#1A1F36]">
                                 Bienvenue sur Two-Step
                             </h1>

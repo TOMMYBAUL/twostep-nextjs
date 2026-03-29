@@ -126,7 +126,7 @@ export default function DiscoverPage() {
             <div className="px-4 pb-2 pt-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                        <Image src="/logo-icon.webp" alt="" width={24} height={24} className="size-6" />
+                        <img src="/logo-icon.webp?v=2" alt="" className="size-6" />
                         <h1 className="font-display text-sm font-bold text-[#1A1F36]">Two-Step</h1>
                         <span className="text-[10px] text-[#8E96B0]">·</span>
                         <p className="flex items-center gap-0.5 text-[11px] text-[#8E96B0]">

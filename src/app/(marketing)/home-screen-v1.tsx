@@ -123,7 +123,7 @@ function Nav() {
             }}
         >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <img src="/logo-icon.webp" alt="" style={{ height: 32, width: 32, borderRadius: 8 }} />
+                <img src="/logo-icon.webp?v=2" alt="" style={{ height: 32, width: 32, borderRadius: 8 }} />
                 <span style={{ fontSize: 17, fontWeight: 800, color: "#1A1F36", letterSpacing: "-0.03em" }}>
                     Two-Step
                 </span>
@@ -879,7 +879,7 @@ function Footer() {
             gap: isMobile ? 8 : 0,
         }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <img src="/logo-icon.webp" alt="" style={{ height: 28, width: 28, borderRadius: 6 }} />
+                <img src="/logo-icon.webp?v=2" alt="" style={{ height: 28, width: 28, borderRadius: 6 }} />
                 <span style={{ fontSize: 17, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.03em" }}>
                     Two-Step
                 </span>

@@ -248,7 +248,7 @@ function SplashScreen() {
                 transition={{ duration: 0.35, ease: "easeOut" }}
             >
                 <Image
-                    src="/logo-icon.webp"
+                    src="/logo-icon.webp?v=2"
                     alt="Two-Step"
                     width={120}
                     height={120}

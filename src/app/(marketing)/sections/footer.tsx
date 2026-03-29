@@ -21,7 +21,7 @@ export function Footer() {
                 margin: "0 auto",
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <Image src="/logo-icon.webp" alt="" width={28} height={28} style={{ borderRadius: 6 }} />
+                    <img src="/logo-icon.webp?v=2" alt="" width={28} height={28} style={{ borderRadius: 6 }} />
                     <span style={{ fontSize: 17, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.03em" }}>
                         Two-Step
                     </span>

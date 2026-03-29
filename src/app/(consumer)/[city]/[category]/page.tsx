@@ -62,7 +62,7 @@ export default async function CityComingSoonPage({ params }: Props) {
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FFFFFF] px-6 text-center" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
             <div className="mx-auto max-w-sm">
                 <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-[#E2E5F0] text-3xl">
-                    <img src="/logo-icon.webp" alt="" className="size-10 rounded-lg" />
+                    <img src="/logo-icon.webp?v=2" alt="" className="size-10 rounded-lg" />
                 </div>
 
                 <h1 className="font-display text-2xl font-bold text-[#1A1F36]">

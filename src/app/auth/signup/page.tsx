@@ -150,7 +150,7 @@ export default function SignupPage() {
             <div className="w-full max-w-sm">
                 {/* Logo */}
                 <div className="mb-6 text-center">
-                    <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
+                    <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
                 </div>
 
                 {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-red-600">{error}</p>}

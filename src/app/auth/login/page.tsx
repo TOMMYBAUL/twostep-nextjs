@@ -40,7 +40,7 @@ export default function LoginPage() {
             <div className="w-full max-w-sm">
                 {/* Logo */}
                 <div className="mb-8 text-center">
-                    <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
+                    <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
                     <h1 className="font-display text-xl font-semibold text-[#1A1F36]">Connexion</h1>
                     <p className="mt-1 text-sm text-[#8E96B0]">Accédez à votre espace</p>
                 </div>

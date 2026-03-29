@@ -27,7 +27,7 @@ export function Nav() {
                 transition={{ duration: 0.55, ease: "easeOut" }}
             >
                 <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-                    <Image src="/logo-icon.webp" alt="" width={32} height={32} style={{ borderRadius: 8 }} />
+                    <img src="/logo-icon.webp?v=2" alt="" width={32} height={32} style={{ borderRadius: 8 }} />
                     <span style={{ fontSize: 17, fontWeight: 800, color: "#1A1F36", letterSpacing: "-0.03em" }}>
                         Two-Step
                     </span>

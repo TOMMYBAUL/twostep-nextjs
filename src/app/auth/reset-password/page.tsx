@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
         <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--ts-bg-warm)" }}>
             <div className="w-full max-w-sm">
                 <div className="mb-8 text-center">
-                    <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
+                    <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
                     <h1 className="font-display text-xl font-semibold" style={{ color: "var(--ts-dark)" }}>
                         Nouveau mot de passe
                     </h1>

@@ -235,7 +235,7 @@ function CookiesIllustration() {
             <div className="absolute inset-0 flex items-center justify-center">
                 <div className="rounded-[22px] bg-[var(--ts-ochre)] p-5 shadow-xl sm:p-6">
                     <Image
-                        src="/logo-icon.webp"
+                        src="/logo-icon.webp?v=2"
                         alt="Two-Step"
                         width={68}
                         height={68}
@@ -319,7 +319,7 @@ function SplashScreen() {
                 transition={{ duration: 0.35, ease: "easeOut" }}
             >
                 <Image
-                    src="/logo-icon.webp"
+                    src="/logo-icon.webp?v=2"
                     alt="Two-Step"
                     width={120}
                     height={120}
