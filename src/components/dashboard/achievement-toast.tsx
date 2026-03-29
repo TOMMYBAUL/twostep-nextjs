@@ -60,11 +60,11 @@ export function AchievementToast() {
                                 {current.gamifiedLabel}
                             </p>
                             <p className="text-sm font-bold text-[#FFFFFF]">{current.label}</p>
-                            <p className="text-[11px] text-[#8B7355] mt-0.5">{current.subtitle}</p>
+                            <p className="text-[11px] text-[#8E96B0] mt-0.5">{current.subtitle}</p>
                         </div>
                         <button
                             onClick={dismiss}
-                            className="shrink-0 text-lg text-[#8B7355]/30 hover:text-[#8B7355] transition"
+                            className="shrink-0 text-lg text-[#8E96B0]/30 hover:text-[#8E96B0] transition"
                         >
                             ✕
                         </button>

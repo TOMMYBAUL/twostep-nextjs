@@ -79,7 +79,7 @@ export function AchievementModal() {
                             {current.gamifiedLabel}
                         </p>
                         <p className="mt-2 text-[22px] font-extrabold text-[#FFFFFF]">{current.label}</p>
-                        <p className="mt-2 text-sm text-[#8B7355] leading-relaxed">{current.subtitle}</p>
+                        <p className="mt-2 text-sm text-[#8E96B0] leading-relaxed">{current.subtitle}</p>
 
                         <button
                             onClick={() => { dismiss(); router.push("/dashboard/achievements"); }}
@@ -91,7 +91,7 @@ export function AchievementModal() {
 
                         <button
                             onClick={dismiss}
-                            className="mt-3 text-xs text-[#8B7355] opacity-70 hover:opacity-100 transition"
+                            className="mt-3 text-xs text-[#8E96B0] opacity-70 hover:opacity-100 transition"
                         >
                             Continuer
                         </button>

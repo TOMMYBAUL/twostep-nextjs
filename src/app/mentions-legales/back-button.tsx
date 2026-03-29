@@ -4,7 +4,7 @@ export function BackButton() {
     return (
         <button
             onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 text-sm text-[#8B7355] hover:text-[#2C1A0E] cursor-pointer mb-8"
+            className="inline-flex items-center gap-2 text-sm text-[#8E96B0] hover:text-[#1A1F36] cursor-pointer mb-8"
         >
             ← Retour
         </button>

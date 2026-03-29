@@ -21,7 +21,7 @@ export function MobileTopBar() {
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1] ?? "Dashboard";
 
     return (
-        <div className="safe-top bg-[#2C1A0E] md:hidden">
+        <div className="safe-top bg-[#1A1F36] md:hidden">
             <div className="flex h-12 items-center justify-center gap-2 px-4">
                 <img src="/logo-icon.webp" alt="Two-Step" className="size-7 rounded-lg" />
                 <span className="text-[15px] font-semibold text-white">{title}</span>

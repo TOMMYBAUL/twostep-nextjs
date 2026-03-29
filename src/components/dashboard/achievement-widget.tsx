@@ -29,7 +29,7 @@ export function AchievementWidget({ achievements, loading }: Props) {
             </div>
 
             {latest.length === 0 ? (
-                <p className="text-xs text-[#8B7355]">
+                <p className="text-xs text-[#8E96B0]">
                     Ajoutez votre premier produit pour débloquer votre premier trophée !
                 </p>
             ) : (
@@ -48,7 +48,7 @@ export function AchievementWidget({ achievements, loading }: Props) {
                         );
                     })}
                     {extra > 0 && (
-                        <span className="text-xs text-[#8B7355] ml-1">+ {extra} autre{extra > 1 ? "s" : ""}</span>
+                        <span className="text-xs text-[#8E96B0] ml-1">+ {extra} autre{extra > 1 ? "s" : ""}</span>
                     )}
                 </div>
             )}

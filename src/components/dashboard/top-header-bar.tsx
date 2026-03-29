@@ -55,8 +55,8 @@ export function TopHeaderBar() {
         <div className="hidden lg:flex h-[52px] items-center border-b border-[#F0EBE3] bg-white px-5 gap-3">
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-[11px]">
-                <span className="text-[#8B7355]">Dashboard</span>
-                <span className="text-[#8B7355]">›</span>
+                <span className="text-[#8E96B0]">Dashboard</span>
+                <span className="text-[#8E96B0]">›</span>
                 <span className="font-semibold text-[#FFFFFF]">{pageLabel}</span>
             </div>
 
@@ -68,9 +68,9 @@ export function TopHeaderBar() {
                 <div className="relative" ref={notifRef}>
                     <button
                         onClick={() => setNotifOpen(!notifOpen)}
-                        className="flex size-8 items-center justify-center rounded-full bg-[#F5F1EB] transition hover:bg-[#F5F6FA]"
+                        className="flex size-8 items-center justify-center rounded-full bg-[#EEF1FF] transition hover:bg-[#F5F6FA]"
                     >
-                        <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                         </svg>
@@ -79,7 +79,7 @@ export function TopHeaderBar() {
                         <div className="absolute right-0 top-10 z-50 w-64 rounded-xl bg-white py-4 px-5 shadow-lg border border-[#F0EBE3] text-center">
                             <div className="text-2xl mb-2">🔔</div>
                             <p className="text-xs font-semibold text-[#FFFFFF]">Pas de notification</p>
-                            <p className="text-[10px] text-[#8B7355] mt-1">Vous serez notifié quand un client vous suit ou met un produit en favori.</p>
+                            <p className="text-[10px] text-[#8E96B0] mt-1">Vous serez notifié quand un client vous suit ou met un produit en favori.</p>
                         </div>
                     )}
                 </div>
@@ -99,7 +99,7 @@ export function TopHeaderBar() {
                             {merchant && (
                                 <div className="px-4 py-2 border-b border-gray-100">
                                     <p className="text-xs font-semibold text-[#FFFFFF] truncate">{merchant.name}</p>
-                                    <p className="text-[10px] text-[#8B7355] truncate">{merchant.address}</p>
+                                    <p className="text-[10px] text-[#8E96B0] truncate">{merchant.address}</p>
                                 </div>
                             )}
 
@@ -108,7 +108,7 @@ export function TopHeaderBar() {
                                 onClick={() => setMenuOpen(false)}
                                 className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
                             >
-                                <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
@@ -123,7 +123,7 @@ export function TopHeaderBar() {
                                     onClick={() => setMenuOpen(false)}
                                     className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
                                 >
-                                    <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                                         <polyline points="15 3 21 3 21 9" />
                                         <line x1="10" y1="14" x2="21" y2="3" />
@@ -137,7 +137,7 @@ export function TopHeaderBar() {
                                 onClick={() => setMenuOpen(false)}
                                 className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
                             >
-                                <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="12" cy="12" r="10" />
                                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                                     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -150,7 +150,7 @@ export function TopHeaderBar() {
                                 onClick={() => setMenuOpen(false)}
                                 className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
                             >
-                                <svg className="size-4 text-[#8B7355]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
                                     <path d="M14 2v6h6" />
                                 </svg>

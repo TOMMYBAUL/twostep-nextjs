@@ -89,16 +89,16 @@ export function AchievementBadgeCard({ def, unlocked, unlockedAt }: BadgeCardPro
                         {def.gamifiedLabel}
                     </p>
                 )}
-                <p className={`text-sm font-bold ${unlocked ? "text-[#2C1A0E]" : "text-gray-400"}`}>
+                <p className={`text-sm font-bold ${unlocked ? "text-[#1A1F36]" : "text-gray-400"}`}>
                     {def.label}
                 </p>
-                <p className="text-[11px] text-[#8B7355] mt-0.5">
+                <p className="text-[11px] text-[#8E96B0] mt-0.5">
                     {unlocked
                         ? def.subtitle
                         : `Condition : ${def.subtitle.toLowerCase()}`}
                 </p>
                 {unlocked && unlockedAt && (
-                    <p className="text-[10px] text-[#8B7355]/60 mt-1">
+                    <p className="text-[10px] text-[#8E96B0]/60 mt-1">
                         {new Date(unlockedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                     </p>
                 )}

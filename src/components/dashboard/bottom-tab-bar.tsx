@@ -51,7 +51,7 @@ function TabItem({ href, label, icon, isActive }: { href: string; label: string;
         <Link
             href={href}
             className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 no-underline transition-colors ${
-                isActive ? "text-[#D4A574]" : "text-[#8B7355]"
+                isActive ? "text-[#4268FF]" : "text-[#8E96B0]"
             }`}
         >
             {icon}
@@ -86,7 +86,7 @@ export function BottomTabBar() {
                 <button
                     onClick={() => setMoreOpen(true)}
                     className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 transition-colors ${
-                        isMoreActive ? "text-[#D4A574]" : "text-[#8B7355]"
+                        isMoreActive ? "text-[#4268FF]" : "text-[#8E96B0]"
                     }`}
                 >
                     <svg className="size-6" viewBox="0 0 24 24" fill="currentColor">

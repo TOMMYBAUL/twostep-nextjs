@@ -64,7 +64,7 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                                     href={item.href}
                                     onClick={() => onOpenChange(false)}
                                     className={`flex items-center gap-3 rounded-xl px-4 py-3.5 no-underline transition ${
-                                        isActive ? "bg-[#F5F1EB] text-[#D4A574]" : "text-[#2C1A0E] hover:bg-gray-50"
+                                        isActive ? "bg-[#EEF1FF] text-[#4268FF]" : "text-[#1A1F36] hover:bg-gray-50"
                                     }`}
                                 >
                                     {item.icon}
@@ -80,7 +80,7 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                                 key={item.href}
                                 href={item.href}
                                 onClick={() => onOpenChange(false)}
-                                className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-[#2C1A0E] no-underline transition hover:bg-gray-50"
+                                className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-[#1A1F36] no-underline transition hover:bg-gray-50"
                             >
                                 {item.icon}
                                 <span className="text-sm font-medium">{item.label}</span>
