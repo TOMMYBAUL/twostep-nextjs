@@ -149,7 +149,7 @@ function MapIllustration() {
                     <rect x="80" y="80" width="32" height="68" rx="4" fill="#DDD5C5" />
                     <rect x="136" y="80" width="24" height="42" rx="4" fill="#DDD5C5" />
                     <rect x="80" y="164" width="50" height="30" rx="4" fill="#DDD5C5" />
-                    {/* Ochre map pins */}
+                    {/* Blue map pins */}
                     {[
                         [58, 40],
                         [170, 38],
@@ -160,7 +160,7 @@ function MapIllustration() {
                             <ellipse cx="11" cy="22" rx="6" ry="3" fill="#00000015" />
                             <path
                                 d="M11 0C5 0 0 5 0 11c0 8.5 11 20 11 20s11-11.5 11-20C22 5 17 0 11 0z"
-                                fill="#C8813A"
+                                fill="#4268FF"
                             />
                             <circle cx="11" cy="10" r="4.5" fill="#fff" />
                         </g>
@@ -199,12 +199,12 @@ function PrivacyIllustration() {
                 {/* Shield shape */}
                 <path
                     d="M120 40 L170 65 L170 130 C170 165 145 190 120 200 C95 190 70 165 70 130 L70 65 Z"
-                    fill="#E07A5F"
+                    fill="#4268FF"
                     opacity="0.9"
                 />
                 <path
                     d="M120 50 L162 72 L162 128 C162 158 141 180 120 189 C99 180 78 158 78 128 L78 72 Z"
-                    fill="#E07A5F"
+                    fill="#4268FF"
                 />
                 {/* Lock body */}
                 <rect x="103" y="115" width="34" height="28" rx="4" fill="white" />
@@ -217,13 +217,13 @@ function PrivacyIllustration() {
                     strokeLinecap="round"
                 />
                 {/* Keyhole */}
-                <circle cx="120" cy="126" r="4" fill="#E07A5F" />
-                <rect x="118.5" y="128" width="3" height="6" rx="1.5" fill="#E07A5F" />
+                <circle cx="120" cy="126" r="4" fill="#4268FF" />
+                <rect x="118.5" y="128" width="3" height="6" rx="1.5" fill="#4268FF" />
                 {/* Decorative dots around shield */}
                 {[
                     [50, 50], [185, 55], [40, 160], [195, 165], [55, 105], [185, 110],
                 ].map(([px, py], i) => (
-                    <circle key={i} cx={px} cy={py} r={4 + (i % 3)} fill="#E07A5F" opacity={0.1 + (i % 3) * 0.05} />
+                    <circle key={i} cx={px} cy={py} r={4 + (i % 3)} fill="#4268FF" opacity={0.1 + (i % 3) * 0.05} />
                 ))}
             </svg>
         </div>
@@ -235,13 +235,13 @@ function NotificationsIllustration() {
         <div className="mx-auto h-52 w-48 sm:h-60 sm:w-52">
             <svg viewBox="0 0 208 230" fill="none" className="h-full w-full">
                 {/* Phone body */}
-                <rect x="38" y="26" width="104" height="184" rx="20" fill="#2C2018" />
+                <rect x="38" y="26" width="104" height="184" rx="20" fill="#1A1F36" />
                 <rect x="45" y="36" width="90" height="164" rx="14" fill="white" />
-                <rect x="68" y="36" width="44" height="10" rx="5" fill="#2C2018" />
+                <rect x="68" y="36" width="44" height="10" rx="5" fill="#1A1F36" />
                 {/* Notification card 1 — ochre */}
-                <rect x="54" y="62" width="72" height="32" rx="8" fill="#FDF8F3" stroke="#C8813A" strokeWidth="1.2" />
-                <circle cx="67" cy="78" r="7" fill="#C8813A" opacity="0.15" />
-                <rect x="78" y="73" width="38" height="3.5" rx="1.75" fill="#C8813A" opacity="0.4" />
+                <rect x="54" y="62" width="72" height="32" rx="8" fill="#F0F4FF" stroke="#4268FF" strokeWidth="1.2" />
+                <circle cx="67" cy="78" r="7" fill="#4268FF" opacity="0.15" />
+                <rect x="78" y="73" width="38" height="3.5" rx="1.75" fill="#4268FF" opacity="0.4" />
                 <rect x="78" y="80" width="26" height="2.5" rx="1.25" fill="#E0D8C8" />
                 {/* Notification card 2 — sage */}
                 <rect
@@ -272,7 +272,7 @@ function NotificationsIllustration() {
                 <rect x="78" y="153" width="34" height="3.5" rx="1.75" fill="#E8923A" opacity="0.4" />
                 <rect x="78" y="160" width="28" height="2.5" rx="1.25" fill="#E0D8C8" />
                 {/* Floating bell circle */}
-                <circle cx="156" cy="36" r="24" fill="#C8813A" />
+                <circle cx="156" cy="36" r="24" fill="#4268FF" />
                 <path
                     d="M156 22c-6 0-11 5-11 11v6l-3 3v1.5h28V42l-3-3v-6c0-6-5-11-11-11z"
                     fill="#fff"
@@ -435,12 +435,12 @@ function ReadyIllustration() {
                 <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
                 <circle cx="120" cy="120" r="114" fill="#EBE3D3" />
                 {/* Shopping bag */}
-                <rect x="80" y="90" width="80" height="85" rx="8" fill="#E07A5F" />
+                <rect x="80" y="90" width="80" height="85" rx="8" fill="#4268FF" />
                 <rect x="88" y="98" width="64" height="69" rx="4" fill="white" opacity="0.9" />
                 {/* Bag handles */}
                 <path
                     d="M100 90 L100 72 C100 60 109 52 120 52 C131 52 140 60 140 72 L140 90"
-                    stroke="#E07A5F"
+                    stroke="#4268FF"
                     strokeWidth="6"
                     fill="none"
                     strokeLinecap="round"
@@ -448,7 +448,7 @@ function ReadyIllustration() {
                 {/* Checkmark in bag */}
                 <path
                     d="M104 130 L115 142 L140 115"
-                    stroke="#E07A5F"
+                    stroke="#4268FF"
                     strokeWidth="5"
                     fill="none"
                     strokeLinecap="round"
@@ -459,14 +459,14 @@ function ReadyIllustration() {
                     [55, 65, 6], [175, 60, 5], [50, 160, 4], [185, 155, 6],
                     [65, 110, 3], [175, 105, 4], [120, 195, 3],
                 ].map(([px, py, r], i) => (
-                    <circle key={i} cx={px} cy={py} r={r} fill="#E07A5F" opacity={0.15 + (i % 3) * 0.05} />
+                    <circle key={i} cx={px} cy={py} r={r} fill="#4268FF" opacity={0.15 + (i % 3) * 0.05} />
                 ))}
                 {/* Star sparkles */}
                 {[
                     [60, 80], [170, 75], [55, 145], [180, 140],
                 ].map(([px, py], i) => (
                     <g key={`s${i}`} transform={`translate(${px},${py})`}>
-                        <path d="M0 -5 L1.5 -1.5 L5 0 L1.5 1.5 L0 5 L-1.5 1.5 L-5 0 L-1.5 -1.5Z" fill="#C8813A" opacity="0.3" />
+                        <path d="M0 -5 L1.5 -1.5 L5 0 L1.5 1.5 L0 5 L-1.5 1.5 L-5 0 L-1.5 -1.5Z" fill="#4268FF" opacity="0.3" />
                     </g>
                 ))}
             </svg>

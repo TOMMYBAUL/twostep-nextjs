@@ -149,7 +149,7 @@ function MapIllustration() {
                     <rect x="80" y="80" width="32" height="68" rx="4" fill="#DDD5C5" />
                     <rect x="136" y="80" width="24" height="42" rx="4" fill="#DDD5C5" />
                     <rect x="80" y="164" width="50" height="30" rx="4" fill="#DDD5C5" />
-                    {/* Ochre map pins */}
+                    {/* Blue map pins */}
                     {[
                         [58, 40],
                         [170, 38],
@@ -160,7 +160,7 @@ function MapIllustration() {
                             <ellipse cx="11" cy="22" rx="6" ry="3" fill="#00000015" />
                             <path
                                 d="M11 0C5 0 0 5 0 11c0 8.5 11 20 11 20s11-11.5 11-20C22 5 17 0 11 0z"
-                                fill="#C8813A"
+                                fill="#4268FF"
                             />
                             <circle cx="11" cy="10" r="4.5" fill="#fff" />
                         </g>
@@ -227,7 +227,7 @@ function CookiesIllustration() {
                         width={c.w}
                         height={c.h}
                         rx={8}
-                        fill="#C8813A"
+                        fill="#4268FF"
                         opacity={c.o}
                     />
                 ))}
@@ -253,13 +253,13 @@ function NotificationsIllustration() {
         <div className="mx-auto h-52 w-48 sm:h-60 sm:w-52">
             <svg viewBox="0 0 208 230" fill="none" className="h-full w-full">
                 {/* Phone body */}
-                <rect x="38" y="26" width="104" height="184" rx="20" fill="#2C2018" />
+                <rect x="38" y="26" width="104" height="184" rx="20" fill="#1A1F36" />
                 <rect x="45" y="36" width="90" height="164" rx="14" fill="white" />
-                <rect x="68" y="36" width="44" height="10" rx="5" fill="#2C2018" />
+                <rect x="68" y="36" width="44" height="10" rx="5" fill="#1A1F36" />
                 {/* Notification card 1 — ochre */}
-                <rect x="54" y="62" width="72" height="32" rx="8" fill="#FDF8F3" stroke="#C8813A" strokeWidth="1.2" />
-                <circle cx="67" cy="78" r="7" fill="#C8813A" opacity="0.15" />
-                <rect x="78" y="73" width="38" height="3.5" rx="1.75" fill="#C8813A" opacity="0.4" />
+                <rect x="54" y="62" width="72" height="32" rx="8" fill="#F0F4FF" stroke="#4268FF" strokeWidth="1.2" />
+                <circle cx="67" cy="78" r="7" fill="#4268FF" opacity="0.15" />
+                <rect x="78" y="73" width="38" height="3.5" rx="1.75" fill="#4268FF" opacity="0.4" />
                 <rect x="78" y="80" width="26" height="2.5" rx="1.25" fill="#E0D8C8" />
                 {/* Notification card 2 — sage */}
                 <rect
@@ -290,7 +290,7 @@ function NotificationsIllustration() {
                 <rect x="78" y="153" width="34" height="3.5" rx="1.75" fill="#E8923A" opacity="0.4" />
                 <rect x="78" y="160" width="28" height="2.5" rx="1.25" fill="#E0D8C8" />
                 {/* Floating bell circle */}
-                <circle cx="156" cy="36" r="24" fill="#C8813A" />
+                <circle cx="156" cy="36" r="24" fill="#4268FF" />
                 <path
                     d="M156 22c-6 0-11 5-11 11v6l-3 3v1.5h28V42l-3-3v-6c0-6-5-11-11-11z"
                     fill="#fff"

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
 
 export default function MentionsLegalesPage() {
     return (
-        <div className="min-h-screen bg-[#F4F1DE]">
+        <div className="min-h-screen bg-[#F8F9FC]">
             <div className="mx-auto max-w-2xl px-6 py-16">
                 <BackButton />
 
-                <h1 className="text-2xl font-bold text-[#2C1A0E] mb-8">Mentions légales</h1>
+                <h1 className="text-2xl font-bold text-[#1A1F36] mb-8">Mentions légales</h1>
 
-                <div className="space-y-8 text-sm text-[#2C1A0E] leading-relaxed">
+                <div className="space-y-8 text-sm text-[#1A1F36] leading-relaxed">
                     <section>
                         <h2 className="text-base font-semibold mb-3">1. Éditeur du site</h2>
                         <p>Le site <strong>twostep.fr</strong> est édité par :</p>
@@ -98,7 +98,7 @@ export default function MentionsLegalesPage() {
                         </p>
                     </section>
 
-                    <p className="text-xs text-[#8B7355] mt-12">Dernière mise à jour : mars 2026</p>
+                    <p className="text-xs text-[#8E96B0] mt-12">Dernière mise à jour : mars 2026</p>
                 </div>
             </div>
         </div>

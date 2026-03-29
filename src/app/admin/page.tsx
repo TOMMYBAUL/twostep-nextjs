@@ -163,12 +163,12 @@ export default function AdminOverviewPage() {
                 <MetricCard
                     label="Produits"
                     value={stats.total_products}
-                    accent="#2C2018"
+                    accent="#1A1F36"
                 />
                 <MetricCard
                     label="Promos actives"
                     value={stats.total_promotions_active}
-                    accent="#C8813A"
+                    accent="#4268FF"
                 />
             </div>
 

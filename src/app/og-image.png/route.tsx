@@ -13,7 +13,7 @@ export async function GET() {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "linear-gradient(135deg, #2C2018 0%, #3D2E1F 100%)",
+                    background: "linear-gradient(135deg, #1A1F36 0%, #2A3258 100%)",
                     fontFamily: "sans-serif",
                 }}
             >
@@ -30,7 +30,7 @@ export async function GET() {
                             width: 64,
                             height: 64,
                             borderRadius: 16,
-                            background: "#C8813A",
+                            background: "#4268FF",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -41,7 +41,7 @@ export async function GET() {
                     >
                         2S
                     </div>
-                    <div style={{ fontSize: 48, fontWeight: 800, color: "#F5EDD6", letterSpacing: "-0.03em" }}>
+                    <div style={{ fontSize: 48, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.03em" }}>
                         Two-Step
                     </div>
                 </div>
@@ -49,19 +49,19 @@ export async function GET() {
                     style={{
                         fontSize: 36,
                         fontWeight: 700,
-                        color: "#F5EDD6",
+                        color: "#FFFFFF",
                         textAlign: "center",
                         lineHeight: 1.3,
                         maxWidth: 800,
                     }}
                 >
                     Le stock local, visible
-                    <span style={{ color: "#C8813A" }}> en temps réel</span>
+                    <span style={{ color: "#4268FF" }}> en temps réel</span>
                 </div>
                 <div
                     style={{
                         fontSize: 20,
-                        color: "rgba(245,237,214,0.6)",
+                        color: "rgba(255,255,255,0.6)",
                         marginTop: 20,
                         textAlign: "center",
                     }}
