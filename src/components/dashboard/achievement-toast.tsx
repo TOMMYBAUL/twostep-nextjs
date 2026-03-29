@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import confetti from "canvas-confetti";
 import { useCelebration } from "@/providers/celebration-provider";
+import { AchievementIconRenderer } from "./achievement-icon-renderer";
 
 const CONFETTI_COLORS = ["#D4A574", "#E07A5F", "#81B29A", "#FFD700"];
 
@@ -52,7 +53,7 @@ export function AchievementToast() {
                                 boxShadow: `0 2px 8px ${current.color}4D`,
                             }}
                         >
-                            <span className="text-[22px]">{current.emoji}</span>
+                            <AchievementIconRenderer icon={current.icon} size={22} />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[11px] font-extrabold uppercase tracking-wide" style={{ color: current.color }}>

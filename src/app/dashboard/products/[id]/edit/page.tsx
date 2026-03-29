@@ -78,7 +78,9 @@ export default function EditProductPage() {
                     category: product.category ?? "",
                     price: product.price?.toString() ?? "",
                     initialQuantity: "0",
+                    photoUrl: (product as any).photo_processed_url ?? (product as any).photo_url ?? null,
                 }}
+                productId={id}
                 onSubmit={handleSubmit}
                 submitLabel="Enregistrer"
                 isLoading={isLoading}

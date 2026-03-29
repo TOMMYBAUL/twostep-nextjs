@@ -8,6 +8,11 @@ import { notFound } from "next/navigation";
 const BASE_URL = "https://www.twostep.fr";
 
 const CATEGORIES: Record<string, { title: string; description: string; dbCategory: string }> = {
+    mode: { title: "Mode", description: "Boutiques de mode et prêt-à-porter à Toulouse. Vêtements, accessoires et créateurs locaux.", dbCategory: "Mode" },
+    chaussures: { title: "Chaussures", description: "Magasins de chaussures à Toulouse. Sneakers, boots, escarpins et chaussures artisanales.", dbCategory: "Chaussures" },
+    bijoux: { title: "Bijoux", description: "Bijouteries et créateurs de bijoux à Toulouse. Bijoux artisanaux, fantaisie et précieux.", dbCategory: "Bijoux" },
+    sport: { title: "Sport", description: "Magasins de sport à Toulouse. Équipements, vêtements techniques et accessoires.", dbCategory: "Sport" },
+    decoration: { title: "Décoration", description: "Boutiques de décoration et design d'intérieur à Toulouse. Objets déco, mobilier et art de vivre.", dbCategory: "Décoration" },
     boulangeries: { title: "Boulangeries", description: "Découvrez les meilleures boulangeries artisanales de Toulouse. Pain frais, viennoiseries et pâtisseries disponibles en boutique.", dbCategory: "Boulangerie" },
     fromageries: { title: "Fromageries", description: "Les fromageries artisanales de Toulouse. Fromages locaux et affinés, disponibles en boutique.", dbCategory: "Fromagerie" },
     epiceries: { title: "Épiceries", description: "Épiceries fines et de quartier à Toulouse. Produits locaux, bio et artisanaux.", dbCategory: "Épicerie" },

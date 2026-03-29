@@ -306,7 +306,7 @@ export default function ProfilePage() {
                             </div>
 
                             {!follows || follows.length === 0 ? (
-                                <p className="py-6 text-center text-[13px] text-[#5a4020]">
+                                <p className="py-6 text-center text-[13px] text-[#8a6a3a]">
                                     Tu ne suis aucune boutique pour le moment.
                                 </p>
                             ) : (
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                                                     <div className="min-w-0 flex-1">
                                                         <p className="truncate text-[13px] font-medium text-[#f5deb3]">{merchant.name}</p>
                                                         {merchant.city && (
-                                                            <p className="text-[11px] text-[#5a4020]">{merchant.city}</p>
+                                                            <p className="text-[11px] text-[#8a6a3a]">{merchant.city}</p>
                                                         )}
                                                     </div>
                                                 </Link>

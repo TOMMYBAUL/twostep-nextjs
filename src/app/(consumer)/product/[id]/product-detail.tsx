@@ -202,7 +202,7 @@ export default function ProductDetailClient() {
                                 <p className="text-[13px] font-medium text-[#e8d4b0]">
                                     {product.merchants.name}
                                 </p>
-                                <p className="mt-0.5 text-[11px] text-[#5a4020]">
+                                <p className="mt-0.5 text-[11px] text-[#8a6a3a]">
                                     {product.merchants.address}, {product.merchants.city}
                                 </p>
                             </div>
@@ -387,7 +387,7 @@ export default function ProductDetailClient() {
                             {/* Shop info */}
                             <div className="px-5 pb-4 text-center">
                                 <p className="text-base font-semibold text-[#f0dfc0]">{shop.name}</p>
-                                <p className="mt-1 text-xs text-[#5a4020]">{shop.address}, {shop.city}</p>
+                                <p className="mt-1 text-xs text-[#8a6a3a]">{shop.address}, {shop.city}</p>
                             </div>
 
                             {shop.phone ? (
@@ -421,7 +421,7 @@ export default function ProductDetailClient() {
                                 </>
                             ) : (
                                 <div className="px-5 pb-5 text-center">
-                                    <p className="text-[13px] text-[#5a4020]">Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.</p>
+                                    <p className="text-[13px] text-[#8a6a3a]">Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.</p>
                                 </div>
                             )}
                         </motion.div>

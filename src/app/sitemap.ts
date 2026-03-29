@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     // Category pages for local SEO
-    const categories = ["boulangeries", "fromageries", "epiceries", "cavistes", "bouchers", "poissonneries", "patisseries", "traiteurs", "primeurs", "chocolatiers"];
+    const categories = ["mode", "chaussures", "bijoux", "sport", "decoration", "boulangeries", "fromageries", "epiceries", "cavistes", "bouchers", "poissonneries", "patisseries", "traiteurs", "primeurs", "chocolatiers"];
     const categoryRoutes: MetadataRoute.Sitemap = categories.map((cat) => ({
         url: `${BASE_URL}/toulouse/${cat}`,
         lastModified: new Date(),

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import confetti from "canvas-confetti";
 import { useCelebration } from "@/providers/celebration-provider";
+import { AchievementIconRenderer } from "./achievement-icon-renderer";
 
 const CONFETTI_COLORS = ["#D4A574", "#E07A5F", "#81B29A", "#FFD700"];
 
@@ -71,7 +72,7 @@ export function AchievementModal() {
                                 boxShadow: `0 4px 16px ${current.color}66`,
                             }}
                         >
-                            <span className="text-[40px]">{current.emoji}</span>
+                            <AchievementIconRenderer icon={current.icon} size={40} />
                         </div>
 
                         <p className="mt-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: current.color }}>

@@ -12,9 +12,13 @@ export type AchievementType =
 
 export type CelebrationMode = "toast" | "modal";
 
+export type AchievementIcon =
+    | "gift" | "eye" | "heart" | "users" | "bar-chart"
+    | "tag" | "zap" | "check-circle" | "star" | "trophy";
+
 export type AchievementDef = {
     type: AchievementType;
-    emoji: string;
+    icon: AchievementIcon;
     label: string;
     gamifiedLabel: string;
     subtitle: string;
@@ -27,7 +31,7 @@ export type AchievementDef = {
 export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     "first-product": {
         type: "first-product",
-        emoji: "🎁",
+        icon: "gift",
         label: "Premier produit",
         gamifiedLabel: "Débloqué !",
         subtitle: "Vous avez fait le premier pas !",
@@ -38,7 +42,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "first-view": {
         type: "first-view",
-        emoji: "👀",
+        icon: "eye",
         label: "Première vue",
         gamifiedLabel: "Débloqué !",
         subtitle: "Votre boutique a été vue !",
@@ -49,7 +53,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "first-favorite": {
         type: "first-favorite",
-        emoji: "❤️",
+        icon: "heart",
         label: "Premier favori",
         gamifiedLabel: "Débloqué !",
         subtitle: "Un client vous a remarqué !",
@@ -60,7 +64,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "first-follower": {
         type: "first-follower",
-        emoji: "🏪",
+        icon: "users",
         label: "Premier abonné",
         gamifiedLabel: "Débloqué !",
         subtitle: "Votre communauté commence !",
@@ -71,7 +75,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "views-100": {
         type: "views-100",
-        emoji: "💯",
+        icon: "bar-chart",
         label: "100 vues",
         gamifiedLabel: "Débloqué !",
         subtitle: "Votre boutique rayonne !",
@@ -82,7 +86,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "first-promo": {
         type: "first-promo",
-        emoji: "🏷️",
+        icon: "tag",
         label: "Première promo",
         gamifiedLabel: "Débloqué !",
         subtitle: "Vos offres attirent les clients !",
@@ -93,7 +97,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "streak-7": {
         type: "streak-7",
-        emoji: "🔥",
+        icon: "zap",
         label: "7 jours d'affilée",
         gamifiedLabel: "En feu !",
         subtitle: "Régularité exemplaire !",
@@ -104,7 +108,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "onboarding-complete": {
         type: "onboarding-complete",
-        emoji: "✅",
+        icon: "check-circle",
         label: "Onboarding complété",
         gamifiedLabel: "Prêt à briller !",
         subtitle: "Votre boutique est 100% configurée",
@@ -115,7 +119,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "score-50": {
         type: "score-50",
-        emoji: "⭐",
+        icon: "star",
         label: "Score 50+",
         gamifiedLabel: "En progrès !",
         subtitle: "Vous montez en puissance",
@@ -126,7 +130,7 @@ export const ACHIEVEMENTS: Record<AchievementType, AchievementDef> = {
     },
     "score-80": {
         type: "score-80",
-        emoji: "🏆",
+        icon: "trophy",
         label: "Score Excellent",
         gamifiedLabel: "Légendaire !",
         subtitle: "Top boutique Two-Step !",

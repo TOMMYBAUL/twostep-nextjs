@@ -1,6 +1,21 @@
 "use client";
 
-import type { AchievementDef } from "@/lib/achievements";
+import type { AchievementDef, AchievementIcon } from "@/lib/achievements";
+import { Gift01, Eye, Heart, Users01, BarChart01, Tag01, Zap, CheckCircle, Star01, Trophy01, Lock01 } from "@untitledui/icons";
+import type { FC, SVGProps } from "react";
+
+const ICON_MAP: Record<AchievementIcon, FC<SVGProps<SVGSVGElement>>> = {
+    gift: Gift01,
+    eye: Eye,
+    heart: Heart,
+    users: Users01,
+    "bar-chart": BarChart01,
+    tag: Tag01,
+    zap: Zap,
+    "check-circle": CheckCircle,
+    star: Star01,
+    trophy: Trophy01,
+};
 
 type BadgeProps = {
     def: AchievementDef;
@@ -10,9 +25,9 @@ type BadgeProps = {
 };
 
 const sizes = {
-    sm: { circle: 28, emoji: 14, icon: 12 },
-    md: { circle: 40, emoji: 20, icon: 16 },
-    lg: { circle: 56, emoji: 26, icon: 20 },
+    sm: { circle: 28, icon: 14 },
+    md: { circle: 40, icon: 20 },
+    lg: { circle: 56, icon: 26 },
 };
 
 export function AchievementBadge({ def, unlocked, unlockedAt, size = "md" }: BadgeProps) {
@@ -25,10 +40,12 @@ export function AchievementBadge({ def, unlocked, unlockedAt, size = "md" }: Bad
                 style={{ width: s.circle, height: s.circle }}
                 title={`${def.label} — Verrouillé`}
             >
-                <span style={{ fontSize: s.icon }} className="text-gray-400">🔒</span>
+                <Lock01 style={{ width: s.icon, height: s.icon }} className="text-gray-400" />
             </div>
         );
     }
+
+    const Icon = ICON_MAP[def.icon];
 
     return (
         <div
@@ -41,7 +58,7 @@ export function AchievementBadge({ def, unlocked, unlockedAt, size = "md" }: Bad
             }}
             title={`${def.label} — ${unlockedAt ? new Date(unlockedAt).toLocaleDateString("fr-FR") : ""}`}
         >
-            <span style={{ fontSize: s.emoji }}>{def.emoji}</span>
+            <Icon style={{ width: s.icon, height: s.icon }} className="text-white" />
         </div>
     );
 }

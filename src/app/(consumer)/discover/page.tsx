@@ -395,7 +395,7 @@ export default function DiscoverPage() {
                                         <div className="px-2 py-2">
                                             <p className="truncate text-[13px] font-semibold text-[#f0dfc0]">{p.product_name}</p>
                                             <p className="mt-0.5 text-xs font-normal text-[#a07840]">{(p.sale_price ?? p.product_price).toFixed(2)} €</p>
-                                            <p className="mt-0.5 text-[10px] text-[#5a4020]">
+                                            <p className="mt-0.5 text-[10px] text-[#8a6a3a]">
                                                 {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`} · {p.merchant_name}
                                             </p>
                                         </div>
@@ -633,7 +633,7 @@ function InfiniteProductGrid({
         <section className="pb-20">
             <div className="px-4 pb-3 pt-6">
                 <h2 className="text-base font-semibold text-[#f0dfc0]" style={{ letterSpacing: "-0.2px" }}>Tout près de toi</h2>
-                {total > 0 && <p className="mt-0.5 text-[11px] text-[#5a4020]">{total} produits disponibles</p>}
+                {total > 0 && <p className="mt-0.5 text-[11px] text-[#8a6a3a]">{total} produits disponibles</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-2.5 px-4 md:grid-cols-4 md:gap-3 md:px-6">
@@ -719,7 +719,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
                 <div className="flex size-16 items-center justify-center rounded-2xl bg-[#2a1a08] text-2xl">🏪</div>
                 <p className="mt-4 text-[15px] font-semibold text-[#f0dfc0]">Aucune boutique suivie</p>
-                <p className="mt-1.5 text-[13px] text-[#5a4020]">
+                <p className="mt-1.5 text-[13px] text-[#8a6a3a]">
                     Abonne-toi à des boutiques pour les retrouver ici.
                 </p>
                 <Link
@@ -746,7 +746,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
                 <p className="text-[15px] font-semibold text-[#f0dfc0]">Rien de nouveau</p>
-                <p className="mt-1.5 text-[13px] text-[#5a4020]">
+                <p className="mt-1.5 text-[13px] text-[#8a6a3a]">
                     Les boutiques que tu suis n'ont pas encore de produits.
                 </p>
             </div>
@@ -766,7 +766,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                                     <Image src={p.product_photo} alt={p.product_name} fill sizes="100vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
                                 ) : (
                                     <div className="flex h-full items-center justify-center">
-                                        <span className="text-3xl font-light text-[#5a4020]/30">{p.product_name.charAt(0)}</span>
+                                        <span className="text-3xl font-light text-[#8a6a3a]/30">{p.product_name.charAt(0)}</span>
                                     </div>
                                 )}
                                 <div className="absolute right-3 top-3">
@@ -807,7 +807,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                             <div className="min-w-0 flex-1">
                                 <Link
                                     href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
-                                    className="text-[12px] font-semibold text-[#5a4020] transition active:opacity-70"
+                                    className="text-[12px] font-semibold text-[#8a6a3a] transition active:opacity-70"
                                 >
                                     {p.merchant_name}
                                 </Link>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import { ImagePlus } from "@untitledui/icons";
 
 const CATEGORIES = [
     { value: "mode", label: "Mode" },
@@ -24,7 +25,9 @@ interface ProductFormProps {
         category: string;
         price: string;
         initialQuantity: string;
+        photoUrl?: string | null;
     };
+    productId?: string;
     onSubmit: (values: {
         name: string;
         description: string;
@@ -37,7 +40,7 @@ interface ProductFormProps {
     isLoading: boolean;
 }
 
-export function ProductForm({ initialValues, onSubmit, submitLabel, isLoading }: ProductFormProps) {
+export function ProductForm({ initialValues, productId, onSubmit, submitLabel, isLoading }: ProductFormProps) {
     const [name, setName] = useState(initialValues?.name ?? "");
     const [description, setDescription] = useState(initialValues?.description ?? "");
     const [ean, setEan] = useState(initialValues?.ean ?? "");
@@ -45,6 +48,30 @@ export function ProductForm({ initialValues, onSubmit, submitLabel, isLoading }:
     const [price, setPrice] = useState(initialValues?.price ?? "");
     const [initialQuantity, setInitialQuantity] = useState(initialValues?.initialQuantity ?? "0");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [photoPreview, setPhotoPreview] = useState<string | null>(initialValues?.photoUrl ?? null);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !productId) return;
+
+        setPhotoPreview(URL.createObjectURL(file));
+        setUploading(true);
+        try {
+            const form = new FormData();
+            form.append("file", file);
+            form.append("product_id", productId);
+            const res = await fetch("/api/images/upload", { method: "POST", body: form });
+            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json();
+            setPhotoPreview(data.photo_url);
+        } catch {
+            setErrors((prev) => ({ ...prev, photo: "Erreur lors de l'upload" }));
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const validate = () => {
         const errs: Record<string, string> = {};
@@ -69,6 +96,41 @@ export function ProductForm({ initialValues, onSubmit, submitLabel, isLoading }:
 
     return (
         <form onSubmit={handleSubmit} className="animate-fade-up stagger-3 space-y-5 max-w-xl">
+            {/* Photo */}
+            {productId && (
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Photo du produit</label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 transition hover:border-gray-300"
+                        >
+                            {photoPreview ? (
+                                <img src={photoPreview} alt="Preview" className="size-full object-cover" />
+                            ) : (
+                                <ImagePlus className="size-6 text-gray-400" />
+                            )}
+                        </button>
+                        <div className="text-xs text-gray-400">
+                            {uploading ? (
+                                <p className="font-medium text-[var(--ts-terracotta)]">Upload en cours...</p>
+                            ) : (
+                                <p>Cliquez pour ajouter une photo. Elle sera automatiquement détourée.</p>
+                            )}
+                        </div>
+                    </div>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handlePhotoChange}
+                    />
+                    {errors.photo && <p className="mt-1 text-xs text-red-500">{errors.photo}</p>}
+                </div>
+            )}
+
             {/* Name */}
             <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Nom du produit *</label>

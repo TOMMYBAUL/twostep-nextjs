@@ -65,7 +65,7 @@ export default function FavoritesPage() {
                                             <h3 className="text-[13px] font-medium text-[#f5deb3]">{product.name}</h3>
                                             <p className="mt-0.5 text-xs font-normal text-[#a07840]">{product.price?.toFixed(2)} €</p>
                                             {merchant && (
-                                                <p className="mt-0.5 text-[11px] text-[#5a4020]">{merchant.name}</p>
+                                                <p className="mt-0.5 text-[11px] text-[#8a6a3a]">{merchant.name}</p>
                                             )}
                                         </div>
                                         <StockBadge quantity={quantity} />
@@ -120,7 +120,7 @@ function EmptyStateWithSuggestions() {
                 </div>
                 <div>
                     <p className="text-xs font-semibold text-[#e8d4b0]">Ton espace de curation</p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-[#5a4020]">
+                    <p className="mt-1 text-[11px] leading-relaxed text-[#8a6a3a]">
                         Sauvegarde les produits et boutiques qui t&apos;intéressent. Retrouve-les ici avant qu&apos;ils disparaissent.
                     </p>
                 </div>
@@ -132,7 +132,7 @@ function EmptyStateWithSuggestions() {
             </p>
 
             {/* Subtitle */}
-            <p className="mt-2 text-[13px] leading-relaxed text-[#5a4020]">
+            <p className="mt-2 text-[13px] leading-relaxed text-[#8a6a3a]">
                 Appuie sur ♡ sur un produit pour le sauvegarder ici.
             </p>
 
@@ -147,7 +147,7 @@ function EmptyStateWithSuggestions() {
             {/* Product suggestions — 2×2 grid */}
             {suggestions.length > 0 && (
                 <div className="mt-6">
-                    <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.8px] text-[#5a4020]">
+                    <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.8px] text-[#8a6a3a]">
                         À découvrir autour de toi
                     </p>
                     <div className="grid grid-cols-2 gap-2">
@@ -164,7 +164,7 @@ function EmptyStateWithSuggestions() {
                                         {p.product_photo ? (
                                             <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover" />
                                         ) : (
-                                            <div className="flex h-full items-center justify-center text-lg text-[#5a4020]/30">
+                                            <div className="flex h-full items-center justify-center text-lg text-[#8a6a3a]/30">
                                                 {p.product_name?.charAt(0)}
                                             </div>
                                         )}
@@ -184,7 +184,7 @@ function EmptyStateWithSuggestions() {
                                     </div>
                                     <div className="px-2 py-[7px]">
                                         <p className="truncate text-[11px] font-medium text-[#e8d4b0]">{p.product_name}</p>
-                                        <p className="mt-0.5 text-[10px] text-[#5a4020]">{p.merchant_name}</p>
+                                        <p className="mt-0.5 text-[10px] text-[#8a6a3a]">{p.merchant_name}</p>
                                         <p className="mt-0.5 text-[11px] text-[#a07840]">{(p.sale_price ?? p.product_price)?.toFixed(2)} €</p>
                                     </div>
                                 </Link>
