@@ -474,7 +474,8 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
                 type="button"
                 onClick={() => isFollowing ? unfollow.mutate(merchant.merchant_id) : follow.mutate(merchant.merchant_id)}
                 className={cx(
-                    "shrink-0 self-start mt-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition duration-150 active:scale-[0.97]",
+                    "shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition duration-150 active:scale-[0.97]",
+                    merchant.promo_count > 0 && "self-start mt-1",
                     isFollowing
                         ? "border border-[#1A1F36]/15 text-[#1A1F36]/50"
                         : "bg-[#4268FF] text-white",
