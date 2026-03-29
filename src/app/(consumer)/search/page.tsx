@@ -80,7 +80,7 @@ function SearchPageInner() {
                 {isFilterMode && filterParam && FILTER_LABELS[filterParam] && (
                     <div className="mb-3 flex items-center gap-2">
                         <img src="/logo-icon.webp?v=2" alt="" className="size-6" />
-                        <p className="font-display text-lg font-bold text-[var(--ts-ochre)]">
+                        <p className="font-display text-lg font-bold uppercase text-[var(--ts-ochre)]">
                             {FILTER_LABELS[filterParam]}
                         </p>
                     </div>

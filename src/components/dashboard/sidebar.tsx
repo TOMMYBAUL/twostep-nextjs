@@ -104,7 +104,7 @@ export function DashboardSidebar() {
             {/* Logo */}
             <div className="flex h-[60px] items-center gap-2.5 px-4">
                 <img src="/logo-icon.webp?v=2" alt="Two-Step" className="size-9 shrink-0 rounded-[10px]" />
-                <span className="logo-text font-display text-[15px] font-bold text-white whitespace-nowrap">
+                <span className="logo-text font-display text-[15px] font-bold uppercase text-white whitespace-nowrap">
                     Two-Step
                 </span>
             </div>

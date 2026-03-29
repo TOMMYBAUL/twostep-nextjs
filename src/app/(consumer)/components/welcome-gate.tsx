@@ -99,7 +99,7 @@ export function WelcomeGate() {
                         {/* Logo */}
                         <div className="mb-6 text-center">
                             <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
-                            <h1 className="font-display text-xl font-bold text-[#1A1F36]">
+                            <h1 className="font-display text-xl font-bold uppercase text-[#1A1F36]">
                                 Bienvenue sur Two-Step
                             </h1>
                             <p className="mt-1 text-sm text-[#8E96B0]/60">
@@ -150,7 +150,7 @@ export function WelcomeGate() {
                     /* ── Sizing step (after signup) ── */
                     <>
                         <div className="mb-5 text-center">
-                            <h2 className="font-display text-lg font-bold text-[#1A1F36]">
+                            <h2 className="font-display text-lg font-bold uppercase text-[#1A1F36]">
                                 Tes préférences
                             </h2>
                             <p className="mt-1 text-xs text-[#8E96B0]/50">
@@ -213,7 +213,7 @@ export function WelcomeGate() {
                 ) : (
                     /* ── Login / Signup form ── */
                     <>
-                        <h2 className="mb-5 text-center font-display text-lg font-bold text-[#1A1F36]">
+                        <h2 className="mb-5 text-center font-display text-lg font-bold uppercase text-[#1A1F36]">
                             {mode === "signup" ? "Créer un compte" : "Se connecter"}
                         </h2>
 

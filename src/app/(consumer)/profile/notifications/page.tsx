@@ -117,7 +117,7 @@ export default function NotificationsPage() {
                     >
                         <ArrowLeft className="size-5 text-[#1A1F36]/60" />
                     </button>
-                    <h1 className="font-display text-lg font-bold text-[#1A1F36]">Notifications</h1>
+                    <h1 className="font-display text-lg font-bold uppercase text-[#1A1F36]">Notifications</h1>
                 </div>
             </div>
 

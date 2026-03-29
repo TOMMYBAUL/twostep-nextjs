@@ -158,7 +158,7 @@ export default function SignupPage() {
                 {/* ══════════ Role selector ══════════ */}
                 {!role && (
                     <>
-                        <h1 className="mb-6 text-center font-display text-xl font-bold text-[#1A1F36]">Créer un compte</h1>
+                        <h1 className="mb-6 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Créer un compte</h1>
                         <div className="space-y-3">
                             <button
                                 type="button"
@@ -189,7 +189,7 @@ export default function SignupPage() {
                 {/* ══════════ User signup ══════════ */}
                 {role === "user" && (
                     <>
-                        <h1 className="mb-1 text-center font-display text-xl font-bold text-[#1A1F36]">Inscription</h1>
+                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Inscription</h1>
                         <p className="mb-6 text-center text-xs text-[#8E96B0]">Créez votre compte en quelques secondes</p>
 
                         <form onSubmit={handleUserSubmit} className="space-y-3">
@@ -246,7 +246,7 @@ export default function SignupPage() {
                 {/* ══════════ Merchant signup ══════════ */}
                 {role === "merchant" && (
                     <>
-                        <h1 className="mb-1 text-center font-display text-xl font-bold text-[#1A1F36]">Inscription marchand</h1>
+                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Inscription marchand</h1>
                         <p className="mb-4 text-center text-xs text-[#8E96B0]">3 étapes rapides pour démarrer</p>
 
                         {/* Step indicator */}

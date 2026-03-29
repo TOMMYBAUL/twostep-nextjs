@@ -84,7 +84,7 @@ export default async function CategoryPage({ params }: Props) {
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
             <div className="min-h-dvh bg-[#FFFFFF] px-4 pb-24" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <h1 className="font-display text-2xl font-bold text-[#1A1F36]">
+                <h1 className="font-display text-2xl font-bold uppercase text-[#1A1F36]">
                     {cat.title} à Toulouse
                 </h1>
                 <p className="mt-2 text-sm text-[#1A1F36]/60">

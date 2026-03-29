@@ -85,10 +85,10 @@ function TextBlock({
 }) {
     return (
         <div className="px-8 text-center">
-            <h1 className="font-display text-[2rem] font-bold leading-tight text-[#1A1F36]">
+            <h1 className="font-display text-[2rem] font-bold uppercase leading-tight text-[#1A1F36]">
                 {title}
             </h1>
-            <p className="font-display text-[1.4rem] font-bold text-[#4268FF]">
+            <p className="font-display text-[1.4rem] font-bold uppercase text-[#4268FF]">
                 {subtitle}
             </p>
             <p className="mx-auto mt-3 max-w-[300px] text-sm leading-relaxed text-[#8E96B0]">

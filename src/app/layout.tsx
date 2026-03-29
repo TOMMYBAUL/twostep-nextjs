@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Syne } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RouteProvider } from "@/providers/router-provider";
@@ -8,10 +8,10 @@ import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
 import { ZoomReset } from "@/components/zoom-reset";
 
-const playfairDisplay = Playfair_Display({
+const syne = Syne({
     subsets: ["latin"],
     display: "swap",
-    weight: ["500"],
+    weight: ["700"],
     variable: "--font-syne",
 });
 
@@ -70,7 +70,7 @@ export default function RootLayout({
     return (
         <html lang="fr" suppressHydrationWarning>
             <body
-                className={cx(playfairDisplay.variable, cormorantGaramond.variable, "antialiased")}
+                className={cx(syne.variable, cormorantGaramond.variable, "antialiased")}
                 style={{
                     fontFamily: "var(--font-syne), system-ui, sans-serif",
                     background: "#FFFFFF",
