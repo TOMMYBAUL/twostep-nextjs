@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { MarkerPin01, Heart, ShoppingBag01 } from "@untitledui/icons";
+import { MarkerPin01, Heart } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 
 const STORAGE_KEY = "ts-welcome-dismissed";
@@ -98,9 +98,7 @@ export function WelcomeGate() {
                     <>
                         {/* Logo */}
                         <div className="mb-6 text-center">
-                            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--ts-ochre)] to-[var(--ts-ochre-dark)] shadow-md">
-                                <ShoppingBag01 className="size-8 text-white" />
-                            </div>
+                            <img src="/logo-icon.webp" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
                             <h1 className="font-display text-xl font-bold text-[var(--ts-brown)]">
                                 Bienvenue sur Two-Step
                             </h1>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BackButton } from "./back-button";
 
 export const metadata: Metadata = {
     title: "Mentions légales — Two-Step",
@@ -8,9 +9,7 @@ export default function MentionsLegalesPage() {
     return (
         <div className="min-h-screen bg-[#F4F1DE]">
             <div className="mx-auto max-w-2xl px-6 py-16">
-                <a href="/dashboard" className="inline-flex items-center gap-2 text-sm text-[#8B7355] hover:text-[#2C1A0E] no-underline mb-8">
-                    ← Retour au dashboard
-                </a>
+                <BackButton />
 
                 <h1 className="text-2xl font-bold text-[#2C1A0E] mb-8">Mentions légales</h1>
 
