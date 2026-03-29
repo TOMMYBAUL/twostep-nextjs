@@ -14,13 +14,13 @@ export function StockBadge({ quantity }: StockBadgeProps) {
     };
 
     const bgStyles = {
-        ok: "bg-[var(--ts-sage-light)]",
+        ok: "bg-emerald-50",
         low: "bg-amber-50",
         out: "bg-red-50",
     };
 
     const dotStyles = {
-        ok: "bg-[var(--ts-sage)]",
+        ok: "bg-emerald-500",
         low: "bg-amber-500",
         out: "bg-red-500",
     };

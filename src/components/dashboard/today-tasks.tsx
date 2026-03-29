@@ -50,7 +50,7 @@ export function TodayTasks({ stats }: { stats: DashboardStats }) {
                 {tasks.map((task) => (
                     <Link key={task.id} href={task.href} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 transition hover:shadow-sm no-underline group">
                         <span className="size-2 shrink-0 rounded-full" style={{ background: priorityDot[task.priority] }} />
-                        <span className="flex-1 text-sm text-primary group-hover:text-[var(--ts-terracotta)] transition">{task.label}</span>
+                        <span className="flex-1 text-sm text-primary group-hover:text-[#4268FF] transition">{task.label}</span>
                         <span className="text-xs text-tertiary">→</span>
                     </Link>
                 ))}

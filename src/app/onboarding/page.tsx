@@ -16,20 +16,16 @@ const STORAGE_KEY = "onboarding_completed";
    Shared UI
    ═══════════════════════════════════════════════════════ */
 
-function Dots({ current, light = false }: { current: number; light?: boolean }) {
+function Dots({ current }: { current: number }) {
     return (
-        <div className="flex items-center justify-center gap-2 pb-8 pt-4">
+        <div className="flex items-center justify-center gap-2 py-4">
             {[0, 1, 2, 3].map((i) => (
                 <div
                     key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
                         i === current
-                            ? light
-                                ? "w-6 bg-white"
-                                : "w-6 bg-[var(--ts-ochre)]"
-                            : light
-                              ? "w-2 bg-white/30"
-                              : "w-2 bg-[var(--ts-ochre)]/25"
+                            ? "w-5 bg-[#4268FF]"
+                            : "w-1.5 bg-[#4268FF]/20"
                     }`}
                 />
             ))}
@@ -40,15 +36,12 @@ function Dots({ current, light = false }: { current: number; light?: boolean }) 
 function ScreenLayout({
     children,
     dots,
-    topRight,
 }: {
     children: React.ReactNode;
     dots: number;
-    topRight?: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-dvh flex-col bg-[var(--ts-cream)]">
-            {topRight && <div className="flex justify-end px-6 pt-4">{topRight}</div>}
+        <div className="flex h-dvh flex-col bg-white">
             {children}
             <Dots current={dots} />
         </div>
@@ -60,7 +53,7 @@ function PrimaryButton({ onClick, children }: { onClick: () => void; children: R
         <button
             type="button"
             onClick={onClick}
-            className="w-full rounded-2xl bg-[var(--ts-ochre)] py-4 text-base font-bold text-white shadow-sm transition duration-150 active:scale-[0.98] active:opacity-90"
+            className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:scale-[0.98] active:opacity-90"
         >
             {children}
         </button>
@@ -72,19 +65,7 @@ function OutlineButton({ onClick, children }: { onClick: () => void; children: R
         <button
             type="button"
             onClick={onClick}
-            className="w-full rounded-2xl border-2 border-[var(--ts-ochre)] py-3.5 text-base font-bold text-[var(--ts-ochre)] transition duration-150 active:bg-[var(--ts-ochre)]/5"
-        >
-            {children}
-        </button>
-    );
-}
-
-function TextLink({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className="w-full py-3 text-sm font-semibold text-[var(--ts-ochre)] transition duration-150 active:opacity-70"
+            className="w-full rounded-xl border-2 border-[#4268FF] py-3 text-sm font-bold text-[#4268FF] transition duration-150 active:bg-[#4268FF]/5"
         >
             {children}
         </button>
@@ -104,52 +85,43 @@ function TextBlock({
 }) {
     return (
         <div className="px-8 text-center">
-            <h1
-                className="text-[2.5rem] font-bold leading-tight text-[var(--ts-brown)]"
-                style={{ fontFamily: "var(--font-fraunces), serif" }}
-            >
+            <h1 className="font-display text-[2rem] font-bold leading-tight text-[#1A1F36]">
                 {title}
             </h1>
-            <p
-                className="text-[1.75rem] font-bold text-[var(--ts-ochre)]"
-                style={{ fontFamily: "var(--font-fraunces), serif" }}
-            >
+            <p className="font-display text-[1.4rem] font-bold text-[#4268FF]">
                 {subtitle}
             </p>
-            <p className="mx-auto mt-5 max-w-[300px] text-base font-medium leading-relaxed text-[var(--ts-brown)]">
+            <p className="mx-auto mt-3 max-w-[300px] text-sm leading-relaxed text-[#8E96B0]">
                 {body}
             </p>
-            {hint && <p className="mt-3 text-sm text-[var(--ts-brown-mid)]/50">{hint}</p>}
+            {hint && <p className="mt-2 text-xs text-[#8E96B0]/60">{hint}</p>}
         </div>
     );
 }
 
 /* ═══════════════════════════════════════════════════════
-   Illustrations (inline SVG)
+   Illustrations (inline SVG) — updated to Minuit Électrique
    ═══════════════════════════════════════════════════════ */
 
 function MapIllustration() {
     return (
-        <div className="mx-auto h-56 w-56 sm:h-64 sm:w-64">
+        <div className="mx-auto size-44">
             <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
-                <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="120" r="116" stroke="#D5D9E8" strokeWidth="3" fill="none" />
                 <defs>
                     <clipPath id="mc">
                         <circle cx="120" cy="120" r="114" />
                     </clipPath>
                 </defs>
                 <g clipPath="url(#mc)">
-                    <rect width="240" height="240" fill="#EBE3D3" />
-                    {/* Roads */}
+                    <rect width="240" height="240" fill="#E8EAF2" />
                     <path d="M0 72h240M0 156h240" stroke="#fff" strokeWidth="13" />
                     <path d="M72 0v240M168 0v240" stroke="#fff" strokeWidth="13" />
                     <path d="M120 20v200" stroke="#fff" strokeWidth="9" opacity="0.6" />
                     <path d="M20 120h200" stroke="#fff" strokeWidth="9" opacity="0.5" />
-                    {/* Blocks */}
-                    <rect x="80" y="80" width="32" height="68" rx="4" fill="#DDD5C5" />
-                    <rect x="136" y="80" width="24" height="42" rx="4" fill="#DDD5C5" />
-                    <rect x="80" y="164" width="50" height="30" rx="4" fill="#DDD5C5" />
-                    {/* Blue map pins */}
+                    <rect x="80" y="80" width="32" height="68" rx="4" fill="#D5D9E8" />
+                    <rect x="136" y="80" width="24" height="42" rx="4" fill="#D5D9E8" />
+                    <rect x="80" y="164" width="50" height="30" rx="4" fill="#D5D9E8" />
                     {[
                         [58, 40],
                         [170, 38],
@@ -165,7 +137,6 @@ function MapIllustration() {
                             <circle cx="11" cy="10" r="4.5" fill="#fff" />
                         </g>
                     ))}
-                    {/* Sage pins */}
                     {[
                         [102, 42],
                         [150, 138],
@@ -174,14 +145,13 @@ function MapIllustration() {
                             <ellipse cx="9" cy="18" rx="5" ry="2.5" fill="#00000012" />
                             <path
                                 d="M9 0C4 0 0 4 0 9c0 7 9 16 9 16s9-9 9-16C18 4 14 0 9 0z"
-                                fill="#7A9E7E"
+                                fill="#8E96B0"
                             />
                             <circle cx="9" cy="8" r="3.5" fill="#fff" />
                         </g>
                     ))}
-                    {/* User position blue dot */}
-                    <circle cx="120" cy="120" r="12" fill="#4A90D9" opacity="0.15" />
-                    <circle cx="120" cy="120" r="6" fill="#4A90D9" />
+                    <circle cx="120" cy="120" r="12" fill="#4268FF" opacity="0.15" />
+                    <circle cx="120" cy="120" r="6" fill="#4268FF" />
                     <circle cx="120" cy="120" r="2.5" fill="#fff" />
                 </g>
             </svg>
@@ -191,12 +161,10 @@ function MapIllustration() {
 
 function PrivacyIllustration() {
     return (
-        <div className="mx-auto h-56 w-56 sm:h-64 sm:w-64">
+        <div className="mx-auto size-44">
             <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
-                {/* Outer circle */}
-                <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
-                <circle cx="120" cy="120" r="114" fill="#EBE3D3" />
-                {/* Shield shape */}
+                <circle cx="120" cy="120" r="116" stroke="#D5D9E8" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="120" r="114" fill="#E8EAF2" />
                 <path
                     d="M120 40 L170 65 L170 130 C170 165 145 190 120 200 C95 190 70 165 70 130 L70 65 Z"
                     fill="#4268FF"
@@ -206,9 +174,7 @@ function PrivacyIllustration() {
                     d="M120 50 L162 72 L162 128 C162 158 141 180 120 189 C99 180 78 158 78 128 L78 72 Z"
                     fill="#4268FF"
                 />
-                {/* Lock body */}
                 <rect x="103" y="115" width="34" height="28" rx="4" fill="white" />
-                {/* Lock shackle */}
                 <path
                     d="M109 115 L109 105 C109 97 114 92 120 92 C126 92 131 97 131 105 L131 115"
                     stroke="white"
@@ -216,10 +182,8 @@ function PrivacyIllustration() {
                     fill="none"
                     strokeLinecap="round"
                 />
-                {/* Keyhole */}
                 <circle cx="120" cy="126" r="4" fill="#4268FF" />
                 <rect x="118.5" y="128" width="3" height="6" rx="1.5" fill="#4268FF" />
-                {/* Decorative dots around shield */}
                 {[
                     [50, 50], [185, 55], [40, 160], [195, 165], [55, 105], [185, 110],
                 ].map(([px, py], i) => (
@@ -230,59 +194,42 @@ function PrivacyIllustration() {
     );
 }
 
-function NotificationsIllustration() {
+function ReadyIllustration() {
     return (
-        <div className="mx-auto h-52 w-48 sm:h-60 sm:w-52">
-            <svg viewBox="0 0 208 230" fill="none" className="h-full w-full">
-                {/* Phone body */}
-                <rect x="38" y="26" width="104" height="184" rx="20" fill="#1A1F36" />
-                <rect x="45" y="36" width="90" height="164" rx="14" fill="white" />
-                <rect x="68" y="36" width="44" height="10" rx="5" fill="#1A1F36" />
-                {/* Notification card 1 — ochre */}
-                <rect x="54" y="62" width="72" height="32" rx="8" fill="#F0F4FF" stroke="#4268FF" strokeWidth="1.2" />
-                <circle cx="67" cy="78" r="7" fill="#4268FF" opacity="0.15" />
-                <rect x="78" y="73" width="38" height="3.5" rx="1.75" fill="#4268FF" opacity="0.4" />
-                <rect x="78" y="80" width="26" height="2.5" rx="1.25" fill="#E0D8C8" />
-                {/* Notification card 2 — sage */}
-                <rect
-                    x="54"
-                    y="102"
-                    width="72"
-                    height="32"
-                    rx="8"
-                    fill="#FDF8F3"
-                    stroke="#7A9E7E"
-                    strokeWidth="1.2"
-                />
-                <circle cx="67" cy="118" r="7" fill="#7A9E7E" opacity="0.15" />
-                <rect x="78" y="113" width="32" height="3.5" rx="1.75" fill="#7A9E7E" opacity="0.4" />
-                <rect x="78" y="120" width="40" height="2.5" rx="1.25" fill="#E0D8C8" />
-                {/* Notification card 3 — orange */}
-                <rect
-                    x="54"
-                    y="142"
-                    width="72"
-                    height="32"
-                    rx="8"
-                    fill="#FDF8F3"
-                    stroke="#E8923A"
-                    strokeWidth="1.2"
-                />
-                <circle cx="67" cy="158" r="7" fill="#E8923A" opacity="0.15" />
-                <rect x="78" y="153" width="34" height="3.5" rx="1.75" fill="#E8923A" opacity="0.4" />
-                <rect x="78" y="160" width="28" height="2.5" rx="1.25" fill="#E0D8C8" />
-                {/* Floating bell circle */}
-                <circle cx="156" cy="36" r="24" fill="#4268FF" />
+        <div className="mx-auto size-44">
+            <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
+                <circle cx="120" cy="120" r="116" stroke="#D5D9E8" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="120" r="114" fill="#E8EAF2" />
+                <rect x="80" y="90" width="80" height="85" rx="8" fill="#4268FF" />
+                <rect x="88" y="98" width="64" height="69" rx="4" fill="white" opacity="0.9" />
                 <path
-                    d="M156 22c-6 0-11 5-11 11v6l-3 3v1.5h28V42l-3-3v-6c0-6-5-11-11-11z"
-                    fill="#fff"
+                    d="M100 90 L100 72 C100 60 109 52 120 52 C131 52 140 60 140 72 L140 90"
+                    stroke="#4268FF"
+                    strokeWidth="6"
+                    fill="none"
+                    strokeLinecap="round"
                 />
-                <circle cx="156" cy="45" r="3.2" fill="#fff" />
-                {/* Red badge */}
-                <circle cx="164" cy="16" r="9" fill="#D94F4F" />
-                <text x="164" y="20" textAnchor="middle" fill="white" fontSize="11" fontWeight="700">
-                    3
-                </text>
+                <path
+                    d="M104 130 L115 142 L140 115"
+                    stroke="#4268FF"
+                    strokeWidth="5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                {[
+                    [55, 65, 6], [175, 60, 5], [50, 160, 4], [185, 155, 6],
+                    [65, 110, 3], [175, 105, 4], [120, 195, 3],
+                ].map(([px, py, r], i) => (
+                    <circle key={i} cx={px} cy={py} r={r} fill="#4268FF" opacity={0.15 + (i % 3) * 0.05} />
+                ))}
+                {[
+                    [60, 80], [170, 75], [55, 145], [180, 140],
+                ].map(([px, py], i) => (
+                    <g key={`s${i}`} transform={`translate(${px},${py})`}>
+                        <path d="M0 -5 L1.5 -1.5 L5 0 L1.5 1.5 L0 5 L-1.5 1.5 L-5 0 L-1.5 -1.5Z" fill="#4268FF" opacity="0.3" />
+                    </g>
+                ))}
             </svg>
         </div>
     );
@@ -294,7 +241,7 @@ function NotificationsIllustration() {
 
 function SplashScreen() {
     return (
-        <div className="flex min-h-dvh flex-col items-center justify-center bg-[var(--ts-ochre)]">
+        <div className="flex h-dvh flex-col items-center justify-center bg-white">
             <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -305,12 +252,11 @@ function SplashScreen() {
                     alt="Two-Step"
                     width={120}
                     height={120}
-                    className="brightness-0 invert"
                     priority
                 />
             </motion.div>
             <div className="absolute inset-x-0 bottom-0">
-                <Dots current={0} light />
+                <Dots current={0} />
             </div>
         </div>
     );
@@ -343,7 +289,7 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
 
     return (
         <ScreenLayout dots={1}>
-            <div className="flex flex-1 items-end justify-center pb-4 pt-10">
+            <div className="flex flex-1 items-end justify-center pb-3 pt-6">
                 <MapIllustration />
             </div>
             <TextBlock
@@ -352,30 +298,26 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
                 body="Indique ta position pour découvrir les boutiques et les bons plans près de chez toi."
                 hint="Tu peux modifier ce paramètre à tout moment."
             />
-            <div className="mt-auto px-6 pb-2 pt-6">
+            <div className="mt-auto space-y-2 px-6 pb-2 pt-4">
                 <PrimaryButton onClick={requestLocation}>Activer la localisation</PrimaryButton>
 
                 {showAddressInput ? (
-                    <div className="mt-4 space-y-3">
+                    <div className="space-y-2">
                         <input
                             type="text"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             placeholder="Ex : 12 rue du Taur, Toulouse"
-                            className="w-full rounded-2xl border-2 border-[var(--ts-ochre)]/30 bg-white px-4 py-3.5 text-sm text-[var(--ts-brown)] outline-none transition duration-150 focus:border-[var(--ts-ochre)]"
+                            className="w-full rounded-xl border-2 border-[#4268FF]/30 bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition duration-150 focus:border-[#4268FF]"
                             autoFocus
                             onKeyDown={(e) => e.key === "Enter" && handleAddressSubmit()}
                         />
                         <OutlineButton onClick={handleAddressSubmit}>Valider</OutlineButton>
                     </div>
                 ) : (
-                    <button
-                        type="button"
-                        onClick={() => setShowAddressInput(true)}
-                        className="mt-3 w-full rounded-2xl border-2 border-[var(--ts-ochre)] py-3.5 text-base font-bold text-[var(--ts-ochre)] transition duration-150 active:bg-[var(--ts-ochre)]/5"
-                    >
+                    <OutlineButton onClick={() => setShowAddressInput(true)}>
                         Entrer une adresse manuellement
-                    </button>
+                    </OutlineButton>
                 )}
             </div>
         </ScreenLayout>
@@ -389,7 +331,7 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
 function CookiesScreen({ onNext }: { onNext: () => void }) {
     return (
         <ScreenLayout dots={2}>
-            <div className="flex flex-1 items-end justify-center pb-4">
+            <div className="flex flex-1 items-end justify-center pb-3">
                 <PrivacyIllustration />
             </div>
             <TextBlock
@@ -397,7 +339,7 @@ function CookiesScreen({ onNext }: { onNext: () => void }) {
                 subtitle="ton choix."
                 body="On utilise des cookies pour améliorer ton expérience et te montrer les promos qui t'intéressent vraiment."
             />
-            <div className="mt-auto space-y-3 px-6 pb-2 pt-6">
+            <div className="mt-auto space-y-2 px-6 pb-2 pt-4">
                 <PrimaryButton onClick={onNext}>Tout accepter</PrimaryButton>
                 <PrimaryButton onClick={onNext}>Tout refuser</PrimaryButton>
                 <OutlineButton onClick={onNext}>Personnaliser</OutlineButton>
@@ -407,13 +349,13 @@ function CookiesScreen({ onNext }: { onNext: () => void }) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   Screen 3 — Notifications
+   Screen 3 — C'est parti
    ═══════════════════════════════════════════════════════ */
 
 function ReadyScreen({ onFinish }: { onFinish: () => void }) {
     return (
         <ScreenLayout dots={3}>
-            <div className="flex flex-1 items-end justify-center pb-4 pt-10">
+            <div className="flex flex-1 items-end justify-center pb-3 pt-6">
                 <ReadyIllustration />
             </div>
             <TextBlock
@@ -421,56 +363,10 @@ function ReadyScreen({ onFinish }: { onFinish: () => void }) {
                 subtitle="Tout est prêt."
                 body="Découvre les boutiques autour de toi, explore leurs produits en temps réel, et sauvegarde tes coups de cœur."
             />
-            <div className="mt-auto px-6 pb-2 pt-6">
+            <div className="mt-auto px-6 pb-2 pt-4">
                 <PrimaryButton onClick={onFinish}>Explorer les boutiques</PrimaryButton>
             </div>
         </ScreenLayout>
-    );
-}
-
-function ReadyIllustration() {
-    return (
-        <div className="mx-auto h-56 w-56 sm:h-64 sm:w-64">
-            <svg viewBox="0 0 240 240" fill="none" className="h-full w-full">
-                <circle cx="120" cy="120" r="116" stroke="#E0D8C8" strokeWidth="3" fill="none" />
-                <circle cx="120" cy="120" r="114" fill="#EBE3D3" />
-                {/* Shopping bag */}
-                <rect x="80" y="90" width="80" height="85" rx="8" fill="#4268FF" />
-                <rect x="88" y="98" width="64" height="69" rx="4" fill="white" opacity="0.9" />
-                {/* Bag handles */}
-                <path
-                    d="M100 90 L100 72 C100 60 109 52 120 52 C131 52 140 60 140 72 L140 90"
-                    stroke="#4268FF"
-                    strokeWidth="6"
-                    fill="none"
-                    strokeLinecap="round"
-                />
-                {/* Checkmark in bag */}
-                <path
-                    d="M104 130 L115 142 L140 115"
-                    stroke="#4268FF"
-                    strokeWidth="5"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                {/* Sparkles */}
-                {[
-                    [55, 65, 6], [175, 60, 5], [50, 160, 4], [185, 155, 6],
-                    [65, 110, 3], [175, 105, 4], [120, 195, 3],
-                ].map(([px, py, r], i) => (
-                    <circle key={i} cx={px} cy={py} r={r} fill="#4268FF" opacity={0.15 + (i % 3) * 0.05} />
-                ))}
-                {/* Star sparkles */}
-                {[
-                    [60, 80], [170, 75], [55, 145], [180, 140],
-                ].map(([px, py], i) => (
-                    <g key={`s${i}`} transform={`translate(${px},${py})`}>
-                        <path d="M0 -5 L1.5 -1.5 L5 0 L1.5 1.5 L0 5 L-1.5 1.5 L-5 0 L-1.5 -1.5Z" fill="#4268FF" opacity="0.3" />
-                    </g>
-                ))}
-            </svg>
-        </div>
     );
 }
 
@@ -483,7 +379,6 @@ export default function OnboardingPage() {
     const [step, setStep] = useState(0);
     const [mounted, setMounted] = useState(false);
 
-    /* Check if onboarding already done */
     useEffect(() => {
         setMounted(true);
         if (localStorage.getItem(STORAGE_KEY) === "true") {
@@ -491,7 +386,6 @@ export default function OnboardingPage() {
         }
     }, [router]);
 
-    /* Auto-advance splash */
     useEffect(() => {
         if (step === 0 && mounted) {
             const timer = setTimeout(() => setStep(1), SPLASH_DURATION);
@@ -509,7 +403,7 @@ export default function OnboardingPage() {
     if (!mounted) return null;
 
     return (
-        <div className="relative min-h-dvh overflow-hidden bg-[var(--ts-cream)]">
+        <div className="relative h-dvh overflow-hidden bg-white">
             <AnimatePresence mode="wait">
                 {step === 0 && (
                     <motion.div

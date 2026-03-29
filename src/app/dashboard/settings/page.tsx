@@ -175,7 +175,7 @@ export default function SettingsPage() {
                                     </div>
 
                                     {isThisConnected ? (
-                                        <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--ts-sage-light)] text-[#5a9474]">
+                                        <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[#4268FF]/10 text-[#4268FF]">
                                             Connecté
                                         </span>
                                     ) : (
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                     })}
 
                     {syncResult && (
-                        <div className="rounded-lg bg-[var(--ts-sage-light)] px-4 py-3 text-xs text-[#5a9474]">
+                        <div className="rounded-lg bg-[#4268FF]/10 px-4 py-3 text-xs text-[#4268FF]">
                             <p className="font-semibold">Synchronisation terminée</p>
                             <p className="mt-1">
                                 {syncResult.products_created} produit(s) créé(s) · {syncResult.products_updated} mis à jour · {syncResult.stock_updated} stock(s) · {syncResult.promos_imported} promo(s)
@@ -224,7 +224,7 @@ export default function SettingsPage() {
 
                 <p className="mt-4 text-center text-xs text-gray-400">
                     Pas de caisse ?{" "}
-                    <a href="https://squareup.com/signup" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--ts-terracotta)" }}>
+                    <a href="https://squareup.com/signup" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "#4268FF" }}>
                         Créez un compte Square gratuitement
                     </a>
                 </p>
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                         {enhancing ? "Traitement en cours..." : "Améliorer les photos"}
                     </button>
                     {enhanceResult !== null && (
-                        <p className="text-xs text-[#5a9474]">
+                        <p className="text-xs text-[#4268FF]">
                             {enhanceResult} photo(s) en cours de traitement
                         </p>
                     )}
@@ -256,7 +256,7 @@ export default function SettingsPage() {
             <section className="animate-fade-up stagger-5 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
-                    <p className="text-sm font-semibold" style={{ color: "var(--ts-terracotta)" }}>
+                    <p className="text-sm font-semibold" style={{ color: "#4268FF" }}>
                         {merchant?.plan === "standard" ? "Standard" : merchant?.plan === "premium" ? "Premium" : "Gratuit"}
                     </p>
                     <p className="mt-1 text-xs text-gray-400">

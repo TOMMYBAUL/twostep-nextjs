@@ -68,7 +68,7 @@ export default function NewProductPage() {
             )}
 
             {activeTab === "invoice" && (
-                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "var(--ts-bg-card)" }}>
+                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "#F5F6FA" }}>
                     <p className="text-3xl mb-3">📄</p>
                     <p className="text-sm font-medium text-gray-400">Import facture — Disponible prochainement</p>
                     <p className="text-xs text-gray-300 mt-1">L&apos;IA analysera vos factures fournisseur automatiquement</p>
@@ -76,7 +76,7 @@ export default function NewProductPage() {
             )}
 
             {activeTab === "ean" && (
-                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "var(--ts-bg-card)" }}>
+                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "#F5F6FA" }}>
                     <p className="text-3xl mb-3">📱</p>
                     <p className="text-sm font-medium text-gray-400">Scan EAN — Disponible prochainement</p>
                     <p className="text-xs text-gray-300 mt-1">Scannez le code-barres pour remplir automatiquement</p>

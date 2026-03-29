@@ -143,13 +143,13 @@ export default function PromotionsPage() {
                                     <p className="text-xs text-gray-400 mt-0.5">
                                         <span className="line-through">{promo.products?.price?.toFixed(2)} €</span>
                                         {" → "}
-                                        <span className="font-semibold" style={{ color: "var(--ts-terracotta)" }}>
+                                        <span className="font-semibold text-[#4268FF]">
                                             {promo.sale_price.toFixed(2)} €
                                         </span>
                                     </p>
                                 </div>
 
-                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-[var(--ts-dark-light)] text-[var(--ts-dark)]" : "bg-[var(--ts-sage-light)] text-[#5a9474]"}`}>
+                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-gray-100 text-gray-600" : "bg-emerald-50 text-[#5a9474]"}`}>
                                     {isScheduled ? "Programmée" : "Active"}
                                 </span>
 

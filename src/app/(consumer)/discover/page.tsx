@@ -95,15 +95,17 @@ export default function DiscoverPage() {
         else add.mutate(id);
     };
 
-    // Hero promo: pick product with highest discount %
-    const heroPromo = useMemo(() => {
-        if (!promos || promos.length === 0) return null;
-        return promos.reduce((best, p) => {
-            if (!p.sale_price) return best;
-            const discount = (p.product_price - p.sale_price) / p.product_price;
-            const bestDiscount = best?.sale_price ? (best.product_price - best.sale_price) / best.product_price : 0;
-            return discount > bestDiscount ? p : best;
-        }, promos.find((p) => p.sale_price) ?? null);
+    // Top 3 promos sorted by discount % (then distance)
+    const topPromos = useMemo(() => {
+        if (!promos || promos.length === 0) return [];
+        return promos
+            .filter((p) => p.sale_price && p.sale_price < p.product_price)
+            .sort((a, b) => {
+                const dA = (a.product_price - a.sale_price!) / a.product_price;
+                const dB = (b.product_price - b.sale_price!) / b.product_price;
+                return dB - dA || a.distance_km - b.distance_km;
+            })
+            .slice(0, 5);
     }, [promos]);
 
     // Featured shop: closest merchant from nearby products
@@ -121,45 +123,43 @@ export default function DiscoverPage() {
     return (
         <div className="min-h-dvh bg-[#F8F9FC]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
             {/* ── Header ── */}
-            <div className="px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <div className="flex items-start justify-between">
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <Image src="/logo-icon.webp" alt="" width={28} height={28} className="size-7" />
-                            <h1 className="font-display text-2xl font-bold text-[#1A1F36]">
-                                Two-Step
-                            </h1>
-                        </div>
-                        <p className="mt-0.5 flex items-center gap-1 text-xs text-[#8E96B0]">
-                            <MarkerPin01 className="size-3" aria-hidden="true" />
+            <div className="px-4 pb-2 pt-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                        <Image src="/logo-icon.webp" alt="" width={24} height={24} className="size-6" />
+                        <h1 className="font-display text-sm font-bold text-[#1A1F36]">Two-Step</h1>
+                        <span className="text-[10px] text-[#8E96B0]">·</span>
+                        <p className="flex items-center gap-0.5 text-[11px] text-[#8E96B0]">
+                            <MarkerPin01 className="size-2.5" aria-hidden="true" />
                             {position ? "Autour de toi" : "Toulouse"}
                         </p>
                     </div>
                     <Link
                         href="/profile/notifications"
-                        className="mt-1 flex size-[30px] items-center justify-center rounded-full bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
+                        className="flex size-7 items-center justify-center rounded-full bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
                     >
-                        <Bell01 className="size-4 text-[#8E96B0]" />
+                        <Bell01 className="size-3.5 text-[#8E96B0]" />
                     </Link>
                 </div>
 
                 {/* ── Category pills with emoji + size filter button ── */}
-                <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
                     {/* Size filter toggle */}
                     <button
                         type="button"
                         onClick={() => setShowSizeFilters((v) => !v)}
                         className={cx(
-                            "flex shrink-0 items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold transition duration-150",
+                            "flex shrink-0 items-center justify-center rounded-full transition duration-150",
                             hasActiveSizeFilter || showSizeFilters
                                 ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
                                 : "bg-[#F5F6FA] text-[#1A1F36]/60",
+                            "size-7",
                         )}
+                        aria-label="Filtrer par taille"
                     >
                         <FilterLines className="size-3.5" />
-                        Taille
                         {hasActiveSizeFilter && (
-                            <span className="ml-0.5 flex size-4 items-center justify-center rounded-full bg-[#F8F9FC]/20 text-[9px]">
+                            <span className="absolute -right-0.5 -top-0.5 flex size-3 items-center justify-center rounded-full bg-[#4268FF] text-[7px] text-white">
                                 {(sizeFilter ? 1 : 0) + (shoeSizeFilter ? 1 : 0)}
                             </span>
                         )}
@@ -171,13 +171,13 @@ export default function DiscoverPage() {
                             type="button"
                             onClick={() => setActiveCategory(cat.value)}
                             className={cx(
-                                "flex shrink-0 items-center gap-1 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
+                                "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition duration-150",
                                 activeCategory === cat.value
                                     ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
                                     : "bg-[#F5F6FA] text-[#1A1F36]/60",
                             )}
                         >
-                            {cat.emoji && <span className="text-xs">{cat.emoji}</span>}
+                            {cat.emoji && <span className="text-[11px]">{cat.emoji}</span>}
                             {cat.label}
                         </button>
                     ))}
@@ -263,36 +263,39 @@ export default function DiscoverPage() {
             </div>
 
             {/* ── Pour toi / Suivis toggle ── */}
-            <div className="mt-3 flex justify-center px-4">
-                <div className="flex rounded-full p-1" style={{ background: "#F5F6FA" }}>
-                    <button
-                        type="button"
-                        onClick={() => setFeedTab("pour-toi")}
-                        className={cx(
-                            "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
-                            feedTab === "pour-toi" ? "bg-[#4268FF] text-white" : "text-[#1A1F36]/50",
-                        )}
-                    >
-                        Pour toi
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFeedTab("suivis")}
-                        className={cx(
-                            "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
-                            feedTab === "suivis" ? "bg-[#4268FF] text-white" : "text-[#1A1F36]/50",
-                        )}
-                    >
-                        Suivis
-                    </button>
-                </div>
+            <div className="flex gap-6 border-b border-[#E2E5F0] px-4">
+                <button
+                    type="button"
+                    onClick={() => setFeedTab("pour-toi")}
+                    className={cx(
+                        "pb-1.5 text-xs font-medium transition duration-150",
+                        feedTab === "pour-toi"
+                            ? "border-b-2 border-[#4268FF] text-[#4268FF]"
+                            : "text-[#8E96B0]",
+                    )}
+                >
+                    Pour toi
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setFeedTab("suivis")}
+                    className={cx(
+                        "pb-1.5 text-xs font-medium transition duration-150",
+                        feedTab === "suivis"
+                            ? "border-b-2 border-[#4268FF] text-[#4268FF]"
+                            : "text-[#8E96B0]",
+                    )}
+                >
+                    Suivis
+                </button>
             </div>
 
             {/* ── Feed sections ── */}
             {feedTab === "pour-toi" ? (
             <div className="flex flex-col gap-5 pb-24 pt-4">
 
-                {/* ── 1. Promos du moment — Hero card ── */}
+                {/* ── 1. Promos du moment — 1 grande + 3 petites ── */}
+                {(loadingPromos || topPromos.length > 0) && (
                 <section>
                     <div className="flex items-center justify-between px-4">
                         <div className="flex items-center gap-2.5">
@@ -310,51 +313,74 @@ export default function DiscoverPage() {
                         </Link>
                     </div>
 
-                    <div className="mt-3 px-4">
+                    {topPromos.length > 0 && (
+                    <div className="mt-3 flex flex-col px-3.5" style={{ gap: 10 }}>
                         {loadingPromos ? (
-                            <div className="h-[100px] animate-pulse rounded-[14px] bg-[#F5F6FA]" />
-                        ) : heroPromo && heroPromo.sale_price ? (
+                            <div className="h-[84px] animate-pulse rounded-[10px] bg-[#F5F6FA]" />
+                        ) : (<>
+                            {/* Grande card — promo vedette */}
                             <Link
-                                href={`/product/${generateSlug(heroPromo.product_name, heroPromo.product_id)}`}
-                                className="flex min-h-[120px] overflow-hidden rounded-[14px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
+                                href={`/product/${generateSlug(topPromos[0].product_name, topPromos[0].product_id)}`}
+                                className="flex items-center rounded-[10px] bg-[#F5F6FA] p-2.5 transition active:bg-[#E2E5F0]"
+                                style={{ gap: 10 }}
                             >
-                                {/* Product image */}
-                                <div className="relative w-[120px] shrink-0 self-stretch bg-[#E2E5F0]">
-                                    {heroPromo.product_photo ? (
-                                        <Image
-                                            src={heroPromo.product_photo}
-                                            alt={heroPromo.product_name}
-                                            fill
-                                            className="object-cover"
-                                        />
+                                <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-[#E2E5F0]">
+                                    {topPromos[0].product_photo ? (
+                                        <Image src={topPromos[0].product_photo} alt={topPromos[0].product_name} fill sizes="64px" className="object-cover" />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/30">
-                                            {heroPromo.product_name.charAt(0)}
-                                        </div>
+                                        <div className="flex h-full items-center justify-center text-lg font-light text-[#8E96B0]/30">{topPromos[0].product_name.charAt(0)}</div>
                                     )}
                                 </div>
-                                {/* Info */}
-                                <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-4 py-4">
-                                    <span className="inline-flex w-fit items-center gap-1 rounded-full px-2 py-[2px] text-[9px] font-medium text-[#4268FF]" style={{ background: "rgba(66,104,255,0.18)", border: "0.5px solid rgba(66,104,255,0.3)" }}>
-                                        −{Math.round(((heroPromo.product_price - heroPromo.sale_price) / heroPromo.product_price) * 100)}% · {heroPromo.merchant_name}
+                                <div className="min-w-0 flex-1">
+                                    <span className="inline-flex w-fit items-center rounded-full text-[11px] font-medium text-[#185FA5]" style={{ background: "rgba(66,104,255,0.13)", padding: "2px 7px" }}>
+                                        −{Math.round(((topPromos[0].product_price - topPromos[0].sale_price!) / topPromos[0].product_price) * 100)}% · {topPromos[0].merchant_name}
                                     </span>
-                                    <p className="truncate text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.1px" }}>{heroPromo.product_name}</p>
-                                    <p className="text-[10px] text-[#8E96B0]">
-                                        {heroPromo.distance_km < 1 ? `${Math.round(heroPromo.distance_km * 1000)}m` : `${heroPromo.distance_km.toFixed(1)}km`}
+                                    <p className="mt-1 truncate text-[13px] font-medium text-[#1A1F36]">{topPromos[0].product_name}</p>
+                                    <p className="mt-0.5 text-[10px] text-[#8E96B0]">
+                                        {topPromos[0].distance_km < 1 ? `${Math.round(topPromos[0].distance_km * 1000)}m` : `${topPromos[0].distance_km.toFixed(1)}km`}
                                     </p>
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-[13px] font-normal text-[#8E96B0]">{heroPromo.sale_price.toFixed(2)} €</span>
-                                        <span className="text-[11px] text-[#8E96B0]/60 line-through">{heroPromo.product_price.toFixed(2)} €</span>
+                                    <div className="mt-0.5 flex items-baseline gap-1.5">
+                                        <span className="text-xs text-[#1A1F36]">{topPromos[0].sale_price!.toFixed(2)} €</span>
+                                        <span className="text-[10px] text-[#8E96B0]/60 line-through">{topPromos[0].product_price.toFixed(2)} €</span>
                                     </div>
                                 </div>
                             </Link>
-                        ) : (
-                            <div className="flex h-[100px] items-center justify-center rounded-[14px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA]">
-                                <p className="text-xs text-[#8E96B0]/50">Aucune promo pour le moment</p>
-                            </div>
-                        )}
+
+                            {/* 3 petites cards */}
+                            {topPromos.length > 1 && (
+                                <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(topPromos.length - 1, 4)}, 1fr)` }}>
+                                    {topPromos.slice(1, 5).map((p) => (
+                                        <Link
+                                            key={`${p.product_id}-${p.merchant_id}`}
+                                            href={`/product/${generateSlug(p.product_name, p.product_id)}`}
+                                            className="overflow-hidden rounded-[10px] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
+                                        >
+                                            <div className="relative h-[145px] w-full bg-[#E2E5F0]">
+                                                {p.product_photo ? (
+                                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="33vw" className="object-cover" />
+                                                ) : (
+                                                    <div className="flex h-full items-center justify-center text-base font-light text-[#8E96B0]/20">{p.product_name.charAt(0)}</div>
+                                                )}
+                                                <span className="absolute bottom-1 left-1 rounded-full text-[11px] font-medium text-[#185FA5]" style={{ background: "rgba(66,104,255,0.13)", padding: "1px 6px" }}>
+                                                    −{Math.round(((p.product_price - p.sale_price!) / p.product_price) * 100)}%
+                                                </span>
+                                            </div>
+                                            <div style={{ padding: "5px 6px 7px" }}>
+                                                <p className="truncate text-[10px] font-medium text-[#1A1F36]">{p.product_name}</p>
+                                                <p className="mt-0.5 text-[9px] text-[#8E96B0]">
+                                                    {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`}
+                                                </p>
+                                                <p className="mt-0.5 text-[10px] text-[#1A1F36]">{p.sale_price!.toFixed(2)} €</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </>)}
                     </div>
+                    )}
                 </section>
+                )}
 
                 {/* ── 2. Tendances — 2×2 grid ── */}
                 <section>

@@ -9,7 +9,7 @@ import { LocationTag } from "../components/location-tag";
 const heroCSS = `
 .hero-s{min-height:100vh;background:#FFFFFF;display:flex;align-items:center;padding:100px 48px 80px;position:relative;overflow:hidden}
 .hero-g{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:3fr 2fr;gap:64px;align-items:center}
-.hero-h1{font-size:clamp(48px,5.5vw,80px);font-weight:800;line-height:1.1;letter-spacing:-0.035em;color:#1A1F36;margin:0 0 24px}
+.hero-h1{font-size:clamp(42px,4.8vw,68px);font-weight:800;line-height:1.1;letter-spacing:-0.035em;color:#1A1F36;margin:0 0 24px}
 .hero-p{font-size:18px;color:#8E96B0;line-height:1.65;max-width:480px;margin:0}
 .hero-iw{position:relative;display:flex;justify-content:center;align-items:center;order:0;padding:0}
 .hero-img{width:100%;max-width:440px;height:auto;display:block;filter:drop-shadow(0 32px 64px rgba(26,31,54,0.16))}
@@ -17,7 +17,7 @@ const heroCSS = `
 @media(max-width:767px){
 .hero-s{padding:76px 24px 48px}
 .hero-g{grid-template-columns:1fr;gap:16px}
-.hero-h1{font-size:clamp(38px,9vw,52px)}
+.hero-h1{font-size:clamp(34px,8vw,46px)}
 .hero-p{font-size:16px}
 .hero-iw{padding:32px 0 36px;overflow:hidden}
 .hero-img{max-width:240px;margin:12px auto 8px}

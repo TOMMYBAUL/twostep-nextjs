@@ -11,7 +11,7 @@ function FunnelStep({ value, label, trend, icon }: { value: number; label: strin
     return (
         <div className="flex-1 rounded-xl bg-white px-4 py-3 text-center">
             <p className="text-xs text-tertiary">{icon}</p>
-            <p className="mt-1 text-2xl font-bold" style={{ color: "var(--ts-dark)" }}>{value}</p>
+            <p className="mt-1 text-2xl font-bold" style={{ color: "#1A1F36" }}>{value}</p>
             <p className="text-xs text-secondary">{label}</p>
             {trend !== undefined && trend !== 0 && (
                 <p className={`mt-0.5 text-[10px] font-medium ${trendPositive ? "text-[#5a9474]" : "text-[#c4553a]"}`}>

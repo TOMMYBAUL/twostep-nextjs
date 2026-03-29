@@ -114,7 +114,7 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
                         </button>
                         <div className="text-xs text-gray-400">
                             {uploading ? (
-                                <p className="font-medium text-[var(--ts-terracotta)]">Upload en cours...</p>
+                                <p className="font-medium text-[#4268FF]">Upload en cours...</p>
                             ) : (
                                 <p>Cliquez pour ajouter une photo. Elle sera automatiquement détourée.</p>
                             )}

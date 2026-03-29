@@ -257,7 +257,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
             >
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-semibold text-[#FFFFFF]">
+                        <span className="text-xs font-semibold text-[#1A1F36]">
                             Configuration boutique
                         </span>
                         <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
@@ -269,7 +269,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                             className="h-full rounded-full transition-all duration-500"
                             style={{
                                 width: `${(completed / steps.length) * 100}%`,
-                                background: completed === steps.length ? "#5a9474" : "var(--ts-ochre)",
+                                background: completed === steps.length ? "#5a9474" : "#4268FF",
                             }}
                         />
                     </div>
@@ -299,7 +299,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                         >
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
                                 step.checked
-                                    ? "bg-[var(--ts-sage-light)] text-[#5a9474]"
+                                    ? "bg-[#4268FF]/10 text-[#4268FF]"
                                     : "bg-gray-100 text-gray-500"
                             }`}>
                                 {step.checked ? (
@@ -316,7 +316,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                                 </p>
                             </div>
                             {!step.checked && (
-                                <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-[var(--ts-ochre)] no-underline hover:underline">
+                                <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-[#4268FF] no-underline hover:underline">
                                     {step.cta}
                                 </Link>
                             )}
@@ -331,7 +331,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
 function QuickLink({ href, label, description }: { href: string; label: string; description: string }) {
     return (
         <Link href={href} className="group rounded-xl bg-white px-5 py-4 no-underline transition hover:shadow-sm">
-            <p className="text-sm font-semibold text-gray-900 group-hover:text-[var(--ts-ochre)] transition">{label}</p>
+            <p className="text-sm font-semibold text-gray-900 group-hover:text-[#4268FF] transition">{label}</p>
             <p className="mt-0.5 text-xs text-gray-400">{description}</p>
         </Link>
     );
@@ -344,7 +344,7 @@ function ExternalQuickLink({ href, label, description }: { href: string; label: 
             target="_blank"
             rel="noopener noreferrer"
             className="group rounded-xl px-5 py-4 no-underline transition hover:shadow-sm"
-            style={{ background: "var(--ts-terracotta)" }}
+            style={{ background: "#4268FF" }}
         >
             <p className="text-sm font-semibold text-white transition">{label}</p>
             <p className="mt-0.5 text-xs text-white/70">{description}</p>

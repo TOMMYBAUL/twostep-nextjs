@@ -18,10 +18,10 @@ export function PageHeader({ storeName, title, titleAccent, action }: PageHeader
                 </p>
             )}
             <div className="animate-fade-up stagger-1 flex items-center justify-between">
-                <h1 className="font-display text-[26px] font-bold" style={{ color: "var(--ts-dark)" }}>
+                <h1 className="font-display text-[26px] font-bold" style={{ color: "#1A1F36" }}>
                     {title}{" "}
                     {titleAccent && (
-                        <span style={{ color: "var(--ts-terracotta)" }}>{titleAccent}</span>
+                        <span style={{ color: "#4268FF" }}>{titleAccent}</span>
                     )}
                 </h1>
                 {action}

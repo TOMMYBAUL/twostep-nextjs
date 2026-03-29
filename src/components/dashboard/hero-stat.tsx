@@ -38,7 +38,7 @@ export function HeroStat({ value, label, trend }: HeroStatProps) {
 
     return (
         <div className="text-center">
-            <p className="text-5xl font-bold tracking-tight" style={{ color: "var(--ts-dark)" }}>
+            <p className="text-5xl font-bold tracking-tight" style={{ color: "#1A1F36" }}>
                 {animatedValue}
             </p>
             <p className="mt-1 text-sm text-secondary">{label}</p>

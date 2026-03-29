@@ -10,13 +10,13 @@ export function MetricCard({ label, value, variant = "default", staggerIndex = 0
         variant === "danger"
             ? "text-red-600"
             : variant === "warn"
-              ? "text-[var(--ts-terracotta)]"
-              : "text-[var(--ts-dark)]";
+              ? "text-[#4268FF]"
+              : "text-[#1A1F36]";
 
     return (
         <div
             className={`animate-fade-up rounded-[10px] p-5 stagger-${staggerIndex + 1}`}
-            style={{ background: "var(--ts-bg-card)" }}
+            style={{ background: "#F5F6FA" }}
         >
             <p className="mb-1.5 text-xs font-medium text-gray-500">{label}</p>
             <p className={`text-[28px] font-bold ${colorClass}`}>{value}</p>

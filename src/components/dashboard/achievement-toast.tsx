@@ -59,7 +59,7 @@ export function AchievementToast() {
                             <p className="text-[11px] font-extrabold uppercase tracking-wide" style={{ color: current.color }}>
                                 {current.gamifiedLabel}
                             </p>
-                            <p className="text-sm font-bold text-[#FFFFFF]">{current.label}</p>
+                            <p className="text-sm font-bold text-[#1A1F36]">{current.label}</p>
                             <p className="text-[11px] text-[#8E96B0] mt-0.5">{current.subtitle}</p>
                         </div>
                         <button

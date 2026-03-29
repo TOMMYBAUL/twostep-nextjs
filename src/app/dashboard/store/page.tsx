@@ -118,7 +118,7 @@ export default function StorePage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
-                        style={{ background: "var(--ts-terracotta)", color: "white" }}
+                        style={{ background: "#4268FF", color: "white" }}
                     >
                         👁 Voir ma boutique comme un client
                     </a>
@@ -127,9 +127,9 @@ export default function StorePage() {
 
             {/* Creation banner */}
             {isCreating && (
-                <div className="animate-fade-up stagger-2 mb-6 rounded-xl px-5 py-4" style={{ background: "var(--ts-sage-light)" }}>
-                    <p className="text-sm font-semibold text-[#5a9474]">Créez votre profil boutique</p>
-                    <p className="mt-0.5 text-xs text-[#5a9474]/70">
+                <div className="animate-fade-up stagger-2 mb-6 rounded-xl px-5 py-4" style={{ background: "rgba(66,104,255,0.1)" }}>
+                    <p className="text-sm font-semibold text-[#4268FF]">Créez votre profil boutique</p>
+                    <p className="mt-0.5 text-xs text-[#4268FF]/70">
                         Remplissez les informations ci-dessous pour activer votre compte marchand.
                     </p>
                 </div>
@@ -138,7 +138,7 @@ export default function StorePage() {
             {/* SIRET status */}
             {merchant && (
                 <div className="animate-fade-up stagger-2 mb-8 flex items-center gap-3 rounded-xl bg-white px-5 py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-amber-50 text-amber-700"}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-700"}`}>
                         {merchant.status === "active" ? "Vérifié" : "En attente"}
                     </span>
                     {merchant.siret && (
@@ -180,7 +180,7 @@ export default function StorePage() {
                                     <button
                                         type="button"
                                         onClick={() => toggleDay(day.key)}
-                                        className={`w-24 rounded-lg px-3 py-1.5 text-xs font-medium ${h ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-gray-100 text-gray-400"}`}
+                                        className={`w-24 rounded-lg px-3 py-1.5 text-xs font-medium ${h ? "bg-[#4268FF]/10 text-[#4268FF]" : "bg-gray-100 text-gray-400"}`}
                                     >
                                         {day.label}
                                     </button>
@@ -211,7 +211,7 @@ export default function StorePage() {
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-tertiary">
                             Mes trophées
                         </h2>
-                        <Link href="/dashboard/achievements" className="text-xs font-medium text-[var(--ts-ochre)] hover:underline no-underline">
+                        <Link href="/dashboard/achievements" className="text-xs font-medium text-[#4268FF] hover:underline no-underline">
                             Voir tout
                         </Link>
                     </div>

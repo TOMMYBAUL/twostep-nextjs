@@ -23,7 +23,7 @@ export function AchievementWidget({ achievements, loading }: Props) {
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-tertiary">
                     Mes trophées
                 </h3>
-                <Link href="/dashboard/achievements" className="text-xs font-medium text-[var(--ts-ochre)] hover:underline no-underline">
+                <Link href="/dashboard/achievements" className="text-xs font-medium text-[#4268FF] hover:underline no-underline">
                     Tout voir
                 </Link>
             </div>

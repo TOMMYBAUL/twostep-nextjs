@@ -65,7 +65,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             >
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-semibold text-[#FFFFFF]">Configuration boutique</span>
+                        <span className="text-xs font-semibold text-[#1A1F36]">Configuration boutique</span>
                         <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
                             {completed}/{items.length}
                         </span>
@@ -73,7 +73,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
                     <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
                         <div
                             className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${(completed / items.length) * 100}%`, background: "var(--ts-ochre)" }}
+                            style={{ width: `${(completed / items.length) * 100}%`, background: "#4268FF" }}
                         />
                     </div>
                 </div>
@@ -89,7 +89,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
                     {items.map((item, i) => (
                         <div key={item.label} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition ${item.checked ? "opacity-50" : ""}`}>
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
-                                item.checked ? "bg-[var(--ts-sage-light)] text-[#5a9474]" : "bg-gray-100 text-gray-500"
+                                item.checked ? "bg-[#4268FF]/10 text-[#4268FF]" : "bg-gray-100 text-gray-500"
                             }`}>
                                 {item.checked ? (
                                     <svg className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -103,7 +103,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
                                 {item.label}
                             </p>
                             {!item.checked && (
-                                <Link href={item.href} className="shrink-0 text-[10px] font-semibold text-[var(--ts-ochre)] no-underline hover:underline">
+                                <Link href={item.href} className="shrink-0 text-[10px] font-semibold text-[#4268FF] no-underline hover:underline">
                                     {item.cta}
                                 </Link>
                             )}

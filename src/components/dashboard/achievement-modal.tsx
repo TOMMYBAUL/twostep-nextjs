@@ -78,7 +78,7 @@ export function AchievementModal() {
                         <p className="mt-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: current.color }}>
                             {current.gamifiedLabel}
                         </p>
-                        <p className="mt-2 text-[22px] font-extrabold text-[#FFFFFF]">{current.label}</p>
+                        <p className="mt-2 text-[22px] font-extrabold text-[#1A1F36]">{current.label}</p>
                         <p className="mt-2 text-sm text-[#8E96B0] leading-relaxed">{current.subtitle}</p>
 
                         <button

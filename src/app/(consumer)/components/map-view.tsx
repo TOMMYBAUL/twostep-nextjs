@@ -132,16 +132,16 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
             layers.forEach((layer) => {
                 const id = layer.id;
                 const type = layer.type;
-                if (type === "background") map.setPaintProperty(id, "background-color", "#F5F0E8");
-                if (id.includes("water") && type === "fill") map.setPaintProperty(id, "fill-color", "#c5d5c0");
+                if (type === "background") map.setPaintProperty(id, "background-color", "#F0F2F8");
+                if (id.includes("water") && type === "fill") map.setPaintProperty(id, "fill-color", "#C5D0E8");
                 if ((id.includes("landuse") || id.includes("park") || id.includes("land-structure")) && type === "fill") {
-                    try { map.setPaintProperty(id, "fill-color", "#dde8d5"); } catch {}
+                    try { map.setPaintProperty(id, "fill-color", "#D8E2D5"); } catch {}
                 }
                 if (id.includes("road") && type === "line") {
-                    try { map.setPaintProperty(id, "line-color", "#e0d5c4"); } catch {}
+                    try { map.setPaintProperty(id, "line-color", "#E4E8F0"); } catch {}
                 }
                 if (id.includes("building") && type === "fill") {
-                    try { map.setPaintProperty(id, "fill-color", "#ebe3d6"); } catch {}
+                    try { map.setPaintProperty(id, "fill-color", "#E0E4EE"); } catch {}
                 }
             });
         });
@@ -303,7 +303,7 @@ export function MapView({ merchants, userPosition, className, recenterTrigger, i
                             id: "3d-buildings", source: fillLayer.source, "source-layer": fillLayer["source-layer"],
                             type: "fill-extrusion", minzoom: 14,
                             paint: {
-                                "fill-extrusion-color": "#ebe3d6",
+                                "fill-extrusion-color": "#E0E4EE",
                                 "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 16, ["get", "height"]],
                                 "fill-extrusion-base": ["get", "min_height"],
                                 "fill-extrusion-opacity": 0.7,

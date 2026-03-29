@@ -57,7 +57,7 @@ export function TopHeaderBar() {
             <div className="flex items-center gap-1.5 text-[11px]">
                 <span className="text-[#8E96B0]">Dashboard</span>
                 <span className="text-[#8E96B0]">›</span>
-                <span className="font-semibold text-[#FFFFFF]">{pageLabel}</span>
+                <span className="font-semibold text-[#1A1F36]">{pageLabel}</span>
             </div>
 
             <div className="flex-1" />
@@ -78,7 +78,7 @@ export function TopHeaderBar() {
                     {notifOpen && (
                         <div className="absolute right-0 top-10 z-50 w-64 rounded-xl bg-white py-4 px-5 shadow-lg border border-[#F0EBE3] text-center">
                             <div className="text-2xl mb-2">🔔</div>
-                            <p className="text-xs font-semibold text-[#FFFFFF]">Pas de notification</p>
+                            <p className="text-xs font-semibold text-[#1A1F36]">Pas de notification</p>
                             <p className="text-[10px] text-[#8E96B0] mt-1">Vous serez notifié quand un client vous suit ou met un produit en favori.</p>
                         </div>
                     )}
@@ -98,7 +98,7 @@ export function TopHeaderBar() {
                             {/* Merchant name header */}
                             {merchant && (
                                 <div className="px-4 py-2 border-b border-gray-100">
-                                    <p className="text-xs font-semibold text-[#FFFFFF] truncate">{merchant.name}</p>
+                                    <p className="text-xs font-semibold text-[#1A1F36] truncate">{merchant.name}</p>
                                     <p className="text-[10px] text-[#8E96B0] truncate">{merchant.address}</p>
                                 </div>
                             )}
@@ -106,7 +106,7 @@ export function TopHeaderBar() {
                             <Link
                                 href="/dashboard/store"
                                 onClick={() => setMenuOpen(false)}
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#1A1F36] no-underline transition hover:bg-gray-50"
                             >
                                 <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -121,7 +121,7 @@ export function TopHeaderBar() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => setMenuOpen(false)}
-                                    className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
+                                    className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#1A1F36] no-underline transition hover:bg-gray-50"
                                 >
                                     <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -135,7 +135,7 @@ export function TopHeaderBar() {
                             <a
                                 href="mailto:support@twostep.fr"
                                 onClick={() => setMenuOpen(false)}
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#1A1F36] no-underline transition hover:bg-gray-50"
                             >
                                 <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="12" cy="12" r="10" />
@@ -148,7 +148,7 @@ export function TopHeaderBar() {
                             <Link
                                 href="/mentions-legales"
                                 onClick={() => setMenuOpen(false)}
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#FFFFFF] no-underline transition hover:bg-gray-50"
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#1A1F36] no-underline transition hover:bg-gray-50"
                             >
                                 <svg className="size-4 text-[#8E96B0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
