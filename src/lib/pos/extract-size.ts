@@ -19,3 +19,20 @@ export function extractSize(name: string): string | null {
 
     return null;
 }
+
+/**
+ * Remove the size portion from a product name to get the "base name".
+ * Used to group sibling products that differ only by size.
+ */
+export function stripSize(name: string): string {
+    if (!name) return "";
+    const size = extractSize(name);
+    if (!size) return name.trim();
+
+    const idx = name.lastIndexOf(size);
+    if (idx === -1) return name.trim();
+
+    const before = name.slice(0, idx);
+    const after = name.slice(idx + size.length);
+    return (before + after).replace(/[\s\-\/,()]+/g, " ").replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
+}

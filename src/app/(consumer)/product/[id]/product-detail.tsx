@@ -3,12 +3,19 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, ChevronRight, Phone01, XClose } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
+
+interface SiblingSize {
+    size: string;
+    product_id: string;
+    slug: string | null;
+    in_stock: boolean;
+}
 
 interface ProductDetail {
     id: string;
@@ -20,9 +27,11 @@ interface ProductDetail {
     ean: string | null;
     brand: string | null;
     category: string | null;
+    size: string | null;
     merchant_id: string;
     stock: { quantity: number }[];
     promotions: { sale_price: number; ends_at: string | null }[];
+    available_sizes: SiblingSize[];
     merchants?: {
         name: string;
         address: string;
@@ -33,10 +42,9 @@ interface ProductDetail {
     };
 }
 
-const SHOE_SIZES = [35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const;
-
 export default function ProductDetailClient() {
     const { id } = useParams<{ id: string }>();
+    const router = useRouter();
 
     const { data: product, isLoading } = useQuery<ProductDetail>({
         queryKey: ["product", id],
@@ -62,7 +70,9 @@ export default function ProductDetailClient() {
     const discount = activePromo ? Math.round(((product!.price - activePromo.sale_price) / product!.price) * 100) : 0;
     const displayPrice = activePromo ? activePromo.sale_price : product?.price;
 
-    const [selectedSize, setSelectedSize] = useState<number | null>(null);
+    const availableSizes = product?.available_sizes ?? [];
+    const hasMultipleSizes = availableSizes.length > 1;
+
     const [sizeSheetOpen, setSizeSheetOpen] = useState(false);
     const [sizeChartOpen, setSizeChartOpen] = useState(false);
     const [contactSheetOpen, setContactSheetOpen] = useState(false);
@@ -163,17 +173,21 @@ export default function ProductDetailClient() {
                     </div>
 
                     {/* ── Size selector line ── */}
-                    <button
-                        type="button"
-                        onClick={() => setSizeSheetOpen(true)}
-                        className="flex w-full items-center justify-between border-y-[0.5px] border-[rgba(255,255,255,0.07)] py-4"
-                    >
-                        <span className="text-[13px] text-[#a07840]">Pointure</span>
-                        <span className="flex items-center gap-1.5 text-[13px] font-medium text-[#f0dfc0]">
-                            {selectedSize ?? "Sélectionner"}
-                            <ChevronRight className="size-4 text-[#3d2a10]" />
-                        </span>
-                    </button>
+                    {product.size && (
+                        <button
+                            type="button"
+                            onClick={() => hasMultipleSizes && setSizeSheetOpen(true)}
+                            className="flex w-full items-center justify-between border-y-[0.5px] border-[rgba(255,255,255,0.07)] py-4"
+                        >
+                            <span className="text-[13px] text-[#a07840]">
+                                {/^\d/.test(product.size) ? "Pointure" : "Taille"}
+                            </span>
+                            <span className="flex items-center gap-1.5 text-[13px] font-medium text-[#f0dfc0]">
+                                {product.size}
+                                {hasMultipleSizes && <ChevronRight className="size-4 text-[#3d2a10]" />}
+                            </span>
+                        </button>
+                    )}
 
                     {/* Size guide line */}
                     <button
@@ -258,7 +272,9 @@ export default function ProductDetailClient() {
                             <div className="sticky top-0 z-10 bg-[#1c1209] px-5 pb-3 pt-3">
                                 <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#3d2a10]" />
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-[15px] font-semibold text-[#f0dfc0]">Sélectionnez votre pointure</h2>
+                                    <h2 className="text-[15px] font-semibold text-[#f0dfc0]">
+                                        {/^\d/.test(product?.size ?? "") ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
+                                    </h2>
                                     <button type="button" onClick={() => setSizeSheetOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[#2a1a08]">
                                         <XClose className="size-4 text-[#a07840]" />
                                     </button>
@@ -267,20 +283,33 @@ export default function ProductDetailClient() {
 
                             {/* Size grid */}
                             <div className="grid grid-cols-4 gap-2 px-5 pb-4">
-                                {SHOE_SIZES.map((s) => (
-                                    <button
-                                        key={s}
-                                        type="button"
-                                        onClick={() => { setSelectedSize(s); setSizeSheetOpen(false); }}
-                                        className={`rounded-xl border-[0.5px] py-3 text-[13px] font-medium transition duration-100 ${
-                                            selectedSize === s
-                                                ? "border-[#c87830] bg-[#c87830] text-[#130e07]"
-                                                : "border-[#3d2a10] bg-[#2a1a08] text-[#e8d4b0]"
-                                        }`}
-                                    >
-                                        {s}
-                                    </button>
-                                ))}
+                                {availableSizes.map((s) => {
+                                    const isCurrent = s.product_id === product?.id;
+                                    const isOos = !s.in_stock;
+
+                                    return (
+                                        <button
+                                            key={s.product_id}
+                                            type="button"
+                                            disabled={isOos}
+                                            onClick={() => {
+                                                setSizeSheetOpen(false);
+                                                if (!isCurrent) {
+                                                    router.push(`/product/${s.slug ?? s.product_id}`);
+                                                }
+                                            }}
+                                            className={`relative rounded-xl border-[0.5px] py-3 text-[13px] font-medium transition duration-100 ${
+                                                isCurrent
+                                                    ? "border-[#c87830] bg-[#c87830] text-[#130e07]"
+                                                    : isOos
+                                                      ? "border-[#2a1a08] bg-[#1c1209] text-[#3d2a10] line-through"
+                                                      : "border-[#3d2a10] bg-[#2a1a08] text-[#e8d4b0]"
+                                            }`}
+                                        >
+                                            {s.size}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </motion.div>
                     </>
