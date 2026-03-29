@@ -31,30 +31,41 @@
 
 /* ── Two-Step brand overrides ── */
 :root {
-    --ts-cream:      #F5EDD6;
-    --ts-cream-dark: #EDE0C4;
-    --ts-ochre:      #C8813A;
-    --ts-ochre-dark: #A86828;
-    --ts-sage:       #7A9E7E;
-    --ts-brown:      #2C2018;
-    --ts-brown-mid:  #6B4F38;
     --ts-white:      #FFFFFF;
+    --ts-bg:         #F8F9FC;
+    --ts-bg-input:   #F5F6FA;
+    --ts-border:     #E2E5F0;
+    --ts-border-light: #ECEEF4;
+    --ts-accent:     #4268FF;
+    --ts-accent-hover: #3558E0;
+    --ts-accent-light: #93AEFF;
+    --ts-accent-bg:  rgba(66, 104, 255, 0.06);
+    --ts-text:       #1A1F36;
+    --ts-text-secondary: #8E96B0;
+    --ts-text-muted: #A8AEBF;
+    --ts-success:    #22B86E;
     --ts-red:        #D94F4F;
     --ts-orange:     #E8923A;
 
-    /* Override UntitledUI brand palette → ochre */
-    --color-brand-25:  #fdf8f3;
-    --color-brand-50:  #faf0e4;
-    --color-brand-100: #f4dcbf;
-    --color-brand-200: #ebc494;
-    --color-brand-300: #dfa668;
-    --color-brand-400: #d4904a;
-    --color-brand-500: #c8813a;
-    --color-brand-600: #a86828;
-    --color-brand-700: #8a531e;
-    --color-brand-800: #6b3f17;
-    --color-brand-900: #4a2c0f;
-    --color-brand-950: #2c1a09;
+    /* Dark (pour CTA marketing, sidebar dashboard) */
+    --ts-dark:       #070A10;
+    --ts-dark-surface: #0E1420;
+    --ts-dark-text:  #C8D6F0;
+    --ts-dark-muted: #566080;
+
+    /* Override UntitledUI brand palette → bleu électrique */
+    --color-brand-25:  #f5f7ff;
+    --color-brand-50:  #eef1ff;
+    --color-brand-100: #dce2ff;
+    --color-brand-200: #b8c4ff;
+    --color-brand-300: #93aeff;
+    --color-brand-400: #6b8aff;
+    --color-brand-500: #4268ff;
+    --color-brand-600: #3558e0;
+    --color-brand-700: #2847b8;
+    --color-brand-800: #1e3690;
+    --color-brand-900: #142668;
+    --color-brand-950: #0a1540;
 }
 
 html,

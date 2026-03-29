@@ -1,20 +1,20 @@
 /* ── Two-Step Dashboard DA ── */
 
 :root {
-    --ts-terracotta: #E07A5F;
-    --ts-terracotta-hover: #c96a50;
-    --ts-sage: #81B29A;
-    --ts-sage-light: #e8f3ee;
-    --ts-cream: #F4F1DE;
-    --ts-cream-dark: #ebe7d0;
-    --ts-dark: #2C2018;
-    --ts-dark-hover: #1e1610;
-    --ts-dark-light: rgba(44, 32, 24, 0.08);
-    --ts-sidebar-bg: #E07A5F;
-    --ts-accent: #E07A5F;
-    --ts-accent-hover: #c96a50;
-    --ts-bg-warm: #F4F1DE;
-    --ts-bg-card: #ebe7d0;
+    --ts-terracotta: #4268FF;
+    --ts-terracotta-hover: #3558E0;
+    --ts-sage: #22B86E;
+    --ts-sage-light: #E8F8EF;
+    --ts-cream: #F8F9FC;
+    --ts-cream-dark: #F5F6FA;
+    --ts-dark: #1A1F36;
+    --ts-dark-hover: #0F1225;
+    --ts-dark-light: rgba(26, 31, 54, 0.08);
+    --ts-sidebar-bg: #0E1420;
+    --ts-accent: #4268FF;
+    --ts-accent-hover: #3558E0;
+    --ts-bg-warm: #F8F9FC;
+    --ts-bg-card: #FFFFFF;
 }
 
 @keyframes fadeUp {
@@ -140,7 +140,7 @@
     transition: background 150ms, box-shadow 150ms;
 }
 .product-row-ts:hover {
-    background: #faf9f5;
+    background: #F5F6FA;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 .product-row-ts:hover .row-arrow {

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { Cormorant_Garamond, Syne } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RouteProvider } from "@/providers/router-provider";
@@ -7,16 +7,18 @@ import { Theme } from "@/providers/theme";
 import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const syne = Syne({
     subsets: ["latin"],
     display: "swap",
-    variable: "--font-plus-jakarta-sans",
+    variable: "--font-syne",
 });
 
-const fraunces = Fraunces({
+const cormorantGaramond = Cormorant_Garamond({
     subsets: ["latin"],
     display: "swap",
-    variable: "--font-fraunces",
+    weight: ["300", "400"],
+    style: ["normal", "italic"],
+    variable: "--font-cormorant",
 });
 
 export const metadata: Metadata = {
@@ -53,8 +55,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-    themeColor: "#2C1A0E",
-    colorScheme: "dark light",
+    themeColor: "#FFFFFF",
+    colorScheme: "light",
     viewportFit: "cover",
 };
 
@@ -66,10 +68,10 @@ export default function RootLayout({
     return (
         <html lang="fr" suppressHydrationWarning>
             <body
-                className={cx(plusJakartaSans.variable, fraunces.variable, "antialiased")}
+                className={cx(syne.variable, cormorantGaramond.variable, "antialiased")}
                 style={{
-                    fontFamily: "var(--font-plus-jakarta-sans), Inter, sans-serif",
-                    background: "#130e07",
+                    fontFamily: "var(--font-syne), system-ui, sans-serif",
+                    background: "#FFFFFF",
                 }}
             >
                 <RouteProvider>
