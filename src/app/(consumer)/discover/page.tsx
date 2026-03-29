@@ -203,7 +203,7 @@ export default function DiscoverPage() {
                                                 <button
                                                     key={s}
                                                     type="button"
-                                                    onClick={() => setSizeFilter(sizeFilter === s ? null : s)}
+                                                    onClick={() => { setSizeFilter(sizeFilter === s ? null : s); setShowSizeFilters(false); }}
                                                     className={cx(
                                                         "rounded-lg px-3 py-1.5 text-[11px] font-medium transition duration-100",
                                                         sizeFilter === s
@@ -227,7 +227,7 @@ export default function DiscoverPage() {
                                                 <button
                                                     key={s}
                                                     type="button"
-                                                    onClick={() => setShoeSizeFilter(shoeSizeFilter === s ? null : s)}
+                                                    onClick={() => { setShoeSizeFilter(shoeSizeFilter === s ? null : s); setShowSizeFilters(false); }}
                                                     className={cx(
                                                         "rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition duration-100",
                                                         shoeSizeFilter === s
