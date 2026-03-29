@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
     if ("error" in parsed) return parsed.error;
     const { lat, lng, radius, section, category } = parsed.data;
-    const size = request.nextUrl.searchParams.get("size");
+    const size = request.nextUrl.searchParams.get("size") || null;
 
     try {
 
@@ -22,7 +22,8 @@ export async function GET(request: NextRequest) {
             user_lng: lng,
             radius_km: radius,
             result_offset: 0,
-            result_limit: size ? 200 : 20,
+            result_limit: 20,
+            filter_size: size,
         });
 
         if (error) {
@@ -32,16 +33,11 @@ export async function GET(request: NextRequest) {
 
         // Resolve categories for returned product IDs
         const productIds = (data ?? []).map((r: any) => r.product_id);
-        const [categoryMap, hiddenIds] = await Promise.all([
-            resolveCategories(supabase, productIds),
-            resolveHiddenIds(supabase, productIds),
-        ]);
-        const sizeSet = size ? await resolveProductsWithSize(supabase, productIds, size) : null;
+        const categoryMap = await resolveCategories(supabase, productIds);
 
-        // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
+        // Deduplicate by product_id+merchant_id
         const seen = new Set<string>();
         const products = (data ?? [])
-            .filter((row: any) => !hiddenIds.has(row.product_id))
             .filter((row: any) => {
                 const key = `${row.product_id}::${row.merchant_id}`;
                 if (seen.has(key)) return false;
@@ -49,7 +45,6 @@ export async function GET(request: NextRequest) {
                 return true;
             })
             .filter((row: any) => !category || categoryMap.get(row.product_id) === category)
-            .filter((row: any) => !sizeSet || sizeSet.has(row.product_id))
             .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
@@ -68,14 +63,14 @@ export async function GET(request: NextRequest) {
         });
     }
 
-    // trending & nearby both use the feed RPC — trending sorts by score, nearby by distance
-    // Fetch more when size filter is active (post-filter reduces results heavily)
+    // trending & nearby — size filter handled in RPC
     const { data, error } = await supabase.rpc("get_feed_nearby", {
         user_lat: lat,
         user_lng: lng,
         radius_km: radius,
         cursor_score: 999999,
-        result_limit: size ? 200 : 20,
+        result_limit: 20,
+        filter_size: size,
     });
 
     if (error) {
@@ -85,20 +80,15 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
-    // Resolve categories, merchant photos, and visibility for returned product IDs
+    // Resolve categories and merchant photos
     const productIds = items.map((r: any) => r.product_id);
     const merchantIds = [...new Set<string>(items.map((r: any) => r.merchant_id))];
-    const [categoryMap, merchantPhotoMap, hiddenIds] = await Promise.all([
+    const [categoryMap, merchantPhotoMap] = await Promise.all([
         resolveCategories(supabase, productIds),
         resolveMerchantPhotos(supabase, merchantIds),
-        resolveHiddenIds(supabase, productIds),
     ]);
-    const sizeSet = size ? await resolveProductsWithSize(supabase, productIds, size) : null;
 
-    // Filter out variants and non-visible products
-    items = items.filter((row: any) => !hiddenIds.has(row.product_id));
-
-    // Deduplicate by product_id+merchant_id (feed can return same product for new_product + new_promo events)
+    // Deduplicate by product_id+merchant_id
     const seen = new Set<string>();
     items = items.filter((row: any) => {
         const key = `${row.product_id}::${row.merchant_id}`;
@@ -110,10 +100,6 @@ export async function GET(request: NextRequest) {
     // Filter by category if provided
     if (category) {
         items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
-    }
-
-    if (sizeSet) {
-        items = items.filter((row: any) => sizeSet.has(row.product_id));
     }
 
     // For "nearby", re-sort by distance instead of feed_score
@@ -160,43 +146,6 @@ async function resolveMerchantPhotos(
         if (row.photo_url) map.set(row.id, row.photo_url);
     }
     return map;
-}
-
-/** Returns a Set of product IDs that have the given size in their available_sizes JSONB */
-async function resolveProductsWithSize(
-    supabase: any,
-    productIds: string[],
-    size: string,
-): Promise<Set<string>> {
-    if (productIds.length === 0) return new Set();
-    const { data } = await supabase
-        .from("products")
-        .select("id, available_sizes")
-        .in("id", productIds)
-        .not("available_sizes", "eq", "[]");
-    const matches = new Set<string>();
-    for (const row of data ?? []) {
-        const sizes = row.available_sizes as { size: string; quantity?: number }[] | null;
-        if (!Array.isArray(sizes)) continue;
-        if (sizes.some((s) => String(s.size) === size)) {
-            matches.add(row.id);
-        }
-    }
-    return matches;
-}
-
-/** Returns a Set of product IDs that should be hidden (variants or not visible) */
-async function resolveHiddenIds(
-    supabase: any,
-    productIds: string[],
-): Promise<Set<string>> {
-    if (productIds.length === 0) return new Set();
-    const { data } = await supabase
-        .from("products")
-        .select("id")
-        .in("id", [...new Set(productIds)])
-        .or("variant_of.not.is.null,visible.eq.false");
-    return new Set((data ?? []).map((r: any) => r.id));
 }
 
 /** Fetch categories for a list of product IDs in one query */
