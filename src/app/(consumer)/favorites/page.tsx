@@ -113,19 +113,6 @@ function EmptyStateWithSuggestions() {
 
     return (
         <div className="pb-20 pt-4">
-            {/* Editorial banner */}
-            <div className="mb-4 flex items-start gap-2.5 rounded-xl bg-[#F8F9FC] px-3.5 py-3" style={{ border: "0.5px solid rgba(66,104,255,0.15)" }}>
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-lg text-sm" style={{ background: "rgba(66,104,255,0.1)" }}>
-                    💡
-                </div>
-                <div>
-                    <p className="text-xs font-semibold text-[#6B7799]">Ton espace de curation</p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-[#8E96B0]">
-                        Sauvegarde les produits et boutiques qui t&apos;intéressent. Retrouve-les ici avant qu&apos;ils disparaissent.
-                    </p>
-                </div>
-            </div>
-
             {/* Title */}
             <p className="text-[17px] font-bold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>
                 Commence ta liste
@@ -133,7 +120,7 @@ function EmptyStateWithSuggestions() {
 
             {/* Subtitle */}
             <p className="mt-2 text-[13px] leading-relaxed text-[#8E96B0]">
-                Appuie sur ♡ sur un produit pour le sauvegarder ici.
+                Appuie sur ♡ sur un produit pour le sauvegarder ici. Retrouve-le avant qu&apos;il disparaisse.
             </p>
 
             {/* CTA */}
