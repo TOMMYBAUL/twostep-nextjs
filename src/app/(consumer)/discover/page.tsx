@@ -589,7 +589,7 @@ export default function DiscoverPage() {
                     </section>
                 )}
                 {/* ── 6. Tout près de toi — infinite scroll ── */}
-                <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
+                <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
             ) : (
                 <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
@@ -600,9 +600,9 @@ export default function DiscoverPage() {
 
 /* ── Infinite scroll product grid ── */
 function InfiniteProductGrid({
-    lat, lng, category, favoriteIds, onToggleFav,
+    lat, lng, category, size, favoriteIds, onToggleFav,
 }: {
-    lat: number; lng: number; category: string | null;
+    lat: number; lng: number; category: string | null; size: string | null;
     favoriteIds: Set<string>; onToggleFav: (id: string) => void;
 }) {
     const [pages, setPages] = useState<any[][]>([]);
@@ -613,15 +613,17 @@ function InfiniteProductGrid({
     const loadingRef = useRef(false);
     const hasMoreRef = useRef(true);
     const categoryRef = useRef(category);
+    const sizeRef = useRef(size);
 
-    // Reset when category changes
+    // Reset when category or size changes
     useEffect(() => {
         categoryRef.current = category;
+        sizeRef.current = size;
         setPages([]);
         pageRef.current = 1;
         hasMoreRef.current = true;
         setTotal(0);
-    }, [category]);
+    }, [category, size]);
 
     // Stable loadMore — no state in dependencies
     const loadMore = useCallback(async () => {
@@ -634,6 +636,7 @@ function InfiniteProductGrid({
                 page: pageRef.current.toString(), limit: "20",
             });
             if (categoryRef.current) params.set("category", categoryRef.current);
+            if (sizeRef.current) params.set("size", sizeRef.current);
             const res = await fetch(`/api/products/discover?${params}`);
             if (!res.ok) {
                 hasMoreRef.current = false;

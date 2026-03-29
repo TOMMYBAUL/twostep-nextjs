@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(params.get("page") ?? "1", 10));
     const limit = Math.min(40, Math.max(1, parseInt(params.get("limit") ?? "20", 10)));
     const category = params.get("category") || null;
+    const size = params.get("size") || null;
     const radius = 10;
     const offset = (page - 1) * limit;
 
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
         filter_category: category,
         result_offset: offset,
         result_limit: limit,
+        filter_size: size,
     });
 
     if (!rpcError && rpcData) {
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
         }));
 
         const { data: countData } = await supabase.rpc("get_products_nearby_count", {
-            user_lat: lat, user_lng: lng, radius_km: radius, filter_category: category,
+            user_lat: lat, user_lng: lng, radius_km: radius, filter_category: category, filter_size: size,
         });
         const total = countData ?? products.length;
 
@@ -56,6 +58,7 @@ export async function GET(request: NextRequest) {
         radius_km: radius,
         cursor_score: 999999,
         result_limit: 200,
+        filter_size: size,
     });
 
     if (error) {
