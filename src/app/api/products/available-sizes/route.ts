@@ -12,7 +12,6 @@ export async function GET() {
     try {
         const supabase = createAdminClient();
 
-        // Read from available_sizes JSONB column (the real source of truth)
         const { data, error } = await supabase
             .from("products")
             .select("available_sizes")
@@ -33,8 +32,13 @@ export async function GET() {
             for (const entry of sizes) {
                 const s = typeof entry === "string" ? entry : entry.size;
                 if (!s) continue;
+                // Only include sizes that have stock > 0
+                const qty = typeof entry === "object" ? (entry.quantity ?? 0) : 0;
+                if (qty <= 0) continue;
+
                 const num = parseFloat(s);
-                if (!isNaN(num) && num >= 35 && num <= 48) {
+                if (!isNaN(num)) {
+                    // Any numeric size (pointure, taille enfant, etc.)
                     shoe.add(num);
                 } else if (/^(XXS|XS|S|M|L|XL|XXL|XXXL)$/i.test(s)) {
                     clothing.add(s.toUpperCase());
