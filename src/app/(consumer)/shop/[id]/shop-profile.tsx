@@ -120,7 +120,7 @@ export default function ShopProfileClient() {
 
     if (!profile) {
         return (
-            <div className="min-h-dvh bg-[var(--ts-cream)]">
+            <div className="min-h-dvh bg-[#F8F9FC]">
                 <div className="h-52 animate-pulse bg-white" />
                 <div className="space-y-3 p-4">
                     <div className="h-6 w-48 animate-pulse rounded-xl bg-white" />
@@ -133,7 +133,7 @@ export default function ShopProfileClient() {
     const links = profile.merchant_links ?? {};
 
     return (
-        <div className="min-h-dvh bg-[var(--ts-cream)]">
+        <div className="min-h-dvh bg-[#F8F9FC]">
             {/* Cover photo — TGTG style */}
             <div className="relative h-[45vh] min-h-[300px] max-h-[420px] w-full">
                 {profile.merchant_cover ? (
@@ -141,7 +141,7 @@ export default function ShopProfileClient() {
                 ) : profile.merchant_photo ? (
                     <img src={profile.merchant_photo} alt="" className="h-full w-full object-cover" />
                 ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[var(--ts-ochre)] to-[var(--ts-ochre-dark)]">
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#4268FF] to-[#3558E0]">
                         <span className="text-6xl font-bold text-white/30">{profile.merchant_name.charAt(0)}</span>
                     </div>
                 )}
@@ -156,7 +156,7 @@ export default function ShopProfileClient() {
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"
                 >
-                    <ArrowLeft className="size-5 text-[var(--ts-brown)]" />
+                    <ArrowLeft className="size-5 text-[#1A1F36]" />
                 </Link>
 
                 {/* Logo + name at bottom of cover — TGTG exact layout */}
@@ -165,7 +165,7 @@ export default function ShopProfileClient() {
                         {profile.merchant_logo ? (
                             <img src={profile.merchant_logo} alt={profile.merchant_name} className="h-full w-full object-cover" />
                         ) : (
-                            <span className="text-lg font-bold text-[var(--ts-ochre)]">{profile.merchant_name.charAt(0)}</span>
+                            <span className="text-lg font-bold text-[#4268FF]">{profile.merchant_name.charAt(0)}</span>
                         )}
                     </div>
                     <div className="ml-3 mb-0.5 min-w-0 flex-1">
@@ -176,28 +176,28 @@ export default function ShopProfileClient() {
             </div>
 
             {/* Info zone — clean beige below cover */}
-            <div className="bg-[var(--ts-cream)] px-5 pt-4">
+            <div className="bg-[#F8F9FC] px-5 pt-4">
                 {/* Address row — clickable like TGTG */}
                 <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(profile.merchant_address + ", " + profile.merchant_city)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 border-b border-[var(--ts-cream-dark)] pb-3"
+                    className="flex items-center gap-3 border-b border-[#E2E5F0] pb-3"
                 >
-                    <MarkerPin01 className="size-5 shrink-0 text-[var(--ts-ochre)]" aria-hidden="true" />
+                    <MarkerPin01 className="size-5 shrink-0 text-[#4268FF]" aria-hidden="true" />
                     <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-[var(--ts-ochre)]">{profile.merchant_address}, {profile.merchant_city}</p>
-                        <p className="text-[11px] text-[var(--ts-brown-mid)]/50">Plus d&apos;informations sur le commerce</p>
+                        <p className="truncate text-sm font-medium text-[#4268FF]">{profile.merchant_address}, {profile.merchant_city}</p>
+                        <p className="text-[11px] text-[#8E96B0]/50">Plus d&apos;informations sur le commerce</p>
                     </div>
-                    <ChevronDown className="-rotate-90 size-5 text-[var(--ts-brown-mid)]/40" aria-hidden="true" />
+                    <ChevronDown className="-rotate-90 size-5 text-[#8E96B0]/40" aria-hidden="true" />
                 </a>
 
                 {/* Stats + opening hours */}
                 <div className="mt-3 flex items-center gap-2">
-                    <p className="text-xs text-[var(--ts-brown-mid)]/50">
-                        <span className="font-semibold text-[var(--ts-brown)]">{profile.follower_count}</span> abonné{profile.follower_count !== 1 ? "s" : ""}
+                    <p className="text-xs text-[#8E96B0]/50">
+                        <span className="font-semibold text-[#1A1F36]">{profile.follower_count}</span> abonné{profile.follower_count !== 1 ? "s" : ""}
                         {" · "}
-                        <span className="font-semibold text-[var(--ts-brown)]">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
+                        <span className="font-semibold text-[#1A1F36]">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
                     </p>
                     {(() => {
                         const status = getOpenStatus(profile.merchant_opening_hours);
@@ -207,7 +207,7 @@ export default function ShopProfileClient() {
                                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
                                 status.isOpen
                                     ? "bg-[var(--ts-sage)]/15 text-[var(--ts-sage)]"
-                                    : "bg-[var(--ts-red)]/10 text-[var(--ts-red)]",
+                                    : "bg-[#D94F4F]/10 text-[#D94F4F]",
                             )}>
                                 <Clock className="size-2.5" aria-hidden="true" />
                                 {status.isOpen ? "Ouvert" : "Fermé"}
@@ -224,8 +224,8 @@ export default function ShopProfileClient() {
                         className={cx(
                             "flex-1 rounded-lg py-2.5 text-[13px] font-semibold transition duration-150 active:scale-[0.97]",
                             isFollowing
-                                ? "border border-[var(--ts-brown-mid)]/15 bg-[var(--ts-cream-dark)] text-[var(--ts-brown-mid)]/70"
-                                : "bg-[var(--ts-ochre)] text-white",
+                                ? "border border-[#8E96B0]/15 bg-[#E2E5F0] text-[#8E96B0]/70"
+                                : "bg-[#4268FF] text-white",
                         )}
                     >
                         {isFollowing ? "Abonné ✓" : "S'abonner"}
@@ -240,9 +240,9 @@ export default function ShopProfileClient() {
                                 await navigator.clipboard.writeText(url);
                             }
                         }}
-                        className="flex size-10 items-center justify-center rounded-lg border border-[var(--ts-brown-mid)]/15 bg-[var(--ts-cream-dark)] transition active:scale-[0.97]"
+                        className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition active:scale-[0.97]"
                     >
-                        <Share07 className="size-4 text-[var(--ts-brown-mid)]" />
+                        <Share07 className="size-4 text-[#8E96B0]" />
                     </button>
                 </div>
 
@@ -251,7 +251,7 @@ export default function ShopProfileClient() {
 
                 {/* Bio + links */}
                 {profile.merchant_description && (
-                    <p className="mt-4 text-sm leading-relaxed text-[var(--ts-brown-mid)]/70">{profile.merchant_description}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-[#8E96B0]/70">{profile.merchant_description}</p>
                 )}
                 {Object.keys(links).length > 0 && (
                     <div className="mt-3 flex gap-3">
@@ -261,7 +261,7 @@ export default function ShopProfileClient() {
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-0.5 text-xs font-medium text-[var(--ts-ochre)] hover:underline"
+                                className="flex items-center gap-0.5 text-xs font-medium text-[#4268FF] hover:underline"
                             >
                                 {platform}
                                 <LinkExternal01 className="size-3" aria-hidden="true" />
@@ -272,7 +272,7 @@ export default function ShopProfileClient() {
             </div>
 
             {/* Sub-tabs */}
-            <div className="mt-5 border-b border-[var(--ts-cream-dark)] bg-[var(--ts-cream)]">
+            <div className="mt-5 border-b border-[#E2E5F0] bg-[#F8F9FC]">
                 <div className="flex px-5">
                     {SUB_TABS.map((tab) => (
                         <button
@@ -288,10 +288,10 @@ export default function ShopProfileClient() {
                             className={cx(
                                 "border-b-2 px-4 py-3 text-sm font-semibold transition duration-150",
                                 tab === "Avis"
-                                    ? "border-transparent text-[var(--ts-brown-mid)]/40"
+                                    ? "border-transparent text-[#8E96B0]/40"
                                     : activeTab === tab
-                                        ? "border-[var(--ts-ochre)] text-[var(--ts-ochre)]"
-                                        : "border-transparent text-[var(--ts-brown-mid)]/40",
+                                        ? "border-[#4268FF] text-[#4268FF]"
+                                        : "border-transparent text-[#8E96B0]/40",
                             )}
                         >
                             {tab}
@@ -303,7 +303,7 @@ export default function ShopProfileClient() {
             {/* Product grid */}
             <div className="grid grid-cols-2 gap-3 p-4 pb-24">
                 {filteredProducts.length === 0 ? (
-                    <p className="col-span-2 py-12 text-center text-sm text-[var(--ts-brown-mid)]/40">
+                    <p className="col-span-2 py-12 text-center text-sm text-[#8E96B0]/40">
                         {activeTab === "Promos" ? "Aucune promo en cours" : activeTab === "Nouveautés" ? "Pas de nouveautés récentes" : "Aucun produit"}
                     </p>
                 ) : (
@@ -314,7 +314,7 @@ export default function ShopProfileClient() {
                         return (
                             <Link key={p.id} href={`/product/${generateSlug(p.name, p.id)}`} className="group block">
                                 {/* Photo */}
-                                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[var(--ts-cream-dark)]">
+                                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#E2E5F0]">
                                     {(p.photo_processed_url ?? p.photo_url) ? (
                                         <img
                                             src={p.photo_processed_url ?? p.photo_url ?? "/placeholder-product.svg"}
@@ -326,7 +326,7 @@ export default function ShopProfileClient() {
                                         />
                                     ) : (
                                         <div className="flex h-full items-center justify-center">
-                                            <span className="text-3xl font-light text-[var(--ts-brown-mid)]/15">{p.name.charAt(0)}</span>
+                                            <span className="text-3xl font-light text-[#8E96B0]/15">{p.name.charAt(0)}</span>
                                         </div>
                                     )}
 
@@ -340,7 +340,7 @@ export default function ShopProfileClient() {
                                     </div>
 
                                     {sale && (
-                                        <div className="absolute bottom-2 left-2 rounded-md bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                                        <div className="absolute bottom-2 left-2 rounded-md bg-[#4268FF] px-1.5 py-0.5 text-[10px] font-semibold text-white">
                                             -{Math.round(((p.price - sale) / p.price) * 100)}%
                                         </div>
                                     )}
@@ -354,7 +354,7 @@ export default function ShopProfileClient() {
 
                                 {/* Info */}
                                 <div className="mt-2 px-0.5">
-                                    <p className="truncate text-[13px] font-medium text-[var(--ts-brown)]">{p.name}</p>
+                                    <p className="truncate text-[13px] font-medium text-[#1A1F36]">{p.name}</p>
                                     <div className="mt-0.5 flex items-baseline gap-2">
                                         {sale ? (
                                             <>
@@ -392,7 +392,7 @@ function OpeningHoursSection({ hours }: { hours: unknown }) {
             <button
                 type="button"
                 onClick={() => setExpanded((v) => !v)}
-                className="flex items-center gap-1.5 text-xs text-[var(--ts-brown-mid)]/60 transition duration-100 hover:text-[var(--ts-brown)]"
+                className="flex items-center gap-1.5 text-xs text-[#8E96B0]/60 transition duration-100 hover:text-[#1A1F36]"
             >
                 <Clock className="size-3" aria-hidden="true" />
                 <span>{status.label}</span>
@@ -402,9 +402,9 @@ function OpeningHoursSection({ hours }: { hours: unknown }) {
                 <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 rounded-xl bg-white/60 px-3 py-2.5">
                     {weekly.map((row) => (
                         <div key={row.day} className="flex justify-between text-[11px]">
-                            <span className="font-medium text-[var(--ts-brown)]">{row.day}</span>
+                            <span className="font-medium text-[#1A1F36]">{row.day}</span>
                             <span className={cx(
-                                row.hours === "Fermé" ? "text-[var(--ts-red)]/60" : "text-[var(--ts-brown-mid)]/50",
+                                row.hours === "Fermé" ? "text-[#D94F4F]/60" : "text-[#8E96B0]/50",
                             )}>{row.hours}</span>
                         </div>
                     ))}
