@@ -126,11 +126,11 @@ export default function ExplorePage() {
             {/* Liste view — dark fullscreen */}
             {viewMode === "liste" && (
                 <div
-                    className="absolute inset-0 z-20 overflow-y-auto bg-[#2C1A0E]"
+                    className="absolute inset-0 z-20 overflow-y-auto bg-[#FFFFFF]"
                     style={{ paddingTop: "calc(env(safe-area-inset-top) + 140px)" }}
                 >
                     <div className="px-4 pb-24">
-                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-sm font-bold text-[#F5EDD8]">
+                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-sm font-bold text-[#1A1F36]">
                             {isLoading
                                 ? "Recherche..."
                                 : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""} à proximité`}
@@ -139,14 +139,14 @@ export default function ExplorePage() {
                         {isLoading ? (
                             <div className="flex flex-col gap-2">
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-[#3D2A1A]" />
+                                    <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-[#E2E5F0]" />
                                 ))}
                             </div>
                         ) : merchants.length === 0 ? (
                             <div className="flex flex-col items-center gap-2 py-20 text-center">
-                                <SearchLg className="size-7 text-[#F5EDD8]/15" />
-                                <p className="text-sm font-medium text-[#F5EDD8]/40">Aucune boutique trouvée</p>
-                                <p className="text-[11px] text-[#F5EDD8]/30">Essaie d'élargir ta zone ou de changer de catégorie</p>
+                                <SearchLg className="size-7 text-[#1A1F36]/15" />
+                                <p className="text-sm font-medium text-[#1A1F36]/40">Aucune boutique trouvée</p>
+                                <p className="text-[11px] text-[#1A1F36]/30">Essaie d'élargir ta zone ou de changer de catégorie</p>
                             </div>
                         ) : (
                             <ul role="list" className="flex flex-col gap-2">
@@ -170,7 +170,7 @@ export default function ExplorePage() {
                 <div className="flex gap-2">
                     <div className={cx(
                         "flex min-w-0 flex-1 items-center gap-2.5 rounded-xl bg-white px-4 py-3 shadow-md transition-all duration-200",
-                        searchFocused && "shadow-lg ring-2 ring-[#C17B2F]/20",
+                        searchFocused && "shadow-lg ring-2 ring-[#4268FF]/20",
                     )}>
                         <SearchMd className="size-[18px] shrink-0 text-gray-400" aria-hidden="true" />
                         <input
@@ -181,7 +181,7 @@ export default function ExplorePage() {
                             onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
                             onKeyDown={(e) => { if (e.key === "Enter") handleSearch(searchQuery); }}
                             placeholder="Rechercher"
-                            className="min-w-0 flex-1 bg-transparent text-sm text-[#2C1A0E] outline-none placeholder:text-gray-400"
+                            className="min-w-0 flex-1 bg-transparent text-sm text-[#FFFFFF] outline-none placeholder:text-gray-400"
                         />
                         {searchQuery && (
                             <button type="button" onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-600">
@@ -195,7 +195,7 @@ export default function ExplorePage() {
                         onClick={() => { setRadiusOpen((v) => !v); setFilterOpen(false); }}
                         className={cx(
                             "flex shrink-0 items-center gap-1 rounded-xl px-3 shadow-md transition duration-150 active:scale-95",
-                            radiusOpen ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                            radiusOpen ? "bg-[#4268FF] text-white" : "bg-white text-[#FFFFFF]",
                         )}
                         aria-label="Rayon de recherche"
                     >
@@ -208,7 +208,7 @@ export default function ExplorePage() {
                         onClick={() => { setFilterOpen((v) => !v); setRadiusOpen(false); }}
                         className={cx(
                             "flex size-12 shrink-0 items-center justify-center rounded-xl shadow-md transition duration-150 active:scale-95",
-                            category ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                            category ? "bg-[#4268FF] text-white" : "bg-white text-[#FFFFFF]",
                         )}
                         aria-label="Filtres"
                     >
@@ -224,7 +224,7 @@ export default function ExplorePage() {
                             onClick={() => { setViewMode("liste"); setSelectedMerchant(null); }}
                             className={cx(
                                 "rounded-full px-6 py-2 text-sm font-semibold transition duration-150",
-                                viewMode === "liste" ? "bg-[#C17B2F] text-white" : "text-[#2C1A0E]",
+                                viewMode === "liste" ? "bg-[#4268FF] text-white" : "text-[#FFFFFF]",
                             )}
                         >
                             Liste
@@ -234,7 +234,7 @@ export default function ExplorePage() {
                             onClick={() => setViewMode("carte")}
                             className={cx(
                                 "rounded-full px-6 py-2 text-sm font-semibold transition duration-150",
-                                viewMode === "carte" ? "bg-[#C17B2F] text-white" : "text-[#2C1A0E]",
+                                viewMode === "carte" ? "bg-[#4268FF] text-white" : "text-[#FFFFFF]",
                             )}
                         >
                             Carte
@@ -251,7 +251,7 @@ export default function ExplorePage() {
                                 type="button"
                                 role="option"
                                 aria-selected={false}
-                                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#2C1A0E] transition duration-100 hover:bg-gray-50"
+                                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#FFFFFF] transition duration-100 hover:bg-gray-50"
                                 onMouseDown={(e) => { e.preventDefault(); handleSearch(s.suggestion); }}
                             >
                                 <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
@@ -266,7 +266,7 @@ export default function ExplorePage() {
                 {/* Radius selector dropdown */}
                 {radiusOpen && (
                     <div className="mt-2 overflow-hidden rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5">
-                        <p className="text-xs font-semibold text-[#2C1A0E]">Rayon de recherche</p>
+                        <p className="text-xs font-semibold text-[#FFFFFF]">Rayon de recherche</p>
                         <div className="mt-3 flex items-center gap-3">
                             <input
                                 type="range"
@@ -275,9 +275,9 @@ export default function ExplorePage() {
                                 step={1}
                                 value={radius}
                                 onChange={(e) => setRadius(Number(e.target.value))}
-                                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-[#C17B2F] [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C17B2F] [&::-webkit-slider-thumb]:shadow-md"
+                                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-[#4268FF] [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#4268FF] [&::-webkit-slider-thumb]:shadow-md"
                             />
-                            <span className="w-12 shrink-0 text-right text-sm font-bold text-[#C17B2F]">{radius} km</span>
+                            <span className="w-12 shrink-0 text-right text-sm font-bold text-[#4268FF]">{radius} km</span>
                         </div>
                         <div className="mt-1.5 flex justify-between text-[10px] text-gray-400">
                             <span>1 km</span>
@@ -299,8 +299,8 @@ export default function ExplorePage() {
                                 className={cx(
                                     "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition duration-100",
                                     category === cat.value
-                                        ? "bg-[#C17B2F]/10 font-semibold text-[#C17B2F]"
-                                        : "text-[#2C1A0E] hover:bg-gray-50",
+                                        ? "bg-[#4268FF]/10 font-semibold text-[#4268FF]"
+                                        : "text-[#FFFFFF] hover:bg-gray-50",
                                 )}
                             >
                                 {cat.emoji && <span>{cat.emoji}</span>}
@@ -318,7 +318,7 @@ export default function ExplorePage() {
                                 <div className="flex flex-wrap gap-1 px-2 pb-2">
                                     {availableSizes!.clothing.map((s) => (
                                         <button key={s} type="button" onClick={() => setSizeFilterExplore(sizeFilterExplore === s ? null : s)}
-                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", sizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", sizeFilterExplore === s ? "bg-[#4268FF] text-white" : "bg-gray-100 text-gray-600")}
                                         >{s}</button>
                                     ))}
                                 </div>
@@ -332,7 +332,7 @@ export default function ExplorePage() {
                                 <div className="flex flex-wrap gap-1 px-2 pb-2">
                                     {availableSizes!.shoe.map((s) => (
                                         <button key={s} type="button" onClick={() => setShoeSizeFilterExplore(shoeSizeFilterExplore === s ? null : s)}
-                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", shoeSizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", shoeSizeFilterExplore === s ? "bg-[#4268FF] text-white" : "bg-gray-100 text-gray-600")}
                                         >{s}</button>
                                     ))}
                                 </div>
@@ -354,7 +354,7 @@ export default function ExplorePage() {
                         onClick={() => setIs3D((v) => !v)}
                         className={cx(
                             "flex size-11 items-center justify-center rounded-xl shadow-md transition duration-150 active:scale-95",
-                            is3D ? "bg-[#C17B2F] text-white" : "bg-white text-[#2C1A0E]",
+                            is3D ? "bg-[#4268FF] text-white" : "bg-white text-[#FFFFFF]",
                         )}
                         aria-label={is3D ? "Vue 2D" : "Vue 3D"}
                     >
@@ -366,7 +366,7 @@ export default function ExplorePage() {
                         className="flex size-11 items-center justify-center rounded-xl bg-white shadow-md transition duration-150 active:scale-95"
                         aria-label="Recentrer"
                     >
-                        <NavigationPointer01 className="size-5 text-[#C17B2F]" aria-hidden="true" />
+                        <NavigationPointer01 className="size-5 text-[#4268FF]" aria-hidden="true" />
                     </button>
                 </div>
             )}
@@ -380,14 +380,14 @@ export default function ExplorePage() {
                                 {selectedMerchant.merchant_photo || selectedMerchant.merchant_logo ? (
                                     <Image src={selectedMerchant.merchant_logo || selectedMerchant.merchant_photo || ""} alt="" fill className="object-cover" />
                                 ) : (
-                                    <span className="text-lg font-bold text-[#C17B2F]">
+                                    <span className="text-lg font-bold text-[#4268FF]">
                                         {selectedMerchant.merchant_name.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2)}
                                     </span>
                                 )}
                             </div>
 
                             <div className="min-w-0 flex-1">
-                                <h3 className="truncate text-sm font-bold text-[#2C1A0E]">{selectedMerchant.merchant_name}</h3>
+                                <h3 className="truncate text-sm font-bold text-[#FFFFFF]">{selectedMerchant.merchant_name}</h3>
                                 <p className="mt-0.5 truncate text-xs text-gray-500">{selectedMerchant.merchant_address}</p>
                                 <div className="mt-1.5 flex flex-wrap items-center gap-2">
                                     <span className="flex items-center gap-1 text-[11px] font-medium text-[var(--ts-sage)]">
@@ -412,7 +412,7 @@ export default function ExplorePage() {
 
                             <Link
                                 href={`/shop/${generateSlug(selectedMerchant.merchant_name, selectedMerchant.merchant_id)}`}
-                                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#C17B2F] text-white shadow-sm transition duration-150 active:scale-95"
+                                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#4268FF] text-white shadow-sm transition duration-150 active:scale-95"
                             >
                                 <ChevronRight className="size-5" />
                             </Link>
@@ -433,30 +433,30 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
     const isFollowing = follows?.some((f: any) => f.merchant_id === merchant.merchant_id) ?? false;
 
     return (
-        <div className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-3">
+        <div className="flex items-center gap-3 rounded-2xl bg-[#E2E5F0] p-3">
             <Link
                 href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
                 className="flex flex-1 items-center gap-3 min-w-0 transition duration-150 active:opacity-80"
             >
-                <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2C1A0E]">
+                <div className="relative flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FFFFFF]">
                     {logo ? (
                         <Image src={logo} alt="" fill className="object-cover" />
                     ) : (
-                        <span className="text-lg font-bold text-[#C17B2F]">
+                        <span className="text-lg font-bold text-[#4268FF]">
                             {merchant.merchant_name.charAt(0).toUpperCase()}
                         </span>
                     )}
                 </div>
 
                 <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-semibold text-[#F5EDD8]">{merchant.merchant_name}</p>
-                    <p className="mt-0.5 truncate text-xs text-[#F5EDD8]/50">{merchant.merchant_address}</p>
+                    <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{merchant.merchant_name}</p>
+                    <p className="mt-0.5 truncate text-xs text-[#1A1F36]/50">{merchant.merchant_address}</p>
                     <div className="mt-1 flex items-center gap-2">
-                        <span className="flex items-center gap-1 text-[11px] text-[#F5EDD8]/50">
+                        <span className="flex items-center gap-1 text-[11px] text-[#1A1F36]/50">
                             <Clock className="size-3 shrink-0" aria-hidden="true" />
                             {minutes} min
                         </span>
-                        <span className="text-[#F5EDD8]/20">·</span>
+                        <span className="text-[#1A1F36]/20">·</span>
                         <span className="text-[11px] font-medium text-[var(--ts-sage)]">
                             {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
                         </span>
@@ -476,8 +476,8 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
                 className={cx(
                     "shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition duration-150 active:scale-[0.97]",
                     isFollowing
-                        ? "border border-[#F5EDD8]/15 text-[#F5EDD8]/50"
-                        : "bg-[#C17B2F] text-white",
+                        ? "border border-[#1A1F36]/15 text-[#1A1F36]/50"
+                        : "bg-[#4268FF] text-white",
                 )}
             >
                 {isFollowing ? "Abonné ✓" : "S'abonner"}

@@ -73,9 +73,9 @@ function SearchPageInner() {
     const showPlaceholder = !query && !isFilterMode;
 
     return (
-        <div className="min-h-dvh bg-[#2C1A0E]">
+        <div className="min-h-dvh bg-[#FFFFFF]">
             {/* Search header */}
-            <div className="bg-[#2C1A0E] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+            <div className="bg-[#FFFFFF] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 {/* Filter title with logo */}
                 {isFilterMode && filterParam && FILTER_LABELS[filterParam] && (
                     <div className="mb-3 flex items-center gap-2">
@@ -90,10 +90,10 @@ function SearchPageInner() {
                     <div
                         className={cx(
                             "flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 transition duration-150",
-                            isFocused ? "border-[#C17B2F] shadow-[0_0_0_4px_rgba(193,123,47,0.15)]" : "border-[#3D2A1A]",
+                            isFocused ? "border-[#4268FF] shadow-[0_0_0_4px_rgba(193,123,47,0.15)]" : "border-[#E2E5F0]",
                         )}
                     >
-                        <SearchMd className="size-5 text-[#F5EDD8]/40" aria-hidden="true" />
+                        <SearchMd className="size-5 text-[#1A1F36]/40" aria-hidden="true" />
                         <input
                             type="text"
                             value={query}
@@ -101,14 +101,14 @@ function SearchPageInner() {
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                             placeholder="Nike Air Max, iPhone 15, Levi's 501..."
-                            className="flex-1 bg-transparent text-sm text-[#F5EDD8] outline-none placeholder:text-[#F5EDD8]/30"
+                            className="flex-1 bg-transparent text-sm text-[#1A1F36] outline-none placeholder:text-[#1A1F36]/30"
                             aria-label="Rechercher un produit"
                         />
                         {query && (
                             <button
                                 type="button"
                                 onClick={() => setQuery("")}
-                                className="rounded-full bg-[#3D2A1A] p-1 text-[#F5EDD8]/40"
+                                className="rounded-full bg-[#E2E5F0] p-1 text-[#1A1F36]/40"
                                 aria-label="Effacer"
                             >
                                 <XClose className="size-3.5" />
@@ -121,7 +121,7 @@ function SearchPageInner() {
                                 initial={{ opacity: 0, y: -4 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -4 }}
-                                className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-[#3D2A1A] shadow-xl ring-1 ring-[#F5EDD8]/5"
+                                className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-[#E2E5F0] shadow-xl ring-1 ring-[#1A1F36]/5"
                                 role="listbox"
                                 aria-label="Suggestions"
                             >
@@ -131,13 +131,13 @@ function SearchPageInner() {
                                         type="button"
                                         role="option"
                                         aria-selected={false}
-                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#F5EDD8] hover:bg-[#2C1A0E]/50"
+                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#1A1F36] hover:bg-[#FFFFFF]/50"
                                         onMouseDown={(e) => {
                                             e.preventDefault();
                                             setQuery(s.suggestion);
                                         }}
                                     >
-                                        <span className="rounded-lg bg-[#2C1A0E] px-2 py-0.5 text-[10px] font-semibold text-[#F5EDD8]/50">
+                                        <span className="rounded-lg bg-[#FFFFFF] px-2 py-0.5 text-[10px] font-semibold text-[#1A1F36]/50">
                                             {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
                                         </span>
                                         <span>{s.suggestion}</span>
@@ -161,8 +161,8 @@ function SearchPageInner() {
                             className={cx(
                                 "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
                                 activeCategory === cat
-                                    ? "bg-[#C17B2F] text-white shadow-sm"
-                                    : "bg-[#3D2A1A] text-[#F5EDD8]/60",
+                                    ? "bg-[#4268FF] text-white shadow-sm"
+                                    : "bg-[#E2E5F0] text-[#1A1F36]/60",
                             )}
                         >
                             {cat}
@@ -175,8 +175,8 @@ function SearchPageInner() {
             <div className="p-4 pb-24">
                 {showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <SearchMd className="size-10 text-[#F5EDD8]/15" />
-                        <p className="text-sm font-medium text-[#F5EDD8]/40">
+                        <SearchMd className="size-10 text-[#1A1F36]/15" />
+                        <p className="text-sm font-medium text-[#1A1F36]/40">
                             Tape un nom, une marque ou un code-barres
                         </p>
                     </div>
@@ -185,14 +185,14 @@ function SearchPageInner() {
                 {displayLoading && (
                     <div className="grid grid-cols-2 gap-3">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-[#3D2A1A]" />
+                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-[#E2E5F0]" />
                         ))}
                     </div>
                 )}
 
                 {displayProducts && displayProducts.length > 0 && (
                     <>
-                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-xs font-medium text-[#F5EDD8]/50">
+                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-xs font-medium text-[#1A1F36]/50">
                             {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
                         <ul role="list" className="grid grid-cols-2 gap-3">
@@ -221,13 +221,13 @@ function SearchPageInner() {
 
                 {displayProducts && displayProducts.length === 0 && !showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <p className="text-sm font-medium text-[#F5EDD8]/40">
+                        <p className="text-sm font-medium text-[#1A1F36]/40">
                             {isFilterMode
                                 ? "Aucune promo disponible pour le moment"
                                 : `Aucun résultat pour \u201c${query}\u201d`}
                         </p>
                         {!isFilterMode && (
-                            <p className="text-xs text-[#F5EDD8]/30">
+                            <p className="text-xs text-[#1A1F36]/30">
                                 Essaie avec un autre terme
                             </p>
                         )}

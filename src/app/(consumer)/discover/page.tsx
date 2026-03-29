@@ -119,27 +119,27 @@ export default function DiscoverPage() {
     }, [nearby]);
 
     return (
-        <div className="min-h-dvh bg-[#1C1209]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
+        <div className="min-h-dvh bg-[#F8F9FC]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
             {/* ── Header ── */}
             <div className="px-4 pb-3 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="flex items-start justify-between">
                     <div>
                         <div className="flex items-center gap-2">
                             <Image src="/logo-icon.webp" alt="" width={28} height={28} className="size-7" />
-                            <h1 className="font-display text-2xl font-bold text-[#f5deb3]">
+                            <h1 className="font-display text-2xl font-bold text-[#1A1F36]">
                                 Two-Step
                             </h1>
                         </div>
-                        <p className="mt-0.5 flex items-center gap-1 text-xs text-[#a07840]">
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-[#8E96B0]">
                             <MarkerPin01 className="size-3" aria-hidden="true" />
                             {position ? "Autour de toi" : "Toulouse"}
                         </p>
                     </div>
                     <Link
                         href="/profile/notifications"
-                        className="mt-1 flex size-[30px] items-center justify-center rounded-full bg-[#2a1a08] transition active:bg-[#3d2008]"
+                        className="mt-1 flex size-[30px] items-center justify-center rounded-full bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
                     >
-                        <Bell01 className="size-4 text-[#a07840]" />
+                        <Bell01 className="size-4 text-[#8E96B0]" />
                     </Link>
                 </div>
 
@@ -152,14 +152,14 @@ export default function DiscoverPage() {
                         className={cx(
                             "flex shrink-0 items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold transition duration-150",
                             hasActiveSizeFilter || showSizeFilters
-                                ? "bg-[#c87830] text-[#1C1209] shadow-sm"
-                                : "bg-[#2a1a08] text-[#f5deb3]/60",
+                                ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
+                                : "bg-[#F5F6FA] text-[#1A1F36]/60",
                         )}
                     >
                         <FilterLines className="size-3.5" />
                         Taille
                         {hasActiveSizeFilter && (
-                            <span className="ml-0.5 flex size-4 items-center justify-center rounded-full bg-[#1C1209]/20 text-[9px]">
+                            <span className="ml-0.5 flex size-4 items-center justify-center rounded-full bg-[#F8F9FC]/20 text-[9px]">
                                 {(sizeFilter ? 1 : 0) + (shoeSizeFilter ? 1 : 0)}
                             </span>
                         )}
@@ -173,8 +173,8 @@ export default function DiscoverPage() {
                             className={cx(
                                 "flex shrink-0 items-center gap-1 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
                                 activeCategory === cat.value
-                                    ? "bg-[#c87830] text-[#1C1209] shadow-sm"
-                                    : "bg-[#2a1a08] text-[#f5deb3]/60",
+                                    ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
+                                    : "bg-[#F5F6FA] text-[#1A1F36]/60",
                             )}
                         >
                             {cat.emoji && <span className="text-xs">{cat.emoji}</span>}
@@ -193,11 +193,11 @@ export default function DiscoverPage() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                         >
-                            <div className="mt-3 rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] p-3">
+                            <div className="mt-3 rounded-xl border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] p-3">
                                 {/* Clothing size */}
                                 {(availableSizes?.clothing?.length ?? 0) > 0 && (
                                     <>
-                                        <p className="mb-2 text-[11px] font-medium text-[#a07840]">Taille vêtements</p>
+                                        <p className="mb-2 text-[11px] font-medium text-[#8E96B0]">Taille vêtements</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {availableSizes!.clothing.map((s) => (
                                                 <button
@@ -207,8 +207,8 @@ export default function DiscoverPage() {
                                                     className={cx(
                                                         "rounded-lg px-3 py-1.5 text-[11px] font-medium transition duration-100",
                                                         sizeFilter === s
-                                                            ? "bg-[#c87830] text-[#1C1209]"
-                                                            : "bg-[#1C1209] text-[#f5deb3]/60",
+                                                            ? "bg-[#4268FF] text-[#F8F9FC]"
+                                                            : "bg-[#F8F9FC] text-[#1A1F36]/60",
                                                     )}
                                                 >
                                                     {s}
@@ -221,7 +221,7 @@ export default function DiscoverPage() {
                                 {/* Shoe size */}
                                 {(availableSizes?.shoe?.length ?? 0) > 0 && (
                                     <>
-                                        <p className={cx("mb-2 text-[11px] font-medium text-[#a07840]", (availableSizes?.clothing?.length ?? 0) > 0 && "mt-3")}>Pointure</p>
+                                        <p className={cx("mb-2 text-[11px] font-medium text-[#8E96B0]", (availableSizes?.clothing?.length ?? 0) > 0 && "mt-3")}>Pointure</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {availableSizes!.shoe.map((s) => (
                                                 <button
@@ -231,8 +231,8 @@ export default function DiscoverPage() {
                                                     className={cx(
                                                         "rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition duration-100",
                                                         shoeSizeFilter === s
-                                                            ? "bg-[#c87830] text-[#1C1209]"
-                                                            : "bg-[#1C1209] text-[#f5deb3]/60",
+                                                            ? "bg-[#4268FF] text-[#F8F9FC]"
+                                                            : "bg-[#F8F9FC] text-[#1A1F36]/60",
                                                     )}
                                                 >
                                                     {s}
@@ -243,7 +243,7 @@ export default function DiscoverPage() {
                                 )}
 
                                 {(availableSizes?.clothing?.length ?? 0) === 0 && (availableSizes?.shoe?.length ?? 0) === 0 && (
-                                    <p className="text-[11px] text-[#8a6a3a]">Aucune taille renseignée pour le moment.</p>
+                                    <p className="text-[11px] text-[#8E96B0]">Aucune taille renseignée pour le moment.</p>
                                 )}
 
                                 {/* Reset */}
@@ -251,7 +251,7 @@ export default function DiscoverPage() {
                                     <button
                                         type="button"
                                         onClick={() => { setSizeFilter(null); setShoeSizeFilter(null); }}
-                                        className="mt-2.5 text-[11px] font-medium text-[#c87830]"
+                                        className="mt-2.5 text-[11px] font-medium text-[#4268FF]"
                                     >
                                         Réinitialiser les filtres
                                     </button>
@@ -264,13 +264,13 @@ export default function DiscoverPage() {
 
             {/* ── Pour toi / Suivis toggle ── */}
             <div className="mt-3 flex justify-center px-4">
-                <div className="flex rounded-full p-1" style={{ background: "#2a1a08" }}>
+                <div className="flex rounded-full p-1" style={{ background: "#F5F6FA" }}>
                     <button
                         type="button"
                         onClick={() => setFeedTab("pour-toi")}
                         className={cx(
                             "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
-                            feedTab === "pour-toi" ? "bg-[#C17B2F] text-white" : "text-[#f0dfc0]/50",
+                            feedTab === "pour-toi" ? "bg-[#4268FF] text-white" : "text-[#1A1F36]/50",
                         )}
                     >
                         Pour toi
@@ -280,7 +280,7 @@ export default function DiscoverPage() {
                         onClick={() => setFeedTab("suivis")}
                         className={cx(
                             "rounded-full px-5 py-2 text-sm font-semibold transition duration-150",
-                            feedTab === "suivis" ? "bg-[#C17B2F] text-white" : "text-[#f0dfc0]/50",
+                            feedTab === "suivis" ? "bg-[#4268FF] text-white" : "text-[#1A1F36]/50",
                         )}
                     >
                         Suivis
@@ -296,15 +296,15 @@ export default function DiscoverPage() {
                 <section>
                     <div className="flex items-center justify-between px-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
                                 <Tag01 className="size-4" />
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Promos du moment</h2>
-                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Les bons plans près de chez toi</p>
+                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Promos du moment</h2>
+                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Les bons plans près de chez toi</p>
                             </div>
                         </div>
-                        <Link href="/search?filter=promos" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                        <Link href="/search?filter=promos" className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
                             Voir tout
                             <ChevronRight className="size-3.5" />
                         </Link>
@@ -312,14 +312,14 @@ export default function DiscoverPage() {
 
                     <div className="mt-3 px-4">
                         {loadingPromos ? (
-                            <div className="h-[100px] animate-pulse rounded-[14px] bg-[#2a1a08]" />
+                            <div className="h-[100px] animate-pulse rounded-[14px] bg-[#F5F6FA]" />
                         ) : heroPromo && heroPromo.sale_price ? (
                             <Link
                                 href={`/product/${generateSlug(heroPromo.product_name, heroPromo.product_id)}`}
-                                className="flex min-h-[120px] overflow-hidden rounded-[14px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] transition active:bg-[#3d2008]"
+                                className="flex min-h-[120px] overflow-hidden rounded-[14px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
                             >
                                 {/* Product image */}
-                                <div className="relative w-[120px] shrink-0 self-stretch bg-[#3d2008]">
+                                <div className="relative w-[120px] shrink-0 self-stretch bg-[#E2E5F0]">
                                     {heroPromo.product_photo ? (
                                         <Image
                                             src={heroPromo.product_photo}
@@ -328,29 +328,29 @@ export default function DiscoverPage() {
                                             className="object-cover"
                                         />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/30">
+                                        <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/30">
                                             {heroPromo.product_name.charAt(0)}
                                         </div>
                                     )}
                                 </div>
                                 {/* Info */}
                                 <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-4 py-4">
-                                    <span className="inline-flex w-fit items-center gap-1 rounded-full px-2 py-[2px] text-[9px] font-medium text-[#c87830]" style={{ background: "rgba(200,120,48,0.18)", border: "0.5px solid rgba(200,120,48,0.3)" }}>
+                                    <span className="inline-flex w-fit items-center gap-1 rounded-full px-2 py-[2px] text-[9px] font-medium text-[#4268FF]" style={{ background: "rgba(66,104,255,0.18)", border: "0.5px solid rgba(66,104,255,0.3)" }}>
                                         −{Math.round(((heroPromo.product_price - heroPromo.sale_price) / heroPromo.product_price) * 100)}% · {heroPromo.merchant_name}
                                     </span>
-                                    <p className="truncate text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.1px" }}>{heroPromo.product_name}</p>
-                                    <p className="text-[10px] text-[#a07840]">
+                                    <p className="truncate text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.1px" }}>{heroPromo.product_name}</p>
+                                    <p className="text-[10px] text-[#8E96B0]">
                                         {heroPromo.distance_km < 1 ? `${Math.round(heroPromo.distance_km * 1000)}m` : `${heroPromo.distance_km.toFixed(1)}km`}
                                     </p>
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-[13px] font-normal text-[#a07840]">{heroPromo.sale_price.toFixed(2)} €</span>
-                                        <span className="text-[11px] text-[#5a3a18]/60 line-through">{heroPromo.product_price.toFixed(2)} €</span>
+                                        <span className="text-[13px] font-normal text-[#8E96B0]">{heroPromo.sale_price.toFixed(2)} €</span>
+                                        <span className="text-[11px] text-[#8E96B0]/60 line-through">{heroPromo.product_price.toFixed(2)} €</span>
                                     </div>
                                 </div>
                             </Link>
                         ) : (
-                            <div className="flex h-[100px] items-center justify-center rounded-[14px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08]">
-                                <p className="text-xs text-[#a07840]/50">Aucune promo pour le moment</p>
+                            <div className="flex h-[100px] items-center justify-center rounded-[14px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA]">
+                                <p className="text-xs text-[#8E96B0]/50">Aucune promo pour le moment</p>
                             </div>
                         )}
                     </div>
@@ -360,15 +360,15 @@ export default function DiscoverPage() {
                 <section>
                     <div className="flex items-center justify-between px-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#f5deb3]/10 text-[#f5deb3]/70">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#1A1F36]/10 text-[#1A1F36]/70">
                                 <TrendUp01 className="size-4" />
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Tendances</h2>
-                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Ce qui se vend le plus dans ton quartier</p>
+                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tendances</h2>
+                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Ce qui se vend le plus dans ton quartier</p>
                             </div>
                         </div>
-                        <Link href="/search?filter=trending" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                        <Link href="/search?filter=trending" className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
                             Voir tout
                             <ChevronRight className="size-3.5" />
                         </Link>
@@ -378,7 +378,7 @@ export default function DiscoverPage() {
                         {loadingTrending ? (
                             <div className="grid grid-cols-2 gap-2">
                                 {Array.from({ length: 4 }).map((_, i) => (
-                                    <div key={i} className="h-[160px] animate-pulse rounded-[10px] bg-[#2a1a08]" />
+                                    <div key={i} className="h-[160px] animate-pulse rounded-[10px] bg-[#F5F6FA]" />
                                 ))}
                             </div>
                         ) : trending && trending.length > 0 ? (
@@ -387,10 +387,10 @@ export default function DiscoverPage() {
                                     <Link
                                         key={`${p.product_id}-${p.merchant_id}`}
                                         href={`/product/${generateSlug(p.product_name, p.product_id)}`}
-                                        className="group overflow-hidden rounded-[10px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] transition active:bg-[#3d2008]"
+                                        className="group overflow-hidden rounded-[10px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
                                     >
                                         {/* Image */}
-                                        <div className="relative h-[220px] w-full bg-[#3d2008]">
+                                        <div className="relative h-[220px] w-full bg-[#E2E5F0]">
                                             {p.product_photo ? (
                                                 <Image
                                                     src={p.product_photo}
@@ -400,7 +400,7 @@ export default function DiscoverPage() {
                                                     className="object-cover transition duration-300 group-hover:scale-[1.03]"
                                                 />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/20">
+                                                <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/20">
                                                     {p.product_name.charAt(0)}
                                                 </div>
                                             )}
@@ -415,9 +415,9 @@ export default function DiscoverPage() {
                                         </div>
                                         {/* Body */}
                                         <div className="px-2 py-2">
-                                            <p className="truncate text-[13px] font-semibold text-[#f0dfc0]">{p.product_name}</p>
-                                            <p className="mt-0.5 text-xs font-normal text-[#a07840]">{(p.sale_price ?? p.product_price).toFixed(2)} €</p>
-                                            <p className="mt-0.5 text-[10px] text-[#8a6a3a]">
+                                            <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
+                                            <p className="mt-0.5 text-xs font-normal text-[#8E96B0]">{(p.sale_price ?? p.product_price).toFixed(2)} €</p>
+                                            <p className="mt-0.5 text-[10px] text-[#8E96B0]">
                                                 {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`} · {p.merchant_name}
                                             </p>
                                         </div>
@@ -425,8 +425,8 @@ export default function DiscoverPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-[10px] border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-4 py-8 text-center">
-                                <p className="text-xs text-[#a07840]/50">Rien pour le moment</p>
+                            <div className="rounded-[10px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-4 py-8 text-center">
+                                <p className="text-xs text-[#8E96B0]/50">Rien pour le moment</p>
                             </div>
                         )}
                     </div>
@@ -436,12 +436,12 @@ export default function DiscoverPage() {
                 {featuredShop && (
                     <section className="px-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
                                 <MarkerPin01 className="size-4" />
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Boutique à découvrir</h2>
-                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>
+                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Boutique à découvrir</h2>
+                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>
                                     Ouverte maintenant · {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`}
                                 </p>
                             </div>
@@ -449,9 +449,9 @@ export default function DiscoverPage() {
 
                         <Link
                             href={`/shop/${generateSlug(featuredShop.merchant_name, featuredShop.merchant_id)}`}
-                            className="mt-3 flex items-center gap-2.5 rounded-xl border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-3 py-2.5 transition active:bg-[#3d2008]"
+                            className="mt-3 flex items-center gap-2.5 rounded-xl border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-3 py-2.5 transition active:bg-[#E2E5F0]"
                         >
-                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#3d2008] text-sm font-bold text-[#c87830]">
+                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#E2E5F0] text-sm font-bold text-[#4268FF]">
                                 {featuredShop.merchant_photo ? (
                                     <Image src={featuredShop.merchant_photo} alt={featuredShop.merchant_name} width={36} height={36} className="h-full w-full object-cover" />
                                 ) : (
@@ -459,8 +459,8 @@ export default function DiscoverPage() {
                                 )}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-xs font-medium text-[#f5deb3]">{featuredShop.merchant_name}</p>
-                                <p className="text-[10px] text-[#a07840]">
+                                <p className="truncate text-xs font-medium text-[#1A1F36]">{featuredShop.merchant_name}</p>
+                                <p className="text-[10px] text-[#8E96B0]">
                                     {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
                                 </p>
                             </div>
@@ -479,11 +479,11 @@ export default function DiscoverPage() {
                                 <svg className="size-4" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="5" /></svg>
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Disponible maintenant</h2>
-                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Stock confirmé aujourd'hui</p>
+                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Disponible maintenant</h2>
+                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Stock confirmé aujourd'hui</p>
                             </div>
                         </div>
-                        <Link href="/search?filter=nearby" className="flex items-center gap-0.5 text-xs font-semibold text-[#c87830]">
+                        <Link href="/search?filter=nearby" className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
                             Voir tout
                             <ChevronRight className="size-3.5" />
                         </Link>
@@ -492,7 +492,7 @@ export default function DiscoverPage() {
                     {loadingNearby ? (
                         <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide">
                             {Array.from({ length: 3 }).map((_, i) => (
-                                <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#2a1a08]" />
+                                <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#F5F6FA]" />
                             ))}
                         </div>
                     ) : nearby && nearby.length > 0 ? (
@@ -516,8 +516,8 @@ export default function DiscoverPage() {
                             ))}
                         </ul>
                     ) : (
-                        <div className="mx-4 mt-3 rounded-lg border-[0.5px] border-[#3d2a10] bg-[#2a1a08] px-4 py-8 text-center">
-                            <p className="text-xs text-[#a07840]/50">Rien pour le moment — ça arrive vite.</p>
+                        <div className="mx-4 mt-3 rounded-lg border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-4 py-8 text-center">
+                            <p className="text-xs text-[#8E96B0]/50">Rien pour le moment — ça arrive vite.</p>
                         </div>
                     )}
                 </section>
@@ -526,12 +526,12 @@ export default function DiscoverPage() {
                 {follows && follows.length > 0 && (
                     <section className="px-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#c87830]/15 text-[#c87830]">
+                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
                                 <Heart className="size-4" />
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-semibold text-[#f5deb3]" style={{ letterSpacing: "-0.2px" }}>Tes boutiques</h2>
-                                <p className="text-[11px] text-[#a07840]" style={{ letterSpacing: "0.2px" }}>Les dernières nouveautés de tes favoris</p>
+                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tes boutiques</h2>
+                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Les dernières nouveautés de tes favoris</p>
                             </div>
                         </div>
                         <div className="mt-3 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
@@ -544,16 +544,16 @@ export default function DiscoverPage() {
                                         href={`/shop/${generateSlug(f.merchants?.name || f.merchant_name || "", f.merchant_id)}`}
                                         className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                                     >
-                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#2a1a08] shadow-sm ring-2 ring-[#c87830]/30">
+                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#F5F6FA] shadow-sm ring-2 ring-[#4268FF]/30">
                                             {merchant.photo_url ? (
                                                 <Image src={merchant.photo_url} alt={merchant.name} fill className="object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#c87830]">
+                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#4268FF]">
                                                     {merchant.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#f5deb3]/70">
+                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#1A1F36]/70">
                                             {merchant.name}
                                         </span>
                                     </Link>
@@ -654,8 +654,8 @@ function InfiniteProductGrid({
     return (
         <section className="pb-20">
             <div className="px-4 pb-3 pt-6">
-                <h2 className="text-base font-semibold text-[#f0dfc0]" style={{ letterSpacing: "-0.2px" }}>Tout près de toi</h2>
-                {total > 0 && <p className="mt-0.5 text-[11px] text-[#8a6a3a]">{total} produits disponibles</p>}
+                <h2 className="text-base font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tout près de toi</h2>
+                {total > 0 && <p className="mt-0.5 text-[11px] text-[#8E96B0]">{total} produits disponibles</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-2.5 px-4 md:grid-cols-4 md:gap-3 md:px-6">
@@ -666,14 +666,14 @@ function InfiniteProductGrid({
                         <Link
                             key={p.product_id}
                             href={`/product/${generateSlug(p.product_name, p.product_id)}`}
-                            className="overflow-hidden rounded-xl bg-[#1e1409] transition active:opacity-90"
+                            className="overflow-hidden rounded-xl bg-[#F8F9FC] transition active:opacity-90"
                             style={{ border: "0.5px solid rgba(255,255,255,0.05)" }}
                         >
-                            <div className="relative h-[180px] w-full bg-[#2a1c0a] md:h-[200px]">
+                            <div className="relative h-[180px] w-full bg-[#F5F6FA] md:h-[200px]">
                                 {p.product_photo ? (
                                     <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover" loading="lazy" />
                                 ) : (
-                                    <div className="flex h-full items-center justify-center text-2xl font-light text-[#a07840]/20">
+                                    <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/20">
                                         {p.product_name?.charAt(0)}
                                     </div>
                                 )}
@@ -683,21 +683,21 @@ function InfiniteProductGrid({
                                 <button
                                     type="button"
                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFav(p.product_id); }}
-                                    className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full text-[13px] text-[#f0dfc0]"
-                                    style={{ background: "rgba(19,14,7,0.55)" }}
+                                    className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full text-[13px] text-[#1A1F36]"
+                                    style={{ background: "rgba(26,31,54,0.55)" }}
                                 >
                                     {isFav ? "♥" : "♡"}
                                 </button>
                             </div>
                             <div className="px-2.5 pb-3 pt-2.5">
-                                <p className="text-[10px] tracking-wide text-[#7a5c30]">
+                                <p className="text-[10px] tracking-wide text-[#8E96B0]">
                                     {p.merchant_name} · {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km}km`}
                                 </p>
-                                <p className="mt-1 line-clamp-2 text-xs font-medium leading-tight text-[#e8d4b0]">{p.product_name}</p>
+                                <p className="mt-1 line-clamp-2 text-xs font-medium leading-tight text-[#6B7799]">{p.product_name}</p>
                                 <div className="mt-1.5 flex items-baseline gap-1.5">
-                                    <span className="text-xs text-[#a07840]">{(p.sale_price ?? p.product_price)?.toFixed(2)} €</span>
+                                    <span className="text-xs text-[#8E96B0]">{(p.sale_price ?? p.product_price)?.toFixed(2)} €</span>
                                     {p.sale_price && (
-                                        <span className="text-[10px] text-[#3d2a10] line-through">{p.product_price.toFixed(2)} €</span>
+                                        <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>
                                     )}
                                 </div>
                             </div>
@@ -708,9 +708,9 @@ function InfiniteProductGrid({
 
             {/* Sentinel */}
             <div ref={sentinelRef} className="flex h-10 items-center justify-center">
-                {loading && <p className="text-xs text-[#3d2a10]">Chargement...</p>}
+                {loading && <p className="text-xs text-[#E2E5F0]">Chargement...</p>}
                 {!hasMoreRef.current && !loading && allProducts.length > 0 && (
-                    <p className="text-[11px] tracking-wide text-[#3d2a10]">Le quartier est à sec 📍</p>
+                    <p className="text-[11px] tracking-wide text-[#E2E5F0]">Le quartier est à sec 📍</p>
                 )}
             </div>
         </section>
@@ -739,14 +739,14 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
     if (!follows || follows.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
-                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#2a1a08] text-2xl">🏪</div>
-                <p className="mt-4 text-[15px] font-semibold text-[#f0dfc0]">Aucune boutique suivie</p>
-                <p className="mt-1.5 text-[13px] text-[#8a6a3a]">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#F5F6FA] text-2xl">🏪</div>
+                <p className="mt-4 text-[15px] font-semibold text-[#1A1F36]">Aucune boutique suivie</p>
+                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
                     Abonne-toi à des boutiques pour les retrouver ici.
                 </p>
                 <Link
                     href="/explore"
-                    className="mt-4 rounded-full bg-[#c87830] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
+                    className="mt-4 rounded-full bg-[#4268FF] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
                 >
                     Explorer les boutiques
                 </Link>
@@ -758,7 +758,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
         return (
             <div className="grid grid-cols-2 gap-3 px-4 pb-24 pt-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#2a1a08]" />
+                    <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#F5F6FA]" />
                 ))}
             </div>
         );
@@ -767,8 +767,8 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
     if (!products || products.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
-                <p className="text-[15px] font-semibold text-[#f0dfc0]">Rien de nouveau</p>
-                <p className="mt-1.5 text-[13px] text-[#8a6a3a]">
+                <p className="text-[15px] font-semibold text-[#1A1F36]">Rien de nouveau</p>
+                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
                     Les boutiques que tu suis n'ont pas encore de produits.
                 </p>
             </div>
@@ -783,12 +783,12 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                     <div key={p.product_id} className="px-4 pb-5">
                         {/* Product image */}
                         <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
-                            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#2a1a08]">
+                            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
                                 {p.product_photo ? (
                                     <Image src={p.product_photo} alt={p.product_name} fill sizes="100vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
                                 ) : (
                                     <div className="flex h-full items-center justify-center">
-                                        <span className="text-3xl font-light text-[#8a6a3a]/30">{p.product_name.charAt(0)}</span>
+                                        <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
                                     </div>
                                 )}
                                 <div className="absolute right-3 top-3">
@@ -814,11 +814,11 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                                 href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
                                 className="mt-0.5 shrink-0 transition active:opacity-70"
                             >
-                                <div className="size-8 overflow-hidden rounded-full bg-[#2a1a08] border border-[#3d2a10]">
+                                <div className="size-8 overflow-hidden rounded-full bg-[#F5F6FA] border border-[#E2E5F0]">
                                     {p.merchant_photo ? (
                                         <img src={p.merchant_photo} alt={p.merchant_name} className="h-full w-full object-cover" />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-[10px] font-bold text-[#c87830]">
+                                        <div className="flex h-full items-center justify-center text-[10px] font-bold text-[#4268FF]">
                                             {p.merchant_name.charAt(0)}
                                         </div>
                                     )}
@@ -829,19 +829,19 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                             <div className="min-w-0 flex-1">
                                 <Link
                                     href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
-                                    className="text-[12px] font-semibold text-[#8a6a3a] transition active:opacity-70"
+                                    className="text-[12px] font-semibold text-[#8E96B0] transition active:opacity-70"
                                 >
                                     {p.merchant_name}
                                 </Link>
-                                <p className="truncate text-[14px] font-medium text-[#f5deb3]">{p.product_name}</p>
+                                <p className="truncate text-[14px] font-medium text-[#1A1F36]">{p.product_name}</p>
                                 <div className="mt-0.5 flex items-baseline gap-2">
                                     {p.sale_price ? (
                                         <>
-                                            <span className="text-[13px] text-[#a07840]">{p.sale_price.toFixed(2)} €</span>
-                                            <span className="text-[12px] text-[#5a3a18]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                            <span className="text-[13px] text-[#8E96B0]">{p.sale_price.toFixed(2)} €</span>
+                                            <span className="text-[12px] text-[#8E96B0]/60 line-through">{p.product_price.toFixed(2)} €</span>
                                         </>
                                     ) : (
-                                        <span className="text-[13px] text-[#a07840]">{p.product_price.toFixed(2)} €</span>
+                                        <span className="text-[13px] text-[#8E96B0]">{p.product_price.toFixed(2)} €</span>
                                     )}
                                 </div>
                             </div>

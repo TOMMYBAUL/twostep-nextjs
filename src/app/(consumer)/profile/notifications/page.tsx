@@ -73,7 +73,7 @@ export default function NotificationsPage() {
         {
             id: "push",
             icon: <Bell01 className="size-5" />,
-            iconBg: "bg-[#C17B2F]/15 text-[#C17B2F]",
+            iconBg: "bg-[#4268FF]/15 text-[#4268FF]",
             label: "Notifications push",
             description: "Recevoir des notifications sur ton téléphone",
             enabled: prefs.push,
@@ -81,7 +81,7 @@ export default function NotificationsPage() {
         {
             id: "promos",
             icon: <Tag01 className="size-5" />,
-            iconBg: "bg-[#C17B2F]/15 text-[#C17B2F]",
+            iconBg: "bg-[#4268FF]/15 text-[#4268FF]",
             label: "Nouvelles promos",
             description: "Quand une boutique suivie lance une promo",
             enabled: prefs.promos,
@@ -105,32 +105,32 @@ export default function NotificationsPage() {
     ];
 
     return (
-        <div className="min-h-dvh bg-[#2C1A0E]">
+        <div className="min-h-dvh bg-[#FFFFFF]">
             {/* Header */}
-            <div className="bg-[#2C1A0E] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+            <div className="bg-[#FFFFFF] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="flex items-center gap-3">
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="flex size-10 items-center justify-center rounded-xl bg-[#3D2A1A] transition active:bg-[#2C1A0E]/50"
+                        className="flex size-10 items-center justify-center rounded-xl bg-[#E2E5F0] transition active:bg-[#FFFFFF]/50"
                         aria-label="Retour"
                     >
-                        <ArrowLeft className="size-5 text-[#F5EDD8]/60" />
+                        <ArrowLeft className="size-5 text-[#1A1F36]/60" />
                     </button>
-                    <h1 className="font-display text-lg font-bold text-[#F5EDD8]">Notifications</h1>
+                    <h1 className="font-display text-lg font-bold text-[#1A1F36]">Notifications</h1>
                 </div>
             </div>
 
             {/* Settings */}
             <div className="space-y-3 p-4 pb-24">
                 {settings.map((setting) => (
-                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-[#3D2A1A] p-4">
+                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-[#E2E5F0] p-4">
                         <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${setting.iconBg}`}>
                             {setting.icon}
                         </div>
                         <div className="flex-1">
-                            <p className="text-sm font-semibold text-[#F5EDD8]">{setting.label}</p>
-                            <p className="text-[11px] text-[#F5EDD8]/50">{setting.description}</p>
+                            <p className="text-sm font-semibold text-[#1A1F36]">{setting.label}</p>
+                            <p className="text-[11px] text-[#1A1F36]/50">{setting.description}</p>
                         </div>
                         {/* Toggle — rendered client-only to avoid hydration mismatch with localStorage */}
                         {mounted ? (
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
                                 aria-checked={setting.enabled}
                                 onClick={() => toggle(setting.id)}
                                 className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
-                                    setting.enabled ? "bg-[var(--ts-sage)]" : "bg-[#2C1A0E]"
+                                    setting.enabled ? "bg-[var(--ts-sage)]" : "bg-[#FFFFFF]"
                                 }`}
                             >
                                 <span
@@ -149,12 +149,12 @@ export default function NotificationsPage() {
                                 />
                             </button>
                         ) : (
-                            <div className="h-7 w-12 shrink-0 rounded-full bg-[#2C1A0E]" />
+                            <div className="h-7 w-12 shrink-0 rounded-full bg-[#FFFFFF]" />
                         )}
                     </div>
                 ))}
 
-                <p className="pt-4 text-center text-[11px] text-[#F5EDD8]/30">
+                <p className="pt-4 text-center text-[11px] text-[#1A1F36]/30">
                     Les notifications push nécessitent l&apos;autorisation de ton navigateur.
                 </p>
             </div>

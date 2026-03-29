@@ -347,7 +347,7 @@ export default function ShopProfileClient() {
 
                                     {isOut && (
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <span className="rounded-lg px-2.5 py-[5px] text-[11px] font-medium text-[#e8d4b0]" style={{ background: "rgba(0,0,0,0.55)" }}>Indisponible</span>
+                                            <span className="rounded-lg px-2.5 py-[5px] text-[11px] font-medium text-[#6B7799]" style={{ background: "rgba(0,0,0,0.55)" }}>Indisponible</span>
                                         </div>
                                     )}
                                 </div>
@@ -358,11 +358,11 @@ export default function ShopProfileClient() {
                                     <div className="mt-0.5 flex items-baseline gap-2">
                                         {sale ? (
                                             <>
-                                                <span className="text-xs font-normal text-[#a07840]">{sale.toFixed(2)} €</span>
-                                                <span className="text-[11px] text-[#5a3a18]/60 line-through">{p.price.toFixed(2)} €</span>
+                                                <span className="text-xs font-normal text-[#8E96B0]">{sale.toFixed(2)} €</span>
+                                                <span className="text-[11px] text-[#8E96B0]/60 line-through">{p.price.toFixed(2)} €</span>
                                             </>
                                         ) : (
-                                            <span className="text-xs font-normal text-[#a07840]">{p.price.toFixed(2)} €</span>
+                                            <span className="text-xs font-normal text-[#8E96B0]">{p.price.toFixed(2)} €</span>
                                         )}
                                     </div>
                                 </div>

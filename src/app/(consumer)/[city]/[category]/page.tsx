@@ -59,25 +59,25 @@ export default async function CityComingSoonPage({ params }: Props) {
     if (!cityInfo || !catTitle) notFound();
 
     return (
-        <div className="flex min-h-dvh flex-col items-center justify-center bg-[#2C1A0E] px-6 text-center" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+        <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FFFFFF] px-6 text-center" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
             <div className="mx-auto max-w-sm">
-                <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-[#3D2A1A] text-3xl">
+                <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-[#E2E5F0] text-3xl">
                     <img src="/logo-icon.webp" alt="" className="size-10 rounded-lg" />
                 </div>
 
-                <h1 className="font-display text-2xl font-bold text-[#F5EDD8]">
+                <h1 className="font-display text-2xl font-bold text-[#1A1F36]">
                     {catTitle} à {cityInfo.name}
                 </h1>
 
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#3D2A1A] px-4 py-2">
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#E2E5F0] px-4 py-2">
                     <span className="relative flex size-2">
-                        <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#C17B2F] opacity-75" />
-                        <span className="relative inline-flex size-2 rounded-full bg-[#C17B2F]" />
+                        <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#4268FF] opacity-75" />
+                        <span className="relative inline-flex size-2 rounded-full bg-[#4268FF]" />
                     </span>
-                    <span className="text-sm font-medium text-[#C17B2F]">Arrive bientôt</span>
+                    <span className="text-sm font-medium text-[#4268FF]">Arrive bientôt</span>
                 </div>
 
-                <p className="mt-6 text-sm leading-relaxed text-[#F5EDD8]/50">
+                <p className="mt-6 text-sm leading-relaxed text-[#1A1F36]/50">
                     Two-Step se lance d'abord à Toulouse. {cityInfo.name} fait partie
                     des prochaines villes sur notre liste.
                 </p>
@@ -85,21 +85,21 @@ export default async function CityComingSoonPage({ params }: Props) {
                 <div className="mt-8 flex flex-col gap-3">
                     <Link
                         href="/toulouse"
-                        className="rounded-xl bg-[#C17B2F] px-6 py-3 text-sm font-semibold text-white transition active:opacity-80"
+                        className="rounded-xl bg-[#4268FF] px-6 py-3 text-sm font-semibold text-white transition active:opacity-80"
                     >
                         Découvrir Toulouse
                     </Link>
                     <Link
                         href="/discover"
-                        className="rounded-xl border border-[#F5EDD8]/15 px-6 py-3 text-sm font-medium text-[#F5EDD8]/60 transition active:opacity-80"
+                        className="rounded-xl border border-[#1A1F36]/15 px-6 py-3 text-sm font-medium text-[#1A1F36]/60 transition active:opacity-80"
                     >
                         Retour à l'accueil
                     </Link>
                 </div>
 
                 {/* Other categories in this city */}
-                <nav className="mt-12 border-t border-[#F5EDD8]/10 pt-6">
-                    <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-[#F5EDD8]/30">
+                <nav className="mt-12 border-t border-[#1A1F36]/10 pt-6">
+                    <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-[#1A1F36]/30">
                         Autres catégories à {cityInfo.name}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2">
@@ -110,7 +110,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                                 <Link
                                     key={key}
                                     href={`/${city}/${key}`}
-                                    className="rounded-full bg-[#3D2A1A] px-3 py-1.5 text-xs text-[#F5EDD8]/50 transition hover:bg-[#3D2A1A]/80"
+                                    className="rounded-full bg-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36]/50 transition hover:bg-[#E2E5F0]/80"
                                 >
                                     {val}
                                 </Link>
