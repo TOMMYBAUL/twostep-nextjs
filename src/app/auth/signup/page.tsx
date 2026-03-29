@@ -148,15 +148,15 @@ export default function SignupPage() {
                     <form onSubmit={handleAccountSubmit} className="space-y-4">
                         <div>
                             <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="search-ts w-full" required />
+                            <input type="email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="search-ts w-full" required />
                         </div>
                         <div>
                             <label className="mb-1 block text-sm font-medium text-gray-700">Mot de passe</label>
-                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="search-ts w-full" required />
+                            <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="search-ts w-full" required />
                         </div>
                         <div>
-                            <label className="mb-1 block text-sm font-medium text-gray-700">Confirmer</label>
-                            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="search-ts w-full" required />
+                            <label className="mb-1 block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+                            <input type="password" name="confirm-password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="search-ts w-full" required />
                         </div>
                         <button type="submit" className="btn-ts w-full">Continuer</button>
                     </form>

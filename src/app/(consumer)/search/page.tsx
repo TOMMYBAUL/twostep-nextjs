@@ -172,7 +172,7 @@ function SearchPageInner() {
             </div>
 
             {/* Results */}
-            <div className="p-4">
+            <div className="p-4 pb-24">
                 {showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
                         <SearchMd className="size-10 text-[#F5EDD8]/15" />

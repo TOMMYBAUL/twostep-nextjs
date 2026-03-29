@@ -72,8 +72,8 @@ export function Hero() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.32, ease: E }}
                         >
-                            Cet article qui te fait envie depuis des jours ? Une boutique du quartier l'a en stock.
-                            Two-Step te dit laquelle. Et dans combien de minutes tu peux y être.
+                            Cet article qui vous fait envie depuis des jours ? Une boutique du quartier l'a en stock.
+                            Two-Step vous dit laquelle. Et dans combien de minutes vous pouvez y être.
                         </motion.p>
                     </motion.div>
 

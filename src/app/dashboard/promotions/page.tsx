@@ -19,6 +19,7 @@ export default function PromotionsPage() {
     const [salePrice, setSalePrice] = useState("");
     const [endsAt, setEndsAt] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
     const handleCreate = async (e: FormEvent) => {
         e.preventDefault();
@@ -158,12 +159,29 @@ export default function PromotionsPage() {
                                     </span>
                                 )}
 
-                                <button
-                                    onClick={() => handleDelete(promo.id)}
-                                    className="text-xs text-red-400 hover:text-red-600"
-                                >
-                                    Supprimer
-                                </button>
+                                {confirmDeleteId === promo.id ? (
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => { handleDelete(promo.id); setConfirmDeleteId(null); }}
+                                            className="rounded-lg bg-red-600 px-2.5 py-1 text-[11px] font-medium text-white"
+                                        >
+                                            Confirmer
+                                        </button>
+                                        <button
+                                            onClick={() => setConfirmDeleteId(null)}
+                                            className="text-[11px] text-gray-400"
+                                        >
+                                            Annuler
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => setConfirmDeleteId(promo.id)}
+                                        className="text-xs text-red-400 hover:text-red-600"
+                                    >
+                                        Supprimer
+                                    </button>
+                                )}
                             </div>
                         );
                     })}

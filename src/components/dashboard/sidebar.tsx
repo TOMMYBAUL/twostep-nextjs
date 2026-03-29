@@ -46,6 +46,15 @@ const navItems = [
         ),
     },
     {
+        href: "/dashboard/achievements",
+        label: "Trophées",
+        icon: (
+            <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m12 5h1.5a2.5 2.5 0 0 0 0-5H18M6 4h12v5a6 6 0 0 1-12 0V4zM9 20h6M12 15v5" />
+            </svg>
+        ),
+    },
+    {
         href: "/dashboard/store",
         label: "Ma boutique",
         icon: (

@@ -26,12 +26,12 @@ export function Nav() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, ease: "easeOut" }}
             >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
                     <Image src="/logo-icon.webp" alt="" width={32} height={32} style={{ borderRadius: 8 }} />
                     <span style={{ fontSize: 17, fontWeight: 800, color: "#2C2018", letterSpacing: "-0.03em" }}>
                         Two-Step
                     </span>
-                </div>
+                </a>
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <a href="/discover" className="nav-btn-outline">
                         <span className="nav-full">Explorer les boutiques</span>

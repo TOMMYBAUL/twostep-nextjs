@@ -44,6 +44,8 @@ export default function LoginPage() {
                         <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
                         <input
                             type="email"
+                            name="email"
+                            autoComplete="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="search-ts w-full"
@@ -55,10 +57,12 @@ export default function LoginPage() {
                         <label className="mb-1 block text-sm font-medium text-gray-700">Mot de passe</label>
                         <input
                             type="password"
+                            name="password"
+                            autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="search-ts w-full"
-                            placeholder="••••••••"
+                            placeholder="Votre mot de passe"
                             required
                         />
                     </div>
