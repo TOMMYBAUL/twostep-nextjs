@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
             resolveCategories(supabase, productIds),
             resolveHiddenIds(supabase, productIds),
         ]);
-        const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
+        const sizeSet = size ? await resolveProductsWithSize(supabase, productIds, size) : null;
 
         // Deduplicate by product_id+merchant_id (RPC can return same item for overlapping promo events)
         const seen = new Set<string>();
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
                 return true;
             })
             .filter((row: any) => !category || categoryMap.get(row.product_id) === category)
-            .filter((row: any) => !size || sizeMap.get(row.product_id) === size)
+            .filter((row: any) => !sizeSet || sizeSet.has(row.product_id))
             .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
         resolveMerchantPhotos(supabase, merchantIds),
         resolveHiddenIds(supabase, productIds),
     ]);
-    const sizeMap = size ? await resolveSizes(supabase, productIds) : new Map<string, string>();
+    const sizeSet = size ? await resolveProductsWithSize(supabase, productIds, size) : null;
 
     // Filter out variants and non-visible products
     items = items.filter((row: any) => !hiddenIds.has(row.product_id));
@@ -111,8 +111,8 @@ export async function GET(request: NextRequest) {
         items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
     }
 
-    if (size) {
-        items = items.filter((row: any) => sizeMap.get(row.product_id) === size);
+    if (sizeSet) {
+        items = items.filter((row: any) => sizeSet.has(row.product_id));
     }
 
     // For "nearby", re-sort by distance instead of feed_score
@@ -161,21 +161,27 @@ async function resolveMerchantPhotos(
     return map;
 }
 
-async function resolveSizes(
+/** Returns a Set of product IDs that have the given size in their available_sizes JSONB */
+async function resolveProductsWithSize(
     supabase: any,
     productIds: string[],
-): Promise<Map<string, string>> {
-    if (productIds.length === 0) return new Map();
+    size: string,
+): Promise<Set<string>> {
+    if (productIds.length === 0) return new Set();
     const { data } = await supabase
         .from("products")
-        .select("id, size")
+        .select("id, available_sizes")
         .in("id", productIds)
-        .not("size", "is", null);
-    const map = new Map<string, string>();
+        .not("available_sizes", "eq", "[]");
+    const matches = new Set<string>();
     for (const row of data ?? []) {
-        map.set(row.id, row.size);
+        const sizes = row.available_sizes as { size: string; quantity?: number }[] | null;
+        if (!Array.isArray(sizes)) continue;
+        if (sizes.some((s) => String(s.size) === size)) {
+            matches.add(row.id);
+        }
     }
-    return map;
+    return matches;
 }
 
 /** Returns a Set of product IDs that should be hidden (variants or not visible) */
