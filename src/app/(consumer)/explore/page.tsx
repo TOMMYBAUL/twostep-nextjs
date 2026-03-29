@@ -52,6 +52,15 @@ export default function ExplorePage() {
     const [category, setCategory] = useState<string | null>(null);
     const [sizeFilterExplore, setSizeFilterExplore] = useState<string | null>(null);
     const [shoeSizeFilterExplore, setShoeSizeFilterExplore] = useState<number | null>(null);
+    const { data: availableSizes } = useQuery<{ clothing: string[]; shoe: number[] }>({
+        queryKey: ["available-sizes"],
+        queryFn: async () => {
+            const res = await fetch("/api/products/available-sizes");
+            if (!res.ok) return { clothing: [], shoe: [] };
+            return res.json();
+        },
+        staleTime: 5 * 60_000,
+    });
     const [recenterTrigger, setRecenterTrigger] = useState(0);
     const [is3D, setIs3D] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -303,24 +312,36 @@ export default function ExplorePage() {
                         <div className="mx-2 my-1.5 border-t border-gray-100" />
 
                         {/* Taille vêtements */}
-                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Taille</p>
-                        <div className="flex flex-wrap gap-1 px-2 pb-2">
-                            {(["XS", "S", "M", "L", "XL", "XXL"] as const).map((s) => (
-                                <button key={s} type="button" onClick={() => setSizeFilterExplore(sizeFilterExplore === s ? null : s)}
-                                    className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", sizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
-                                >{s}</button>
-                            ))}
-                        </div>
+                        {(availableSizes?.clothing?.length ?? 0) > 0 && (
+                            <>
+                                <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Taille</p>
+                                <div className="flex flex-wrap gap-1 px-2 pb-2">
+                                    {availableSizes!.clothing.map((s) => (
+                                        <button key={s} type="button" onClick={() => setSizeFilterExplore(sizeFilterExplore === s ? null : s)}
+                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", sizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                        >{s}</button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
 
                         {/* Pointure */}
-                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Pointure</p>
-                        <div className="flex flex-wrap gap-1 px-2 pb-2">
-                            {([35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const).map((s) => (
-                                <button key={s} type="button" onClick={() => setShoeSizeFilterExplore(shoeSizeFilterExplore === s ? null : s)}
-                                    className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", shoeSizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
-                                >{s}</button>
-                            ))}
-                        </div>
+                        {(availableSizes?.shoe?.length ?? 0) > 0 && (
+                            <>
+                                <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Pointure</p>
+                                <div className="flex flex-wrap gap-1 px-2 pb-2">
+                                    {availableSizes!.shoe.map((s) => (
+                                        <button key={s} type="button" onClick={() => setShoeSizeFilterExplore(shoeSizeFilterExplore === s ? null : s)}
+                                            className={cx("rounded-md px-2 py-1 text-[11px] font-medium transition", shoeSizeFilterExplore === s ? "bg-[#C17B2F] text-white" : "bg-gray-100 text-gray-600")}
+                                        >{s}</button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {(availableSizes?.clothing?.length ?? 0) === 0 && (availableSizes?.shoe?.length ?? 0) === 0 && (
+                            <p className="px-3 py-2 text-[11px] text-gray-400">Aucune taille renseignée pour le moment.</p>
+                        )}
                     </div>
                 )}
             </div>
