@@ -6,6 +6,7 @@ import { RouteProvider } from "@/providers/router-provider";
 import { Theme } from "@/providers/theme";
 import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
+import { ZoomReset } from "@/components/zoom-reset";
 
 const syne = Syne({
     subsets: ["latin"],
@@ -58,7 +59,6 @@ export const viewport: Viewport = {
     themeColor: "#FFFFFF",
     colorScheme: "light",
     viewportFit: "cover",
-    maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -75,6 +75,7 @@ export default function RootLayout({
                     background: "#FFFFFF",
                 }}
             >
+                <ZoomReset />
                 <RouteProvider>
                     <Theme>{children}</Theme>
                 </RouteProvider>
