@@ -1,0 +1,91 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { sendIntentEmail } from "@/lib/email/resend";
+import { sendPushToUser } from "@/lib/push-send";
+
+export async function POST(request: NextRequest) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { product_id, merchant_id, selected_size } = body;
+
+    if (!product_id || !merchant_id) {
+        return NextResponse.json({ error: "Missing product_id or merchant_id" }, { status: 400 });
+    }
+
+    // Rate limit: max 5 signals per user per hour
+    const admin = createAdminClient();
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count } = await admin
+        .from("intent_signals")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", oneHourAgo);
+
+    if ((count ?? 0) >= 5) {
+        return NextResponse.json({ error: "Rate limit: max 5 signals per hour" }, { status: 429 });
+    }
+
+    // Insert the signal
+    const { data: signal, error } = await admin
+        .from("intent_signals")
+        .insert({
+            user_id: user.id,
+            product_id,
+            merchant_id,
+            selected_size: selected_size ?? null,
+        })
+        .select("id, expires_at")
+        .single();
+
+    if (error) {
+        return NextResponse.json({ error: "Failed to create signal" }, { status: 500 });
+    }
+
+    // Fetch product name, merchant info, and user display name — in parallel
+    const [productRes, merchantRes] = await Promise.all([
+        admin.from("products").select("name").eq("id", product_id).single(),
+        admin.from("merchants").select("id, name, user_id").eq("id", merchant_id).single(),
+    ]);
+
+    const productName = productRes.data?.name ?? "un produit";
+    const merchantName = merchantRes.data?.name ?? "votre boutique";
+    const merchantUserId = merchantRes.data?.user_id;
+
+    // Get user display name from consumer profile or email
+    const { data: profile } = await admin
+        .from("consumer_profiles")
+        .select("display_name")
+        .eq("user_id", user.id)
+        .single();
+    const userName = profile?.display_name || user.email?.split("@")[0] || "Un client";
+
+    // Get merchant email from auth.users
+    const merchantEmail = merchantUserId
+        ? (await admin.auth.admin.getUserById(merchantUserId)).data?.user?.email
+        : null;
+
+    // Send notifications (fire-and-forget, don't block the response)
+    const sizeText = selected_size ? ` en taille ${selected_size}` : "";
+
+    // 1. Email
+    if (merchantEmail) {
+        sendIntentEmail(merchantEmail, merchantName, userName, productName, selected_size).catch(() => {});
+    }
+
+    // 2. Push notification to merchant
+    if (merchantUserId) {
+        sendPushToUser(merchantUserId, {
+            title: `${userName} arrive !`,
+            body: `${productName}${sizeText} — il/elle sera là d'ici ~1h`,
+            url: "/dashboard",
+        }).catch(() => {});
+    }
+
+    return NextResponse.json({ intent_id: signal.id, expires_at: signal.expires_at }, { status: 201 });
+}
