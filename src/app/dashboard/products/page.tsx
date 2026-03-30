@@ -209,9 +209,11 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
     const [name, setName] = useState(product.name);
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [isOneSize, setIsOneSize] = useState(false);
     const [sizes, setSizes] = useState<{ size: string; quantity: number }[]>([]);
     const [newSize, setNewSize] = useState("");
     const [newQty, setNewQty] = useState("1");
+    const [oneSizeQty, setOneSizeQty] = useState("1");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
 
@@ -228,7 +230,7 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
     };
 
     const handleSubmit = async () => {
-        if (!name.trim() || sizes.length === 0) return;
+        if (!name.trim() || (!isOneSize && sizes.length === 0)) return;
         setIsSubmitting(true);
         try {
             // Upload photo if provided
@@ -242,13 +244,14 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
             }
 
             // Update product with name, available_sizes, visible=true
-            const totalStock = sizes.reduce((sum, s) => sum + s.quantity, 0);
+            const finalSizes = isOneSize ? [] : sizes;
+            const totalStock = isOneSize ? (parseInt(oneSizeQty) || 1) : sizes.reduce((sum, s) => sum + s.quantity, 0);
             await fetch(`/api/products/${product.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: name.trim(),
-                    available_sizes: sizes,
+                    available_sizes: finalSizes,
                     visible: true,
                 }),
             });
@@ -315,50 +318,80 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="search-ts w-full" />
             </div>
 
-            {/* Sizes */}
+            {/* One size toggle */}
             <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">Tailles disponibles</label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Tailles</label>
+                <button
+                    type="button"
+                    onClick={() => setIsOneSize(!isOneSize)}
+                    className={`flex w-full items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm transition ${isOneSize ? "border-blue-200 bg-blue-50 text-blue-700" : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"}`}
+                >
+                    <span>Taille unique</span>
+                    <span className={`flex size-5 items-center justify-center rounded-full text-xs font-bold transition ${isOneSize ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"}`}>
+                        {isOneSize ? "✓" : ""}
+                    </span>
+                </button>
+                <p className="mt-1 text-[11px] text-gray-400">Montre, bijou, bougie, déco... tout ce qui n'a pas de taille</p>
+            </div>
 
-                {sizes.length > 0 && (
-                    <div className="mb-3 flex flex-wrap gap-2">
-                        {sizes.map((s) => (
-                            <span key={s.size} className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
-                                {s.size} <span className="text-gray-400">({s.quantity})</span>
-                                <button type="button" onClick={() => removeSize(s.size)} className="text-gray-400 hover:text-red-500">
-                                    <XClose className="size-3" />
-                                </button>
-                            </span>
-                        ))}
-                    </div>
-                )}
-
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={newSize}
-                        onChange={(e) => setNewSize(e.target.value)}
-                        className="search-ts flex-1"
-                        placeholder="Taille (ex: 42, M, XL)"
-                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSize())}
-                    />
+            {/* Sizes or quantity */}
+            {isOneSize ? (
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Quantité en stock</label>
                     <input
                         type="number"
                         min="1"
-                        value={newQty}
-                        onChange={(e) => setNewQty(e.target.value)}
-                        className="search-ts w-20"
-                        placeholder="Qté"
+                        value={oneSizeQty}
+                        onChange={(e) => setOneSizeQty(e.target.value)}
+                        className="search-ts w-full"
+                        placeholder="Quantité"
                     />
-                    <button type="button" onClick={addSize} className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 text-xs font-medium text-gray-600 hover:bg-gray-200 transition">
-                        <Plus className="size-3.5" /> Ajouter
-                    </button>
                 </div>
-            </div>
+            ) : (
+                <div>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">Tailles disponibles</label>
+
+                    {sizes.length > 0 && (
+                        <div className="mb-3 flex flex-wrap gap-2">
+                            {sizes.map((s) => (
+                                <span key={s.size} className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
+                                    {s.size} <span className="text-gray-400">({s.quantity})</span>
+                                    <button type="button" onClick={() => removeSize(s.size)} className="text-gray-400 hover:text-red-500">
+                                        <XClose className="size-3" />
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newSize}
+                            onChange={(e) => setNewSize(e.target.value)}
+                            className="search-ts flex-1"
+                            placeholder="Taille (ex: 42, M, XL)"
+                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSize())}
+                        />
+                        <input
+                            type="number"
+                            min="1"
+                            value={newQty}
+                            onChange={(e) => setNewQty(e.target.value)}
+                            className="search-ts w-20"
+                            placeholder="Qté"
+                        />
+                        <button type="button" onClick={addSize} className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 text-xs font-medium text-gray-600 hover:bg-gray-200 transition">
+                            <Plus className="size-3.5" /> Ajouter
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Submit */}
             <button
                 onClick={handleSubmit}
-                disabled={isSubmitting || !name.trim() || sizes.length === 0}
+                disabled={isSubmitting || !name.trim() || (!isOneSize && sizes.length === 0)}
                 className="btn-ts w-full"
             >
                 {isSubmitting ? "Publication..." : "Publier le produit"}
