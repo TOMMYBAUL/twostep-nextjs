@@ -32,14 +32,8 @@ export async function GET(request: NextRequest) {
 
     if (category) query = query.eq("category", category);
     if (size) query = query.eq("size", size);
-    // When both sizes are provided, use OR (a product is either clothing OR shoes)
-    if (clothingSize && shoeSize) {
-        query = query.or(`size.eq.${clothingSize},size.eq.${shoeSize}`);
-    } else if (clothingSize) {
-        query = query.eq("size", clothingSize);
-    } else if (shoeSize) {
-        query = query.eq("size", shoeSize);
-    }
+    // Note: clothingSize and shoeSize are NOT used as DB filters —
+    // they're used post-query to SORT matching sizes first (not exclude others)
 
     const { data: products, error } = await query;
 
@@ -71,14 +65,28 @@ export async function GET(request: NextRequest) {
             merchant_photo: p.merchants?.photo_url ?? null,
             sale_price: promoMap.get(p.id) ?? null,
             category: p.category,
+            size: p.size ?? null,
             distance_km: 0,
         }));
 
-    if (promoFirst) {
+    // Sort: size-matched first, then promos, then rest
+    const userSizes = [clothingSize, shoeSize].filter(Boolean) as string[];
+
+    if (promoFirst || userSizes.length > 0) {
         result.sort((a: any, b: any) => {
-            const aHasPromo = a.sale_price !== null ? 1 : 0;
-            const bHasPromo = b.sale_price !== null ? 1 : 0;
-            return bHasPromo - aHasPromo; // promos first
+            // 1. Size match has highest priority
+            if (userSizes.length > 0) {
+                const aMatchesSize = a.size && userSizes.includes(a.size) ? 1 : 0;
+                const bMatchesSize = b.size && userSizes.includes(b.size) ? 1 : 0;
+                if (aMatchesSize !== bMatchesSize) return bMatchesSize - aMatchesSize;
+            }
+            // 2. Promos second
+            if (promoFirst) {
+                const aHasPromo = a.sale_price !== null ? 1 : 0;
+                const bHasPromo = b.sale_price !== null ? 1 : 0;
+                if (aHasPromo !== bHasPromo) return bHasPromo - aHasPromo;
+            }
+            return 0;
         });
     }
 
