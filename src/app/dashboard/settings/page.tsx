@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
@@ -16,8 +17,28 @@ const POS_PROVIDERS = [
 ] as const;
 
 export default function SettingsPage() {
+    return (
+        <Suspense>
+            <SettingsPageInner />
+        </Suspense>
+    );
+}
+
+function SettingsPageInner() {
     const { merchant, refetch } = useMerchant();
     const { toast } = useToast();
+    const searchParams = useSearchParams();
+
+    // Show OAuth callback feedback
+    useEffect(() => {
+        const pos = searchParams.get("pos");
+        const error = searchParams.get("error");
+        if (pos === "connected") {
+            toast("Caisse connectée avec succès !", "success");
+        } else if (error) {
+            toast(error === "oauth_failed" ? "Échec de la connexion. Réessayez." : `Erreur : ${error}`, "error");
+        }
+    }, [searchParams, toast]);
     const { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
     const [email, setEmail] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState("");

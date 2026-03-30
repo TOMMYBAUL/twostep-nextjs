@@ -24,7 +24,7 @@ interface AutocompleteSuggestion {
     suggestion_type: "product" | "brand" | "category";
 }
 
-export function useSearch(query: string, lat: number, lng: number, radius = 5) {
+export function useSearch(query: string, lat: number, lng: number, radius = 5, category: string | null = null) {
     const [debouncedQuery, setDebouncedQuery] = useState(query);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export function useSearch(query: string, lat: number, lng: number, radius = 5) {
     }, [query]);
 
     return useQuery<SearchResult[]>({
-        queryKey: ["search", debouncedQuery, lat, lng, radius],
+        queryKey: ["search", debouncedQuery, lat, lng, radius, category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 q: debouncedQuery,
@@ -41,6 +41,7 @@ export function useSearch(query: string, lat: number, lng: number, radius = 5) {
                 lng: lng.toString(),
                 radius: radius.toString(),
             });
+            if (category) params.set("category", category);
             const res = await fetch(`/api/search?${params}`);
             if (!res.ok) throw new Error("Search failed");
             const data = await res.json();

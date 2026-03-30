@@ -19,6 +19,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             .from("merchants")
             .select(PUBLIC_FIELDS)
             .eq("id", id)
+            .eq("status", "active")
             .single();
 
         if (error) {

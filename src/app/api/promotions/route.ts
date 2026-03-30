@@ -63,12 +63,16 @@ export async function POST(request: Request) {
         // Verify ownership: product must belong to user's merchant
         const { data: product } = await supabase
             .from("products")
-            .select("merchant_id, merchants!inner(user_id)")
+            .select("merchant_id, price, merchants!inner(user_id)")
             .eq("id", product_id)
             .single();
 
         if (!product || (product as any).merchants?.user_id !== user.id) {
             return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+        }
+
+        if (product.price && sale_price >= product.price) {
+            return NextResponse.json({ error: "Le prix promo doit être inférieur au prix du produit" }, { status: 400 });
         }
 
         const { data, error } = await supabase

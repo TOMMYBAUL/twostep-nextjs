@@ -49,8 +49,8 @@ function SearchPageInner() {
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
 
-    // Search mode: standard text search
-    const { data: results, isLoading } = useSearch(query, lat, lng);
+    // Search mode: standard text search (with optional category filter)
+    const { data: results, isLoading } = useSearch(query, lat, lng, 5, activeCategory);
 
     // Filter mode: discover section (promos, trending)
     const isFilterMode = !!filterParam && !query;

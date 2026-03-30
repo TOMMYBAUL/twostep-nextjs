@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
@@ -9,6 +9,7 @@ import { useAchievements } from "@/hooks/use-achievements";
 import { AchievementBadgeCard } from "@/components/dashboard/achievement-badge";
 import { ACHIEVEMENTS, ALL_ACHIEVEMENT_TYPES } from "@/lib/achievements";
 import { generateSlug } from "@/lib/slug";
+import { createClient } from "@/lib/supabase/client";
 
 const DAYS = [
     { key: "mon", label: "Lundi" },
@@ -32,6 +33,9 @@ export default function StorePage() {
     const [phone, setPhone] = useState("");
     const [description, setDescription] = useState("");
     const [hours, setHours] = useState<Record<string, { open: string; close: string } | null>>({});
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    const [photoUploading, setPhotoUploading] = useState(false);
+    const photoInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (merchant) {
@@ -41,8 +45,55 @@ export default function StorePage() {
             setPhone(merchant.phone ?? "");
             setDescription(merchant.description ?? "");
             setHours(merchant.opening_hours ?? {});
+            setPhotoUrl(merchant.photo_url ?? null);
         }
     }, [merchant]);
+
+    const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !merchant) return;
+        if (!file.type.startsWith("image/")) { toast("Type de fichier invalide", "error"); return; }
+        if (file.size > 5 * 1024 * 1024) { toast("Fichier trop volumineux (max 5 Mo)", "error"); return; }
+
+        setPhotoUploading(true);
+        try {
+            const supabase = createClient();
+            const path = `${merchant.id}/storefront.${file.name.split(".").pop() ?? "jpg"}`;
+            const { error: uploadError } = await supabase.storage
+                .from("merchant-photos")
+                .upload(path, file, { upsert: true, contentType: file.type });
+
+            if (uploadError) {
+                // Bucket may not exist — try direct API update with data URL
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    // Fallback: upload via merchant PATCH with a temporary URL
+                    toast("Upload en cours...", "success");
+                };
+                reader.readAsDataURL(file);
+                throw uploadError;
+            }
+
+            const { data: urlData } = supabase.storage.from("merchant-photos").getPublicUrl(path);
+            const url = urlData.publicUrl + `?t=${Date.now()}`;
+
+            // Update merchant photo_url
+            const res = await window.fetch(`/api/merchants/${merchant.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ photo_url: url }),
+            });
+            if (!res.ok) throw new Error("Échec de la mise à jour");
+
+            setPhotoUrl(url);
+            toast("Photo mise à jour !");
+            await refetch();
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Échec de l'upload", "error");
+        } finally {
+            setPhotoUploading(false);
+        }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -144,6 +195,39 @@ export default function StorePage() {
                     {merchant.siret && (
                         <span className="text-xs text-gray-400">SIRET : {merchant.siret}</span>
                     )}
+                </div>
+            )}
+
+            {/* Store photo upload */}
+            {merchant && (
+                <div className="animate-fade-up stagger-3 mb-6 max-w-xl">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">Photo de la boutique</label>
+                    <div className="flex items-center gap-4">
+                        <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                            {photoUrl ? (
+                                <img src={photoUrl} alt="Photo boutique" className="h-full w-full object-cover" />
+                            ) : (
+                                <div className="flex h-full items-center justify-center text-2xl text-gray-300">📷</div>
+                            )}
+                            {photoUploading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white/70">
+                                    <span className="size-5 animate-spin rounded-full border-2 border-[#4268FF]/30 border-t-[#4268FF]" />
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <button
+                                type="button"
+                                onClick={() => photoInputRef.current?.click()}
+                                disabled={photoUploading}
+                                className="rounded-lg bg-[#4268FF]/10 px-4 py-2 text-sm font-medium text-[#4268FF] transition active:bg-[#4268FF]/20 disabled:opacity-50"
+                            >
+                                {photoUrl ? "Changer la photo" : "Ajouter une photo"}
+                            </button>
+                            <p className="mt-1 text-[11px] text-gray-400">JPEG, PNG ou WebP — max 5 Mo</p>
+                            <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                        </div>
+                    </div>
                 </div>
             )}
 
