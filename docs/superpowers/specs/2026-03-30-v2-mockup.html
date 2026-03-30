@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Step V2 — Maquettes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #1A1F36;
+            color: #FFFFFF;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8E96B0;
+            font-size: 14px;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-transform: uppercase;
+            color: #4268FF;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .section-desc {
+            text-align: center;
+            color: #8E96B0;
+            font-size: 13px;
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mockup-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-bottom: 64px;
+        }
+
+        /* Phone frame */
+        .phone {
+            width: 320px;
+            background: #F8F9FC;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            color: #1A1F36;
+            position: relative;
+        }
+
+        .phone-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8E96B0;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            height: 44px;
+            background: #F8F9FC;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4px;
+        }
+
+        /* Header */
+        .app-header {
+            padding: 8px 16px 8px;
+            background: #F8F9FC;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: #4268FF;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .header-location {
+            font-size: 10px;
+            color: #8E96B0;
+        }
+
+        .bell {
+            width: 28px;
+            height: 28px;
+            background: #F0F1F5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 16px;
+            margin-top: 6px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8E96B0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            color: #1A1F36;
+            border-bottom-color: #4268FF;
+        }
+
+        /* Category pills */
+        .pills {
+            display: flex;
+            gap: 6px;
+            padding: 10px 16px 6px;
+            overflow-x: auto;
+        }
+
+        .pill {
+            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #F0F1F5;
+            color: #1A1F36;
+        }
+
+        .pill.active {
+            background: #4268FF;
+            color: white;
+        }
+
+        /* Story bar */
+        .story-bar {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px 8px;
+            overflow-x: auto;
+        }
+
+        .story-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .story-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4268FF, #7B93FF);
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #F0F1F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 2px solid #F8F9FC;
+        }
+
+        .story-avatar.seen .story-avatar-inner {
+            border-color: #E2E5F0;
+        }
+
+        .story-avatar.seen {
+            background: #E2E5F0;
+        }
+
+        .story-name {
+            font-size: 9px;
+            color: #8E96B0;
+            max-width: 56px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Size banner */
+        .size-banner {
+            margin: 8px 16px;
+            padding: 10px 14px;
+            background: #EEF0FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .size-banner-text {
+            font-size: 11px;
+            color: #4268FF;
+            font-weight: 500;
+        }
+
+        .size-banner-tags {
+            display: flex;
+            gap: 4px;
+        }
+
+        .size-tag {
+            background: #4268FF;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Product card (feed style) */
+        .product-feed-card {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .product-feed-img {
+            width: 100%;
+            height: 200px;
+            background: #F0F1F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-feed-img span {
+            font-size: 48px;
+            opacity: 0.15;
+        }
+
+        .promo-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #FF4757;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .heart-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: rgba(26,31,54,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .product-feed-info {
+            padding: 12px 14px;
+        }
+
+        .product-feed-brand {
+            font-size: 10px;
+            color: #8E96B0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-feed-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .product-feed-price {
+            font-size: 13px;
+            color: #6B7799;
+            margin-top: 4px;
+        }
+
+        .product-feed-price .old {
+            text-decoration: line-through;
+            color: #E2E5F0;
+            margin-left: 6px;
+            font-size: 11px;
+        }
+
+        .product-feed-shop {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #F5F6FA;
+        }
+
+        .product-feed-shop-logo {
+            width: 20px;
+            height: 20px;
+            background: #F0F1F5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .product-feed-shop-name {
+            font-size: 11px;
+            color: #8E96B0;
+        }
+
+        .product-feed-shop-dist {
+            margin-left: auto;
+            font-size: 10px;
+            color: #8E96B0;
+        }
+
+        /* ── Product detail mockup ── */
+        .detail-img {
+            width: 100%;
+            height: 220px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .detail-img span {
+            font-size: 64px;
+            opacity: 0.12;
+        }
+
+        .detail-back {
+            position: absolute;
+            top: 50px;
+            left: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(26,31,54,0.55);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .detail-body {
+            padding: 16px;
+            background: #F8F9FC;
+        }
+
+        .detail-brand {
+            font-size: 10px;
+            color: #8E96B0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 4px;
+            line-height: 1.2;
+        }
+
+        .detail-price {
+            font-size: 15px;
+            color: #6B7799;
+            margin-top: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #F0F1F5;
+        }
+
+        .detail-row-label {
+            font-size: 12px;
+            color: #8E96B0;
+        }
+
+        .detail-row-value {
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .detail-row-value .chevron {
+            color: #E2E5F0;
+        }
+
+        /* J'arrive button */
+        .btn-jarrive {
+            width: 100%;
+            padding: 14px;
+            background: #4268FF;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-jarrive .arrow {
+            font-size: 18px;
+        }
+
+        .btn-jarrive-disclaimer {
+            text-align: center;
+            font-size: 10px;
+            color: #8E96B0;
+            margin-top: 6px;
+        }
+
+        .btn-jarrive-sent {
+            width: 100%;
+            padding: 14px;
+            background: #F0F1F5;
+            color: #8E96B0;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Shop row in detail */
+        .detail-shop {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 0;
+            border-bottom: 1px solid #F0F1F5;
+        }
+
+        .detail-shop-logo {
+            width: 36px;
+            height: 36px;
+            background: #F0F1F5;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .detail-shop-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6B7799;
+        }
+
+        .detail-shop-addr {
+            font-size: 10px;
+            color: #8E96B0;
+            margin-top: 1px;
+        }
+
+        /* ── Story viewer mockup ── */
+        .story-viewer {
+            background: #000;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .story-viewer-img {
+            width: 100%;
+            height: 480px;
+            background: linear-gradient(180deg, #2D3555 0%, #1A1F36 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .story-viewer-img .placeholder {
+            font-size: 80px;
+            opacity: 0.15;
+        }
+
+        .story-viewer-header {
+            position: absolute;
+            top: 48px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .story-viewer-progress {
+            position: absolute;
+            top: 40px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            gap: 3px;
+        }
+
+        .story-viewer-progress-bar {
+            flex: 1;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 1px;
+        }
+
+        .story-viewer-progress-bar.filled {
+            background: white;
+        }
+
+        .story-viewer-avatar {
+            width: 32px;
+            height: 32px;
+            background: #F0F1F5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .story-viewer-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .story-viewer-time {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .story-viewer-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 16px 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        }
+
+        .story-viewer-caption p {
+            color: white;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Dashboard notification */
+        .dash-notif {
+            margin: 12px 16px;
+            background: white;
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .dash-notif-icon {
+            width: 40px;
+            height: 40px;
+            background: #EEF0FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .dash-notif-text {
+            flex: 1;
+        }
+
+        .dash-notif-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dash-notif-body {
+            font-size: 11px;
+            color: #8E96B0;
+            margin-top: 2px;
+        }
+
+        .dash-notif-time {
+            font-size: 10px;
+            color: #8E96B0;
+            flex-shrink: 0;
+        }
+
+        /* Separator */
+        .section-sep {
+            width: 80px;
+            height: 2px;
+            background: #4268FF;
+            margin: 0 auto 48px;
+            border-radius: 1px;
+        }
+
+        /* Bottom tab bar */
+        .tab-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 20px;
+            background: white;
+            border-top: 1px solid #F0F1F5;
+        }
+
+        .tab-bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 9px;
+            color: #8E96B0;
+        }
+
+        .tab-bar-item.active {
+            color: #4268FF;
+        }
+
+        .tab-bar-icon {
+            font-size: 18px;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: #4268FF;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .annotation::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .annotation.left::after {
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 6px solid #4268FF;
+        }
+
+        .annotation.bottom::after {
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 6px solid #4268FF;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Two-Step V2 — Maquettes</h1>
+    <p class="subtitle">3 features : Onglets Explorer/Pour toi/Suivis · Bouton "J'arrive" · Stories boutique</p>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- FEATURE 1 — TABS -->
+    <!-- ═══════════════════════════════════════════ -->
+
+    <h2 class="section-title">Feature 1 — Nouveaux onglets Discover</h2>
+    <p class="section-desc">L'ancien "Pour toi" devient "Explorer". Le nouveau "Pour toi" = boutiques suivies + taille auto. "Suivis" = tout voir sans filtre.</p>
+
+    <div class="mockup-row">
+
+        <!-- Phone 1: Explorer -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div class="app-header">
+                    <div class="logo-area">
+                        <div class="logo-icon">TS</div>
+                        <span class="logo-text">Two-Step</span>
+                        <span class="header-location">· Toulouse</span>
+                    </div>
+                    <div class="bell">🔔</div>
+                </div>
+                <div class="tabs">
+                    <div class="tab active">Explorer</div>
+                    <div class="tab">Pour toi</div>
+                    <div class="tab">Suivis</div>
+                </div>
+                <div class="pills">
+                    <div class="pill active">✨ Tout</div>
+                    <div class="pill">👟 Sneakers</div>
+                    <div class="pill">👗 Mode</div>
+                    <div class="pill">💍 Bijoux</div>
+                    <div class="pill">🏠 Maison</div>
+                </div>
+
+                <!-- Products -->
+                <div style="padding-top: 8px; padding-bottom: 60px; height: 340px; overflow: hidden;">
+                    <div class="product-feed-card">
+                        <div class="product-feed-img">
+                            <span>👟</span>
+                            <div class="promo-badge">-30%</div>
+                            <div class="heart-btn">🤍</div>
+                        </div>
+                        <div class="product-feed-info">
+                            <div class="product-feed-brand">Nike</div>
+                            <div class="product-feed-name">Air Force 1 '07</div>
+                            <div class="product-feed-price">76,93 € <span class="old">109,90 €</span></div>
+                            <div class="product-feed-shop">
+                                <div class="product-feed-shop-logo">🏪</div>
+                                <span class="product-feed-shop-name">Sneakers District</span>
+                                <span class="product-feed-shop-dist">8 min 🚶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-bar">
+                    <div class="tab-bar-item active"><span class="tab-bar-icon">🏠</span>Discover</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🗺️</span>Carte</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🔍</span>Recherche</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">❤️</span>Favoris</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">👤</span>Profil</div>
+                </div>
+            </div>
+            <p class="phone-label">Explorer (ancien "Pour toi")</p>
+        </div>
+
+        <!-- Phone 2: Pour toi -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div class="app-header">
+                    <div class="logo-area">
+                        <div class="logo-icon">TS</div>
+                        <span class="logo-text">Two-Step</span>
+                        <span class="header-location">· Toulouse</span>
+                    </div>
+                    <div class="bell">🔔</div>
+                </div>
+                <div class="tabs">
+                    <div class="tab">Explorer</div>
+                    <div class="tab active">Pour toi</div>
+                    <div class="tab">Suivis</div>
+                </div>
+
+                <!-- Story bar -->
+                <div class="story-bar">
+                    <div class="story-circle">
+                        <div class="story-avatar">
+                            <div class="story-avatar-inner">👟</div>
+                        </div>
+                        <span class="story-name">Sneakers D.</span>
+                    </div>
+                    <div class="story-circle">
+                        <div class="story-avatar">
+                            <div class="story-avatar-inner">💎</div>
+                        </div>
+                        <span class="story-name">Bijoux Marie</span>
+                    </div>
+                    <div class="story-circle">
+                        <div class="story-avatar seen">
+                            <div class="story-avatar-inner">👗</div>
+                        </div>
+                        <span class="story-name">Chez Zel</span>
+                    </div>
+                    <div class="story-circle">
+                        <div class="story-avatar">
+                            <div class="story-avatar-inner">🧢</div>
+                        </div>
+                        <span class="story-name">Le Repère</span>
+                    </div>
+                </div>
+
+                <!-- Size auto-filter banner -->
+                <div class="size-banner">
+                    <span class="size-banner-text">Filtré pour toi</span>
+                    <div class="size-banner-tags">
+                        <span class="size-tag">M</span>
+                        <span class="size-tag">42</span>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div style="padding-top: 8px; padding-bottom: 60px; height: 260px; overflow: hidden;">
+                    <div class="product-feed-card">
+                        <div class="product-feed-img">
+                            <span>👟</span>
+                            <div class="promo-badge">-25%</div>
+                            <div class="heart-btn">❤️</div>
+                        </div>
+                        <div class="product-feed-info">
+                            <div class="product-feed-brand">New Balance</div>
+                            <div class="product-feed-name">574 Classic — Taille 42</div>
+                            <div class="product-feed-price">67,43 € <span class="old">89,90 €</span></div>
+                            <div class="product-feed-shop">
+                                <div class="product-feed-shop-logo">🏪</div>
+                                <span class="product-feed-shop-name">Do My Shoes</span>
+                                <span class="product-feed-shop-dist">5 min 🚶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-bar">
+                    <div class="tab-bar-item active"><span class="tab-bar-icon">🏠</span>Discover</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🗺️</span>Carte</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🔍</span>Recherche</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">❤️</span>Favoris</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">👤</span>Profil</div>
+                </div>
+            </div>
+            <p class="phone-label">Pour toi (nouveau — taille auto + stories)</p>
+        </div>
+
+        <!-- Phone 3: Suivis -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div class="app-header">
+                    <div class="logo-area">
+                        <div class="logo-icon">TS</div>
+                        <span class="logo-text">Two-Step</span>
+                        <span class="header-location">· Toulouse</span>
+                    </div>
+                    <div class="bell">🔔</div>
+                </div>
+                <div class="tabs">
+                    <div class="tab">Explorer</div>
+                    <div class="tab">Pour toi</div>
+                    <div class="tab active">Suivis</div>
+                </div>
+                <div class="pills">
+                    <div class="pill" style="background: #4268FF12; color: #4268FF; border: 1px solid #4268FF30;">🔽 Taille</div>
+                    <div class="pill active">✨ Tout</div>
+                    <div class="pill">👟 Sneakers</div>
+                    <div class="pill">👗 Mode</div>
+                </div>
+
+                <!-- Products (all sizes) -->
+                <div style="padding-top: 8px; padding-bottom: 60px; height: 340px; overflow: hidden;">
+                    <div class="product-feed-card">
+                        <div class="product-feed-img">
+                            <span>👗</span>
+                            <div class="heart-btn">🤍</div>
+                        </div>
+                        <div class="product-feed-info">
+                            <div class="product-feed-brand">Sézane</div>
+                            <div class="product-feed-name">Robe Lena — Taille S</div>
+                            <div class="product-feed-price">125,00 €</div>
+                            <div class="product-feed-shop">
+                                <div class="product-feed-shop-logo">🏪</div>
+                                <span class="product-feed-shop-name">Chez Zel</span>
+                                <span class="product-feed-shop-dist">12 min 🚶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-bar">
+                    <div class="tab-bar-item active"><span class="tab-bar-icon">🏠</span>Discover</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🗺️</span>Carte</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">🔍</span>Recherche</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">❤️</span>Favoris</div>
+                    <div class="tab-bar-item"><span class="tab-bar-icon">👤</span>Profil</div>
+                </div>
+            </div>
+            <p class="phone-label">Suivis (toutes tailles — pour offrir)</p>
+        </div>
+    </div>
+
+    <div class="section-sep"></div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- FEATURE 2 — J'ARRIVE -->
+    <!-- ═══════════════════════════════════════════ -->
+
+    <h2 class="section-title">Feature 2 — Bouton "J'arrive"</h2>
+    <p class="section-desc">Signal d'intention sur la fiche produit. Le marchand est notifié (dashboard + email + push). Ce n'est pas une réservation.</p>
+
+    <div class="mockup-row">
+
+        <!-- Phone: Product detail with J'arrive -->
+        <div>
+            <div class="phone">
+                <div class="detail-img">
+                    <span>👟</span>
+                    <div class="detail-back">←</div>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-brand">Nike · Sneakers</div>
+                    <div class="detail-name">Air Max 90</div>
+                    <div class="detail-price">129,90 €</div>
+
+                    <div class="detail-row">
+                        <span class="detail-row-label">Pointure</span>
+                        <span class="detail-row-value">42 <span class="chevron">›</span></span>
+                    </div>
+
+                    <div class="detail-shop">
+                        <div class="detail-shop-logo">🏪</div>
+                        <div>
+                            <div class="detail-shop-name">Sneakers District</div>
+                            <div class="detail-shop-addr">15 Rue Saint-Rome, Toulouse</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-jarrive">
+                        <span class="arrow">📍</span> J'arrive !
+                    </button>
+                    <p class="btn-jarrive-disclaimer">Sous réserve de disponibilité — le commerçant est prévenu</p>
+                </div>
+            </div>
+            <p class="phone-label">Fiche produit — avant envoi</p>
+        </div>
+
+        <!-- Phone: After sending -->
+        <div>
+            <div class="phone">
+                <div class="detail-img">
+                    <span>👟</span>
+                    <div class="detail-back">←</div>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-brand">Nike · Sneakers</div>
+                    <div class="detail-name">Air Max 90</div>
+                    <div class="detail-price">129,90 €</div>
+
+                    <div class="detail-row">
+                        <span class="detail-row-label">Pointure</span>
+                        <span class="detail-row-value">42 <span class="chevron">›</span></span>
+                    </div>
+
+                    <div class="detail-shop">
+                        <div class="detail-shop-logo">🏪</div>
+                        <div>
+                            <div class="detail-shop-name">Sneakers District</div>
+                            <div class="detail-shop-addr">15 Rue Saint-Rome, Toulouse</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-jarrive-sent">
+                        ✓ Le commerçant est prévenu
+                    </button>
+                    <p class="btn-jarrive-disclaimer">Sneakers District sait que tu arrives — valable 2h</p>
+                </div>
+            </div>
+            <p class="phone-label">Fiche produit — après envoi</p>
+        </div>
+
+        <!-- Phone: Dashboard notification -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div style="padding: 12px 16px; background: #1A1F36;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="logo-icon" style="width: 32px; height: 32px; font-size: 11px;">TS</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: white; font-family: 'Syne', sans-serif; text-transform: uppercase;">Dashboard</div>
+                            <div style="font-size: 10px; color: #8E96B0;">Sneakers District</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: #F8F9FC; min-height: 400px; padding-top: 4px;">
+                    <div style="padding: 12px 16px 4px; font-size: 13px; font-weight: 700; color: #1A1F36;">Nouveaux signaux</div>
+
+                    <div class="dash-notif" style="border-left: 3px solid #4268FF;">
+                        <div class="dash-notif-icon">📍</div>
+                        <div class="dash-notif-text">
+                            <div class="dash-notif-title">Thomas arrive !</div>
+                            <div class="dash-notif-body">Air Max 90 — Pointure 42<br>Il sera là d'ici ~1h</div>
+                        </div>
+                        <span class="dash-notif-time">Il y a 3 min</span>
+                    </div>
+
+                    <div class="dash-notif">
+                        <div class="dash-notif-icon">📍</div>
+                        <div class="dash-notif-text">
+                            <div class="dash-notif-title">Marie arrive !</div>
+                            <div class="dash-notif-body">NB 574 Classic — Pointure 38</div>
+                        </div>
+                        <span class="dash-notif-time">Il y a 28 min</span>
+                    </div>
+
+                    <div style="padding: 12px 16px 4px; margin-top: 8px; font-size: 13px; font-weight: 700; color: #1A1F36;">Aussi envoyé par</div>
+                    <div style="padding: 0 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="background: white; padding: 6px 12px; border-radius: 10px; font-size: 11px; color: #8E96B0; display: flex; align-items: center; gap: 4px;">📧 Email</span>
+                        <span style="background: white; padding: 6px 12px; border-radius: 10px; font-size: 11px; color: #8E96B0; display: flex; align-items: center; gap: 4px;">🔔 Push notification</span>
+                    </div>
+                </div>
+            </div>
+            <p class="phone-label">Dashboard marchand — notifications</p>
+        </div>
+    </div>
+
+    <div class="section-sep"></div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- FEATURE 3 — STORIES -->
+    <!-- ═══════════════════════════════════════════ -->
+
+    <h2 class="section-title">Feature 3 — Stories boutique</h2>
+    <p class="section-desc">Les marchands publient des stories (photo + texte, 48h). Visibles en haut du feed "Pour toi" et sur la page boutique. Style Instagram.</p>
+
+    <div class="mockup-row">
+
+        <!-- Phone: Story viewer -->
+        <div>
+            <div class="phone story-viewer">
+                <div class="story-viewer-img">
+                    <span class="placeholder">👟</span>
+
+                    <div class="story-viewer-progress">
+                        <div class="story-viewer-progress-bar filled"></div>
+                        <div class="story-viewer-progress-bar"></div>
+                        <div class="story-viewer-progress-bar"></div>
+                    </div>
+
+                    <div class="story-viewer-header">
+                        <div class="story-viewer-avatar">👟</div>
+                        <div>
+                            <div class="story-viewer-name">Sneakers District</div>
+                            <div class="story-viewer-time">il y a 2h</div>
+                        </div>
+                    </div>
+
+                    <div class="story-viewer-caption">
+                        <p>Arrivage Nike Air Max 90 ! 🔥<br>Disponibles du 39 au 45.<br>Passez avant qu'il n'y en ait plus !</p>
+                    </div>
+                </div>
+            </div>
+            <p class="phone-label">Story viewer (plein écran)</p>
+        </div>
+
+        <!-- Phone: Dashboard story creation -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div style="padding: 12px 16px; background: #1A1F36;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="logo-icon" style="width: 32px; height: 32px; font-size: 11px;">TS</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: white; font-family: 'Syne', sans-serif; text-transform: uppercase;">Stories</div>
+                            <div style="font-size: 10px; color: #8E96B0;">Publier une story</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: #F8F9FC; min-height: 420px; padding: 16px;">
+
+                    <!-- Upload area -->
+                    <div style="width: 100%; height: 180px; background: white; border-radius: 16px; border: 2px dashed #E2E5F0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+                        <span style="font-size: 32px;">📷</span>
+                        <span style="font-size: 12px; color: #8E96B0;">Ajouter une photo</span>
+                        <span style="font-size: 10px; color: #8E96B0; opacity: 0.6;">JPG ou PNG, max 5 Mo</span>
+                    </div>
+
+                    <!-- Caption -->
+                    <div style="margin-top: 16px;">
+                        <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Texte (optionnel)</label>
+                        <div style="background: white; border-radius: 12px; padding: 12px; min-height: 60px; font-size: 13px; color: #8E96B0; border: 1px solid #E2E5F0;">
+                            Arrivage Nike Air Max 90 ! Dispo du 39 au 45...
+                        </div>
+                        <div style="text-align: right; font-size: 10px; color: #8E96B0; margin-top: 4px;">47 / 280</div>
+                    </div>
+
+                    <!-- Info -->
+                    <div style="margin-top: 12px; padding: 10px 14px; background: #EEF0FF; border-radius: 10px; font-size: 11px; color: #4268FF;">
+                        ℹ️ Visible pendant 48h dans l'app consommateur
+                    </div>
+
+                    <!-- Button -->
+                    <button style="width: 100%; margin-top: 16px; padding: 14px; background: #4268FF; color: white; border: none; border-radius: 14px; font-size: 14px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer;">
+                        Publier la story
+                    </button>
+                </div>
+            </div>
+            <p class="phone-label">Dashboard — publier une story</p>
+        </div>
+
+        <!-- Phone: Shop profile with story -->
+        <div>
+            <div class="phone">
+                <div class="status-bar"></div>
+                <div style="height: 140px; background: linear-gradient(135deg, #2D3555, #1A1F36); position: relative; display: flex; align-items: flex-end; padding: 16px;">
+                    <div style="position: absolute; top: 50px; left: 12px;">
+                        <div style="width: 28px; height: 28px; background: rgba(26,31,54,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">←</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 18px; font-weight: 700; color: white;">Sneakers District</div>
+                        <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px;">15 Rue Saint-Rome, Toulouse</div>
+                    </div>
+                </div>
+
+                <div style="background: #F8F9FC; padding: 16px; min-height: 320px;">
+                    <!-- Story circle on shop profile -->
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="story-avatar" style="width: 64px; height: 64px;">
+                            <div class="story-avatar-inner" style="font-size: 22px;">👟</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 13px; font-weight: 600;">3 stories actives</div>
+                            <div style="font-size: 11px; color: #8E96B0;">Dernière il y a 2h</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; font-weight: 700;">127</div>
+                            <div style="font-size: 10px; color: #8E96B0;">produits</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; font-weight: 700;">52</div>
+                            <div style="font-size: 10px; color: #8E96B0;">abonnés</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; font-weight: 700;">4.8</div>
+                            <div style="font-size: 10px; color: #8E96B0;">avis</div>
+                        </div>
+                    </div>
+
+                    <!-- Subscribe + contact -->
+                    <div style="display: flex; gap: 8px;">
+                        <button style="flex: 1; padding: 10px; background: #4268FF; color: white; border: none; border-radius: 12px; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;">S'abonner</button>
+                        <button style="padding: 10px 16px; background: #F0F1F5; border: none; border-radius: 12px; font-size: 13px; font-family: 'Inter', sans-serif;">📞</button>
+                    </div>
+                </div>
+            </div>
+            <p class="phone-label">Page boutique — story en haut</p>
+        </div>
+    </div>
+
+</body>
+</html>
