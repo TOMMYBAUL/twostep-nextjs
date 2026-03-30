@@ -102,7 +102,7 @@ function SearchPageInner() {
                     <div
                         className={cx(
                             "flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 transition duration-150",
-                            isFocused ? "border-[#4268FF] shadow-[0_0_0_4px_rgba(193,123,47,0.15)]" : "border-[#E2E5F0]",
+                            isFocused ? "border-[#4268FF] shadow-[0_0_0_4px_rgba(66,104,255,0.15)]" : "border-[#E2E5F0]",
                         )}
                     >
                         <SearchMd className="size-5 text-[#1A1F36]/40" aria-hidden="true" />

@@ -172,7 +172,7 @@ function DiscoverContent() {
                         type="button"
                         onClick={() => setShowSizeFilters((v) => !v)}
                         className={cx(
-                            "flex shrink-0 items-center justify-center rounded-full transition duration-150",
+                            "relative flex shrink-0 items-center justify-center rounded-full transition duration-150",
                             hasActiveSizeFilter || showSizeFilters
                                 ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
                                 : "bg-[#F5F6FA] text-[#1A1F36]/60",

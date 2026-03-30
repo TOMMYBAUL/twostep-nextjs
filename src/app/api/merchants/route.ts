@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         }
 
         return NextResponse.json({ merchant: data }, {
-            headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" },
+            headers: { "Cache-Control": "private, max-age=60" },
         });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

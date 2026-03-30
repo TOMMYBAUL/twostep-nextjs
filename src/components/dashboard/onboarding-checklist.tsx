@@ -24,7 +24,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             const supabase = createClient();
 
             const hasPOS = merchant!.pos_type !== null;
-            const hasEmail = !!(merchant!.phone);
+            const hasPhone = !!(merchant!.phone);
             const hasPhoto = !!(merchant!.photo_url);
             const hasProfile = !!(merchant!.description && merchant!.address && merchant!.opening_hours);
 
@@ -39,7 +39,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
 
             setItems([
                 { label: "Connecter votre caisse (POS)", href: "/dashboard/settings", cta: "Connecter", checked: hasPOS },
-                { label: "Ajouter votre email de contact", href: "/dashboard/store", cta: "Ajouter", checked: hasEmail },
+                { label: "Ajouter votre téléphone de contact", href: "/dashboard/store", cta: "Ajouter", checked: hasPhone },
                 { label: "Ajouter une photo de boutique", href: "/dashboard/store", cta: "Ajouter", checked: hasPhoto },
                 { label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile },
                 { label: "Ajouter des photos à vos produits", href: "/dashboard/products", cta: "Ajouter", checked: hasProductPhotos },

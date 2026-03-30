@@ -101,9 +101,19 @@ export default function ExplorePage() {
 
     useEffect(() => {
         const handler = () => { setSelectedMerchant(null); setFilterOpen(false); setRadiusOpen(false); };
-        const map = document.querySelector("[class*='mapboxgl-canvas']");
-        map?.addEventListener("click", handler);
-        return () => map?.removeEventListener("click", handler);
+        // Retry until mapbox canvas is mounted (dynamic import)
+        let canvas: Element | null = null;
+        const interval = setInterval(() => {
+            canvas = document.querySelector("[class*='mapboxgl-canvas']");
+            if (canvas) {
+                canvas.addEventListener("click", handler);
+                clearInterval(interval);
+            }
+        }, 500);
+        return () => {
+            clearInterval(interval);
+            canvas?.removeEventListener("click", handler);
+        };
     }, []);
 
     return (

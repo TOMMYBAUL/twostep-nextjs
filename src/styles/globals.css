@@ -46,6 +46,10 @@
     --ts-success:    #22B86E;
     --ts-red:        #D94F4F;
     --ts-orange:     #E8923A;
+    --ts-ochre:      #C17B2F;
+    --ts-brown:      #1A1F36;
+    --ts-brown-mid:  #6B7799;
+    --ts-sage:       #22B86E;
 
     /* Dark (pour CTA marketing, sidebar dashboard) */
     --ts-dark:       #070A10;

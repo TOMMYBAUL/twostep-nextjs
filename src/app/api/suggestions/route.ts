@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Groq from "groq-sdk";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "placeholder" });
+const groq = process.env.GROQ_API_KEY
+    ? new Groq({ apiKey: process.env.GROQ_API_KEY })
+    : null;
 
 const SYSTEM_PROMPT = `Tu es un filtre de suggestions pour des boutiques locales.
 Tu reçois un message d'un consommateur destiné au marchand.
@@ -50,6 +52,7 @@ export async function POST(req: NextRequest) {
     let rewrittenText: string | null = null;
 
     try {
+        if (!groq) throw new Error("Groq not configured");
         const completion = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
             messages: [

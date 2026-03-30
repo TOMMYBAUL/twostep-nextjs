@@ -105,7 +105,7 @@ export default function TipsHistoryPage() {
                                 <span className={`inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                                     tip.type === "insight"
                                         ? "bg-[#4268FF]/10 text-[#4268FF]"
-                                        : "bg-[#4268FF]/10 text-[#4268FF]"
+                                        : "bg-emerald-50 text-emerald-600"
                                 }`}>
                                     {tip.emoji} {tip.type === "insight" ? "Insight" : "Action"}
                                 </span>

@@ -23,9 +23,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             .from("products")
             .select("*, stock(quantity), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours)")
             .eq("id", productId)
+            .eq("visible", true)
             .single();
 
-        if (error) {
+        if (error || !data) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 
