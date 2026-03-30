@@ -14,6 +14,9 @@ export async function GET(request: NextRequest) {
 
     const category = request.nextUrl.searchParams.get("category");
     const size = request.nextUrl.searchParams.get("size");
+    const shoeSize = request.nextUrl.searchParams.get("shoe_size");
+    const clothingSize = request.nextUrl.searchParams.get("clothing_size");
+    const promoFirst = request.nextUrl.searchParams.get("promo_first") === "true";
 
     const supabase = await createClient();
 
@@ -29,6 +32,8 @@ export async function GET(request: NextRequest) {
 
     if (category) query = query.eq("category", category);
     if (size) query = query.eq("size", size);
+    if (clothingSize) query = query.eq("size", clothingSize);
+    if (shoeSize) query = query.eq("size", shoeSize);
 
     const { data: products, error } = await query;
 
@@ -62,6 +67,14 @@ export async function GET(request: NextRequest) {
             category: p.category,
             distance_km: 0,
         }));
+
+    if (promoFirst) {
+        result.sort((a: any, b: any) => {
+            const aHasPromo = a.sale_price !== null ? 1 : 0;
+            const bHasPromo = b.sale_price !== null ? 1 : 0;
+            return bHasPromo - aHasPromo; // promos first
+        });
+    }
 
     return NextResponse.json({ products: result }, {
         headers: { "Cache-Control": "private, s-maxage=30" },
