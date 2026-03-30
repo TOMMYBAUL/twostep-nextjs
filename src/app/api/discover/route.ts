@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
 
     const parsed = parseQuery(request.nextUrl.searchParams, discoverQuery);
     if ("error" in parsed) return parsed.error;
-    const { lat, lng, radius, section, category } = parsed.data;
+    const { lat, lng, radius, section, category: rawCategory } = parsed.data;
+    const category = rawCategory?.toLowerCase() ?? null;
     const size = request.nextUrl.searchParams.get("size") || null;
 
     try {

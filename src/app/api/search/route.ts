@@ -15,7 +15,7 @@ export async function GET(request: Request) {
         const parsed = parseQuery(searchParams, searchQuery);
         if ("error" in parsed) return parsed.error;
         const { q: query, lat, lng, radius, limit } = parsed.data;
-        const categoryFilter = searchParams.get("category") || null;
+        const categoryFilter = searchParams.get("category")?.toLowerCase() || null;
 
         const { data, error } = await supabase.rpc("search_products_nearby", {
             search_query: query,
