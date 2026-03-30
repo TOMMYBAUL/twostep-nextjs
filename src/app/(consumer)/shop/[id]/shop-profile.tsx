@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown, Share07 } from "@untitledui/icons";
 import { useState, useEffect } from "react";
 import { HeartButton } from "../../components/heart-button";
+import { StoryBar } from "../../components/story-bar";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
@@ -91,6 +92,19 @@ export default function ShopProfileClient() {
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
     const merchantUuid = profile?.merchant_id;
+
+    const { data: shopStories } = useQuery<any[]>({
+        queryKey: ["stories", merchantUuid],
+        queryFn: async () => {
+            if (!merchantUuid) return [];
+            const res = await fetch(`/api/stories?merchant_ids=${merchantUuid}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.stories ?? [];
+        },
+        enabled: !!merchantUuid,
+        staleTime: 60_000,
+    });
     const isFollowing = follows?.some((f) => f.merchant_id === merchantUuid) ?? false;
 
     useEffect(() => {
@@ -264,6 +278,13 @@ export default function ShopProfileClient() {
                     </div>
                 )}
             </div>
+
+            {/* Stories bar */}
+            {shopStories && shopStories.length > 0 && (
+                <div className="mt-4">
+                    <StoryBar stories={shopStories} />
+                </div>
+            )}
 
             {/* Sub-tabs */}
             <div className="mt-5 border-b border-[#E2E5F0] bg-[#F8F9FC]">

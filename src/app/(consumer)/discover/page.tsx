@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "../components/product-card";
+import { StoryBar } from "../components/story-bar";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows } from "../hooks/use-follows";
 import { generateSlug } from "@/lib/slug";
@@ -775,6 +776,19 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
         staleTime: 30_000,
     });
 
+    const { data: stories } = useQuery<any[]>({
+        queryKey: ["stories", merchantIds],
+        queryFn: async () => {
+            if (merchantIds.length === 0) return [];
+            const res = await fetch(`/api/stories?merchant_ids=${merchantIds.join(",")}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.stories ?? [];
+        },
+        enabled: merchantIds.length > 0,
+        staleTime: 60_000,
+    });
+
     if (!follows || follows.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
@@ -795,6 +809,9 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
 
     return (
         <div className="pb-24 pt-2">
+            {/* Stories bar */}
+            <StoryBar stories={stories ?? []} />
+
             {/* Size auto-filter banner */}
             {hasPrefs ? (
                 <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
