@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         // Insert product
         const { data: product, error: productError } = await supabase
             .from("products")
-            .insert({ merchant_id: merchant.id, name, ean, description, category, price, photo_url })
+            .insert({ merchant_id: merchant.id, name, ean, description, category: category?.toLowerCase() ?? null, price, photo_url })
             .select()
             .single();
 

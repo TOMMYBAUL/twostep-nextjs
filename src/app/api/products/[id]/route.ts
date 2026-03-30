@@ -69,7 +69,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         }
         if (ean !== undefined) updates.ean = ean;
         if (description !== undefined) updates.description = description;
-        if (category !== undefined) updates.category = category;
+        if (category !== undefined) updates.category = typeof category === "string" ? category.toLowerCase() : category;
         if (price !== undefined) {
             if (typeof price !== "number" || price < 0) {
                 return NextResponse.json({ error: "price must be a non-negative number" }, { status: 400 });

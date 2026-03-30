@@ -80,7 +80,7 @@ export const shopifyAdapter: IPOSAdapter = {
                             : product.title,
                         ean: variant.barcode || null,
                         price: variant.price ? parseFloat(variant.price) : null,
-                        category: product.product_type || null,
+                        category: product.product_type?.toLowerCase() || null,
                         photo_url: product.image?.src ?? null,
                     });
                 }

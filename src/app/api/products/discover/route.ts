@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const lng = parseFloat(params.get("lng") ?? "1.4442");
     const page = Math.max(1, parseInt(params.get("page") ?? "1", 10));
     const limit = Math.min(40, Math.max(1, parseInt(params.get("limit") ?? "20", 10)));
-    const category = params.get("category") || null;
+    const category = params.get("category")?.toLowerCase() || null;
     const size = params.get("size") || null;
     const radius = 10;
     const offset = (page - 1) * limit;
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
             .in("id", unique);
         const catMap = new Map<string, string>();
         for (const row of catData ?? []) {
-            if (row.category) catMap.set(row.id, row.category);
+            if (row.category) catMap.set(row.id, row.category.toLowerCase());
         }
         items = items.filter((row: any) => catMap.get(row.product_id) === category);
     }

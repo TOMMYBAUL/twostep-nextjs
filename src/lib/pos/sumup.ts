@@ -83,7 +83,7 @@ export const sumupAdapter: IPOSAdapter = {
                 name: String(p.name),
                 ean: (p.ean as string) || null,
                 price: typeof p.price === "number" ? p.price : null,
-                category: (p.category as string) || null,
+                category: ((p.category as string) || "").toLowerCase() || null,
                 photo_url: (p.image_url as string) || null,
             };
         });

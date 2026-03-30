@@ -81,7 +81,7 @@ export const lightspeedAdapter: IPOSAdapter = {
                     price: item.Prices?.ItemPrice?.[0]?.amount
                         ? parseFloat(item.Prices.ItemPrice[0].amount)
                         : null,
-                    category: item.Category?.name ?? null,
+                    category: item.Category?.name?.toLowerCase() ?? null,
                     photo_url: item.Images?.Image?.baseImageURL ?? null,
                 });
             }

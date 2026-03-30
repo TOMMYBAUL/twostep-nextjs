@@ -14,7 +14,7 @@ export function parseOpenEanResponse(data: Record<string, unknown>): Omit<EanRes
         name: String(data.name ?? "Unknown"),
         brand: data.brand ? String(data.brand) : null,
         photo_url: data.image ? String(data.image) : null,
-        category: data.category_name ? String(data.category_name) : null,
+        category: data.category_name ? String(data.category_name).toLowerCase() : null,
     };
 }
 
@@ -41,7 +41,7 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
             name: item.title ?? "Unknown",
             brand: item.brand ?? null,
             photo_url: item.images?.[0] ?? null,
-            category: item.category ?? null,
+            category: item.category?.toLowerCase() ?? null,
             source: "upc_database",
         };
     } catch {
