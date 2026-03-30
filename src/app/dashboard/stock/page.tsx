@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StockBadge } from "@/components/dashboard/stock-badge";
 import { useToast } from "@/components/dashboard/toast";
@@ -68,6 +70,13 @@ export default function StockPage() {
                         <div key={i} className="animate-pulse rounded-xl bg-white px-4 py-5" />
                     ))}
                 </div>
+            ) : products.length === 0 ? (
+                <EmptyState
+                    icon="📦"
+                    title="Aucun produit"
+                    description="Ajoutez des produits pour gérer votre stock."
+                    action={<Link href="/dashboard/products/new" className="btn-ts">Ajouter un produit</Link>}
+                />
             ) : (
                 <div className="flex flex-col gap-1.5">
                     {products.map((product, i) => {
@@ -87,6 +96,7 @@ export default function StockPage() {
                                 {/* +/- buttons */}
                                 <div className="flex items-center gap-1">
                                     <button
+                                        type="button"
                                         onClick={() => handleDelta(product.id, -1)}
                                         disabled={updatingId === product.id || qty === 0}
                                         className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -97,11 +107,12 @@ export default function StockPage() {
                                         type="number"
                                         min="0"
                                         defaultValue={qty}
-                                        key={qty}
+                                        key={product.id}
                                         onBlur={(e) => handleAbsolute(product.id, e.target.value)}
                                         className="w-16 rounded-lg bg-gray-50 px-2 py-1.5 text-center text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-[var(--ts-accent)]/30"
                                     />
                                     <button
+                                        type="button"
                                         onClick={() => handleDelta(product.id, 1)}
                                         disabled={updatingId === product.id}
                                         className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"

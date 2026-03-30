@@ -12,26 +12,32 @@ interface ProductRowProps {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-    Alimentation: "bg-amber-50",
-    Cosmétique: "bg-pink-50",
-    Hygiène: "bg-blue-50",
-    Textile: "bg-purple-50",
-    Décoration: "bg-green-50",
-    Autre: "bg-gray-100",
+    mode: "bg-purple-50",
+    chaussures: "bg-blue-50",
+    bijoux: "bg-amber-50",
+    beaute: "bg-pink-50",
+    cosmetique: "bg-pink-50",
+    sport: "bg-green-50",
+    deco: "bg-emerald-50",
+    epicerie: "bg-amber-50",
+    tech: "bg-slate-50",
 };
 
 const CATEGORY_EMOJIS: Record<string, string> = {
-    Alimentation: "🥖",
-    Cosmétique: "✨",
-    Hygiène: "🧴",
-    Textile: "👕",
-    Décoration: "🏠",
-    Autre: "📦",
+    mode: "👗",
+    chaussures: "👟",
+    bijoux: "💎",
+    beaute: "💄",
+    cosmetique: "✨",
+    sport: "⚽",
+    deco: "🏠",
+    epicerie: "🧺",
+    tech: "📱",
 };
 
 export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex }: ProductRowProps) {
-    const bg = CATEGORY_COLORS[category ?? "Autre"] ?? "bg-gray-100";
-    const emoji = CATEGORY_EMOJIS[category ?? "Autre"] ?? "📦";
+    const bg = CATEGORY_COLORS[category ?? ""] ?? "bg-gray-100";
+    const emoji = CATEGORY_EMOJIS[category ?? ""] ?? "📦";
 
     return (
         <Link

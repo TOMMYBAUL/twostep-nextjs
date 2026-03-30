@@ -59,7 +59,7 @@ export default function PromotionsPage() {
                 title="Mes"
                 titleAccent="promotions"
                 action={
-                    <button onClick={() => setShowForm(!showForm)} className="btn-ts">
+                    <button type="button" onClick={() => setShowForm(!showForm)} className="btn-ts">
                         {showForm ? "Fermer" : "+ Nouvelle promotion"}
                     </button>
                 }
@@ -97,6 +97,7 @@ export default function PromotionsPage() {
                             type="date"
                             value={endsAt}
                             onChange={(e) => setEndsAt(e.target.value)}
+                            min={new Date().toISOString().split("T")[0]}
                             className="search-ts w-full"
                         />
                     </div>
@@ -119,7 +120,7 @@ export default function PromotionsPage() {
                     title="Aucune promotion active"
                     description="Créez une promotion pour mettre en avant vos produits."
                     action={
-                        <button onClick={() => setShowForm(true)} className="btn-ts">
+                        <button type="button" onClick={() => setShowForm(true)} className="btn-ts">
                             Créer une promotion
                         </button>
                     }
@@ -162,12 +163,14 @@ export default function PromotionsPage() {
                                 {confirmDeleteId === promo.id ? (
                                     <div className="flex items-center gap-2">
                                         <button
+                                            type="button"
                                             onClick={() => { handleDelete(promo.id); setConfirmDeleteId(null); }}
                                             className="rounded-lg bg-red-600 px-2.5 py-1 text-[11px] font-medium text-white"
                                         >
                                             Confirmer
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={() => setConfirmDeleteId(null)}
                                             className="text-[11px] text-gray-400"
                                         >
@@ -176,6 +179,7 @@ export default function PromotionsPage() {
                                     </div>
                                 ) : (
                                     <button
+                                        type="button"
                                         onClick={() => setConfirmDeleteId(promo.id)}
                                         className="text-xs text-red-400 hover:text-red-600"
                                     >

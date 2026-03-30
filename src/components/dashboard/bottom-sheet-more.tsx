@@ -6,6 +6,29 @@ import { Drawer } from "vaul";
 
 const moreItems = [
     {
+        href: "/dashboard/stock",
+        label: "Stock",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+            </svg>
+        ),
+    },
+    {
+        href: "/dashboard/achievements",
+        label: "Trophées",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+            </svg>
+        ),
+    },
+    {
         href: "/dashboard/stories",
         label: "Stories",
         icon: (
@@ -101,6 +124,7 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                         <div className="my-2 border-t border-gray-100" />
 
                         <button
+                            type="button"
                             onClick={() => { onOpenChange(false); window.location.href = "/auth/logout"; }}
                             className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-[#c4553a] transition hover:bg-red-50"
                         >

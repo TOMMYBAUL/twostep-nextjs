@@ -13,6 +13,8 @@ const breadcrumbLabels: Record<string, string> = {
     "/dashboard/store": "Ma boutique",
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
+    "/dashboard/stock": "Stock",
+    "/dashboard/stories": "Stories",
     "/dashboard/tips-history": "Historique tips",
 };
 

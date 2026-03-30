@@ -483,7 +483,7 @@ function DiscoverContent() {
                             <div>
                                 <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Boutique à découvrir</h2>
                                 <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>
-                                    Ouverte maintenant · {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`}
+                                    À {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
                                 </p>
                             </div>
                         </div>
@@ -505,8 +505,8 @@ function DiscoverContent() {
                                     {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
                                 </p>
                             </div>
-                            <span className="shrink-0 rounded-lg px-[7px] py-[2px] text-[9px] font-medium text-[#6ecf7f]" style={{ background: "rgba(34,90,45,0.35)" }}>
-                                Ouvert
+                            <span className="shrink-0 rounded-lg bg-[#4268FF]/10 px-[7px] py-[2px] text-[9px] font-medium text-[#4268FF]">
+                                Voir →
                             </span>
                         </Link>
                     </section>
@@ -801,7 +801,7 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
     const secondarySize = clothingSize && shoeSize ? String(shoeSize) : null;
 
     const { data: suggestions } = useQuery<DiscoverProduct[]>({
-        queryKey: ["for-you-suggestions", lat, lng, primarySize, secondarySize],
+        queryKey: ["for-you-suggestions", lat, lng, primarySize, secondarySize, merchantIds],
         queryFn: async () => {
             if (!primarySize) return [];
             // Fetch nearby products filtered by primary size

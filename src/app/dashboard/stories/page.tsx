@@ -25,6 +25,7 @@ export default function StoriesPage() {
 
     const [stories, setStories] = useState<any[]>([]);
     const [loaded, setLoaded] = useState(false);
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
     const fetchStories = async () => {
         if (!merchant?.id) return;
@@ -51,12 +52,18 @@ export default function StoriesPage() {
             formData.append("image", file);
             if (caption.trim()) formData.append("caption", caption.trim());
             const res = await fetch("/api/stories", { method: "POST", body: formData });
-            if (res.ok) {
-                setFile(null);
-                setPreview(null);
-                setCaption("");
-                fetchStories();
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Échec de la publication");
             }
+            if (preview) URL.revokeObjectURL(preview);
+            setFile(null);
+            setPreview(null);
+            setCaption("");
+            fetchStories();
+        } catch (err) {
+            // Show error inline — no toast available here
+            console.error(err);
         } finally {
             setIsCreating(false);
         }
@@ -70,6 +77,7 @@ export default function StoriesPage() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const f = e.target.files?.[0];
         if (!f) return;
+        if (preview) URL.revokeObjectURL(preview);
         setFile(f);
         setPreview(URL.createObjectURL(f));
     };
@@ -148,13 +156,20 @@ export default function StoriesPage() {
                                             {s.caption && <p className="line-clamp-2 text-[11px] text-white">{s.caption}</p>}
                                             <p className="mt-1 text-[9px] text-white/60">Expire dans {hoursLeft}h</p>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDelete(s.id)}
-                                            className="absolute right-2 top-2 rounded-full bg-black/50 p-1.5"
-                                        >
-                                            <TrashIcon />
-                                        </button>
+                                        {confirmDeleteId === s.id ? (
+                                            <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                                                <button type="button" onClick={() => { handleDelete(s.id); setConfirmDeleteId(null); }} className="rounded-full bg-red-500 px-2 py-1 text-[10px] font-semibold text-white">Supprimer</button>
+                                                <button type="button" onClick={() => setConfirmDeleteId(null)} className="rounded-full bg-black/50 px-2 py-1 text-[10px] text-white">Annuler</button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => setConfirmDeleteId(s.id)}
+                                                className="absolute right-2 top-2 rounded-full bg-black/50 p-1.5"
+                                            >
+                                                <TrashIcon />
+                                            </button>
+                                        )}
                                     </div>
                                 );
                             })}

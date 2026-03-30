@@ -56,6 +56,12 @@ export function StoryViewer({
         }
     }, [storyIndex, groupIndex, groups]);
 
+    // Lock body scroll
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => { document.body.style.overflow = ""; };
+    }, []);
+
     // Auto-advance after 5 seconds
     useEffect(() => {
         const timer = setTimeout(goNext, 5000);
@@ -79,7 +85,18 @@ export function StoryViewer({
                 {/* Progress bars */}
                 <div className="absolute left-2 right-2 top-10 z-10 flex gap-1">
                     {group.stories.map((_, i) => (
-                        <div key={i} className="h-[2px] flex-1 rounded-full" style={{ background: i <= storyIndex ? "white" : "rgba(255,255,255,0.3)" }} />
+                        <div key={i} className="h-[2px] flex-1 overflow-hidden rounded-full bg-white/30">
+                            {i < storyIndex && <div className="h-full w-full bg-white" />}
+                            {i === storyIndex && (
+                                <motion.div
+                                    key={`${groupIndex}-${storyIndex}`}
+                                    className="h-full bg-white"
+                                    initial={{ width: "0%" }}
+                                    animate={{ width: "100%" }}
+                                    transition={{ duration: 5, ease: "linear" }}
+                                />
+                            )}
+                        </div>
                     ))}
                 </div>
 
