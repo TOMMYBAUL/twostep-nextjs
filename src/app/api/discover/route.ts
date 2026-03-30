@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { discoverQuery, parseQuery } from "@/lib/validation";
+import { captureError } from "@/lib/error";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
         });
 
         if (error) {
-            console.error("[discover/promos] RPC error:", error.message);
+            captureError(error, { route: "discover/promos" });
             return NextResponse.json({ error: "Query failed" }, { status: 500 });
         }
 
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (error) {
-        console.error(`[discover/${section}] RPC error:`, error.message);
+        captureError(error, { route: `discover/${section}` });
         return NextResponse.json({ error: "Query failed" }, { status: 500 });
     }
 
@@ -131,7 +132,7 @@ export async function GET(request: NextRequest) {
     });
 
     } catch (err) {
-        console.error("[discover] Unhandled error:", err);
+        captureError(err, { route: "discover" });
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }

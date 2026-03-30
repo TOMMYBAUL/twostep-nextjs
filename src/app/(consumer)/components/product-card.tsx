@@ -62,7 +62,7 @@ export function ProductCard({
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center">
-                        <span className="text-4xl font-light text-[var(--ts-brown-mid)]/10">
+                        <span className="text-4xl font-light text-[#8E96B0]/10">
                             {name.charAt(0)}
                         </span>
                     </div>

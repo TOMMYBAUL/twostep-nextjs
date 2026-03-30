@@ -71,7 +71,8 @@ export default function StoriesPage() {
     };
 
     const handleDelete = async (id: string) => {
-        await fetch(`/api/stories/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/stories/${id}`, { method: "DELETE" });
+        if (!res.ok) { toast("Échec de la suppression", "error"); return; }
         fetchStories();
     };
 

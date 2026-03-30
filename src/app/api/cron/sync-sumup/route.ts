@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     // Find all SumUp-connected merchants
     const { data: connections } = await supabase
         .from("pos_connections")
-        .select("merchant_id, access_token_enc, refresh_token_enc, token_expires_at, options")
+        .select("merchant_id, access_token, refresh_token, token_expires_at, options")
         .eq("provider", "sumup");
 
     if (!connections || connections.length === 0) {
@@ -31,11 +31,11 @@ export async function POST(req: NextRequest) {
     for (const conn of connections) {
         try {
             // Decrypt token
-            let accessToken = decrypt(conn.access_token_enc);
+            let accessToken = decrypt(conn.access_token);
 
             // Refresh if expired
             if (conn.token_expires_at && new Date(conn.token_expires_at) < new Date()) {
-                const refreshToken = decrypt(conn.refresh_token_enc);
+                const refreshToken = decrypt(conn.refresh_token);
                 const newTokens = await adapter.refreshToken(refreshToken);
                 if (newTokens) {
                     accessToken = newTokens.access_token;
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
                     await supabase
                         .from("pos_connections")
                         .update({
-                            access_token_enc: enc(newTokens.access_token),
-                            refresh_token_enc: enc(newTokens.refresh_token),
+                            access_token: enc(newTokens.access_token),
+                            refresh_token: enc(newTokens.refresh_token),
                             token_expires_at: newTokens.expires_at,
                         })
                         .eq("merchant_id", conn.merchant_id)

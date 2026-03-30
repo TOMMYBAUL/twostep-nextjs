@@ -103,9 +103,49 @@ function DiscoverContent() {
     });
 
     const activeSize = sizeFilter ?? (shoeSizeFilter ? String(shoeSizeFilter) : null);
-    const { data: promos, isLoading: loadingPromos } = useDiscoverFeed(lat, lng, "promos", activeCategory, activeSize);
-    const { data: trending, isLoading: loadingTrending } = useDiscoverFeed(lat, lng, "trending", activeCategory, activeSize);
-    const { data: nearby, isLoading: loadingNearby } = useDiscoverFeed(lat, lng, "nearby", activeCategory, activeSize);
+    const isExplorer = feedTab === "explorer";
+    const { data: promos, isLoading: loadingPromos } = useQuery<DiscoverProduct[]>({
+        queryKey: ["discover", "promos", lat, lng, activeCategory, activeSize],
+        queryFn: async () => {
+            const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "promos", radius: "10" });
+            if (activeCategory) params.set("category", activeCategory);
+            if (activeSize) params.set("size", activeSize);
+            const res = await fetch(`/api/discover?${params}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.products ?? [];
+        },
+        staleTime: 15_000,
+        enabled: isExplorer,
+    });
+    const { data: trending, isLoading: loadingTrending } = useQuery<DiscoverProduct[]>({
+        queryKey: ["discover", "trending", lat, lng, activeCategory, activeSize],
+        queryFn: async () => {
+            const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "trending", radius: "10" });
+            if (activeCategory) params.set("category", activeCategory);
+            if (activeSize) params.set("size", activeSize);
+            const res = await fetch(`/api/discover?${params}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.products ?? [];
+        },
+        staleTime: 15_000,
+        enabled: isExplorer,
+    });
+    const { data: nearby, isLoading: loadingNearby } = useQuery<DiscoverProduct[]>({
+        queryKey: ["discover", "nearby", lat, lng, activeCategory, activeSize],
+        queryFn: async () => {
+            const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "nearby", radius: "10" });
+            if (activeCategory) params.set("category", activeCategory);
+            if (activeSize) params.set("size", activeSize);
+            const res = await fetch(`/api/discover?${params}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.products ?? [];
+        },
+        staleTime: 15_000,
+        enabled: isExplorer,
+    });
 
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();

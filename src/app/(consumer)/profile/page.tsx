@@ -454,7 +454,7 @@ function SizingPreferences() {
     };
 
     const selectStyle = "appearance-none rounded-lg border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-3 py-[7px] pr-8 font-[inherit] text-[13px] cursor-pointer min-w-[110px] bg-[length:12px_12px] bg-[position:right_10px_center] bg-no-repeat";
-    const chevronBg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a07840' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`;
+    const chevronBg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234268FF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`;
 
     return (
         <div className="mx-4 mb-4 rounded-xl border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] p-3.5">

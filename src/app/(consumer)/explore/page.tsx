@@ -101,12 +101,13 @@ export default function ExplorePage() {
 
     useEffect(() => {
         const handler = () => { setSelectedMerchant(null); setFilterOpen(false); setRadiusOpen(false); };
-        // Retry until mapbox canvas is mounted (dynamic import)
         let canvas: Element | null = null;
+        let attempts = 0;
         const interval = setInterval(() => {
+            attempts++;
             canvas = document.querySelector("[class*='mapboxgl-canvas']");
-            if (canvas) {
-                canvas.addEventListener("click", handler);
+            if (canvas || attempts >= 20) {
+                canvas?.addEventListener("click", handler);
                 clearInterval(interval);
             }
         }, 500);

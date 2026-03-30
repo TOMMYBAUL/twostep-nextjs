@@ -23,7 +23,7 @@ export function WelcomeGate() {
     const [shoeSize, setShoeSize] = useState<number | null>(null);
 
     useEffect(() => {
-        if (localStorage.getItem(STORAGE_KEY)) return;
+        try { if (localStorage.getItem(STORAGE_KEY)) return; } catch { return; }
         const supabase = createClient();
         supabase.auth.getUser().then(({ data }) => {
             if (!data.user) setShow(true);

@@ -39,9 +39,8 @@ export default function FavoritesPage() {
                     ) : !hasFavs ? (
                         <EmptyStateWithSuggestions />
                     ) : (
-                        favorites.map((fav: any) => {
+                        favorites.filter((fav: any) => fav.products).map((fav: any) => {
                             const product = fav.products;
-                            if (!product) return null;
                             const quantity = product.stock?.[0]?.quantity ?? 0;
                             const merchant = product.merchants;
 

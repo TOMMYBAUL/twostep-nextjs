@@ -44,6 +44,10 @@ export async function GET(request: NextRequest) {
     // Get stock and promos for these products
     const productIds = (products ?? []).map((p: any) => p.id);
 
+    if (productIds.length === 0) {
+        return NextResponse.json({ products: [] });
+    }
+
     const [{ data: stockData }, { data: promoData }] = await Promise.all([
         supabase.from("stock").select("product_id, quantity").in("product_id", productIds),
         supabase.from("promotions").select("product_id, sale_price").in("product_id", productIds).gte("ends_at", new Date().toISOString()),
@@ -104,6 +108,6 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ products: result }, {
-        headers: { "Cache-Control": "private, s-maxage=30" },
+        headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
     });
 }
