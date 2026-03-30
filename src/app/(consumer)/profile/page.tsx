@@ -38,7 +38,7 @@ export default function ProfilePage() {
     const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
 
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(INVITE_URL);
+        try { await navigator.clipboard.writeText(INVITE_URL); } catch {}
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };

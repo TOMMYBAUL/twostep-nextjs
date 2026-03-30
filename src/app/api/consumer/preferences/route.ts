@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
         if (clothing_size !== null && clothing_size !== undefined && !VALID_SIZES.includes(clothing_size)) {
             return NextResponse.json({ error: "Invalid clothing size" }, { status: 400 });
         }
-        if (shoe_size !== null && shoe_size !== undefined && (shoe_size < 18 || shoe_size > 50)) {
+        if (shoe_size !== null && shoe_size !== undefined && (typeof shoe_size !== "number" || shoe_size < 18 || shoe_size > 50)) {
             return NextResponse.json({ error: "Invalid shoe size" }, { status: 400 });
         }
 

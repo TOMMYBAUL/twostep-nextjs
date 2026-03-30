@@ -27,9 +27,10 @@ interface ProductCardProps {
 export function ProductCard({
     id, name, price, photo, category, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className,
 }: ProductCardProps) {
-    const formattedDistance = distance < 1
-        ? `${Math.round(distance * 1000)}m`
-        : `${distance.toFixed(1)}km`;
+    const safeDistance = distance ?? 0;
+    const formattedDistance = safeDistance < 1
+        ? `${Math.round(safeDistance * 1000)}m`
+        : `${safeDistance.toFixed(1)}km`;
 
     const isLow = stockQuantity > 0 && stockQuantity <= 3;
     const isOut = stockQuantity === 0;
@@ -77,7 +78,7 @@ export function ProductCard({
                 </div>
 
                 {/* Promo tag — discret, couleurs Two-Step */}
-                {salePrice && (
+                {salePrice && price > 0 && (
                     <div className="absolute left-2.5 bottom-2.5 rounded-sm bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-medium text-white">
                         -{Math.round(((price - salePrice) / price) * 100)}%
                     </div>

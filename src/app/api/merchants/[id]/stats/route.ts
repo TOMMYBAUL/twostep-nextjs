@@ -52,33 +52,33 @@ export async function GET(
         // table may not exist yet
     }
 
-    // 2. Favorites received
+    // 2. Favorites received (user_favorites → products → merchant)
     let favoritesThisWeek = 0;
     let favoritesLastWeek = 0;
     try {
         const { count: ftw } = await supabase
-            .from("favorites")
-            .select("*", { count: "exact", head: true })
-            .eq("merchant_id", id)
+            .from("user_favorites")
+            .select("*, products!inner(merchant_id)", { count: "exact", head: true })
+            .eq("products.merchant_id", id)
             .gte("created_at", weekAgo.toISOString());
         favoritesThisWeek = ftw ?? 0;
 
         const { count: flw } = await supabase
-            .from("favorites")
-            .select("*", { count: "exact", head: true })
-            .eq("merchant_id", id)
+            .from("user_favorites")
+            .select("*, products!inner(merchant_id)", { count: "exact", head: true })
+            .eq("products.merchant_id", id)
             .gte("created_at", twoWeeksAgo.toISOString())
             .lt("created_at", weekAgo.toISOString());
         favoritesLastWeek = flw ?? 0;
     } catch {
-        // column may not exist yet
+        // join may fail if no products
     }
 
     // 3. Follows
     let followsTotal = 0;
     try {
         const { count } = await supabase
-            .from("follows")
+            .from("user_follows")
             .select("*", { count: "exact", head: true })
             .eq("merchant_id", id);
         followsTotal = count ?? 0;

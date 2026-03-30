@@ -64,14 +64,7 @@ export default function StorePage() {
                 .upload(path, file, { upsert: true, contentType: file.type });
 
             if (uploadError) {
-                // Bucket may not exist — try direct API update with data URL
-                const reader = new FileReader();
-                reader.onload = async () => {
-                    // Fallback: upload via merchant PATCH with a temporary URL
-                    toast("Upload en cours...", "success");
-                };
-                reader.readAsDataURL(file);
-                throw uploadError;
+                throw new Error("Upload échoué — vérifiez que le bucket 'merchant-photos' existe dans Supabase Storage");
             }
 
             const { data: urlData } = supabase.storage.from("merchant-photos").getPublicUrl(path);

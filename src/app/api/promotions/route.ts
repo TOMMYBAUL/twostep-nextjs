@@ -16,32 +16,30 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "merchant_id is required" }, { status: 400 });
         }
 
-        if (merchantIdParam) {
-            const merchantId = await resolveMerchantId(merchantIdParam);
-            if (!merchantId) {
-                return NextResponse.json({ promotions: [] });
-            }
-            // Filter by merchant: get product IDs first, then fetch their promotions
-            const { data: products } = await supabase.from("products").select("id").eq("merchant_id", merchantId);
-            const productIds = (products ?? []).map((p) => p.id);
-
-            if (productIds.length === 0) {
-                return NextResponse.json({ promotions: [] });
-            }
-
-            const { data, error } = await supabase
-                .from("promotions")
-                .select("*, products(name, price, photo_url, merchant_id)")
-                .in("product_id", productIds)
-                .or("ends_at.is.null,ends_at.gt.now()")
-                .order("created_at", { ascending: false });
-
-            if (error) {
-                return NextResponse.json({ error: "Operation failed" }, { status: 500 });
-            }
-
-            return NextResponse.json({ promotions: data ?? [] });
+        const merchantId = await resolveMerchantId(merchantIdParam);
+        if (!merchantId) {
+            return NextResponse.json({ promotions: [] });
         }
+
+        const { data: products } = await supabase.from("products").select("id").eq("merchant_id", merchantId);
+        const productIds = (products ?? []).map((p) => p.id);
+
+        if (productIds.length === 0) {
+            return NextResponse.json({ promotions: [] });
+        }
+
+        const { data, error } = await supabase
+            .from("promotions")
+            .select("*, products(name, price, photo_url, merchant_id)")
+            .in("product_id", productIds)
+            .or("ends_at.is.null,ends_at.gt.now()")
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            return NextResponse.json({ error: "Operation failed" }, { status: 500 });
+        }
+
+        return NextResponse.json({ promotions: data ?? [] });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

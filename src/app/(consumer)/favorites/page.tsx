@@ -63,7 +63,7 @@ export default function FavoritesPage() {
                                     <div className="flex flex-1 flex-col justify-between py-0.5">
                                         <div>
                                             <h3 className="text-[13px] font-medium text-[#1A1F36]">{product.name}</h3>
-                                            <p className="mt-0.5 text-xs font-normal text-[#8E96B0]">{product.price?.toFixed(2)} €</p>
+                                            <p className="mt-0.5 text-xs font-normal text-[#8E96B0]">{(product.price ?? 0).toFixed(2)} €</p>
                                             {merchant && (
                                                 <p className="mt-0.5 text-[11px] text-[#8E96B0]">{merchant.name}</p>
                                             )}

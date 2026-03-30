@@ -39,8 +39,14 @@ export async function POST(request: NextRequest) {
             break;
         }
         case "customer.subscription.deleted": {
-            // Find merchant by Stripe customer ID and downgrade to free
-            // For simplicity, handled via stripe_customer_id lookup
+            const sub = event.data.object as any;
+            const customerId = sub.customer as string;
+            if (customerId) {
+                await supabase
+                    .from("merchants")
+                    .update({ plan: "free" })
+                    .eq("stripe_customer_id", customerId);
+            }
             break;
         }
     }

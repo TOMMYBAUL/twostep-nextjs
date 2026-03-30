@@ -50,8 +50,9 @@ export async function POST(request: NextRequest) {
     }
     const { product_id, merchant_id, selected_size } = body as { product_id?: string; merchant_id?: string; selected_size?: string };
 
-    if (!product_id || !merchant_id) {
-        return NextResponse.json({ error: "Missing product_id or merchant_id" }, { status: 400 });
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!product_id || !merchant_id || !uuidRegex.test(product_id) || !uuidRegex.test(merchant_id)) {
+        return NextResponse.json({ error: "Valid product_id and merchant_id required" }, { status: 400 });
     }
 
     // Rate limit: max 5 signals per user per hour

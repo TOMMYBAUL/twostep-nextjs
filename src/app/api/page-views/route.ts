@@ -6,11 +6,17 @@ export async function POST(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "page-views", 60);
     if (limited) return limited;
 
-    const body = await request.json();
-    const { merchant_id, page_type, product_id } = body;
+    let body: Record<string, unknown>;
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
+    const { merchant_id, page_type, product_id } = body as { merchant_id?: string; page_type?: string; product_id?: string };
 
-    if (!merchant_id) {
-        return NextResponse.json({ error: "merchant_id required" }, { status: 400 });
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!merchant_id || !uuidRegex.test(merchant_id)) {
+        return NextResponse.json({ error: "Valid merchant_id required" }, { status: 400 });
     }
 
     const supabase = await createClient();

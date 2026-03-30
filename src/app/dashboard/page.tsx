@@ -272,7 +272,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                         <div
                             className="h-full rounded-full transition-all duration-500"
                             style={{
-                                width: `${(completed / steps.length) * 100}%`,
+                                width: `${steps.length > 0 ? (completed / steps.length) * 100 : 0}%`,
                                 background: completed === steps.length ? "#5a9474" : "#4268FF",
                             }}
                         />

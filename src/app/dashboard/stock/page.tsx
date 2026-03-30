@@ -107,7 +107,7 @@ export default function StockPage() {
                                         type="number"
                                         min="0"
                                         defaultValue={qty}
-                                        key={product.id}
+                                        key={`${product.id}-${qty}`}
                                         onBlur={(e) => handleAbsolute(product.id, e.target.value)}
                                         className="w-16 rounded-lg bg-gray-50 px-2 py-1.5 text-center text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-[var(--ts-accent)]/30"
                                     />

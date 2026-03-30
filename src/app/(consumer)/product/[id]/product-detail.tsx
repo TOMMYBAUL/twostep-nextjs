@@ -140,7 +140,7 @@ export default function ProductDetailClient() {
                 {/* Back button — mobile only */}
                 <button
                     type="button"
-                    onClick={() => window.history.back()}
+                    onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/discover")}
                     className="absolute left-4 top-4 flex size-8 items-center justify-center rounded-full md:hidden"
                     style={{ marginTop: "env(safe-area-inset-top)", background: "rgba(26,31,54,0.55)" }}
                     aria-label="Retour"
@@ -520,7 +520,7 @@ export default function ProductDetailClient() {
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                navigator.clipboard.writeText(shop.phone!);
+                                                try { navigator.clipboard.writeText(shop.phone!); } catch {}
                                                 setPhoneCopied(true);
                                                 setTimeout(() => setPhoneCopied(false), 2000);
                                             }}

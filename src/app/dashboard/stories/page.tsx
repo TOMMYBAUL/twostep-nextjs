@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 
 function TrashIcon() {
@@ -16,6 +17,7 @@ function TrashIcon() {
 
 export default function StoriesPage() {
     const { merchant } = useMerchant();
+    const { toast } = useToast();
 
     const fileRef = useRef<HTMLInputElement>(null);
     const [caption, setCaption] = useState("");
@@ -62,8 +64,7 @@ export default function StoriesPage() {
             setCaption("");
             fetchStories();
         } catch (err) {
-            // Show error inline — no toast available here
-            console.error(err);
+            toast(err instanceof Error ? err.message : "Échec de la publication", "error");
         } finally {
             setIsCreating(false);
         }
