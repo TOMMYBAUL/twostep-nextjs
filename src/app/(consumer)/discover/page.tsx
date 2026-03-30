@@ -68,7 +68,7 @@ export default function DiscoverPage() {
     const [shoeSizeFilter, setShoeSizeFilter] = useState<number | null>(null);
     const [showSizeFilters, setShowSizeFilters] = useState(false);
     const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
-    const [feedTab, setFeedTab] = useState<"pour-toi" | "suivis">("pour-toi");
+    const [feedTab, setFeedTab] = useState<"explorer" | "pour-toi" | "suivis">("explorer");
 
     const { data: availableSizes } = useQuery<{ clothing: string[]; shoe: number[] }>({
         queryKey: ["available-sizes"],
@@ -142,7 +142,8 @@ export default function DiscoverPage() {
                     </Link>
                 </div>
 
-                {/* ── Category pills with emoji + size filter button ── */}
+                {/* ── Category pills + size filter (Explorer tab only) ── */}
+                {feedTab === "explorer" && <>
                 <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
                     {/* Size filter toggle */}
                     <button
@@ -260,38 +261,30 @@ export default function DiscoverPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
+                </>}
             </div>
 
-            {/* ── Pour toi / Suivis toggle ── */}
-            <div className="flex gap-6 border-b border-[#E2E5F0] px-4">
-                <button
-                    type="button"
-                    onClick={() => setFeedTab("pour-toi")}
-                    className={cx(
-                        "pb-1.5 text-xs font-medium transition duration-150",
-                        feedTab === "pour-toi"
-                            ? "border-b-2 border-[#4268FF] text-[#4268FF]"
-                            : "text-[#8E96B0]",
-                    )}
-                >
-                    Pour toi
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setFeedTab("suivis")}
-                    className={cx(
-                        "pb-1.5 text-xs font-medium transition duration-150",
-                        feedTab === "suivis"
-                            ? "border-b-2 border-[#4268FF] text-[#4268FF]"
-                            : "text-[#8E96B0]",
-                    )}
-                >
-                    Suivis
-                </button>
+            {/* ── Explorer / Pour toi / Suivis toggle ── */}
+            <div className="flex border-b border-[#E2E5F0]">
+                {(["explorer", "pour-toi", "suivis"] as const).map((tab) => (
+                    <button
+                        key={tab}
+                        type="button"
+                        onClick={() => setFeedTab(tab)}
+                        className={cx(
+                            "flex-1 py-2.5 text-center text-[12px] font-semibold transition duration-150",
+                            feedTab === tab
+                                ? "border-b-2 border-[#4268FF] text-[#1A1F36]"
+                                : "text-[#8E96B0]",
+                        )}
+                    >
+                        {tab === "explorer" ? "Explorer" : tab === "pour-toi" ? "Pour toi" : "Suivis"}
+                    </button>
+                ))}
             </div>
 
             {/* ── Feed sections ── */}
-            {feedTab === "pour-toi" ? (
+            {feedTab === "explorer" ? (
             <div className="flex flex-col gap-5 pb-24 pt-4">
 
                 {/* ── 1. Promos du moment — 1 grande + 3 petites ── */}
@@ -591,6 +584,8 @@ export default function DiscoverPage() {
                 {/* ── 6. Tout près de toi — infinite scroll ── */}
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
+            ) : feedTab === "pour-toi" ? (
+                <div className="px-4 py-12 text-center text-sm text-[#8E96B0]">Bientôt disponible</div>
             ) : (
                 <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
             )}
