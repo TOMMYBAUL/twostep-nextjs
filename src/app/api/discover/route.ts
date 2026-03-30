@@ -84,12 +84,13 @@ export async function GET(request: NextRequest) {
 
     let items = data ?? [];
 
-    // Resolve categories and merchant photos
+    // Resolve categories, merchant photos, and active promotions
     const productIds = items.map((r: any) => r.product_id);
     const merchantIds = [...new Set<string>(items.map((r: any) => r.merchant_id))];
-    const [categoryMap, merchantPhotoMap] = await Promise.all([
+    const [categoryMap, merchantPhotoMap, promoMap] = await Promise.all([
         resolveCategories(supabase, productIds),
         resolveMerchantPhotos(supabase, merchantIds),
+        resolveActivePromos(supabase, productIds),
     ]);
 
     // Deduplicate by product_id+merchant_id
@@ -121,7 +122,7 @@ export async function GET(request: NextRequest) {
         merchant_name: row.merchant_name,
         merchant_photo: merchantPhotoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
-        sale_price: row.sale_price ?? null,
+        sale_price: row.sale_price ?? promoMap.get(row.product_id) ?? null,
         category: categoryMap.get(row.product_id) ?? null,
     }));
 
@@ -166,6 +167,30 @@ async function resolveCategories(
     const map = new Map<string, string>();
     for (const row of data ?? []) {
         if (row.category) map.set(row.id, row.category.toLowerCase());
+    }
+    return map;
+}
+
+/** Fetch active promotion sale_price for a list of product IDs */
+async function resolveActivePromos(
+    supabase: any,
+    productIds: string[],
+): Promise<Map<string, number>> {
+    if (productIds.length === 0) return new Map();
+    const unique = [...new Set(productIds)];
+    const { data } = await supabase
+        .from("promotions")
+        .select("product_id, sale_price")
+        .in("product_id", unique)
+        .lte("starts_at", new Date().toISOString())
+        .or("ends_at.is.null,ends_at.gt.now()");
+    const map = new Map<string, number>();
+    for (const row of data ?? []) {
+        // Keep the lowest sale_price if multiple active promos
+        const current = map.get(row.product_id);
+        if (!current || row.sale_price < current) {
+            map.set(row.product_id, row.sale_price);
+        }
     }
     return map;
 }

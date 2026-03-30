@@ -3,7 +3,7 @@
  * Bump CACHE_VERSION on each deploy to bust stale caches.
  */
 
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 7;
 const CACHE_NAME = `twostep-v${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install
