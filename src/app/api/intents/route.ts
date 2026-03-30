@@ -4,6 +4,33 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sendIntentEmail } from "@/lib/email/resend";
 import { sendPushToUser } from "@/lib/push-send";
 
+export async function GET(request: NextRequest) {
+    const productId = request.nextUrl.searchParams.get("product_id");
+    if (!productId) {
+        return NextResponse.json({ count: 0 });
+    }
+
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Count active intents for this product (exclude current user)
+    const admin = createAdminClient();
+    let query = admin
+        .from("intent_signals")
+        .select("id", { count: "exact", head: true })
+        .eq("product_id", productId)
+        .eq("status", "active")
+        .gte("expires_at", new Date().toISOString());
+
+    if (user) {
+        query = query.neq("user_id", user.id);
+    }
+
+    const { count } = await query;
+
+    return NextResponse.json({ count: count ?? 0 });
+}
+
 export async function POST(request: NextRequest) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();

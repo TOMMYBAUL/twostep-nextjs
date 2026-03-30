@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -79,6 +79,16 @@ export default function ProductDetailClient() {
 
     const [intentSent, setIntentSent] = useState(false);
     const [intentLoading, setIntentLoading] = useState(false);
+    const [othersCount, setOthersCount] = useState(0);
+
+    // Fetch how many others are interested in this product
+    useEffect(() => {
+        if (!product?.id) return;
+        fetch(`/api/intents?product_id=${product.id}`)
+            .then((r) => r.json())
+            .then((d) => setOthersCount(d.count ?? 0))
+            .catch(() => {});
+    }, [product?.id, intentSent]);
 
     const handleIntent = async () => {
         if (intentLoading || intentSent || !product) return;
@@ -264,6 +274,16 @@ export default function ProductDetailClient() {
                     {/* ── J'arrive button ── */}
                     {quantity > 0 && (
                         <div className="pt-5">
+                            {othersCount > 0 && !intentSent && (
+                                <div className="mb-3 flex items-center gap-2 rounded-xl bg-[#FFF4F0] px-3.5 py-2.5">
+                                    <span className="text-[13px]">🔥</span>
+                                    <p className="text-[11px] font-medium text-[#E8553A]">
+                                        {othersCount === 1
+                                            ? "1 autre personne est aussi intéressée"
+                                            : `${othersCount} autres personnes sont aussi intéressées`}
+                                    </p>
+                                </div>
+                            )}
                             {intentSent ? (
                                 <button
                                     type="button"
