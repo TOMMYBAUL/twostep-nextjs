@@ -161,7 +161,7 @@ async function resolveCategories(
         .in("id", unique);
     const map = new Map<string, string>();
     for (const row of data ?? []) {
-        if (row.category) map.set(row.id, row.category);
+        if (row.category) map.set(row.id, row.category.toLowerCase());
     }
     return map;
 }

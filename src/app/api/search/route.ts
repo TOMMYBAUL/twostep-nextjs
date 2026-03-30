@@ -41,7 +41,7 @@ export async function GET(request: Request) {
             const categoryMap = new Map<string, string>();
             for (const p of productMeta ?? []) {
                 if (p.variant_of || p.visible === false) hiddenSet.add(p.id);
-                if (p.category) categoryMap.set(p.id, p.category);
+                if (p.category) categoryMap.set(p.id, p.category.toLowerCase());
             }
             results = results.filter((r: any) => !hiddenSet.has(r.product_id));
             if (categoryFilter) {

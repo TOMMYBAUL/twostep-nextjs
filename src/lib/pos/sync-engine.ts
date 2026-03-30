@@ -219,7 +219,7 @@ async function upsertProduct(
         p_name: posProduct.name,
         p_price: posProduct.price,
         p_ean: posProduct.ean,
-        p_category: posProduct.category,
+        p_category: posProduct.category?.toLowerCase() ?? null,
         p_photo_url: posProduct.photo_url,
         p_pos_item_id: posProduct.pos_item_id,
         p_pos_provider: provider,
