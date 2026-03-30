@@ -13,6 +13,7 @@ import { useCoachTips } from "@/hooks/use-coach-tips";
 import { useAchievements } from "@/hooks/use-achievements";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
+import { IntentSignals } from "@/components/dashboard/intent-signals";
 import { createClient } from "@/lib/supabase/client";
 import { generateSlug } from "@/lib/slug";
 
@@ -128,6 +129,8 @@ export default function DashboardPage() {
                 title="Bienvenue sur"
                 titleAccent="Two-Step"
             />
+
+            <IntentSignals merchantId={merchant?.id} />
 
             {onboardingLoading ? (
                 <div className="max-w-2xl space-y-6">
