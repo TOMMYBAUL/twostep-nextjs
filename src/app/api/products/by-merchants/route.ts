@@ -79,10 +79,12 @@ export async function GET(request: NextRequest) {
             distance_km: 0,
         }));
 
-    // When user sizes are provided, FILTER to only products with those sizes in stock
+    // When user sizes are provided, FILTER to products with those sizes in stock
+    // Sizeless products (no available_sizes) pass through — they fit everyone
     let result = mapped;
     if (userSizes.length > 0) {
         result = mapped.filter((p: any) =>
+            !Array.isArray(p._availableSizes) || p._availableSizes.length === 0 ||
             userSizes.some((s) => hasSizeInStock(p._availableSizes, s)),
         );
     }
