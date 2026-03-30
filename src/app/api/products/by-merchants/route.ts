@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     // Only fetch products from the specified merchants
     let query = supabase
         .from("products")
-        .select("id, name, price, photo_url, photo_processed_url, category, size, merchant_id, created_at, merchants!inner(name, photo_url)")
+        .select("id, name, price, photo_url, photo_processed_url, category, size, available_sizes, merchant_id, created_at, merchants!inner(name, photo_url)")
         .in("merchant_id", ids)
         .is("variant_of", null)
         .eq("visible", true)
@@ -52,6 +52,16 @@ export async function GET(request: NextRequest) {
     const stockMap = new Map((stockData ?? []).map((s: any) => [s.product_id, s.quantity]));
     const promoMap = new Map((promoData ?? []).map((p: any) => [p.product_id, p.sale_price]));
 
+    // Helper: check if a product has a given size with stock > 0 in available_sizes
+    const hasSizeInStock = (availableSizes: any, targetSize: string): boolean => {
+        if (!Array.isArray(availableSizes)) return false;
+        return availableSizes.some(
+            (entry: any) => entry.size === targetSize && (entry.quantity ?? 0) > 0,
+        );
+    };
+
+    const userSizes = [clothingSize, shoeSize].filter(Boolean) as string[];
+
     const result = (products ?? [])
         .filter((p: any) => (stockMap.get(p.id) ?? 0) > 0)
         .map((p: any) => ({
@@ -65,19 +75,17 @@ export async function GET(request: NextRequest) {
             merchant_photo: p.merchants?.photo_url ?? null,
             sale_price: promoMap.get(p.id) ?? null,
             category: p.category,
-            size: p.size ?? null,
+            _availableSizes: p.available_sizes,
             distance_km: 0,
         }));
 
-    // Sort: size-matched first, then promos, then rest
-    const userSizes = [clothingSize, shoeSize].filter(Boolean) as string[];
-
+    // Sort: size-matched (with stock) first, then promos, then rest
     if (promoFirst || userSizes.length > 0) {
         result.sort((a: any, b: any) => {
-            // 1. Size match has highest priority
+            // 1. Size match with stock has highest priority
             if (userSizes.length > 0) {
-                const aMatchesSize = a.size && userSizes.includes(a.size) ? 1 : 0;
-                const bMatchesSize = b.size && userSizes.includes(b.size) ? 1 : 0;
+                const aMatchesSize = userSizes.some((s) => hasSizeInStock(a._availableSizes, s)) ? 1 : 0;
+                const bMatchesSize = userSizes.some((s) => hasSizeInStock(b._availableSizes, s)) ? 1 : 0;
                 if (aMatchesSize !== bMatchesSize) return bMatchesSize - aMatchesSize;
             }
             // 2. Promos second
@@ -88,6 +96,11 @@ export async function GET(request: NextRequest) {
             }
             return 0;
         });
+    }
+
+    // Remove internal field before sending response
+    for (const item of result) {
+        delete item._availableSizes;
     }
 
     return NextResponse.json({ products: result }, {
