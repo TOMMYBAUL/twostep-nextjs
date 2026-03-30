@@ -32,8 +32,14 @@ export async function GET(request: NextRequest) {
 
     if (category) query = query.eq("category", category);
     if (size) query = query.eq("size", size);
-    if (clothingSize) query = query.eq("size", clothingSize);
-    if (shoeSize) query = query.eq("size", shoeSize);
+    // When both sizes are provided, use OR (a product is either clothing OR shoes)
+    if (clothingSize && shoeSize) {
+        query = query.or(`size.eq.${clothingSize},size.eq.${shoeSize}`);
+    } else if (clothingSize) {
+        query = query.eq("size", clothingSize);
+    } else if (shoeSize) {
+        query = query.eq("size", shoeSize);
+    }
 
     const { data: products, error } = await query;
 
