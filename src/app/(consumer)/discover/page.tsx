@@ -585,7 +585,7 @@ export default function DiscoverPage() {
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
             ) : feedTab === "pour-toi" ? (
-                <div className="px-4 py-12 text-center text-sm text-[#8E96B0]">Bientôt disponible</div>
+                <ForYouFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             ) : (
                 <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
             )}
@@ -738,6 +738,143 @@ function InfiniteProductGrid({
                 )}
             </div>
         </section>
+    );
+}
+
+/* ── For You feed — followed shops, auto size filtered, promos first ── */
+function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void }) {
+    const merchantIds = follows?.map((f: any) => f.merchant_id) ?? [];
+
+    const { data: prefs } = useQuery<{ clothing_size: string | null; shoe_size: number | null }>({
+        queryKey: ["consumer-preferences"],
+        queryFn: async () => {
+            const res = await fetch("/api/consumer/preferences");
+            if (!res.ok) return { clothing_size: null, shoe_size: null };
+            return res.json();
+        },
+        staleTime: 5 * 60_000,
+    });
+
+    const clothingSize = prefs?.clothing_size ?? null;
+    const shoeSize = prefs?.shoe_size ?? null;
+    const hasPrefs = clothingSize !== null || shoeSize !== null;
+
+    const { data: products, isLoading } = useQuery<DiscoverProduct[]>({
+        queryKey: ["for-you-products", merchantIds, clothingSize, shoeSize],
+        queryFn: async () => {
+            if (merchantIds.length === 0) return [];
+            const params = new URLSearchParams({ merchant_ids: merchantIds.join(","), promo_first: "true" });
+            if (clothingSize) params.set("clothing_size", clothingSize);
+            if (shoeSize) params.set("shoe_size", String(shoeSize));
+            const res = await fetch(`/api/products/by-merchants?${params}`);
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.products ?? [];
+        },
+        enabled: merchantIds.length > 0,
+        staleTime: 30_000,
+    });
+
+    if (!follows || follows.length === 0) {
+        return (
+            <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#F5F6FA] text-2xl">🏪</div>
+                <p className="mt-4 text-[15px] font-semibold text-[#1A1F36]">Aucune boutique suivie</p>
+                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
+                    Abonne-toi à des boutiques pour voir ici les produits faits pour toi.
+                </p>
+                <Link
+                    href="/explore"
+                    className="mt-4 rounded-full bg-[#4268FF] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
+                >
+                    Explorer les boutiques
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="pb-24 pt-2">
+            {/* Size auto-filter banner */}
+            {hasPrefs ? (
+                <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
+                    <div className="flex gap-1.5">
+                        {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
+                        {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
+                    </div>
+                </div>
+            ) : (
+                <Link href="/profile" className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#FFF8EE] px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium text-[#C88A3A]">Renseigne ta taille pour un feed personnalisé</span>
+                    <ChevronRight className="size-3.5 text-[#C88A3A]" />
+                </Link>
+            )}
+
+            {/* Loading */}
+            {isLoading && (
+                <div className="grid grid-cols-2 gap-3 px-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#F5F6FA]" />
+                    ))}
+                </div>
+            )}
+
+            {/* Empty (has follows but no matching products) */}
+            {!isLoading && (!products || products.length === 0) && (
+                <div className="flex flex-col items-center px-6 pt-12 text-center">
+                    <p className="text-[15px] font-semibold text-[#1A1F36]">Rien dans ta taille</p>
+                    <p className="mt-1.5 text-[13px] text-[#8E96B0]">
+                        Tes boutiques suivies n'ont pas encore de produits dans ta taille. Reviens bientôt !
+                    </p>
+                </div>
+            )}
+
+            {/* Products grid */}
+            {products && products.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 px-4">
+                    {products.map((p) => {
+                        const isFav = favoriteIds.has(p.product_id);
+                        return (
+                            <div key={p.product_id}>
+                                <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
+                                    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
+                                        {p.product_photo ? (
+                                            <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center">
+                                                <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
+                                            </div>
+                                        )}
+                                        {p.sale_price && (
+                                            <div className="absolute left-3 top-3 rounded-lg bg-[#FF4757] px-2 py-0.5 text-[10px] font-bold text-white">
+                                                -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
+                                            </div>
+                                        )}
+                                        <div className="absolute right-3 top-3">
+                                            <HeartButton
+                                                isFavorite={isFav}
+                                                onToggle={() => onToggleFav(p.product_id)}
+                                                ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                                className="!size-8 !rounded-full [background:rgba(26,31,54,0.5)]"
+                                            />
+                                        </div>
+                                    </div>
+                                </Link>
+                                <div className="mt-2">
+                                    <p className="text-[10px] text-[#8E96B0] uppercase">{p.merchant_name}</p>
+                                    <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
+                                    <div className="mt-0.5 flex items-baseline gap-2">
+                                        <span className="text-[12px] text-[#6B7799]">{(p.sale_price ?? p.product_price).toFixed(2)} €</span>
+                                        {p.sale_price && <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
     );
 }
 
