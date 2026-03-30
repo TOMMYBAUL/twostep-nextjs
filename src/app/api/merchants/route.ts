@@ -77,6 +77,33 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "lat must be [-90,90], lng must be [-180,180]" }, { status: 400 });
         }
 
+        // Geocode address if coordinates are missing (0,0)
+        let finalLat = lat;
+        let finalLng = lng;
+        if (lat === 0 && lng === 0 && address && city) {
+            const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+            if (mapboxToken) {
+                try {
+                    const query = encodeURIComponent(`${address}, ${city}, France`);
+                    const geoRes = await fetch(
+                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxToken}&limit=1&country=FR`,
+                    );
+                    if (geoRes.ok) {
+                        const geoData = await geoRes.json();
+                        const coords = geoData.features?.[0]?.center;
+                        if (coords) {
+                            finalLng = coords[0];
+                            finalLat = coords[1];
+                        }
+                    }
+                } catch {
+                    // Geocoding failed — use defaults (Toulouse center)
+                    finalLat = 43.6047;
+                    finalLng = 1.4442;
+                }
+            }
+        }
+
         const { data, error } = await supabase
             .from("merchants")
             .insert({
@@ -84,7 +111,7 @@ export async function POST(request: NextRequest) {
                 name,
                 address,
                 city,
-                location: `SRID=4326;POINT(${lng} ${lat})`,
+                location: `SRID=4326;POINT(${finalLng} ${finalLat})`,
                 siret: siret ?? null,
                 phone: phone ?? null,
                 description: description ?? null,

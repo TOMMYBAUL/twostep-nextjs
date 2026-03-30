@@ -89,14 +89,9 @@ export default function ExplorePage() {
             });
             if (category) params.set("category", category);
             if (activeSizeExplore) params.set("size", activeSizeExplore);
-            console.log("[explore] Fetching nearby:", { lat: position!.lat, lng: position!.lng, radius, category });
             const res = await fetch(`/api/nearby?${params}`);
-            if (!res.ok) {
-                console.error("[explore] API error:", res.status, await res.text().catch(() => ""));
-                throw new Error("Failed");
-            }
+            if (!res.ok) throw new Error("Failed");
             const json = await res.json();
-            console.log("[explore] Got merchants:", json.merchants?.length ?? 0);
             return json.merchants;
         },
         enabled: !!position,

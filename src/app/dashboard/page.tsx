@@ -61,10 +61,10 @@ export default function DashboardPage() {
                     checked: hasPOS,
                 },
                 {
-                    label: "Ajouter votre email de contact",
+                    label: "Ajouter votre téléphone de contact",
                     description: "Pour que vos clients puissent vous joindre facilement.",
                     href: "/dashboard/store",
-                    cta: "Ajouter mon email",
+                    cta: "Ajouter mon téléphone",
                     checked: hasEmail,
                 },
                 {
@@ -255,6 +255,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
         <div className="rounded-xl bg-white overflow-hidden">
             {/* Compact bar — always visible */}
             <button
+                type="button"
                 onClick={() => setExpanded(!expanded)}
                 className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-gray-50"
             >

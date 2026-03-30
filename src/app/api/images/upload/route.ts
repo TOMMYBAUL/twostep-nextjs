@@ -30,6 +30,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "file and product_id required" }, { status: 400 });
         }
 
+        // Validate file type and size
+        const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            return NextResponse.json({ error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF" }, { status: 400 });
+        }
+        if (file.size > MAX_SIZE) {
+            return NextResponse.json({ error: "File too large (max 5 MB)" }, { status: 400 });
+        }
+
         // Verify product belongs to merchant
         const { data: product } = await supabase
             .from("products")

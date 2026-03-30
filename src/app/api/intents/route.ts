@@ -38,8 +38,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { product_id, merchant_id, selected_size } = body;
+    let body: Record<string, unknown>;
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const { product_id, merchant_id, selected_size } = body as { product_id?: string; merchant_id?: string; selected_size?: string };
 
     if (!product_id || !merchant_id) {
         return NextResponse.json({ error: "Missing product_id or merchant_id" }, { status: 400 });
@@ -102,7 +107,7 @@ export async function POST(request: NextRequest) {
 
     // 1. Email
     if (merchantEmail) {
-        sendIntentEmail(merchantEmail, merchantName, userName, productName, selected_size).catch(() => {});
+        sendIntentEmail(merchantEmail, merchantName, userName, productName, selected_size ?? null).catch(() => {});
     }
 
     // 2. Push notification to merchant

@@ -216,7 +216,7 @@ export default function ProductDetailClient() {
                         <button
                             type="button"
                             onClick={() => setSizeSheetOpen(true)}
-                            className="flex w-full items-center justify-between border-y-[0.5px] border-[rgba(255,255,255,0.07)] py-4"
+                            className="flex w-full items-center justify-between border-y-[0.5px] border-[#E2E5F0] py-4"
                         >
                             <span className="text-[13px] text-[#8E96B0]">
                                 {/^\d/.test(availableSizes[0].size) ? "Pointure" : "Taille"}
@@ -228,21 +228,23 @@ export default function ProductDetailClient() {
                         </button>
                     )}
 
-                    {/* Size guide line */}
-                    <button
-                        type="button"
-                        onClick={() => setSizeChartOpen(true)}
-                        className="flex w-full items-center justify-between border-b-[0.5px] border-[rgba(255,255,255,0.07)] py-3.5"
-                    >
-                        <span className="text-[13px] text-[#8E96B0]">Correspondances de taille</span>
-                        <ChevronRight className="size-4 text-[#E2E5F0]" />
-                    </button>
+                    {/* Size guide line — only when product has sizes */}
+                    {hasSizes && (
+                        <button
+                            type="button"
+                            onClick={() => setSizeChartOpen(true)}
+                            className="flex w-full items-center justify-between border-b-[0.5px] border-[#E2E5F0] py-3.5"
+                        >
+                            <span className="text-[13px] text-[#8E96B0]">Correspondances de taille</span>
+                            <ChevronRight className="size-4 text-[#E2E5F0]" />
+                        </button>
+                    )}
 
                     {/* ── Shop line ── */}
                     {product.merchants && (
                         <Link
                             href={shopSlug ? `/shop/${shopSlug}` : "#"}
-                            className="flex items-center gap-3 border-b-[0.5px] border-[rgba(255,255,255,0.07)] py-3.5"
+                            className="flex items-center gap-3 border-b-[0.5px] border-[#E2E5F0] py-3.5"
                         >
                             <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border-[0.5px] border-[rgba(255,255,255,0.08)] bg-[#F5F6FA]">
                                 {product.merchants.photo_url ? (
@@ -265,7 +267,7 @@ export default function ProductDetailClient() {
 
                     {/* ── Description ── */}
                     {product.description && (
-                        <div className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] py-4">
+                        <div className="border-b-[0.5px] border-[#E2E5F0] py-4">
                             <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-[#8E96B0]">Description</p>
                             <p className="text-[13px] leading-relaxed text-[#8E96B0]">{product.description}</p>
                         </div>
@@ -425,9 +427,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-left font-medium text-[#8E96B0]">EU</th>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-center font-medium text-[#8E96B0]">US</th>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-right font-medium text-[#8E96B0]">UK</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-left font-medium text-[#8E96B0]">EU</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-center font-medium text-[#8E96B0]">US</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-right font-medium text-[#8E96B0]">UK</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -451,9 +453,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-left font-medium text-[#8E96B0]">Taille</th>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-center font-medium text-[#8E96B0]">EU</th>
-                                            <th className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] px-4 py-2.5 text-right font-medium text-[#8E96B0]">US</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-left font-medium text-[#8E96B0]">Taille</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-center font-medium text-[#8E96B0]">EU</th>
+                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-right font-medium text-[#8E96B0]">US</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -12,6 +12,10 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const merchantIdParam = searchParams.get("merchant_id");
 
+        if (!merchantIdParam) {
+            return NextResponse.json({ error: "merchant_id is required" }, { status: 400 });
+        }
+
         if (merchantIdParam) {
             const merchantId = await resolveMerchantId(merchantIdParam);
             if (!merchantId) {
@@ -38,18 +42,6 @@ export async function GET(request: Request) {
 
             return NextResponse.json({ promotions: data ?? [] });
         }
-
-        const { data, error } = await supabase
-            .from("promotions")
-            .select("*, products(name, price, photo_url, merchant_id)")
-            .or("ends_at.is.null,ends_at.gt.now()")
-            .order("created_at", { ascending: false });
-
-        if (error) {
-            return NextResponse.json({ error: "Operation failed" }, { status: 500 });
-        }
-
-        return NextResponse.json({ promotions: data ?? [] });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

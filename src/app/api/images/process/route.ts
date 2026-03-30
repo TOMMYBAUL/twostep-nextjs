@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { processProductImage } from "@/lib/images/process";
 import { uploadToR2 } from "@/lib/r2";
 import { captureError } from "@/lib/error";
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     try {
-        const supabase = await createClient();
+        const supabase = createAdminClient();
 
         // Grab pending jobs
         const { data: jobs } = await supabase

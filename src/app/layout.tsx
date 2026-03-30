@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Syne } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RouteProvider } from "@/providers/router-provider";
+import { ConsentAnalytics } from "@/components/consent-analytics";
 import { Theme } from "@/providers/theme";
 import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
@@ -80,8 +79,7 @@ export default function RootLayout({
                 <RouteProvider>
                     <Theme>{children}</Theme>
                 </RouteProvider>
-                <Analytics />
-                <SpeedInsights />
+                <ConsentAnalytics />
             </body>
         </html>
     );

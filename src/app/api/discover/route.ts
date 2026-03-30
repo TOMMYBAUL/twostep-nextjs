@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
         merchant_name: row.merchant_name,
         merchant_photo: merchantPhotoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
-        sale_price: null,
+        sale_price: row.sale_price ?? null,
         category: categoryMap.get(row.product_id) ?? null,
     }));
 

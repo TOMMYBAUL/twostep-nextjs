@@ -329,6 +329,15 @@ function LocationScreen({ onNext }: { onNext: () => void }) {
    ═══════════════════════════════════════════════════════ */
 
 function CookiesScreen({ onNext }: { onNext: () => void }) {
+    const handleAccept = () => {
+        localStorage.setItem("cookie_consent", "accepted");
+        onNext();
+    };
+    const handleRefuse = () => {
+        localStorage.setItem("cookie_consent", "refused");
+        onNext();
+    };
+
     return (
         <ScreenLayout dots={2}>
             <div className="flex flex-1 items-end justify-center pb-3">
@@ -340,9 +349,9 @@ function CookiesScreen({ onNext }: { onNext: () => void }) {
                 body="On utilise des cookies pour améliorer ton expérience et te montrer les promos qui t'intéressent vraiment."
             />
             <div className="mt-auto space-y-2 px-6 pb-2 pt-4">
-                <PrimaryButton onClick={onNext}>Tout accepter</PrimaryButton>
-                <PrimaryButton onClick={onNext}>Tout refuser</PrimaryButton>
-                <OutlineButton onClick={onNext}>Personnaliser</OutlineButton>
+                <PrimaryButton onClick={handleAccept}>Tout accepter</PrimaryButton>
+                <PrimaryButton onClick={handleRefuse}>Tout refuser</PrimaryButton>
+                <OutlineButton onClick={handleRefuse}>Cookies essentiels uniquement</OutlineButton>
             </div>
         </ScreenLayout>
     );

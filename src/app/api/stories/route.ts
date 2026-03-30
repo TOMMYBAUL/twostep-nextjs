@@ -39,6 +39,16 @@ export async function POST(request: NextRequest) {
     if (!image) return NextResponse.json({ error: "Image required" }, { status: 400 });
     if (caption && caption.length > 280) return NextResponse.json({ error: "Caption too long (max 280)" }, { status: 400 });
 
+    // Validate file type and size
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+    if (!ALLOWED_TYPES.includes(image.type)) {
+        return NextResponse.json({ error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF" }, { status: 400 });
+    }
+    if (image.size > MAX_SIZE) {
+        return NextResponse.json({ error: "File too large (max 5 MB)" }, { status: 400 });
+    }
+
     // Upload to Supabase Storage
     const ext = image.name.split(".").pop() ?? "jpg";
     const path = `${merchant.id}/${Date.now()}.${ext}`;
