@@ -66,24 +66,32 @@ export default function ProfilePage() {
         });
     }, [user]);
 
+    const [avatarError, setAvatarError] = useState<string | null>(null);
+
     const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        if (!file.type.startsWith("image/")) return;
-        if (file.size > 5 * 1024 * 1024) return; // 5 MB max
-        const supabase = createClient();
-        const { data: { user: u } } = await supabase.auth.getUser();
-        if (!u) return;
+        if (!file.type.startsWith("image/")) { setAvatarError("Format non supporté"); return; }
+        if (file.size > 5 * 1024 * 1024) { setAvatarError("Photo trop lourde (max 5 Mo)"); return; }
+        setAvatarError(null);
 
-        const path = `${u.id}/avatar.jpg`;
-        const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
-        if (error) return;
+        try {
+            const supabase = createClient();
+            const { data: { user: u } } = await supabase.auth.getUser();
+            if (!u) { setAvatarError("Non connecté"); return; }
 
-        const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-        const publicUrl = data.publicUrl + `?t=${Date.now()}`; // cache bust
+            const path = `${u.id}/avatar.jpg`;
+            const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+            if (error) { setAvatarError(`Échec upload : ${error.message}`); return; }
 
-        await supabase.from("consumer_profiles").upsert({ user_id: u.id, avatar_url: publicUrl }, { onConflict: "user_id" });
-        setAvatarUrl(publicUrl);
+            const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+            const publicUrl = data.publicUrl + `?t=${Date.now()}`;
+
+            await supabase.from("consumer_profiles").upsert({ user_id: u.id, avatar_url: publicUrl }, { onConflict: "user_id" });
+            setAvatarUrl(publicUrl);
+        } catch {
+            setAvatarError("Erreur inattendue");
+        }
     };
 
     return (
@@ -123,6 +131,7 @@ export default function ProfilePage() {
                         </div>
                         <div className="min-w-0 flex-1">
                             <p className="truncate text-[15px] font-medium text-[#1A1F36]">{user.email}</p>
+                            {avatarError && <p className="mt-0.5 text-[11px] text-[#D94F4F]">{avatarError}</p>}
                             <p className="mt-0.5 text-xs text-[#8E96B0]">
                                 {favCount} favori{favCount > 1 ? "s" : ""} · {followCount} boutique{followCount > 1 ? "s" : ""} suivie{followCount > 1 ? "s" : ""}
                             </p>
