@@ -77,6 +77,36 @@ export default function ProductDetailClient() {
     const [contactSheetOpen, setContactSheetOpen] = useState(false);
     const [phoneCopied, setPhoneCopied] = useState(false);
 
+    const [intentSent, setIntentSent] = useState(false);
+    const [intentLoading, setIntentLoading] = useState(false);
+
+    const handleIntent = async () => {
+        if (intentLoading || intentSent || !product) return;
+        if (hasSizes && !selectedSize) {
+            setSizeSheetOpen(true);
+            return;
+        }
+        setIntentLoading(true);
+        try {
+            const res = await fetch("/api/intents", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    product_id: product.id,
+                    merchant_id: product.merchant_id,
+                    selected_size: selectedSize,
+                }),
+            });
+            if (res.ok) {
+                setIntentSent(true);
+            }
+        } catch {
+            // Silently fail
+        } finally {
+            setIntentLoading(false);
+        }
+    };
+
     const shopSlug = product?.merchants?.name ? generateSlug(product.merchants.name, product.merchant_id) : null;
 
     const shop = product?.merchants;
@@ -228,6 +258,39 @@ export default function ProductDetailClient() {
                         <div className="border-b-[0.5px] border-[rgba(255,255,255,0.07)] py-4">
                             <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-[#8E96B0]">Description</p>
                             <p className="text-[13px] leading-relaxed text-[#8E96B0]">{product.description}</p>
+                        </div>
+                    )}
+
+                    {/* ── J'arrive button ── */}
+                    {quantity > 0 && (
+                        <div className="pt-5">
+                            {intentSent ? (
+                                <button
+                                    type="button"
+                                    disabled
+                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#F0F1F5] py-[13px] text-[13px] font-semibold text-[#8E96B0]"
+                                >
+                                    ✓ Le commerçant est prévenu
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={handleIntent}
+                                    disabled={intentLoading}
+                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#4268FF] py-[13px] text-[14px] font-bold text-white transition active:opacity-90 disabled:opacity-60"
+                                >
+                                    {intentLoading ? (
+                                        <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                    ) : (
+                                        <>📍 J&apos;arrive !</>
+                                    )}
+                                </button>
+                            )}
+                            <p className="mt-1.5 text-center text-[10px] text-[#8E96B0]">
+                                {intentSent
+                                    ? `${product?.merchants?.name ?? "La boutique"} sait que tu arrives — valable 2h`
+                                    : "Sous réserve de disponibilité — le commerçant est prévenu"}
+                            </p>
                         </div>
                     )}
 
