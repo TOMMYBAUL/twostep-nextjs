@@ -57,7 +57,7 @@ function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending
             const data = await res.json();
             return data.products ?? [];
         },
-        staleTime: 30_000,
+        staleTime: 15_000,
     });
 }
 
