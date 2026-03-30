@@ -18,12 +18,13 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
 
     if (section === "promos") {
+        const promoLimit = category ? 100 : 20;
         const { data, error } = await supabase.rpc("get_promos_nearby", {
             user_lat: lat,
             user_lng: lng,
             radius_km: radius,
             result_offset: 0,
-            result_limit: 20,
+            result_limit: promoLimit,
             filter_size: size,
         });
 
@@ -65,12 +66,14 @@ export async function GET(request: NextRequest) {
     }
 
     // trending & nearby — size filter handled in RPC
+    // Fetch more results when category filter is active (filtering happens post-RPC)
+    const fetchLimit = category ? 100 : 20;
     const { data, error } = await supabase.rpc("get_feed_nearby", {
         user_lat: lat,
         user_lng: lng,
         radius_km: radius,
         cursor_score: 999999,
-        result_limit: 20,
+        result_limit: fetchLimit,
         filter_size: size,
     });
 
