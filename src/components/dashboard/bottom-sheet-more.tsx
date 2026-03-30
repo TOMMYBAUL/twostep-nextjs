@@ -6,6 +6,17 @@ import { Drawer } from "vaul";
 
 const moreItems = [
     {
+        href: "/dashboard/stories",
+        label: "Stories",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <circle cx="12" cy="10" r="3" />
+                <path d="M6 21v-1a6 6 0 0 1 12 0v1" />
+            </svg>
+        ),
+    },
+    {
         href: "/dashboard/settings",
         label: "Réglages",
         icon: (
