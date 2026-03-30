@@ -12,12 +12,20 @@ import { useGeolocation } from "../hooks/use-geolocation";
 import { useSearch, useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
 
-const CATEGORIES = ["Mode", "Tech", "Sport", "Maison", "Beauté", "Jouets", "Bijoux"];
+const CATEGORIES = [
+    { label: "Tout", value: null },
+    { label: "Mode", value: "mode" },
+    { label: "Chaussures", value: "chaussures" },
+    { label: "Bijoux", value: "bijoux" },
+    { label: "Beauté", value: "beaute" },
+    { label: "Sport", value: "sport" },
+    { label: "Déco", value: "deco" },
+    { label: "Épicerie", value: "epicerie" },
+] as const;
 
 const FILTER_LABELS: Record<string, string> = {
-    promos: "Promos du moment",
+    promos: "Promotions",
     trending: "Tendances",
-    nearby: "Disponible maintenant",
 };
 
 export default function SearchPage() {
@@ -32,9 +40,11 @@ function SearchPageInner() {
     const searchParams = useSearchParams();
     const initialQuery = searchParams.get("q") ?? "";
     const filterParam = searchParams.get("filter");
+    const categoryParam = searchParams.get("category");
+    const sizeParam = searchParams.get("size");
     const [query, setQuery] = useState(initialQuery);
     const [isFocused, setIsFocused] = useState(false);
-    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
     const { position } = useGeolocation();
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
@@ -42,10 +52,10 @@ function SearchPageInner() {
     // Search mode: standard text search
     const { data: results, isLoading } = useSearch(query, lat, lng);
 
-    // Filter mode: discover section (promos, trending, nearby)
+    // Filter mode: discover section (promos, trending)
     const isFilterMode = !!filterParam && !query;
     const { data: filterResults, isLoading: filterLoading } = useQuery<any[]>({
-        queryKey: ["discover-filter", filterParam, lat, lng],
+        queryKey: ["discover-filter", filterParam, lat, lng, activeCategory, sizeParam],
         queryFn: async () => {
             const params = new URLSearchParams({
                 section: filterParam!,
@@ -53,6 +63,8 @@ function SearchPageInner() {
                 lng: lng.toString(),
                 radius: "10",
             });
+            if (activeCategory) params.set("category", activeCategory);
+            if (sizeParam) params.set("size", sizeParam);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) throw new Error("Failed to fetch");
             const data = await res.json();
@@ -148,27 +160,31 @@ function SearchPageInner() {
                     </AnimatePresence>
                 </div>
 
-                {/* Category chips */}
+                {/* Category chips — same as discover page */}
                 <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
                     {CATEGORIES.map((cat) => (
                         <button
-                            key={cat}
+                            key={cat.label}
                             type="button"
-                            onClick={() => {
-                                setActiveCategory(activeCategory === cat ? null : cat);
-                                setQuery(activeCategory === cat ? "" : cat);
-                            }}
+                            onClick={() => setActiveCategory(activeCategory === cat.value ? null : cat.value)}
                             className={cx(
                                 "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
-                                activeCategory === cat
+                                activeCategory === cat.value
                                     ? "bg-[#4268FF] text-white shadow-sm"
                                     : "bg-[#E2E5F0] text-[#1A1F36]/60",
                             )}
                         >
-                            {cat}
+                            {cat.label}
                         </button>
                     ))}
                 </div>
+
+                {/* Active size badge */}
+                {sizeParam && (
+                    <div className="mt-2 flex items-center gap-1.5">
+                        <span className="rounded-lg bg-[#4268FF] px-2.5 py-1 text-[11px] font-semibold text-white">Taille {sizeParam}</span>
+                    </div>
+                )}
             </div>
 
             {/* Results */}
@@ -223,7 +239,7 @@ function SearchPageInner() {
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
                         <p className="text-sm font-medium text-[#1A1F36]/40">
                             {isFilterMode
-                                ? "Aucune promo disponible pour le moment"
+                                ? "Aucun résultat avec ces filtres"
                                 : `Aucun résultat pour \u201c${query}\u201d`}
                         </p>
                         {!isFilterMode && (
