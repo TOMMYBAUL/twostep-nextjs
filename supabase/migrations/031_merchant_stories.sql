@@ -22,7 +22,7 @@ CREATE POLICY "stories_select_active" ON merchant_stories
     FOR SELECT USING (expires_at > NOW());
 
 CREATE INDEX idx_stories_merchant ON merchant_stories(merchant_id, created_at DESC);
-CREATE INDEX idx_stories_active ON merchant_stories(expires_at) WHERE expires_at > NOW();
+CREATE INDEX idx_stories_active ON merchant_stories(expires_at);
 
 -- Create storage bucket for story images
 INSERT INTO storage.buckets (id, name, public) VALUES ('stories', 'stories', true)
