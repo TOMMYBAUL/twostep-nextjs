@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState, useCallback, useEffect, useRef } from "react";
+import { Suspense, useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, Bell01, FilterLines } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { ProductCard } from "../components/product-card";
 import { StoryBar } from "../components/story-bar";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
@@ -61,6 +62,14 @@ function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending
 }
 
 export default function DiscoverPage() {
+    return (
+        <Suspense fallback={<div className="min-h-dvh bg-[#F8F9FC]" />}>
+            <DiscoverContent />
+        </Suspense>
+    );
+}
+
+function DiscoverContent() {
     const { position } = useGeolocation();
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
@@ -69,7 +78,19 @@ export default function DiscoverPage() {
     const [shoeSizeFilter, setShoeSizeFilter] = useState<number | null>(null);
     const [showSizeFilters, setShowSizeFilters] = useState(false);
     const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
-    const [feedTab, setFeedTab] = useState<"explorer" | "pour-toi" | "suivis">("explorer");
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const tabParam = searchParams.get("tab");
+    const feedTab: "explorer" | "pour-toi" | "suivis" =
+        tabParam === "pour-toi" || tabParam === "suivis" ? tabParam : "explorer";
+    const setFeedTab = useCallback((tab: "explorer" | "pour-toi" | "suivis") => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (tab === "explorer") params.delete("tab");
+        else params.set("tab", tab);
+        const qs = params.toString();
+        router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+    }, [searchParams, router, pathname]);
 
     const { data: availableSizes } = useQuery<{ clothing: string[]; shoe: number[] }>({
         queryKey: ["available-sizes"],
