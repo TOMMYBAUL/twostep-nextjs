@@ -513,54 +513,6 @@ function DiscoverContent() {
                 )}
 
                 {/* ── 4. Promotions — horizontal scroll ── */}
-                {(loadingPromos || (promos && promos.length > 0)) && (
-                <section>
-                    <div className="flex items-center justify-between px-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#FF6B4A]/15 text-[#FF6B4A]">
-                                <Tag01 className="size-4" />
-                            </div>
-                            <div>
-                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Promotions</h2>
-                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Les bons plans autour de toi</p>
-                            </div>
-                        </div>
-                        <Link href={`/search?filter=promos${activeCategory ? `&category=${activeCategory}` : ""}${activeSize ? `&size=${activeSize}` : ""}`} className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
-                            Voir tout
-                            <ChevronRight className="size-3.5" />
-                        </Link>
-                    </div>
-
-                    {loadingPromos ? (
-                        <div className="mt-3 flex gap-3 overflow-x-auto px-4 scrollbar-hide">
-                            {Array.from({ length: 3 }).map((_, i) => (
-                                <div key={i} className="aspect-[3/4] w-40 shrink-0 animate-pulse rounded-lg bg-[#F5F6FA]" />
-                            ))}
-                        </div>
-                    ) : promos && promos.length > 0 ? (
-                        <ul role="list" className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-hide">
-                            {promos.map((p) => (
-                                <li key={`${p.product_id}-${p.merchant_id}`}>
-                                    <ProductCard
-                                        id={p.product_id}
-                                        name={p.product_name}
-                                        price={p.product_price}
-                                        photo={p.product_photo}
-                                        merchantName={p.merchant_name}
-                                        distance={p.distance_km}
-                                        stockQuantity={p.stock_quantity}
-                                        salePrice={p.sale_price}
-                                        isFavorite={favoriteIds.has(p.product_id)}
-                                        onToggleFavorite={() => toggleFav(p.product_id)}
-                                        className="w-44 shrink-0"
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    ) : null}
-                </section>
-                )}
-
                 {/* ── Followed shops ── */}
                 {follows && follows.length > 0 && (
                     <section className="px-4">
