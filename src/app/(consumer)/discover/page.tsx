@@ -586,7 +586,7 @@ export default function DiscoverPage() {
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </div>
             ) : feedTab === "pour-toi" ? (
-                <ForYouFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
+                <ForYouFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} lat={lat} lng={lng} />
             ) : (
                 <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
             )}
@@ -743,8 +743,9 @@ function InfiniteProductGrid({
 }
 
 /* ── For You feed — followed shops, auto size filtered, promos first ── */
-function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void }) {
+function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: any[] | undefined; favoriteIds: Set<string>; onToggleFav: (id: string) => void; lat: number; lng: number }) {
     const merchantIds = follows?.map((f: any) => f.merchant_id) ?? [];
+    const followedSet = new Set(merchantIds);
 
     const { data: prefs } = useQuery<{ clothing_size: string | null; shoe_size: number | null }>({
         queryKey: ["consumer-preferences"],
@@ -760,6 +761,7 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
     const shoeSize = prefs?.shoe_size ?? null;
     const hasPrefs = clothingSize !== null || shoeSize !== null;
 
+    // Section 1: products from followed shops, filtered to user's sizes
     const { data: products, isLoading } = useQuery<DiscoverProduct[]>({
         queryKey: ["for-you-products", merchantIds, clothingSize, shoeSize],
         queryFn: async () => {
@@ -772,8 +774,40 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
             const data = await res.json();
             return data.products ?? [];
         },
-        enabled: merchantIds.length > 0,
+        enabled: merchantIds.length > 0 && hasPrefs,
         staleTime: 30_000,
+    });
+
+    // Section 2: suggestions from OTHER shops, same sizes — use clothing first, then shoe
+    const primarySize = clothingSize ?? (shoeSize ? String(shoeSize) : null);
+    const secondarySize = clothingSize && shoeSize ? String(shoeSize) : null;
+
+    const { data: suggestions } = useQuery<DiscoverProduct[]>({
+        queryKey: ["for-you-suggestions", lat, lng, primarySize, secondarySize],
+        queryFn: async () => {
+            if (!primarySize) return [];
+            // Fetch nearby products filtered by primary size
+            const params1 = new URLSearchParams({ lat: String(lat), lng: String(lng), section: "nearby", radius: "10", size: primarySize });
+            const res1 = await fetch(`/api/discover?${params1}`);
+            const data1 = res1.ok ? await res1.json() : { products: [] };
+            let items: DiscoverProduct[] = data1.products ?? [];
+
+            // If secondary size, also fetch those
+            if (secondarySize) {
+                const params2 = new URLSearchParams({ lat: String(lat), lng: String(lng), section: "nearby", radius: "10", size: secondarySize });
+                const res2 = await fetch(`/api/discover?${params2}`);
+                const data2 = res2.ok ? await res2.json() : { products: [] };
+                const seen = new Set(items.map((p) => p.product_id));
+                for (const p of (data2.products ?? []) as DiscoverProduct[]) {
+                    if (!seen.has(p.product_id)) items.push(p);
+                }
+            }
+
+            // Exclude products from followed merchants
+            return items.filter((p) => !followedSet.has(p.merchant_id));
+        },
+        enabled: hasPrefs,
+        staleTime: 60_000,
     });
 
     const { data: stories } = useQuery<any[]>({
@@ -789,20 +823,79 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
         staleTime: 60_000,
     });
 
+    // Product card renderer (shared between both sections)
+    const renderProductCard = (p: DiscoverProduct) => {
+        const isFav = favoriteIds.has(p.product_id);
+        return (
+            <div key={p.product_id}>
+                <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
+                        {p.product_photo ? (
+                            <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
+                        ) : (
+                            <div className="flex h-full items-center justify-center">
+                                <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
+                            </div>
+                        )}
+                        {p.sale_price && (
+                            <div className="absolute left-3 top-3 rounded-lg bg-[#FF4757] px-2 py-0.5 text-[10px] font-bold text-white">
+                                -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
+                            </div>
+                        )}
+                        <div className="absolute right-3 top-3">
+                            <HeartButton
+                                isFavorite={isFav}
+                                onToggle={() => onToggleFav(p.product_id)}
+                                ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                className="!size-8 !rounded-full [background:rgba(26,31,54,0.5)]"
+                            />
+                        </div>
+                    </div>
+                </Link>
+                <div className="mt-2">
+                    <p className="text-[10px] text-[#8E96B0] uppercase">{p.merchant_name}</p>
+                    <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
+                    <div className="mt-0.5 flex items-baseline gap-2">
+                        <span className="text-[12px] text-[#6B7799]">{(p.sale_price ?? p.product_price).toFixed(2)} €</span>
+                        {p.sale_price && <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    if (!hasPrefs) {
+        return (
+            <div className="pb-24 pt-2">
+                <Link href="/profile" className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#FFF8EE] px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium text-[#C88A3A]">Renseigne ta taille pour un feed personnalisé</span>
+                    <ChevronRight className="size-3.5 text-[#C88A3A]" />
+                </Link>
+            </div>
+        );
+    }
+
     if (!follows || follows.length === 0) {
         return (
-            <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
-                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#F5F6FA] text-2xl">🏪</div>
-                <p className="mt-4 text-[15px] font-semibold text-[#1A1F36]">Aucune boutique suivie</p>
-                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
-                    Abonne-toi à des boutiques pour voir ici les produits faits pour toi.
-                </p>
-                <Link
-                    href="/explore"
-                    className="mt-4 rounded-full bg-[#4268FF] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
-                >
-                    Explorer les boutiques
-                </Link>
+            <div className="pb-24 pt-2">
+                {/* Size banner */}
+                <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
+                    <div className="flex gap-1.5">
+                        {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
+                        {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
+                    </div>
+                </div>
+
+                {/* No follows — skip to suggestions */}
+                {suggestions && suggestions.length > 0 && (
+                    <>
+                        <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Autour de toi, à ta taille</p>
+                        <div className="grid grid-cols-2 gap-3 px-4">
+                            {suggestions.map(renderProductCard)}
+                        </div>
+                    </>
+                )}
             </div>
         );
     }
@@ -813,83 +906,50 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav }: { follows: any[] | un
             <StoryBar stories={stories ?? []} />
 
             {/* Size auto-filter banner */}
-            {hasPrefs ? (
-                <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
-                    <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
-                    <div className="flex gap-1.5">
-                        {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
-                        {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
-                    </div>
+            <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
+                <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
+                <div className="flex gap-1.5">
+                    {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
+                    {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
                 </div>
-            ) : (
-                <Link href="/profile" className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#FFF8EE] px-3.5 py-2.5">
-                    <span className="text-[11px] font-medium text-[#C88A3A]">Renseigne ta taille pour un feed personnalisé</span>
-                    <ChevronRight className="size-3.5 text-[#C88A3A]" />
-                </Link>
-            )}
+            </div>
 
-            {/* Loading */}
+            {/* ── Section 1: Followed shops ── */}
+            <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Tes boutiques</p>
+
             {isLoading && (
                 <div className="grid grid-cols-2 gap-3 px-4">
-                    {Array.from({ length: 6 }).map((_, i) => (
+                    {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#F5F6FA]" />
                     ))}
                 </div>
             )}
 
-            {/* Empty (has follows but no matching products) */}
             {!isLoading && (!products || products.length === 0) && (
-                <div className="flex flex-col items-center px-6 pt-12 text-center">
-                    <p className="text-[15px] font-semibold text-[#1A1F36]">Rien dans ta taille</p>
-                    <p className="mt-1.5 text-[13px] text-[#8E96B0]">
-                        Tes boutiques suivies n'ont pas encore de produits dans ta taille. Reviens bientôt !
-                    </p>
+                <div className="px-4 pb-4 pt-2 text-center">
+                    <p className="text-[12px] text-[#8E96B0]">Pas de produit dans ta taille chez tes boutiques suivies pour le moment</p>
                 </div>
             )}
 
-            {/* Products grid */}
             {products && products.length > 0 && (
                 <div className="grid grid-cols-2 gap-3 px-4">
-                    {products.map((p) => {
-                        const isFav = favoriteIds.has(p.product_id);
-                        return (
-                            <div key={p.product_id}>
-                                <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
-                                    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
-                                        {p.product_photo ? (
-                                            <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
-                                        ) : (
-                                            <div className="flex h-full items-center justify-center">
-                                                <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
-                                            </div>
-                                        )}
-                                        {p.sale_price && (
-                                            <div className="absolute left-3 top-3 rounded-lg bg-[#FF4757] px-2 py-0.5 text-[10px] font-bold text-white">
-                                                -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
-                                            </div>
-                                        )}
-                                        <div className="absolute right-3 top-3">
-                                            <HeartButton
-                                                isFavorite={isFav}
-                                                onToggle={() => onToggleFav(p.product_id)}
-                                                ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                                className="!size-8 !rounded-full [background:rgba(26,31,54,0.5)]"
-                                            />
-                                        </div>
-                                    </div>
-                                </Link>
-                                <div className="mt-2">
-                                    <p className="text-[10px] text-[#8E96B0] uppercase">{p.merchant_name}</p>
-                                    <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
-                                    <div className="mt-0.5 flex items-baseline gap-2">
-                                        <span className="text-[12px] text-[#6B7799]">{(p.sale_price ?? p.product_price).toFixed(2)} €</span>
-                                        {p.sale_price && <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {products.map(renderProductCard)}
                 </div>
+            )}
+
+            {/* ── Section 2: Suggestions from other shops ── */}
+            {suggestions && suggestions.length > 0 && (
+                <>
+                    <div className="mx-4 my-6 flex items-center gap-3">
+                        <div className="h-px flex-1 bg-[#E2E5F0]" />
+                        <span className="text-[11px] font-medium text-[#8E96B0]">Suggestions</span>
+                        <div className="h-px flex-1 bg-[#E2E5F0]" />
+                    </div>
+                    <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Autour de toi, à ta taille</p>
+                    <div className="grid grid-cols-2 gap-3 px-4">
+                        {suggestions.map(renderProductCard)}
+                    </div>
+                </>
             )}
         </div>
     );

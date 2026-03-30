@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
     const userSizes = [clothingSize, shoeSize].filter(Boolean) as string[];
 
-    const result = (products ?? [])
+    const mapped = (products ?? [])
         .filter((p: any) => (stockMap.get(p.id) ?? 0) > 0)
         .map((p: any) => ({
             product_id: p.id,
@@ -79,22 +79,20 @@ export async function GET(request: NextRequest) {
             distance_km: 0,
         }));
 
-    // Sort: size-matched (with stock) first, then promos, then rest
-    if (promoFirst || userSizes.length > 0) {
+    // When user sizes are provided, FILTER to only products with those sizes in stock
+    let result = mapped;
+    if (userSizes.length > 0) {
+        result = mapped.filter((p: any) =>
+            userSizes.some((s) => hasSizeInStock(p._availableSizes, s)),
+        );
+    }
+
+    // Sort: promos first
+    if (promoFirst) {
         result.sort((a: any, b: any) => {
-            // 1. Size match with stock has highest priority
-            if (userSizes.length > 0) {
-                const aMatchesSize = userSizes.some((s) => hasSizeInStock(a._availableSizes, s)) ? 1 : 0;
-                const bMatchesSize = userSizes.some((s) => hasSizeInStock(b._availableSizes, s)) ? 1 : 0;
-                if (aMatchesSize !== bMatchesSize) return bMatchesSize - aMatchesSize;
-            }
-            // 2. Promos second
-            if (promoFirst) {
-                const aHasPromo = a.sale_price !== null ? 1 : 0;
-                const bHasPromo = b.sale_price !== null ? 1 : 0;
-                if (aHasPromo !== bHasPromo) return bHasPromo - aHasPromo;
-            }
-            return 0;
+            const aHasPromo = a.sale_price !== null ? 1 : 0;
+            const bHasPromo = b.sale_price !== null ? 1 : 0;
+            return bHasPromo - aHasPromo;
         });
     }
 
