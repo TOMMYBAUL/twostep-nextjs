@@ -155,19 +155,16 @@ function EmptyStateWithSuggestions() {
                                                 {p.product_name?.charAt(0)}
                                             </div>
                                         )}
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                if (isFav) remove.mutate(p.product_id);
-                                                else add.mutate(p.product_id);
-                                            }}
-                                            className="absolute right-[7px] top-[7px] flex size-6 items-center justify-center rounded-full text-[11px] text-[#1A1F36]"
-                                            style={{ background: "rgba(26,31,54,0.6)" }}
-                                        >
-                                            {isFav ? "♥" : "♡"}
-                                        </button>
+                                        <div className="absolute right-[7px] top-[7px]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                                            <HeartButton
+                                                isFavorite={isFav}
+                                                onToggle={() => {
+                                                    if (isFav) remove.mutate(p.product_id);
+                                                    else add.mutate(p.product_id);
+                                                }}
+                                                ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="px-2 py-[7px]">
                                         <p className="truncate text-[11px] font-medium text-[#6B7799]">{p.product_name}</p>

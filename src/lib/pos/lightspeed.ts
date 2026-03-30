@@ -177,8 +177,9 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     verifyWebhook(body: string, signature: string): boolean {
+        if (!process.env.LIGHTSPEED_WEBHOOK_SECRET) return false;
         const expected = crypto
-            .createHmac("sha256", process.env.LIGHTSPEED_WEBHOOK_SECRET ?? "")
+            .createHmac("sha256", process.env.LIGHTSPEED_WEBHOOK_SECRET)
             .update(body)
             .digest("hex");
         try {

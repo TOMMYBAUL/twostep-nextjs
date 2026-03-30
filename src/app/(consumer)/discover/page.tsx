@@ -724,14 +724,13 @@ function InfiniteProductGrid({
                                 {discount > 0 && (
                                     <span className="absolute bottom-2 left-2 text-sm">🏷️</span>
                                 )}
-                                <button
-                                    type="button"
-                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFav(p.product_id); }}
-                                    className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full text-[13px] text-[#1A1F36]"
-                                    style={{ background: "rgba(26,31,54,0.55)" }}
-                                >
-                                    {isFav ? "♥" : "♡"}
-                                </button>
+                                <div className="absolute right-2 top-2" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                                    <HeartButton
+                                        isFavorite={isFav}
+                                        onToggle={() => onToggleFav(p.product_id)}
+                                        ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
+                                    />
+                                </div>
                             </div>
                             <div className="px-2.5 pb-3 pt-2.5">
                                 <p className="text-[10px] tracking-wide text-[#8E96B0]">

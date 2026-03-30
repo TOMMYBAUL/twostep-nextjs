@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 import { favoriteBody, parseBody } from "@/lib/validation";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "favorites", 30);
+        if (limited) return limited;
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -27,8 +31,11 @@ export async function GET() {
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
+        const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "favorites-post", 20);
+        if (limited) return limited;
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 

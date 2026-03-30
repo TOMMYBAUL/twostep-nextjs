@@ -41,6 +41,21 @@ export async function updateSession(request: NextRequest) {
             }
         }
 
+        // Dashboard protection: require merchant profile
+        if (user && pathname.startsWith("/dashboard")) {
+            const { data: merchant } = await supabase
+                .from("merchants")
+                .select("id")
+                .eq("user_id", user.id)
+                .single();
+
+            if (!merchant) {
+                const url = request.nextUrl.clone();
+                url.pathname = "/discover";
+                return NextResponse.redirect(url);
+            }
+        }
+
         // Admin API protection: require admin role (pages are checked client-side in admin layout)
         if (user && pathname.startsWith("/api/admin")) {
             const isAdmin = (user as any).app_metadata?.role === "admin";

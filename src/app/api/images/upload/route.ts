@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 import { uploadToR2 } from "@/lib/r2";
 import { createImageJob } from "@/lib/images/jobs";
 
 export async function POST(request: NextRequest) {
     try {
+        const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "images-upload", 15);
+        if (limited) return limited;
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 

@@ -164,8 +164,9 @@ export const shopifyAdapter: IPOSAdapter = {
     },
 
     verifyWebhook(body: string, signature: string): boolean {
+        if (!process.env.SHOPIFY_WEBHOOK_SECRET) return false;
         const expected = crypto
-            .createHmac("sha256", process.env.SHOPIFY_WEBHOOK_SECRET ?? "")
+            .createHmac("sha256", process.env.SHOPIFY_WEBHOOK_SECRET)
             .update(body)
             .digest("base64");
         try {

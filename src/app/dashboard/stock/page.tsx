@@ -55,7 +55,7 @@ export default function StockPage() {
                 titleAccent="stock"
             />
 
-            <div className="mb-8 grid grid-cols-4 gap-4">
+            <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                 <MetricCard label="Total produits" value={totalProducts} staggerIndex={0} />
                 <MetricCard label="En stock" value={inStock} staggerIndex={1} />
                 <MetricCard label="Stock bas" value={lowStock} variant="warn" staggerIndex={2} />

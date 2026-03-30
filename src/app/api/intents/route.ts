@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { rateLimit } from "@/lib/rate-limit";
 import { sendIntentEmail } from "@/lib/email/resend";
 import { sendPushToUser } from "@/lib/push-send";
 
 export async function GET(request: NextRequest) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "intents", 30);
+    if (limited) return limited;
+
     const productId = request.nextUrl.searchParams.get("product_id");
     if (!productId) {
         return NextResponse.json({ count: 0 });

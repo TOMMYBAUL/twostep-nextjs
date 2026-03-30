@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
     try {
+        const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "stock", 30);
+        if (limited) return limited;
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 

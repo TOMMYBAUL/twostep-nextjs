@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 import Groq from "groq-sdk";
 
 const groq = process.env.GROQ_API_KEY
@@ -17,6 +18,9 @@ Règles :
 Réponds UNIQUEMENT "pass", "reject", ou "rewrite: [texte reformulé]". Rien d'autre.`;
 
 export async function POST(req: NextRequest) {
+    const limited = await rateLimit(req.headers.get("x-forwarded-for") ?? null, "suggestions", 10);
+    if (limited) return limited;
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
