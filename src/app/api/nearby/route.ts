@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     try {
         const parsed = parseQuery(request.nextUrl.searchParams, nearbyQuery);
         if ("error" in parsed) return parsed.error;
-        const { lat, lng, radius, category, limit } = parsed.data;
+        const { lat, lng, radius, category, size, limit } = parsed.data;
 
         const supabase = await createClient();
 
@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
             radius_km: radius,
             category_filter: category ?? null,
             result_limit: limit,
+            filter_size: size ?? null,
         });
 
         if (error) {

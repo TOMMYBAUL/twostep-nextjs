@@ -32,6 +32,7 @@ export const autocompleteQuery = z.object({
 
 export const nearbyQuery = geoSchema.extend({
     category: z.string().max(100).nullish(),
+    size: z.string().max(20).nullish(),
     limit: z.coerce.number().int().min(1).max(100).default(50),
 });
 

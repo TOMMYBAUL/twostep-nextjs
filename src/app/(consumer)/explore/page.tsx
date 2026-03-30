@@ -77,8 +77,10 @@ export default function ExplorePage() {
         if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
     };
 
+    const activeSizeExplore = sizeFilterExplore ?? (shoeSizeFilterExplore ? String(shoeSizeFilterExplore) : null);
+
     const { data, isLoading } = useQuery<NearbyMerchant[]>({
-        queryKey: ["merchants-nearby", position?.lat, position?.lng, category, radius],
+        queryKey: ["merchants-nearby", position?.lat, position?.lng, category, radius, activeSizeExplore],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: position!.lat.toString(),
@@ -86,6 +88,7 @@ export default function ExplorePage() {
                 radius: radius.toString(),
             });
             if (category) params.set("category", category);
+            if (activeSizeExplore) params.set("size", activeSizeExplore);
             console.log("[explore] Fetching nearby:", { lat: position!.lat, lng: position!.lng, radius, category });
             const res = await fetch(`/api/nearby?${params}`);
             if (!res.ok) {
