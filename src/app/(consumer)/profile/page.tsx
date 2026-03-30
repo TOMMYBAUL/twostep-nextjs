@@ -418,8 +418,8 @@ export default function ProfilePage() {
 }
 
 /* ── Sizing preferences component ── */
-const CLOTHING_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
-const SHOE_SIZES = [35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47] as const;
+const CLOTHING_SIZES = ["2A", "4A", "6A", "8A", "10A", "12A", "14A", "16A", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"] as const;
+const SHOE_SIZES = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47, 47.5, 48, 48.5, 49, 49.5, 50] as const;
 
 function SizingPreferences() {
     const { data } = useQuery({

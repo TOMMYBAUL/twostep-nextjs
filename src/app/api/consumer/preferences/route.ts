@@ -32,11 +32,11 @@ export async function PUT(request: Request) {
         const body = await request.json();
         const { clothing_size, shoe_size } = body;
 
-        const VALID_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+        const VALID_SIZES = ["2A", "4A", "6A", "8A", "10A", "12A", "14A", "16A", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
         if (clothing_size !== null && clothing_size !== undefined && !VALID_SIZES.includes(clothing_size)) {
             return NextResponse.json({ error: "Invalid clothing size" }, { status: 400 });
         }
-        if (shoe_size !== null && shoe_size !== undefined && (shoe_size < 35 || shoe_size > 48)) {
+        if (shoe_size !== null && shoe_size !== undefined && (shoe_size < 18 || shoe_size > 50)) {
             return NextResponse.json({ error: "Invalid shoe size" }, { status: 400 });
         }
 
