@@ -292,7 +292,7 @@ export default function ExplorePage() {
 
                 {/* Category + size filter dropdown */}
                 {filterOpen && (
-                    <div className="ml-auto mt-2 w-64 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
+                    <div className="ml-auto mt-2 max-h-[60vh] w-64 overflow-y-auto overscroll-contain rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
                         {/* Categories */}
                         {CATEGORIES.map((cat) => (
                             <button
