@@ -3,6 +3,10 @@
     {
       "path": "/api/images/process",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/sync-sumup",
+      "schedule": "*/10 * * * *"
     }
   ]
 }
