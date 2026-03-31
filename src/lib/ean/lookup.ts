@@ -10,8 +10,11 @@ type EanResult = {
     source: string;
 };
 
-// Rate limiter: 25 requests/minute (UPCitemdb paid plan)
-const upcRateLimiter = createRateLimiter(25, 60_000);
+// Rate limiter: 6 req/min (free) or 25 req/min (paid, when UPCITEMDB_API_KEY is set)
+const upcRateLimiter = createRateLimiter(
+    process.env.UPCITEMDB_API_KEY ? 25 : 6,
+    60_000,
+);
 
 export function parseOpenEanResponse(data: Record<string, unknown>): Omit<EanResult, "source"> {
     return {
@@ -51,15 +54,18 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = 1): P
 }
 
 async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
-    const apiKey = process.env.UPCITEMDB_API_KEY;
-    if (!apiKey) return null;
-
     await upcRateLimiter.acquire();
 
-    const res = await fetchWithRetry(
-        `https://api.upcitemdb.com/prod/v1/lookup?upc=${ean}`,
-        { headers: { "user_key": apiKey, "Accept": "application/json" } },
-    );
+    const apiKey = process.env.UPCITEMDB_API_KEY;
+    // Paid plan: /prod/v1/lookup with user_key header
+    // Free plan: /prod/trial/lookup without auth
+    const url = apiKey
+        ? `https://api.upcitemdb.com/prod/v1/lookup?upc=${ean}`
+        : `https://api.upcitemdb.com/prod/trial/lookup?upc=${ean}`;
+    const headers: Record<string, string> = { "Accept": "application/json" };
+    if (apiKey) headers["user_key"] = apiKey;
+
+    const res = await fetchWithRetry(url, { headers });
     if (!res) return null;
 
     const data = await res.json();
