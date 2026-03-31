@@ -14,24 +14,41 @@ type GoogleConnection = {
     store_code: string;
 };
 
+type GoogleStats = {
+    total_visible: number;
+    eligible_google: number;
+    missing_ean: number;
+    missing_photo: number;
+    missing_price: number;
+    score: number;
+};
+
 export default function GooglePage() {
     const { merchant } = useMerchant();
     const [connection, setConnection] = useState<GoogleConnection | null>(null);
+    const [stats, setStats] = useState<GoogleStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
 
     useEffect(() => {
         if (!merchant?.id) return;
+
         const supabase = createClient();
-        supabase
-            .from("google_merchant_connections")
-            .select("google_merchant_id, products_pushed, last_feed_at, last_feed_status, last_feed_error, store_code")
-            .eq("merchant_id", merchant.id)
-            .maybeSingle()
-            .then(({ data }: { data: GoogleConnection | null }) => {
-                setConnection(data);
-                setLoading(false);
-            });
+
+        // Load connection + stats in parallel
+        Promise.all([
+            supabase
+                .from("google_merchant_connections")
+                .select("google_merchant_id, products_pushed, last_feed_at, last_feed_status, last_feed_error, store_code")
+                .eq("merchant_id", merchant.id)
+                .maybeSingle()
+                .then(({ data }: { data: GoogleConnection | null }) => data),
+            fetch("/api/google/stats").then((r) => r.json()),
+        ]).then(([conn, statsData]) => {
+            setConnection(conn);
+            if (!statsData.error) setStats(statsData);
+            setLoading(false);
+        });
     }, [merchant?.id]);
 
     async function handleConnect() {
@@ -65,11 +82,62 @@ export default function GooglePage() {
         );
     }
 
+    const suggestions: Array<{ count: number; label: string; color: string }> = [];
+    if (stats) {
+        if (stats.missing_photo > 0) suggestions.push({ count: stats.missing_photo, label: "produits sans photo — ajoutez une photo pour les rendre visibles", color: "#E65100" });
+        if (stats.missing_ean > 0) suggestions.push({ count: stats.missing_ean, label: "produits sans code-barres — complétez-les dans votre caisse", color: "#C62828" });
+        if (stats.missing_price > 0) suggestions.push({ count: stats.missing_price, label: "produits sans prix — ajoutez un prix pour les rendre visibles", color: "#F57F17" });
+    }
+
     return (
         <>
             <PageHeader title="Google" storeName={merchant?.name} />
 
-            <div className="mx-auto mt-6 max-w-lg">
+            <div className="mx-auto mt-6 max-w-lg space-y-4">
+                {/* Score de visibilité — toujours visible */}
+                {stats && stats.total_visible > 0 && (
+                    <div className="rounded-2xl border border-[#E8ECF4] bg-white p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[#8E96B0]">Visibilité Google</p>
+                                <p className="mt-0.5 text-xs text-[#8E96B0]">
+                                    {stats.eligible_google} / {stats.total_visible} produits éligibles
+                                </p>
+                            </div>
+                            <p className="text-3xl font-bold" style={{ color: stats.score >= 70 ? "#34A853" : stats.score >= 40 ? "#F57F17" : "#EA4335" }}>
+                                {stats.score}%
+                            </p>
+                        </div>
+                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E8ECF4]">
+                            <div
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                    width: `${stats.score}%`,
+                                    backgroundColor: stats.score >= 70 ? "#34A853" : stats.score >= 40 ? "#F57F17" : "#EA4335",
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Suggestions */}
+                {suggestions.length > 0 && (
+                    <div className="rounded-2xl border border-[#E8ECF4] bg-white p-6">
+                        <p className="mb-3 text-sm font-semibold text-[#1A1F36]">Suggestions</p>
+                        <div className="space-y-2">
+                            {suggestions.map((s, i) => (
+                                <div key={i} className="rounded-xl bg-[#FFF8E1] px-4 py-3">
+                                    <p className="text-xs text-[#1A1F36]">
+                                        <span className="font-bold" style={{ color: s.color }}>+{s.count}</span>{" "}
+                                        {s.label}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Connexion Google */}
                 {!connection ? (
                     <div className="rounded-2xl border border-[#E8ECF4] bg-white p-8 text-center">
                         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#F1F5FF]">
@@ -81,11 +149,12 @@ export default function GooglePage() {
                             </svg>
                         </div>
                         <h2 className="text-lg font-semibold text-[#1A1F36]">
-                            Rendez vos produits visibles sur Google
+                            Connectez-vous à Google
                         </h2>
                         <p className="mt-2 text-sm text-[#8E96B0]">
-                            Vos produits apparaîtront gratuitement sur Google Shopping et Google Maps
-                            quand un client cherche un produit près de chez vous.
+                            {stats && stats.eligible_google > 0
+                                ? `${stats.eligible_google} produits seront visibles immédiatement sur Google Shopping et Google Maps.`
+                                : "Vos produits apparaîtront gratuitement sur Google Shopping et Google Maps quand un client cherche un produit près de chez vous."}
                         </p>
                         <button
                             onClick={handleConnect}
@@ -95,7 +164,7 @@ export default function GooglePage() {
                         </button>
                     </div>
                 ) : (
-                    <div className="rounded-2xl border border-[#E8ECF4] bg-white p-8">
+                    <div className="rounded-2xl border border-[#E8ECF4] bg-white p-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
                                 <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -110,34 +179,26 @@ export default function GooglePage() {
                             </div>
                         </div>
 
-                        <div className="mt-6 space-y-3">
+                        <div className="mt-4 space-y-2">
                             <div className="flex items-center justify-between rounded-xl bg-[#F8F9FC] px-4 py-3">
-                                <span className="text-sm text-[#8E96B0]">Produits sur Google</span>
+                                <span className="text-xs text-[#8E96B0]">Produits envoyés</span>
+                                <span className="text-sm font-semibold text-[#1A1F36]">{connection.products_pushed}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-xl bg-[#F8F9FC] px-4 py-3">
+                                <span className="text-xs text-[#8E96B0]">Dernière sync</span>
                                 <span className="text-sm font-semibold text-[#1A1F36]">
-                                    {connection.products_pushed}
+                                    {connection.last_feed_at ? formatTimeAgo(connection.last_feed_at) : "En attente"}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between rounded-xl bg-[#F8F9FC] px-4 py-3">
-                                <span className="text-sm text-[#8E96B0]">Dernière mise à jour</span>
-                                <span className="text-sm font-semibold text-[#1A1F36]">
-                                    {connection.last_feed_at
-                                        ? formatTimeAgo(connection.last_feed_at)
-                                        : "En attente"}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between rounded-xl bg-[#F8F9FC] px-4 py-3">
-                                <span className="text-sm text-[#8E96B0]">Statut</span>
+                                <span className="text-xs text-[#8E96B0]">Statut</span>
                                 <span className={`text-sm font-semibold ${
-                                    connection.last_feed_status === "success"
-                                        ? "text-green-600"
-                                        : connection.last_feed_status === "error"
-                                            ? "text-red-500"
+                                    connection.last_feed_status === "success" ? "text-green-600"
+                                        : connection.last_feed_status === "error" ? "text-red-500"
                                             : "text-[#8E96B0]"
                                 }`}>
-                                    {connection.last_feed_status === "success"
-                                        ? "Succès"
-                                        : connection.last_feed_status === "error"
-                                            ? `Erreur : ${connection.last_feed_error ?? "inconnue"}`
+                                    {connection.last_feed_status === "success" ? "Succès"
+                                        : connection.last_feed_status === "error" ? `Erreur : ${connection.last_feed_error ?? "inconnue"}`
                                             : "En attente"}
                                 </span>
                             </div>
@@ -146,7 +207,7 @@ export default function GooglePage() {
                         <button
                             onClick={handleDisconnect}
                             disabled={disconnecting}
-                            className="mt-6 text-sm text-red-500 transition hover:text-red-700 disabled:opacity-50"
+                            className="mt-4 text-xs text-red-500 transition hover:text-red-700 disabled:opacity-50"
                         >
                             {disconnecting ? "Déconnexion..." : "Déconnecter de Google"}
                         </button>
