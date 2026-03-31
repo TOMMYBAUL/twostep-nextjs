@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/enrich-ean",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/google-feed",
+      "schedule": "0 3 * * *"
     }
   ]
 }
