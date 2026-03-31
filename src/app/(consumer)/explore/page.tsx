@@ -15,17 +15,7 @@ import { useAutocomplete } from "../hooks/use-search";
 import { useFollows, useToggleFollow } from "../hooks/use-follows";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
-
-const CATEGORIES = [
-    { label: "Tout", value: null, emoji: "" },
-    { label: "Mode", value: "mode", emoji: "👗" },
-    { label: "Chaussures", value: "chaussures", emoji: "👟" },
-    { label: "Sport", value: "sport", emoji: "⚽" },
-    { label: "Tech", value: "tech", emoji: "📱" },
-    { label: "Beauté", value: "beaute", emoji: "💄" },
-    { label: "Bijoux", value: "bijoux", emoji: "💍" },
-    { label: "Jouets", value: "jouets", emoji: "🧸" },
-] as const;
+import { CONSUMER_CATEGORIES } from "@/lib/categories";
 
 interface NearbyMerchant {
     merchant_id: string;
@@ -300,7 +290,7 @@ export default function ExplorePage() {
                 {filterOpen && (
                     <div className="ml-auto mt-2 max-h-[60vh] w-64 overflow-y-auto overscroll-contain rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
                         {/* Categories */}
-                        {CATEGORIES.map((cat) => (
+                        {CONSUMER_CATEGORIES.map((cat) => (
                             <button
                                 key={cat.label}
                                 type="button"

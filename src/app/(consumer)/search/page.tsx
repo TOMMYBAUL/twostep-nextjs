@@ -11,17 +11,7 @@ import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useSearch, useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
-
-const CATEGORIES = [
-    { label: "Tout", value: null },
-    { label: "Mode", value: "mode" },
-    { label: "Chaussures", value: "chaussures" },
-    { label: "Bijoux", value: "bijoux" },
-    { label: "Beauté", value: "beaute" },
-    { label: "Sport", value: "sport" },
-    { label: "Déco", value: "deco" },
-    { label: "Épicerie", value: "epicerie" },
-] as const;
+import { CONSUMER_CATEGORIES } from "@/lib/categories";
 
 const FILTER_LABELS: Record<string, string> = {
     promos: "Promotions",
@@ -162,7 +152,7 @@ function SearchPageInner() {
 
                 {/* Category chips — same as discover page */}
                 <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
-                    {CATEGORIES.map((cat) => (
+                    {CONSUMER_CATEGORIES.map((cat) => (
                         <button
                             key={cat.label}
                             type="button"

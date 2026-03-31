@@ -4,26 +4,9 @@ import Image from "next/image";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { MarkerPin01 } from "@untitledui/icons";
 import { notFound } from "next/navigation";
+import { CATEGORY_SEO } from "@/lib/categories";
 
 const BASE_URL = "https://www.twostep.fr";
-
-const CATEGORIES: Record<string, { title: string; description: string; dbCategory: string }> = {
-    mode: { title: "Mode", description: "Boutiques de mode et prêt-à-porter à Toulouse. Vêtements, accessoires et créateurs locaux.", dbCategory: "Mode" },
-    chaussures: { title: "Chaussures", description: "Magasins de chaussures à Toulouse. Sneakers, boots, escarpins et chaussures artisanales.", dbCategory: "Chaussures" },
-    bijoux: { title: "Bijoux", description: "Bijouteries et créateurs de bijoux à Toulouse. Bijoux artisanaux, fantaisie et précieux.", dbCategory: "Bijoux" },
-    sport: { title: "Sport", description: "Magasins de sport à Toulouse. Équipements, vêtements techniques et accessoires.", dbCategory: "Sport" },
-    decoration: { title: "Décoration", description: "Boutiques de décoration et design d'intérieur à Toulouse. Objets déco, mobilier et art de vivre.", dbCategory: "Décoration" },
-    boulangeries: { title: "Boulangeries", description: "Découvrez les meilleures boulangeries artisanales de Toulouse. Pain frais, viennoiseries et pâtisseries disponibles en boutique.", dbCategory: "Boulangerie" },
-    fromageries: { title: "Fromageries", description: "Les fromageries artisanales de Toulouse. Fromages locaux et affinés, disponibles en boutique.", dbCategory: "Fromagerie" },
-    epiceries: { title: "Épiceries", description: "Épiceries fines et de quartier à Toulouse. Produits locaux, bio et artisanaux.", dbCategory: "Épicerie" },
-    cavistes: { title: "Cavistes", description: "Les meilleurs cavistes de Toulouse. Vins, spiritueux et conseils de passionnés.", dbCategory: "Caviste" },
-    bouchers: { title: "Boucheries", description: "Boucheries artisanales de Toulouse. Viandes de qualité, circuit court.", dbCategory: "Boucherie" },
-    poissonneries: { title: "Poissonneries", description: "Poissonneries de Toulouse. Poissons frais et fruits de mer.", dbCategory: "Poissonnerie" },
-    patisseries: { title: "Pâtisseries", description: "Pâtisseries artisanales de Toulouse. Gâteaux, macarons et douceurs.", dbCategory: "Pâtisserie" },
-    traiteurs: { title: "Traiteurs", description: "Traiteurs de Toulouse. Plats cuisinés, buffets et spécialités.", dbCategory: "Traiteur" },
-    primeurs: { title: "Primeurs", description: "Primeurs de Toulouse. Fruits et légumes frais, de saison et locaux.", dbCategory: "Primeur" },
-    chocolatiers: { title: "Chocolatiers", description: "Chocolatiers artisanaux de Toulouse. Chocolats fins et confiseries.", dbCategory: "Chocolatier" },
-};
 
 interface Props {
     params: Promise<{ category: string }>;
@@ -31,7 +14,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { category } = await params;
-    const cat = CATEGORIES[category];
+    const cat = CATEGORY_SEO[category];
     if (!cat) return {};
 
     return {
@@ -48,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
     const { category } = await params;
-    const cat = CATEGORIES[category];
+    const cat = CATEGORY_SEO[category];
     if (!cat) notFound();
 
     let merchants: any[] = [];
@@ -131,7 +114,7 @@ export default async function CategoryPage({ params }: Props) {
                 <nav className="mt-12 border-t border-[#1A1F36]/10 pt-6">
                     <h2 className="text-sm font-semibold text-[#1A1F36]/60">Autres catégories à Toulouse</h2>
                     <div className="mt-3 flex flex-wrap gap-2">
-                        {Object.entries(CATEGORIES)
+                        {Object.entries(CATEGORY_SEO)
                             .filter(([key]) => key !== category)
                             .map(([key, val]) => (
                                 <Link

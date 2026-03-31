@@ -1,0 +1,34 @@
+export const CONSUMER_CATEGORIES = [
+    { label: "Tout", value: null, emoji: null },
+    { label: "Mode", value: "mode", emoji: "👗" },
+    { label: "Chaussures", value: "chaussures", emoji: "👟" },
+    { label: "Bijoux", value: "bijoux", emoji: "💎" },
+    { label: "Beauté", value: "beaute", emoji: "💄" },
+    { label: "Sport", value: "sport", emoji: "⚽" },
+    { label: "Déco", value: "deco", emoji: "🏠" },
+    { label: "Épicerie", value: "epicerie", emoji: "🧺" },
+] as const;
+
+/** Mapping slug → DB category name (for SEO pages) */
+export const CATEGORY_SEO: Record<string, { title: string; description: string; dbCategory: string }> = {
+    mode: { title: "Mode", description: "Boutiques de mode et prêt-à-porter. Vêtements, accessoires et créateurs locaux.", dbCategory: "Mode" },
+    chaussures: { title: "Chaussures", description: "Magasins de chaussures. Sneakers, boots, escarpins et chaussures artisanales.", dbCategory: "Chaussures" },
+    bijoux: { title: "Bijoux", description: "Bijouteries et créateurs de bijoux. Bijoux artisanaux, fantaisie et précieux.", dbCategory: "Bijoux" },
+    sport: { title: "Sport", description: "Magasins de sport. Équipements, vêtements techniques et accessoires.", dbCategory: "Sport" },
+    decoration: { title: "Décoration", description: "Boutiques de décoration et design d'intérieur. Objets déco, mobilier et art de vivre.", dbCategory: "Décoration" },
+    beaute: { title: "Beauté", description: "Instituts et boutiques beauté. Soins, maquillage et produits naturels.", dbCategory: "Beauté" },
+    epicerie: { title: "Épicerie", description: "Épiceries fines et commerces alimentaires. Produits locaux et artisanaux.", dbCategory: "Épicerie" },
+    deco: { title: "Déco", description: "Boutiques de décoration d'intérieur. Objets déco, mobilier et art de vivre.", dbCategory: "Décoration" },
+    boulangeries: { title: "Boulangeries", description: "Découvrez les meilleures boulangeries artisanales. Pain frais, viennoiseries et pâtisseries disponibles en boutique.", dbCategory: "Boulangerie" },
+    fromageries: { title: "Fromageries", description: "Les fromageries artisanales. Fromages locaux et affinés, disponibles en boutique.", dbCategory: "Fromagerie" },
+    epiceries: { title: "Épiceries", description: "Épiceries fines et de quartier. Produits locaux, bio et artisanaux.", dbCategory: "Épicerie" },
+    cavistes: { title: "Cavistes", description: "Les meilleurs cavistes. Vins, spiritueux et conseils de passionnés.", dbCategory: "Caviste" },
+    bouchers: { title: "Boucheries", description: "Boucheries artisanales. Viandes de qualité, circuit court.", dbCategory: "Boucherie" },
+    poissonneries: { title: "Poissonneries", description: "Poissonneries. Poissons frais et fruits de mer.", dbCategory: "Poissonnerie" },
+    patisseries: { title: "Pâtisseries", description: "Pâtisseries artisanales. Gâteaux, macarons et douceurs.", dbCategory: "Pâtisserie" },
+    traiteurs: { title: "Traiteurs", description: "Traiteurs. Plats cuisinés, buffets et spécialités.", dbCategory: "Traiteur" },
+    primeurs: { title: "Primeurs", description: "Primeurs. Fruits et légumes frais, de saison et locaux.", dbCategory: "Primeur" },
+    chocolatiers: { title: "Chocolatiers", description: "Chocolatiers artisanaux. Chocolats fins et confiseries.", dbCategory: "Chocolatier" },
+};
+
+export type CategoryValue = (typeof CONSUMER_CATEGORIES)[number]["value"];

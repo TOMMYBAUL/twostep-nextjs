@@ -15,6 +15,7 @@ import { generateSlug } from "@/lib/slug";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
 import { HeartButton } from "../components/heart-button";
+import { CONSUMER_CATEGORIES } from "@/lib/categories";
 
 interface DiscoverProduct {
     product_id: string;
@@ -28,17 +29,6 @@ interface DiscoverProduct {
     distance_km: number;
     sale_price: number | null;
 }
-
-const CATEGORIES = [
-    { label: "Tout", value: null, emoji: null },
-    { label: "Mode", value: "mode", emoji: "👗" },
-    { label: "Chaussures", value: "chaussures", emoji: "👟" },
-    { label: "Bijoux", value: "bijoux", emoji: "💎" },
-    { label: "Beauté", value: "beaute", emoji: "💄" },
-    { label: "Sport", value: "sport", emoji: "⚽" },
-    { label: "Déco", value: "deco", emoji: "🏠" },
-    { label: "Épicerie", value: "epicerie", emoji: "🧺" },
-] as const;
 
 function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending" | "nearby", category: string | null, size: string | null) {
     return useQuery<DiscoverProduct[]>({
@@ -228,7 +218,7 @@ function DiscoverContent() {
                         )}
                     </button>
 
-                    {CATEGORIES.map((cat) => (
+                    {CONSUMER_CATEGORIES.map((cat) => (
                         <button
                             key={cat.label}
                             type="button"

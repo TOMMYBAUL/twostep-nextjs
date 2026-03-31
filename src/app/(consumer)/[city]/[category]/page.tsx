@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CATEGORY_SEO } from "@/lib/categories";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -17,24 +18,6 @@ const SUPPORTED_CITIES: Record<string, { name: string; available: boolean }> = {
     nice: { name: "Nice", available: false },
 };
 
-const CATEGORIES: Record<string, string> = {
-    mode: "Mode",
-    chaussures: "Chaussures",
-    bijoux: "Bijoux",
-    sport: "Sport",
-    decoration: "Décoration",
-    boulangeries: "Boulangeries",
-    fromageries: "Fromageries",
-    epiceries: "Épiceries",
-    cavistes: "Cavistes",
-    bouchers: "Boucheries",
-    poissonneries: "Poissonneries",
-    patisseries: "Pâtisseries",
-    traiteurs: "Traiteurs",
-    primeurs: "Primeurs",
-    chocolatiers: "Chocolatiers",
-};
-
 interface Props {
     params: Promise<{ city: string; category: string }>;
 }
@@ -42,7 +25,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { city, category } = await params;
     const cityInfo = SUPPORTED_CITIES[city];
-    const catTitle = CATEGORIES[category];
+    const catTitle = CATEGORY_SEO[category]?.title;
     if (!cityInfo || !catTitle) return {};
 
     return {
@@ -55,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CityComingSoonPage({ params }: Props) {
     const { city, category } = await params;
     const cityInfo = SUPPORTED_CITIES[city];
-    const catTitle = CATEGORIES[category];
+    const catTitle = CATEGORY_SEO[category]?.title;
     if (!cityInfo || !catTitle) notFound();
 
     return (
@@ -103,7 +86,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                         Autres catégories à {cityInfo.name}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2">
-                        {Object.entries(CATEGORIES)
+                        {Object.entries(CATEGORY_SEO)
                             .filter(([key]) => key !== category)
                             .slice(0, 8)
                             .map(([key, val]) => (
@@ -112,7 +95,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                                     href={`/${city}/${key}`}
                                     className="rounded-full bg-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36]/50 transition hover:bg-[#E2E5F0]/80"
                                 >
-                                    {val}
+                                    {val.title}
                                 </Link>
                             ))}
                     </div>
