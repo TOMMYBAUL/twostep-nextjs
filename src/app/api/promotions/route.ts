@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 
         const { data, error } = await supabase
             .from("promotions")
-            .select("*, products(name, price, photo_url, merchant_id)")
+            .select("*, products(name, canonical_name, price, photo_url, merchant_id)")
             .in("product_id", productIds)
             .or("ends_at.is.null,ends_at.gt.now()")
             .order("created_at", { ascending: false });

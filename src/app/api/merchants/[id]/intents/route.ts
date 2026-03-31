@@ -27,7 +27,7 @@ export async function GET(
     // Fetch active (non-expired) intent signals
     const { data: intents } = await supabase
         .from("intent_signals")
-        .select("id, selected_size, created_at, expires_at, products(name, photo_url, photo_processed_url), consumer_profiles:user_id(display_name)")
+        .select("id, selected_size, created_at, expires_at, products(name, canonical_name, photo_url, photo_processed_url), consumer_profiles:user_id(display_name)")
         .eq("merchant_id", merchantId)
         .eq("status", "active")
         .gte("expires_at", new Date().toISOString())

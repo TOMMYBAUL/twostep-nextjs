@@ -87,7 +87,7 @@ export default function StockPage() {
                                 className={`animate-fade-up stagger-${Math.min(i + 5, 10)} flex items-center gap-4 rounded-xl bg-white px-5 py-3.5`}
                             >
                                 <div className="flex-1 min-w-0">
-                                    <p className="truncate text-sm font-semibold text-gray-900">{product.name}</p>
+                                    <p className="truncate text-sm font-semibold text-gray-900">{product.canonical_name ?? product.name}</p>
                                     {product.category && <p className="text-xs text-gray-400">{product.category}</p>}
                                 </div>
 
