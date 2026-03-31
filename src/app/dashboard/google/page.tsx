@@ -48,6 +48,8 @@ export default function GooglePage() {
             setConnection(conn);
             if (!statsData.error) setStats(statsData);
             setLoading(false);
+        }).catch(() => {
+            setLoading(false);
         });
     }, [merchant?.id]);
 
@@ -61,6 +63,7 @@ export default function GooglePage() {
         setDisconnecting(true);
         await fetch("/api/google/disconnect", { method: "POST" });
         setConnection(null);
+        setStats(null);
         setDisconnecting(false);
     }
 

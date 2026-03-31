@@ -91,6 +91,9 @@ async function fetchFromOpenEan(ean: string): Promise<EanResult | null> {
  * Updates product and ean_lookups cache.
  */
 export async function lookupEan(ean: string, productId: string): Promise<boolean> {
+    // Validate EAN format (8 or 13 digits)
+    if (!/^\d{8}(\d{5})?$/.test(ean)) return false;
+
     const supabase = createAdminClient();
 
     // Check cache first

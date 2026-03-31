@@ -18,11 +18,20 @@ export default function ProfilePage() {
     const { data: follows } = useFollows();
     const [user, setUser] = useState<{ email?: string } | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isMerchant, setIsMerchant] = useState(false);
 
     useEffect(() => {
         const supabase = createClient();
-        supabase.auth.getUser().then(({ data }) => {
+        supabase.auth.getUser().then(async ({ data }) => {
             setUser(data.user ? { email: data.user.email } : null);
+            if (data.user) {
+                const { data: merchant } = await supabase
+                    .from("merchants")
+                    .select("id")
+                    .eq("user_id", data.user.id)
+                    .maybeSingle();
+                setIsMerchant(!!merchant);
+            }
             setLoading(false);
         }).catch(() => setLoading(false));
     }, []);
@@ -218,6 +227,21 @@ export default function ProfilePage() {
 
                 {user && (
                     <>
+                        {isMerchant && (
+                            <>
+                                <div className="mx-4 border-t-[0.5px] border-[#E2E5F0]" />
+                                <Link
+                                    href="/dashboard"
+                                    className="flex items-center gap-3 px-4 py-3 transition duration-100 active:bg-[#E2E5F0]"
+                                >
+                                    <div className="flex size-9 items-center justify-center rounded-[10px] bg-[#F8F9FC]">
+                                        <Settings01 className="size-[18px] text-[#4268FF]" />
+                                    </div>
+                                    <span className="flex-1 text-[13px] font-medium text-[#1A1F36]">Mon dashboard</span>
+                                    <ChevronRight className="size-4 shrink-0 text-[#8E96B0]" />
+                                </Link>
+                            </>
+                        )}
                         <div className="mx-4 border-t-[0.5px] border-[#E2E5F0]" />
                         <button
                             type="button"
