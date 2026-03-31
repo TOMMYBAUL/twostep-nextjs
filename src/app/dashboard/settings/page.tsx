@@ -46,6 +46,10 @@ function SettingsPageInner() {
     const [isLoading, setIsLoading] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
     const [enhanceResult, setEnhanceResult] = useState<number | null>(null);
+    const [instagramUrl, setInstagramUrl] = useState("");
+    const [tiktokUrl, setTiktokUrl] = useState("");
+    const [websiteUrl, setWebsiteUrl] = useState("");
+    const [savingSocial, setSavingSocial] = useState(false);
 
     useEffect(() => {
         const supabase = createClient();
@@ -53,6 +57,15 @@ function SettingsPageInner() {
             setEmail(data.user?.email ?? null);
         });
     }, []);
+
+    useEffect(() => {
+        if (merchant) {
+            const links = (merchant as any).links ?? {};
+            setInstagramUrl((merchant as any).instagram_url ?? links.instagram ?? "");
+            setTiktokUrl((merchant as any).tiktok_url ?? links.tiktok ?? "");
+            setWebsiteUrl((merchant as any).website_url ?? links.website ?? "");
+        }
+    }, [merchant]);
 
     const handlePasswordChange = async (e: FormEvent) => {
         e.preventDefault();
@@ -104,6 +117,37 @@ function SettingsPageInner() {
             }
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur de synchronisation", "error");
+        }
+    };
+
+    const handleSaveSocial = async (e: FormEvent) => {
+        e.preventDefault();
+        if (!merchant) return;
+        setSavingSocial(true);
+        try {
+            const supabase = createClient();
+            const currentLinks = (merchant as any).links ?? {};
+            const { error } = await supabase
+                .from("merchants")
+                .update({
+                    instagram_url: instagramUrl || null,
+                    tiktok_url: tiktokUrl || null,
+                    website_url: websiteUrl || null,
+                    links: {
+                        ...currentLinks,
+                        instagram: instagramUrl || undefined,
+                        tiktok: tiktokUrl || undefined,
+                        website: websiteUrl || undefined,
+                    },
+                })
+                .eq("id", merchant.id);
+            if (error) throw error;
+            toast("Liens sociaux mis à jour");
+            refetch();
+        } catch {
+            toast("Erreur lors de la mise à jour", "error");
+        } finally {
+            setSavingSocial(false);
         }
     };
 
@@ -251,8 +295,53 @@ function SettingsPageInner() {
                 </p>
             </section>
 
-            {/* Photos */}
+            {/* Réseaux sociaux & Site web */}
             <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
+                <h2 className="mb-4 text-base font-semibold text-gray-900">Réseaux sociaux & Site web</h2>
+                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
+                    <p className="text-sm text-gray-600">
+                        Les clients verront ces liens sur votre page boutique. Ajoutez au moins votre Instagram.
+                    </p>
+                    <form onSubmit={handleSaveSocial} className="flex flex-col gap-3">
+                        <label className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-gray-500">Instagram</span>
+                            <input
+                                type="text"
+                                value={instagramUrl}
+                                onChange={(e) => setInstagramUrl(e.target.value)}
+                                placeholder="@votre_boutique ou URL complète"
+                                className="search-ts w-full"
+                            />
+                        </label>
+                        <label className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-gray-500">TikTok</span>
+                            <input
+                                type="text"
+                                value={tiktokUrl}
+                                onChange={(e) => setTiktokUrl(e.target.value)}
+                                placeholder="@votre_boutique ou URL complète"
+                                className="search-ts w-full"
+                            />
+                        </label>
+                        <label className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-gray-500">Site web</span>
+                            <input
+                                type="text"
+                                value={websiteUrl}
+                                onChange={(e) => setWebsiteUrl(e.target.value)}
+                                placeholder="https://www.votre-boutique.fr"
+                                className="search-ts w-full"
+                            />
+                        </label>
+                        <button type="submit" className="btn-ts self-start" disabled={savingSocial}>
+                            {savingSocial ? "Enregistrement..." : "Enregistrer"}
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            {/* Photos */}
+            <section className="animate-fade-up stagger-6 mb-10 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Photos produit</h2>
                 <div className="rounded-xl bg-white px-5 py-5 space-y-4">
                     <p className="text-sm text-gray-600">
@@ -274,7 +363,7 @@ function SettingsPageInner() {
             </section>
 
             {/* Subscription */}
-            <section className="animate-fade-up stagger-5 max-w-xl">
+            <section className="animate-fade-up stagger-7 max-w-xl">
                 <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
                 <div className="rounded-xl bg-white px-5 py-4">
                     <p className="text-sm font-semibold" style={{ color: "#4268FF" }}>
