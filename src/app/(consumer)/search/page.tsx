@@ -13,11 +13,6 @@ import { useSearch, useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
 import { CONSUMER_CATEGORIES } from "@/lib/categories";
 
-const FILTER_LABELS: Record<string, string> = {
-    promos: "Promotions",
-    trending: "Tendances",
-};
-
 export default function SearchPage() {
     return (
         <Suspense>
@@ -78,16 +73,6 @@ function SearchPageInner() {
         <div className="min-h-dvh bg-[#FFFFFF]">
             {/* Search header */}
             <div className="bg-[#FFFFFF] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                {/* Filter title with logo */}
-                {isFilterMode && filterParam && FILTER_LABELS[filterParam] && (
-                    <div className="mb-3 flex items-center gap-2">
-                        <img src="/logo-icon.webp?v=2" alt="" className="size-6" />
-                        <p className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">
-                            {FILTER_LABELS[filterParam]}
-                        </p>
-                    </div>
-                )}
-
                 <div className="relative">
                     <div
                         className={cx(
