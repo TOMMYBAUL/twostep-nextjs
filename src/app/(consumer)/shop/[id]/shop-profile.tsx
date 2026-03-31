@@ -3,7 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, LinkExternal01, MarkerPin01, Clock, ChevronDown, Share07 } from "@untitledui/icons";
+import { ArrowLeft, MarkerPin01, Clock, ChevronDown, Share07, Globe02 } from "@untitledui/icons";
+import Instagram from "@/components/foundations/social-icons/instagram";
+import TikTok from "@/components/foundations/social-icons/tiktok";
 import { useState, useEffect } from "react";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
@@ -212,8 +214,9 @@ export default function ShopProfileClient() {
                     })()}
                 </div>
 
-                {/* S'abonner button — Instagram style */}
-                <div className="mt-3 flex gap-2">
+                {/* S'abonner + Social links + Partager */}
+                <div className="mt-3 flex items-center gap-2">
+                    {/* S'abonner — flex-1 */}
                     <button
                         type="button"
                         onClick={() => merchantUuid && (isFollowing ? unfollow.mutate(merchantUuid) : follow.mutate(merchantUuid))}
@@ -226,6 +229,43 @@ export default function ShopProfileClient() {
                     >
                         {isFollowing ? "Abonné ✓" : "S'abonner"}
                     </button>
+
+                    {/* Social icons — only shown if URL exists */}
+                    {links.instagram && (
+                        <a
+                            href={links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${links.instagram.replace("@", "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            aria-label="Instagram"
+                        >
+                            <Instagram size={18} className="text-[#8E96B0]" />
+                        </a>
+                    )}
+                    {links.tiktok && (
+                        <a
+                            href={links.tiktok.startsWith("http") ? links.tiktok : `https://tiktok.com/@${links.tiktok.replace("@", "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            aria-label="TikTok"
+                        >
+                            <TikTok size={18} className="text-[#8E96B0]" />
+                        </a>
+                    )}
+                    {links.website && (
+                        <a
+                            href={links.website.startsWith("http") ? links.website : `https://${links.website}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            aria-label="Site web"
+                        >
+                            <Globe02 className="size-[18px] text-[#8E96B0]" />
+                        </a>
+                    )}
+
+                    {/* Partager */}
                     <button
                         type="button"
                         onClick={async () => {
@@ -236,7 +276,8 @@ export default function ShopProfileClient() {
                                 await navigator.clipboard.writeText(url);
                             }
                         }}
-                        className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition active:scale-[0.97]"
+                        className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                        aria-label="Partager"
                     >
                         <Share07 className="size-4 text-[#8E96B0]" />
                     </button>
@@ -248,22 +289,6 @@ export default function ShopProfileClient() {
                 {/* Bio + links */}
                 {profile.merchant_description && (
                     <p className="mt-4 text-sm leading-relaxed text-[#8E96B0]/70">{profile.merchant_description}</p>
-                )}
-                {Object.keys(links).length > 0 && (
-                    <div className="mt-3 flex gap-3">
-                        {Object.entries(links).map(([platform, url]) => (
-                            <a
-                                key={platform}
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-0.5 text-xs font-medium text-[#4268FF] hover:underline"
-                            >
-                                {platform}
-                                <LinkExternal01 className="size-3" aria-hidden="true" />
-                            </a>
-                        ))}
-                    </div>
                 )}
             </div>
 
