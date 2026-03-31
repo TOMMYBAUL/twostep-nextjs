@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Syne } from "next/font/google";
+import { Archivo_Black, Barlow, Inter } from "next/font/google";
 import { RouteProvider } from "@/providers/router-provider";
 import { ConsentAnalytics } from "@/components/consent-analytics";
 import { Theme } from "@/providers/theme";
@@ -7,19 +7,25 @@ import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
 import { ZoomReset } from "@/components/zoom-reset";
 
-const syne = Syne({
+const archivoBlack = Archivo_Black({
     subsets: ["latin"],
     display: "swap",
-    weight: ["700"],
-    variable: "--font-syne",
+    weight: ["400"],
+    variable: "--font-archivo-black",
 });
 
-const cormorantGaramond = Cormorant_Garamond({
+const barlow = Barlow({
     subsets: ["latin"],
     display: "swap",
-    weight: ["300", "400"],
-    style: ["normal", "italic"],
-    variable: "--font-cormorant",
+    weight: ["400", "500", "600", "700", "800"],
+    variable: "--font-barlow",
+});
+
+const inter = Inter({
+    subsets: ["latin"],
+    display: "swap",
+    weight: ["400", "500", "600"],
+    variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -69,9 +75,8 @@ export default function RootLayout({
     return (
         <html lang="fr" suppressHydrationWarning>
             <body
-                className={cx(syne.variable, cormorantGaramond.variable, "antialiased")}
+                className={cx(archivoBlack.variable, barlow.variable, inter.variable, "antialiased")}
                 style={{
-                    fontFamily: "var(--font-syne), system-ui, sans-serif",
                     background: "#FFFFFF",
                 }}
             >
