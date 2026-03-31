@@ -40,6 +40,27 @@ const moreItems = [
         ),
     },
     {
+        href: "/dashboard/google",
+        label: "Google",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4l3 3" />
+                <path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-1.99 1.82H9.83a2 2 0 0 1-1.99-1.82l-.35-3.83m.01 0a5.002 5.002 0 0 1 9.01 0" />
+            </svg>
+        ),
+    },
+    {
+        href: "/discover",
+        label: "Explorer les boutiques",
+        icon: (
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+        ),
+    },
+    {
         href: "/dashboard/settings",
         label: "Réglages",
         icon: (

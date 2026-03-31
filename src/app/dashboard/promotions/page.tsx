@@ -74,7 +74,7 @@ export default function PromotionsPage() {
                             <option value="">Choisir un produit...</option>
                             {products.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                    {p.name} — {p.price?.toFixed(2)} €
+                                    {p.canonical_name ?? p.name} — {p.price?.toFixed(2)} €
                                 </option>
                             ))}
                         </select>
@@ -139,7 +139,7 @@ export default function PromotionsPage() {
                             >
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-gray-900">
-                                        {promo.products?.name ?? "Produit"}
+                                        {promo.products?.canonical_name ?? promo.products?.name ?? "Produit"}
                                     </p>
                                     <p className="text-xs text-gray-400 mt-0.5">
                                         <span className="line-through">{promo.products?.price?.toFixed(2)} €</span>

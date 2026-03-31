@@ -22,6 +22,7 @@ export default function ProductsPage() {
     const [activeTab, setActiveTab] = useState<"catalogue" | "incomplete">("catalogue");
 
     const filtered = products.filter((p) =>
+        (p.canonical_name ?? p.name).toLowerCase().includes(search.toLowerCase()) ||
         p.name.toLowerCase().includes(search.toLowerCase()),
     );
 
@@ -115,7 +116,7 @@ export default function ProductsPage() {
                                 <ProductRow
                                     key={product.id}
                                     id={product.id}
-                                    name={product.name}
+                                    name={product.canonical_name ?? product.name}
                                     category={product.category}
                                     price={product.price}
                                     stockQuantity={product.stock?.[0]?.quantity ?? 0}

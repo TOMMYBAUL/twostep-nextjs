@@ -48,15 +48,28 @@ describe("Google feed generation", () => {
         expect(result.availability).toBe("out_of_stock");
     });
 
-    it("filters eligible products (has EAN, visible, has price)", () => {
+    it("filters eligible products (has EAN, visible, has price, has photo)", () => {
         const products = [
             baseProduct,
             { ...baseProduct, id: "no-ean", ean: null },
             { ...baseProduct, id: "no-price", price: null },
             { ...baseProduct, id: "hidden", visible: false },
+            { ...baseProduct, id: "no-photo", photo_processed_url: null, photo_url: null },
         ];
         const eligible = filterEligibleProducts(products);
         expect(eligible).toHaveLength(1);
         expect(eligible[0].id).toBe("prod-123");
+    });
+
+    it("filters out products without any photo", () => {
+        const noPhoto = { ...baseProduct, id: "no-photo", photo_processed_url: null, photo_url: null };
+        const eligible = filterEligibleProducts([noPhoto]);
+        expect(eligible).toHaveLength(0);
+    });
+
+    it("accepts product with only photo_url (no processed)", () => {
+        const onlyRaw = { ...baseProduct, id: "raw-only", photo_processed_url: null };
+        const eligible = filterEligibleProducts([onlyRaw]);
+        expect(eligible).toHaveLength(1);
     });
 });

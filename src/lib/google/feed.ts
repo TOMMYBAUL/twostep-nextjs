@@ -47,6 +47,6 @@ export function transformProductToGoogle(product: ProductRow, storeCode: string)
 
 export function filterEligibleProducts(products: ProductRow[]): ProductRow[] {
     return products.filter(
-        (p) => p.ean !== null && p.visible !== false && p.price !== null,
+        (p) => p.ean !== null && p.visible !== false && p.price !== null && (p.photo_processed_url !== null || p.photo_url !== null),
     );
 }

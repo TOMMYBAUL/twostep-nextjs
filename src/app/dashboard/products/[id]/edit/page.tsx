@@ -62,7 +62,7 @@ export default function EditProductPage() {
             <PageHeader
                 storeName={merchant?.name}
                 title="Modifier"
-                titleAccent={product.name}
+                titleAccent={product.canonical_name ?? product.name}
                 action={
                     <Link href="/dashboard/products" className="text-sm text-gray-400 hover:text-gray-600 no-underline">
                         ← Retour

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Promotion } from "@/lib/types";
 
 type PromotionWithProduct = Promotion & {
-    products: { name: string; price: number | null; photo_url: string | null; merchant_id: string };
+    products: { name: string; canonical_name: string | null; price: number | null; photo_url: string | null; merchant_id: string };
 };
 
 export function usePromotions(merchantId: string | undefined) {
