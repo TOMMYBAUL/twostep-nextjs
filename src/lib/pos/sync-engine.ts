@@ -5,6 +5,7 @@ import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
 import { extractSize } from "@/lib/pos/extract-size";
 import { enrichNewProducts } from "@/lib/ean/enrich";
+import { pushInventoryToGoogle } from "@/lib/google/inventory";
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -149,6 +150,14 @@ export async function syncMerchantPOS(
         } catch (err) {
             // Enrichment failure must never break the sync
             captureError(err, { merchantId, context: "ean-enrich-during-sync" });
+        }
+
+        // ─── Google inventory push (best-effort) ────────────────────
+
+        try {
+            await pushInventoryToGoogle(merchantId);
+        } catch (err) {
+            captureError(err, { merchantId, context: "google-inventory-during-sync" });
         }
 
         // ─── Variant grouping by EAN ────────────────────────────────

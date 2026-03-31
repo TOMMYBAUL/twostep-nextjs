@@ -4,6 +4,7 @@ import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
+import { pushInventoryToGoogle } from "@/lib/google/inventory";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -73,6 +74,18 @@ export async function POST(request: NextRequest) {
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
                 }).catch(() => {});
+            }
+        }
+
+        // Push updated inventory to Google
+        if (updates.length > 0) {
+            const { data: firstProduct } = await supabase
+                .from("products")
+                .select("merchant_id")
+                .eq("pos_item_id", updates[0].pos_item_id)
+                .maybeSingle();
+            if (firstProduct) {
+                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
             }
         }
 

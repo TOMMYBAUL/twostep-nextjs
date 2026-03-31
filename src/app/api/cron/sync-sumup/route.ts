@@ -5,6 +5,7 @@ import { captureError } from "@/lib/error";
 import { decrypt } from "@/lib/email/encryption";
 import { extractSize } from "@/lib/pos/extract-size";
 import { createImageJob } from "@/lib/images/jobs";
+import { pushInventoryToGoogle } from "@/lib/google/inventory";
 
 export async function POST(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
@@ -118,6 +119,8 @@ export async function POST(req: NextRequest) {
             }
 
             synced++;
+            // Push to Google
+            pushInventoryToGoogle(conn.merchant_id).catch(() => {});
         } catch (err) {
             errors++;
             captureError(err, { merchant: conn.merchant_id, cron: "sync-sumup" });
