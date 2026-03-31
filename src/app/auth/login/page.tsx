@@ -42,7 +42,7 @@ export default function LoginPage() {
                 <div className="mb-8 text-center">
                     <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
                     <h1 className="font-display text-xl font-semibold uppercase text-[#1A1F36]">Connexion</h1>
-                    <p className="mt-1 text-sm text-[#8E96B0]">Accédez à votre espace</p>
+                    <p className="mt-1 text-sm text-[#8E96B0]">Commerçant ou client, un seul compte</p>
                 </div>
 
                 {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-red-600">{error}</p>}
