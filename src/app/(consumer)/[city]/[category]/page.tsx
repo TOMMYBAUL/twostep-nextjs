@@ -65,7 +65,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                     <img src="/logo-icon.webp?v=2" alt="" className="size-10 rounded-lg" />
                 </div>
 
-                <h1 className="font-display text-2xl font-bold uppercase text-[#1A1F36]">
+                <h1 className="font-heading text-2xl font-bold uppercase text-[var(--ts-text)]">
                     {catTitle} à {cityInfo.name}
                 </h1>
 

@@ -178,7 +178,7 @@ export default function ShopProfileClient() {
                         )}
                     </div>
                     <div className="ml-3 mb-0.5 min-w-0 flex-1">
-                        <h1 className="font-display text-[22px] font-bold leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">{profile.merchant_name}</h1>
+                        <h1 className="font-heading text-[22px] font-bold leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">{profile.merchant_name}</h1>
                         <ShopBadges shopId={profile.merchant_id} />
                     </div>
                 </div>
@@ -215,8 +215,8 @@ export default function ShopProfileClient() {
                             <span className={cx(
                                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
                                 status.isOpen
-                                    ? "bg-[var(--ts-sage)]/15 text-[var(--ts-sage)]"
-                                    : "bg-[#D94F4F]/10 text-[#D94F4F]",
+                                    ? "bg-[var(--ts-success)]/15 text-[var(--ts-success)]"
+                                    : "bg-[var(--ts-error)]/10 text-[var(--ts-error)]",
                             )}>
                                 <Clock className="size-2.5" aria-hidden="true" />
                                 {status.isOpen ? "Ouvert" : "Fermé"}

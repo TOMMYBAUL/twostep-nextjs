@@ -189,7 +189,7 @@ function DiscoverContent() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                         <img src="/logo-icon.webp?v=2" alt="" className="size-6" />
-                        <h1 className="font-display text-sm font-bold uppercase text-[#1A1F36]">Two-Step</h1>
+                        <h1 className="font-display text-sm font-bold uppercase text-[var(--ts-text)]">Two-Step</h1>
                         <span className="text-[10px] text-[#8E96B0]">·</span>
                         <p className="flex items-center gap-0.5 text-[11px] text-[#8E96B0]">
                             <MarkerPin01 className="size-2.5" aria-hidden="true" />

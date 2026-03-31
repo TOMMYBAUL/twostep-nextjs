@@ -21,7 +21,7 @@ export default function FavoritesPage() {
             <div className="bg-[#F8F9FC]" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="flex items-center gap-2.5 px-4 pb-4">
                     <img src="/logo-icon.webp?v=2" alt="" className="size-7" />
-                    <h1 className="font-display text-xl font-bold uppercase text-[#1A1F36]">Favoris</h1>
+                    <h1 className="font-heading text-xl font-bold uppercase text-[var(--ts-text)]">Favoris</h1>
                     {favorites && favorites.length > 0 && (
                         <span className="rounded-full bg-[#F5F6FA] px-2 py-0.5 text-[10px] font-semibold text-[#8E96B0]">
                             {favorites.length}

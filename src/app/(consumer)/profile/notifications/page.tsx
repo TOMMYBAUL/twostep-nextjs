@@ -89,7 +89,7 @@ export default function NotificationsPage() {
         {
             id: "restock",
             icon: <Heart className="size-5" />,
-            iconBg: "bg-[var(--ts-red)]/15 text-[var(--ts-red)]",
+            iconBg: "bg-[var(--ts-error)]/15 text-[var(--ts-error)]",
             label: "Réassort d'un favori",
             description: "Quand un produit liké revient en stock",
             enabled: prefs.restock,
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
         {
             id: "shops",
             icon: <ShoppingBag01 className="size-5" />,
-            iconBg: "bg-[var(--ts-sage)]/15 text-[var(--ts-sage)]",
+            iconBg: "bg-[var(--ts-success)]/15 text-[var(--ts-success)]",
             label: "Actualités boutiques",
             description: "Nouveautés et événements des boutiques suivies",
             enabled: prefs.shops,
@@ -117,7 +117,7 @@ export default function NotificationsPage() {
                     >
                         <ArrowLeft className="size-5 text-[#1A1F36]/60" />
                     </button>
-                    <h1 className="font-display text-lg font-bold uppercase text-[#1A1F36]">Notifications</h1>
+                    <h1 className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">Notifications</h1>
                 </div>
             </div>
 
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
                                 aria-checked={setting.enabled}
                                 onClick={() => toggle(setting.id)}
                                 className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
-                                    setting.enabled ? "bg-[var(--ts-sage)]" : "bg-[#FFFFFF]"
+                                    setting.enabled ? "bg-[var(--ts-success)]" : "bg-[#FFFFFF]"
                                 }`}
                             >
                                 <span
