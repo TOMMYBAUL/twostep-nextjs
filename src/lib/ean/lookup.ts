@@ -134,16 +134,27 @@ async function applyEnrichment(
     if (data.brand) updateData.brand = data.brand;
     if (data.category) updateData.category = data.category;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
-    if (data.photo_url) updateData.photo_url = data.photo_url;
+
+    // Fetch current product to check for existing photo before overwriting
+    const { data: prod } = await supabase
+        .from("products")
+        .select("merchant_id, photo_url")
+        .eq("id", productId)
+        .single();
+
+    const shouldSetPhoto = data.photo_url && prod && !prod.photo_url;
+    if (shouldSetPhoto) {
+        // Only set photo when product has none — never overwrite POS original
+        updateData.photo_url = data.photo_url;
+        updateData.photo_processed_url = null; // clear any stale processed image
+        updateData.photo_source = "ean";
+    }
 
     if (Object.keys(updateData).length > 0) {
         await supabase.from("products").update(updateData).eq("id", productId);
     }
 
-    if (data.photo_url) {
-        const { data: prod } = await supabase.from("products").select("merchant_id, photo_processed_url").eq("id", productId).single();
-        if (prod && !prod.photo_processed_url) {
-            await createImageJob(productId, prod.merchant_id, data.photo_url);
-        }
+    if (shouldSetPhoto && prod) {
+        await createImageJob(productId, prod.merchant_id, data.photo_url!, supabase as any);
     }
 }

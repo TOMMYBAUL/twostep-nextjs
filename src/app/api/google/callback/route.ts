@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${baseUrl}/dashboard/google?error=missing_params`);
     }
 
-    const colonIdx = state.indexOf(":");
-    if (colonIdx === -1 || state.slice(0, colonIdx) !== "google") {
+    const parts = state.split(":");
+    if (parts.length < 3 || parts[0] !== "google") {
         return NextResponse.redirect(`${baseUrl}/dashboard/google?error=invalid_state`);
     }
 
-    const merchantId = state.slice(colonIdx + 1);
+    const merchantId = parts[1];
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();

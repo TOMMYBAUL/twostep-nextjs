@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
@@ -32,7 +33,7 @@ export function getGoogleAuthUrl(merchantId: string): string {
         scope: "https://www.googleapis.com/auth/content",
         access_type: "offline",
         prompt: "consent",
-        state: `google:${merchantId}`,
+        state: `google:${merchantId}:${crypto.randomUUID().slice(0, 8)}`,
     });
     return `${GOOGLE_AUTH_URL}?${params}`;
 }
