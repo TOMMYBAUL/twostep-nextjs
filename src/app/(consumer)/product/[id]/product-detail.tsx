@@ -368,25 +368,21 @@ export default function ProductDetailClient() {
 
                             {/* Size grid */}
                             <div className="grid grid-cols-4 gap-2 px-5 pb-4">
-                                {availableSizes.map((s) => {
+                                {availableSizes.filter((s) => s.quantity > 0).map((s) => {
                                     const isSelected = selectedSize === s.size;
-                                    const isOos = s.quantity === 0;
 
                                     return (
                                         <button
                                             key={s.size}
                                             type="button"
-                                            disabled={isOos}
                                             onClick={() => {
                                                 setSelectedSize(s.size);
                                                 setSizeSheetOpen(false);
                                             }}
-                                            className={`relative rounded-xl border-[0.5px] py-3 text-[13px] font-medium transition duration-100 ${
+                                            className={`relative rounded-lg border py-3 text-[13px] font-medium transition duration-100 ${
                                                 isSelected
-                                                    ? "border-[#4268FF] bg-[#4268FF] text-[#FFFFFF]"
-                                                    : isOos
-                                                      ? "border-[#F5F6FA] bg-[#F8F9FC] text-[#E2E5F0] line-through"
-                                                      : "border-[#E2E5F0] bg-[#F5F6FA] text-[#6B7799]"
+                                                    ? "border-[var(--ts-accent)] bg-[#EEF2FF] text-[var(--ts-accent)] font-semibold border-[1.5px]"
+                                                    : "border-[var(--ts-border)] bg-white text-[var(--ts-text-muted)]"
                                             }`}
                                         >
                                             {s.size}
