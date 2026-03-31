@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createBrowserClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
-import { DashboardHeader } from "@/components/dashboard/header";
+import { PageHeader } from "@/components/dashboard/page-header";
 
 type GoogleConnection = {
     google_merchant_id: string;
@@ -22,13 +22,13 @@ export default function GooglePage() {
 
     useEffect(() => {
         if (!merchant?.id) return;
-        const supabase = createBrowserClient();
+        const supabase = createClient();
         supabase
             .from("google_merchant_connections")
             .select("google_merchant_id, products_pushed, last_feed_at, last_feed_status, last_feed_error, store_code")
             .eq("merchant_id", merchant.id)
             .maybeSingle()
-            .then(({ data }) => {
+            .then(({ data }: { data: GoogleConnection | null }) => {
                 setConnection(data);
                 setLoading(false);
             });
@@ -59,7 +59,7 @@ export default function GooglePage() {
     if (loading) {
         return (
             <>
-                <DashboardHeader title="Google" storeName={merchant?.name} />
+                <PageHeader title="Google" storeName={merchant?.name} />
                 <div className="mt-8 text-center text-sm text-[#8E96B0]">Chargement...</div>
             </>
         );
@@ -67,7 +67,7 @@ export default function GooglePage() {
 
     return (
         <>
-            <DashboardHeader title="Google" storeName={merchant?.name} />
+            <PageHeader title="Google" storeName={merchant?.name} />
 
             <div className="mx-auto mt-6 max-w-lg">
                 {!connection ? (

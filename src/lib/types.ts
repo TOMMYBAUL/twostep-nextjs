@@ -36,6 +36,7 @@ export type Product = {
     merchant_id: string;
     ean: string | null;
     name: string;
+    canonical_name: string | null;
     description: string | null;
     category: string | null;
     price: number | null;

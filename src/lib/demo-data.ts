@@ -48,7 +48,7 @@ type ProductWithStock = Product & { stock: { quantity: number }[] };
 export const demoProducts: ProductWithStock[] = [
     {
         id: "p1", merchant_id: MERCHANT_ID,
-        name: "Nike Air Force 1 '07", ean: "0194956623461", brand: "Nike",
+        name: "Nike Air Force 1 '07", ean: "0194956623461", brand: "Nike", canonical_name: null,
         category: "Sneakers", price: 119.99, purchase_price: 62,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-001",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -56,7 +56,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p2", merchant_id: MERCHANT_ID,
-        name: "Adidas Stan Smith", ean: "4066745172583", brand: "Adidas",
+        name: "Adidas Stan Smith", ean: "4066745172583", brand: "Adidas", canonical_name: null,
         category: "Sneakers", price: 109.99, purchase_price: 55,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-002",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -64,7 +64,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p3", merchant_id: MERCHANT_ID,
-        name: "New Balance 574", ean: "0196560400033", brand: "New Balance",
+        name: "New Balance 574", ean: "0196560400033", brand: "New Balance", canonical_name: null,
         category: "Sneakers", price: 99.99, purchase_price: 48,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-003",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -72,7 +72,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p4", merchant_id: MERCHANT_ID,
-        name: "Vans Old Skool", ean: "0194115827542", brand: "Vans",
+        name: "Vans Old Skool", ean: "0194115827542", brand: "Vans", canonical_name: null,
         category: "Sneakers", price: 79.99, purchase_price: 38,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-004",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -80,7 +80,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p5", merchant_id: MERCHANT_ID,
-        name: "Converse Chuck Taylor All Star", ean: "0888755678901", brand: "Converse",
+        name: "Converse Chuck Taylor All Star", ean: "0888755678901", brand: "Converse", canonical_name: null,
         category: "Sneakers", price: 69.99, purchase_price: 32,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-005",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -88,7 +88,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p6", merchant_id: MERCHANT_ID,
-        name: "Puma Suede Classic XXI", ean: "4065449742368", brand: "Puma",
+        name: "Puma Suede Classic XXI", ean: "4065449742368", brand: "Puma", canonical_name: null,
         category: "Sneakers", price: 74.99, purchase_price: 36,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-006",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -96,7 +96,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p7", merchant_id: MERCHANT_ID,
-        name: "Timberland 6-Inch Premium Boot", ean: "0889587713245", brand: "Timberland",
+        name: "Timberland 6-Inch Premium Boot", ean: "0889587713245", brand: "Timberland", canonical_name: null,
         category: "Boots", price: 199.99, purchase_price: 105,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-007",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -104,7 +104,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p8", merchant_id: MERCHANT_ID,
-        name: "Dr. Martens 1460 Smooth", ean: "0800090276734", brand: "Dr. Martens",
+        name: "Dr. Martens 1460 Smooth", ean: "0800090276734", brand: "Dr. Martens", canonical_name: null,
         category: "Boots", price: 169.99, purchase_price: 88,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-008",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -112,7 +112,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p9", merchant_id: MERCHANT_ID,
-        name: "Reebok Classic Leather", ean: "4064047264807", brand: "Reebok",
+        name: "Reebok Classic Leather", ean: "4064047264807", brand: "Reebok", canonical_name: null,
         category: "Sneakers", price: 89.99, purchase_price: 42,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-009",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
@@ -120,7 +120,7 @@ export const demoProducts: ProductWithStock[] = [
     },
     {
         id: "p10", merchant_id: MERCHANT_ID,
-        name: "Asics Gel-Lyte III OG", ean: "4550214146835", brand: "Asics",
+        name: "Asics Gel-Lyte III OG", ean: "4550214146835", brand: "Asics", canonical_name: null,
         category: "Sneakers", price: 129.99, purchase_price: 65,
         photo_url: null, photo_processed_url: null, photo_source: null, pos_item_id: "sq-010",
         description: null, category_auto: "Chaussures", created_at: now, updated_at: now,
