@@ -1,7 +1,8 @@
 @theme {
     /* FONT FAMILY */
-    --font-body: var(--font-syne, "Syne"), system-ui, sans-serif;
-    --font-display: var(--font-cormorant, "Cormorant Garamond"), Georgia, serif;
+    --font-body: var(--font-inter, "Inter"), system-ui, sans-serif;
+    --font-display: var(--font-archivo-black, "Archivo Black"), system-ui, sans-serif;
+    --font-heading: var(--font-barlow, "Barlow"), system-ui, sans-serif;
     --font-mono: ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
     /* FONT SIZE */
