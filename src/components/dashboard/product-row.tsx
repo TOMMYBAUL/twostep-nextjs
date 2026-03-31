@@ -9,6 +9,7 @@ interface ProductRowProps {
     stockQuantity: number;
     photoUrl: string | null;
     staggerIndex: number;
+    stockControls?: React.ReactNode;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -35,34 +36,54 @@ const CATEGORY_EMOJIS: Record<string, string> = {
     tech: "📱",
 };
 
-export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex }: ProductRowProps) {
+export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex, stockControls }: ProductRowProps) {
     const bg = CATEGORY_COLORS[category ?? ""] ?? "bg-gray-100";
     const emoji = CATEGORY_EMOJIS[category ?? ""] ?? "📦";
+
+    const thumbnail = photoUrl ? (
+        <img src={photoUrl} alt={name} className="size-[42px] shrink-0 rounded-[10px] object-cover" />
+    ) : (
+        <div className={`flex size-[42px] shrink-0 items-center justify-center rounded-[10px] text-xl ${bg}`}>
+            {emoji}
+        </div>
+    );
+
+    const info = (
+        <div className="flex-1 min-w-0">
+            <p className="truncate text-sm font-semibold text-gray-900">{name}</p>
+            {category && <p className="text-xs text-gray-400">{category}</p>}
+        </div>
+    );
+
+    const price_ = (
+        <p className="w-20 text-right text-sm font-semibold text-gray-900">
+            {price != null ? `${price.toFixed(2)} €` : "—"}
+        </p>
+    );
+
+    // When stock controls are provided, render as a div to avoid nesting interactive
+    // elements inside an <a> tag (invalid HTML). The edit link wraps only the left side.
+    if (stockControls) {
+        return (
+            <div className={`animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-white px-4 py-3.5`}>
+                <Link href={`/dashboard/products/${id}/edit`} className="flex min-w-0 flex-1 items-center gap-4 no-underline">
+                    {thumbnail}
+                    {info}
+                    {price_}
+                </Link>
+                {stockControls}
+            </div>
+        );
+    }
 
     return (
         <Link
             href={`/dashboard/products/${id}/edit`}
             className={`product-row-ts animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-white px-4 py-3.5 no-underline`}
         >
-            {/* Thumbnail */}
-            {photoUrl ? (
-                <img src={photoUrl} alt={name} className="size-[42px] shrink-0 rounded-[10px] object-cover" />
-            ) : (
-                <div className={`flex size-[42px] shrink-0 items-center justify-center rounded-[10px] text-xl ${bg}`}>
-                    {emoji}
-                </div>
-            )}
-
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-semibold text-gray-900">{name}</p>
-                {category && <p className="text-xs text-gray-400">{category}</p>}
-            </div>
-
-            {/* Price */}
-            <p className="w-20 text-right text-sm font-semibold text-gray-900">
-                {price != null ? `${price.toFixed(2)} €` : "—"}
-            </p>
+            {thumbnail}
+            {info}
+            {price_}
 
             {/* Stock */}
             <div className="w-24 text-center">

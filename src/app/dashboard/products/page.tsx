@@ -8,6 +8,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductRow } from "@/components/dashboard/product-row";
+import { StockBadge } from "@/components/dashboard/stock-badge";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
@@ -15,11 +16,37 @@ import { useIncompleteProducts } from "@/hooks/use-incomplete-products";
 
 export default function ProductsPage() {
     const { merchant } = useMerchant();
-    const { products, loading } = useProducts(merchant?.id);
+    const { products, loading, updateStock } = useProducts(merchant?.id);
     const { products: incompleteProducts, count: incompleteCount, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
     const { toast } = useToast();
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"catalogue" | "incomplete">("catalogue");
+    const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+    const handleDelta = async (productId: string, delta: number) => {
+        setUpdatingId(productId);
+        try {
+            await updateStock(productId, delta);
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur", "error");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
+    const handleAbsolute = async (productId: string, value: string) => {
+        const qty = parseInt(value, 10);
+        if (isNaN(qty) || qty < 0) return;
+        setUpdatingId(productId);
+        try {
+            await updateStock(productId, undefined, qty);
+            toast("Stock mis à jour");
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur", "error");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
 
     const filtered = products.filter((p) =>
         (p.canonical_name ?? p.name).toLowerCase().includes(search.toLowerCase()) ||
@@ -112,18 +139,50 @@ export default function ProductsPage() {
                         <p className="py-8 text-center text-sm text-gray-400">Aucun résultat pour &quot;{search}&quot;</p>
                     ) : (
                         <div className="flex flex-col gap-1.5">
-                            {filtered.map((product, i) => (
-                                <ProductRow
-                                    key={product.id}
-                                    id={product.id}
-                                    name={product.canonical_name ?? product.name}
-                                    category={product.category}
-                                    price={product.price}
-                                    stockQuantity={product.stock?.[0]?.quantity ?? 0}
-                                    photoUrl={product.photo_processed_url ?? product.photo_url}
-                                    staggerIndex={i}
-                                />
-                            ))}
+                            {filtered.map((product, i) => {
+                                const qty = product.stock?.[0]?.quantity ?? 0;
+                                return (
+                                    <ProductRow
+                                        key={product.id}
+                                        id={product.id}
+                                        name={product.canonical_name ?? product.name}
+                                        category={product.category}
+                                        price={product.price}
+                                        stockQuantity={qty}
+                                        photoUrl={product.photo_processed_url ?? product.photo_url}
+                                        staggerIndex={i}
+                                        stockControls={
+                                            <div className="flex items-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDelta(product.id, -1)}
+                                                    disabled={updatingId === product.id || qty <= 0}
+                                                    className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+                                                >
+                                                    −
+                                                </button>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    defaultValue={qty}
+                                                    key={`${product.id}-${qty}`}
+                                                    onBlur={(e) => handleAbsolute(product.id, e.target.value)}
+                                                    className="w-14 rounded-lg bg-gray-50 px-2 py-1.5 text-center text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-[var(--ts-accent)]/30"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDelta(product.id, 1)}
+                                                    disabled={updatingId === product.id}
+                                                    className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+                                                >
+                                                    +
+                                                </button>
+                                                <StockBadge quantity={qty} />
+                                            </div>
+                                        }
+                                    />
+                                );
+                            })}
                         </div>
                     )}
                 </>
