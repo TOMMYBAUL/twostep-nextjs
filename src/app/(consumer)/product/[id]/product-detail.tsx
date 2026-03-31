@@ -125,13 +125,13 @@ export default function ProductDetailClient() {
     return (
         <div className="min-h-dvh bg-[#FFFFFF] md:flex md:min-h-screen md:flex-row">
             {/* ── Image zone ── */}
-            <div className={`relative h-[300px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2 ${product?.photo_processed_url ? "bg-white" : "bg-[#F8F9FC]"}`}>
+            <div className={`relative h-[300px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2 ${product?.photo_processed_url ? "bg-white" : "bg-[var(--ts-bg)]"}`}>
                 {(product?.photo_processed_url ?? product?.photo_url) ? (
                     <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.canonical_name ?? product?.name ?? ""} className={`h-full w-full object-center ${product?.photo_processed_url ? "object-contain p-4" : "object-cover"}`} />
                 ) : (
                     <div className="flex h-full items-center justify-center">
                         {isLoading ? null : (
-                            <span className="text-6xl font-bold text-[#E2E5F0]/30">
+                            <span className="text-6xl font-bold text-[var(--ts-border)]/30">
                                 {(product?.canonical_name ?? product?.name)?.charAt(0)}
                             </span>
                         )}
@@ -172,40 +172,40 @@ export default function ProductDetailClient() {
             {/* ── Info zone ── */}
             {isLoading ? (
                 <div className="space-y-3 px-5 pt-6 md:w-1/2 md:px-10 md:pt-12">
-                    <div className="h-3 w-32 animate-pulse rounded bg-[#F5F6FA]" />
-                    <div className="h-6 w-48 animate-pulse rounded bg-[#F5F6FA]" />
-                    <div className="h-4 w-24 animate-pulse rounded bg-[#F5F6FA]" />
+                    <div className="h-3 w-32 animate-pulse rounded bg-[var(--ts-bg-input)]" />
+                    <div className="h-6 w-48 animate-pulse rounded bg-[var(--ts-bg-input)]" />
+                    <div className="h-4 w-24 animate-pulse rounded bg-[var(--ts-bg-input)]" />
                 </div>
             ) : product ? (
                 <div className="px-5 pb-40 pt-5 md:w-1/2 md:overflow-y-auto md:px-10 md:pb-12 md:pt-12">
                     {/* Brand · Category + stock tag */}
                     <div className="mb-1.5 flex items-center justify-between">
-                        <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E96B0]">
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">
                             {[product.brand, product.category].filter(Boolean).join(" · ")}
                         </span>
                         {quantity === 0 && (
-                            <span className="rounded-md border-[0.5px] border-[rgba(66,104,255,0.25)] px-2 py-[2px] text-[10px] font-medium text-[#4268FF]" style={{ background: "rgba(66,104,255,0.12)" }}>
+                            <span className="rounded-md border-[0.5px] border-[rgba(66,104,255,0.25)] px-2 py-[2px] text-[10px] font-medium text-[var(--ts-accent)]" style={{ background: "rgba(66,104,255,0.12)" }}>
                                 Épuisé en boutique
                             </span>
                         )}
                     </div>
 
                     {/* Product name */}
-                    <h1 className="mb-2.5 text-xl font-bold leading-tight tracking-tight text-[#1A1F36] md:text-2xl">
+                    <h1 className="mb-2.5 text-xl font-bold leading-tight tracking-tight text-[var(--ts-text)] md:text-2xl">
                         {product.canonical_name ?? product.name}
                     </h1>
 
                     {/* Price line */}
                     <div className="mb-5 flex items-baseline gap-2.5">
-                        <span className="text-base font-normal text-[#6B7799]">
+                        <span className="text-base font-normal text-[var(--ts-text-muted)]">
                             {displayPrice?.toFixed(2)} €
                         </span>
                         {activePromo && (
                             <>
-                                <span className="text-[13px] text-[#E2E5F0] line-through">
+                                <span className="text-[13px] text-[var(--ts-border)] line-through">
                                     {product.price.toFixed(2)} €
                                 </span>
-                                <span className="text-xs font-medium text-[#4268FF]">
+                                <span className="text-xs font-medium text-[var(--ts-accent)]">
                                     −{discount}%
                                 </span>
                             </>
@@ -217,14 +217,14 @@ export default function ProductDetailClient() {
                         <button
                             type="button"
                             onClick={() => setSizeSheetOpen(true)}
-                            className="flex w-full items-center justify-between border-y-[0.5px] border-[#E2E5F0] py-4"
+                            className="flex w-full items-center justify-between border-y-[0.5px] border-[var(--ts-border)] py-4"
                         >
-                            <span className="text-[13px] text-[#8E96B0]">
+                            <span className="text-[13px] text-[var(--ts-text-secondary)]">
                                 {/^\d/.test(availableSizes[0].size) ? "Pointure" : "Taille"}
                             </span>
-                            <span className="flex items-center gap-1.5 text-[13px] font-medium text-[#1A1F36]">
+                            <span className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--ts-text)]">
                                 {selectedSize ?? "Sélectionner"}
-                                <ChevronRight className="size-4 text-[#E2E5F0]" />
+                                <ChevronRight className="size-4 text-[var(--ts-border)]" />
                             </span>
                         </button>
                     )}
@@ -234,10 +234,10 @@ export default function ProductDetailClient() {
                         <button
                             type="button"
                             onClick={() => setSizeChartOpen(true)}
-                            className="flex w-full items-center justify-between border-b-[0.5px] border-[#E2E5F0] py-3.5"
+                            className="flex w-full items-center justify-between border-b-[0.5px] border-[var(--ts-border)] py-3.5"
                         >
-                            <span className="text-[13px] text-[#8E96B0]">Correspondances de taille</span>
-                            <ChevronRight className="size-4 text-[#E2E5F0]" />
+                            <span className="text-[13px] text-[var(--ts-text-secondary)]">Correspondances de taille</span>
+                            <ChevronRight className="size-4 text-[var(--ts-border)]" />
                         </button>
                     )}
 
@@ -245,9 +245,9 @@ export default function ProductDetailClient() {
                     {product.merchants && (
                         <Link
                             href={shopSlug ? `/shop/${shopSlug}` : "#"}
-                            className="flex items-center gap-3 border-b-[0.5px] border-[#E2E5F0] py-3.5"
+                            className="flex items-center gap-3 border-b-[0.5px] border-[var(--ts-border)] py-3.5"
                         >
-                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border-[0.5px] border-[rgba(255,255,255,0.08)] bg-[#F5F6FA]">
+                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border-[0.5px] border-[rgba(255,255,255,0.08)] bg-[var(--ts-bg-input)]">
                                 {product.merchants.photo_url ? (
                                     <img src={product.merchants.photo_url} alt="" className="h-full w-full object-cover" />
                                 ) : (
@@ -255,22 +255,22 @@ export default function ProductDetailClient() {
                                 )}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="text-[13px] font-medium text-[#6B7799]">
+                                <p className="text-[13px] font-medium text-[var(--ts-text-muted)]">
                                     {product.merchants.name}
                                 </p>
-                                <p className="mt-0.5 text-[11px] text-[#8E96B0]">
+                                <p className="mt-0.5 text-[11px] text-[var(--ts-text-secondary)]">
                                     {product.merchants.address}, {product.merchants.city}
                                 </p>
                             </div>
-                            <ChevronRight className="size-4 shrink-0 text-[#E2E5F0]" />
+                            <ChevronRight className="size-4 shrink-0 text-[var(--ts-border)]" />
                         </Link>
                     )}
 
                     {/* ── Description ── */}
                     {product.description && (
-                        <div className="border-b-[0.5px] border-[#E2E5F0] py-4">
-                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-[#8E96B0]">Description</p>
-                            <p className="text-[13px] leading-relaxed text-[#8E96B0]">{product.description}</p>
+                        <div className="border-b-[0.5px] border-[var(--ts-border)] py-4">
+                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">Description</p>
+                            <p className="text-[13px] leading-relaxed text-[var(--ts-text-secondary)]">{product.description}</p>
                         </div>
                     )}
 
@@ -280,7 +280,7 @@ export default function ProductDetailClient() {
                             {othersCount > 0 && !intentSent && (
                                 <div className="mb-3 flex items-center gap-2 rounded-xl bg-[#FFF4F0] px-3.5 py-2.5">
                                     <span className="text-[13px]">🔥</span>
-                                    <p className="text-[11px] font-medium text-[#E8553A]">
+                                    <p className="text-[11px] font-medium text-[var(--ts-promo)]">
                                         {othersCount === 1
                                             ? "1 autre personne est aussi intéressée"
                                             : `${othersCount} autres personnes sont aussi intéressées`}
@@ -291,7 +291,7 @@ export default function ProductDetailClient() {
                                 <button
                                     type="button"
                                     disabled
-                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#F0F1F5] py-[13px] text-[13px] font-semibold text-[#8E96B0]"
+                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[var(--ts-bg-input)] py-[13px] text-[13px] font-semibold text-[var(--ts-text-secondary)]"
                                 >
                                     ✓ Le commerçant est prévenu
                                 </button>
@@ -300,7 +300,7 @@ export default function ProductDetailClient() {
                                     type="button"
                                     onClick={handleIntent}
                                     disabled={intentLoading}
-                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#4268FF] py-[13px] text-[14px] font-bold text-white transition active:opacity-90 disabled:opacity-60"
+                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[var(--ts-accent)] py-[13px] text-[14px] font-bold text-white transition active:opacity-90 disabled:opacity-60"
                                 >
                                     {intentLoading ? (
                                         <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -309,7 +309,7 @@ export default function ProductDetailClient() {
                                     )}
                                 </button>
                             )}
-                            <p className="mt-1.5 text-center text-[10px] text-[#8E96B0]">
+                            <p className="mt-1.5 text-center text-[10px] text-[var(--ts-text-secondary)]">
                                 {intentSent
                                     ? `${product?.merchants?.name ?? "La boutique"} sait que tu arrives — valable 2h`
                                     : "Sous réserve de disponibilité — le commerçant est prévenu"}
@@ -322,7 +322,7 @@ export default function ProductDetailClient() {
                         <button
                             type="button"
                             onClick={() => setContactSheetOpen(true)}
-                            className="flex w-full items-center justify-center gap-2 rounded-[14px] border-[0.5px] border-[#E2E5F0] bg-transparent py-[13px] text-[13px] font-medium text-[#8E96B0] transition active:opacity-80"
+                            className="flex w-full items-center justify-center gap-2 rounded-[14px] border-[0.5px] border-[var(--ts-border)] bg-transparent py-[13px] text-[13px] font-medium text-[var(--ts-text-secondary)] transition active:opacity-80"
                         >
                             <Phone01 className="size-4" />
                             Contacter la boutique
@@ -350,18 +350,18 @@ export default function ProductDetailClient() {
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-[#F8F9FC]"
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-[var(--ts-bg)]"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
                             {/* Handle + header */}
-                            <div className="sticky top-0 z-10 bg-[#F8F9FC] px-5 pb-3 pt-3">
-                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#E2E5F0]" />
+                            <div className="sticky top-0 z-10 bg-[var(--ts-bg)] px-5 pb-3 pt-3">
+                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[var(--ts-border)]" />
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-[15px] font-semibold text-[#1A1F36]">
+                                    <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">
                                         {/^\d/.test(availableSizes[0]?.size ?? "") ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
                                     </h2>
-                                    <button type="button" onClick={() => setSizeSheetOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[#F5F6FA]">
-                                        <XClose className="size-4 text-[#8E96B0]" />
+                                    <button type="button" onClick={() => setSizeSheetOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[var(--ts-bg-input)]">
+                                        <XClose className="size-4 text-[var(--ts-text-secondary)]" />
                                     </button>
                                 </div>
                             </div>
@@ -407,15 +407,15 @@ export default function ProductDetailClient() {
                         <motion.div
                             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-[#F8F9FC]"
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-[var(--ts-bg)]"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
-                            <div className="sticky top-0 z-10 bg-[#F8F9FC] px-5 pb-3 pt-3">
-                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#E2E5F0]" />
+                            <div className="sticky top-0 z-10 bg-[var(--ts-bg)] px-5 pb-3 pt-3">
+                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[var(--ts-border)]" />
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-[15px] font-semibold text-[#1A1F36]">Correspondances de taille</h2>
-                                    <button type="button" onClick={() => setSizeChartOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[#F5F6FA]">
-                                        <XClose className="size-4 text-[#8E96B0]" />
+                                    <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">Correspondances de taille</h2>
+                                    <button type="button" onClick={() => setSizeChartOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[var(--ts-bg-input)]">
+                                        <XClose className="size-4 text-[var(--ts-text-secondary)]" />
                                     </button>
                                 </div>
                             </div>
@@ -424,9 +424,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-left font-medium text-[#8E96B0]">EU</th>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-center font-medium text-[#8E96B0]">US</th>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-right font-medium text-[#8E96B0]">UK</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-left font-medium text-[var(--ts-text-secondary)]">EU</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-center font-medium text-[var(--ts-text-secondary)]">US</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-right font-medium text-[var(--ts-text-secondary)]">UK</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -439,9 +439,9 @@ export default function ProductDetailClient() {
                                             { eu: "45", us: "14", uk: "12.5" }, { eu: "46", us: "15", uk: "13.5" },
                                         ].map((row) => (
                                             <tr key={row.eu}>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[#1A1F36]">{row.eu}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[#6B7799]">{row.us}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[#6B7799]">{row.uk}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[var(--ts-text)]">{row.eu}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[var(--ts-text-muted)]">{row.us}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[var(--ts-text-muted)]">{row.uk}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -450,9 +450,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-left font-medium text-[#8E96B0]">Taille</th>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-center font-medium text-[#8E96B0]">EU</th>
-                                            <th className="border-b-[0.5px] border-[#E2E5F0] px-4 py-2.5 text-right font-medium text-[#8E96B0]">US</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-left font-medium text-[var(--ts-text-secondary)]">Taille</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-center font-medium text-[var(--ts-text-secondary)]">EU</th>
+                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-right font-medium text-[var(--ts-text-secondary)]">US</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -462,9 +462,9 @@ export default function ProductDetailClient() {
                                             { label: "XL", eu: "50/52", us: "18/20" }, { label: "XXL", eu: "54/56", us: "22/24" },
                                         ].map((row) => (
                                             <tr key={row.label}>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[#1A1F36]">{row.label}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[#6B7799]">{row.eu}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[#6B7799]">{row.us}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[var(--ts-text)]">{row.label}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[var(--ts-text-muted)]">{row.eu}</td>
+                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[var(--ts-text-muted)]">{row.us}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -487,22 +487,22 @@ export default function ProductDetailClient() {
                         <motion.div
                             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-[#F8F9FC]"
+                            className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-[var(--ts-bg)]"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                         >
                             <div className="mx-auto mb-3 mt-3 h-1 w-9 rounded-full bg-white/15" />
 
                             {/* Shop info */}
                             <div className="px-5 pb-4 text-center">
-                                <p className="text-base font-semibold text-[#1A1F36]">{shop.name}</p>
-                                <p className="mt-1 text-xs text-[#8E96B0]">{shop.address}, {shop.city}</p>
+                                <p className="text-base font-semibold text-[var(--ts-text)]">{shop.name}</p>
+                                <p className="mt-1 text-xs text-[var(--ts-text-secondary)]">{shop.address}, {shop.city}</p>
                             </div>
 
                             {shop.phone ? (
                                 <>
                                     <div className="px-5 pb-4 text-center">
-                                        <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-[#8E96B0]">Téléphone</p>
-                                        <p className="text-[22px] font-semibold tracking-wide text-[#6B7799]">{shop.phone}</p>
+                                        <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">Téléphone</p>
+                                        <p className="text-[22px] font-semibold tracking-wide text-[var(--ts-text-muted)]">{shop.phone}</p>
                                     </div>
 
                                     <div className="flex gap-2.5 px-5 pb-5">
@@ -521,7 +521,7 @@ export default function ProductDetailClient() {
                                                 setPhoneCopied(true);
                                                 setTimeout(() => setPhoneCopied(false), 2000);
                                             }}
-                                            className="flex flex-1 items-center justify-center rounded-[14px] border-[0.5px] border-[#E2E5F0] py-[14px] text-[14px] font-medium text-[#8E96B0] transition active:opacity-80"
+                                            className="flex flex-1 items-center justify-center rounded-[14px] border-[0.5px] border-[var(--ts-border)] py-[14px] text-[14px] font-medium text-[var(--ts-text-secondary)] transition active:opacity-80"
                                         >
                                             {phoneCopied ? "Copié !" : "Copier"}
                                         </button>
@@ -529,7 +529,7 @@ export default function ProductDetailClient() {
                                 </>
                             ) : (
                                 <div className="px-5 pb-5 text-center">
-                                    <p className="text-[13px] text-[#8E96B0]">Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.</p>
+                                    <p className="text-[13px] text-[var(--ts-text-secondary)]">Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.</p>
                                 </div>
                             )}
                         </motion.div>
