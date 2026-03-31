@@ -8,7 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { ProductCard } from "../components/product-card";
-import { StoryBar } from "../components/story-bar";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows } from "../hooks/use-follows";
 import { generateSlug } from "@/lib/slug";
@@ -810,19 +809,6 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
         staleTime: 60_000,
     });
 
-    const { data: stories } = useQuery<any[]>({
-        queryKey: ["stories", merchantIds],
-        queryFn: async () => {
-            if (merchantIds.length === 0) return [];
-            const res = await fetch(`/api/stories?merchant_ids=${merchantIds.join(",")}`);
-            if (!res.ok) return [];
-            const data = await res.json();
-            return data.stories ?? [];
-        },
-        enabled: merchantIds.length > 0,
-        staleTime: 60_000,
-    });
-
     // Product card renderer (shared between both sections)
     const renderProductCard = (p: DiscoverProduct) => {
         const isFav = favoriteIds.has(p.product_id);
@@ -902,9 +888,6 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
 
     return (
         <div className="pb-24 pt-2">
-            {/* Stories bar */}
-            <StoryBar stories={stories ?? []} />
-
             {/* Size auto-filter banner */}
             <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
                 <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
