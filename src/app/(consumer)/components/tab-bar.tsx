@@ -1,20 +1,22 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Home02, MarkerPin01, Heart, User01 } from "@untitledui/icons";
+import { Home02, SearchMd, Tag01, User01 } from "@untitledui/icons";
 import { motion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const tabs = [
     { href: "/discover", label: "Accueil", icon: Home02 },
-    { href: "/explore", label: "Carte", icon: MarkerPin01 },
-    { href: "/favorites", label: "Favoris", icon: Heart },
+    { href: "/explore", label: "Recherche", icon: SearchMd },
+    { href: "/search?filter=promos", label: "Promos", icon: Tag01 },
     { href: "/profile", label: "Profil", icon: User01 },
 ] as const;
 
-export function TabBar() {
+function TabBarInner() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     return (
         <nav
@@ -28,7 +30,9 @@ export function TabBar() {
                     const isActive =
                         tab.href === "/discover"
                             ? pathname === "/discover" || pathname === "/"
-                            : pathname.startsWith(tab.href);
+                            : tab.href.startsWith("/search")
+                                ? pathname === "/search" && searchParams.get("filter") === "promos"
+                                : pathname.startsWith(tab.href);
                     const Icon = tab.icon;
                     return (
                         <Link
@@ -63,5 +67,13 @@ export function TabBar() {
                 })}
             </div>
         </nav>
+    );
+}
+
+export function TabBar() {
+    return (
+        <Suspense fallback={null}>
+            <TabBarInner />
+        </Suspense>
     );
 }
