@@ -17,6 +17,7 @@ import { cx } from "@/utils/cx";
 import { HeartButton } from "../components/heart-button";
 import { CONSUMER_CATEGORIES } from "@/lib/categories";
 import { FeedHeader, type FeedTab } from "../components/feed-header";
+import { ProductCardSkeleton, PromoCardSkeleton } from "../components/feed-skeleton";
 
 interface DiscoverProduct {
     product_id: string;
@@ -343,7 +344,7 @@ function DiscoverContent() {
                     {topPromos.length > 0 && (
                     <div className="mt-3 flex flex-col px-3.5" style={{ gap: 10 }}>
                         {loadingPromos ? (
-                            <div className="h-[84px] animate-pulse rounded-[10px] bg-[#F5F6FA]" />
+                            <PromoCardSkeleton index={0} />
                         ) : (<>
                             {/* Grande card — promo vedette */}
                             <Link
@@ -430,8 +431,8 @@ function DiscoverContent() {
                     <div className="mt-3 px-4">
                         {loadingTrending ? (
                             <div className="grid grid-cols-2 gap-2">
-                                {Array.from({ length: 4 }).map((_, i) => (
-                                    <div key={i} className="h-[160px] animate-pulse rounded-[10px] bg-[#F5F6FA]" />
+                                {[0, 1, 2, 3].map((i) => (
+                                    <ProductCardSkeleton key={i} index={i} />
                                 ))}
                             </div>
                         ) : trending && trending.length > 0 ? (
