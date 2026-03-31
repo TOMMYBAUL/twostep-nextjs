@@ -152,6 +152,10 @@ export async function syncMerchantPOS(
             captureError(err, { merchantId, context: "ean-enrich-during-sync" });
         }
 
+        // ─── Variant grouping by EAN ────────────────────────────────
+
+        await groupVariantsByEAN(supabase, merchantId);
+
         // ─── Google inventory push (best-effort) ────────────────────
 
         try {
@@ -159,10 +163,6 @@ export async function syncMerchantPOS(
         } catch (err) {
             captureError(err, { merchantId, context: "google-inventory-during-sync" });
         }
-
-        // ─── Variant grouping by EAN ────────────────────────────────
-
-        await groupVariantsByEAN(supabase, merchantId);
 
         // ─── Success bookkeeping ─────────────────────────────────────
 
