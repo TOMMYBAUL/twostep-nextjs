@@ -54,18 +54,11 @@ export default function DashboardPage() {
 
             setSteps([
                 {
-                    label: "Connecter votre caisse (POS)",
-                    description: "Square, Lightspeed ou Shopify — votre stock et vos produits se synchronisent automatiquement.",
-                    href: "/dashboard/settings",
-                    cta: "Connecter ma caisse",
-                    checked: hasPOS,
-                },
-                {
-                    label: "Ajouter votre téléphone de contact",
-                    description: "Pour que vos clients puissent vous joindre facilement.",
+                    label: "Compléter votre profil boutique",
+                    description: "Bio, adresse et horaires d'ouverture — les infos qui donnent envie de vous rendre visite.",
                     href: "/dashboard/store",
-                    cta: "Ajouter mon téléphone",
-                    checked: hasEmail,
+                    cta: "Compléter mon profil",
+                    checked: hasProfile,
                 },
                 {
                     label: "Ajouter une photo de boutique",
@@ -75,20 +68,49 @@ export default function DashboardPage() {
                     checked: hasPhoto,
                 },
                 {
-                    label: "Compléter votre profil boutique",
-                    description: "Bio, adresse et horaires d'ouverture — les infos qui donnent envie de vous rendre visite.",
+                    label: "Ajouter votre téléphone de contact",
+                    description: "Pour que vos clients puissent vous joindre facilement.",
                     href: "/dashboard/store",
-                    cta: "Compléter mon profil",
-                    checked: hasProfile,
+                    cta: "Ajouter mon téléphone",
+                    checked: hasEmail,
                 },
                 {
-                    label: "Ajouter des photos à vos produits",
+                    label: "Connecter votre caisse (POS)",
+                    description: "Square, Lightspeed ou Shopify — votre stock et vos produits se synchronisent automatiquement.",
+                    href: "/dashboard/settings",
+                    cta: "Connecter ma caisse",
+                    checked: hasPOS,
+                },
+                {
+                    label: "Vérifier vos produits (photos, noms, stock)",
                     description: "Les produits avec photo attirent 3× plus de clics. Complétez ce que le POS ne fournit pas.",
                     href: "/dashboard/products",
-                    cta: "Ajouter des photos",
+                    cta: "Vérifier mes produits",
                     checked: hasProductPhotos,
                 },
             ]);
+
+            // Bonus step — only appears when all 5 main steps are complete
+            const allMainDone = hasProfile && hasPhoto && hasEmail && hasPOS && hasProductPhotos;
+            if (allMainDone) {
+                const { data: googleConn } = await supabase
+                    .from("google_merchant_connections")
+                    .select("id")
+                    .eq("merchant_id", merchant!.id)
+                    .maybeSingle();
+
+                setSteps((prev) => [
+                    ...prev,
+                    {
+                        label: "🎁 Bonus : Connecter Google Merchant Center",
+                        description: "Vos produits apparaissent directement sur Google Shopping — visibilité maximale.",
+                        href: "/dashboard/google",
+                        cta: "Connecter Google",
+                        checked: !!googleConn,
+                    },
+                ]);
+            }
+
             setOnboardingLoading(false);
         }
 
