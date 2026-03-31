@@ -88,6 +88,17 @@ const navItems = [
     },
 ];
 
+const exploreItem = {
+    href: "/discover",
+    label: "Explorer les boutiques",
+    icon: (
+        <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+        </svg>
+    ),
+};
+
 const settingsItem = {
     href: "/dashboard/settings",
     label: "Réglages",
@@ -145,8 +156,12 @@ export function DashboardSidebar() {
                 ))}
             </nav>
 
-            {/* Settings (bottom) */}
-            <div className="px-1.5 pb-4">
+            {/* Bottom links */}
+            <div className="space-y-0.5 px-1.5 pb-4">
+                <NavItem
+                    {...exploreItem}
+                    isActive={false}
+                />
                 <NavItem
                     {...settingsItem}
                     isActive={pathname.startsWith(settingsItem.href)}
