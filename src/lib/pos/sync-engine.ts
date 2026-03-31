@@ -4,6 +4,7 @@ import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
 import { extractSize } from "@/lib/pos/extract-size";
+import { enrichNewProducts } from "@/lib/ean/enrich";
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -12,6 +13,7 @@ export type SyncResult = {
     products_updated: number;
     stock_updated: number;
     promos_imported: number;
+    products_enriched: number;
 };
 
 // ─── Main sync function ─────────────────────────────────────────────
@@ -85,6 +87,7 @@ export async function syncMerchantPOS(
             products_updated: 0,
             stock_updated: 0,
             promos_imported: 0,
+            products_enriched: 0,
         };
 
         const posItemToProductId = new Map<string, string>();
@@ -136,6 +139,16 @@ export async function syncMerchantPOS(
 
         for (const promo of promos) {
             await upsertPromo(supabase, merchantId, provider, promo, posItemToProductId, result);
+        }
+
+        // ─── EAN enrichment (best-effort) ────────────────────────────
+
+        try {
+            const enrichResult = await enrichNewProducts(merchantId);
+            result.products_enriched = enrichResult.enriched;
+        } catch (err) {
+            // Enrichment failure must never break the sync
+            captureError(err, { merchantId, context: "ean-enrich-during-sync" });
         }
 
         // ─── Variant grouping by EAN ────────────────────────────────
