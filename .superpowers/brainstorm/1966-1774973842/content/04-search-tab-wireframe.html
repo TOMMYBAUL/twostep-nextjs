@@ -1,0 +1,156 @@
+<h2>Option B validée — Onglet Recherche</h2>
+<p class="subtitle">Carte plein écran avec barre de recherche + toggle Liste/Carte, comme l'Explorer actuel</p>
+
+<div class="split">
+  <!-- Mode Carte -->
+  <div class="mockup">
+    <div class="mockup-header">🗺️ Mode Carte (défaut)</div>
+    <div class="mockup-body" style="padding:0; height:480px; position:relative; background:#E8ECF4; overflow:hidden;">
+      <!-- Search bar -->
+      <div style="position:absolute; top:12px; left:12px; right:12px; z-index:10;">
+        <div style="background:white; border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <span style="color:#8E96B0;">🔍</span>
+          <span style="color:#8E96B0; font-size:13px;">Air Max 90, sac Longchamp...</span>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div style="position:absolute; top:58px; left:12px; right:12px; z-index:10; display:flex; gap:6px; overflow:hidden;">
+        <span style="background:white; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:500; color:#4A5170; box-shadow:0 1px 4px rgba(0,0,0,0.08); white-space:nowrap;">Chaussures</span>
+        <span style="background:white; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:500; color:#4A5170; box-shadow:0 1px 4px rgba(0,0,0,0.08); white-space:nowrap;">Vêtements</span>
+        <span style="background:white; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:500; color:#4A5170; box-shadow:0 1px 4px rgba(0,0,0,0.08); white-space:nowrap;">Accessoires</span>
+      </div>
+
+      <!-- Fake map -->
+      <div style="width:100%; height:100%; background:linear-gradient(135deg, #dfe6e9 0%, #b2bec3 50%, #dfe6e9 100%); display:flex; align-items:center; justify-content:center;">
+        <div style="text-align:center; opacity:0.3;">
+          <div style="font-size:48px;">🗺️</div>
+          <div style="font-size:12px; margin-top:4px;">Mapbox</div>
+        </div>
+      </div>
+
+      <!-- Map pins -->
+      <div style="position:absolute; top:45%; left:30%; width:28px; height:28px; background:#4268FF; border-radius:50%; border:3px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center;">
+        <span style="color:white; font-size:10px; font-weight:700;">3</span>
+      </div>
+      <div style="position:absolute; top:55%; left:60%; width:28px; height:28px; background:#4268FF; border-radius:50%; border:3px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center;">
+        <span style="color:white; font-size:10px; font-weight:700;">7</span>
+      </div>
+      <div style="position:absolute; top:35%; left:55%; width:28px; height:28px; background:#E5390E; border-radius:50%; border:3px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center;">
+        <span style="color:white; font-size:10px; font-weight:700;">2</span>
+      </div>
+
+      <!-- Toggle Liste/Carte -->
+      <div style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:10;">
+        <div style="background:white; border-radius:20px; padding:4px; display:flex; gap:2px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+          <span style="padding:6px 16px; font-size:11px; font-weight:500; color:#8E96B0;">Liste</span>
+          <span style="padding:6px 16px; font-size:11px; font-weight:600; color:white; background:#4268FF; border-radius:16px;">Carte</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode Liste -->
+  <div class="mockup">
+    <div class="mockup-header">📋 Mode Liste</div>
+    <div class="mockup-body" style="padding:0; height:480px; position:relative; background:white; overflow:hidden;">
+      <!-- Search bar -->
+      <div style="padding:12px;">
+        <div style="background:#F8F9FC; border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px; border:1px solid #E8ECF4;">
+          <span style="color:#8E96B0;">🔍</span>
+          <span style="color:#1A1F36; font-size:13px; font-weight:500;">Air Max 90</span>
+          <span style="margin-left:auto; color:#8E96B0; font-size:12px;">✕</span>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div style="padding:0 12px 8px; display:flex; gap:6px;">
+        <span style="background:#4268FF; color:white; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:600;">Chaussures</span>
+        <span style="background:#F1F3F9; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:500; color:#4A5170;">42</span>
+        <span style="background:#F1F3F9; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:500; color:#4A5170;">< 2km</span>
+      </div>
+
+      <!-- Results count -->
+      <div style="padding:4px 12px 8px; font-size:11px; color:#8E96B0;">3 résultats autour de toi</div>
+
+      <!-- Result cards -->
+      <div style="padding:0 12px; display:flex; flex-direction:column; gap:8px;">
+        <!-- Card 1 -->
+        <div style="display:flex; gap:10px; padding:10px; border-radius:10px; border:1px solid #E8ECF4;">
+          <div style="width:72px; height:72px; border-radius:8px; background:#F8F9FC; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-size:24px;">👟</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <p style="margin:0; font-size:13px; font-weight:600; color:#1A1F36;">Nike Air Max 90</p>
+            <p style="margin:2px 0 0; font-size:11px; color:#8E96B0;">The Last Step · 800m</p>
+            <div style="display:flex; align-items:baseline; gap:6px; margin-top:4px;">
+              <span style="font-size:13px; font-weight:500; color:#4A5170;">119,00 €</span>
+              <span style="font-size:10px; color:#12B76A;">En stock · 42</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div style="display:flex; gap:10px; padding:10px; border-radius:10px; border:1px solid #E8ECF4;">
+          <div style="width:72px; height:72px; border-radius:8px; background:#F8F9FC; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-size:24px;">👟</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <p style="margin:0; font-size:13px; font-weight:600; color:#1A1F36;">Nike Air Max 90 SE</p>
+            <p style="margin:2px 0 0; font-size:11px; color:#8E96B0;">Neiwa Store · 1.2km</p>
+            <div style="display:flex; align-items:baseline; gap:6px; margin-top:4px;">
+              <span style="font-size:13px; font-weight:500; color:#4A5170;">129,00 €</span>
+              <span style="font-size:10px; color:#D0D5E1; text-decoration:line-through;">145,00 €</span>
+              <span style="font-size:10px; font-weight:600; color:#E5390E;">-11%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div style="display:flex; gap:10px; padding:10px; border-radius:10px; border:1px solid #E8ECF4;">
+          <div style="width:72px; height:72px; border-radius:8px; background:#F8F9FC; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-size:24px;">👟</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <p style="margin:0; font-size:13px; font-weight:600; color:#1A1F36;">Nike Air Max 90 Futura</p>
+            <p style="margin:2px 0 0; font-size:11px; color:#8E96B0;">SWAP Boutique · 2.1km</p>
+            <div style="display:flex; align-items:baseline; gap:6px; margin-top:4px;">
+              <span style="font-size:13px; font-weight:500; color:#4A5170;">139,00 €</span>
+              <span style="font-size:10px; color:#12B76A;">En stock · 42, 43</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toggle Liste/Carte -->
+      <div style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:10;">
+        <div style="background:white; border-radius:20px; padding:4px; display:flex; gap:2px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+          <span style="padding:6px 16px; font-size:11px; font-weight:600; color:white; background:#4268FF; border-radius:16px;">Liste</span>
+          <span style="padding:6px 16px; font-size:11px; font-weight:500; color:#8E96B0;">Carte</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(66,104,255,0.06); border-radius: 12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Récap navigation validée</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:12px; color:#4A5170;">
+    <div style="background:white; padding:10px; border-radius:8px;">
+      <strong style="color:#1A1F36;">🏠 Accueil</strong><br>
+      Feed : Promos en haut + Tendances + Pour toi / Suivis
+    </div>
+    <div style="background:white; padding:10px; border-radius:8px; border:2px solid #4268FF;">
+      <strong style="color:#4268FF;">🔍 Recherche</strong><br>
+      Carte plein écran + barre recherche + toggle Liste/Carte
+    </div>
+    <div style="background:white; padding:10px; border-radius:8px;">
+      <strong style="color:#1A1F36;">🔥 Promos</strong><br>
+      Feed dédié prix barrés, trié proximité + date fin
+    </div>
+    <div style="background:white; padding:10px; border-radius:8px;">
+      <strong style="color:#1A1F36;">👤 Profil</strong><br>
+      Favoris, tailles, boutiques suivies, paramètres
+    </div>
+  </div>
+</div>

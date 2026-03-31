@@ -1,0 +1,188 @@
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+
+<h2>Site marketing — Trois niveaux de clarté</h2>
+<p class="subtitle">Du plus sombre au plus clair. Clique sur celui qui te parle.</p>
+
+<div class="cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:32px;">
+
+  <!-- OPTION A : HERO DARK, RESTE CLAIR -->
+  <div class="card" data-choice="hero-dark-only" onclick="toggleSelect(this)" style="background:#fff;border:1px solid rgba(66,104,255,0.12);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:8px 16px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.08);">
+      <span class="label" style="font-size:10px;letter-spacing:0.08em;color:#4268FF;">A · HERO DARK, RESTE BLANC</span>
+    </div>
+
+    <!-- Nav (dark) -->
+    <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:#070A10;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:#C8D6F0;letter-spacing:0.1em;">TWO—STEP</span>
+      <span style="font-family:'Syne',sans-serif;font-size:9px;background:#4268FF;color:#fff;padding:3px 8px;border-radius:4px;">Commencer</span>
+    </div>
+
+    <!-- Hero (dark) -->
+    <div style="padding:28px 16px 22px;text-align:center;background:#070A10;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;color:#4268FF;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">TOULOUSE · STOCKS EN TEMPS RÉEL</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#C8D6F0;letter-spacing:0.04em;line-height:1.15;margin-bottom:8px;">Votre produit exact<br><em style="font-style:italic;color:#93AEFF;">est là.</em></p>
+      <p style="font-family:'Syne',sans-serif;font-size:11px;color:#566080;line-height:1.5;margin-bottom:14px;">Une boutique du quartier l'a en stock.</p>
+      <button style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;background:#4268FF;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;">Découvrir</button>
+    </div>
+
+    <!-- Stats (white) -->
+    <div style="padding:16px;background:#FFFFFF;border-top:1px solid #ECEEF4;">
+      <div style="display:flex;justify-content:space-around;text-align:center;">
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">2 400+</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Produits</p>
+        </div>
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">48</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Boutiques</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How (white) -->
+    <div style="padding:14px 16px;background:#FFFFFF;border-top:1px solid #ECEEF4;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.12em;color:#8E96B0;text-transform:uppercase;margin-bottom:10px;">Comment ça marche</p>
+      <div style="display:flex;gap:6px;">
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">1</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Cherchez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">2</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Trouvez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">3</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Allez-y</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA (light blue tint) -->
+    <div style="padding:14px 16px;background:#F0F2FF;text-align:center;border-top:1px solid #ECEEF4;">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:#1A1F36;">Rejoignez Two-Step</p>
+    </div>
+  </div>
+
+  <!-- OPTION B : TOUT BLANC -->
+  <div class="card" data-choice="all-white" onclick="toggleSelect(this)" style="background:#fff;border:1px solid rgba(66,104,255,0.12);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:8px 16px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.08);">
+      <span class="label" style="font-size:10px;letter-spacing:0.08em;color:#4268FF;">B · TOUT BLANC</span>
+    </div>
+
+    <!-- Nav (white) -->
+    <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:#FFFFFF;border-bottom:1px solid #ECEEF4;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:#1A1F36;letter-spacing:0.1em;">TWO—STEP</span>
+      <span style="font-family:'Syne',sans-serif;font-size:9px;background:#4268FF;color:#fff;padding:3px 8px;border-radius:4px;">Commencer</span>
+    </div>
+
+    <!-- Hero (white) -->
+    <div style="padding:28px 16px 22px;text-align:center;background:#FFFFFF;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;color:#4268FF;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">TOULOUSE · STOCKS EN TEMPS RÉEL</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#1A1F36;letter-spacing:0.04em;line-height:1.15;margin-bottom:8px;">Votre produit exact<br><em style="font-style:italic;color:#4268FF;">est là.</em></p>
+      <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;line-height:1.5;margin-bottom:14px;">Une boutique du quartier l'a en stock.</p>
+      <button style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;background:#4268FF;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;">Découvrir</button>
+    </div>
+
+    <!-- Stats (soft gray) -->
+    <div style="padding:16px;background:#F8F9FC;border-top:1px solid #ECEEF4;">
+      <div style="display:flex;justify-content:space-around;text-align:center;">
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">2 400+</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Produits</p>
+        </div>
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">48</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Boutiques</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How (white) -->
+    <div style="padding:14px 16px;background:#FFFFFF;border-top:1px solid #ECEEF4;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.12em;color:#8E96B0;text-transform:uppercase;margin-bottom:10px;">Comment ça marche</p>
+      <div style="display:flex;gap:6px;">
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">1</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Cherchez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">2</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Trouvez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">3</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Allez-y</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA (soft blue) -->
+    <div style="padding:14px 16px;background:#F0F2FF;text-align:center;border-top:1px solid #ECEEF4;">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:#1A1F36;">Rejoignez Two-Step</p>
+    </div>
+  </div>
+
+  <!-- OPTION C : BLANC + CTA DARK -->
+  <div class="card" data-choice="white-dark-cta" onclick="toggleSelect(this)" style="background:#fff;border:1px solid rgba(66,104,255,0.12);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:8px 16px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.08);">
+      <span class="label" style="font-size:10px;letter-spacing:0.08em;color:#4268FF;">C · BLANC + CTA SOMBRE</span>
+    </div>
+
+    <!-- Nav (white) -->
+    <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:#FFFFFF;border-bottom:1px solid #ECEEF4;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:#1A1F36;letter-spacing:0.1em;">TWO—STEP</span>
+      <span style="font-family:'Syne',sans-serif;font-size:9px;background:#4268FF;color:#fff;padding:3px 8px;border-radius:4px;">Commencer</span>
+    </div>
+
+    <!-- Hero (white) -->
+    <div style="padding:28px 16px 22px;text-align:center;background:#FFFFFF;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;color:#4268FF;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">TOULOUSE · STOCKS EN TEMPS RÉEL</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#1A1F36;letter-spacing:0.04em;line-height:1.15;margin-bottom:8px;">Votre produit exact<br><em style="font-style:italic;color:#4268FF;">est là.</em></p>
+      <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;line-height:1.5;margin-bottom:14px;">Une boutique du quartier l'a en stock.</p>
+      <button style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;background:#4268FF;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;">Découvrir</button>
+    </div>
+
+    <!-- Stats (soft gray) -->
+    <div style="padding:16px;background:#F8F9FC;border-top:1px solid #ECEEF4;">
+      <div style="display:flex;justify-content:space-around;text-align:center;">
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">2 400+</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Produits</p>
+        </div>
+        <div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1A1F36;font-weight:300;">48</p>
+          <p style="font-family:'Syne',sans-serif;font-size:9px;color:#8E96B0;">Boutiques</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How (white) -->
+    <div style="padding:14px 16px;background:#FFFFFF;border-top:1px solid #ECEEF4;">
+      <p style="font-family:'Syne',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.12em;color:#8E96B0;text-transform:uppercase;margin-bottom:10px;">Comment ça marche</p>
+      <div style="display:flex;gap:6px;">
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">1</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Cherchez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">2</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Trouvez</p>
+        </div>
+        <div style="flex:1;background:#F5F6FA;border-radius:6px;padding:10px;">
+          <p style="font-family:'Syne',sans-serif;font-size:14px;color:#4268FF;margin-bottom:4px;">3</p>
+          <p style="font-family:'Syne',sans-serif;font-size:10px;color:#1A1F36;">Allez-y</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA (DARK accent) -->
+    <div style="padding:18px 16px;background:#070A10;text-align:center;border-top:0.5px solid rgba(66,104,255,0.15);">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:#C8D6F0;margin-bottom:8px;">Prêt à rejoindre Two-Step ?</p>
+      <button style="font-family:'Syne',sans-serif;font-size:10px;font-weight:500;background:#4268FF;color:#fff;border:none;border-radius:5px;padding:7px 14px;cursor:pointer;">Inscription gratuite</button>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:24px;font-size:13px;opacity:0.4;text-align:center;">Clique sur la card pour sélectionner ta préférence</p>

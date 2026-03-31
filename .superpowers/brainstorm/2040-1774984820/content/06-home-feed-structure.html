@@ -1,0 +1,54 @@
+<h2>Onglet Accueil — Structure du feed</h2>
+<p class="subtitle">Comment organiser les sections quand l'utilisateur ouvre l'app ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Promos hero → Tendances → Pour toi / Suivis</h3>
+      <p>Les promos sont le <strong>premier truc qu'on voit</strong> (carrousel grande taille). Ensuite les tendances. Puis le feed infini avec toggle Pour toi/Suivis. <em>Les promos accrochent, le feed retient.</em></p>
+      <div style="margin-top:8px; font-size:11px; color:#8E96B0; line-height:1.6;">
+        📱 Scroll : Promos 🔥 (carrousel) → Tendances (grille) → [Pour toi | Suivis] (feed infini)
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Pour toi / Suivis en haut → Promos intégrées dans le feed</h3>
+      <p>Le toggle Pour toi/Suivis est <strong>tout en haut</strong> (comme Instagram). Les promos apparaissent comme des cartes <strong>mises en avant dans le feed</strong> (fond orange, badge 🔥). Pas de section séparée.</p>
+      <div style="margin-top:8px; font-size:11px; color:#8E96B0; line-height:1.6;">
+        📱 Scroll : [Pour toi | Suivis] → feed mixte (produits + promos intercalées + tendances)
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Stories → Promos → Tendances → Pour toi / Suivis</h3>
+      <p>En tout premier, les <strong>stories des boutiques suivies</strong> (bulles en haut comme Instagram/Snapchat). Puis promos, tendances, feed. <em>Les stories créent un lien émotionnel avec les boutiques.</em></p>
+      <div style="margin-top:8px; font-size:11px; color:#8E96B0; line-height:1.6;">
+        📱 Scroll : Stories (bulles) → Promos 🔥 → Tendances → [Pour toi | Suivis]
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Comme le Discover actuel (ce qu'on a déjà)</h3>
+      <p>On garde la structure actuelle : header Two-Step → filtres catégorie/taille → toggle Pour toi/Suivis → sections (promos, tendances, boutique à découvrir, tout près de toi). <em>Ça marche, on améliore juste le design.</em></p>
+      <div style="margin-top:8px; font-size:11px; color:#8E96B0; line-height:1.6;">
+        📱 Scroll : Filtres → [Pour toi | Suivis] → Promos → Tendances → Boutiques → Tout près de toi
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(66,104,255,0.06); border-radius: 12px;">
+  <p style="margin: 0; font-size: 0.85rem; color: #4A5170;">
+    <strong>Ma recommandation :</strong> Option A. Les promos en hero captent l'attention immédiatement (raison de revenir). Puis les tendances pour le côté "qu'est-ce qui est populaire". Puis le feed infini Pour toi/Suivis pour garder les gens. Vu qu'on a un onglet Promos dédié, la section hero ici sert de teaser — "voir tout →" renvoie vers l'onglet Promos.
+  </p>
+</div>

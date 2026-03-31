@@ -6,7 +6,7 @@ import { Drawer } from "vaul";
 
 const moreItems = [
     {
-        href: "/dashboard/stock",
+        href: "/dashboard/products",
         label: "Stock",
         icon: (
             <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

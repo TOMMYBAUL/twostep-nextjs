@@ -119,7 +119,7 @@ Pour l'action, si le conseil mène à une page de l'app, fournis un CTA :
 - Photos manquantes → cta: {"label": "Ajouter une photo", "href": "/dashboard/products?filter=no-photo"}
 - Créer promo → cta: {"label": "Créer une promo", "href": "/dashboard/promotions/new"}
 - Compléter profil → cta: {"label": "Modifier ma boutique", "href": "/dashboard/store"}
-- Stock à mettre à jour → cta: {"label": "Gérer le stock", "href": "/dashboard/stock"}
+- Stock à mettre à jour → cta: {"label": "Gérer le stock", "href": "/dashboard/products"}
 - Si le conseil est externe (réseaux sociaux, etc.) → cta: null
 
 Réponds UNIQUEMENT avec le JSON, rien d'autre :

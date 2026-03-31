@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palette de couleurs — Two-Step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #eee; font-family: 'Inter', system-ui, sans-serif; padding: 32px 24px; }
+  h1 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: #fff; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 32px; }
+  .section-title {
+    font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.08em; color: #4268FF; text-transform: uppercase;
+    margin: 36px 0 16px;
+  }
+
+  .palette-row {
+    display: flex; gap: 0; border-radius: 12px; overflow: hidden;
+    margin-bottom: 8px; max-width: 900px;
+  }
+  .swatch {
+    flex: 1; padding: 18px 10px; text-align: center; font-size: 10px;
+    font-weight: 500; font-family: 'Barlow', sans-serif; letter-spacing: 0.02em;
+  }
+  .swatch .label { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+  .swatch .hex { font-size: 10px; opacity: 0.8; }
+
+  .functional-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    max-width: 900px; margin-bottom: 8px;
+  }
+  .func-swatch {
+    border-radius: 10px; padding: 16px; text-align: center;
+  }
+  .func-swatch .label { font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .func-swatch .hex { font-size: 10px; opacity: 0.7; }
+  .func-swatch .role { font-size: 10px; margin-top: 4px; opacity: 0.6; }
+
+  .card {
+    background: #1a1a1a; border: 2px solid #333; border-radius: 16px;
+    overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+    max-width: 900px;
+  }
+  .card:hover { border-color: #4268FF; transform: translateY(-2px); }
+  .card.selected { border-color: #4268FF; box-shadow: 0 0 24px rgba(66,104,255,0.3); }
+
+  .preview { background: #fff; padding: 28px; }
+  .info { padding: 14px 18px; }
+  .info h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+  .info p { font-size: 12px; color: #999; line-height: 1.5; }
+
+  .mock-card {
+    flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;
+    max-width: 180px;
+  }
+  .mock-card-img {
+    height: 80px; background: #F8F9FC; display: flex; align-items: center;
+    justify-content: center; font-size: 28px; position: relative;
+  }
+
+  .neutral-grid {
+    display: flex; gap: 0; border-radius: 10px; overflow: hidden;
+    max-width: 900px; margin-bottom: 8px;
+  }
+  .neutral-swatch {
+    flex: 1; padding: 14px 8px; text-align: center;
+    font-size: 9px; font-family: 'Barlow', sans-serif;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; }
+
+  .note {
+    max-width: 900px; margin: 24px 0 0; padding: 14px 18px;
+    background: rgba(66,104,255,0.08); border: 1px solid rgba(66,104,255,0.2);
+    border-radius: 10px; font-size: 13px; color: #aaa;
+  }
+
+  .selected-indicator {
+    position: fixed; bottom: 20px; right: 20px; background: #4268FF; color: white;
+    padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    display: none; z-index: 100; box-shadow: 0 4px 20px rgba(66,104,255,0.4);
+  }
+</style>
+</head>
+<body>
+
+<h1>PALETTE DE COULEURS</h1>
+<p class="subtitle">Le bleu #4268FF est confirmé. Voici la gamme complète construite autour.</p>
+
+<!-- GAMME BLEU -->
+<div class="section-title">Gamme du bleu électrique — #4268FF au centre</div>
+<div class="palette-row">
+  <div class="swatch" style="background: #EEF2FF; color: #1A1F36;">
+    <div class="label">25</div><div class="hex">#EEF2FF</div>
+  </div>
+  <div class="swatch" style="background: #DBE4FF; color: #1A1F36;">
+    <div class="label">50</div><div class="hex">#DBE4FF</div>
+  </div>
+  <div class="swatch" style="background: #B4C6FF; color: #1A1F36;">
+    <div class="label">100</div><div class="hex">#B4C6FF</div>
+  </div>
+  <div class="swatch" style="background: #8DA8FF; color: #1A1F36;">
+    <div class="label">200</div><div class="hex">#8DA8FF</div>
+  </div>
+  <div class="swatch" style="background: #668AFF; color: #1A1F36;">
+    <div class="label">300</div><div class="hex">#668AFF</div>
+  </div>
+  <div class="swatch" style="background: #4268FF; color: #ffffff;">
+    <div class="label">500 ★</div><div class="hex">#4268FF</div>
+  </div>
+  <div class="swatch" style="background: #3554DB; color: #ffffff;">
+    <div class="label">600</div><div class="hex">#3554DB</div>
+  </div>
+  <div class="swatch" style="background: #2A43B8; color: #ffffff;">
+    <div class="label">700</div><div class="hex">#2A43B8</div>
+  </div>
+  <div class="swatch" style="background: #203494; color: #ffffff;">
+    <div class="label">800</div><div class="hex">#203494</div>
+  </div>
+  <div class="swatch" style="background: #18287A; color: #ffffff;">
+    <div class="label">900</div><div class="hex">#18287A</div>
+  </div>
+  <div class="swatch" style="background: #0F1A52; color: #ffffff;">
+    <div class="label">950</div><div class="hex">#0F1A52</div>
+  </div>
+</div>
+<p style="font-size: 11px; color: #666; max-width: 900px;">Le 500 est notre bleu principal. Le 600 est pour hover. Le 25-50 pour les fonds teintés. Le 950 pour les textes sur fond clair.</p>
+
+<!-- NEUTRALS -->
+<div class="section-title">Gris neutres</div>
+<div class="neutral-grid">
+  <div class="neutral-swatch" style="background: #FAFBFC; color: #1A1F36;"><strong>25</strong><br>#FAFBFC</div>
+  <div class="neutral-swatch" style="background: #F8F9FC; color: #1A1F36;"><strong>50</strong><br>#F8F9FC</div>
+  <div class="neutral-swatch" style="background: #F1F3F9; color: #1A1F36;"><strong>100</strong><br>#F1F3F9</div>
+  <div class="neutral-swatch" style="background: #E8ECF4; color: #1A1F36;"><strong>200</strong><br>#E8ECF4</div>
+  <div class="neutral-swatch" style="background: #D0D5E1; color: #1A1F36;"><strong>300</strong><br>#D0D5E1</div>
+  <div class="neutral-swatch" style="background: #8E96B0; color: #ffffff;"><strong>500</strong><br>#8E96B0</div>
+  <div class="neutral-swatch" style="background: #6B7394; color: #ffffff;"><strong>600</strong><br>#6B7394</div>
+  <div class="neutral-swatch" style="background: #4A5170; color: #ffffff;"><strong>700</strong><br>#4A5170</div>
+  <div class="neutral-swatch" style="background: #2D3352; color: #ffffff;"><strong>800</strong><br>#2D3352</div>
+  <div class="neutral-swatch" style="background: #1A1F36; color: #ffffff;"><strong>900</strong><br>#1A1F36</div>
+  <div class="neutral-swatch" style="background: #0E1220; color: #ffffff;"><strong>950</strong><br>#0E1220</div>
+</div>
+<p style="font-size: 11px; color: #666; max-width: 900px;">Gris à sous-ton bleu (pas jaune, pas rose) — cohérent avec le bleu #4268FF. Le 900 est le texte principal, le 500 le texte secondaire.</p>
+
+<!-- COULEURS FONCTIONNELLES -->
+<div class="section-title">Couleurs fonctionnelles</div>
+<div class="functional-grid">
+  <div class="func-swatch" style="background: #12B76A; color: white;">
+    <div class="label">Success</div>
+    <div class="hex">#12B76A</div>
+    <div class="role">En stock, validé, ouvert</div>
+  </div>
+  <div class="func-swatch" style="background: #F79009; color: white;">
+    <div class="label">Warning</div>
+    <div class="hex">#F79009</div>
+    <div class="role">Stock limité, attention</div>
+  </div>
+  <div class="func-swatch" style="background: #F04438; color: white;">
+    <div class="label">Error</div>
+    <div class="hex">#F04438</div>
+    <div class="role">Épuisé, erreur, fermé</div>
+  </div>
+  <div class="func-swatch" style="background: #E5390E; color: white;">
+    <div class="label">Promo</div>
+    <div class="hex">#E5390E</div>
+    <div class="role">Badges promo, -30%</div>
+  </div>
+</div>
+
+<!-- MOCKUP APPLICATION -->
+<div class="section-title">La palette en situation</div>
+<div class="grid-2">
+
+  <!-- Option A: Palette pure -->
+  <div class="card" onclick="selectOption(this, 'palette-pure')">
+    <div class="preview">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <span style="font-family: 'Archivo Black'; font-size: 18px; color: #1A1F36;">TWO-STEP</span>
+        <div style="display: flex; gap: 8px;">
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 12px;">🔍</div>
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 12px;">❤️</div>
+        </div>
+      </div>
+
+      <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: #8E96B0;">🔍 Rechercher...</div>
+
+      <!-- Filters -->
+      <div style="display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+        <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 600;">Tout</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Chaussures</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Sacs</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Montres</span>
+      </div>
+
+      <div style="font-family: 'Barlow'; font-size: 16px; font-weight: 700; color: #1A1F36; margin-bottom: 10px;">Près de chez toi</div>
+
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+          <div style="height: 70px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span style="font-size: 24px;">👟</span>
+            <span style="position: absolute; top: 4px; right: 4px; background: #12B76A; color: white; font-size: 7px; padding: 2px 5px; border-radius: 3px; font-family: 'Barlow'; font-weight: 700;">EN STOCK</span>
+          </div>
+          <div style="padding: 8px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 600; color: #1A1F36;">Air Max 90</div>
+            <div style="font-size: 10px; color: #8E96B0;">The Last Step · 800m</div>
+            <div style="font-size: 11px; color: #4A5170; font-weight: 500; margin-top: 4px;">139 €</div>
+          </div>
+        </div>
+        <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+          <div style="height: 70px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span style="font-size: 24px;">👜</span>
+            <span style="position: absolute; top: 4px; left: 4px; background: #E5390E; color: white; font-size: 7px; padding: 2px 5px; border-radius: 3px; font-family: 'Barlow'; font-weight: 700;">-30%</span>
+          </div>
+          <div style="padding: 8px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 600; color: #1A1F36;">Sac City</div>
+            <div style="font-size: 10px; color: #8E96B0;">Neiwa · 1.2km</div>
+            <div style="font-size: 11px; color: #4A5170; margin-top: 4px;"><s style="color:#8E96B0; font-size: 9px;">89 €</s> 62 €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>A · Badge "En stock" en vert</h3>
+      <p>Vert = disponible, orange promo = réduction. Le bleu #4268FF reste pour les CTA et filtres actifs. Chaque couleur a un rôle unique.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Bleu dominant -->
+  <div class="card" onclick="selectOption(this, 'bleu-dominant')">
+    <div class="preview">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <span style="font-family: 'Archivo Black'; font-size: 18px; color: #1A1F36;">TWO-STEP</span>
+        <div style="display: flex; gap: 8px;">
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 12px;">🔍</div>
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 12px;">❤️</div>
+        </div>
+      </div>
+
+      <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: #8E96B0;">🔍 Rechercher...</div>
+
+      <!-- Filters -->
+      <div style="display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+        <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 600;">Tout</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Chaussures</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Sacs</span>
+        <span style="background: #F1F3F9; color: #4A5170; padding: 5px 12px; border-radius: 20px; font-family: 'Barlow'; font-size: 11px; font-weight: 500;">Montres</span>
+      </div>
+
+      <div style="font-family: 'Barlow'; font-size: 16px; font-weight: 700; color: #1A1F36; margin-bottom: 10px;">Près de chez toi</div>
+
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+          <div style="height: 70px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span style="font-size: 24px;">👟</span>
+            <span style="position: absolute; top: 4px; right: 4px; background: #4268FF; color: white; font-size: 7px; padding: 2px 5px; border-radius: 3px; font-family: 'Barlow'; font-weight: 700;">EN STOCK</span>
+          </div>
+          <div style="padding: 8px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 600; color: #1A1F36;">Air Max 90</div>
+            <div style="font-size: 10px; color: #8E96B0;">The Last Step · 800m</div>
+            <div style="font-size: 11px; color: #4A5170; font-weight: 500; margin-top: 4px;">139 €</div>
+          </div>
+        </div>
+        <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+          <div style="height: 70px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span style="font-size: 24px;">👜</span>
+            <span style="position: absolute; top: 4px; left: 4px; background: #E5390E; color: white; font-size: 7px; padding: 2px 5px; border-radius: 3px; font-family: 'Barlow'; font-weight: 700;">-30%</span>
+          </div>
+          <div style="padding: 8px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 600; color: #1A1F36;">Sac City</div>
+            <div style="font-size: 10px; color: #8E96B0;">Neiwa · 1.2km</div>
+            <div style="font-size: 11px; color: #4A5170; margin-top: 4px;"><s style="color:#8E96B0; font-size: 9px;">89 €</s> 62 €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>B · Badge "En stock" en bleu #4268FF</h3>
+      <p>Le bleu = signature Two-Step partout. "En stock" en bleu renforce la marque. Le vert est réservé au success/validation dans les formulaires.</p>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>La vraie question ici :</strong> Est-ce que le badge "En stock" (l'info la plus importante de Two-Step) doit être en <strong style="color: #12B76A;">vert</strong> (convention = disponible) ou en <strong style="color: #4268FF;">bleu #4268FF</strong> (signature Two-Step) ? Le reste de la palette est identique dans les deux cas.
+</div>
+
+<div class="selected-indicator" id="indicator">
+  Sélection : <span id="selected-name"></span>
+</div>
+
+<script>
+function selectOption(el, name) {
+  document.querySelectorAll('.card').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selected-name').textContent = name;
+  document.getElementById('indicator').style.display = 'block';
+  if (window.__sendEvent) {
+    window.__sendEvent({ type: 'click', choice: name, text: el.querySelector('h3')?.textContent || name });
+  }
+}
+</script>
+</body>
+</html>

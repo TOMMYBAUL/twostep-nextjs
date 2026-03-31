@@ -1,0 +1,71 @@
+<h2>Contourner les 30% Apple — Stratégie stories mobile</h2>
+<p class="subtitle">Comment laisser les marchands faire des stories sur téléphone sans payer la taxe Apple</p>
+
+<!-- Le non-problème actuel -->
+<div class="section" style="padding:1.2rem; background:#F0FFF4; border-radius:12px; margin-bottom:1.5rem;">
+  <h3 style="margin-top:0; color:#12B76A;">✅ Aujourd'hui : pas de problème</h3>
+  <p style="font-size:12px; color:#4A5170; margin:6px 0 0; line-height:1.6;">
+    Two-Step est une <strong>web app / PWA</strong>. Pas d'App Store, pas de taxe Apple. Le marchand paie via Stripe sur le site web. Les 39€/mois arrivent à 100% chez nous (moins les ~2.9% Stripe).
+  </p>
+</div>
+
+<!-- Le futur problème -->
+<div class="section" style="padding:1.2rem; background:#FFF4F0; border-radius:12px; margin-bottom:1.5rem;">
+  <h3 style="margin-top:0; color:#E5390E;">⚠️ Le problème futur : si app native iOS</h3>
+  <p style="font-size:12px; color:#4A5170; margin:6px 0 0; line-height:1.6;">
+    Si on publie une app sur l'App Store avec un abonnement marchand dedans → Apple prend 30% (soit ~12€/mois sur 39€). Sur 50 marchands = <strong>600€/mois perdus</strong>.
+  </p>
+</div>
+
+<h3>3 stratégies possibles</h3>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Rester en PWA (recommandé pour le lancement)</h3>
+      <p>Pas d'app native. Le consommateur "installe" Two-Step depuis Safari (Ajouter à l'écran d'accueil). Le marchand utilise le dashboard web sur PC et <strong>le même site sur son téléphone</strong> pour les stories.</p>
+      <div style="margin-top:8px; font-size:11px; line-height:1.6;">
+        <span style="color:#12B76A;">✅</span> 0% Apple · <span style="color:#12B76A;">✅</span> Stories sur mobile (navigateur) · <span style="color:#12B76A;">✅</span> Pas de validation App Store · <span style="color:#12B76A;">✅</span> Déploiement instantané<br>
+        <span style="color:#E5390E;">❌</span> Pas de push notifications natives (mais les web push fonctionnent) · <span style="color:#E5390E;">❌</span> Pas dans l'App Store (découvrabilité)
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>App native consumer (gratuite) + Dashboard web (payant)</h3>
+      <p>L'app iOS est <strong>uniquement pour les consommateurs</strong> (gratuite, pas de paiement). Les marchands n'ont <strong>aucune fonction payante dans l'app</strong>. Ils s'abonnent et gèrent tout sur le site web.</p>
+      <div style="margin-top:8px; font-size:11px; line-height:1.6;">
+        <span style="color:#12B76A;">✅</span> 0% Apple (pas de paiement dans l'app) · <span style="color:#12B76A;">✅</span> App Store pour les consommateurs · <span style="color:#12B76A;">✅</span> Push natives<br>
+        <span style="color:#E5390E;">❌</span> Les marchands doivent ouvrir le navigateur pour les stories sur mobile · <span style="color:#F79009;">⚠️</span> Modèle "Netflix" accepté par Apple
+      </div>
+      <div style="margin-top:8px; padding:8px; background:#EEF2FF; border-radius:6px; font-size:11px; color:#4A5170;">
+        <strong>Le bouton "Ajouter" (story)</strong> dans l'app consumer apparaît uniquement si le user est marchand → redirige vers le dashboard web dans le navigateur. Pas d'in-app purchase.
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>App native avec abonnement hors-app</h3>
+      <p>L'app a les features marchands mais <strong>aucun bouton d'achat</strong>. Le marchand doit s'être abonné sur le site web avant. L'app vérifie l'abonnement et débloque les features. Comme Spotify/Netflix.</p>
+      <div style="margin-top:8px; font-size:11px; line-height:1.6;">
+        <span style="color:#12B76A;">✅</span> 0% Apple · <span style="color:#12B76A;">✅</span> Stories nativement dans l'app · <span style="color:#12B76A;">✅</span> Meilleure UX marchand<br>
+        <span style="color:#F79009;">⚠️</span> Apple peut rejeter si mal exécuté · <span style="color:#E5390E;">❌</span> Plus complexe à implémenter · <span style="color:#E5390E;">❌</span> Depuis mars 2024, Apple autorise les liens externes mais prend quand même 27%
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recommandation -->
+<div class="section" style="margin-top:1.5rem; padding:1.5rem; background:rgba(66,104,255,0.06); border-radius:12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Ma recommandation : A maintenant → B plus tard</h3>
+  <div style="font-size:12px; color:#4A5170; line-height:1.8;">
+    <p style="margin:0 0 8px;"><strong>Phase 1 (maintenant) :</strong> Rester en PWA. Le dashboard marchand est responsive — les stories se créent sur le téléphone via le navigateur. Le marchand prend la photo, écrit le texte, planifie. Tout marche. Zéro Apple.</p>
+    <p style="margin:0 0 8px;"><strong>Phase 2 (quand on a 1000+ consommateurs) :</strong> Publier une app native iOS/Android pour les consommateurs uniquement (gratuite). Les marchands continuent de gérer tout sur le web. Si un marchand ouvre l'app consumer et qu'il est identifié comme marchand, le bouton "+" sur les stories le redirige vers son dashboard web.</p>
+    <p style="margin:0;"><strong>Résultat :</strong> Apple ne voit qu'une app gratuite. Le paiement reste 100% web. Les stories marchands passent par le navigateur mobile (le site est déjà mobile-first).</p>
+  </div>
+</div>

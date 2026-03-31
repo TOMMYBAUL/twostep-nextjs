@@ -1,0 +1,108 @@
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+
+<h2>Dashboard marchand — Fond sombre ou clair ?</h2>
+<p class="subtitle">Le dashboard est l'outil quotidien des commerçants. Choisis l'ambiance.</p>
+
+<div class="cards" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
+
+  <!-- OPTION A : DASHBOARD DARK -->
+  <div class="card" data-choice="dark" onclick="toggleSelect(this)" style="background:#070A10;border:1px solid rgba(66,104,255,0.15);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:10px 20px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.1);">
+      <span class="label" style="font-size:11px;letter-spacing:0.08em;color:#4268FF;">A · TOUT SOMBRE</span>
+    </div>
+    <div style="padding:0;">
+      <!-- Sidebar + content layout -->
+      <div style="display:flex;min-height:340px;">
+        <!-- Sidebar -->
+        <div style="width:52px;background:#0E1420;border-right:1px solid rgba(66,104,255,0.1);padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:18px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#C8D6F0;font-weight:300;letter-spacing:0.08em;">T</div>
+          <div style="width:3px;height:20px;background:#4268FF;border-radius:0 3px 3px 0;margin-left:-10.5px;align-self:flex-start;"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(66,104,255,0.12);"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,0.04);"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,0.04);"></div>
+        </div>
+        <!-- Content -->
+        <div style="flex:1;padding:20px;">
+          <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;color:#3D4D70;text-transform:uppercase;margin-bottom:14px;">Tableau de bord</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#C8D6F0;margin-bottom:20px;">Bonjour, Thomas</p>
+
+          <!-- Metric cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div style="background:#0E1420;border:0.5px solid rgba(100,140,220,0.15);border-radius:8px;padding:14px;">
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#3D4D70;margin-bottom:6px;">Vues aujourd'hui</p>
+              <p style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#C8D6F0;">47</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#4268FF;margin-top:4px;">+12%</p>
+            </div>
+            <div style="background:#0E1420;border:0.5px solid rgba(100,140,220,0.15);border-radius:8px;padding:14px;">
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#3D4D70;margin-bottom:6px;">Produits en stock</p>
+              <p style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#C8D6F0;">183</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#566080;margin-top:4px;">sur 210 actifs</p>
+            </div>
+          </div>
+
+          <!-- Product row -->
+          <div style="background:#0E1420;border:0.5px solid rgba(100,140,220,0.15);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#141B2E;border-radius:6px;"></div>
+            <div style="flex:1;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#C8D6F0;">574 Classic</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#566080;">New Balance · 3 tailles</p>
+            </div>
+            <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;background:#4268FF;color:#fff;padding:3px 8px;border-radius:4px;">En stock</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B : DASHBOARD CLAIR -->
+  <div class="card" data-choice="light" onclick="toggleSelect(this)" style="background:#F8F9FC;border:1px solid rgba(66,104,255,0.12);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:10px 20px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.08);">
+      <span class="label" style="font-size:11px;letter-spacing:0.08em;color:#4268FF;">B · DASHBOARD CLAIR</span>
+    </div>
+    <div style="padding:0;">
+      <!-- Sidebar + content layout -->
+      <div style="display:flex;min-height:340px;">
+        <!-- Sidebar dark -->
+        <div style="width:52px;background:#0E1420;border-right:1px solid rgba(66,104,255,0.1);padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:18px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#C8D6F0;font-weight:300;letter-spacing:0.08em;">T</div>
+          <div style="width:3px;height:20px;background:#4268FF;border-radius:0 3px 3px 0;margin-left:-10.5px;align-self:flex-start;"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(66,104,255,0.12);"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,0.06);"></div>
+          <div style="width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,0.06);"></div>
+        </div>
+        <!-- Content clair -->
+        <div style="flex:1;padding:20px;background:#F8F9FC;">
+          <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;color:#8E96B0;text-transform:uppercase;margin-bottom:14px;">Tableau de bord</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#1A1F36;margin-bottom:20px;">Bonjour, Thomas</p>
+
+          <!-- Metric cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div style="background:#FFFFFF;border:1px solid rgba(66,104,255,0.1);border-radius:8px;padding:14px;box-shadow:0 1px 3px rgba(10,13,18,0.04);">
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;margin-bottom:6px;">Vues aujourd'hui</p>
+              <p style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#1A1F36;">47</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#4268FF;margin-top:4px;">+12%</p>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid rgba(66,104,255,0.1);border-radius:8px;padding:14px;box-shadow:0 1px 3px rgba(10,13,18,0.04);">
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;margin-bottom:6px;">Produits en stock</p>
+              <p style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#1A1F36;">183</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;margin-top:4px;">sur 210 actifs</p>
+            </div>
+          </div>
+
+          <!-- Product row -->
+          <div style="background:#FFFFFF;border:1px solid rgba(66,104,255,0.1);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(10,13,18,0.04);">
+            <div style="width:36px;height:36px;background:#EEF0F8;border-radius:6px;"></div>
+            <div style="flex:1;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#1A1F36;">574 Classic</p>
+              <p style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;">New Balance · 3 tailles</p>
+            </div>
+            <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:500;background:#4268FF;color:#fff;padding:3px 8px;border-radius:4px;">En stock</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:24px;font-size:13px;opacity:0.4;text-align:center;">Clique sur la card pour sélectionner ta préférence</p>

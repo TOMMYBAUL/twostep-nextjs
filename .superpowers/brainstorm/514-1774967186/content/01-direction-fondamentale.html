@@ -1,0 +1,252 @@
+<h2>Direction fondamentale — Fond de l'app consommateur</h2>
+<p class="subtitle">Cette décision impacte toute la charte graphique. Le bleu #4268FF reste dans les deux cas.</p>
+
+<div class="cards">
+  <!-- Option A: Light Mode -->
+  <div class="card" data-choice="light" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0; overflow: hidden;">
+      <div style="background: #FFFFFF; padding: 24px; min-height: 380px; font-family: system-ui, sans-serif;">
+        <!-- Nav -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <span style="font-family: Georgia, serif; font-size: 20px; color: #1A1F36; letter-spacing: 0.05em; font-weight: 300;">TWO—STEP</span>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">🔍</span>
+            </div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search bar -->
+        <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+          <span style="color: #8E96B0; font-size: 13px;">🔍</span>
+          <span style="color: #8E96B0; font-size: 14px;">Rechercher un produit, une marque...</span>
+        </div>
+
+        <!-- Section title -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #8E96B0; text-transform: uppercase;">Près de toi</span>
+          <span style="font-size: 12px; color: #4268FF; font-weight: 500;">Voir tout →</span>
+        </div>
+
+        <!-- Product cards row -->
+        <div style="display: flex; gap: 12px;">
+          <!-- Card 1 -->
+          <div style="flex: 1; background: #FFFFFF; border: 1px solid #E8ECF4; border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👟</span>
+              <span style="position: absolute; top: 8px; right: 8px; background: #4268FF; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">EN STOCK</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-size: 13px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+              <div style="font-size: 11px; color: #8E96B0; margin-bottom: 6px;">The Last Step · 800m</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #4268FF; font-weight: 500;">139 €</span>
+                <span style="font-size: 10px; color: #8E96B0; background: #F1F3F9; padding: 2px 6px; border-radius: 4px;">42</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="flex: 1; background: #FFFFFF; border: 1px solid #E8ECF4; border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👜</span>
+              <span style="position: absolute; top: 8px; left: 8px; background: #E5390E; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">-30%</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-size: 13px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Sac City</div>
+              <div style="font-size: 11px; color: #8E96B0; margin-bottom: 6px;">Neiwa · 1.2km</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #1A1F36;"><s style="color:#8E96B0; font-size: 10px;">89 €</s> 62 €</span>
+                <span style="font-size: 10px; color: #8E96B0; background: #F1F3F9; padding: 2px 6px; border-radius: 4px;">TU</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Light Mode — Style Deliveroo / SNKRS</h3>
+      <p>Fond blanc, les photos produit apportent la couleur. Clean, lumineux, familier. Le bleu #4268FF est l'accent. Les produits ressortent naturellement.</p>
+      <div style="margin-top: 8px; font-size: 12px; color: #888;">
+        ✅ Photos produit = héros (fond neutre)<br>
+        ✅ Familier pour les consommateurs<br>
+        ✅ Compatible design system Untitled UI existant<br>
+        ⚠️ Moins distinctif visuellement
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Dark Mode -->
+  <div class="card" data-choice="dark" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0; overflow: hidden;">
+      <div style="background: #070A10; padding: 24px; min-height: 380px; font-family: system-ui, sans-serif;">
+        <!-- Nav -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <span style="font-family: Georgia, serif; font-size: 20px; color: #C8D6F0; letter-spacing: 0.05em; font-weight: 300;">TWO—STEP</span>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #0E1420; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">🔍</span>
+            </div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #0E1420; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search bar -->
+        <div style="background: #0E1420; border: 0.5px solid rgba(100,140,220,0.15); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+          <span style="color: #566080; font-size: 13px;">🔍</span>
+          <span style="color: #566080; font-size: 14px;">Rechercher un produit, une marque...</span>
+        </div>
+
+        <!-- Section title -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: #3D4D70; text-transform: uppercase;">Près de toi</span>
+          <span style="font-size: 12px; color: #4268FF; font-weight: 500;">Voir tout →</span>
+        </div>
+
+        <!-- Product cards row -->
+        <div style="display: flex; gap: 12px;">
+          <!-- Card 1 -->
+          <div style="flex: 1; background: #0E1420; border: 0.5px solid rgba(100,140,220,0.15); border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #141B2E; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👟</span>
+              <span style="position: absolute; top: 8px; right: 8px; background: #4268FF; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">EN STOCK</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-family: Georgia, serif; font-size: 14px; color: #C8D6F0; margin-bottom: 2px;">Air Max 90</div>
+              <div style="font-size: 11px; color: #566080; margin-bottom: 6px;">The Last Step · 800m</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #3D4D70; font-weight: 400;">139 €</span>
+                <span style="font-size: 10px; color: #93AEFF; background: rgba(66,104,255,0.1); padding: 2px 6px; border-radius: 4px; border: 0.5px solid rgba(66,104,255,0.22);">42</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="flex: 1; background: #0E1420; border: 0.5px solid rgba(100,140,220,0.15); border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #141B2E; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👜</span>
+              <span style="position: absolute; top: 8px; left: 8px; background: #E5390E; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">-30%</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-family: Georgia, serif; font-size: 14px; color: #C8D6F0; margin-bottom: 2px;">Sac City</div>
+              <div style="font-size: 11px; color: #566080; margin-bottom: 6px;">Neiwa · 1.2km</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #3D4D70;"><s style="color:#566080; font-size: 10px;">89 €</s> 62 €</span>
+                <span style="font-size: 10px; color: #93AEFF; background: rgba(66,104,255,0.1); padding: 2px 6px; border-radius: 4px; border: 0.5px solid rgba(66,104,255,0.22);">TU</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Dark Mode — Style SSENSE / Vestiaire Collective</h3>
+      <p>Fond marine-noir #070A10, ambiance magazine premium. Le bleu #4268FF et les photos créent la lumière. Distinctif, éditorial, luxe.</p>
+      <div style="margin-top: 8px; font-size: 12px; color: #888;">
+        ✅ Très distinctif, mémorable<br>
+        ✅ Ambiance premium / magazine mode<br>
+        ✅ Charte Minuit Électrique déjà rédigée<br>
+        ⚠️ Les photos produit doivent être de bonne qualité<br>
+        ⚠️ Moins courant pour une app consumer grand public
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C: Hybrid -->
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0; overflow: hidden;">
+      <div style="background: #FFFFFF; padding: 24px; min-height: 380px; font-family: system-ui, sans-serif;">
+        <!-- Nav -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <span style="font-family: Georgia, serif; font-size: 20px; color: #1A1F36; letter-spacing: 0.05em; font-weight: 300;">TWO—STEP</span>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">🔍</span>
+            </div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #F1F3F9; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 14px;">❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search bar -->
+        <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+          <span style="color: #8E96B0; font-size: 13px;">🔍</span>
+          <span style="color: #8E96B0; font-size: 14px;">Rechercher un produit, une marque...</span>
+        </div>
+
+        <!-- Section title -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #8E96B0; text-transform: uppercase;">Près de toi</span>
+          <span style="font-size: 12px; color: #4268FF; font-weight: 500;">Voir tout →</span>
+        </div>
+
+        <!-- Product cards row -->
+        <div style="display: flex; gap: 12px;">
+          <!-- Card 1 -->
+          <div style="flex: 1; background: #FFFFFF; border: 1px solid #E8ECF4; border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👟</span>
+              <span style="position: absolute; top: 8px; right: 8px; background: #4268FF; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">EN STOCK</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-size: 13px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+              <div style="font-size: 11px; color: #8E96B0; margin-bottom: 6px;">The Last Step · 800m</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #1A1F36; font-weight: 500;">139 €</span>
+                <span style="font-size: 10px; color: #8E96B0; background: #F1F3F9; padding: 2px 6px; border-radius: 4px;">42</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="flex: 1; background: #FFFFFF; border: 1px solid #E8ECF4; border-radius: 12px; overflow: hidden;">
+            <div style="height: 120px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span style="font-size: 36px;">👜</span>
+              <span style="position: absolute; top: 8px; left: 8px; background: #E5390E; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 500;">-30%</span>
+            </div>
+            <div style="padding: 10px;">
+              <div style="font-size: 13px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Sac City</div>
+              <div style="font-size: 11px; color: #8E96B0; margin-bottom: 6px;">Neiwa · 1.2km</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #1A1F36;"><s style="color:#8E96B0; font-size: 10px;">89 €</s> 62 €</span>
+                <span style="font-size: 10px; color: #8E96B0; background: #F1F3F9; padding: 2px 6px; border-radius: 4px;">TU</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark CTA section -->
+        <div style="background: #070A10; border-radius: 12px; padding: 16px; margin-top: 16px; text-align: center;">
+          <div style="font-family: Georgia, serif; font-size: 15px; color: #C8D6F0; margin-bottom: 8px;">Promos près de chez toi</div>
+          <div style="font-size: 11px; color: #566080; margin-bottom: 10px;">12 offres actives dans un rayon de 2 km</div>
+          <div style="background: #4268FF; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 500; display: inline-block;">Voir les promos</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Hybride — Light + Dark sections stratégiques</h3>
+      <p>App consommateur en fond blanc (lisibilité, photos). Sections dark stratégiques pour les CTA et le feed promos. Style Stripe/Linear.</p>
+      <div style="margin-top: 8px; font-size: 12px; color: #888;">
+        ✅ Le meilleur des deux mondes<br>
+        ✅ Photos produit lisibles + moments premium<br>
+        ✅ Sections dark = points d'accroche visuels<br>
+        ✅ Dashboard marchand peut rester dark<br>
+        ⚠️ Plus complexe à maintenir (deux modes)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>Ce qui ne change pas quelle que soit ta décision</h3>
+  <ul>
+    <li><strong>Bleu électrique #4268FF</strong> — couleur accent principale</li>
+    <li><strong>Le produit est le héros</strong> — grandes photos, infos clés visibles</li>
+    <li><strong>Prix discret</strong> — pas mis en avant, style premium</li>
+    <li><strong>Homepage</strong> — peut avoir son propre traitement (dark hero comme Stripe)</li>
+    <li><strong>Dashboard marchand</strong> — décision séparée</li>
+  </ul>
+</div>

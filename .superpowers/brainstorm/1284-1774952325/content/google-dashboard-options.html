@@ -1,0 +1,131 @@
+<h2>Dashboard Google — Phase C : quel layout ?</h2>
+<p class="subtitle">Le marchand a connecté Google. Voici 3 options pour la page complète avec métriques.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fc;">
+      <!-- Option A: Stats cards + table -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+          <div style="font-size: 11px; color: #8e96b0; margin-bottom: 4px;">Produits sur Google</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1f36;">142</div>
+          <div style="font-size: 11px; color: #34a853;">✓ Approuvés</div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+          <div style="font-size: 11px; color: #8e96b0; margin-bottom: 4px;">Impressions (30j)</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1f36;">2,847</div>
+          <div style="font-size: 11px; color: #4285f4;">↑ Recherche Google</div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+          <div style="font-size: 11px; color: #8e96b0; margin-bottom: 4px;">Clics (30j)</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1f36;">89</div>
+          <div style="font-size: 11px; color: #8e96b0;">Taux: 3.1%</div>
+        </div>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+        <div style="font-size: 12px; font-weight: 600; color: #1a1f36; margin-bottom: 8px;">Produits rejetés (3)</div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f2f7; font-size: 11px;">
+          <span style="color: #1a1f36;">Nike Air Max 90</span>
+          <span style="color: #ea4335;">Photo manquante</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f2f7; font-size: 11px;">
+          <span style="color: #1a1f36;">Adidas Stan Smith</span>
+          <span style="color: #ea4335;">Prix invalide</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 11px;">
+          <span style="color: #1a1f36;">NB 574</span>
+          <span style="color: #ea4335;">GTIN manquant</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Stats + Table erreurs</h3>
+      <p>3 KPI en haut (produits, impressions, clics) + tableau des produits rejetés avec la raison. Focus sur l'actionnable.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fc;">
+      <!-- Option B: Progress bar + suggestions -->
+      <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e8ecf4; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #1a1f36;">Visibilité Google</div>
+            <div style="font-size: 12px; color: #8e96b0;">142 / 186 produits visibles</div>
+          </div>
+          <div style="font-size: 28px; font-weight: 700; color: #34a853;">76%</div>
+        </div>
+        <div style="background: #e8ecf4; border-radius: 8px; height: 8px; overflow: hidden;">
+          <div style="background: #34a853; height: 100%; width: 76%; border-radius: 8px;"></div>
+        </div>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+        <div style="font-size: 12px; font-weight: 600; color: #1a1f36; margin-bottom: 10px;">💡 Suggestions</div>
+        <div style="padding: 8px 12px; background: #fff8e1; border-radius: 8px; margin-bottom: 8px; font-size: 11px; color: #1a1f36;">
+          <strong>+12 produits</strong> — Ajoutez une photo à 12 produits pour les rendre visibles sur Google
+        </div>
+        <div style="padding: 8px 12px; background: #fff8e1; border-radius: 8px; margin-bottom: 8px; font-size: 11px; color: #1a1f36;">
+          <strong>+32 produits</strong> — 32 produits sans code-barres ne sont pas envoyés à Google
+        </div>
+        <div style="padding: 8px 12px; background: #e8f5e9; border-radius: 8px; font-size: 11px; color: #1a1f36;">
+          ✓ Dernière sync réussie il y a 2h
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Score de visibilité + Suggestions</h3>
+      <p>Un gros pourcentage "76% visible" avec barre de progression + suggestions concrètes pour améliorer. Gamifié, motivant.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fc;">
+      <!-- Option C: Hybrid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 11px; color: #8e96b0;">Visibilité</div>
+              <div style="font-size: 22px; font-weight: 700; color: #34a853;">76%</div>
+            </div>
+            <div style="font-size: 11px; color: #8e96b0; text-align: right;">142 / 186<br/>produits</div>
+          </div>
+          <div style="background: #e8ecf4; border-radius: 8px; height: 6px; overflow: hidden; margin-top: 8px;">
+            <div style="background: #34a853; height: 100%; width: 76%; border-radius: 8px;"></div>
+          </div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4;">
+          <div style="font-size: 11px; color: #8e96b0;">Dernière sync</div>
+          <div style="font-size: 14px; font-weight: 600; color: #1a1f36; margin-top: 4px;">Il y a 2h</div>
+          <div style="font-size: 11px; color: #34a853; margin-top: 4px;">✓ Succès</div>
+          <div style="font-size: 11px; color: #8e96b0; margin-top: 2px;">Prochain : 3h00</div>
+        </div>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e8ecf4; margin-bottom: 12px;">
+        <div style="font-size: 12px; font-weight: 600; color: #1a1f36; margin-bottom: 8px;">À améliorer</div>
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1; padding: 8px; background: #fff3e0; border-radius: 8px; font-size: 11px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 700; color: #e65100;">12</div>
+            <div style="color: #8e96b0;">Sans photo</div>
+          </div>
+          <div style="flex: 1; padding: 8px; background: #fce4ec; border-radius: 8px; font-size: 11px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 700; color: #c62828;">32</div>
+            <div style="color: #8e96b0;">Sans EAN</div>
+          </div>
+          <div style="flex: 1; padding: 8px; background: #fff8e1; border-radius: 8px; font-size: 11px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 700; color: #f57f17;">3</div>
+            <div style="color: #8e96b0;">Rejetés</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: white; border-radius: 12px; padding: 10px 16px; border: 1px solid #e8ecf4; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; color: #8e96b0;">Connecté à Google</span>
+        <span style="font-size: 11px; color: #ea4335; cursor: pointer;">Déconnecter</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Hybride compact</h3>
+      <p>Score de visibilité + statut sync + 3 compteurs d'amélioration (sans photo, sans EAN, rejetés) + déconnexion. Tout en un écran, dense mais clair.</p>
+    </div>
+  </div>
+</div>

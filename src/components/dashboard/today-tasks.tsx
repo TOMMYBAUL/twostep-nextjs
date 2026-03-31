@@ -9,10 +9,10 @@ function generateTasks(stats: DashboardStats): Task[] {
     const tasks: Task[] = [];
 
     if (stats.stock.outOfStock > 0) {
-        tasks.push({ id: "restock", label: `${stats.stock.outOfStock} produit${stats.stock.outOfStock > 1 ? "s" : ""} en rupture de stock`, href: "/dashboard/stock", priority: "high" });
+        tasks.push({ id: "restock", label: `${stats.stock.outOfStock} produit${stats.stock.outOfStock > 1 ? "s" : ""} en rupture de stock`, href: "/dashboard/products", priority: "high" });
     }
     if (stats.stock.lowStock > 0) {
-        tasks.push({ id: "low-stock", label: `${stats.stock.lowStock} produit${stats.stock.lowStock > 1 ? "s" : ""} en stock bas (≤ 3)`, href: "/dashboard/stock", priority: "high" });
+        tasks.push({ id: "low-stock", label: `${stats.stock.lowStock} produit${stats.stock.lowStock > 1 ? "s" : ""} en stock bas (≤ 3)`, href: "/dashboard/products", priority: "high" });
     }
     const missingPhotos = stats.stock.total - stats.stock.withPhoto;
     if (missingPhotos > 0) {

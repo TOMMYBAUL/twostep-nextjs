@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Pairings — Two-Step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Bebas+Neue&family=Bowlby+One+SC&family=Inter:wght@400;500;600&family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #eee; font-family: 'Inter', system-ui, sans-serif; padding: 32px 24px; }
+  h1 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 32px; }
+  .section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
+    color: #4268FF; text-transform: uppercase; margin: 32px 0 16px;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .full { grid-column: 1 / -1; }
+
+  .card {
+    background: #1a1a1a; border: 2px solid #333; border-radius: 16px;
+    overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+  }
+  .card:hover { border-color: #4268FF; transform: translateY(-2px); }
+  .card.selected { border-color: #4268FF; box-shadow: 0 0 24px rgba(66,104,255,0.3); }
+  .card.favorite { border-color: #22c55e; }
+  .card.favorite.selected { border-color: #4268FF; }
+
+  .preview { background: #fff; padding: 28px; }
+  .info { padding: 14px 18px; }
+  .info h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+  .info p { font-size: 12px; color: #999; line-height: 1.5; }
+  .tag { display: inline-block; margin-top: 6px; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-right: 4px; }
+  .tag-blue { background: rgba(66,104,255,0.15); color: #4268FF; }
+  .tag-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+
+  .star { position: absolute; top: 12px; right: 12px; background: #22c55e; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+
+  .note {
+    max-width: 1100px; margin: 24px auto 0; padding: 14px 18px;
+    background: rgba(66,104,255,0.08); border: 1px solid rgba(66,104,255,0.2);
+    border-radius: 10px; font-size: 13px; color: #aaa;
+  }
+
+  .selected-indicator {
+    position: fixed; bottom: 20px; right: 20px; background: #4268FF; color: white;
+    padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    display: none; z-index: 100; box-shadow: 0 4px 20px rgba(66,104,255,0.4);
+  }
+
+  /* Product card inside mockup */
+  .mock-card {
+    flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;
+  }
+  .mock-card-img {
+    height: 72px; background: #F8F9FC; display: flex; align-items: center;
+    justify-content: center; font-size: 28px; position: relative;
+  }
+  .mock-card-body { padding: 8px 10px; }
+  .mock-badge {
+    position: absolute; top: 5px; right: 5px; background: #4268FF; color: white;
+    font-size: 8px; padding: 2px 5px; border-radius: 3px; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1>Font pairings — ton duo + alternatives</h1>
+<p class="subtitle">Ton instinct Bowlby + Barlow est validé par la recherche. Voici la comparaison finale. Clique sur ton favori.</p>
+
+<!-- TON DUO ORIGINAL -->
+<div class="section-title">Ton duo original</div>
+<div class="grid">
+  <div class="card favorite full" onclick="selectOption(this, 'bowlby-barlow')" style="position: relative;">
+    <div class="star">TON CHOIX</div>
+    <div class="preview" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+
+      <!-- Left: Typography showcase -->
+      <div>
+        <div style="font-family: 'Bowlby One SC'; font-size: 28px; color: #1A1F36; letter-spacing: 0.03em; margin-bottom: 20px;">TWO-STEP</div>
+
+        <div style="font-family: 'Barlow'; font-size: 20px; font-weight: 700; color: #1A1F36; margin-bottom: 4px;">Près de chez toi</div>
+        <div style="font-family: 'Inter'; font-size: 13px; color: #8E96B0; margin-bottom: 20px;">12 produits dans un rayon de 2 km</div>
+
+        <div style="font-family: 'Barlow'; font-size: 15px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+        <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 12px;">Nike · The Last Step · 800m</div>
+
+        <span style="background: #4268FF; color: white; padding: 9px 20px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; font-weight: 600;">Voir en boutique</span>
+
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #E8ECF4;">
+          <div style="font-family: 'Bowlby One SC'; font-size: 14px; color: #4268FF; margin-bottom: 6px;">PROMOS DU JOUR</div>
+          <div style="font-family: 'Barlow Semi Condensed'; font-size: 12px; font-weight: 600; color: #8E96B0; letter-spacing: 0.06em; text-transform: uppercase;">EN STOCK · NOUVEAU · PROMO</div>
+        </div>
+      </div>
+
+      <!-- Right: Mini app mockup -->
+      <div style="border: 1px solid #E8ECF4; border-radius: 16px; overflow: hidden; max-width: 280px;">
+        <div style="padding: 14px 16px; border-bottom: 1px solid #E8ECF4; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: 'Bowlby One SC'; font-size: 14px; color: #1A1F36;">TWO-STEP</span>
+          <span style="font-size: 12px;">🔍 ❤️</span>
+        </div>
+        <div style="padding: 14px 16px;">
+          <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 8px; padding: 9px 12px; margin-bottom: 14px; font-size: 12px; color: #8E96B0;">🔍 Rechercher...</div>
+          <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 700; color: #1A1F36; margin-bottom: 10px;">Près de chez toi</div>
+          <div style="display: flex; gap: 8px;">
+            <div class="mock-card">
+              <div class="mock-card-img">👟<span class="mock-badge" style="font-family: 'Barlow Semi Condensed'; font-size: 7px;">EN STOCK</span></div>
+              <div class="mock-card-body">
+                <div style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #1A1F36;">Air Max 90</div>
+                <div style="font-size: 9px; color: #8E96B0;">800m</div>
+              </div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-img">👜</div>
+              <div class="mock-card-body">
+                <div style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #1A1F36;">Sac City</div>
+                <div style="font-size: 9px; color: #8E96B0;">1.2km</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>Bowlby One SC (logo/accroches) + Barlow (titres/UI) + Inter (corps)</h3>
+      <p>Ton duo. Impact + structure + lisibilité. Bowlby = marque de fabrique, Barlow = le workhorse polyvalent, Inter = neutralité parfaite.</p>
+      <span class="tag tag-green">Ton choix</span><span class="tag tag-blue">Pairing validé</span><span class="tag tag-blue">3 niveaux de hiérarchie</span>
+    </div>
+  </div>
+</div>
+
+<!-- ALTERNATIVES DANS LA MEME ENERGIE -->
+<div class="section-title">Alternatives — même énergie, au cas où</div>
+<div class="grid">
+
+  <!-- Bebas Neue + Barlow -->
+  <div class="card" onclick="selectOption(this, 'bebas-barlow')">
+    <div class="preview">
+      <div style="font-family: 'Bebas Neue'; font-size: 32px; color: #1A1F36; letter-spacing: 0.04em; margin-bottom: 16px;">TWO-STEP</div>
+      <div style="font-family: 'Barlow'; font-size: 18px; font-weight: 700; color: #1A1F36; margin-bottom: 4px;">Près de chez toi</div>
+      <div style="font-family: 'Inter'; font-size: 13px; color: #8E96B0; margin-bottom: 16px;">12 produits dans un rayon de 2 km</div>
+      <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+      <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 14px;">Nike · The Last Step</div>
+      <div style="font-family: 'Bebas Neue'; font-size: 15px; color: #4268FF; letter-spacing: 0.04em;">PROMOS DU JOUR</div>
+    </div>
+    <div class="info">
+      <h3>Bebas Neue + Barlow + Inter</h3>
+      <p>Bebas Neue = la référence display condensée. Plus étroite que Bowlby, très populaire. Moins de personnalité unique mais ultra-éprouvée.</p>
+      <span class="tag tag-blue">Éprouvé</span><span class="tag tag-blue">Condensé</span>
+    </div>
+  </div>
+
+  <!-- Anton + Barlow -->
+  <div class="card" onclick="selectOption(this, 'anton-barlow')">
+    <div class="preview">
+      <div style="font-family: 'Anton'; font-size: 32px; color: #1A1F36; letter-spacing: 0.02em; margin-bottom: 16px;">TWO-STEP</div>
+      <div style="font-family: 'Barlow'; font-size: 18px; font-weight: 700; color: #1A1F36; margin-bottom: 4px;">Près de chez toi</div>
+      <div style="font-family: 'Inter'; font-size: 13px; color: #8E96B0; margin-bottom: 16px;">12 produits dans un rayon de 2 km</div>
+      <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+      <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 14px;">Nike · The Last Step</div>
+      <div style="font-family: 'Anton'; font-size: 15px; color: #4268FF; letter-spacing: 0.02em;">PROMOS DU JOUR</div>
+    </div>
+    <div class="info">
+      <h3>Anton + Barlow + Inter</h3>
+      <p>Anton = ultra-condensée, maximum d'impact dans minimum d'espace. Très billboard, très urbain. Lisible de loin.</p>
+      <span class="tag tag-blue">Ultra-condensé</span><span class="tag tag-blue">Billboard</span>
+    </div>
+  </div>
+
+  <!-- Archivo Black + Barlow -->
+  <div class="card" onclick="selectOption(this, 'archivo-barlow')">
+    <div class="preview">
+      <div style="font-family: 'Archivo Black'; font-size: 30px; color: #1A1F36; letter-spacing: 0.01em; margin-bottom: 16px;">TWO-STEP</div>
+      <div style="font-family: 'Barlow'; font-size: 18px; font-weight: 700; color: #1A1F36; margin-bottom: 4px;">Près de chez toi</div>
+      <div style="font-family: 'Inter'; font-size: 13px; color: #8E96B0; margin-bottom: 16px;">12 produits dans un rayon de 2 km</div>
+      <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+      <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 14px;">Nike · The Last Step</div>
+      <div style="font-family: 'Archivo Black'; font-size: 15px; color: #4268FF; letter-spacing: 0.01em;">PROMOS DU JOUR</div>
+    </div>
+    <div class="info">
+      <h3>Archivo Black + Barlow + Inter</h3>
+      <p>Archivo Black = grotesque noire, conçue pour print+digital. Plus large que Bowlby, moins "rétro". Très moderne, digital-native.</p>
+      <span class="tag tag-blue">Digital-native</span><span class="tag tag-blue">Moderne</span>
+    </div>
+  </div>
+
+  <!-- Bowlby + Urbanist (alternative body) -->
+  <div class="card" onclick="selectOption(this, 'bowlby-urbanist')">
+    <div class="preview">
+      <div style="font-family: 'Bowlby One SC'; font-size: 28px; color: #1A1F36; letter-spacing: 0.03em; margin-bottom: 16px;">TWO-STEP</div>
+      <div style="font-family: 'Urbanist'; font-size: 18px; font-weight: 700; color: #1A1F36; margin-bottom: 4px;">Près de chez toi</div>
+      <div style="font-family: 'Urbanist'; font-size: 13px; font-weight: 400; color: #8E96B0; margin-bottom: 16px;">12 produits dans un rayon de 2 km</div>
+      <div style="font-family: 'Urbanist'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+      <div style="font-family: 'Urbanist'; font-size: 12px; font-weight: 400; color: #8E96B0; margin-bottom: 14px;">Nike · The Last Step</div>
+      <div style="font-family: 'Bowlby One SC'; font-size: 14px; color: #4268FF;">PROMOS DU JOUR</div>
+    </div>
+    <div class="info">
+      <h3>Bowlby One SC + Urbanist (sans Barlow)</h3>
+      <p>Urbanist = géométrique moderne, recommandée comme le meilleur pairing de Bowlby. Plus douce que Barlow, contraste net avec l'impact de Bowlby.</p>
+      <span class="tag tag-blue">Pairing #1 recommandé</span><span class="tag tag-blue">Géométrique</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <strong>Résumé :</strong> Ton duo <strong>Bowlby + Barlow</strong> a une identité unique — Bowlby est rare et distinctif, Barlow est le parfait complément structuré. Les alternatives (Bebas, Anton, Archivo) sont dans la même énergie si jamais tu veux comparer. Urbanist est une option intéressante si tu veux remplacer Barlow par quelque chose de plus géométrique.
+</div>
+
+<div class="selected-indicator" id="indicator">
+  Sélection : <span id="selected-name"></span>
+</div>
+
+<script>
+function selectOption(el, name) {
+  document.querySelectorAll('.card').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selected-name').textContent = name;
+  document.getElementById('indicator').style.display = 'block';
+  if (window.__sendEvent) {
+    window.__sendEvent({ type: 'click', choice: name, text: el.querySelector('h3')?.textContent || name });
+  }
+}
+</script>
+</body>
+</html>

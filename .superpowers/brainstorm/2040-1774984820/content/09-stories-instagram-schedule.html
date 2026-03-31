@@ -1,0 +1,214 @@
+<h2>Stories — Copier Instagram + Programmation avancée</h2>
+<p class="subtitle">Publication identique Instagram, planification en avance sur le dashboard</p>
+
+<div class="split">
+  <!-- Côté Consumer -->
+  <div class="mockup">
+    <div class="mockup-header">📱 Consumer — Identique Instagram</div>
+    <div class="mockup-body" style="padding:16px; background:white;">
+
+      <!-- Story bar -->
+      <div style="display:flex; gap:12px; overflow:hidden; padding-bottom:14px; border-bottom:1px solid #E8ECF4;">
+        <!-- My story (add) -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="width:56px; height:56px; border-radius:50%; border:2px dashed #D0D5E1; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:20px; color:#8E96B0;">+</span>
+          </div>
+          <span style="font-size:9px; color:#8E96B0;">Ajouter</span>
+        </div>
+
+        <!-- Story with ring (unseen) -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(45deg, #4268FF, #668AFF); padding:2.5px;">
+            <div style="width:100%; height:100%; border-radius:50%; background:#F1F3F9; display:flex; align-items:center; justify-content:center; border:2px solid white;">
+              <span style="font-size:18px;">👟</span>
+            </div>
+          </div>
+          <span style="font-size:9px; color:#1A1F36; font-weight:500;">Last Step</span>
+        </div>
+
+        <!-- Story with ring (unseen) -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(45deg, #4268FF, #668AFF); padding:2.5px;">
+            <div style="width:100%; height:100%; border-radius:50%; background:#F1F3F9; display:flex; align-items:center; justify-content:center; border:2px solid white;">
+              <span style="font-size:18px;">👗</span>
+            </div>
+          </div>
+          <span style="font-size:9px; color:#1A1F36; font-weight:500;">SWAP</span>
+        </div>
+
+        <!-- Story seen (gray ring) -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="width:56px; height:56px; border-radius:50%; background:#D0D5E1; padding:2.5px;">
+            <div style="width:100%; height:100%; border-radius:50%; background:#F1F3F9; display:flex; align-items:center; justify-content:center; border:2px solid white;">
+              <span style="font-size:18px;">💍</span>
+            </div>
+          </div>
+          <span style="font-size:9px; color:#8E96B0;">NACH</span>
+        </div>
+
+        <!-- Story seen -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="width:56px; height:56px; border-radius:50%; background:#D0D5E1; padding:2.5px;">
+            <div style="width:100%; height:100%; border-radius:50%; background:#F1F3F9; display:flex; align-items:center; justify-content:center; border:2px solid white;">
+              <span style="font-size:18px;">⌚</span>
+            </div>
+          </div>
+          <span style="font-size:9px; color:#8E96B0;">PAUSE</span>
+        </div>
+      </div>
+
+      <!-- Story viewer (fullscreen preview) -->
+      <div style="margin-top:14px; border-radius:12px; overflow:hidden; background:#1A1F36; position:relative; height:280px;">
+        <!-- Progress bars -->
+        <div style="display:flex; gap:3px; padding:8px 10px; position:absolute; top:0; left:0; right:0; z-index:2;">
+          <div style="flex:1; height:2px; border-radius:2px; background:white;"></div>
+          <div style="flex:1; height:2px; border-radius:2px; background:rgba(255,255,255,0.3); overflow:hidden;">
+            <div style="width:40%; height:100%; background:white; border-radius:2px;"></div>
+          </div>
+          <div style="flex:1; height:2px; border-radius:2px; background:rgba(255,255,255,0.3);"></div>
+        </div>
+
+        <!-- Header -->
+        <div style="display:flex; align-items:center; gap:8px; padding:20px 10px 0; position:absolute; top:0; left:0; right:0; z-index:2;">
+          <div style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2);"></div>
+          <div>
+            <div style="font-size:12px; font-weight:600; color:white;">The Last Step</div>
+            <div style="font-size:10px; color:rgba(255,255,255,0.6);">il y a 3h</div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="display:flex; align-items:center; justify-content:center; height:100%;">
+          <div style="text-align:center; color:white;">
+            <div style="font-size:40px;">👟</div>
+            <div style="font-size:14px; font-weight:600; margin-top:8px;">Nouveau arrivage Nike !</div>
+            <div style="font-size:11px; opacity:0.7; margin-top:4px;">Air Max 90 dispo du 38 au 45</div>
+          </div>
+        </div>
+
+        <!-- Tap zones -->
+        <div style="position:absolute; top:0; left:0; width:30%; height:100%; cursor:pointer;" title="← Story précédente"></div>
+        <div style="position:absolute; top:0; right:0; width:30%; height:100%; cursor:pointer;" title="Story suivante →"></div>
+      </div>
+
+      <div style="margin-top:12px; font-size:11px; color:#8E96B0; text-align:center;">
+        Tap gauche/droite pour naviguer · Swipe vers le bas pour fermer
+      </div>
+    </div>
+  </div>
+
+  <!-- Côté Dashboard -->
+  <div class="mockup">
+    <div class="mockup-header">💼 Dashboard — Planification semaine</div>
+    <div class="mockup-body" style="padding:16px; background:white;">
+
+      <!-- Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div style="font-size:16px; font-weight:700; color:#1A1F36;">Mes stories</div>
+        <div style="padding:8px 16px; background:#4268FF; color:white; border-radius:8px; font-size:12px; font-weight:600;">+ Nouvelle story</div>
+      </div>
+
+      <!-- Week view -->
+      <div style="font-size:11px; font-weight:600; color:#8E96B0; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Cette semaine</div>
+
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <!-- Lundi -->
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:#F8F9FC;">
+          <div style="width:40px; text-align:center;">
+            <div style="font-size:10px; color:#8E96B0;">LUN</div>
+            <div style="font-size:14px; font-weight:700; color:#1A1F36;">31</div>
+          </div>
+          <div style="flex:1; display:flex; gap:6px;">
+            <div style="padding:6px 10px; background:#12B76A; color:white; border-radius:6px; font-size:10px; font-weight:600;">✓ Publiée — 10h</div>
+            <div style="padding:6px 10px; background:#4268FF; color:white; border-radius:6px; font-size:10px; font-weight:600;">Planifiée — 17h</div>
+          </div>
+        </div>
+
+        <!-- Mardi -->
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:#F8F9FC;">
+          <div style="width:40px; text-align:center;">
+            <div style="font-size:10px; color:#8E96B0;">MAR</div>
+            <div style="font-size:14px; font-weight:700; color:#1A1F36;">1</div>
+          </div>
+          <div style="flex:1; display:flex; gap:6px;">
+            <div style="padding:6px 10px; background:#4268FF; color:white; border-radius:6px; font-size:10px; font-weight:600;">Planifiée — 9h</div>
+          </div>
+        </div>
+
+        <!-- Mercredi -->
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:#F8F9FC;">
+          <div style="width:40px; text-align:center;">
+            <div style="font-size:10px; color:#8E96B0;">MER</div>
+            <div style="font-size:14px; font-weight:700; color:#1A1F36;">2</div>
+          </div>
+          <div style="flex:1; display:flex; gap:6px;">
+            <div style="padding:6px 10px; background:#4268FF; color:white; border-radius:6px; font-size:10px; font-weight:600;">Planifiée — 12h</div>
+          </div>
+        </div>
+
+        <!-- Jeudi (vide) -->
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; border:1px dashed #E8ECF4;">
+          <div style="width:40px; text-align:center;">
+            <div style="font-size:10px; color:#8E96B0;">JEU</div>
+            <div style="font-size:14px; font-weight:700; color:#D0D5E1;">3</div>
+          </div>
+          <div style="flex:1;">
+            <span style="font-size:11px; color:#D0D5E1;">+ Ajouter une story</span>
+          </div>
+        </div>
+
+        <!-- Vendredi -->
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:#F8F9FC;">
+          <div style="width:40px; text-align:center;">
+            <div style="font-size:10px; color:#8E96B0;">VEN</div>
+            <div style="font-size:14px; font-weight:700; color:#1A1F36;">4</div>
+          </div>
+          <div style="flex:1; display:flex; gap:6px;">
+            <div style="padding:6px 10px; background:#4268FF; color:white; border-radius:6px; font-size:10px; font-weight:600;">Planifiée — 10h</div>
+            <div style="padding:6px 10px; background:#4268FF; color:white; border-radius:6px; font-size:10px; font-weight:600;">Planifiée — 18h</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tip -->
+      <div style="margin-top:14px; padding:10px 12px; background:#EEF2FF; border-radius:8px; display:flex; gap:8px; align-items:flex-start;">
+        <span style="font-size:14px;">💡</span>
+        <div style="font-size:11px; color:#4A5170; line-height:1.5;">
+          <strong>Astuce :</strong> Planifiez vos stories le dimanche soir pour toute la semaine. 20 minutes suffisent pour 5 stories !
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Comportement Instagram -->
+<div class="section" style="margin-top:1.5rem; padding:1.5rem; background:rgba(66,104,255,0.06); border-radius:12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Ce qu'on copie d'Instagram</h3>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px;">
+    <div>
+      <div style="font-size:12px; font-weight:600; color:#1A1F36; margin-bottom:6px;">📱 Côté consommateur</div>
+      <ul style="font-size:11px; color:#4A5170; margin:0; padding-left:16px; line-height:1.8;">
+        <li>Bulles rondes en haut du feed</li>
+        <li>Anneau bleu = non vue, gris = vue</li>
+        <li>Tap pour ouvrir, tap gauche/droite pour naviguer</li>
+        <li>Barre de progression en haut</li>
+        <li>Nom boutique + "il y a Xh"</li>
+        <li>Visible 24h puis disparaît</li>
+        <li>Swipe bas pour fermer</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-size:12px; font-weight:600; color:#1A1F36; margin-bottom:6px;">💼 Côté marchand (notre ajout)</div>
+      <ul style="font-size:11px; color:#4A5170; margin:0; padding-left:16px; line-height:1.8;">
+        <li><strong>Vue planning semaine</strong> (calendrier)</li>
+        <li><strong>Planifier à l'avance</strong> (date + heure)</li>
+        <li>Photo + texte court (comme Instagram)</li>
+        <li>Statut : brouillon / planifiée / publiée / expirée</li>
+        <li>Dupliquer une story (pour récurrence)</li>
+        <li>Stats : nombre de vues par story</li>
+        <li>Tip IA : "Dimanche soir, 20 min, toute la semaine"</li>
+      </ul>
+    </div>
+  </div>
+</div>

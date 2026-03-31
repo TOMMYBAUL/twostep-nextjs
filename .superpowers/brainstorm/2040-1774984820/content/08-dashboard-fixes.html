@@ -1,0 +1,118 @@
+<h2>Dashboard — 2 problèmes à corriger</h2>
+<p class="subtitle">Fusion Produits/Stock + refonte onboarding checklist</p>
+
+<!-- Problème 1 : Produits vs Stock -->
+<div class="section" style="border:1px solid #E8ECF4; border-radius:12px; padding:1.5rem; margin-bottom:1.5rem;">
+  <h3 style="margin-top:0; color:#F04438;">❌ Problème 1 : Produits et Stock = doublon</h3>
+
+  <div class="split" style="gap:12px;">
+    <div style="flex:1; background:#FFF4F0; border-radius:8px; padding:12px;">
+      <div style="font-size:12px; font-weight:600; color:#E5390E; margin-bottom:6px;">Page Produits (actuelle)</div>
+      <ul style="font-size:11px; color:#4A5170; margin:0; padding-left:16px; line-height:1.7;">
+        <li>Liste des produits</li>
+        <li>Métriques (total, en stock, bas, rupture)</li>
+        <li>Recherche</li>
+        <li>Tab catalogue / incomplets</li>
+        <li>Ajouter un produit</li>
+      </ul>
+    </div>
+    <div style="flex:1; background:#FFF4F0; border-radius:8px; padding:12px;">
+      <div style="font-size:12px; font-weight:600; color:#E5390E; margin-bottom:6px;">Page Stock (actuelle)</div>
+      <ul style="font-size:11px; color:#4A5170; margin:0; padding-left:16px; line-height:1.7;">
+        <li>Liste des produits <em>(identique)</em></li>
+        <li>Métriques <em>(identiques)</em></li>
+        <li>Boutons +/- quantité</li>
+        <li>Saisie directe quantité</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:16px; background:#F0FFF4; border-radius:8px; padding:12px;">
+    <div style="font-size:12px; font-weight:600; color:#12B76A; margin-bottom:6px;">✅ Solution : une seule page "Produits"</div>
+    <ul style="font-size:11px; color:#4A5170; margin:0; padding-left:16px; line-height:1.7;">
+      <li>Liste catalogue avec <strong>contrôles stock intégrés</strong> (+/- et saisie directe sur chaque ligne)</li>
+      <li>Métriques en haut (une seule fois)</li>
+      <li>Tab "Catalogue" / "Incomplets" conservé</li>
+      <li>Supprimer <code>/dashboard/stock</code> de la sidebar</li>
+      <li>Le marchand a tout au même endroit</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Problème 2 : Onboarding -->
+<div class="section" style="border:1px solid #E8ECF4; border-radius:12px; padding:1.5rem;">
+  <h3 style="margin-top:0; color:#F04438;">❌ Problème 2 : Onboarding obsolète</h3>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <!-- Avant -->
+    <div>
+      <div style="font-size:12px; font-weight:600; color:#E5390E; margin-bottom:10px;">Avant (obsolète)</div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#FFF4F0; border-radius:8px; font-size:11px;">
+          <span style="color:#E5390E; font-weight:700;">1</span>
+          <span style="color:#4A5170;">Connecter votre caisse (POS)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#FFF4F0; border-radius:8px; font-size:11px;">
+          <span style="color:#E5390E; font-weight:700;">2</span>
+          <span style="color:#4A5170;">Ajouter votre téléphone</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#FFF4F0; border-radius:8px; font-size:11px;">
+          <span style="color:#E5390E; font-weight:700;">3</span>
+          <span style="color:#4A5170;">Ajouter une photo boutique</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#FFF4F0; border-radius:8px; font-size:11px;">
+          <span style="color:#E5390E; font-weight:700;">4</span>
+          <span style="color:#4A5170;">Compléter votre profil</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#FFF4F0; border-radius:8px; font-size:11px;">
+          <span style="color:#E5390E; font-weight:700;">5</span>
+          <span style="color:#4A5170;">Ajouter des photos produits</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Après -->
+    <div>
+      <div style="font-size:12px; font-weight:600; color:#12B76A; margin-bottom:10px;">Après (nouveau workflow)</div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#F0FFF4; border-radius:8px; font-size:11px;">
+          <span style="color:#12B76A; font-weight:700;">1</span>
+          <span style="color:#4A5170;"><strong>Compléter votre profil</strong> (nom, adresse, horaires)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#F0FFF4; border-radius:8px; font-size:11px;">
+          <span style="color:#12B76A; font-weight:700;">2</span>
+          <span style="color:#4A5170;"><strong>Ajouter une photo de boutique</strong></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#F0FFF4; border-radius:8px; font-size:11px;">
+          <span style="color:#12B76A; font-weight:700;">3</span>
+          <span style="color:#4A5170;"><strong>Ajouter votre téléphone</strong> de contact</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#F0FFF4; border-radius:8px; font-size:11px;">
+          <span style="color:#12B76A; font-weight:700;">4</span>
+          <span style="color:#4A5170;"><strong>Connecter votre caisse</strong> (POS) — ou créer un compte Square</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; background:#F0FFF4; border-radius:8px; font-size:11px;">
+          <span style="color:#12B76A; font-weight:700;">5</span>
+          <span style="color:#4A5170;"><strong>Vérifier vos produits</strong> (photos, noms, stock)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px; padding:12px; background:rgba(66,104,255,0.06); border-radius:8px;">
+    <p style="margin:0; font-size:12px; color:#4A5170; line-height:1.6;">
+      <strong>Logique du nouvel ordre :</strong> Le profil d'abord (pas besoin de POS pour ça), puis la photo (rend la boutique vivante), puis le téléphone (contact), puis le POS (la partie technique). Enfin vérifier les produits importés. Le marchand voit des résultats visuels dès l'étape 2, ce qui le motive à continuer.
+    </p>
+  </div>
+</div>
+
+<!-- Recap -->
+<div class="section" style="margin-top:1.5rem; padding:1.2rem; background:rgba(66,104,255,0.06); border-radius:12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Récap des décisions</h3>
+  <ul style="font-size:12px; color:#4A5170; margin:8px 0 0; padding-left:18px; line-height:1.8;">
+    <li>✅ <strong>Fusionner Produits + Stock</strong> en une seule page avec contrôles +/- intégrés</li>
+    <li>✅ <strong>Supprimer "Stock" de la sidebar</strong></li>
+    <li>✅ <strong>Nouvel onboarding</strong> : Profil → Photo → Téléphone → POS → Vérifier produits</li>
+    <li>❓ <strong>Autre chose à changer</strong> dans le dashboard ?</li>
+  </ul>
+</div>

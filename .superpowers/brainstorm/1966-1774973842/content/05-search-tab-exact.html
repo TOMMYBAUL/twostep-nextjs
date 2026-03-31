@@ -1,0 +1,85 @@
+<h2>Onglet Recherche — Architecture identique à l'Explorer actuel</h2>
+<p class="subtitle">Même layout exact : carte plein écran, barre recherche flottante en haut, toggle Liste/Carte en dessous</p>
+
+<div class="mockup">
+  <div class="mockup-header">🔍 Onglet Recherche = Explorer actuel</div>
+  <div class="mockup-body" style="padding:0; height:580px; position:relative; background:#dfe6e9; overflow:hidden;">
+
+    <!-- Fake map background -->
+    <div style="width:100%; height:100%; background:linear-gradient(145deg, #c8d6e5 0%, #8395a7 40%, #c8d6e5 70%, #8395a7 100%); opacity:0.6;"></div>
+
+    <!-- Map pins -->
+    <div style="position:absolute; top:42%; left:28%; width:30px; height:30px; background:#4268FF; border-radius:50%; border:3px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center;">
+      <span style="color:white; font-size:10px; font-weight:700;">5</span>
+    </div>
+    <div style="position:absolute; top:55%; left:58%; width:30px; height:30px; background:#4268FF; border-radius:50%; border:3px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center;">
+      <span style="color:white; font-size:10px; font-weight:700;">3</span>
+    </div>
+    <div style="position:absolute; top:33%; left:52%; width:30px; height:30px; background:#E5390E; border-radius:50%; border:3px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center;">
+      <span style="color:white; font-size:10px; font-weight:700;">2</span>
+    </div>
+    <div style="position:absolute; top:60%; left:35%; width:30px; height:30px; background:#4268FF; border-radius:50%; border:3px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center;">
+      <span style="color:white; font-size:10px; font-weight:700;">8</span>
+    </div>
+
+    <!-- ── Floating top bar (identique à explore/page.tsx) ── -->
+    <div style="position:absolute; top:0; left:0; right:0; z-index:30; padding:52px 16px 0;">
+
+      <!-- Row 1 : Search + Rayon + Filtres -->
+      <div style="display:flex; gap:8px;">
+        <!-- Search input -->
+        <div style="flex:1; display:flex; align-items:center; gap:8px; background:white; border-radius:12px; padding:12px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+          <span style="color:#9CA3AF; font-size:16px;">🔍</span>
+          <span style="color:#9CA3AF; font-size:13px;">Rechercher</span>
+        </div>
+
+        <!-- Radius button -->
+        <div style="display:flex; align-items:center; gap:4px; background:white; border-radius:12px; padding:0 12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+          <span style="font-size:13px;">📍</span>
+          <span style="font-size:12px; font-weight:600; color:#1A1F36;">5 km</span>
+        </div>
+
+        <!-- Filter button -->
+        <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; background:white; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+          <span style="font-size:18px;">☰</span>
+        </div>
+      </div>
+
+      <!-- Row 2 : Toggle Liste / Carte (centré) -->
+      <div style="display:flex; justify-content:center; margin-top:12px;">
+        <div style="display:flex; background:white; border-radius:50px; padding:4px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+          <div style="padding:8px 24px; font-size:13px; font-weight:600; color:#8E96B0; cursor:pointer;">Liste</div>
+          <div style="padding:8px 24px; font-size:13px; font-weight:600; color:white; background:#4268FF; border-radius:50px;">Carte</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini-fiche boutique (quand on tap un pin) -->
+    <div style="position:absolute; bottom:80px; left:16px; right:16px; background:white; border-radius:16px; padding:14px; box-shadow:0 4px 20px rgba(0,0,0,0.12); display:flex; gap:12px; align-items:center;">
+      <div style="width:48px; height:48px; border-radius:12px; background:#F1F3F9; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <span style="font-size:20px;">🏪</span>
+      </div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:14px; font-weight:600; color:#1A1F36;">The Last Step</div>
+        <div style="font-size:11px; color:#8E96B0; margin-top:1px;">5 articles · 2 promos · 800m</div>
+      </div>
+      <div style="color:#E8ECF4; font-size:18px;">›</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(66,104,255,0.06); border-radius: 12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Ce qu'on garde de l'Explorer actuel</h3>
+  <ul style="font-size:12px; color:#4A5170; margin:8px 0 0; padding-left:18px; line-height:1.8;">
+    <li><strong>Carte Mapbox plein écran</strong> (fond de page)</li>
+    <li><strong>Barre recherche flottante</strong> en haut + bouton rayon (5 km) + bouton filtres</li>
+    <li><strong>Toggle Liste / Carte</strong> centré sous la barre de recherche (pas en bas)</li>
+    <li><strong>Pins boutiques</strong> cliquables → mini-fiche en bas</li>
+    <li><strong>Autocomplete</strong> quand on tape dans la recherche</li>
+    <li><strong>Filtres catégorie</strong> en dropdown + filtre taille</li>
+    <li><strong>Mode Liste</strong> = fond blanc + cards boutiques scrollables</li>
+  </ul>
+  <p style="margin-top:12px; margin-bottom:0; font-size:12px; color:#4A5170;">
+    <strong>Seul changement :</strong> cet écran passe de l'onglet "Explorer" (3e position) à l'onglet "Recherche" 🔍 (2e position) dans la bottom nav.
+  </p>
+</div>

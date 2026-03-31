@@ -1,0 +1,204 @@
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+
+<h2>App consumer — Dark premium ou clair ?</h2>
+<p class="subtitle">L'expérience shopping mobile : parcourir les boutiques, découvrir les produits.</p>
+
+<div class="cards" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
+
+  <!-- OPTION A : DARK -->
+  <div class="card" data-choice="consumer-dark" onclick="toggleSelect(this)" style="background:#070A10;border:1px solid rgba(66,104,255,0.15);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:8px 16px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.1);">
+      <span class="label" style="font-size:10px;letter-spacing:0.08em;color:#4268FF;">A · DARK PREMIUM</span>
+    </div>
+
+    <!-- Phone frame -->
+    <div style="padding:16px;display:flex;justify-content:center;">
+      <div style="width:260px;background:#070A10;border-radius:20px;border:1px solid rgba(100,140,220,0.12);overflow:hidden;">
+
+        <!-- Status bar -->
+        <div style="padding:8px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;">9:41</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:#C8D6F0;letter-spacing:0.1em;">TWO—STEP</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;">&#9829;</span>
+        </div>
+
+        <!-- Search bar -->
+        <div style="padding:0 12px 10px;">
+          <div style="background:#0E1420;border:0.5px solid rgba(100,140,220,0.12);border-radius:8px;padding:8px 12px;">
+            <span style="font-family:'Syne',sans-serif;font-size:11px;color:#3D4D70;">Rechercher un produit...</span>
+          </div>
+        </div>
+
+        <!-- Filter pills -->
+        <div style="padding:0 12px 12px;display:flex;gap:6px;overflow:hidden;">
+          <span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:500;background:#4268FF;color:#fff;padding:4px 10px;border-radius:12px;white-space:nowrap;">Tout</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;background:rgba(66,104,255,0.1);color:#93AEFF;padding:4px 10px;border-radius:12px;border:0.5px solid rgba(66,104,255,0.2);white-space:nowrap;">Sneakers</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;background:rgba(255,255,255,0.04);color:#566080;padding:4px 10px;border-radius:12px;white-space:nowrap;">Mode</span>
+        </div>
+
+        <!-- Product grid -->
+        <div style="padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <!-- Card 1 -->
+          <div style="background:#0E1420;border-radius:10px;overflow:hidden;border:0.5px solid rgba(100,140,220,0.1);">
+            <div style="height:100px;background:#141B2E;display:flex;align-items:center;justify-content:center;position:relative;">
+              <span style="font-size:20px;">&#128095;</span>
+              <span style="position:absolute;top:6px;right:6px;font-family:'Syne',sans-serif;font-size:9px;font-weight:500;background:#4268FF;color:#fff;padding:2px 6px;border-radius:3px;">42·43</span>
+            </div>
+            <div style="padding:10px;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:13px;color:#C8D6F0;">574 Classic</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;margin-top:2px;">New Balance</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#3D4D70;margin-top:4px;">90,52 €</p>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="background:#0E1420;border-radius:10px;overflow:hidden;border:0.5px solid rgba(100,140,220,0.1);">
+            <div style="height:100px;background:#141B2E;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:20px;">&#128094;</span>
+            </div>
+            <div style="padding:10px;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:13px;color:#C8D6F0;">Air Max 90</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;margin-top:2px;">Nike</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#3D4D70;margin-top:4px;">129,00 €</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shop row -->
+        <div style="padding:12px;margin-top:8px;">
+          <p style="font-family:'Syne',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.12em;color:#3D4D70;text-transform:uppercase;margin-bottom:8px;">Boutiques près de vous</p>
+          <div style="background:#0E1420;border-radius:8px;padding:10px;border:0.5px solid rgba(100,140,220,0.1);display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;background:#141B2E;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;">&#127981;</div>
+            <div>
+              <p style="font-family:'Syne',sans-serif;font-size:12px;color:#C8D6F0;">Sneakers District</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;">8 rue Saint-Rome · 3 min</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab bar -->
+        <div style="padding:10px 0;border-top:0.5px solid rgba(100,140,220,0.08);display:flex;justify-content:space-around;">
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#127968;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#4268FF;">Accueil</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#128269;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#3D4D70;">Explorer</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#9829;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#3D4D70;">Favoris</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#128100;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#3D4D70;">Profil</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div style="padding:8px 16px 12px;text-align:center;">
+      <p style="font-family:'Syne',sans-serif;font-size:10px;color:#566080;">Ambiance SSENSE · shopping immersif</p>
+    </div>
+  </div>
+
+  <!-- OPTION B : CLAIR -->
+  <div class="card" data-choice="consumer-light" onclick="toggleSelect(this)" style="background:#F8F9FC;border:1px solid rgba(66,104,255,0.12);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;">
+    <div style="padding:8px 16px;background:rgba(66,104,255,0.04);border-bottom:1px solid rgba(66,104,255,0.08);">
+      <span class="label" style="font-size:10px;letter-spacing:0.08em;color:#4268FF;">B · CLAIR ÉLÉGANT</span>
+    </div>
+
+    <!-- Phone frame -->
+    <div style="padding:16px;display:flex;justify-content:center;">
+      <div style="width:260px;background:#FFFFFF;border-radius:20px;border:1px solid #E2E5F0;overflow:hidden;">
+
+        <!-- Status bar -->
+        <div style="padding:8px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;">9:41</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:#1A1F36;letter-spacing:0.1em;">TWO—STEP</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;">&#9829;</span>
+        </div>
+
+        <!-- Search bar -->
+        <div style="padding:0 12px 10px;">
+          <div style="background:#F5F6FA;border:1px solid #E2E5F0;border-radius:8px;padding:8px 12px;">
+            <span style="font-family:'Syne',sans-serif;font-size:11px;color:#8E96B0;">Rechercher un produit...</span>
+          </div>
+        </div>
+
+        <!-- Filter pills -->
+        <div style="padding:0 12px 12px;display:flex;gap:6px;overflow:hidden;">
+          <span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:500;background:#4268FF;color:#fff;padding:4px 10px;border-radius:12px;white-space:nowrap;">Tout</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;background:rgba(66,104,255,0.06);color:#4268FF;padding:4px 10px;border-radius:12px;border:1px solid rgba(66,104,255,0.15);white-space:nowrap;">Sneakers</span>
+          <span style="font-family:'Syne',sans-serif;font-size:10px;background:#F5F6FA;color:#8E96B0;padding:4px 10px;border-radius:12px;white-space:nowrap;">Mode</span>
+        </div>
+
+        <!-- Product grid -->
+        <div style="padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <!-- Card 1 -->
+          <div style="background:#FFFFFF;border-radius:10px;overflow:hidden;border:1px solid #E2E5F0;">
+            <div style="height:100px;background:#F5F6FA;display:flex;align-items:center;justify-content:center;position:relative;">
+              <span style="font-size:20px;">&#128095;</span>
+              <span style="position:absolute;top:6px;right:6px;font-family:'Syne',sans-serif;font-size:9px;font-weight:500;background:#4268FF;color:#fff;padding:2px 6px;border-radius:3px;">42·43</span>
+            </div>
+            <div style="padding:10px;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:13px;color:#1A1F36;">574 Classic</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;margin-top:2px;">New Balance</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#A8AEBF;margin-top:4px;">90,52 €</p>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="background:#FFFFFF;border-radius:10px;overflow:hidden;border:1px solid #E2E5F0;">
+            <div style="height:100px;background:#F5F6FA;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:20px;">&#128094;</span>
+            </div>
+            <div style="padding:10px;">
+              <p style="font-family:'Cormorant Garamond',serif;font-size:13px;color:#1A1F36;">Air Max 90</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;margin-top:2px;">Nike</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#A8AEBF;margin-top:4px;">129,00 €</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shop row -->
+        <div style="padding:12px;margin-top:8px;">
+          <p style="font-family:'Syne',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.12em;color:#8E96B0;text-transform:uppercase;margin-bottom:8px;">Boutiques près de vous</p>
+          <div style="background:#FFFFFF;border-radius:8px;padding:10px;border:1px solid #E2E5F0;display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;background:#F5F6FA;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;">&#127981;</div>
+            <div>
+              <p style="font-family:'Syne',sans-serif;font-size:12px;color:#1A1F36;">Sneakers District</p>
+              <p style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;">8 rue Saint-Rome · 3 min</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab bar -->
+        <div style="padding:10px 0;border-top:1px solid #E2E5F0;display:flex;justify-content:space-around;background:#FFFFFF;">
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#127968;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#4268FF;">Accueil</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#128269;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#8E96B0;">Explorer</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#9829;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#8E96B0;">Favoris</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;margin-bottom:2px;">&#128100;</div>
+            <p style="font-family:'Syne',sans-serif;font-size:8px;color:#8E96B0;">Profil</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div style="padding:8px 16px 12px;text-align:center;">
+      <p style="font-family:'Syne',sans-serif;font-size:10px;color:#8E96B0;">Cohérent avec marketing + dashboard</p>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:24px;font-size:13px;opacity:0.4;text-align:center;">Clique sur la card pour sélectionner ta préférence</p>

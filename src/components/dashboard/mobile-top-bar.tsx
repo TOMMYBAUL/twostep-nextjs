@@ -9,7 +9,6 @@ const pageTitles: Record<string, string> = {
     "/dashboard/store": "Ma boutique",
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
-    "/dashboard/stock": "Stock",
     "/dashboard/tips-history": "Historique tips",
 };
 

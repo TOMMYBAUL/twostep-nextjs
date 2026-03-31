@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charte Two-Step — Résumé complet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #eee; font-family: 'Inter', system-ui, sans-serif; }
+
+  /* Header */
+  .header {
+    padding: 40px 32px 24px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .header h1 { font-family: 'Archivo Black'; font-size: 32px; color: #fff; margin-bottom: 4px; }
+  .header .sub { font-size: 14px; color: #666; }
+
+  /* Section */
+  .section {
+    max-width: 1200px; margin: 0 auto; padding: 0 32px 40px;
+  }
+  .section-label {
+    font-family: 'Barlow'; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; color: #4268FF; text-transform: uppercase;
+    margin-bottom: 16px; padding-top: 32px;
+    border-top: 1px solid #222;
+  }
+
+  /* Phone mockup */
+  .phone-container {
+    display: flex; gap: 32px; justify-content: center; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 375px; background: #fff; border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden; border: 8px solid #1a1a1a;
+  }
+  .phone-screen { padding: 0; }
+
+  /* Spec cards */
+  .spec-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .spec-card {
+    background: #151515; border: 1px solid #252525; border-radius: 12px;
+    padding: 20px;
+  }
+  .spec-card h3 {
+    font-family: 'Barlow'; font-size: 14px; font-weight: 700;
+    color: #fff; margin-bottom: 10px;
+  }
+  .spec-card p { font-size: 12px; color: #888; line-height: 1.6; }
+  .spec-card code {
+    background: #222; padding: 2px 6px; border-radius: 3px;
+    font-size: 11px; color: #4268FF;
+  }
+
+  .color-row { display: flex; gap: 0; border-radius: 8px; overflow: hidden; margin: 8px 0; }
+  .color-swatch { flex: 1; height: 32px; }
+
+  .typo-sample { margin: 6px 0; }
+
+  .tag {
+    display: inline-block; font-size: 9px; padding: 2px 7px;
+    border-radius: 4px; font-weight: 600; margin-right: 4px;
+    background: rgba(66,104,255,0.12); color: #4268FF;
+    font-family: 'Barlow';
+  }
+
+  .principle {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid #1a1a1a;
+  }
+  .principle:last-child { border-bottom: none; }
+  .principle-num {
+    font-family: 'Archivo Black'; font-size: 18px; color: #4268FF;
+    min-width: 28px;
+  }
+  .principle-text { font-size: 12px; color: #aaa; line-height: 1.5; }
+  .principle-text strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>TWO-STEP — CHARTE GRAPHIQUE</h1>
+  <div class="sub">Résumé des décisions validées — 31 mars 2026</div>
+</div>
+
+<!-- MOCKUP APP -->
+<div class="section">
+  <div class="section-label">Mockup app consommateur — toutes les décisions appliquées</div>
+  <div class="phone-container">
+
+    <!-- Phone 1: Feed -->
+    <div class="phone">
+      <div class="phone-screen">
+        <!-- Status bar -->
+        <div style="background: #fff; padding: 8px 20px 0; display: flex; justify-content: space-between; font-size: 11px; color: #1A1F36; font-weight: 600;">
+          <span>9:41</span>
+          <span>⦿ 📶 🔋</span>
+        </div>
+
+        <div style="background: #fff; padding: 16px 20px;">
+          <!-- Nav -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-family: 'Archivo Black'; font-size: 20px; color: #1A1F36;">TWO-STEP</span>
+            <div style="display: flex; gap: 10px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔍</div>
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 14px;">❤️</div>
+            </div>
+          </div>
+
+          <!-- Search -->
+          <div style="background: #F8F9FC; border: 1px solid #E8ECF4; border-radius: 10px; padding: 11px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: #8E96B0; font-size: 14px;">🔍</span>
+            <span style="font-family: 'Inter'; font-size: 14px; color: #8E96B0;">Rechercher un produit, une marque...</span>
+          </div>
+
+          <!-- Filters -->
+          <div style="display: flex; gap: 8px; margin-bottom: 18px; overflow-x: auto;">
+            <span style="background: #4268FF; color: white; padding: 6px 14px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; font-weight: 600; white-space: nowrap;">Tout</span>
+            <span style="background: #F1F3F9; color: #4A5170; padding: 6px 14px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; font-weight: 500; white-space: nowrap;">Chaussures</span>
+            <span style="background: #F1F3F9; color: #4A5170; padding: 6px 14px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; font-weight: 500; white-space: nowrap;">Sacs</span>
+            <span style="background: #F1F3F9; color: #4A5170; padding: 6px 14px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; font-weight: 500; white-space: nowrap;">Montres</span>
+          </div>
+
+          <!-- Section heading -->
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+            <span style="font-family: 'Barlow'; font-size: 18px; font-weight: 700; color: #1A1F36;">Près de chez toi</span>
+            <span style="font-family: 'Inter'; font-size: 13px; color: #4268FF; font-weight: 500;">Voir tout →</span>
+          </div>
+
+          <!-- Product cards -->
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+              <div style="height: 130px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="font-size: 48px;">👟</span>
+              </div>
+              <div style="padding: 10px 12px;">
+                <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Air Max 90</div>
+                <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 6px;">Nike · The Last Step</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-family: 'Inter'; font-size: 13px; color: #4A5170; font-weight: 500;">139 €</span>
+                  <span style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">800m</span>
+                </div>
+              </div>
+            </div>
+            <div style="flex: 1; border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+              <div style="height: 130px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="font-size: 48px;">👜</span>
+                <span style="position: absolute; top: 8px; left: 8px; background: #E5390E; color: white; font-size: 10px; padding: 3px 8px; border-radius: 6px; font-family: 'Barlow'; font-weight: 700;">-30%</span>
+              </div>
+              <div style="padding: 10px 12px;">
+                <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36; margin-bottom: 2px;">Sac City</div>
+                <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0; margin-bottom: 6px;">Balenciaga · Neiwa</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-family: 'Inter'; font-size: 13px; color: #4A5170;"><s style="color:#D0D5E1; font-size: 11px;">89 €</s> 62 €</span>
+                  <span style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">1.2km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promos section -->
+          <div style="background: #F8F9FC; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+              <span style="font-family: 'Archivo Black'; font-size: 15px; color: #1A1F36;">PROMOS</span>
+              <span style="font-family: 'Inter'; font-size: 12px; color: #E5390E; font-weight: 500;">8 offres →</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1; background: #fff; border: 1px solid #E8ECF4; border-radius: 8px; padding: 10px; text-align: center;">
+                <span style="font-size: 24px;">⌚</span>
+                <div style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #1A1F36; margin-top: 4px;">Casio A168</div>
+                <div style="font-size: 10px; color: #E5390E; font-weight: 500;">-20%</div>
+              </div>
+              <div style="flex: 1; background: #fff; border: 1px solid #E8ECF4; border-radius: 8px; padding: 10px; text-align: center;">
+                <span style="font-size: 24px;">🧢</span>
+                <div style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #1A1F36; margin-top: 4px;">Cap NY</div>
+                <div style="font-size: 10px; color: #E5390E; font-weight: 500;">-15%</div>
+              </div>
+              <div style="flex: 1; background: #fff; border: 1px solid #E8ECF4; border-radius: 8px; padding: 10px; text-align: center;">
+                <span style="font-size: 24px;">👓</span>
+                <div style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #1A1F36; margin-top: 4px;">Ray-Ban</div>
+                <div style="font-size: 10px; color: #E5390E; font-weight: 500;">-25%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom nav -->
+          <div style="display: flex; justify-content: space-around; padding: 12px 0 4px; border-top: 1px solid #E8ECF4;">
+            <div style="text-align: center;">
+              <div style="font-size: 18px; margin-bottom: 2px;">🏠</div>
+              <div style="font-family: 'Barlow'; font-size: 10px; font-weight: 600; color: #4268FF;">Accueil</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 18px; margin-bottom: 2px;">🗺️</div>
+              <div style="font-family: 'Barlow'; font-size: 10px; font-weight: 500; color: #8E96B0;">Explorer</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 18px; margin-bottom: 2px;">🔥</div>
+              <div style="font-family: 'Barlow'; font-size: 10px; font-weight: 500; color: #8E96B0;">Promos</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 18px; margin-bottom: 2px;">👤</div>
+              <div style="font-family: 'Barlow'; font-size: 10px; font-weight: 500; color: #8E96B0;">Profil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 2: Product detail -->
+    <div class="phone">
+      <div class="phone-screen">
+        <div style="background: #fff; padding: 8px 20px 0; display: flex; justify-content: space-between; font-size: 11px; color: #1A1F36; font-weight: 600;">
+          <span>9:41</span>
+          <span>⦿ 📶 🔋</span>
+        </div>
+
+        <div style="background: #fff; padding: 16px 20px;">
+          <!-- Back nav -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-family: 'Inter'; font-size: 14px; color: #4A5170;">← Retour</span>
+            <div style="display: flex; gap: 10px;">
+              <span style="font-size: 16px;">↗️</span>
+              <span style="font-size: 16px;">❤️</span>
+            </div>
+          </div>
+
+          <!-- Product image -->
+          <div style="height: 240px; background: #F8F9FC; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; position: relative;">
+            <span style="font-size: 80px;">👟</span>
+            <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.06); padding: 4px 8px; border-radius: 6px; font-size: 10px; color: #8E96B0;">1/4</span>
+          </div>
+
+          <!-- Product info -->
+          <div style="margin-bottom: 4px;">
+            <span style="font-family: 'Barlow'; font-size: 11px; font-weight: 600; color: #8E96B0; letter-spacing: 0.06em; text-transform: uppercase;">Nike</span>
+          </div>
+          <div style="font-family: 'Barlow'; font-size: 22px; font-weight: 700; color: #1A1F36; margin-bottom: 8px;">Air Max 90</div>
+          <div style="font-family: 'Inter'; font-size: 18px; color: #4A5170; font-weight: 500; margin-bottom: 16px;">139 €</div>
+
+          <!-- Size selector -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 600; color: #1A1F36; margin-bottom: 8px;">Tailles disponibles</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span style="border: 1px solid #E8ECF4; padding: 8px 16px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; color: #4A5170; font-weight: 500;">40</span>
+              <span style="background: #EEF2FF; border: 1.5px solid #4268FF; padding: 8px 16px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; color: #4268FF; font-weight: 600;">42</span>
+              <span style="border: 1px solid #E8ECF4; padding: 8px 16px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; color: #4A5170; font-weight: 500;">43</span>
+              <span style="border: 1px solid #E8ECF4; padding: 8px 16px; border-radius: 8px; font-family: 'Barlow'; font-size: 13px; color: #4A5170; font-weight: 500;">44</span>
+            </div>
+          </div>
+
+          <!-- Shop info -->
+          <div style="background: #F8F9FC; border-radius: 10px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: #E8ECF4; display: flex; align-items: center; justify-content: center; font-size: 18px;">🏪</div>
+            <div style="flex: 1;">
+              <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 600; color: #1A1F36;">The Last Step</div>
+              <div style="font-family: 'Inter'; font-size: 12px; color: #8E96B0;">12 rue des Arts · 800m · Ouvert</div>
+            </div>
+            <span style="font-size: 14px;">→</span>
+          </div>
+
+          <!-- CTA -->
+          <div style="background: #4268FF; color: white; padding: 14px; border-radius: 10px; text-align: center; font-family: 'Barlow'; font-size: 15px; font-weight: 700; margin-bottom: 10px;">
+            Y aller — 800m
+          </div>
+          <div style="text-align: center; font-family: 'Inter'; font-size: 12px; color: #8E96B0;">
+            Ouvert jusqu'à 19h30
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 3: Dashboard marchand -->
+    <div class="phone">
+      <div class="phone-screen">
+        <div style="background: #fff; padding: 8px 20px 0; display: flex; justify-content: space-between; font-size: 11px; color: #1A1F36; font-weight: 600;">
+          <span>9:41</span>
+          <span>⦿ 📶 🔋</span>
+        </div>
+
+        <div style="background: #fff; padding: 16px 20px;">
+          <!-- Nav -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 500; color: #8E96B0;">Bonjour 👋</div>
+              <div style="font-family: 'Barlow'; font-size: 18px; font-weight: 700; color: #1A1F36;">The Last Step</div>
+            </div>
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: #F1F3F9; display: flex; align-items: center; justify-content: center; font-size: 16px;">⚙️</div>
+          </div>
+
+          <!-- Stats -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px;">
+            <div style="background: #F8F9FC; border-radius: 10px; padding: 14px;">
+              <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0; margin-bottom: 4px;">Vues aujourd'hui</div>
+              <div style="font-family: 'Barlow'; font-size: 24px; font-weight: 700; color: #1A1F36;">47</div>
+              <div style="font-family: 'Inter'; font-size: 11px; color: #12B76A; font-weight: 500;">↑ 12%</div>
+            </div>
+            <div style="background: #F8F9FC; border-radius: 10px; padding: 14px;">
+              <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0; margin-bottom: 4px;">Produits actifs</div>
+              <div style="font-family: 'Barlow'; font-size: 24px; font-weight: 700; color: #1A1F36;">128</div>
+              <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">sur 142 au catalogue</div>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div style="background: #EEF2FF; border: 1px solid #DBE4FF; border-radius: 10px; padding: 14px; margin-bottom: 18px;">
+            <div style="font-family: 'Barlow'; font-size: 12px; font-weight: 700; color: #4268FF; margin-bottom: 4px;">💡 Astuce</div>
+            <div style="font-family: 'Inter'; font-size: 12px; color: #4A5170; line-height: 1.5;">Ajoutez des photos à vos 14 produits sans image pour augmenter vos vues de 40%.</div>
+          </div>
+
+          <!-- Products section -->
+          <div style="font-family: 'Barlow'; font-size: 14px; font-weight: 700; color: #1A1F36; margin-bottom: 10px;">Dernières ventes</div>
+
+          <div style="border: 1px solid #E8ECF4; border-radius: 10px; overflow: hidden;">
+            <div style="padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F1F3F9;">
+              <div style="width: 36px; height: 36px; border-radius: 6px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; font-size: 18px;">👟</div>
+              <div style="flex: 1;">
+                <div style="font-family: 'Barlow'; font-size: 13px; font-weight: 600; color: #1A1F36;">Air Max 90 — T.42</div>
+                <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">Il y a 2h · Stock: 1 restant</div>
+              </div>
+              <span style="font-family: 'Inter'; font-size: 12px; color: #F79009; font-weight: 500;">⚠️</span>
+            </div>
+            <div style="padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F1F3F9;">
+              <div style="width: 36px; height: 36px; border-radius: 6px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; font-size: 18px;">🧢</div>
+              <div style="flex: 1;">
+                <div style="font-family: 'Barlow'; font-size: 13px; font-weight: 600; color: #1A1F36;">Cap NY Yankees</div>
+                <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">Il y a 5h · Stock: 8</div>
+              </div>
+              <span style="font-family: 'Inter'; font-size: 12px; color: #12B76A; font-weight: 500;">✓</span>
+            </div>
+            <div style="padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 6px; background: #F8F9FC; display: flex; align-items: center; justify-content: center; font-size: 18px;">👜</div>
+              <div style="flex: 1;">
+                <div style="font-family: 'Barlow'; font-size: 13px; font-weight: 600; color: #1A1F36;">Sac City — Balenciaga</div>
+                <div style="font-family: 'Inter'; font-size: 11px; color: #8E96B0;">Hier · Stock: 0</div>
+              </div>
+              <span style="font-family: 'Inter'; font-size: 12px; color: #F04438; font-weight: 500;">Épuisé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SPECS RÉSUMÉ -->
+<div class="section">
+  <div class="section-label">Récap charte — décisions validées</div>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h3>Mode</h3>
+      <p>Light mode partout (consumer + dashboard). Fond blanc <code>#FFFFFF</code>, fond secondaire <code>#F8F9FC</code>. Les photos produit apportent la couleur.</p>
+    </div>
+    <div class="spec-card">
+      <h3>Typographie</h3>
+      <div class="typo-sample" style="font-family: 'Archivo Black'; font-size: 18px; color: #fff;">Archivo Black — Logo, accroches</div>
+      <div class="typo-sample" style="font-family: 'Barlow'; font-size: 15px; font-weight: 700; color: #ccc;">Barlow 700 — Titres sections</div>
+      <div class="typo-sample" style="font-family: 'Barlow'; font-size: 13px; font-weight: 600; color: #aaa;">Barlow 600 — Noms produits</div>
+      <div class="typo-sample" style="font-family: 'Inter'; font-size: 13px; color: #888;">Inter 400 — Corps, descriptions</div>
+    </div>
+    <div class="spec-card">
+      <h3>Couleur principale</h3>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #EEF2FF;"></div>
+        <div class="color-swatch" style="background: #DBE4FF;"></div>
+        <div class="color-swatch" style="background: #8DA8FF;"></div>
+        <div class="color-swatch" style="background: #4268FF;"></div>
+        <div class="color-swatch" style="background: #3554DB;"></div>
+        <div class="color-swatch" style="background: #2A43B8;"></div>
+        <div class="color-swatch" style="background: #0F1A52;"></div>
+      </div>
+      <p>Bleu électrique <code>#4268FF</code> — CTA, filtres actifs, liens, sélections.</p>
+    </div>
+    <div class="spec-card">
+      <h3>Couleurs fonctionnelles</h3>
+      <div style="display: flex; gap: 6px; margin: 8px 0;">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: #12B76A;"></div>
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: #F79009;"></div>
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: #F04438;"></div>
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: #E5390E;"></div>
+      </div>
+      <p>Success <code>#12B76A</code>, Warning <code>#F79009</code>, Error <code>#F04438</code>, Promo <code>#E5390E</code></p>
+    </div>
+    <div class="spec-card">
+      <h3>Arrondis</h3>
+      <p>Arrondi doux : cards <code>10-12px</code>, boutons <code>8-10px</code>, badges <code>6-8px</code>, inputs <code>8-10px</code>. Pas de pills (sauf filtres).</p>
+    </div>
+    <div class="spec-card">
+      <h3>Principe UX clé</h3>
+      <p><strong>Présence = disponibilité.</strong> Pas de badge "En stock". Si un produit apparaît, c'est qu'il est disponible. S'il ne l'est plus, il disparaît.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PRINCIPES DESIGN -->
+<div class="section">
+  <div class="section-label">10 principes design Two-Step</div>
+  <div style="max-width: 700px;">
+    <div class="principle"><div class="principle-num">1</div><div class="principle-text"><strong>Le produit est le héros.</strong> Grandes photos, fond neutre. La couleur vient des produits, pas de l'UI.</div></div>
+    <div class="principle"><div class="principle-num">2</div><div class="principle-text"><strong>Présence = disponibilité.</strong> Pas de badge "en stock". Ce qui est visible est disponible.</div></div>
+    <div class="principle"><div class="principle-num">3</div><div class="principle-text"><strong>Prix discret.</strong> Jamais en gras, jamais en couleur primaire. Le prix informe, il ne crie pas.</div></div>
+    <div class="principle"><div class="principle-num">4</div><div class="principle-text"><strong>3 niveaux typographiques.</strong> Archivo Black (impact), Barlow (structure), Inter (contenu).</div></div>
+    <div class="principle"><div class="principle-num">5</div><div class="principle-text"><strong>Couleurs fonctionnelles.</strong> Vert = succès. Orange = attention. Rouge = erreur/promo. Bleu = action.</div></div>
+    <div class="principle"><div class="principle-num">6</div><div class="principle-text"><strong>Distance toujours visible.</strong> Chaque produit affiche la distance en mètres/km. C'est le différenciateur.</div></div>
+    <div class="principle"><div class="principle-num">7</div><div class="principle-text"><strong>Arrondis doux.</strong> 8-12px partout. Chaleureux sans être enfantin.</div></div>
+    <div class="principle"><div class="principle-num">8</div><div class="principle-text"><strong>Espacements Stripe.</strong> Précision millimétrique, grille 4px. Pas d'improvisation.</div></div>
+    <div class="principle"><div class="principle-num">9</div><div class="principle-text"><strong>Empty states encourageants.</strong> Illustrations + CTA clair. Jamais un écran vide triste.</div></div>
+    <div class="principle"><div class="principle-num">10</div><div class="principle-text"><strong>Micro-animations avec intention.</strong> Transitions 100-200ms, pas de déco gratuite.</div></div>
+  </div>
+</div>
+
+</body>
+</html>

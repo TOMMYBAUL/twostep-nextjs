@@ -1,0 +1,142 @@
+<h2>Accueil — Header TikTok avec 3 onglets swipables</h2>
+<p class="subtitle">Swipe gauche/droite pour passer entre Explorer, Pour toi et Suivis — comme TikTok</p>
+
+<div class="split">
+  <!-- Avant (actuel, moche) -->
+  <div class="mockup">
+    <div class="mockup-header">❌ Avant — Header actuel</div>
+    <div class="mockup-body" style="padding:0; background:white;">
+      <div style="padding:52px 16px 0;">
+        <!-- Ugly current header -->
+        <div style="display:flex; align-items:center; gap:10px; padding-bottom:12px;">
+          <div style="width:28px; height:28px; background:#F1F3F9; border-radius:6px;"></div>
+          <span style="font-size:14px; font-weight:800; letter-spacing:1px; color:#1A1F36;">TWO-STEP</span>
+          <span style="margin-left:auto; font-size:12px; color:#8E96B0;">📍 Autour de moi</span>
+        </div>
+        <!-- Ugly filter row -->
+        <div style="display:flex; gap:6px; padding-bottom:10px; overflow:hidden;">
+          <span style="background:#4268FF; color:white; border-radius:20px; padding:6px 14px; font-size:11px; font-weight:600; white-space:nowrap;">Tout</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:6px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">👗 Mode</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:6px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">👟 Chaussures</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:6px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">⚽ Sport</span>
+        </div>
+        <!-- Ugly Pour toi / Suivis toggle -->
+        <div style="display:flex; border-bottom:1px solid #E8ECF4;">
+          <div style="flex:1; text-align:center; padding:10px 0; font-size:12px; font-weight:600; color:#1A1F36; border-bottom:2px solid #4268FF;">Pour toi</div>
+          <div style="flex:1; text-align:center; padding:10px 0; font-size:12px; font-weight:500; color:#8E96B0;">Suivis</div>
+        </div>
+      </div>
+      <div style="padding:16px; text-align:center; color:#8E96B0; font-size:11px;">
+        ⬆️ Trop d'éléments empilés<br>
+        Logo + localisation + filtres + onglets = fouillis<br>
+        Pas d'onglet Explorer
+      </div>
+    </div>
+  </div>
+
+  <!-- Après (TikTok style) -->
+  <div class="mockup">
+    <div class="mockup-header">✅ Après — Style TikTok</div>
+    <div class="mockup-body" style="padding:0; background:white;">
+      <div style="padding:48px 0 0;">
+        <!-- Clean TikTok header -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:24px; padding:8px 16px 0; position:relative;">
+          <!-- Explorer tab -->
+          <div style="font-size:15px; font-weight:500; color:#8E96B0; padding-bottom:10px; cursor:pointer;">Explorer</div>
+          <!-- Pour toi tab (active) -->
+          <div style="font-size:15px; font-weight:700; color:#1A1F36; padding-bottom:10px; border-bottom:2.5px solid #1A1F36; cursor:pointer;">Pour toi</div>
+          <!-- Suivis tab -->
+          <div style="font-size:15px; font-weight:500; color:#8E96B0; padding-bottom:10px; cursor:pointer;">Suivis</div>
+        </div>
+
+        <!-- Thin separator -->
+        <div style="height:0.5px; background:#E8ECF4;"></div>
+
+        <!-- Filter pills (compact, sous les tabs) -->
+        <div style="display:flex; gap:6px; padding:10px 16px; overflow:hidden;">
+          <span style="background:#1A1F36; color:white; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:600; white-space:nowrap;">Tout</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">Mode</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">Chaussures</span>
+          <span style="background:#F1F3F9; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:500; color:#4A5170; white-space:nowrap;">Sport</span>
+        </div>
+      </div>
+
+      <!-- Feed content preview -->
+      <div style="padding:8px 16px;">
+        <!-- Section promos -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:14px; font-weight:700; color:#1A1F36;">Promos du moment 🔥</span>
+          <span style="font-size:11px; font-weight:600; color:#4268FF;">Voir tout →</span>
+        </div>
+        <div style="display:flex; gap:10px; overflow:hidden; margin-bottom:20px;">
+          <div style="width:140px; flex-shrink:0; border-radius:10px; border:1px solid #E8ECF4; overflow:hidden;">
+            <div style="height:100px; background:#F8F9FC; display:flex; align-items:center; justify-content:center; position:relative;">
+              <span style="font-size:28px;">👟</span>
+              <div style="position:absolute; top:6px; left:6px; background:#E5390E; color:white; font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px;">-25%</div>
+            </div>
+            <div style="padding:8px;">
+              <div style="font-size:11px; font-weight:600; color:#1A1F36;">Nike Dunk Low</div>
+              <div style="font-size:10px; color:#8E96B0;">The Last Step · 800m</div>
+              <div style="font-size:11px; font-weight:500; color:#4A5170; margin-top:2px;">89 € <span style="color:#D0D5E1; text-decoration:line-through; font-size:10px;">119 €</span></div>
+            </div>
+          </div>
+          <div style="width:140px; flex-shrink:0; border-radius:10px; border:1px solid #E8ECF4; overflow:hidden;">
+            <div style="height:100px; background:#F8F9FC; display:flex; align-items:center; justify-content:center; position:relative;">
+              <span style="font-size:28px;">👜</span>
+              <div style="position:absolute; top:6px; left:6px; background:#E5390E; color:white; font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px;">-30%</div>
+            </div>
+            <div style="padding:8px;">
+              <div style="font-size:11px; font-weight:600; color:#1A1F36;">Sac Eastpak</div>
+              <div style="font-size:10px; color:#8E96B0;">SWAP · 1.2km</div>
+              <div style="font-size:11px; font-weight:500; color:#4A5170; margin-top:2px;">35 € <span style="color:#D0D5E1; text-decoration:line-through; font-size:10px;">50 €</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section tendances -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:14px; font-weight:700; color:#1A1F36;">Tendances</span>
+          <span style="font-size:11px; font-weight:600; color:#4268FF;">Voir tout →</span>
+        </div>
+      </div>
+
+      <!-- Swipe indicator -->
+      <div style="padding:12px 16px; text-align:center;">
+        <div style="display:flex; justify-content:center; gap:4px;">
+          <div style="width:6px; height:6px; border-radius:50%; background:#D0D5E1;"></div>
+          <div style="width:18px; height:6px; border-radius:3px; background:#1A1F36;"></div>
+          <div style="width:6px; height:6px; border-radius:50%; background:#D0D5E1;"></div>
+        </div>
+        <div style="font-size:10px; color:#8E96B0; margin-top:4px;">← Swipe gauche/droite →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Swipe explanation -->
+<div class="section" style="margin-top:1.5rem; padding:1.5rem; background:rgba(66,104,255,0.06); border-radius:12px;">
+  <h3 style="margin-top:0; font-size:14px; color:#1A1F36;">Le comportement swipe</h3>
+  <div style="display:flex; gap:8px; align-items:center; justify-content:center; margin:12px 0; font-size:13px;">
+    <div style="background:white; padding:8px 16px; border-radius:8px; color:#8E96B0; text-align:center;">
+      <strong>Explorer</strong><br>
+      <span style="font-size:10px;">Promos + Tendances<br>+ Boutiques</span>
+    </div>
+    <span style="color:#4268FF;">⟵ swipe ⟶</span>
+    <div style="background:#1A1F36; padding:8px 16px; border-radius:8px; color:white; text-align:center;">
+      <strong>Pour toi</strong><br>
+      <span style="font-size:10px;">Feed algo perso<br>proximité × pertinence</span>
+    </div>
+    <span style="color:#4268FF;">⟵ swipe ⟶</span>
+    <div style="background:white; padding:8px 16px; border-radius:8px; color:#8E96B0; text-align:center;">
+      <strong>Suivis</strong><br>
+      <span style="font-size:10px;">Boutiques suivies<br>reverse-chrono</span>
+    </div>
+  </div>
+  <ul style="font-size:12px; color:#4A5170; margin:12px 0 0; padding-left:18px; line-height:1.8;">
+    <li><strong>Swipe ou tap</strong> — les deux fonctionnent pour changer d'onglet</li>
+    <li><strong>Header minimaliste</strong> — juste les 3 noms, pas de logo, pas de "Autour de moi"</li>
+    <li><strong>Indicateur actif</strong> — trait sous l'onglet actif (style TikTok, pas un pill)</li>
+    <li><strong>Filtres catégorie</strong> — en dessous des tabs, partagés entre les 3 pages</li>
+    <li><strong>Position de scroll conservée</strong> — chaque page garde son scroll quand on swipe</li>
+  </ul>
+</div>

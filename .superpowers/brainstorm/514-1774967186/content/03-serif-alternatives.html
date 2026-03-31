@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choix Serif — Two-Step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Serif+Display&family=Instrument+Serif:ital@0;1&family=Lora:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700&family=Cormorant+Garamond:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #eee; font-family: system-ui, sans-serif; padding: 32px 24px; }
+  h1 { font-family: system-ui, sans-serif; font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 32px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .option {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .option:hover { border-color: #4268FF; transform: translateY(-2px); }
+  .option.selected { border-color: #4268FF; box-shadow: 0 0 20px rgba(66,104,255,0.25); }
+
+  .preview {
+    background: #FFFFFF;
+    padding: 32px;
+    min-height: 260px;
+  }
+
+  .logo-line {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #E8ECF4;
+  }
+
+  .heading-line {
+    margin-bottom: 8px;
+  }
+
+  .body-text {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    color: #8E96B0;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .product-name {
+    margin-bottom: 4px;
+  }
+
+  .product-meta {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    color: #8E96B0;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: #4268FF;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .info {
+    padding: 16px 20px;
+  }
+  .info h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .info p { font-size: 12px; color: #999; line-height: 1.5; }
+  .info .tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(66,104,255,0.15);
+    color: #4268FF;
+    font-weight: 500;
+  }
+
+  .note {
+    max-width: 1200px;
+    margin: 28px auto 0;
+    padding: 14px 18px;
+    background: rgba(66,104,255,0.08);
+    border: 1px solid rgba(66,104,255,0.2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #aaa;
+  }
+
+  .selected-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4268FF;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(66,104,255,0.4);
+  }
+</style>
+</head>
+<body>
+
+<h1>Quelle serif pour Two-Step ?</h1>
+<p class="subtitle">Clique sur celle qui te plaît. Le corps de texte reste en Inter dans tous les cas.</p>
+
+<div class="grid">
+
+  <!-- 1. Playfair Display -->
+  <div class="option" onclick="selectOption(this, 'playfair')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; color: #1A1F36; letter-spacing: 0.03em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>Playfair Display</h3>
+      <p>Haut contraste, éditorial. Référence mode & luxe (Vogue, Harper's). Très expressif en grande taille.</p>
+      <span class="tag">Mode & Luxe</span>
+    </div>
+  </div>
+
+  <!-- 2. DM Serif Display -->
+  <div class="option" onclick="selectOption(this, 'dm-serif')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: #1A1F36; letter-spacing: 0.02em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'DM Serif Display', serif; font-size: 16px; font-weight: 400; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>DM Serif Display</h3>
+      <p>Sobre, moderne, confiant. Moins orné que Playfair. Clean et affirmé, bon équilibre entre premium et accessible.</p>
+      <span class="tag">Moderne & Confiant</span>
+    </div>
+  </div>
+
+  <!-- 3. Instrument Serif -->
+  <div class="option" onclick="selectOption(this, 'instrument')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400; color: #1A1F36; letter-spacing: 0.03em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'Instrument Serif', serif; font-size: 16px; font-weight: 400; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>Instrument Serif</h3>
+      <p>Tendance 2025-2026, minimaliste. Très fin et élégant, proche de Cormorant mais plus contemporain. Utilisé par les nouvelles marques design.</p>
+      <span class="tag">Tendance & Minimal</span>
+    </div>
+  </div>
+
+  <!-- 4. Lora -->
+  <div class="option" onclick="selectOption(this, 'lora')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'Lora', serif; font-size: 26px; font-weight: 600; color: #1A1F36; letter-spacing: 0.02em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'Lora', serif; font-size: 28px; font-weight: 600; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'Lora', serif; font-size: 16px; font-weight: 500; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>Lora</h3>
+      <p>Chaleureuse, lisible, accessible. Moins "fashion" que Playfair, plus "artisanal de qualité". Excellente lisibilité même en petite taille.</p>
+      <span class="tag">Chaleureux & Lisible</span>
+    </div>
+  </div>
+
+  <!-- 5. Source Serif 4 -->
+  <div class="option" onclick="selectOption(this, 'source-serif')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'Source Serif 4', serif; font-size: 26px; font-weight: 600; color: #1A1F36; letter-spacing: 0.02em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'Source Serif 4', serif; font-size: 28px; font-weight: 600; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>Source Serif 4</h3>
+      <p>Par Adobe. Professionnelle, nette, sérieuse sans être froide. Très bonne à toutes les tailles. Variable font (300→700).</p>
+      <span class="tag">Pro & Polyvalent</span>
+    </div>
+  </div>
+
+  <!-- 6. Fraunces -->
+  <div class="option" onclick="selectOption(this, 'fraunces')">
+    <div class="preview">
+      <div class="logo-line">
+        <span style="font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500; color: #1A1F36; letter-spacing: 0.01em;">TWO—STEP</span>
+      </div>
+      <div class="heading-line">
+        <span style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; color: #1A1F36; line-height: 1.2;">Trouvé près de chez toi</span>
+      </div>
+      <div class="body-text">Le produit exact que tu cherches, en boutique à deux pas.</div>
+      <div class="product-name">
+        <span style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 400; color: #1A1F36;">Air Max 90 — Nike</span>
+      </div>
+      <div class="product-meta">The Last Step · 800m · 139 €</div>
+    </div>
+    <div class="info">
+      <h3>Fraunces</h3>
+      <p>Variable, distinctive, personnalité forte. "Soft serif" avec des courbes uniques. Se démarque immédiatement. Utilisée par des marques craft premium.</p>
+      <span class="tag">Unique & Craft</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <strong>Rappel :</strong> La serif ne sera utilisée que pour le logo TWO—STEP, les titres de pages, et éventuellement les noms de produits. Tout le reste (labels, boutons, corps, navigation) reste en <strong>Inter</strong>.
+</div>
+
+<div class="selected-indicator" id="indicator">
+  Sélection : <span id="selected-name"></span>
+</div>
+
+<script>
+function selectOption(el, name) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const indicator = document.getElementById('indicator');
+  const nameEl = document.getElementById('selected-name');
+  nameEl.textContent = name;
+  indicator.style.display = 'block';
+
+  // Send event
+  if (window.__sendEvent) {
+    window.__sendEvent({ type: 'click', choice: name, text: el.querySelector('h3')?.textContent || name });
+  }
+}
+</script>
+</body>
+</html>

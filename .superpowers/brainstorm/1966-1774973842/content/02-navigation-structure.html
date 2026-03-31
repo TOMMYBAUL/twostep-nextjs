@@ -1,0 +1,114 @@
+<h2>Structure de navigation — Bottom tabs</h2>
+<p class="subtitle">Tu as dit : page 1 = promos/tendances (curiosité), page 2 = carte + recherche. Comment on organise les onglets ?</p>
+
+<div class="cards">
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 1.5rem; background: #F8F9FC;">
+      <!-- Mock bottom nav -->
+      <div style="display:flex; gap:0; border-radius:16px; overflow:hidden; border:1px solid #E8ECF4; background:white;">
+        <div style="flex:1; padding:12px 8px; text-align:center; background:#4268FF; color:white;">
+          <div style="font-size:18px;">🔥</div>
+          <div style="font-size:10px; font-weight:600; margin-top:2px;">Discover</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">🗺️</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Explorer</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">🔔</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Alertes</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">👤</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Profil</div>
+        </div>
+      </div>
+      <!-- Page content sketch -->
+      <div style="margin-top:16px; font-size:11px; color:#4A5170; line-height:1.6;">
+        <strong>Discover</strong> = Promos + Tendances + Pour toi/Suivis<br>
+        <strong>Explorer</strong> = Carte + Recherche produit précis<br>
+        <strong>Alertes</strong> = Notifs promos des boutiques suivies<br>
+        <strong>Profil</strong> = Favoris, tailles, paramètres
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — 4 onglets (Discover / Explorer / Alertes / Profil)</h3>
+      <p>La recherche vit dans Explorer (carte). Alertes = onglet dédié pour les promos push. Pas d'onglet "Promos" séparé — les promos sont intégrées dans Discover.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 1.5rem; background: #F8F9FC;">
+      <div style="display:flex; gap:0; border-radius:16px; overflow:hidden; border:1px solid #E8ECF4; background:white;">
+        <div style="flex:1; padding:12px 8px; text-align:center; background:#4268FF; color:white;">
+          <div style="font-size:18px;">🏠</div>
+          <div style="font-size:10px; font-weight:600; margin-top:2px;">Accueil</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">🔍</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Recherche</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">🔥</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Promos</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">👤</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Profil</div>
+        </div>
+      </div>
+      <div style="margin-top:16px; font-size:11px; color:#4A5170; line-height:1.6;">
+        <strong>Accueil</strong> = Feed tendances + Pour toi/Suivis + carte mini<br>
+        <strong>Recherche</strong> = Barre recherche + Carte + Filtres<br>
+        <strong>Promos</strong> = Feed dédié promos (prix barrés, urgence)<br>
+        <strong>Profil</strong> = Favoris, tailles, paramètres
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — 4 onglets (Accueil / Recherche / Promos / Profil)</h3>
+      <p>Les promos ont leur propre onglet (comme TGTG). La recherche aussi. L'accueil est le feed de découverte pur. Carte intégrée dans Recherche.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 1.5rem; background: #F8F9FC;">
+      <div style="display:flex; gap:0; border-radius:16px; overflow:hidden; border:1px solid #E8ECF4; background:white;">
+        <div style="flex:1; padding:12px 8px; text-align:center; background:#4268FF; color:white;">
+          <div style="font-size:18px;">🔥</div>
+          <div style="font-size:10px; font-weight:600; margin-top:2px;">Feed</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">🗺️</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Carte</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">❤️</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Favoris</div>
+        </div>
+        <div style="flex:1; padding:12px 8px; text-align:center; color:#8E96B0;">
+          <div style="font-size:18px;">👤</div>
+          <div style="font-size:10px; font-weight:500; margin-top:2px;">Profil</div>
+        </div>
+      </div>
+      <div style="margin-top:16px; font-size:11px; color:#4A5170; line-height:1.6;">
+        <strong>Feed</strong> = Promos 🔥 en haut + Tendances + Pour toi/Suivis<br>
+        <strong>Carte</strong> = Carte plein écran + Recherche intégrée en haut<br>
+        <strong>Favoris</strong> = Produits sauvegardés<br>
+        <strong>Profil</strong> = Tailles, boutiques suivies, paramètres
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — 4 onglets (Feed / Carte / Favoris / Profil)</h3>
+      <p>Comme ce qu'on a actuellement mais simplifié. Les promos sont en haut du feed (section héros). La carte est l'onglet de recherche. Favoris séparé pour accès rapide.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(66,104,255,0.06); border-radius: 10px;">
+  <p style="margin: 0; font-size: 0.9rem; color: #4A5170;">
+    <strong>Ma recommandation :</strong> Option B. Promos en onglet dédié = plus de visibilité, raison de revenir. Recherche séparée du feed = chaque onglet a un job clair. C'est le pattern TGTG qui fonctionne très bien pour la rétention.
+  </p>
+</div>

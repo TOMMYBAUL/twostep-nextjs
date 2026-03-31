@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SP3 — Coach IA Mockup</title>
+    <style>
+        :root {
+            --ts-terracotta: #E07A5F;
+            --ts-ochre: #C8813A;
+            --ts-cream: #F5EDD6;
+            --ts-cream-dark: #EDE0C4;
+            --bg-dashboard: #faf8f3;
+            --text-primary: #2c1a0e;
+            --text-secondary: #5a4020;
+            --text-muted: #8a7050;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dashboard);
+            color: var(--text-primary);
+            padding: 24px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        /* ── Insight Block ── */
+        .insight-card {
+            background: white;
+            border: 1px solid #e8e2d4;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ts-ochre), var(--ts-terracotta));
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card-header .icon {
+            font-size: 18px;
+        }
+
+        .card-header .title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--ts-ochre);
+        }
+
+        .card-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .card-body strong {
+            color: var(--ts-ochre);
+            font-weight: 600;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 100px;
+            background: var(--ts-cream);
+            color: var(--text-secondary);
+        }
+
+        /* ── Action Block ── */
+        .action-card {
+            background: white;
+            border: 1px solid #e8e2d4;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ts-terracotta), #e8956e);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .action-card .card-header .title {
+            color: var(--ts-terracotta);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 10px 18px;
+            background: var(--ts-terracotta);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .cta-button:hover {
+            background: #c96a50;
+        }
+
+        .cta-button .arrow {
+            font-size: 14px;
+            transition: transform 0.15s;
+        }
+
+        .cta-button:hover .arrow {
+            transform: translateX(2px);
+        }
+
+        /* ── History Link ── */
+        .history-link {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 40px;
+        }
+
+        .history-link a {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.15s;
+        }
+
+        .history-link a:hover {
+            color: var(--ts-terracotta);
+        }
+
+        /* ── History Page Preview ── */
+        .history-section {
+            border-top: 1px solid #e8e2d4;
+            padding-top: 24px;
+        }
+
+        .history-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid #e8e2d4;
+            background: white;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--ts-ochre);
+            color: var(--ts-ochre);
+        }
+
+        .filter-pill.active {
+            background: var(--ts-ochre);
+            border-color: var(--ts-ochre);
+            color: white;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0ebe0;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            min-width: 50px;
+            padding-top: 2px;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-type {
+            display: inline-flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .history-type.insight {
+            background: #f0e8d0;
+            color: var(--ts-ochre);
+        }
+
+        .history-type.action {
+            background: #fce8e2;
+            color: var(--ts-terracotta);
+        }
+
+        .history-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .history-category {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .mockup-divider {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 30px 0 20px;
+            position: relative;
+        }
+
+        .mockup-divider::before,
+        .mockup-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #e8e2d4;
+        }
+
+        .mockup-divider::before { left: 0; }
+        .mockup-divider::after { right: 0; }
+    </style>
+</head>
+<body>
+
+    <h1>Coach IA — SP3 Mockup</h1>
+
+    <p class="section-label">Dashboard marchand — deux blocs tips</p>
+
+    <!-- INSIGHT -->
+    <div class="insight-card">
+        <div class="card-header">
+            <span class="icon">📊</span>
+            <span class="title">Votre situation</span>
+        </div>
+        <div class="card-body">
+            Vos vues ont <strong>doublé cette semaine</strong> (+112%), surtout grâce à votre promo -20% sur les baskets. Vous avez aussi gagné <strong>12 nouveaux abonnés</strong>, soit +30% vs la semaine dernière.
+        </div>
+        <div class="card-footer">
+            <span class="category-badge">📈 Engagement</span>
+        </div>
+    </div>
+
+    <!-- ACTION -->
+    <div class="action-card">
+        <div class="card-header">
+            <span class="icon">💡</span>
+            <span class="title">Action du jour</span>
+        </div>
+        <div class="card-body">
+            <strong>3 produits</strong> n'ont pas encore de photo et passent inaperçus dans les résultats. Les articles avec photo reçoivent en moyenne 3× plus de vues. Une photo rapide avec votre téléphone suffit.
+        </div>
+        <button class="cta-button">
+            Ajouter une photo <span class="arrow">→</span>
+        </button>
+        <div class="card-footer">
+            <span class="category-badge">📸 Photos</span>
+        </div>
+    </div>
+
+    <!-- HISTORY LINK -->
+    <div class="history-link">
+        <a href="#history">Voir l'historique des conseils →</a>
+    </div>
+
+    <!-- HISTORY PAGE PREVIEW -->
+    <div class="mockup-divider">Page historique</div>
+
+    <div class="history-section" id="history">
+        <div class="history-filters">
+            <span class="filter-pill active">Tous</span>
+            <span class="filter-pill">📸 Photos</span>
+            <span class="filter-pill">📦 Stock</span>
+            <span class="filter-pill">🏷️ Promos</span>
+            <span class="filter-pill">🏪 Profil</span>
+            <span class="filter-pill">📈 Engagement</span>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">Auj.</div>
+            <div class="history-content">
+                <span class="history-type insight">📊 Insight</span>
+                <div class="history-text">Vos vues ont doublé cette semaine (+112%), surtout grâce à votre promo -20% sur les baskets.</div>
+                <div class="history-category">📈 Engagement</div>
+            </div>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">Auj.</div>
+            <div class="history-content">
+                <span class="history-type action">💡 Action</span>
+                <div class="history-text">3 produits sans photo passent inaperçus — ajoutez une photo rapide avec votre téléphone.</div>
+                <div class="history-category">📸 Photos</div>
+            </div>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">26 mars</div>
+            <div class="history-content">
+                <span class="history-type insight">📊 Insight</span>
+                <div class="history-text">Votre taux de disponibilité est passé de 70% à 85% cette semaine. Vos clients voient plus de produits en stock.</div>
+                <div class="history-category">📦 Stock</div>
+            </div>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">26 mars</div>
+            <div class="history-content">
+                <span class="history-type action">💡 Action</span>
+                <div class="history-text">Aucune promo active cette semaine. Une petite remise de 10% sur un article suffit à apparaître dans « Promos du moment ».</div>
+                <div class="history-category">🏷️ Promos</div>
+            </div>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">25 mars</div>
+            <div class="history-content">
+                <span class="history-type insight">📊 Insight</span>
+                <div class="history-text">Les marchands avec une description complète ont en moyenne 2× plus d'abonnés. Votre boutique n'a pas encore de description.</div>
+                <div class="history-category">🏪 Profil</div>
+            </div>
+        </div>
+
+        <div class="history-item">
+            <div class="history-date">25 mars</div>
+            <div class="history-content">
+                <span class="history-type action">💡 Action</span>
+                <div class="history-text">Partagez votre profil Two-Step sur Instagram — vos abonnés veulent savoir ce que vous avez en stock aujourd'hui.</div>
+                <div class="history-category">📈 Engagement</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
