@@ -2,11 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Suspense, useMemo, useState, useCallback, useEffect, useRef } from "react";
-import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, Bell01, FilterLines } from "@untitledui/icons";
+import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, FilterLines } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSwipeable } from "react-swipeable";
 import { ProductCard } from "../components/product-card";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows } from "../hooks/use-follows";
@@ -15,6 +16,7 @@ import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
 import { HeartButton } from "../components/heart-button";
 import { CONSUMER_CATEGORIES } from "@/lib/categories";
+import { FeedHeader, type FeedTab } from "../components/feed-header";
 
 interface DiscoverProduct {
     product_id: string;
@@ -73,13 +75,28 @@ function DiscoverContent() {
     const tabParam = searchParams.get("tab");
     const feedTab: "explorer" | "pour-toi" | "suivis" =
         tabParam === "pour-toi" || tabParam === "suivis" ? tabParam : "explorer";
-    const setFeedTab = useCallback((tab: "explorer" | "pour-toi" | "suivis") => {
+    const setFeedTab = useCallback((tab: FeedTab) => {
         const params = new URLSearchParams(searchParams.toString());
         if (tab === "explorer") params.delete("tab");
         else params.set("tab", tab);
         const qs = params.toString();
         router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
     }, [searchParams, router, pathname]);
+
+    const tabOrder: FeedTab[] = ["explorer", "pour-toi", "suivis"];
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => {
+            const idx = tabOrder.indexOf(feedTab);
+            if (idx < tabOrder.length - 1) setFeedTab(tabOrder[idx + 1]);
+        },
+        onSwipedRight: () => {
+            const idx = tabOrder.indexOf(feedTab);
+            if (idx > 0) setFeedTab(tabOrder[idx - 1]);
+        },
+        trackMouse: false,
+        delta: 50,
+        preventScrollOnSwipe: false,
+    });
 
     const { data: availableSizes } = useQuery<{ clothing: string[]; shoe: number[] }>({
         queryKey: ["available-sizes"],
@@ -173,29 +190,13 @@ function DiscoverContent() {
 
     return (
         <div className="min-h-dvh bg-[#F8F9FC]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
-            {/* ── Header ── */}
-            <div className="px-4 pb-2 pt-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                        <img src="/logo-icon.webp?v=2" alt="" className="size-6" />
-                        <h1 className="font-display text-sm font-bold uppercase text-[var(--ts-text)]">Two-Step</h1>
-                        <span className="text-[10px] text-[#8E96B0]">·</span>
-                        <p className="flex items-center gap-0.5 text-[11px] text-[#8E96B0]">
-                            <MarkerPin01 className="size-2.5" aria-hidden="true" />
-                            {position ? "Autour de toi" : "Toulouse"}
-                        </p>
-                    </div>
-                    <Link
-                        href="/profile/notifications"
-                        className="flex size-7 items-center justify-center rounded-full bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
-                    >
-                        <Bell01 className="size-3.5 text-[#8E96B0]" />
-                    </Link>
-                </div>
+            {/* ── Feed Header (TikTok-style tabs) ── */}
+            <FeedHeader activeTab={feedTab} onTabChange={setFeedTab} />
 
-                {/* ── Category pills + size filter (Explorer tab only) ── */}
+            {/* ── Category pills + size filter (Explorer tab only) ── */}
+            <div className="px-4 pb-2 pt-3">
                 {feedTab === "explorer" && <>
-                <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
+                <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
                     {/* Size filter toggle */}
                     <button
                         type="button"
@@ -315,26 +316,8 @@ function DiscoverContent() {
                 </>}
             </div>
 
-            {/* ── Explorer / Pour toi / Suivis toggle ── */}
-            <div className="flex border-b border-[#E2E5F0]">
-                {(["explorer", "pour-toi", "suivis"] as const).map((tab) => (
-                    <button
-                        key={tab}
-                        type="button"
-                        onClick={() => setFeedTab(tab)}
-                        className={cx(
-                            "flex-1 py-2.5 text-center text-[12px] font-semibold transition duration-150",
-                            feedTab === tab
-                                ? "border-b-2 border-[#4268FF] text-[#1A1F36]"
-                                : "text-[#8E96B0]",
-                        )}
-                    >
-                        {tab === "explorer" ? "Explorer" : tab === "pour-toi" ? "Pour toi" : "Suivis"}
-                    </button>
-                ))}
-            </div>
-
             {/* ── Feed sections ── */}
+            <div {...swipeHandlers}>
             {feedTab === "explorer" ? (
             <div className="flex flex-col gap-5 pb-24 pt-4">
 
@@ -590,6 +573,7 @@ function DiscoverContent() {
             ) : (
                 <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
             )}
+            </div>
         </div>
     );
 }
