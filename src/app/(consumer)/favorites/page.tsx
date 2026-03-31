@@ -52,16 +52,16 @@ export default function FavoritesPage() {
                                 >
                                     <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-[#F8F9FC]">
                                         {(product.photo_processed_url ?? product.photo_url) ? (
-                                            <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product.name} className="h-full w-full object-cover" />
+                                            <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product.canonical_name ?? product.name} className="h-full w-full object-cover" />
                                         ) : (
                                             <div className="flex h-full items-center justify-center text-lg font-bold text-[#1A1F36]/20">
-                                                {product.name?.charAt(0)}
+                                                {(product.canonical_name ?? product.name)?.charAt(0)}
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex flex-1 flex-col justify-between py-0.5">
                                         <div>
-                                            <h3 className="text-[13px] font-medium text-[#1A1F36]">{product.name}</h3>
+                                            <h3 className="text-[13px] font-medium text-[#1A1F36]">{product.canonical_name ?? product.name}</h3>
                                             <p className="mt-0.5 text-xs font-normal text-[#8E96B0]">{(product.price ?? 0).toFixed(2)} €</p>
                                             {merchant && (
                                                 <p className="mt-0.5 text-[11px] text-[#8E96B0]">{merchant.name}</p>
@@ -73,7 +73,7 @@ export default function FavoritesPage() {
                                         <HeartButton
                                             isFavorite
                                             onToggle={() => remove.mutate(fav.product_id)}
-                                            ariaLabel={`Retirer ${product.name} des favoris`}
+                                            ariaLabel={`Retirer ${product.canonical_name ?? product.name} des favoris`}
                                         />
                                     </div>
                                 </Link>

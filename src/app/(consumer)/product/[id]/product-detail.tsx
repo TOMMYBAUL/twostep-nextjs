@@ -18,6 +18,7 @@ interface SizeVariant {
 interface ProductDetail {
     id: string;
     name: string;
+    canonical_name: string | null;
     description: string | null;
     price: number;
     photo_url: string | null;
@@ -126,12 +127,12 @@ export default function ProductDetailClient() {
             {/* ── Image zone ── */}
             <div className={`relative h-[300px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2 ${product?.photo_processed_url ? "bg-white" : "bg-[#F8F9FC]"}`}>
                 {(product?.photo_processed_url ?? product?.photo_url) ? (
-                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.name ?? ""} className={`h-full w-full object-center ${product?.photo_processed_url ? "object-contain p-4" : "object-cover"}`} />
+                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.canonical_name ?? product?.name ?? ""} className={`h-full w-full object-center ${product?.photo_processed_url ? "object-contain p-4" : "object-cover"}`} />
                 ) : (
                     <div className="flex h-full items-center justify-center">
                         {isLoading ? null : (
                             <span className="text-6xl font-bold text-[#E2E5F0]/30">
-                                {product?.name?.charAt(0)}
+                                {(product?.canonical_name ?? product?.name)?.charAt(0)}
                             </span>
                         )}
                     </div>
@@ -157,7 +158,7 @@ export default function ProductDetailClient() {
                             if (isFavorite) remove.mutate(productUuid);
                             else add.mutate(productUuid);
                         }}
-                        ariaLabel={`${isFavorite ? "Retirer" : "Ajouter"} ${product?.name ?? "produit"} des favoris`}
+                        ariaLabel={`${isFavorite ? "Retirer" : "Ajouter"} ${product?.canonical_name ?? product?.name ?? "produit"} des favoris`}
                         className="!size-8 !rounded-full [background:rgba(26,31,54,0.55)]"
                     />
                 </div>
@@ -191,7 +192,7 @@ export default function ProductDetailClient() {
 
                     {/* Product name */}
                     <h1 className="mb-2.5 text-xl font-bold leading-tight tracking-tight text-[#1A1F36] md:text-2xl">
-                        {product.name}
+                        {product.canonical_name ?? product.name}
                     </h1>
 
                     {/* Price line */}

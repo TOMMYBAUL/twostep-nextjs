@@ -15,7 +15,7 @@ async function getProduct(slugOrId: string) {
     const supabase = createAdminClient();
     const { data } = await supabase
         .from("products")
-        .select("slug, name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
+        .select("slug, name, canonical_name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
         .eq("id", resolvedId)
         .single();
     return data;
@@ -29,8 +29,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         if (!data) return {};
 
         const merchant = (data as any).merchants;
-        const title = data.name;
-        const description = `${data.name}${data.price ? ` à ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? ` à ${merchant.city}` : ""}. Vérifiez le stock en temps réel sur Two-Step.`;
+        const displayName = (data as any).canonical_name ?? data.name;
+        const title = displayName;
+        const description = `${displayName}${data.price ? ` à ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? ` à ${merchant.city}` : ""}. Vérifiez le stock en temps réel sur Two-Step.`;
         const productSlug = data.slug;
 
         return {
@@ -38,16 +39,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description,
             alternates: { canonical: `${BASE_URL}/product/${productSlug}` },
             openGraph: {
-                title: `${data.name} | Two-Step`,
+                title: `${displayName} | Two-Step`,
                 description,
                 url: `${BASE_URL}/product/${productSlug}`,
                 ...(data.photo_url && {
-                    images: [{ url: data.photo_url, width: 800, height: 800, alt: data.name }],
+                    images: [{ url: data.photo_url, width: 800, height: 800, alt: displayName }],
                 }),
             },
             twitter: {
                 card: "summary_large_image",
-                title: `${data.name} | Two-Step`,
+                title: `${displayName} | Two-Step`,
                 description,
                 ...(data.photo_url && { images: [data.photo_url] }),
             },
@@ -66,6 +67,7 @@ export default async function Page({ params }: Props) {
         const data = await getProduct(id);
         if (data) {
             const merchant = (data as any).merchants;
+            const displayName = (data as any).canonical_name ?? data.name;
             breadcrumbLd = {
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
@@ -73,13 +75,13 @@ export default async function Page({ params }: Props) {
                     { "@type": "ListItem", position: 1, name: "Accueil", item: BASE_URL },
                     { "@type": "ListItem", position: 2, name: "Boutiques", item: `${BASE_URL}/discover` },
                     ...(merchant ? [{ "@type": "ListItem", position: 3, name: merchant.name, item: `${BASE_URL}/shop/${merchant.slug}` }] : []),
-                    { "@type": "ListItem", position: merchant ? 4 : 3, name: data.name, item: `${BASE_URL}/product/${data.slug}` },
+                    { "@type": "ListItem", position: merchant ? 4 : 3, name: displayName, item: `${BASE_URL}/product/${data.slug}` },
                 ],
             };
             jsonLd = {
                 "@context": "https://schema.org",
                 "@type": "Product",
-                name: data.name,
+                name: displayName,
                 description: data.description ?? undefined,
                 image: data.photo_url ?? undefined,
                 sku: data.ean ?? undefined,

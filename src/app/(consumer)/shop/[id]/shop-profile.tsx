@@ -34,6 +34,7 @@ interface MerchantProfile {
 interface Product {
     id: string;
     name: string;
+    canonical_name: string | null;
     price: number;
     photo_url: string | null;
     photo_processed_url: string | null;
@@ -333,7 +334,7 @@ export default function ShopProfileClient() {
                                     {(p.photo_processed_url ?? p.photo_url) ? (
                                         <img
                                             src={p.photo_processed_url ?? p.photo_url ?? "/placeholder-product.svg"}
-                                            alt={p.name}
+                                            alt={p.canonical_name ?? p.name}
                                             className={cx(
                                                 "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",
                                                 isOut && "opacity-40",
@@ -341,7 +342,7 @@ export default function ShopProfileClient() {
                                         />
                                     ) : (
                                         <div className="flex h-full items-center justify-center">
-                                            <span className="text-3xl font-light text-[#8E96B0]/15">{p.name.charAt(0)}</span>
+                                            <span className="text-3xl font-light text-[#8E96B0]/15">{(p.canonical_name ?? p.name).charAt(0)}</span>
                                         </div>
                                     )}
 
@@ -349,7 +350,7 @@ export default function ShopProfileClient() {
                                         <HeartButton
                                             isFavorite={isFav}
                                             onToggle={() => isFav ? remove.mutate(p.id) : add.mutate(p.id)}
-                                            ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.name} des favoris`}
+                                            ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.canonical_name ?? p.name} des favoris`}
                                             className="bg-white/80 backdrop-blur-sm"
                                         />
                                     </div>
@@ -369,7 +370,7 @@ export default function ShopProfileClient() {
 
                                 {/* Info */}
                                 <div className="mt-2 px-0.5">
-                                    <p className="truncate text-[13px] font-medium text-[#1A1F36]">{p.name}</p>
+                                    <p className="truncate text-[13px] font-medium text-[#1A1F36]">{p.canonical_name ?? p.name}</p>
                                     <div className="mt-0.5 flex items-baseline gap-2">
                                         {sale ? (
                                             <>
