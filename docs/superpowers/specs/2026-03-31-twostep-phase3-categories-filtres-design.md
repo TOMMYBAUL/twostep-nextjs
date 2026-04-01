@@ -126,10 +126,12 @@ Il retourne un JSON avec pour chaque produit :
 - **Fallback règles** — Si l'API IA est indisponible, un système de mots-clés basique fait le travail (mapping mot-clé → catégorie)
 - **Apprentissage** — Chaque correction marchand est stockée dans une table `category_corrections` pour améliorer les futures attributions
 
-### Coût
+### Coût (pour Two-Step, transparent pour le marchand)
 
-- ~0.01€ par marchand (200 produits, 1 appel batch Claude Haiku)
+- ~0.01€ par marchand (200 produits, 1 appel batch Claude Haiku) — payé par Two-Step
+- ~1€ pour 100 marchands au lancement Toulouse
 - 1 seule fois par produit (résultat en cache, re-run si nom change)
+- Le marchand ne paie rien et ne voit rien de ce mécanisme — c'est inclus dans le service
 - Re-catégorisation possible manuellement depuis le dashboard
 
 ### Tables Supabase
