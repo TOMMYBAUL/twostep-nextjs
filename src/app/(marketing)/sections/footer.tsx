@@ -1,42 +1,51 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useIsMobile } from "../utils";
 
 export function Footer() {
-    const isMobile = useIsMobile();
     return (
-        <footer style={{
-            background: "#1A1F36",
-            padding: isMobile ? "32px 24px" : "40px 48px",
-        }}>
-            <div style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: isMobile ? "flex-start" : "center",
-                justifyContent: "space-between",
-                gap: isMobile ? 16 : 0,
-                maxWidth: 1100,
-                margin: "0 auto",
-            }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <img src="/logo-icon.webp?v=2" alt="" width={28} height={28} style={{ borderRadius: 6 }} />
-                    <span style={{ fontSize: 17, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.03em" }}>
+        <footer style={{ background: "#0F1218" }}>
+            <div className="mx-auto flex max-w-[1100px] flex-col items-center gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between md:px-12">
+                {/* Logo + name */}
+                <div className="flex items-center gap-2">
+                    <img
+                        src="/logo-icon.webp?v=2"
+                        alt=""
+                        width={24}
+                        height={24}
+                        className="rounded-md"
+                    />
+                    <span className="text-[15px] font-extrabold text-white">
                         Two-Step
                     </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-                    <Link href="/mentions-legales" style={{ fontSize: 13, color: "rgba(200,214,240,0.45)", textDecoration: "none" }}>
+
+                {/* Links */}
+                <div className="flex items-center gap-5 flex-wrap justify-center">
+                    <Link
+                        href="/mentions-legales"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
                         Mentions légales
                     </Link>
-                    <Link href="mailto:contact@twostep.fr" style={{ fontSize: 13, color: "rgba(200,214,240,0.45)", textDecoration: "none" }}>
+                    <a
+                        href="mailto:contact@twostep.fr"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
                         Contact
+                    </a>
+                    <Link
+                        href="/onboarding"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
+                        Marchands
                     </Link>
-                    <span style={{ fontSize: 13, color: "rgba(200,214,240,0.3)" }}>
-                        © 2026 · Toulouse, France
-                    </span>
                 </div>
+
+                {/* Copyright */}
+                <span className="text-[10px] text-white/20">
+                    © 2026 Two-Step
+                </span>
             </div>
         </footer>
     );
