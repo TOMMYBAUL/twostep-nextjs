@@ -11,7 +11,7 @@ import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useSearch, useAutocomplete } from "../hooks/use-search";
 import { cx } from "@/utils/cx";
-import { CONSUMER_CATEGORIES } from "@/lib/categories";
+import { CategoryPills } from "../components/category-pills";
 
 export default function SearchPage() {
     return (
@@ -137,21 +137,7 @@ function SearchPageInner() {
 
                 {/* Category chips — same as discover page */}
                 <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
-                    {CONSUMER_CATEGORIES.map((cat) => (
-                        <button
-                            key={cat.label}
-                            type="button"
-                            onClick={() => setActiveCategory(activeCategory === cat.value ? null : cat.value)}
-                            className={cx(
-                                "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition duration-150",
-                                activeCategory === cat.value
-                                    ? "bg-[#4268FF] text-white shadow-sm"
-                                    : "bg-[#E2E5F0] text-[#1A1F36]/60",
-                            )}
-                        >
-                            {cat.label}
-                        </button>
-                    ))}
+                    <CategoryPills activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
 
                 {/* Active size badge */}

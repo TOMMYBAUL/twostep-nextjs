@@ -15,7 +15,7 @@ import { useAutocomplete } from "../hooks/use-search";
 import { useFollows, useToggleFollow } from "../hooks/use-follows";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
-import { CONSUMER_CATEGORIES } from "@/lib/categories";
+import { CategoryPills } from "../components/category-pills";
 
 interface NearbyMerchant {
     merchant_id: string;
@@ -290,22 +290,7 @@ export default function ExplorePage() {
                 {filterOpen && (
                     <div className="ml-auto mt-2 max-h-[60vh] w-64 overflow-y-auto overscroll-contain rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5">
                         {/* Categories */}
-                        {CONSUMER_CATEGORIES.map((cat) => (
-                            <button
-                                key={cat.label}
-                                type="button"
-                                onClick={() => { setCategory(cat.value); setSelectedMerchant(null); setFilterOpen(false); }}
-                                className={cx(
-                                    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition duration-100",
-                                    category === cat.value
-                                        ? "bg-[#4268FF]/10 font-semibold text-[#4268FF]"
-                                        : "text-[#1A1F36] hover:bg-gray-50",
-                                )}
-                            >
-                                {cat.emoji && <span>{cat.emoji}</span>}
-                                <span className="font-medium">{cat.label}</span>
-                            </button>
-                        ))}
+                        <CategoryPills activeCategory={category} onCategoryChange={(val) => { setCategory(val); setSelectedMerchant(null); setFilterOpen(false); }} />
 
                         {/* Separator */}
                         <div className="mx-2 my-1.5 border-t border-gray-100" />

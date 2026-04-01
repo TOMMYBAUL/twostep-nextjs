@@ -1,14 +1,3 @@
-export const CONSUMER_CATEGORIES = [
-    { label: "Tout", value: null, emoji: null },
-    { label: "Mode", value: "mode", emoji: "👗" },
-    { label: "Chaussures", value: "chaussures", emoji: "👟" },
-    { label: "Bijoux", value: "bijoux", emoji: "💎" },
-    { label: "Beauté", value: "beaute", emoji: "💄" },
-    { label: "Sport", value: "sport", emoji: "⚽" },
-    { label: "Déco", value: "deco", emoji: "🏠" },
-    { label: "Épicerie", value: "epicerie", emoji: "🧺" },
-] as const;
-
 /** Mapping slug → DB category name (for SEO pages) */
 export const CATEGORY_SEO: Record<string, { title: string; description: string; dbCategory: string }> = {
     mode: { title: "Mode", description: "Boutiques de mode et prêt-à-porter. Vêtements, accessoires et créateurs locaux.", dbCategory: "Mode" },
@@ -30,5 +19,3 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
     primeurs: { title: "Primeurs", description: "Primeurs. Fruits et légumes frais, de saison et locaux.", dbCategory: "Primeur" },
     chocolatiers: { title: "Chocolatiers", description: "Chocolatiers artisanaux. Chocolats fins et confiseries.", dbCategory: "Chocolatier" },
 };
-
-export type CategoryValue = (typeof CONSUMER_CATEGORIES)[number]["value"];

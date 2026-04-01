@@ -15,7 +15,7 @@ import { generateSlug } from "@/lib/slug";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { cx } from "@/utils/cx";
 import { HeartButton } from "../components/heart-button";
-import { CONSUMER_CATEGORIES } from "@/lib/categories";
+import { CategoryPills } from "../components/category-pills";
 import { FeedHeader, type FeedTab } from "../components/feed-header";
 import { ProductCardSkeleton, PromoCardSkeleton } from "../components/feed-skeleton";
 
@@ -219,22 +219,7 @@ function DiscoverContent() {
                         )}
                     </button>
 
-                    {CONSUMER_CATEGORIES.map((cat) => (
-                        <button
-                            key={cat.label}
-                            type="button"
-                            onClick={() => setActiveCategory(cat.value)}
-                            className={cx(
-                                "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition duration-150",
-                                activeCategory === cat.value
-                                    ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
-                                    : "bg-[#F5F6FA] text-[#1A1F36]/60",
-                            )}
-                        >
-                            {cat.emoji && <span className="text-[11px]">{cat.emoji}</span>}
-                            {cat.label}
-                        </button>
-                    ))}
+                    <CategoryPills activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
 
                 {/* ── Size filter panel ── */}
