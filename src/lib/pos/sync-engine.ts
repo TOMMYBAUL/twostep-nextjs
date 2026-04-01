@@ -6,6 +6,7 @@ import { createImageJob } from "@/lib/images/jobs";
 import { extractSize } from "@/lib/pos/extract-size";
 import { enrichNewProducts } from "@/lib/ean/enrich";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
+import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -162,6 +163,15 @@ export async function syncMerchantPOS(
             await pushInventoryToGoogle(merchantId);
         } catch (err) {
             captureError(err, { merchantId, context: "google-inventory-during-sync" });
+        }
+
+        // ─── Auto-categorize new products via AI ─────────────────────
+
+        try {
+            await categorizeMerchantProducts(merchantId);
+        } catch (err) {
+            captureError(err, { context: "auto-categorize", merchantId });
+            // Non-blocking: categorization failure shouldn't break sync
         }
 
         // ─── Success bookkeeping ─────────────────────────────────────
