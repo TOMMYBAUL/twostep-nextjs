@@ -1,93 +1,179 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
-import { useRef } from "react";
-import { useIsMobile, E } from "../utils";
-import { SpotlightCard } from "../components/spotlight-card";
+import { motion, AnimatePresence, useInView } from "motion/react";
+import { useRef, useState, useEffect } from "react";
+import { SPRING, slideUp } from "@/lib/motion";
 
-export function How() {
-    const isMobile = useIsMobile();
-    const ref = useRef<HTMLElement>(null);
-    const inView = useInView(ref, { once: true, margin: "-8%" });
+const steps = [
+    {
+        num: 1,
+        title: "Cherche ton produit",
+        desc: "Par catégorie, marque, nom ou directement sur la carte. Filtre par taille, prix, distance.",
+        screen: "Écran recherche",
+        numBg: "bg-[#4268FF]",
+        numText: "text-white",
+    },
+    {
+        num: 2,
+        title: "Vérifie le stock en temps réel",
+        desc: 'Les boutiques connectent leur caisse. Tu vois ce qui est vraiment en rayon, maintenant — pas "en théorie".',
+        screen: "Écran fiche produit",
+        numBg: "bg-[#1A1A1A]",
+        numText: "text-white",
+    },
+    {
+        num: 3,
+        title: 'Vas-y en 2 minutes',
+        desc: "C'est à côté, c'est ouvert, c'est en stock. Préviens le marchand avec \"J'arrive\" et récupère ton produit.",
+        screen: "Écran J'arrive",
+        numBg: "bg-[#1A1A1A]",
+        numText: "text-white",
+    },
+];
 
-    const steps = [
-        {
-            num: "01",
-            title: "On se branche à votre caisse en un clic",
-            desc: "Square, Shopify, Lightspeed, SumUp ou Zettle — Two-Step se connecte à votre logiciel de caisse en 30 secondes. Vos produits, vos prix, votre stock : tout se synchronise automatiquement. Zéro saisie, zéro effort.",
-            bg: "#F8F9FC", numColor: "rgba(26,31,54,0.1)", titleColor: "#1A1F36", descColor: "#8E96B0",
-        },
-        {
-            num: "02",
-            title: "Votre stock devient votre vitrine",
-            desc: "Vos produits apparaissent avec des photos retouchées automatiquement sur fond blanc professionnel. Les consommateurs de votre quartier voient ce que vous avez en boutique, en temps réel. Pas un site e-commerce à gérer — votre caisse fait le travail.",
-            bg: "#1A1F36", numColor: "#4268FF", titleColor: "#FFFFFF", descColor: "rgba(200,214,240,0.65)",
-        },
-        {
-            num: "03",
-            title: "Votre réseau social, sans créer de contenu",
-            desc: "Sur Instagram, vous passez des heures à créer des stories pour 15 vues. Sur Two-Step, vos clients vous trouvent parce qu'ils cherchent vos produits. Ils s'abonnent, suivent vos nouveautés et vous laissent des retours constructifs. Une communauté locale qui se construit toute seule.",
-            bg: "#4268FF", numColor: "rgba(255,255,255,0.18)", titleColor: "#FFFFFF", descColor: "rgba(255,255,255,0.85)",
-        },
-    ];
+function StepRow({
+    step,
+    index,
+    onActivate,
+}: {
+    step: (typeof steps)[0];
+    index: number;
+    onActivate: (i: number) => void;
+}) {
+    const ref = useRef<HTMLDivElement>(null);
+    const inView = useInView(ref, { margin: "-40% 0px -40% 0px" });
+
+    useEffect(() => {
+        if (inView) onActivate(index);
+    }, [inView, index, onActivate]);
 
     return (
-        <section id="comment" ref={ref} style={{ background: "#FFFFFF", padding: isMobile ? "80px 24px" : "120px 48px" }}>
-            <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-                <motion.div
-                    initial={{ opacity: 0, y: 32 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.7, ease: E }}
-                    style={{ marginBottom: 56 }}
+        <motion.div
+            ref={ref}
+            {...slideUp(index * 0.1)}
+            className="flex gap-5 py-10 border-l-[3px] pl-6 transition-all duration-200"
+            style={{
+                borderLeftColor: inView ? "#4268FF" : "transparent",
+                opacity: inView ? 1 : 0.4,
+            }}
+        >
+            <div
+                className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${step.numBg} ${step.numText}`}
+            >
+                {step.num}
+            </div>
+            <div>
+                <h3 className="text-[17px] font-bold tracking-tight text-[#1A1A1A] mb-2 leading-snug">
+                    {step.title}
+                </h3>
+                <p className="text-[14px] text-[#6B7280] leading-relaxed m-0">
+                    {step.desc}
+                </p>
+            </div>
+        </motion.div>
+    );
+}
+
+function MobileStep({ step, index }: { step: (typeof steps)[0]; index: number }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const inView = useInView(ref, { once: true, margin: "-8%" });
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 32 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ ...SPRING, delay: index * 0.1 }}
+            className="flex flex-col gap-4"
+        >
+            {/* Mobile screenshot placeholder */}
+            <div className="h-[180px] bg-gray-100 rounded-2xl flex items-center justify-center">
+                <span className="text-sm text-gray-400 font-medium">{step.screen}</span>
+            </div>
+
+            <div className="flex gap-4">
+                <div
+                    className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${step.numBg} ${step.numText}`}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
-                        Comment ça marche
-                    </div>
-                    <h2 style={{
-                        fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(36px, 5vw, 64px)",
-                        fontWeight: 800, color: "#1A1F36", lineHeight: 1.06,
-                        letterSpacing: "-0.03em", margin: 0, maxWidth: 560,
-                    }}>
-                        Branché. Visible.{" "}
-                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>Vendu.</em>
+                    {step.num}
+                </div>
+                <div>
+                    <h3 className="text-[17px] font-bold tracking-tight text-[#1A1A1A] mb-1.5 leading-snug">
+                        {step.title}
+                    </h3>
+                    <p className="text-[14px] text-[#6B7280] leading-relaxed m-0">
+                        {step.desc}
+                    </p>
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+
+export function How() {
+    const headerRef = useRef<HTMLDivElement>(null);
+    const headerInView = useInView(headerRef, { once: true, margin: "-8%" });
+    const [activeStep, setActiveStep] = useState(0);
+
+    return (
+        <section
+            id="comment"
+            className="bg-white px-6 py-20 md:px-12 md:py-[120px]"
+        >
+            <div className="max-w-[1100px] mx-auto">
+                {/* Header */}
+                <motion.div
+                    ref={headerRef}
+                    initial={{ opacity: 0, y: 32 }}
+                    animate={headerInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ ...SPRING }}
+                    className="mb-14"
+                >
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF] mb-4">
+                        COMMENT ÇA MARCHE
+                    </p>
+                    <h2 className="text-[22px] md:text-[36px] font-[900] tracking-tight text-[#1A1A1A] m-0">
+                        En 3 étapes
                     </h2>
                 </motion.div>
 
-                <div style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-                    gap: 16,
-                }}>
+                {/* Desktop layout */}
+                <div className="hidden md:grid md:grid-cols-2 md:gap-16 md:items-start">
+                    {/* Sticky phone mockup */}
+                    <div className="sticky top-20">
+                        <div className="w-[280px] h-[500px] rounded-[32px] border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+                            <AnimatePresence mode="wait">
+                                <motion.span
+                                    key={activeStep}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="text-sm text-gray-400 font-medium px-4 text-center"
+                                >
+                                    📱 {steps[activeStep].screen}
+                                </motion.span>
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                    {/* Steps */}
+                    <div className="flex flex-col divide-y divide-gray-100">
+                        {steps.map((step, i) => (
+                            <StepRow
+                                key={step.num}
+                                step={step}
+                                index={i}
+                                onActivate={setActiveStep}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Mobile layout */}
+                <div className="flex flex-col gap-10 md:hidden">
                     {steps.map((step, i) => (
-                        <motion.div
-                            key={step.num}
-                            initial={{ opacity: 0, y: 48 }}
-                            animate={inView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.75, delay: isMobile ? 0 : i * 0.13, ease: E }}
-                        >
-                            <SpotlightCard style={{
-                                background: step.bg,
-                                padding: "40px 36px",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 18,
-                                height: "100%",
-                            }}>
-                                <motion.div whileHover={{ y: -6, transition: { duration: 0.25 } }}>
-                                    <span style={{ fontSize: 52, fontWeight: 900, color: step.numColor, lineHeight: 1, letterSpacing: "-0.04em", display: "block" }}>
-                                        {step.num}
-                                    </span>
-                                    <div style={{ marginTop: 18 }}>
-                                        <h3 style={{ fontSize: 17, fontWeight: 700, color: step.titleColor, lineHeight: 1.3, letterSpacing: "-0.02em", margin: "0 0 10px" }}>
-                                            {step.title}
-                                        </h3>
-                                        <p style={{ fontSize: 14, color: step.descColor, lineHeight: 1.65, margin: 0 }}>
-                                            {step.desc}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            </SpotlightCard>
-                        </motion.div>
+                        <MobileStep key={step.num} step={step} index={i} />
                     ))}
                 </div>
             </div>
