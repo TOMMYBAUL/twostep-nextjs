@@ -1,52 +1,72 @@
 "use client";
 
-import Image from "next/image";
-import { motion } from "motion/react";
-
-const navCSS = `
-.nav-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(66,104,255,0.1)}
-.nav-btn-outline{padding:8px 18px;border-radius:999px;border:1.5px solid rgba(26,31,54,0.15);color:#1A1F36;font-weight:600;font-size:13px;text-decoration:none}
-.nav-btn-fill{padding:10px 22px;border-radius:999px;background:#4268FF;color:#fff;font-weight:700;font-size:13px;text-decoration:none;display:inline-block}
-.nav-short{display:none}
-@media(max-width:767px){
-.nav-bar{padding:0 14px}
-.nav-btn-outline{padding:5px 10px;font-size:10px}
-.nav-btn-fill{padding:5px 10px;font-size:10px}
-.nav-full{display:none}
-.nav-short{display:inline}
-}`;
+import Link from "next/link";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { useState } from "react";
 
 export function Nav() {
+    const [scrolled, setScrolled] = useState(false);
+    const { scrollY } = useScroll();
+
+    useMotionValueEvent(scrollY, "change", (y) => {
+        setScrolled(y > 100);
+    });
+
     return (
-        <>
-            <style dangerouslySetInnerHTML={{ __html: navCSS }} />
-            <motion.nav
-                className="nav-bar"
-                initial={{ opacity: 0, y: -16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, ease: "easeOut" }}
-            >
-                <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-                    <img src="/logo-icon.webp?v=2" alt="" width={32} height={32} style={{ borderRadius: 8 }} />
-                    <span style={{ fontSize: 17, fontWeight: 800, color: "#1A1F36", letterSpacing: "-0.03em" }}>
-                        Two-Step
-                    </span>
-                </a>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <a href="/discover" className="nav-btn-outline">
-                        <span className="nav-full">Explorer les boutiques</span>
-                        <span className="nav-short">Explorer</span>
-                    </a>
-                    <motion.a
-                        href="/auth/login"
-                        className="nav-btn-fill"
-                        whileHover={{ scale: 1.05, boxShadow: "0 6px 24px rgba(66,104,255,0.35)" }}
-                        whileTap={{ scale: 0.96 }}
+        <motion.nav
+            className={[
+                "fixed top-0 left-0 right-0 z-[100]",
+                "flex items-center justify-between",
+                "px-12 h-16",
+                "transition-[background-color,backdrop-filter,box-shadow] duration-300",
+                scrolled
+                    ? "bg-[#1A1F36]/85 backdrop-blur-xl shadow-[0_2px_24px_rgba(0,0,0,0.25)]"
+                    : "bg-transparent",
+            ].join(" ")}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        >
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 no-underline">
+                <img
+                    src="/logo-icon.webp?v=2"
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="rounded-md"
+                />
+                <span className="text-[15px] font-extrabold text-white tracking-tight">
+                    Two-Step
+                </span>
+            </Link>
+
+            {/* Desktop links + CTA */}
+            <div className="flex items-center gap-6">
+                {/* Nav links — desktop only */}
+                <div className="hidden md:flex items-center gap-6">
+                    <a
+                        href="#comment"
+                        className="text-[13px] font-medium text-white/60 hover:text-white/90 transition-colors duration-150 no-underline"
                     >
-                        Espace commerçant
-                    </motion.a>
+                        Comment ça marche
+                    </a>
+                    <a
+                        href="#marchands"
+                        className="text-[13px] font-medium text-white/60 hover:text-white/90 transition-colors duration-150 no-underline"
+                    >
+                        Marchands
+                    </a>
                 </div>
-            </motion.nav>
-        </>
+
+                {/* CTA */}
+                <Link
+                    href="/discover"
+                    className="px-4 py-2 rounded-lg bg-[#4268FF] text-white text-[13px] font-bold no-underline hover:bg-[#3558e6] transition-colors duration-150"
+                >
+                    Découvrir
+                </Link>
+            </div>
+        </motion.nav>
     );
 }
