@@ -1,30 +1,28 @@
 "use client";
 
+import { LenisProvider } from "./components/lenis-provider";
 import { Nav } from "./sections/nav";
 import { Hero } from "./sections/hero";
 import { Marquee } from "./sections/marquee";
-import { Statement } from "./sections/statement";
 import { How } from "./sections/how";
-import { About } from "./sections/about";
-import { Pioneers } from "./sections/pioneers";
+import { Statement } from "./sections/statement";
 import { Contact } from "./sections/contact";
+import { CTAFinal } from "./sections/cta-final";
 import { Footer } from "./sections/footer";
 
 export default function HomeScreen() {
     return (
-        <>
+        <LenisProvider>
             <Nav />
             <main>
                 <Hero />
                 <Marquee />
-                <Statement />
-                <Marquee />
                 <How />
-                <About />
-                <Pioneers />
+                <Statement />
                 <Contact />
+                <CTAFinal />
             </main>
             <Footer />
-        </>
+        </LenisProvider>
     );
 }
