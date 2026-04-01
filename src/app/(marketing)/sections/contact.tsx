@@ -1,182 +1,117 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { useIsMobile, E } from "../utils";
-import { GlowInput } from "../components/glow-input";
+import { useRef } from "react";
+import Link from "next/link";
+import { slideUp } from "@/lib/motion";
+
+const bullets = [
+    "Compatible Square, Shopify, Lightspeed, SumUp, Zettle",
+    "Stock synchronisé automatiquement toutes les 15 min",
+    "Dashboard avec métriques et conseils personnalisés",
+];
 
 export function Contact() {
-    const isMobile = useIsMobile();
     const ref = useRef<HTMLElement>(null);
-    const inView = useInView(ref, { once: true, margin: "-8%" });
-    const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-    const [shakeKey, setShakeKey] = useState(0);
+    const inView = useInView(ref, { once: true, margin: "-15%" });
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setStatus("sending");
-        const data = new FormData(e.currentTarget);
-        try {
-            const res = await fetch("https://formspree.io/f/xlgpapze", {
-                method: "POST",
-                body: data,
-                headers: { Accept: "application/json" },
-            });
-            if (res.ok) {
-                setStatus("sent");
-                (e.target as HTMLFormElement).reset();
-            } else {
-                setStatus("error");
-                setShakeKey(k => k + 1);
-            }
-        } catch {
-            setStatus("error");
-            setShakeKey(k => k + 1);
-        }
-    }
+    const label = slideUp(0);
+    const title = slideUp(0.1);
+    const subtitle = slideUp(0.2);
+    const bulletsAnim = slideUp(0.3);
+    const cta = slideUp(0.4);
 
     return (
-        <section id="contact" ref={ref} style={{ background: "#070A10", padding: isMobile ? "80px 24px" : "120px 48px" }}>
-            <div style={{ maxWidth: 580, margin: "0 auto" }}>
+        <section
+            id="marchands"
+            ref={ref}
+            className="py-16 px-6 md:py-20 md:px-12"
+            style={{ background: "#FFFFFF" }}
+        >
+            <div className="max-w-[1100px] mx-auto">
+                {/* Label */}
                 <motion.div
-                    initial={{ opacity: 0, y: 32 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.7, ease: E }}
-                    style={{ marginBottom: 48 }}
+                    initial={label.initial}
+                    animate={inView ? label.animate : label.initial}
+                    transition={label.transition}
+                    className="font-bold uppercase mb-3"
+                    style={{
+                        fontSize: 11,
+                        color: "#4268FF",
+                        letterSpacing: "0.14em",
+                    }}
                 >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#4268FF", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
-                        Vous êtes commerçant à Toulouse ?
-                    </div>
-                    <h2 style={{
-                        fontSize: isMobile ? "clamp(30px, 8vw, 44px)" : "clamp(32px, 4.5vw, 56px)",
-                        fontWeight: 800, color: "#C8D6F0", lineHeight: 1.08,
-                        letterSpacing: "-0.03em", margin: 0,
-                    }}>
-                        Rejoignez les{" "}
-                        <em style={{ fontStyle: "italic", color: "#4268FF" }}>pionniers.</em>
-                    </h2>
+                    Vous êtes commerçant ?
                 </motion.div>
 
-                {status === "sent" ? (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.93 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        style={{ padding: 48, borderRadius: 24, background: "#1A1F36", textAlign: "center", position: "relative", overflow: "hidden" }}
-                    >
-                        {/* Confetti */}
-                        {Array.from({ length: 8 }).map((_, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 1, y: 0, x: 0 }}
-                                animate={{ opacity: 0, y: 60, x: (Math.random() - 0.5) * 60 }}
-                                transition={{ duration: 1, delay: 0.2 + i * 0.05, ease: "easeOut" }}
+                {/* Title */}
+                <motion.h2
+                    initial={title.initial}
+                    animate={inView ? title.animate : title.initial}
+                    transition={title.transition}
+                    className="tracking-tight mb-4"
+                    style={{
+                        fontSize: "clamp(22px, 3vw, 28px)",
+                        fontWeight: 900,
+                        color: "#1A1A1A",
+                        lineHeight: 1.1,
+                    }}
+                >
+                    Rendez votre stock visible
+                </motion.h2>
+
+                {/* Subtitle */}
+                <motion.p
+                    initial={subtitle.initial}
+                    animate={inView ? subtitle.animate : subtitle.initial}
+                    transition={subtitle.transition}
+                    className="mb-6 text-gray-500 max-w-[480px]"
+                    style={{ fontSize: 13, lineHeight: 1.6 }}
+                >
+                    Connectez votre caisse en 2 minutes. Vos produits apparaissent automatiquement auprès des clients de votre quartier. Gratuit pour commencer.
+                </motion.p>
+
+                {/* Bullets */}
+                <motion.ul
+                    initial={bulletsAnim.initial}
+                    animate={inView ? bulletsAnim.animate : bulletsAnim.initial}
+                    transition={bulletsAnim.transition}
+                    className="flex flex-col gap-2 mb-8"
+                >
+                    {bullets.map((text) => (
+                        <li key={text} className="flex items-center gap-2">
+                            <span
+                                className="shrink-0 rounded-full"
                                 style={{
-                                    position: "absolute",
-                                    top: "30%",
-                                    left: `${40 + Math.random() * 20}%`,
-                                    width: 4, height: 4,
-                                    borderRadius: "50%",
-                                    background: i % 2 === 0 ? "#4268FF" : "#7A9E7E",
+                                    width: 6,
+                                    height: 6,
+                                    background: "#4268FF",
                                 }}
                             />
-                        ))}
+                            <span className="text-gray-600" style={{ fontSize: 12 }}>
+                                {text}
+                            </span>
+                        </li>
+                    ))}
+                </motion.ul>
 
-                        {/* Animated checkmark */}
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
-                            style={{
-                                width: 52, height: 52, borderRadius: "50%",
-                                background: "#4268FF",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                margin: "0 auto 20px",
-                            }}
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                <motion.polyline
-                                    points="20 6 9 17 4 12"
-                                    initial={{ pathLength: 0 }}
-                                    animate={{ pathLength: 1 }}
-                                    transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
-                                />
-                            </svg>
-                        </motion.div>
-
-                        <p style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 17, margin: "0 0 4px" }}>
-                            C'est envoyé !
-                        </p>
-                        <p style={{ color: "rgba(200,214,240,0.5)", fontSize: 13, margin: 0 }}>
-                            On vous contacte sous 48h.
-                        </p>
-                    </motion.div>
-                ) : (
-                    <motion.form
-                        onSubmit={handleSubmit}
-                        initial={{ opacity: 0, y: 24 }}
-                        animate={inView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.7, delay: 0.15, ease: E }}
-                        style={{ display: "flex", flexDirection: "column", gap: 28 }}
+                {/* CTA */}
+                <motion.div
+                    initial={cta.initial}
+                    animate={inView ? cta.animate : cta.initial}
+                    transition={cta.transition}
+                >
+                    <Link
+                        href="/onboarding"
+                        className="inline-block rounded-xl px-6 py-3 font-bold text-white"
+                        style={{
+                            background: "#1A1A1A",
+                            fontSize: 14,
+                        }}
                     >
-                        {[
-                            { name: "name", label: "Votre nom", type: "text", placeholder: "Marie Dupont" },
-                            { name: "shop", label: "Votre boutique", type: "text", placeholder: "Librairie Les Mots Voyageurs" },
-                            { name: "email", label: "Votre email", type: "email", placeholder: "marie@maboutique.fr" },
-                        ].map((field, i) => (
-                            <motion.div
-                                key={field.name}
-                                initial={{ opacity: 0, x: -16 }}
-                                animate={inView ? { opacity: 1, x: 0 } : {}}
-                                transition={{ duration: 0.5, delay: 0.22 + i * 0.09, ease: E }}
-                            >
-                                <GlowInput
-                                    name={field.name}
-                                    label={field.label}
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    required
-                                />
-                            </motion.div>
-                        ))}
-
-                        <motion.button
-                            key={shakeKey}
-                            type="submit"
-                            disabled={status === "sending"}
-                            whileHover={{ scale: 1.04, boxShadow: "0 12px 36px rgba(66,104,255,0.4)" }}
-                            whileTap={{ scale: 0.97 }}
-                            animate={status === "error" ? { x: [0, -8, 8, -6, 6, 0] } : {}}
-                            transition={{ duration: 0.3 }}
-                            style={{
-                                marginTop: 8,
-                                padding: "17px 36px",
-                                borderRadius: 999,
-                                background: "#4268FF",
-                                color: "#FFFFFF",
-                                fontWeight: 700,
-                                fontSize: 15,
-                                border: "none",
-                                cursor: "pointer",
-                                letterSpacing: "-0.01em",
-                                alignSelf: "flex-start",
-                                fontFamily: "inherit",
-                            }}
-                        >
-                            {status === "sending" ? "Envoi en cours…" : "Je veux être contacté →"}
-                        </motion.button>
-
-                        {status === "error" && (
-                            <motion.p
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                style={{ color: "#4268FF", fontSize: 14, margin: 0 }}
-                            >
-                                Une erreur s'est produite. Écrivez-nous à{" "}
-                                <a href="mailto:contact@twostep.fr" style={{ color: "#4268FF" }}>contact@twostep.fr</a>
-                            </motion.p>
-                        )}
-                    </motion.form>
-                )}
+                        Inscrire ma boutique →
+                    </Link>
+                </motion.div>
             </div>
         </section>
     );
