@@ -21,13 +21,31 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
         const { data, error } = await supabase
             .from("products")
-            .select("*, stock(quantity), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours)")
+            .select("*, stock(quantity), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours, location)")
             .eq("id", productId)
             .eq("visible", true)
             .single();
 
         if (error || !data) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        }
+
+        const merchant = (data as any).merchants;
+        if (merchant?.location) {
+            try {
+                const loc = merchant.location;
+                if (typeof loc === "string" && loc.includes("POINT")) {
+                    const match = loc.match(/POINT\(([^ ]+) ([^)]+)\)/);
+                    if (match) {
+                        merchant.lng = parseFloat(match[1]);
+                        merchant.lat = parseFloat(match[2]);
+                    }
+                } else if (typeof loc === "object" && loc.coordinates) {
+                    merchant.lng = loc.coordinates[0];
+                    merchant.lat = loc.coordinates[1];
+                }
+            } catch { /* non-critical */ }
+            delete merchant.location;
         }
 
         return NextResponse.json({ product: data });
