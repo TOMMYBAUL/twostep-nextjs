@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 import { useCategories } from "@/hooks/use-categories";
 import { CategoryDrawer } from "./category-drawer";
@@ -11,7 +12,7 @@ interface CategoryPillsProps {
     maxVisible?: number;
 }
 
-const PILL_BASE = "shrink-0 text-[11px] font-semibold rounded-full px-2.5 py-1 transition duration-100 ease-linear";
+const PILL_BASE = "shrink-0 font-[family-name:var(--font-inter)] text-[12px] font-semibold rounded-full px-3.5 py-2 min-h-[44px] flex items-center transition duration-100 ease-linear focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none";
 
 export function CategoryPills({ activeCategory, onCategoryChange, maxVisible = 6 }: CategoryPillsProps) {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -22,18 +23,17 @@ export function CategoryPills({ activeCategory, onCategoryChange, maxVisible = 6
 
     return (
         <>
-            <div className="flex gap-1.5 overflow-x-auto px-4 py-2 scrollbar-hide" role="listbox" aria-label="Catégories">
+            <div className="flex gap-2 overflow-x-auto py-1 scrollbar-hide" role="group" aria-label="Catégories">
                 {/* "Tout" pill */}
                 <button
                     type="button"
-                    role="option"
-                    aria-selected={activeCategory === null}
+                    aria-pressed={activeCategory === null}
                     onClick={() => onCategoryChange(null)}
                     className={cx(
                         PILL_BASE,
                         activeCategory === null
-                            ? "bg-[var(--ts-accent)] text-white shadow-sm"
-                            : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                            ? "bg-primary-solid text-white"
+                            : "bg-secondary text-quaternary",
                     )}
                 >
                     Tout
@@ -46,31 +46,33 @@ export function CategoryPills({ activeCategory, onCategoryChange, maxVisible = 6
                         <button
                             key={cat.slug}
                             type="button"
-                            role="option"
-                            aria-selected={isActive}
+                            aria-pressed={isActive}
                             onClick={() => onCategoryChange(isActive ? null : cat.slug)}
                             className={cx(
                                 PILL_BASE,
                                 isActive
-                                    ? "bg-[var(--ts-accent)] text-white shadow-sm"
-                                    : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                                    ? "bg-primary-solid text-white"
+                                    : "bg-secondary text-quaternary",
                             )}
                         >
-                            {cat.emoji ? `${cat.emoji} ` : ""}{cat.label}
+                            {cat.label}
                         </button>
                     );
                 })}
 
-                {/* "Tout ▾" drawer trigger */}
+                {/* "Plus" drawer trigger */}
                 <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}
+                    aria-label="Voir toutes les catégories"
+                    aria-haspopup="dialog"
                     className={cx(
                         PILL_BASE,
-                        "border-[1.5px] border-[var(--ts-accent)] text-[var(--ts-accent)] bg-transparent",
+                        "border border-secondary text-quaternary bg-primary",
                     )}
                 >
-                    Tout ▾
+                    Plus
+                    <ChevronDown className="ml-1 size-3" aria-hidden="true" />
                 </button>
             </div>
 

@@ -37,7 +37,7 @@ export function ShopStatusBlock({
         >
             <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-secondary">
                 {photoUrl ? (
-                    <Image src={photoUrl} alt="" width={36} height={36} className="h-full w-full object-cover" />
+                    <Image src={photoUrl} alt={name} width={36} height={36} className="h-full w-full object-cover" />
                 ) : (
                     <Building07 className="size-4 text-brand-secondary" aria-hidden="true" />
                 )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "@untitledui/icons";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 interface HeartButtonProps {
@@ -12,6 +12,8 @@ interface HeartButtonProps {
 }
 
 export function HeartButton({ isFavorite, onToggle, ariaLabel, className }: HeartButtonProps) {
+    const prefersReducedMotion = useReducedMotion();
+
     return (
         <motion.button
             type="button"
@@ -20,20 +22,20 @@ export function HeartButton({ isFavorite, onToggle, ariaLabel, className }: Hear
                 e.stopPropagation();
                 onToggle();
             }}
-            whileTap={{ scale: 1.3 }}
+            whileTap={{ scale: prefersReducedMotion ? 1 : 1.18 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             className={cx(
-                "flex min-h-11 min-w-11 items-center justify-center rounded-full p-1.5 transition duration-100",
+                "flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition duration-100 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                 isFavorite
-                    ? "text-[var(--ts-red)]"
-                    : "text-tertiary hover:text-secondary",
+                    ? "text-error-primary"
+                    : "text-primary/40 hover:text-primary/60",
                 className,
             )}
             aria-label={ariaLabel}
             aria-pressed={isFavorite}
         >
             <Heart
-                className="size-5"
+                className="size-4"
                 fill={isFavorite ? "currentColor" : "none"}
                 aria-hidden="true"
             />

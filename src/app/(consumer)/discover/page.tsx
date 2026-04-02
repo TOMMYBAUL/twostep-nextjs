@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Suspense, useMemo, useState, useCallback, useEffect, useRef } from "react";
-import { Tag01, TrendUp01, ChevronRight, MarkerPin01, Heart, FilterLines } from "@untitledui/icons";
+import { ChevronRight, FilterLines, Building07 } from "@untitledui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -55,7 +55,7 @@ function useDiscoverFeed(lat: number, lng: number, section: "promos" | "trending
 
 export default function DiscoverPage() {
     return (
-        <Suspense fallback={<div className="min-h-dvh bg-[#F8F9FC]" />}>
+        <Suspense fallback={<div className="min-h-dvh bg-white" />}>
             <DiscoverContent />
         </Suspense>
     );
@@ -95,7 +95,7 @@ function DiscoverContent() {
             if (idx > 0) setFeedTab(tabOrder[idx - 1]);
         },
         trackMouse: false,
-        delta: 50,
+        delta: 80,
         preventScrollOnSwipe: false,
     });
 
@@ -190,7 +190,8 @@ function DiscoverContent() {
     }, [nearby]);
 
     return (
-        <div className="min-h-dvh bg-[#F8F9FC]" style={{ fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}>
+        <div className="min-h-dvh bg-primary">
+            <h1 className="sr-only">Découvrir — Two-Step</h1>
             {/* ── Feed Header (TikTok-style tabs) ── */}
             <FeedHeader activeTab={feedTab} onTabChange={setFeedTab} />
 
@@ -203,17 +204,17 @@ function DiscoverContent() {
                         type="button"
                         onClick={() => setShowSizeFilters((v) => !v)}
                         className={cx(
-                            "relative flex shrink-0 items-center justify-center rounded-full transition duration-150",
+                            "relative flex shrink-0 items-center justify-center rounded-full transition duration-150 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                             hasActiveSizeFilter || showSizeFilters
-                                ? "bg-[#4268FF] text-[#F8F9FC] shadow-sm"
-                                : "bg-[#F5F6FA] text-[#1A1F36]/60",
-                            "size-7",
+                                ? "bg-brand-solid text-white shadow-sm"
+                                : "bg-secondary text-quaternary",
+                            "size-7 min-h-[44px] min-w-[44px]",
                         )}
                         aria-label="Filtrer par taille"
                     >
                         <FilterLines className="size-3.5" />
                         {hasActiveSizeFilter && (
-                            <span className="absolute -right-0.5 -top-0.5 flex size-3 items-center justify-center rounded-full bg-[#4268FF] text-[7px] text-white">
+                            <span className="absolute -right-0.5 -top-0.5 flex size-3 items-center justify-center rounded-full bg-brand-solid text-[7px] text-white">
                                 {(sizeFilter ? 1 : 0) + (shoeSizeFilter ? 1 : 0)}
                             </span>
                         )}
@@ -232,22 +233,23 @@ function DiscoverContent() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                         >
-                            <div className="mt-3 rounded-xl border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] p-3">
+                            <div className="mt-3 rounded-xl border-[0.5px] border-secondary bg-secondary p-3">
                                 {/* Clothing size */}
                                 {(availableSizes?.clothing?.length ?? 0) > 0 && (
                                     <>
-                                        <p className="mb-2 text-[11px] font-medium text-[#8E96B0]">Taille vêtements</p>
+                                        <p className="mb-2 text-[11px] font-medium text-tertiary">Taille vêtements</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {availableSizes!.clothing.map((s) => (
                                                 <button
                                                     key={s}
                                                     type="button"
+                                                    aria-pressed={sizeFilter === s}
                                                     onClick={() => { setSizeFilter(sizeFilter === s ? null : s); setShowSizeFilters(false); }}
                                                     className={cx(
-                                                        "rounded-lg px-3 py-1.5 text-[11px] font-medium transition duration-100",
+                                                        "min-h-[44px] rounded-lg px-3 py-2.5 text-[11px] font-medium transition duration-100 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none",
                                                         sizeFilter === s
-                                                            ? "bg-[#4268FF] text-[#F8F9FC]"
-                                                            : "bg-[#F8F9FC] text-[#1A1F36]/60",
+                                                            ? "bg-brand-solid text-white"
+                                                            : "bg-white text-quaternary",
                                                     )}
                                                 >
                                                     {s}
@@ -260,18 +262,19 @@ function DiscoverContent() {
                                 {/* Shoe size */}
                                 {(availableSizes?.shoe?.length ?? 0) > 0 && (
                                     <>
-                                        <p className={cx("mb-2 text-[11px] font-medium text-[#8E96B0]", (availableSizes?.clothing?.length ?? 0) > 0 && "mt-3")}>Pointure</p>
+                                        <p className={cx("mb-2 text-[11px] font-medium text-tertiary", (availableSizes?.clothing?.length ?? 0) > 0 && "mt-3")}>Pointure</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {availableSizes!.shoe.map((s) => (
                                                 <button
                                                     key={s}
                                                     type="button"
+                                                    aria-pressed={shoeSizeFilter === s}
                                                     onClick={() => { setShoeSizeFilter(shoeSizeFilter === s ? null : s); setShowSizeFilters(false); }}
                                                     className={cx(
-                                                        "rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition duration-100",
+                                                        "min-h-[44px] rounded-lg px-2.5 py-2.5 text-[11px] font-medium transition duration-100 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none",
                                                         shoeSizeFilter === s
-                                                            ? "bg-[#4268FF] text-[#F8F9FC]"
-                                                            : "bg-[#F8F9FC] text-[#1A1F36]/60",
+                                                            ? "bg-brand-solid text-white"
+                                                            : "bg-white text-quaternary",
                                                     )}
                                                 >
                                                     {s}
@@ -282,7 +285,7 @@ function DiscoverContent() {
                                 )}
 
                                 {(availableSizes?.clothing?.length ?? 0) === 0 && (availableSizes?.shoe?.length ?? 0) === 0 && (
-                                    <p className="text-[11px] text-[#8E96B0]">Aucune taille renseignée pour le moment.</p>
+                                    <p className="text-[11px] text-tertiary">Aucune taille renseignée pour le moment.</p>
                                 )}
 
                                 {/* Reset */}
@@ -290,7 +293,7 @@ function DiscoverContent() {
                                     <button
                                         type="button"
                                         onClick={() => { setSizeFilter(null); setShoeSizeFilter(null); }}
-                                        className="mt-2.5 text-[11px] font-medium text-[#4268FF]"
+                                        className="mt-2.5 min-h-[44px] text-[11px] font-medium text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none rounded"
                                     >
                                         Réinitialiser les filtres
                                     </button>
@@ -305,90 +308,54 @@ function DiscoverContent() {
             {/* ── Feed sections ── */}
             <div {...swipeHandlers}>
             {feedTab === "explorer" ? (
-            <div className="flex flex-col gap-5 pb-24 pt-4">
+            <div className="flex flex-col gap-8 pb-24 pt-5">
 
                 {/* ── 1. Promos du moment — 1 grande + 3 petites ── */}
                 {(loadingPromos || topPromos.length > 0) && (
                 <section>
                     <div className="flex items-center justify-between px-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
-                                <Tag01 className="size-4" />
-                            </div>
-                            <div>
-                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Promos du moment</h2>
-                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Les bons plans près de chez toi</p>
-                            </div>
-                        </div>
-                        <Link href={`/search?filter=promos${activeCategory ? `&category=${activeCategory}` : ""}${activeSize ? `&size=${activeSize}` : ""}`} className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
+                        <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Promos du moment</h2>
+                        <Link href={`/search?filter=promos${activeCategory ? `&category=${activeCategory}` : ""}${activeSize ? `&size=${activeSize}` : ""}`} aria-label="Voir toutes les promos" className="flex items-center gap-0.5 font-[family-name:var(--font-barlow)] text-[13px] font-semibold text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                             Voir tout
-                            <ChevronRight className="size-3.5" />
+                            <ChevronRight className="size-3.5" aria-hidden="true" />
                         </Link>
                     </div>
 
                     {topPromos.length > 0 && (
-                    <div className="mt-3 flex flex-col px-3.5" style={{ gap: 10 }}>
+                    <div className="mt-3 flex flex-col gap-2.5 px-4">
                         {loadingPromos ? (
                             <PromoCardSkeleton index={0} />
                         ) : (<>
-                            {/* Grande card — promo vedette */}
-                            <Link
-                                href={`/product/${generateSlug(topPromos[0].product_name, topPromos[0].product_id)}`}
-                                className="flex items-center rounded-[10px] bg-[#F5F6FA] p-2.5 transition active:bg-[#E2E5F0]"
-                                style={{ gap: 10 }}
-                            >
-                                <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-[#E2E5F0]">
-                                    {topPromos[0].product_photo ? (
-                                        <Image src={topPromos[0].product_photo} alt={topPromos[0].product_name} fill sizes="64px" className="object-cover" />
-                                    ) : (
-                                        <div className="flex h-full items-center justify-center text-lg font-light text-[#8E96B0]/30">{topPromos[0].product_name.charAt(0)}</div>
-                                    )}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <span className="inline-flex w-fit items-center rounded-full text-[11px] font-medium text-[#185FA5]" style={{ background: "rgba(66,104,255,0.13)", padding: "2px 7px" }}>
-                                        −{Math.round(((topPromos[0].product_price - topPromos[0].sale_price!) / topPromos[0].product_price) * 100)}% · {topPromos[0].merchant_name}
-                                    </span>
-                                    <p className="mt-1 truncate text-[13px] font-medium text-[#1A1F36]">{topPromos[0].product_name}</p>
-                                    <p className="mt-0.5 text-[10px] text-[#8E96B0]">
-                                        {topPromos[0].distance_km < 1 ? `${Math.round(topPromos[0].distance_km * 1000)}m` : `${topPromos[0].distance_km.toFixed(1)}km`}
-                                    </p>
-                                    <div className="mt-0.5 flex items-baseline gap-1.5">
-                                        <span className="text-xs text-[#1A1F36]">{topPromos[0].sale_price!.toFixed(2)} €</span>
-                                        <span className="text-[10px] text-[#8E96B0]/60 line-through">{topPromos[0].product_price.toFixed(2)} €</span>
+                            {/* Promo list — Modèle A compact (spec §2.3) */}
+                            {topPromos.map((p) => (
+                                <Link
+                                    key={`${p.product_id}-${p.merchant_id}`}
+                                    href={`/product/${generateSlug(p.product_name, p.product_id)}`}
+                                    className="flex items-center gap-3 rounded-[10px] bg-secondary p-2.5 transition duration-100 active:bg-secondary_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                >
+                                    <div className="relative size-[76px] shrink-0 overflow-hidden rounded-lg bg-secondary_hover">
+                                        {p.product_photo ? (
+                                            <Image src={p.product_photo} alt={p.product_name} fill sizes="76px" className="object-cover" />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center font-[family-name:var(--font-barlow)] text-lg font-light text-primary/15">{p.product_name.charAt(0)}</div>
+                                        )}
+                                        {/* Badge % */}
+                                        <div className="absolute right-1 top-1 rounded-md bg-brand-solid px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                                            −{Math.round(((p.product_price - p.sale_price!) / p.product_price) * 100)}%
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-
-                            {/* 3 petites cards */}
-                            {topPromos.length > 1 && (
-                                <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(topPromos.length - 1, 4)}, 1fr)` }}>
-                                    {topPromos.slice(1, 5).map((p) => (
-                                        <Link
-                                            key={`${p.product_id}-${p.merchant_id}`}
-                                            href={`/product/${generateSlug(p.product_name, p.product_id)}`}
-                                            className="overflow-hidden rounded-[10px] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
-                                        >
-                                            <div className="relative h-[145px] w-full bg-[#E2E5F0]">
-                                                {p.product_photo ? (
-                                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="33vw" className="object-cover" />
-                                                ) : (
-                                                    <div className="flex h-full items-center justify-center text-base font-light text-[#8E96B0]/20">{p.product_name.charAt(0)}</div>
-                                                )}
-                                                <span className="absolute bottom-1 left-1 rounded-full text-[11px] font-medium text-[#185FA5]" style={{ background: "rgba(66,104,255,0.13)", padding: "1px 6px" }}>
-                                                    −{Math.round(((p.product_price - p.sale_price!) / p.product_price) * 100)}%
-                                                </span>
-                                            </div>
-                                            <div style={{ padding: "5px 6px 7px" }}>
-                                                <p className="truncate text-[10px] font-medium text-[#1A1F36]">{p.product_name}</p>
-                                                <p className="mt-0.5 text-[9px] text-[#8E96B0]">
-                                                    {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`}
-                                                </p>
-                                                <p className="mt-0.5 text-[10px] text-[#1A1F36]">{p.sale_price!.toFixed(2)} €</p>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate font-[family-name:var(--font-barlow)] text-[13px] font-bold tracking-[-0.2px] text-primary">{p.product_name}</p>
+                                        <p className="mt-0.5 truncate font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
+                                            {p.merchant_name} · {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`}
+                                        </p>
+                                        <div className="mt-1 flex items-baseline gap-1.5">
+                                            <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">{p.sale_price!.toFixed(2)} €</span>
+                                            <span className="font-[family-name:var(--font-inter)] text-[11px] text-tertiary line-through">{p.product_price.toFixed(2)} €</span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
                         </>)}
                     </div>
                     )}
@@ -398,74 +365,41 @@ function DiscoverContent() {
                 {/* ── 2. Tendances — 2×2 grid ── */}
                 <section>
                     <div className="flex items-center justify-between px-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#1A1F36]/10 text-[#1A1F36]/70">
-                                <TrendUp01 className="size-4" />
-                            </div>
-                            <div>
-                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tendances</h2>
-                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Ce qui se vend le plus dans ton quartier</p>
-                            </div>
-                        </div>
-                        <Link href={`/search?filter=trending${activeCategory ? `&category=${activeCategory}` : ""}${activeSize ? `&size=${activeSize}` : ""}`} className="flex items-center gap-0.5 text-xs font-semibold text-[#4268FF]">
+                        <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Tendances</h2>
+                        <Link href={`/search?filter=trending${activeCategory ? `&category=${activeCategory}` : ""}${activeSize ? `&size=${activeSize}` : ""}`} aria-label="Voir toutes les tendances" className="flex items-center gap-0.5 font-[family-name:var(--font-barlow)] text-[13px] font-semibold text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                             Voir tout
-                            <ChevronRight className="size-3.5" />
+                            <ChevronRight className="size-3.5" aria-hidden="true" />
                         </Link>
                     </div>
 
                     <div className="mt-3 px-4">
                         {loadingTrending ? (
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-2 gap-3">
                                 {[0, 1, 2, 3].map((i) => (
                                     <ProductCardSkeleton key={i} index={i} />
                                 ))}
                             </div>
                         ) : trending && trending.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-2 gap-3">
                                 {trending.slice(0, 4).map((p) => (
-                                    <Link
+                                    <ProductCard
                                         key={`${p.product_id}-${p.merchant_id}`}
-                                        href={`/product/${generateSlug(p.product_name, p.product_id)}`}
-                                        className="group overflow-hidden rounded-[10px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] transition active:bg-[#E2E5F0]"
-                                    >
-                                        {/* Image */}
-                                        <div className="relative h-[220px] w-full bg-[#E2E5F0]">
-                                            {p.product_photo ? (
-                                                <Image
-                                                    src={p.product_photo}
-                                                    alt={p.product_name}
-                                                    fill
-                                                    sizes="50vw"
-                                                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                                                />
-                                            ) : (
-                                                <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/20">
-                                                    {p.product_name.charAt(0)}
-                                                </div>
-                                            )}
-                                            {/* Heart overlay */}
-                                            <div className="absolute right-1.5 top-1.5">
-                                                <HeartButton
-                                                    isFavorite={favoriteIds.has(p.product_id)}
-                                                    onToggle={() => toggleFav(p.product_id)}
-                                                    ariaLabel={`${favoriteIds.has(p.product_id) ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                                />
-                                            </div>
-                                        </div>
-                                        {/* Body */}
-                                        <div className="px-2 py-2">
-                                            <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
-                                            <p className="mt-0.5 text-xs font-normal text-[#8E96B0]">{(p.sale_price ?? p.product_price).toFixed(2)} €</p>
-                                            <p className="mt-0.5 text-[10px] text-[#8E96B0]">
-                                                {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`} · {p.merchant_name}
-                                            </p>
-                                        </div>
-                                    </Link>
+                                        id={p.product_id}
+                                        name={p.product_name}
+                                        price={p.product_price}
+                                        photo={p.product_photo}
+                                        merchantName={p.merchant_name}
+                                        distance={p.distance_km}
+                                        stockQuantity={p.stock_quantity}
+                                        salePrice={p.sale_price}
+                                        isFavorite={favoriteIds.has(p.product_id)}
+                                        onToggleFavorite={() => toggleFav(p.product_id)}
+                                    />
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-[10px] border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-4 py-8 text-center">
-                                <p className="text-xs text-[#8E96B0]/50">Rien pour le moment</p>
+                            <div className="rounded-[10px] bg-secondary px-4 py-10 text-center">
+                                <p className="font-[family-name:var(--font-inter)] text-[13px] text-tertiary">Rien pour le moment</p>
                             </div>
                         )}
                     </div>
@@ -474,37 +408,28 @@ function DiscoverContent() {
                 {/* ── 3. Boutique à découvrir ── */}
                 {featuredShop && (
                     <section className="px-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
-                                <MarkerPin01 className="size-4" />
-                            </div>
-                            <div>
-                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Boutique à découvrir</h2>
-                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>
-                                    À {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
-                                </p>
-                            </div>
-                        </div>
+                        <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Boutique à découvrir</h2>
 
                         <Link
                             href={`/shop/${generateSlug(featuredShop.merchant_name, featuredShop.merchant_id)}`}
-                            className="mt-3 flex items-center gap-2.5 rounded-xl border-[0.5px] border-[#E2E5F0] bg-[#F5F6FA] px-3 py-2.5 transition active:bg-[#E2E5F0]"
+                            className="mt-3 flex items-center gap-3 rounded-[10px] bg-secondary px-3.5 py-3 transition duration-100 active:bg-secondary_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
-                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#E2E5F0] text-sm font-bold text-[#4268FF]">
+                            <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-secondary_hover font-[family-name:var(--font-barlow)] text-sm font-bold text-brand-secondary">
                                 {featuredShop.merchant_photo ? (
-                                    <Image src={featuredShop.merchant_photo} alt={featuredShop.merchant_name} width={36} height={36} className="h-full w-full object-cover" />
+                                    <Image src={featuredShop.merchant_photo} alt={featuredShop.merchant_name} width={40} height={40} className="h-full w-full object-cover" />
                                 ) : (
                                     featuredShop.merchant_name.charAt(0)
                                 )}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-xs font-medium text-[#1A1F36]">{featuredShop.merchant_name}</p>
-                                <p className="text-[10px] text-[#8E96B0]">
-                                    {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
+                                <p className="truncate font-[family-name:var(--font-barlow)] text-[13px] font-bold text-primary">{featuredShop.merchant_name}</p>
+                                <p className="font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
+                                    À {featuredShop.distance_km < 1 ? `${Math.round(featuredShop.distance_km * 1000)}m` : `${featuredShop.distance_km.toFixed(1)}km`} de toi
                                 </p>
                             </div>
-                            <span className="shrink-0 rounded-lg bg-[#4268FF]/10 px-[7px] py-[2px] text-[9px] font-medium text-[#4268FF]">
-                                Voir →
+                            <span className="flex shrink-0 items-center gap-0.5 font-[family-name:var(--font-barlow)] text-[13px] font-semibold text-brand-secondary">
+                                Voir
+                                <ChevronRight className="size-3.5" aria-hidden="true" />
                             </span>
                         </Link>
                     </section>
@@ -514,16 +439,8 @@ function DiscoverContent() {
                 {/* ── Followed shops ── */}
                 {follows && follows.length > 0 && (
                     <section className="px-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="flex size-8 items-center justify-center rounded-xl bg-[#4268FF]/15 text-[#4268FF]">
-                                <Heart className="size-4" />
-                            </div>
-                            <div>
-                                <h2 className="text-[15px] font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tes boutiques</h2>
-                                <p className="text-[11px] text-[#8E96B0]" style={{ letterSpacing: "0.2px" }}>Les dernières nouveautés de tes favoris</p>
-                            </div>
-                        </div>
-                        <div className="mt-3 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+                        <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Tes boutiques</h2>
+                        <div className="mt-3 flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
                             {follows.map((f: any) => {
                                 const merchant = f.merchants;
                                 if (!merchant) return null;
@@ -531,18 +448,18 @@ function DiscoverContent() {
                                     <Link
                                         key={f.merchant_id}
                                         href={`/shop/${generateSlug(f.merchants?.name || f.merchant_name || "", f.merchant_id)}`}
-                                        className="flex w-20 shrink-0 flex-col items-center gap-1.5"
+                                        className="flex w-16 shrink-0 flex-col items-center gap-1.5 rounded-xl focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                     >
-                                        <div className="relative size-16 overflow-hidden rounded-full bg-[#F5F6FA] shadow-sm ring-2 ring-[#4268FF]/30">
+                                        <div className="relative size-14 overflow-hidden rounded-full bg-secondary ring-2 ring-brand/20">
                                             {merchant.photo_url ? (
-                                                <Image src={merchant.photo_url} alt={merchant.name} fill className="object-cover" />
+                                                <Image src={merchant.photo_url} alt={merchant.name} fill sizes="56px" className="object-cover" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-lg font-bold text-[#4268FF]">
+                                                <div className="flex h-full items-center justify-center font-[family-name:var(--font-barlow)] text-base font-bold text-brand-secondary">
                                                     {merchant.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="w-full truncate text-center text-[11px] font-medium text-[#1A1F36]/70">
+                                        <span className="w-full truncate text-center font-[family-name:var(--font-inter)] text-[10px] font-medium text-quaternary">
                                             {merchant.name}
                                         </span>
                                     </Link>
@@ -649,62 +566,36 @@ function InfiniteProductGrid({
     return (
         <section className="pb-20">
             <div className="px-4 pb-3 pt-6">
-                <h2 className="text-base font-semibold text-[#1A1F36]" style={{ letterSpacing: "-0.2px" }}>Tout près de toi</h2>
-                {total > 0 && <p className="mt-0.5 text-[11px] text-[#8E96B0]">{total} produits disponibles</p>}
+                <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Tout près de toi</h2>
+                {total > 0 && <p className="mt-0.5 font-[family-name:var(--font-inter)] text-[11px] text-tertiary">{total} produits disponibles</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 px-4 md:grid-cols-4 md:gap-3 md:px-6">
+            <div className="grid grid-cols-2 gap-3 px-4 md:grid-cols-4 md:gap-4 md:px-6">
                 {allProducts.map((p: any) => {
                     const isFav = favoriteIds.has(p.product_id);
-                    const discount = p.sale_price ? Math.round(((p.product_price - p.sale_price) / p.product_price) * 100) : 0;
                     return (
-                        <Link
+                        <ProductCard
                             key={p.product_id}
-                            href={`/product/${generateSlug(p.product_name, p.product_id)}`}
-                            className="overflow-hidden rounded-xl bg-[#F8F9FC] transition active:opacity-90"
-                            style={{ border: "0.5px solid rgba(255,255,255,0.05)" }}
-                        >
-                            <div className="relative h-[180px] w-full bg-[#F5F6FA] md:h-[200px]">
-                                {p.product_photo ? (
-                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover" loading="lazy" />
-                                ) : (
-                                    <div className="flex h-full items-center justify-center text-2xl font-light text-[#8E96B0]/20">
-                                        {p.product_name?.charAt(0)}
-                                    </div>
-                                )}
-                                {discount > 0 && (
-                                    <span className="absolute bottom-2 left-2 text-sm">🏷️</span>
-                                )}
-                                <div className="absolute right-2 top-2" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
-                                    <HeartButton
-                                        isFavorite={isFav}
-                                        onToggle={() => onToggleFav(p.product_id)}
-                                        ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                    />
-                                </div>
-                            </div>
-                            <div className="px-2.5 pb-3 pt-2.5">
-                                <p className="text-[10px] tracking-wide text-[#8E96B0]">
-                                    {p.merchant_name} · {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km}km`}
-                                </p>
-                                <p className="mt-1 line-clamp-2 text-xs font-medium leading-tight text-[#6B7799]">{p.product_name}</p>
-                                <div className="mt-1.5 flex items-baseline gap-1.5">
-                                    <span className="text-xs text-[#8E96B0]">{(p.sale_price ?? p.product_price)?.toFixed(2)} €</span>
-                                    {p.sale_price && (
-                                        <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>
-                                    )}
-                                </div>
-                            </div>
-                        </Link>
+                            id={p.product_id}
+                            name={p.product_name}
+                            price={p.product_price}
+                            photo={p.product_photo}
+                            merchantName={p.merchant_name}
+                            distance={p.distance_km}
+                            stockQuantity={p.stock_quantity ?? 99}
+                            salePrice={p.sale_price}
+                            isFavorite={isFav}
+                            onToggleFavorite={() => onToggleFav(p.product_id)}
+                        />
                     );
                 })}
             </div>
 
             {/* Sentinel */}
             <div ref={sentinelRef} className="flex h-10 items-center justify-center">
-                {loading && <p className="text-xs text-[#E2E5F0]">Chargement...</p>}
+                {loading && <p className="font-[family-name:var(--font-inter)] text-[12px] text-tertiary">Chargement...</p>}
                 {!hasMoreRef.current && !loading && allProducts.length > 0 && (
-                    <p className="text-[11px] tracking-wide text-[#E2E5F0]">Le quartier est à sec 📍</p>
+                    <p className="font-[family-name:var(--font-inter)] text-[12px] text-tertiary">Tu as tout vu</p>
                 )}
             </div>
         </section>
@@ -779,53 +670,28 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
         staleTime: 60_000,
     });
 
-    // Product card renderer (shared between both sections)
-    const renderProductCard = (p: DiscoverProduct) => {
-        const isFav = favoriteIds.has(p.product_id);
-        return (
-            <div key={p.product_id}>
-                <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
-                        {p.product_photo ? (
-                            <Image src={p.product_photo} alt={p.product_name} fill sizes="50vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
-                        ) : (
-                            <div className="flex h-full items-center justify-center">
-                                <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
-                            </div>
-                        )}
-                        {p.sale_price && (
-                            <div className="absolute left-3 top-3 rounded-lg bg-[#FF4757] px-2 py-0.5 text-[10px] font-bold text-white">
-                                -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
-                            </div>
-                        )}
-                        <div className="absolute right-3 top-3">
-                            <HeartButton
-                                isFavorite={isFav}
-                                onToggle={() => onToggleFav(p.product_id)}
-                                ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                className="!size-8 !rounded-full [background:rgba(26,31,54,0.5)]"
-                            />
-                        </div>
-                    </div>
-                </Link>
-                <div className="mt-2">
-                    <p className="text-[10px] text-[#8E96B0] uppercase">{p.merchant_name}</p>
-                    <p className="truncate text-[13px] font-semibold text-[#1A1F36]">{p.product_name}</p>
-                    <div className="mt-0.5 flex items-baseline gap-2">
-                        <span className="text-[12px] text-[#6B7799]">{(p.sale_price ?? p.product_price).toFixed(2)} €</span>
-                        {p.sale_price && <span className="text-[10px] text-[#E2E5F0] line-through">{p.product_price.toFixed(2)} €</span>}
-                    </div>
-                </div>
-            </div>
-        );
-    };
+    const renderProductCard = (p: DiscoverProduct) => (
+        <ProductCard
+            key={p.product_id}
+            id={p.product_id}
+            name={p.product_name}
+            price={p.product_price}
+            photo={p.product_photo}
+            merchantName={p.merchant_name}
+            distance={p.distance_km}
+            stockQuantity={p.stock_quantity}
+            salePrice={p.sale_price}
+            isFavorite={favoriteIds.has(p.product_id)}
+            onToggleFavorite={() => onToggleFav(p.product_id)}
+        />
+    );
 
     if (!hasPrefs) {
         return (
             <div className="pb-24 pt-2">
-                <Link href="/profile" className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#FFF8EE] px-3.5 py-2.5">
-                    <span className="text-[11px] font-medium text-[#C88A3A]">Renseigne ta taille pour un feed personnalisé</span>
-                    <ChevronRight className="size-3.5 text-[#C88A3A]" />
+                <Link href="/profile" className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-warning-secondary px-3.5 py-2.5 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
+                    <span className="text-[11px] font-medium text-warning-primary">Renseigne ta taille pour un feed personnalisé</span>
+                    <ChevronRight className="size-3.5 text-warning-primary" aria-hidden="true" />
                 </Link>
             </div>
         );
@@ -835,18 +701,18 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
         return (
             <div className="pb-24 pt-2">
                 {/* Size banner */}
-                <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
-                    <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
+                <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-brand-section_subtle px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium text-brand-secondary">Filtré pour toi</span>
                     <div className="flex gap-1.5">
-                        {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
-                        {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
+                        {clothingSize && <span className="rounded-lg bg-brand-solid px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
+                        {shoeSize && <span className="rounded-lg bg-brand-solid px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
                     </div>
                 </div>
 
                 {/* No follows — skip to suggestions */}
                 {suggestions && suggestions.length > 0 && (
                     <>
-                        <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Autour de toi, à ta taille</p>
+                        <p className="mb-3 px-4 text-[13px] font-semibold text-primary">Autour de toi, à ta taille</p>
                         <div className="grid grid-cols-2 gap-3 px-4">
                             {suggestions.map(renderProductCard)}
                         </div>
@@ -859,28 +725,28 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
     return (
         <div className="pb-24 pt-2">
             {/* Size auto-filter banner */}
-            <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-[#EEF0FF] px-3.5 py-2.5">
-                <span className="text-[11px] font-medium text-[#4268FF]">Filtré pour toi</span>
+            <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-brand-section_subtle px-3.5 py-2.5">
+                <span className="text-[11px] font-medium text-brand-secondary">Filtré pour toi</span>
                 <div className="flex gap-1.5">
-                    {clothingSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
-                    {shoeSize && <span className="rounded-lg bg-[#4268FF] px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
+                    {clothingSize && <span className="rounded-lg bg-brand-solid px-2 py-0.5 text-[10px] font-semibold text-white">{clothingSize}</span>}
+                    {shoeSize && <span className="rounded-lg bg-brand-solid px-2 py-0.5 text-[10px] font-semibold text-white">{shoeSize}</span>}
                 </div>
             </div>
 
             {/* ── Section 1: Followed shops ── */}
-            <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Tes boutiques</p>
+            <p className="mb-3 px-4 text-[13px] font-semibold text-primary">Tes boutiques</p>
 
             {isLoading && (
                 <div className="grid grid-cols-2 gap-3 px-4">
                     {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#F5F6FA]" />
+                        <div key={i} className="aspect-[3/4] animate-pulse rounded-[10px] bg-secondary" />
                     ))}
                 </div>
             )}
 
             {!isLoading && (!products || products.length === 0) && (
                 <div className="px-4 pb-4 pt-2 text-center">
-                    <p className="text-[12px] text-[#8E96B0]">Pas de produit dans ta taille chez tes boutiques suivies pour le moment</p>
+                    <p className="text-[12px] text-tertiary">Pas de produit dans ta taille chez tes boutiques suivies pour le moment</p>
                 </div>
             )}
 
@@ -894,11 +760,11 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
             {suggestions && suggestions.length > 0 && (
                 <>
                     <div className="mx-4 my-6 flex items-center gap-3">
-                        <div className="h-px flex-1 bg-[#E2E5F0]" />
-                        <span className="text-[11px] font-medium text-[#8E96B0]">Suggestions</span>
-                        <div className="h-px flex-1 bg-[#E2E5F0]" />
+                        <div className="h-px flex-1 bg-secondary_hover" />
+                        <span className="text-[11px] font-medium text-tertiary">Suggestions</span>
+                        <div className="h-px flex-1 bg-secondary_hover" />
                     </div>
-                    <p className="mb-3 px-4 text-[13px] font-semibold text-[#1A1F36]">Autour de toi, à ta taille</p>
+                    <p className="mb-3 px-4 text-[13px] font-semibold text-primary">Autour de toi, à ta taille</p>
                     <div className="grid grid-cols-2 gap-3 px-4">
                         {suggestions.map(renderProductCard)}
                     </div>
@@ -930,14 +796,14 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
     if (!follows || follows.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
-                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#F5F6FA] text-2xl">🏪</div>
-                <p className="mt-4 text-[15px] font-semibold text-[#1A1F36]">Aucune boutique suivie</p>
-                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-secondary" aria-hidden="true"><Building07 className="size-7 text-tertiary" /></div>
+                <p className="mt-4 text-[15px] font-semibold text-primary">Aucune boutique suivie</p>
+                <p className="mt-1.5 text-[13px] text-tertiary">
                     Abonne-toi à des boutiques pour les retrouver ici.
                 </p>
                 <Link
                     href="/explore"
-                    className="mt-4 rounded-full bg-[#4268FF] px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80"
+                    className="mt-4 rounded-full bg-brand-solid px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                     Explorer les boutiques
                 </Link>
@@ -949,7 +815,7 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
         return (
             <div className="grid grid-cols-2 gap-3 px-4 pb-24 pt-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="aspect-square animate-pulse rounded-xl bg-[#F5F6FA]" />
+                    <div key={i} className="aspect-[3/4] animate-pulse rounded-[10px] bg-secondary" />
                 ))}
             </div>
         );
@@ -958,8 +824,8 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
     if (!products || products.length === 0) {
         return (
             <div className="flex flex-col items-center px-6 pb-24 pt-12 text-center">
-                <p className="text-[15px] font-semibold text-[#1A1F36]">Rien de nouveau</p>
-                <p className="mt-1.5 text-[13px] text-[#8E96B0]">
+                <p className="text-[15px] font-semibold text-primary">Rien de nouveau</p>
+                <p className="mt-1.5 text-[13px] text-tertiary">
                     Les boutiques que tu suis n'ont pas encore de produits.
                 </p>
             </div>
@@ -973,66 +839,61 @@ function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size }: { f
                 return (
                     <div key={p.product_id} className="px-4 pb-5">
                         {/* Product image */}
-                        <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block">
-                            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#F5F6FA]">
+                        {/* Full-width card — Instagram feed style */}
+                        <Link href={`/product/${generateSlug(p.product_name, p.product_id)}`} className="group block rounded-[10px] transition duration-100 motion-reduce:transform-none active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
+                            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[10px] bg-secondary">
                                 {p.product_photo ? (
-                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="100vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                    <Image src={p.product_photo} alt={p.product_name} fill sizes="100vw" className="object-cover transition duration-300 motion-reduce:transform-none group-hover:scale-[1.03]" />
                                 ) : (
                                     <div className="flex h-full items-center justify-center">
-                                        <span className="text-3xl font-light text-[#8E96B0]/30">{p.product_name.charAt(0)}</span>
+                                        <span className="font-[family-name:var(--font-barlow)] text-3xl font-light text-primary/15">{p.product_name.charAt(0)}</span>
                                     </div>
                                 )}
-                                <div className="absolute right-3 top-3">
+                                <div className="absolute right-2.5 top-2.5">
                                     <HeartButton
                                         isFavorite={isFav}
                                         onToggle={() => onToggleFav(p.product_id)}
                                         ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.product_name} des favoris`}
-                                        className="bg-white/80 backdrop-blur-sm"
                                     />
                                 </div>
                                 {p.sale_price && (
-                                    <div className="absolute bottom-3 left-3 rounded-md bg-[var(--ts-ochre)] px-2 py-0.5 text-[11px] font-semibold text-white">
+                                    <div className="absolute left-2.5 top-2.5 rounded-md bg-brand-solid px-1.5 py-0.5 font-[family-name:var(--font-barlow)] text-[11px] font-semibold text-white">
                                         -{Math.round(((p.product_price - p.sale_price) / p.product_price) * 100)}%
                                     </div>
                                 )}
                             </div>
                         </Link>
 
-                        {/* Product info with merchant photo on the left */}
-                        <div className="mt-2 flex items-start gap-2.5">
-                            {/* Merchant photo — clickable to shop */}
+                        {/* Product info — merchant avatar + details */}
+                        <div className="mt-2.5 flex items-start gap-2.5">
                             <Link
                                 href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
-                                className="mt-0.5 shrink-0 transition active:opacity-70"
+                                className="mt-0.5 shrink-0 rounded-full transition active:opacity-70 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             >
-                                <div className="size-8 overflow-hidden rounded-full bg-[#F5F6FA] border border-[#E2E5F0]">
+                                <div className="size-8 overflow-hidden rounded-full bg-secondary">
                                     {p.merchant_photo ? (
-                                        <img src={p.merchant_photo} alt={p.merchant_name} className="h-full w-full object-cover" />
+                                        <Image src={p.merchant_photo} alt={p.merchant_name} width={32} height={32} className="h-full w-full object-cover" />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-[10px] font-bold text-[#4268FF]">
+                                        <div className="flex h-full items-center justify-center font-[family-name:var(--font-barlow)] text-[10px] font-bold text-brand-secondary">
                                             {p.merchant_name.charAt(0)}
                                         </div>
                                     )}
                                 </div>
                             </Link>
 
-                            {/* Name + price */}
                             <div className="min-w-0 flex-1">
-                                <Link
-                                    href={`/shop/${generateSlug(p.merchant_name, p.merchant_id)}`}
-                                    className="text-[12px] font-semibold text-[#8E96B0] transition active:opacity-70"
-                                >
-                                    {p.merchant_name}
-                                </Link>
-                                <p className="truncate text-[14px] font-medium text-[#1A1F36]">{p.product_name}</p>
-                                <div className="mt-0.5 flex items-baseline gap-2">
+                                <p className="truncate font-[family-name:var(--font-barlow)] text-[14px] font-bold tracking-[-0.2px] text-primary">{p.product_name}</p>
+                                <p className="mt-0.5 font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
+                                    {p.merchant_name} · {p.distance_km < 1 ? `${Math.round(p.distance_km * 1000)}m` : `${p.distance_km.toFixed(1)}km`}
+                                </p>
+                                <div className="mt-0.5 flex items-baseline gap-1.5">
                                     {p.sale_price ? (
                                         <>
-                                            <span className="text-[13px] text-[#8E96B0]">{p.sale_price.toFixed(2)} €</span>
-                                            <span className="text-[12px] text-[#8E96B0]/60 line-through">{p.product_price.toFixed(2)} €</span>
+                                            <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">{p.sale_price.toFixed(2)} €</span>
+                                            <span className="font-[family-name:var(--font-inter)] text-[11px] text-tertiary line-through">{p.product_price.toFixed(2)} €</span>
                                         </>
                                     ) : (
-                                        <span className="text-[13px] text-[#8E96B0]">{p.product_price.toFixed(2)} €</span>
+                                        <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">{p.product_price.toFixed(2)} €</span>
                                     )}
                                 </div>
                             </div>

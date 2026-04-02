@@ -3,8 +3,8 @@
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MarkerPin01 } from "@untitledui/icons";
-import { motion, useInView } from "motion/react";
+import { AlertTriangle } from "@untitledui/icons";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import { HeartButton } from "./heart-button";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
@@ -25,7 +25,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
-    id, name, price, photo, category, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className,
+    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className,
 }: ProductCardProps) {
     const safeDistance = distance ?? 0;
     const formattedDistance = safeDistance < 1
@@ -33,43 +33,47 @@ export function ProductCard({
         : `${safeDistance.toFixed(1)}km`;
 
     const isLow = stockQuantity > 0 && stockQuantity <= 3;
-    const isOut = stockQuantity === 0;
+    const hasPromo = salePrice != null && salePrice < price;
     const ref = useRef<HTMLAnchorElement>(null);
+    const prefersReducedMotion = useReducedMotion();
     const inView = useInView(ref, { once: true, margin: "-40px" });
 
     return (
         <motion.div
-            style={{ opacity: inView ? 1 : 0, y: inView ? 0 : 16 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.35, ease: "easeOut" }}
         >
         <Link
             ref={ref}
             href={`/product/${generateSlug(name, id)}`}
-            className={cx("group block", className)}
+            aria-label={`${name} — ${merchantName} — ${hasPromo ? salePrice!.toFixed(2) : price.toFixed(2)} €`}
+            className={cx(
+                "group block overflow-hidden rounded-[10px] transition duration-100 motion-reduce:transform-none active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
+                className,
+            )}
         >
-            {/* Photo — square, neutral bg, no border/shadow */}
-            <div className="relative aspect-square w-full overflow-hidden bg-[#F8F9FC]">
+            {/* Image — 3:4 ratio */}
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[10px] bg-secondary">
                 {photo ? (
                     <Image
                         src={photo}
                         alt={name}
                         fill
                         sizes="(max-width: 768px) 50vw, 25vw"
-                        className={cx(
-                            "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",
-                            isOut && "opacity-50",
-                        )}
+                        className="h-full w-full object-cover transition duration-300 motion-reduce:transform-none md:group-hover:scale-[1.03]"
+                        loading="lazy"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
-                        <span className="text-4xl font-light text-[#8E96B0]/10">
+                    <div className="flex h-full items-center justify-center" aria-hidden="true">
+                        <span className="font-[family-name:var(--font-barlow)] text-3xl font-light text-primary/15">
                             {name.charAt(0)}
                         </span>
                     </div>
                 )}
 
-                {/* Heart — outline only, no bg circle */}
-                <div className="absolute right-2.5 top-2.5">
+                {/* Heart — white circle with shadow, 44px touch target */}
+                <div className="absolute right-2 top-2">
                     <HeartButton
                         isFavorite={isFavorite}
                         onToggle={onToggleFavorite}
@@ -77,50 +81,49 @@ export function ProductCard({
                     />
                 </div>
 
-                {/* Promo tag — discret, couleurs Two-Step */}
-                {salePrice && price > 0 && (
-                    <div className="absolute left-2.5 bottom-2.5 rounded-sm bg-[var(--ts-ochre)] px-1.5 py-0.5 text-[10px] font-medium text-white">
-                        -{Math.round(((price - salePrice) / price) * 100)}%
+                {/* Promo badge — blue */}
+                {hasPromo && (
+                    <div className="absolute left-2 top-2 rounded-md bg-brand-solid px-1.5 py-0.5 font-[family-name:var(--font-barlow)] text-[11px] font-semibold text-white">
+                        -{Math.round(((price - salePrice!) / price) * 100)}%
+                    </div>
+                )}
+
+                {/* Low stock badge */}
+                {isLow && (
+                    <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-md bg-warning-solid px-1.5 py-0.5 font-[family-name:var(--font-inter)] text-[10px] font-medium text-white">
+                        <AlertTriangle className="size-2.5" aria-hidden="true" />
+                        Plus que {stockQuantity}
                     </div>
                 )}
             </div>
 
-            {/* Info — Farfetch hierarchy, light text for dark bg */}
-            <div className="mt-3 space-y-0.5">
-                {/* Category — small, muted */}
-                {category && (
-                    <p className="text-[11px] font-light text-[#1A1F36]/35">{category}</p>
-                )}
+            {/* Info — Modèle B: nom, boutique · distance, prix */}
+            <div className="px-0.5 pb-1 pt-2.5">
+                {/* Product name */}
+                <p className="truncate font-[family-name:var(--font-barlow)] text-[13px] font-bold leading-tight text-primary tracking-[-0.2px]">
+                    {name}
+                </p>
 
-                {/* Merchant — bold */}
-                <p className="text-[13px] font-bold text-[#1A1F36]">{merchantName}</p>
-
-                {/* Product name — normal weight, allows wrapping */}
-                <p className="text-[13px] leading-snug text-[#1A1F36]/60">{name}</p>
+                {/* Merchant · distance */}
+                <p className="mt-0.5 truncate font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
+                    {merchantName} · {formattedDistance}
+                </p>
 
                 {/* Price */}
-                <div className="flex items-baseline gap-2 pt-0.5">
-                    {salePrice ? (
+                <div className="mt-1 flex items-baseline gap-1.5">
+                    {hasPromo ? (
                         <>
-                            <span className="text-[13px] text-[#1A1F36]">{salePrice.toFixed(2)} €</span>
-                            <span className="text-[11px] text-[#1A1F36]/30 line-through">{price.toFixed(2)} €</span>
+                            <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">
+                                {salePrice!.toFixed(2)} €
+                            </span>
+                            <span className="font-[family-name:var(--font-inter)] text-[11px] text-tertiary line-through">
+                                {price.toFixed(2)} €
+                            </span>
                         </>
                     ) : (
-                        <span className="text-[13px] text-[#1A1F36]">{price.toFixed(2)} €</span>
-                    )}
-                </div>
-
-                {/* Distance + stock — subtle footer */}
-                <div className="flex items-center gap-2 pt-1">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-[#1A1F36]/30">
-                        <MarkerPin01 className="size-2.5" aria-hidden="true" />
-                        {formattedDistance}
-                    </span>
-                    {isOut && (
-                        <span className="text-[10px] text-[#1A1F36]/30">Indisponible</span>
-                    )}
-                    {isLow && (
-                        <span className="text-[10px] text-[#4268FF]">Dernières pièces</span>
+                        <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">
+                            {price.toFixed(2)} €
+                        </span>
                     )}
                 </div>
             </div>

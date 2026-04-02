@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Drawer } from "vaul";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { ChevronRight } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 import { useCategories, type Category } from "@/hooks/use-categories";
 
@@ -16,6 +17,7 @@ interface CategoryDrawerProps {
 export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryChange }: CategoryDrawerProps) {
     const { data } = useCategories();
     const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
+    const prefersReducedMotion = useReducedMotion();
 
     const roots = data?.roots ?? [];
     const children = data?.children ?? new Map();
@@ -37,9 +39,9 @@ export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryC
     return (
         <Drawer.Root open={open} onOpenChange={onOpenChange}>
             <Drawer.Portal>
-                <Drawer.Overlay className="fixed inset-0 z-[60] bg-black/40" />
+                <Drawer.Overlay className="fixed inset-0 z-[60] bg-overlay" />
                 <Drawer.Content
-                    className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-2xl bg-[var(--ts-bg)] focus:outline-none"
+                    className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-2xl bg-primary focus:outline-none"
                     style={{
                         maxHeight: "85vh",
                         paddingBottom: "env(safe-area-inset-bottom)",
@@ -49,11 +51,11 @@ export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryC
                     <Drawer.Title className="sr-only">Toutes les catégories</Drawer.Title>
 
                     {/* Drag handle */}
-                    <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-[var(--ts-text)]/10" />
+                    <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-quaternary" />
 
                     {/* Header */}
                     <div className="shrink-0 px-5 pb-3 pt-4">
-                        <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">Toutes les catégories</h2>
+                        <h2 className="text-[15px] font-semibold text-primary">Toutes les catégories</h2>
                     </div>
 
                     {/* Scrollable list */}
@@ -69,23 +71,23 @@ export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryC
                                     <button
                                         type="button"
                                         onClick={() => handleRootTap(cat.slug)}
+                                        aria-expanded={hasSubs ? isExpanded : undefined}
                                         className={cx(
-                                            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-semibold transition duration-100 ease-linear",
+                                            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-semibold transition duration-100 ease-linear focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                             rootActive
-                                                ? "bg-[var(--ts-accent)]/10 text-[var(--ts-accent)]"
-                                                : "text-[var(--ts-text)] hover:bg-[var(--ts-bg-input)]",
+                                                ? "bg-brand-secondary text-brand-secondary"
+                                                : "text-primary hover:bg-secondary",
                                         )}
                                     >
-                                        <span>
-                                            {cat.emoji ? `${cat.emoji} ` : ""}{cat.label}
-                                        </span>
+                                        <span>{cat.label}</span>
                                         {hasSubs && (
-                                            <span
-                                                className="text-[11px] transition-transform duration-150"
-                                                style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
-                                            >
-                                                ›
-                                            </span>
+                                            <ChevronRight
+                                                className={cx(
+                                                    "size-3.5 transition-transform duration-150",
+                                                    isExpanded && "rotate-90",
+                                                )}
+                                                aria-hidden="true"
+                                            />
                                         )}
                                     </button>
 
@@ -96,19 +98,20 @@ export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryC
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.18, ease: "easeInOut" }}
+                                                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.18, ease: "easeInOut" }}
                                                 style={{ overflow: "hidden" }}
                                             >
-                                                <div className="flex flex-wrap gap-1.5 px-3 pb-2 pt-1">
+                                                <div className="flex flex-wrap gap-1.5 px-3 pb-2 pt-1" role="group" aria-label={cat.label}>
                                                     {/* "Tout [Category]" pill */}
                                                     <button
                                                         type="button"
                                                         onClick={() => onCategoryChange(cat.slug)}
+                                                        aria-pressed={activeCategory === cat.slug}
                                                         className={cx(
-                                                            "rounded-full px-2.5 py-1 text-[11px] font-semibold transition duration-100 ease-linear",
+                                                            "min-h-[44px] rounded-full px-3 py-2.5 text-[12px] font-semibold transition duration-100 ease-linear focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                                             activeCategory === cat.slug
-                                                                ? "bg-[var(--ts-accent)]/10 text-[var(--ts-accent)]"
-                                                                : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                                                                ? "bg-brand-secondary text-brand-secondary"
+                                                                : "bg-secondary text-quaternary",
                                                         )}
                                                     >
                                                         Tout {cat.label}
@@ -119,14 +122,15 @@ export function CategoryDrawer({ open, onOpenChange, activeCategory, onCategoryC
                                                             key={sub.slug}
                                                             type="button"
                                                             onClick={() => onCategoryChange(sub.slug)}
+                                                            aria-pressed={activeCategory === sub.slug}
                                                             className={cx(
-                                                                "rounded-full px-2.5 py-1 text-[11px] font-semibold transition duration-100 ease-linear",
+                                                                "min-h-[44px] rounded-full px-3 py-2.5 text-[12px] font-semibold transition duration-100 ease-linear focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                                                 activeCategory === sub.slug
-                                                                    ? "bg-[var(--ts-accent)]/10 text-[var(--ts-accent)]"
-                                                                    : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                                                                    ? "bg-brand-secondary text-brand-secondary"
+                                                                    : "bg-secondary text-quaternary",
                                                             )}
                                                         >
-                                                            {sub.emoji ? `${sub.emoji} ` : ""}{sub.label}
+                                                            {sub.label}
                                                         </button>
                                                     ))}
                                                 </div>

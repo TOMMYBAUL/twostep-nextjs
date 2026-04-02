@@ -24,12 +24,12 @@ export function StickyCtaBar({
 
     return (
         <div
-            className="fixed inset-x-0 bottom-0 z-40 border-t border-secondary bg-primary md:hidden"
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            className="fixed inset-x-0 z-50 border-t border-secondary bg-primary md:hidden"
+            style={{ bottom: "calc(56px + env(safe-area-inset-bottom, 0px))" }}
         >
             <div className="mx-auto flex max-w-lg items-center justify-between gap-4 px-5 py-3">
                 {/* Price */}
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex items-baseline gap-1.5 tabular-nums">
                     <span className="text-[15px] font-bold text-primary">
                         {displayPrice.toFixed(2)} €
                     </span>
@@ -45,7 +45,7 @@ export function StickyCtaBar({
                     <button
                         type="button"
                         disabled
-                        className="rounded-[12px] bg-disabled px-6 py-3 text-[13px] font-bold text-disabled"
+                        className="min-h-[44px] rounded-[12px] bg-disabled px-6 py-3 text-[13px] font-bold text-disabled"
                     >
                         Indisponible
                     </button>
@@ -53,7 +53,7 @@ export function StickyCtaBar({
                     <button
                         type="button"
                         disabled
-                        className="rounded-[12px] bg-secondary px-6 py-3 text-[13px] font-semibold text-tertiary"
+                        className="min-h-[44px] rounded-[12px] bg-secondary px-6 py-3 text-[13px] font-semibold text-tertiary"
                     >
                         ✓ Prévenu
                     </button>
@@ -61,7 +61,7 @@ export function StickyCtaBar({
                     <button
                         type="button"
                         onClick={onOpenSizeSheet}
-                        className="rounded-[12px] bg-brand-solid px-6 py-3 text-[13px] font-bold text-white transition active:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        className="min-h-[44px] rounded-[12px] bg-brand-solid px-6 py-3 text-[13px] font-bold text-white transition-colors active:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                         Choisir une taille
                     </button>
@@ -70,7 +70,7 @@ export function StickyCtaBar({
                         type="button"
                         onClick={onIntent}
                         disabled={intentLoading}
-                        className="flex items-center gap-2 rounded-[12px] bg-brand-solid px-6 py-3 text-[13px] font-bold text-white transition active:opacity-90 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        className="flex min-h-[44px] items-center gap-2 rounded-[12px] bg-brand-solid px-6 py-3 text-[13px] font-bold text-white transition-colors active:opacity-90 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                         {intentLoading ? (
                             <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

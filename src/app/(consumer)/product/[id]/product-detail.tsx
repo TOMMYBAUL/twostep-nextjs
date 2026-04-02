@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ChevronRight, Phone01, XClose, Building07 } from "@untitledui/icons";
+import { ArrowLeft, ChevronRight, Phone01, XClose, Building07, AlertCircle, Lightning02 } from "@untitledui/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
 import { cx } from "@/utils/cx";
@@ -129,7 +129,21 @@ export default function ProductDetailClient() {
     const [phoneCopied, setPhoneCopied] = useState(false);
     const [intentSent, setIntentSent] = useState(false);
     const [intentLoading, setIntentLoading] = useState(false);
+    const [intentError, setIntentError] = useState(false);
     const [othersCount, setOthersCount] = useState(0);
+
+    /* ── Escape key handler for sheets ── */
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                if (contactSheetOpen) setContactSheetOpen(false);
+                else if (sizeChartOpen) setSizeChartOpen(false);
+                else if (sizeSheetOpen) setSizeSheetOpen(false);
+            }
+        };
+        document.addEventListener("keydown", handleEscape);
+        return () => document.removeEventListener("keydown", handleEscape);
+    }, [sizeSheetOpen, sizeChartOpen, contactSheetOpen]);
 
     /* ── Distance ── */
 
@@ -168,9 +182,10 @@ export default function ProductDetailClient() {
                     selected_size: selectedSize,
                 }),
             });
-            if (res.ok) setIntentSent(true);
+            if (res.ok) { setIntentSent(true); setIntentError(false); }
+            else setIntentError(true);
         } catch {
-            // Silently fail
+            setIntentError(true);
         } finally {
             setIntentLoading(false);
         }
@@ -290,7 +305,7 @@ export default function ProductDetailClient() {
                     </h1>
 
                     {/* Price line */}
-                    <div className="mb-5 flex items-baseline gap-2.5">
+                    <div className="mb-5 flex items-baseline gap-2.5 tabular-nums">
                         <span className="text-base font-normal text-secondary">
                             {displayPrice?.toFixed(2)}&nbsp;&euro;
                         </span>
@@ -387,11 +402,20 @@ export default function ProductDetailClient() {
                     {/* ── Social proof ── */}
                     {othersCount > 0 && !intentSent && quantity > 0 && (
                         <div className="mt-4 flex items-center gap-2 rounded-xl bg-error-secondary px-3.5 py-2.5">
-                            <span className="text-[13px]" aria-hidden="true">&#x1F525;</span>
+                            <Lightning02 className="size-4 text-error-primary" aria-hidden="true" />
                             <p className="text-[11px] font-medium text-error-primary">
                                 {othersCount === 1
                                     ? "1 autre personne est aussi intéressée"
                                     : `${othersCount} autres personnes sont aussi intéressées`}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Intent error */}
+                    {intentError && (
+                        <div className="mt-3 rounded-xl bg-error-secondary px-3.5 py-2.5" role="alert">
+                            <p className="text-[11px] font-medium text-error-primary">
+                                Erreur lors de l'envoi — réessaie dans quelques instants.
                             </p>
                         </div>
                     )}
@@ -441,7 +465,20 @@ export default function ProductDetailClient() {
                         </button>
                     </div>
                 </div>
-            ) : null}
+            ) : (
+                <div className="flex flex-col items-center justify-center px-6 pb-24 pt-12 text-center md:w-1/2">
+                    <AlertCircle className="size-10 text-tertiary" aria-hidden="true" />
+                    <p className="mt-4 text-[15px] font-semibold text-primary">Produit introuvable</p>
+                    <p className="mt-1.5 text-[13px] text-tertiary">Ce produit n'est plus disponible ou le lien est invalide.</p>
+                    <button
+                        type="button"
+                        onClick={() => window.location.href = "/discover"}
+                        className="mt-4 rounded-full bg-brand-solid px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                    >
+                        Retour à l'accueil
+                    </button>
+                </div>
+            )}
 
             {/* ══════════════════════════════════════════════
                 STICKY CTA BAR (mobile only)
@@ -471,6 +508,9 @@ export default function ProductDetailClient() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 z-50 bg-black/60"
+                            role="button"
+                            tabIndex={-1}
+                            aria-label="Fermer"
                             onClick={() => setSizeSheetOpen(false)}
                         />
                         <motion.div
@@ -478,7 +518,7 @@ export default function ProductDetailClient() {
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={springOrInstant}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-primary"
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto overscroll-contain rounded-t-2xl bg-primary"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                             role="dialog"
                             aria-modal="true"
@@ -543,6 +583,9 @@ export default function ProductDetailClient() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 z-50 bg-black/60"
+                            role="button"
+                            tabIndex={-1}
+                            aria-label="Fermer"
                             onClick={() => setSizeChartOpen(false)}
                         />
                         <motion.div
@@ -550,7 +593,7 @@ export default function ProductDetailClient() {
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={springOrInstant}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-primary"
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto overscroll-contain rounded-t-2xl bg-primary"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
                             role="dialog"
                             aria-modal="true"
@@ -639,6 +682,9 @@ export default function ProductDetailClient() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 z-50 bg-black/60"
+                            role="button"
+                            tabIndex={-1}
+                            aria-label="Fermer"
                             onClick={() => setContactSheetOpen(false)}
                         />
                         <motion.div

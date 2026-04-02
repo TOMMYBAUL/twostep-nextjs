@@ -20,7 +20,7 @@ export default function ConsumerLayout({
         <QueryProvider>
             <ToastProvider>
                 <div className="flex min-h-dvh flex-col">
-                    <main className="flex-1 pb-16">{children}</main>
+                    <main id="main-content" className="flex-1 pb-20">{children}</main>
                     <TabBar />
                 </div>
                 <WelcomeGate />

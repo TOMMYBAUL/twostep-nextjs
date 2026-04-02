@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useRef, useCallback } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const TABS = ["Explorer", "Pour toi", "Suivis"] as const;
@@ -18,36 +19,56 @@ interface FeedHeaderProps {
 }
 
 export function FeedHeader({ activeTab, onTabChange }: FeedHeaderProps) {
+    const prefersReducedMotion = useReducedMotion();
+    const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
+        let nextIndex: number | null = null;
+        if (e.key === "ArrowRight") nextIndex = (index + 1) % TABS.length;
+        else if (e.key === "ArrowLeft") nextIndex = (index - 1 + TABS.length) % TABS.length;
+        else if (e.key === "Home") nextIndex = 0;
+        else if (e.key === "End") nextIndex = TABS.length - 1;
+
+        if (nextIndex !== null) {
+            e.preventDefault();
+            const nextTab = TAB_MAP[TABS[nextIndex]];
+            onTabChange(nextTab);
+            tabRefs.current[nextIndex]?.focus();
+        }
+    }, [onTabChange]);
+
     return (
         <div
-            className="flex border-b border-[var(--ts-border)]"
+            className="flex border-b border-secondary"
             role="tablist"
             aria-label="Feed"
         >
-            {TABS.map((label) => {
+            {TABS.map((label, index) => {
                 const value = TAB_MAP[label];
                 const isActive = activeTab === value;
                 return (
                     <button
                         key={value}
+                        ref={(el) => { tabRefs.current[index] = el; }}
                         type="button"
                         role="tab"
                         aria-selected={isActive}
                         tabIndex={isActive ? 0 : -1}
                         onClick={() => onTabChange(value)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
                         className={cx(
-                            "relative flex-1 py-2.5 text-center text-[13px] font-semibold transition duration-100 ease-linear",
+                            "relative flex-1 py-3 text-center font-[family-name:var(--font-barlow)] text-[14px] font-semibold transition duration-100 ease-linear focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                             isActive
-                                ? "text-[var(--ts-text)]"
-                                : "text-[var(--ts-text-secondary)]",
+                                ? "text-primary"
+                                : "text-tertiary",
                         )}
                     >
                         {label}
                         {isActive && (
                             <motion.div
                                 layoutId="feed-tab-indicator"
-                                className="absolute bottom-0 left-1/2 h-[2.5px] w-8 -translate-x-1/2 rounded-full bg-[var(--ts-accent)]"
-                                transition={{ type: "spring", stiffness: 200, damping: 30 }}
+                                className="absolute bottom-0 left-1/2 h-[2.5px] w-8 -translate-x-1/2 rounded-full bg-brand-solid"
+                                transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30 }}
                             />
                         )}
                     </button>

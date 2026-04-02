@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Home02, SearchMd, Tag01, User01 } from "@untitledui/icons";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const tabs = [
@@ -17,11 +17,11 @@ const tabs = [
 function TabBarInner() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const prefersReducedMotion = useReducedMotion();
 
     return (
         <nav
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-md"
-            role="tablist"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
             aria-label="Navigation principale"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
@@ -38,21 +38,20 @@ function TabBarInner() {
                         <Link
                             key={tab.href}
                             href={tab.href}
-                            role="tab"
-                            aria-selected={isActive}
+                            aria-current={isActive ? "page" : undefined}
                             aria-label={tab.label}
                             className={cx(
-                                "relative flex flex-1 flex-col items-center gap-0.5 pb-1 pt-2 text-[10px] font-medium transition duration-150 ease-out",
+                                "relative flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5 text-[11px] font-medium transition duration-150 ease-out focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                 isActive
-                                    ? "text-[#4268FF]"
-                                    : "text-gray-400 active:text-[#4268FF]",
+                                    ? "text-brand-secondary"
+                                    : "text-tertiary active:text-brand-secondary",
                             )}
                         >
                             {isActive && (
                                 <motion.span
                                     layoutId="tab-indicator"
-                                    className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-[#4268FF]"
-                                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                    className="absolute -top-px left-1/2 h-[2.5px] w-6 -translate-x-1/2 rounded-full bg-brand-solid"
+                                    transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 35 }}
                                 />
                             )}
                             <Icon
@@ -70,9 +69,24 @@ function TabBarInner() {
     );
 }
 
+function TabBarSkeleton() {
+    return (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+            <div className="mx-auto flex max-w-lg items-center justify-around">
+                {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5">
+                        <div className="size-[22px] rounded-full bg-secondary animate-pulse" />
+                        <div className="h-2 w-8 rounded bg-secondary animate-pulse" />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export function TabBar() {
     return (
-        <Suspense fallback={null}>
+        <Suspense fallback={<TabBarSkeleton />}>
             <TabBarInner />
         </Suspense>
     );
