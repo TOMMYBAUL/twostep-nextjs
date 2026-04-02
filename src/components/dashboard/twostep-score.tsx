@@ -19,7 +19,7 @@ export function TwoStepScore({ score }: ScoreProps) {
     const label = getScoreLabel(score);
 
     return (
-        <div className="rounded-xl bg-white px-5 py-4">
+        <div className="rounded-xl bg-primary px-5 py-4">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-tertiary">Score Two-Step</h3>
@@ -30,7 +30,7 @@ export function TwoStepScore({ score }: ScoreProps) {
                     </div>
                 </div>
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
                 <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${score}%`, background: color }} />
             </div>
             {score < 80 && (

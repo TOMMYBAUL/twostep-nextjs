@@ -59,7 +59,7 @@ export function AchievementModal() {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                        className="rounded-3xl bg-white px-8 py-10 text-center"
+                        className="rounded-3xl bg-primary px-8 py-10 text-center"
                         style={{ maxWidth: 360, boxShadow: "0 8px 40px rgba(26,31,54,0.2)" }}
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -78,12 +78,12 @@ export function AchievementModal() {
                         <p className="mt-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: current.color }}>
                             {current.gamifiedLabel}
                         </p>
-                        <p className="mt-2 text-[22px] font-extrabold text-[#1A1F36]">{current.label}</p>
-                        <p className="mt-2 text-sm text-[#8E96B0] leading-relaxed">{current.subtitle}</p>
+                        <p className="mt-2 text-[22px] font-extrabold text-primary">{current.label}</p>
+                        <p className="mt-2 text-sm text-tertiary leading-relaxed">{current.subtitle}</p>
 
                         <button
                             onClick={() => { dismiss(); router.push("/dashboard/achievements"); }}
-                            className="mt-6 w-full rounded-xl py-3 text-sm font-bold text-white transition hover:opacity-90"
+                            className="mt-6 w-full rounded-xl py-3 text-sm font-bold text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             style={{ background: "linear-gradient(135deg, #8E96B0, #C4956A)" }}
                         >
                             Voir mes trophées
@@ -91,7 +91,7 @@ export function AchievementModal() {
 
                         <button
                             onClick={dismiss}
-                            className="mt-3 text-xs text-[#8E96B0] opacity-70 hover:opacity-100 transition"
+                            className="mt-3 text-xs text-tertiary opacity-70 hover:opacity-100 transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             Continuer
                         </button>

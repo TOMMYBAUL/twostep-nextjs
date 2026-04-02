@@ -18,18 +18,18 @@ export function AchievementWidget({ achievements, loading }: Props) {
     const extra = achievements.length - 3;
 
     return (
-        <div className="rounded-xl bg-white px-5 py-4">
+        <div className="rounded-xl bg-primary px-5 py-4">
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-tertiary">
                     Mes trophées
                 </h3>
-                <Link href="/dashboard/achievements" className="text-xs font-medium text-[#4268FF] hover:underline no-underline">
+                <Link href="/dashboard/achievements" className="text-xs font-medium text-brand-secondary hover:underline no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                     Tout voir
                 </Link>
             </div>
 
             {latest.length === 0 ? (
-                <p className="text-xs text-[#8E96B0]">
+                <p className="text-xs text-tertiary">
                     Ajoutez votre premier produit pour débloquer votre premier trophée !
                 </p>
             ) : (
@@ -48,7 +48,7 @@ export function AchievementWidget({ achievements, loading }: Props) {
                         );
                     })}
                     {extra > 0 && (
-                        <span className="text-xs text-[#8E96B0] ml-1">+ {extra} autre{extra > 1 ? "s" : ""}</span>
+                        <span className="text-xs text-tertiary ml-1">+ {extra} autre{extra > 1 ? "s" : ""}</span>
                     )}
                 </div>
             )}

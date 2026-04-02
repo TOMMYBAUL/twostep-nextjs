@@ -36,9 +36,9 @@ export function TodayTasks({ stats }: { stats: DashboardStats }) {
 
     if (tasks.length === 0) {
         return (
-            <div className="rounded-xl bg-[#E8F8EF] px-5 py-4">
-                <p className="text-sm font-semibold text-[#5a9474]">Tout est en ordre !</p>
-                <p className="mt-0.5 text-xs text-[#5a9474]/80">Votre boutique est bien configurée. Continuez comme ça.</p>
+            <div className="rounded-xl bg-success-secondary px-5 py-4">
+                <p className="text-sm font-semibold text-success-primary">Tout est en ordre !</p>
+                <p className="mt-0.5 text-xs text-success-primary/80">Votre boutique est bien configurée. Continuez comme ça.</p>
             </div>
         );
     }
@@ -48,9 +48,9 @@ export function TodayTasks({ stats }: { stats: DashboardStats }) {
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-tertiary">{"Aujourd'hui"}</h3>
             <div className="space-y-2">
                 {tasks.map((task) => (
-                    <Link key={task.id} href={task.href} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 transition hover:shadow-sm no-underline group">
-                        <span className="size-2 shrink-0 rounded-full" style={{ background: priorityDot[task.priority] }} />
-                        <span className="flex-1 text-sm text-primary group-hover:text-[#4268FF] transition">{task.label}</span>
+                    <Link key={task.id} href={task.href} className="flex items-center gap-3 rounded-xl bg-primary px-4 py-3 transition hover:shadow-sm no-underline group focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
+                        <span className="size-2 shrink-0 rounded-full" style={{ background: priorityDot[task.priority] }} aria-hidden="true" />
+                        <span className="flex-1 text-sm text-primary group-hover:text-brand-secondary transition">{task.label}</span>
                         <span className="text-xs text-tertiary">→</span>
                     </Link>
                 ))}

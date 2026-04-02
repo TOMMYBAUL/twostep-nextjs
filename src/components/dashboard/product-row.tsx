@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { StockBadge } from "./stock-badge";
 
 interface ProductRowProps {
@@ -37,11 +38,11 @@ const CATEGORY_EMOJIS: Record<string, string> = {
 };
 
 export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex, stockControls }: ProductRowProps) {
-    const bg = CATEGORY_COLORS[category ?? ""] ?? "bg-gray-100";
+    const bg = CATEGORY_COLORS[category ?? ""] ?? "bg-secondary";
     const emoji = CATEGORY_EMOJIS[category ?? ""] ?? "📦";
 
     const thumbnail = photoUrl ? (
-        <img src={photoUrl} alt={name} className="size-[42px] shrink-0 rounded-[10px] object-cover" />
+        <Image src={photoUrl} alt={name} width={42} height={42} className="size-[42px] shrink-0 rounded-[10px] object-cover" />
     ) : (
         <div className={`flex size-[42px] shrink-0 items-center justify-center rounded-[10px] text-xl ${bg}`}>
             {emoji}
@@ -50,13 +51,13 @@ export function ProductRow({ id, name, category, price, stockQuantity, photoUrl,
 
     const info = (
         <div className="flex-1 min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-900">{name}</p>
-            {category && <p className="text-xs text-gray-400">{category}</p>}
+            <p className="truncate text-sm font-semibold text-primary">{name}</p>
+            {category && <p className="text-xs text-quaternary">{category}</p>}
         </div>
     );
 
     const price_ = (
-        <p className="w-20 text-right text-sm font-semibold text-gray-900">
+        <p className="w-20 text-right text-sm font-semibold text-primary">
             {price != null ? `${price.toFixed(2)} €` : "—"}
         </p>
     );
@@ -65,7 +66,7 @@ export function ProductRow({ id, name, category, price, stockQuantity, photoUrl,
     // elements inside an <a> tag (invalid HTML). The edit link wraps only the left side.
     if (stockControls) {
         return (
-            <div className={`animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-white px-4 py-3.5`}>
+            <div className={`animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-primary px-4 py-3.5`}>
                 <Link href={`/dashboard/products/${id}/edit`} className="flex min-w-0 flex-1 items-center gap-4 no-underline">
                     {thumbnail}
                     {info}
@@ -79,7 +80,7 @@ export function ProductRow({ id, name, category, price, stockQuantity, photoUrl,
     return (
         <Link
             href={`/dashboard/products/${id}/edit`}
-            className={`product-row-ts animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-white px-4 py-3.5 no-underline`}
+            className={`product-row-ts animate-fade-up stagger-${Math.min(staggerIndex + 5, 10)} flex items-center gap-4 rounded-xl bg-primary px-4 py-3.5 no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none`}
         >
             {thumbnail}
             {info}
@@ -91,7 +92,7 @@ export function ProductRow({ id, name, category, price, stockQuantity, photoUrl,
             </div>
 
             {/* Arrow */}
-            <span className="row-arrow text-gray-300 opacity-0 transition-opacity">→</span>
+            <span className="row-arrow text-quaternary opacity-0 transition-opacity" aria-hidden="true">→</span>
         </Link>
     );
 }

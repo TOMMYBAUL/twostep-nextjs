@@ -17,5 +17,5 @@ const ICON_MAP: Record<AchievementIcon, FC<SVGProps<SVGSVGElement>>> = {
 
 export function AchievementIconRenderer({ icon, size }: { icon: AchievementIcon; size: number }) {
     const Icon = ICON_MAP[icon];
-    return <Icon style={{ width: size, height: size }} className="text-white" />;
+    return <Icon style={{ width: size, height: size }} className="text-white" aria-hidden="true" />;
 }

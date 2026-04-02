@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { cx } from "@/utils/cx";
 
 const navItems = [
@@ -93,15 +94,15 @@ function NavItem({ href, label, icon, isActive }: { href: string; label: string;
         <Link
             href={href}
             className={cx(
-                "nav-item relative flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 whitespace-nowrap transition-colors",
+                "nav-item relative flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 min-h-[44px] whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                 isActive
                     ? "nav-item-active bg-white/20 text-white"
                     : "text-white/60 hover:bg-white/10",
             )}
         >
-            {icon}
+            <span aria-hidden="true">{icon}</span>
             <span className={cx("nav-label text-[13px]", isActive && "font-semibold")}>{label}</span>
-            <span className="nav-tooltip absolute left-[60px] top-1/2 -translate-y-1/2 rounded-md bg-gray-900 px-2.5 py-1 text-[11px] text-white whitespace-nowrap z-10">
+            <span className="nav-tooltip absolute left-[60px] top-1/2 -translate-y-1/2 rounded-md bg-primary-solid px-2.5 py-1 text-[11px] text-white whitespace-nowrap z-10">
                 {label}
             </span>
         </Link>
@@ -115,7 +116,7 @@ export function DashboardSidebar() {
         <aside className="sidebar-ts hidden md:flex h-screen flex-col shrink-0">
             {/* Logo */}
             <div className="flex h-[60px] items-center gap-2.5 px-4">
-                <img src="/logo-icon.webp?v=2" alt="Two-Step" className="size-9 shrink-0 rounded-[10px]" />
+                <Image src="/logo-icon.webp?v=2" alt="Two-Step" width={36} height={36} className="shrink-0 rounded-[10px]" />
                 <span className="logo-text font-display text-[15px] font-bold uppercase text-white whitespace-nowrap">
                     Two-Step
                 </span>

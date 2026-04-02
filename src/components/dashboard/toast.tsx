@@ -42,8 +42,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         className={cx(
                             "animate-fade-up rounded-lg px-4 py-3 text-sm font-medium shadow-lg",
                             t.type === "success"
-                                ? "bg-green-800 text-white"
-                                : "bg-red-700 text-white",
+                                ? "bg-success-solid text-white"
+                                : "bg-error-solid text-white",
                         )}
                     >
                         {t.message}

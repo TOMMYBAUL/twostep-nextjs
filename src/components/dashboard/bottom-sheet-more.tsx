@@ -97,8 +97,8 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
         <Drawer.Root open={open} onOpenChange={onOpenChange}>
             <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 z-[60] bg-black/30" />
-                <Drawer.Content className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-2xl bg-white safe-bottom">
-                    <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-gray-300" />
+                <Drawer.Content className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-2xl bg-primary safe-bottom">
+                    <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-quaternary" />
                     <div className="p-4 pb-6">
                         {moreItems.map((item) => {
                             const isActive = pathname.startsWith(item.href);
@@ -107,8 +107,8 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                                     key={item.href}
                                     href={item.href}
                                     onClick={() => onOpenChange(false)}
-                                    className={`flex items-center gap-3 rounded-xl px-4 py-3.5 no-underline transition ${
-                                        isActive ? "bg-[#EEF1FF] text-[#4268FF]" : "text-[#1A1F36] hover:bg-gray-50"
+                                    className={`flex items-center gap-3 rounded-xl px-4 py-3.5 min-h-[44px] no-underline transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
+                                        isActive ? "bg-brand-secondary text-brand-secondary" : "text-primary hover:bg-secondary"
                                     }`}
                                 >
                                     {item.icon}
@@ -117,26 +117,26 @@ export function BottomSheetMore({ open, onOpenChange }: Props) {
                             );
                         })}
 
-                        <div className="my-2 border-t border-gray-100" />
+                        <div className="my-2 border-t border-tertiary" />
 
                         {externalItems.map((item) => (
                             <a
                                 key={item.href}
                                 href={item.href}
                                 onClick={() => onOpenChange(false)}
-                                className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-[#1A1F36] no-underline transition hover:bg-gray-50"
+                                className="flex items-center gap-3 rounded-xl px-4 py-3.5 min-h-[44px] text-primary no-underline transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             >
                                 {item.icon}
                                 <span className="text-sm font-medium">{item.label}</span>
                             </a>
                         ))}
 
-                        <div className="my-2 border-t border-gray-100" />
+                        <div className="my-2 border-t border-tertiary" />
 
                         <button
                             type="button"
                             onClick={() => { onOpenChange(false); window.location.href = "/auth/logout"; }}
-                            className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-[#c4553a] transition hover:bg-red-50"
+                            className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 min-h-[44px] text-error-primary transition hover:bg-error-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

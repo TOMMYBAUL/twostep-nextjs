@@ -38,7 +38,7 @@ export function AchievementToast() {
                     className="fixed left-1/2 top-4 z-[100] -translate-x-1/2"
                 >
                     <div
-                        className="flex items-center gap-3.5 rounded-[20px] bg-white px-5 py-4"
+                        className="flex items-center gap-3.5 rounded-[20px] bg-primary px-5 py-4"
                         style={{
                             border: `2px solid ${current.color}`,
                             boxShadow: `0 4px 20px rgba(26,31,54,0.12)`,
@@ -59,12 +59,13 @@ export function AchievementToast() {
                             <p className="text-[11px] font-extrabold uppercase tracking-wide" style={{ color: current.color }}>
                                 {current.gamifiedLabel}
                             </p>
-                            <p className="text-sm font-bold text-[#1A1F36]">{current.label}</p>
-                            <p className="text-[11px] text-[#8E96B0] mt-0.5">{current.subtitle}</p>
+                            <p className="text-sm font-bold text-primary">{current.label}</p>
+                            <p className="text-[11px] text-tertiary mt-0.5">{current.subtitle}</p>
                         </div>
                         <button
                             onClick={dismiss}
-                            className="shrink-0 text-lg text-[#8E96B0]/30 hover:text-[#8E96B0] transition"
+                            aria-label="Fermer"
+                            className="shrink-0 text-lg text-tertiary/30 hover:text-tertiary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             ✕
                         </button>

@@ -41,7 +41,7 @@ export function IntentSignals({ merchantId }: { merchantId?: string }) {
 
     return (
         <div className="mb-6">
-            <h2 className="mb-3 text-sm font-bold text-[#1A1F36]">
+            <h2 className="mb-3 text-sm font-bold text-primary">
                 Clients en route ({data.length})
             </h2>
             <div className="space-y-2">
@@ -52,17 +52,17 @@ export function IntentSignals({ merchantId }: { merchantId?: string }) {
                     const sizeText = intent.selected_size ? ` — Taille ${intent.selected_size}` : "";
 
                     return (
-                        <div key={intent.id} className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm" style={{ borderLeft: "3px solid #4268FF" }}>
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF0FF] text-lg">
+                        <div key={intent.id} className="flex items-start gap-3 rounded-xl bg-primary p-3 shadow-sm border-l-[3px] border-brand">
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-secondary text-lg" aria-hidden="true">
                                 📍
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="text-[13px] font-semibold text-[#1A1F36]">{name} arrive !</p>
-                                <p className="mt-0.5 text-[11px] text-[#8E96B0]">
+                                <p className="text-[13px] font-semibold text-primary">{name} arrive !</p>
+                                <p className="mt-0.5 text-[11px] text-tertiary">
                                     {productName}{sizeText}
                                 </p>
                             </div>
-                            <span className="shrink-0 text-[10px] text-[#8E96B0]">
+                            <span className="shrink-0 text-[10px] text-tertiary">
                                 il y a {minutesAgo < 1 ? "1" : minutesAgo} min
                             </span>
                         </div>

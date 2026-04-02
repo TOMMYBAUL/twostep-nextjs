@@ -36,11 +36,11 @@ export function AchievementBadge({ def, unlocked, unlockedAt, size = "md" }: Bad
     if (!unlocked) {
         return (
             <div
-                className="flex items-center justify-center rounded-full bg-gray-100"
+                className="flex items-center justify-center rounded-full bg-secondary"
                 style={{ width: s.circle, height: s.circle }}
                 title={`${def.label} — Verrouillé`}
             >
-                <Lock01 style={{ width: s.icon, height: s.icon }} className="text-gray-400" />
+                <Lock01 style={{ width: s.icon, height: s.icon }} className="text-quaternary" aria-hidden="true" />
             </div>
         );
     }
@@ -58,7 +58,7 @@ export function AchievementBadge({ def, unlocked, unlockedAt, size = "md" }: Bad
             }}
             title={`${def.label} — ${unlockedAt ? new Date(unlockedAt).toLocaleDateString("fr-FR") : ""}`}
         >
-            <Icon style={{ width: s.icon, height: s.icon }} className="text-white" />
+            <Icon style={{ width: s.icon, height: s.icon }} className="text-white" aria-hidden="true" />
         </div>
     );
 }
@@ -73,7 +73,7 @@ export function AchievementBadgeCard({ def, unlocked, unlockedAt }: BadgeCardPro
     return (
         <div
             className={`flex items-center gap-3.5 rounded-[20px] px-5 py-4 transition ${
-                unlocked ? "bg-white" : "bg-gray-50 opacity-60"
+                unlocked ? "bg-primary" : "bg-secondary opacity-60"
             }`}
             style={unlocked ? {
                 border: `2px solid ${def.color}`,
@@ -89,16 +89,16 @@ export function AchievementBadgeCard({ def, unlocked, unlockedAt }: BadgeCardPro
                         {def.gamifiedLabel}
                     </p>
                 )}
-                <p className={`text-sm font-bold ${unlocked ? "text-[#1A1F36]" : "text-gray-400"}`}>
+                <p className={`text-sm font-bold ${unlocked ? "text-primary" : "text-quaternary"}`}>
                     {def.label}
                 </p>
-                <p className="text-[11px] text-[#8E96B0] mt-0.5">
+                <p className="text-[11px] text-tertiary mt-0.5">
                     {unlocked
                         ? def.subtitle
                         : `Condition : ${def.subtitle.toLowerCase()}`}
                 </p>
                 {unlocked && unlockedAt && (
-                    <p className="text-[10px] text-[#8E96B0]/60 mt-1">
+                    <p className="text-[10px] text-tertiary/60 mt-1">
                         {new Date(unlockedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                     </p>
                 )}

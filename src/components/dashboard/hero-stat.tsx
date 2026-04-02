@@ -38,12 +38,12 @@ export function HeroStat({ value, label, trend }: HeroStatProps) {
 
     return (
         <div className="text-center">
-            <p className="text-5xl font-bold tracking-tight" style={{ color: "#1A1F36" }}>
+            <p className="text-5xl font-bold tracking-tight text-primary">
                 {animatedValue}
             </p>
             <p className="mt-1 text-sm text-secondary">{label}</p>
             {trend !== undefined && trend !== 0 && (
-                <p className={`mt-1 text-xs font-medium ${trendPositive ? "text-[#5a9474]" : "text-[#c4553a]"}`}>
+                <p className={`mt-1 text-xs font-medium ${trendPositive ? "text-success-primary" : "text-error-primary"}`}>
                     {trendPositive ? "+" : ""}{trend}% vs semaine dernière
                 </p>
             )}

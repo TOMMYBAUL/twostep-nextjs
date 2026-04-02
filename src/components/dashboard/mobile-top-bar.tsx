@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const pageTitles: Record<string, string> = {
     "/dashboard": "Accueil",
@@ -20,9 +21,9 @@ export function MobileTopBar() {
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1] ?? "Dashboard";
 
     return (
-        <div className="safe-top bg-[#1A1F36] md:hidden">
+        <div className="safe-top bg-primary-solid md:hidden">
             <div className="flex h-12 items-center justify-center gap-2 px-4">
-                <img src="/logo-icon.webp?v=2" alt="Two-Step" className="size-7 rounded-lg" />
+                <Image src="/logo-icon.webp?v=2" alt="Two-Step" width={28} height={28} className="rounded-lg" />
                 <span className="text-[15px] font-semibold text-white">{title}</span>
             </div>
         </div>

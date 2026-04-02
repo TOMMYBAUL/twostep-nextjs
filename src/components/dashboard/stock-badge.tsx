@@ -8,21 +8,21 @@ export function StockBadge({ quantity }: StockBadgeProps) {
     const level = quantity === 0 ? "out" : quantity <= 10 ? "low" : "ok";
 
     const styles = {
-        ok: "text-[#5a9474]",
-        low: "text-[#b8860b]",
-        out: "text-red-700",
+        ok: "text-success-primary",
+        low: "text-warning-primary",
+        out: "text-error-primary",
     };
 
     const bgStyles = {
-        ok: "bg-emerald-50",
-        low: "bg-amber-50",
-        out: "bg-red-50",
+        ok: "bg-success-secondary",
+        low: "bg-warning-secondary",
+        out: "bg-error-secondary",
     };
 
     const dotStyles = {
-        ok: "bg-emerald-500",
-        low: "bg-amber-500",
-        out: "bg-red-500",
+        ok: "bg-success-solid",
+        low: "bg-warning-solid",
+        out: "bg-error-solid",
     };
 
     return (

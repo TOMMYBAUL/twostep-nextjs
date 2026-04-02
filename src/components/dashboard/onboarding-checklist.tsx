@@ -58,38 +58,39 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
     const completed = items.filter((i) => i.checked).length;
 
     return (
-        <div className="mb-6 rounded-xl bg-white overflow-hidden">
+        <div className="mb-6 rounded-xl bg-primary overflow-hidden">
             <button
                 onClick={() => setExpanded(!expanded)}
-                className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-gray-50"
+                className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
             >
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-semibold text-[#1A1F36]">Configuration boutique</span>
-                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                        <span className="text-xs font-semibold text-primary">Configuration boutique</span>
+                        <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-tertiary">
                             {completed}/{items.length}
                         </span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
                         <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${(completed / items.length) * 100}%`, background: "#4268FF" }}
+                            className="h-full rounded-full transition-all duration-500 bg-brand-solid"
+                            style={{ width: `${(completed / items.length) * 100}%` }}
                         />
                     </div>
                 </div>
                 <svg
-                    className={`size-4 shrink-0 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                    className={`size-4 shrink-0 text-quaternary transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 >
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
             </button>
             {expanded && (
-                <div className="border-t border-gray-100 px-5 py-3 space-y-2">
+                <div className="border-t border-tertiary px-5 py-3 space-y-2">
                     {items.map((item, i) => (
                         <div key={item.label} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition ${item.checked ? "opacity-50" : ""}`}>
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
-                                item.checked ? "bg-[#4268FF]/10 text-[#4268FF]" : "bg-gray-100 text-gray-500"
+                                item.checked ? "bg-brand-secondary text-brand-secondary" : "bg-secondary text-tertiary"
                             }`}>
                                 {item.checked ? (
                                     <svg className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -99,11 +100,11 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
                                     i + 1
                                 )}
                             </div>
-                            <p className={`flex-1 text-xs font-medium ${item.checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                            <p className={`flex-1 text-xs font-medium ${item.checked ? "text-quaternary line-through" : "text-primary"}`}>
                                 {item.label}
                             </p>
                             {!item.checked && (
-                                <Link href={item.href} className="shrink-0 text-[10px] font-semibold text-[#4268FF] no-underline hover:underline">
+                                <Link href={item.href} className="shrink-0 text-[10px] font-semibold text-brand-secondary no-underline hover:underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                                     {item.cta}
                                 </Link>
                             )}

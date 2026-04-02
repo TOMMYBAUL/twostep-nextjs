@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { ImagePlus } from "@untitledui/icons";
+import Image from "next/image";
 
 const CATEGORIES = [
     { value: "mode", label: "Mode" },
@@ -99,22 +100,22 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
             {/* Photo */}
             {productId && (
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Photo du produit</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Photo du produit</label>
                     <div className="flex items-center gap-4">
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 transition hover:border-gray-300"
+                            className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-secondary bg-secondary transition hover:border-tertiary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             {photoPreview ? (
-                                <img src={photoPreview} alt="Preview" className="size-full object-cover" />
+                                <Image src={photoPreview} alt="Preview" width={96} height={96} className="size-full object-cover" />
                             ) : (
-                                <ImagePlus className="size-6 text-gray-400" />
+                                <ImagePlus className="size-6 text-quaternary" aria-hidden="true" />
                             )}
                         </button>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-quaternary">
                             {uploading ? (
-                                <p className="font-medium text-[#4268FF]">Upload en cours...</p>
+                                <p className="font-medium text-brand-secondary">Upload en cours...</p>
                             ) : (
                                 <p>Cliquez pour ajouter une photo. Elle sera automatiquement détourée.</p>
                             )}
@@ -127,13 +128,13 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
                         className="hidden"
                         onChange={handlePhotoChange}
                     />
-                    {errors.photo && <p className="mt-1 text-xs text-red-500">{errors.photo}</p>}
+                    {errors.photo && <p className="mt-1 text-xs text-error-primary">{errors.photo}</p>}
                 </div>
             )}
 
             {/* Name */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Nom du produit *</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Nom du produit *</label>
                 <input
                     type="text"
                     value={name}
@@ -141,12 +142,12 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
                     className="search-ts w-full"
                     placeholder="Ex: Croissant beurre AOP"
                 />
-                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+                {errors.name && <p className="mt-1 text-xs text-error-primary">{errors.name}</p>}
             </div>
 
             {/* Description */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Description</label>
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -157,7 +158,7 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
 
             {/* EAN */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Code EAN</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Code EAN</label>
                 <input
                     type="text"
                     value={ean}
@@ -169,7 +170,7 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
 
             {/* Category */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Catégorie</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Catégorie</label>
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -185,7 +186,7 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
             {/* Price + Quantity row */}
             <div className="flex gap-4">
                 <div className="flex-1">
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Prix de vente (€) *</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Prix de vente (€) *</label>
                     <input
                         type="number"
                         step="0.01"
@@ -195,11 +196,11 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
                         className="search-ts w-full"
                         placeholder="0.00"
                     />
-                    {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price}</p>}
+                    {errors.price && <p className="mt-1 text-xs text-error-primary">{errors.price}</p>}
                 </div>
                 {!initialValues && (
                     <div className="flex-1">
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Quantité initiale</label>
+                        <label className="mb-1 block text-sm font-medium text-secondary">Quantité initiale</label>
                         <input
                             type="number"
                             min="0"
@@ -214,7 +215,7 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
 
             {/* Submit */}
             <div className="flex gap-3 pt-4">
-                <button type="submit" className="btn-ts" disabled={isLoading}>
+                <button type="submit" className="btn-ts focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none" disabled={isLoading}>
                     {isLoading ? "..." : submitLabel}
                 </button>
             </div>

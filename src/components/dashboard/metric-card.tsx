@@ -8,17 +8,16 @@ interface MetricCardProps {
 export function MetricCard({ label, value, variant = "default", staggerIndex = 0 }: MetricCardProps) {
     const colorClass =
         variant === "danger"
-            ? "text-red-600"
+            ? "text-error-primary"
             : variant === "warn"
-              ? "text-[#4268FF]"
-              : "text-[#1A1F36]";
+              ? "text-brand-secondary"
+              : "text-primary";
 
     return (
         <div
-            className={`animate-fade-up rounded-[10px] p-5 stagger-${staggerIndex + 1}`}
-            style={{ background: "#F5F6FA" }}
+            className={`animate-fade-up rounded-[10px] p-5 bg-secondary stagger-${staggerIndex + 1}`}
         >
-            <p className="mb-1.5 text-xs font-medium text-gray-500">{label}</p>
+            <p className="mb-1.5 text-xs font-medium text-tertiary">{label}</p>
             <p className={`text-[28px] font-bold ${colorClass}`}>{value}</p>
         </div>
     );

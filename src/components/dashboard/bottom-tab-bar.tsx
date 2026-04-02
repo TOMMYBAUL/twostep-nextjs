@@ -50,8 +50,8 @@ function TabItem({ href, label, icon, isActive }: { href: string; label: string;
     return (
         <Link
             href={href}
-            className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 no-underline transition-colors ${
-                isActive ? "text-[#4268FF]" : "text-[#8E96B0]"
+            className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 min-h-[44px] no-underline transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
+                isActive ? "text-brand-secondary" : "text-tertiary"
             }`}
         >
             {icon}
@@ -68,7 +68,7 @@ export function BottomTabBar() {
 
     return (
         <>
-            <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-[#F0EBE3] bg-white safe-bottom md:hidden">
+            <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-secondary bg-primary safe-bottom md:hidden">
                 {tabs.map((tab) => {
                     const isActive = "exact" in tab && tab.exact
                         ? pathname === tab.href
@@ -85,8 +85,9 @@ export function BottomTabBar() {
                 })}
                 <button
                     onClick={() => setMoreOpen(true)}
-                    className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 transition-colors ${
-                        isMoreActive ? "text-[#4268FF]" : "text-[#8E96B0]"
+                    aria-label="Plus d'options"
+                    className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 min-h-[44px] transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
+                        isMoreActive ? "text-brand-secondary" : "text-tertiary"
                     }`}
                 >
                     <svg className="size-6" viewBox="0 0 24 24" fill="currentColor">

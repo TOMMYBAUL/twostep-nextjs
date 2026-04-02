@@ -13,15 +13,15 @@ export function PageHeader({ storeName, title, titleAccent, action }: PageHeader
     return (
         <div className="mb-6">
             {storeName && (
-                <p className="animate-fade-up mb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                <p className="animate-fade-up mb-1 text-[11px] font-semibold uppercase tracking-wider text-quaternary">
                     {storeName}
                 </p>
             )}
             <div className="animate-fade-up stagger-1 flex items-center justify-between">
-                <h1 className="font-display text-[26px] font-bold uppercase" style={{ color: "#1A1F36" }}>
+                <h1 className="font-display text-[26px] font-bold uppercase text-primary">
                     {title}{" "}
                     {titleAccent && (
-                        <span style={{ color: "#4268FF" }}>{titleAccent}</span>
+                        <span className="text-brand-secondary">{titleAccent}</span>
                     )}
                 </h1>
                 {action}
