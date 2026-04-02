@@ -161,8 +161,7 @@ export default function StorePage() {
                         href={`/shop/${shopSlug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
-                        style={{ background: "#4268FF", color: "white" }}
+                        className="inline-flex items-center gap-2 rounded-lg bg-brand-solid px-4 py-2 text-sm font-medium text-white transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                         👁 Voir ma boutique comme un client
                     </a>
@@ -171,9 +170,9 @@ export default function StorePage() {
 
             {/* Creation banner */}
             {isCreating && (
-                <div className="animate-fade-up stagger-2 mb-6 rounded-xl px-5 py-4" style={{ background: "rgba(66,104,255,0.1)" }}>
-                    <p className="text-sm font-semibold text-[#4268FF]">Créez votre profil boutique</p>
-                    <p className="mt-0.5 text-xs text-[#4268FF]/70">
+                <div className="animate-fade-up stagger-2 mb-6 rounded-xl bg-brand-secondary px-5 py-4">
+                    <p className="text-sm font-semibold text-brand-secondary">Créez votre profil boutique</p>
+                    <p className="mt-0.5 text-xs text-brand-tertiary">
                         Remplissez les informations ci-dessous pour activer votre compte marchand.
                     </p>
                 </div>
@@ -181,12 +180,12 @@ export default function StorePage() {
 
             {/* SIRET status */}
             {merchant && (
-                <div className="animate-fade-up stagger-2 mb-8 flex items-center gap-3 rounded-xl bg-white px-5 py-4">
+                <div className="animate-fade-up stagger-2 mb-8 flex items-center gap-3 rounded-xl bg-primary px-5 py-4">
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-700"}`}>
                         {merchant.status === "active" ? "Vérifié" : "En attente"}
                     </span>
                     {merchant.siret && (
-                        <span className="text-xs text-gray-400">SIRET : {merchant.siret}</span>
+                        <span className="text-xs text-tertiary">SIRET : {merchant.siret}</span>
                     )}
                 </div>
             )}
@@ -194,17 +193,17 @@ export default function StorePage() {
             {/* Store photo upload */}
             {merchant && (
                 <div className="animate-fade-up stagger-3 mb-6 max-w-xl">
-                    <label className="mb-2 block text-sm font-medium text-gray-700">Photo de la boutique</label>
+                    <label className="mb-2 block text-sm font-medium text-secondary">Photo de la boutique</label>
                     <div className="flex items-center gap-4">
-                        <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                        <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-secondary bg-secondary">
                             {photoUrl ? (
                                 <img src={photoUrl} alt="Photo boutique" className="h-full w-full object-cover" />
                             ) : (
-                                <div className="flex h-full items-center justify-center text-2xl text-gray-300">📷</div>
+                                <div className="flex h-full items-center justify-center text-2xl text-tertiary">📷</div>
                             )}
                             {photoUploading && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-white/70">
-                                    <span className="size-5 animate-spin rounded-full border-2 border-[#4268FF]/30 border-t-[#4268FF]" />
+                                <div className="absolute inset-0 flex items-center justify-center bg-primary/70">
+                                    <span className="size-5 animate-spin rounded-full border-2 border-brand/30 border-t-brand" />
                                 </div>
                             )}
                         </div>
@@ -213,11 +212,11 @@ export default function StorePage() {
                                 type="button"
                                 onClick={() => photoInputRef.current?.click()}
                                 disabled={photoUploading}
-                                className="rounded-lg bg-[#4268FF]/10 px-4 py-2 text-sm font-medium text-[#4268FF] transition active:bg-[#4268FF]/20 disabled:opacity-50"
+                                className="rounded-lg bg-brand-secondary px-4 py-2 text-sm font-medium text-brand-secondary transition active:bg-brand-primary disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             >
                                 {photoUrl ? "Changer la photo" : "Ajouter une photo"}
                             </button>
-                            <p className="mt-1 text-[11px] text-gray-400">JPEG, PNG ou WebP — max 5 Mo</p>
+                            <p className="mt-1 text-[11px] text-tertiary">JPEG, PNG ou WebP — max 5 Mo</p>
                             <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
                         </div>
                     </div>
@@ -226,29 +225,29 @@ export default function StorePage() {
 
             <form onSubmit={handleSubmit} className="animate-fade-up stagger-3 space-y-5 max-w-xl">
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Nom de la boutique</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Nom de la boutique</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="search-ts w-full" placeholder="Ma Boutique" />
                 </div>
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Adresse</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Adresse</label>
                     <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="search-ts w-full" placeholder="12 rue du Commerce" />
                 </div>
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Ville</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Ville</label>
                     <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="search-ts w-full" placeholder="Paris" />
                 </div>
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Téléphone</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Téléphone</label>
                     <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="search-ts w-full" placeholder="06 12 34 56 78" />
                 </div>
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Description</label>
                     <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="search-ts w-full min-h-[80px] resize-y" placeholder="Ce que votre boutique propose..." />
                 </div>
 
                 {/* Opening hours */}
                 <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">Horaires d&apos;ouverture</label>
+                    <label className="mb-2 block text-sm font-medium text-secondary">Horaires d&apos;ouverture</label>
                     <div className="space-y-2">
                         {DAYS.map((day) => {
                             const h = hours[day.key];
@@ -257,18 +256,18 @@ export default function StorePage() {
                                     <button
                                         type="button"
                                         onClick={() => toggleDay(day.key)}
-                                        className={`w-24 rounded-lg px-3 py-1.5 text-xs font-medium ${h ? "bg-[#4268FF]/10 text-[#4268FF]" : "bg-gray-100 text-gray-400"}`}
+                                        className={`w-24 rounded-lg px-3 py-1.5 min-h-[44px] text-xs font-medium focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${h ? "bg-brand-secondary text-brand-secondary" : "bg-secondary text-tertiary"}`}
                                     >
                                         {day.label}
                                     </button>
                                     {h ? (
                                         <>
                                             <input type="time" value={h.open} onChange={(e) => updateHour(day.key, "open", e.target.value)} className="search-ts w-28 text-sm" />
-                                            <span className="text-xs text-gray-400">&rarr;</span>
+                                            <span className="text-xs text-tertiary">&rarr;</span>
                                             <input type="time" value={h.close} onChange={(e) => updateHour(day.key, "close", e.target.value)} className="search-ts w-28 text-sm" />
                                         </>
                                     ) : (
-                                        <span className="text-xs text-gray-300">Fermé</span>
+                                        <span className="text-xs text-tertiary">Fermé</span>
                                     )}
                                 </div>
                             );
@@ -288,14 +287,14 @@ export default function StorePage() {
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-tertiary">
                             Mes trophées
                         </h2>
-                        <Link href="/dashboard/achievements" className="text-xs font-medium text-[#4268FF] hover:underline no-underline">
+                        <Link href="/dashboard/achievements" className="text-xs font-medium text-brand-secondary hover:underline no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                             Voir tout
                         </Link>
                     </div>
                     {achievementsLoading ? (
                         <div className="space-y-3">
                             {Array.from({ length: 3 }).map((_, i) => (
-                                <div key={i} className="animate-pulse rounded-[20px] bg-white/60 h-16" />
+                                <div key={i} className="animate-pulse rounded-[20px] bg-primary/60 h-16" />
                             ))}
                         </div>
                     ) : (
@@ -315,7 +314,7 @@ export default function StorePage() {
                             {ALL_ACHIEVEMENT_TYPES.length > 5 && (
                                 <Link
                                     href="/dashboard/achievements"
-                                    className="block text-center text-xs text-[#8E96B0] hover:text-[#8E96B0] no-underline py-2 transition"
+                                    className="block text-center text-xs text-tertiary hover:text-tertiary no-underline py-2 transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
                                 >
                                     Voir les {ALL_ACHIEVEMENT_TYPES.length - 5} autres trophées →
                                 </Link>

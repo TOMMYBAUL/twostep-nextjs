@@ -50,11 +50,11 @@ export default function EditProductPage() {
     };
 
     if (!product && !merchant) {
-        return <div className="animate-pulse py-12 text-center text-sm text-gray-400">Chargement...</div>;
+        return <div className="animate-pulse py-12 text-center text-sm text-tertiary">Chargement...</div>;
     }
 
     if (!product) {
-        return <div className="py-12 text-center text-sm text-gray-400">Produit introuvable</div>;
+        return <div className="py-12 text-center text-sm text-tertiary">Produit introuvable</div>;
     }
 
     return (
@@ -64,7 +64,7 @@ export default function EditProductPage() {
                 title="Modifier"
                 titleAccent={product.canonical_name ?? product.name}
                 action={
-                    <Link href="/dashboard/products" className="text-sm text-gray-400 hover:text-gray-600 no-underline">
+                    <Link href="/dashboard/products" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         ← Retour
                     </Link>
                 }
@@ -87,19 +87,19 @@ export default function EditProductPage() {
             />
 
             {/* Delete */}
-            <div className="mt-12 border-t border-gray-200 pt-6 max-w-xl">
+            <div className="mt-12 border-t border-secondary pt-6 max-w-xl">
                 {showDeleteConfirm ? (
                     <div className="flex items-center gap-3">
-                        <p className="text-sm text-red-600">Supprimer définitivement ?</p>
-                        <button onClick={handleDelete} className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white">
+                        <p className="text-sm text-error-primary">Supprimer définitivement ?</p>
+                        <button onClick={handleDelete} className="rounded-lg bg-error-solid px-3 py-1.5 text-xs font-medium text-white focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
                             Confirmer
                         </button>
-                        <button onClick={() => setShowDeleteConfirm(false)} className="text-xs text-gray-400">
+                        <button onClick={() => setShowDeleteConfirm(false)} className="text-xs text-tertiary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                             Annuler
                         </button>
                     </div>
                 ) : (
-                    <button onClick={() => setShowDeleteConfirm(true)} className="text-sm text-red-500 hover:text-red-700">
+                    <button onClick={() => setShowDeleteConfirm(true)} className="text-sm text-error-primary hover:text-error-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         Supprimer ce produit
                     </button>
                 )}

@@ -181,14 +181,14 @@ function SettingsPageInner() {
 
             {/* Account */}
             <section className="animate-fade-up stagger-2 mb-10 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Compte</h2>
-                <div className="mb-6 rounded-xl bg-white px-5 py-4">
-                    <p className="text-xs text-gray-400">Email</p>
-                    <p className="text-sm font-medium text-gray-900">{email ?? "—"}</p>
+                <h2 className="mb-4 text-base font-semibold text-primary">Compte</h2>
+                <div className="mb-6 rounded-xl bg-primary px-5 py-4">
+                    <p className="text-xs text-tertiary">Email</p>
+                    <p className="text-sm font-medium text-primary">{email ?? "—"}</p>
                 </div>
 
-                <form onSubmit={handlePasswordChange} className="space-y-4 rounded-xl bg-white px-5 py-5">
-                    <p className="text-sm font-medium text-gray-700">Changer le mot de passe</p>
+                <form onSubmit={handlePasswordChange} className="space-y-4 rounded-xl bg-primary px-5 py-5">
+                    <p className="text-sm font-medium text-secondary">Changer le mot de passe</p>
                     <input
                         type="password"
                         value={newPassword}
@@ -211,7 +211,7 @@ function SettingsPageInner() {
 
             {/* POS */}
             <section className="animate-fade-up stagger-3 mb-10 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Caisse (POS)</h2>
+                <h2 className="mb-4 text-base font-semibold text-primary">Caisse (POS)</h2>
 
                 <div className="space-y-2">
                     {POS_PROVIDERS.map(({ id, name, icon }) => {
@@ -219,15 +219,15 @@ function SettingsPageInner() {
                         const isOtherConnected = isConnected && !isThisConnected;
 
                         return (
-                            <div key={id} className="rounded-xl bg-white px-5 py-5 space-y-4">
+                            <div key={id} className="rounded-xl bg-primary px-5 py-5 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100 text-lg">
+                                        <div className="flex size-10 items-center justify-center rounded-lg bg-secondary text-lg">
                                             {icon}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900">{name}</p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-sm font-semibold text-primary">{name}</p>
+                                            <p className="text-xs text-tertiary">
                                                 {isThisConnected
                                                     ? merchant?.pos_last_sync
                                                         ? `Dernière sync : ${new Date(merchant.pos_last_sync).toLocaleString("fr-FR")}`
@@ -240,11 +240,11 @@ function SettingsPageInner() {
                                     </div>
 
                                     {isThisConnected ? (
-                                        <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[#4268FF]/10 text-[#4268FF]">
+                                        <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold bg-brand-secondary text-brand-secondary">
                                             Connecté
                                         </span>
                                     ) : (
-                                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-400">
+                                        <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-tertiary">
                                             Disponible
                                         </span>
                                     )}
@@ -257,7 +257,7 @@ function SettingsPageInner() {
                                         </button>
                                         <button
                                             onClick={handleDisconnect}
-                                            className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
+                                            className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-primary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                             disabled={connecting}
                                         >
                                             Déconnecter
@@ -277,7 +277,7 @@ function SettingsPageInner() {
                     })}
 
                     {syncResult && (
-                        <div className="rounded-lg bg-[#4268FF]/10 px-4 py-3 text-xs text-[#4268FF]">
+                        <div className="rounded-lg bg-brand-secondary px-4 py-3 text-xs text-brand-secondary">
                             <p className="font-semibold">Synchronisation terminée</p>
                             <p className="mt-1">
                                 {syncResult.products_created} produit(s) créé(s) · {syncResult.products_updated} mis à jour · {syncResult.stock_updated} stock(s) · {syncResult.promos_imported} promo(s)
@@ -287,9 +287,9 @@ function SettingsPageInner() {
 
                 </div>
 
-                <p className="mt-4 text-center text-xs text-gray-400">
+                <p className="mt-4 text-center text-xs text-tertiary">
                     Pas de caisse ?{" "}
-                    <a href="https://squareup.com/signup" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "#4268FF" }}>
+                    <a href="https://squareup.com/signup" target="_blank" rel="noopener noreferrer" className="font-medium underline text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         Créez un compte Square gratuitement
                     </a>
                 </p>
@@ -297,14 +297,14 @@ function SettingsPageInner() {
 
             {/* Réseaux sociaux & Site web */}
             <section className="animate-fade-up stagger-4 mb-10 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Réseaux sociaux & Site web</h2>
-                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
-                    <p className="text-sm text-gray-600">
+                <h2 className="mb-4 text-base font-semibold text-primary">Réseaux sociaux & Site web</h2>
+                <div className="rounded-xl bg-primary px-5 py-5 space-y-4">
+                    <p className="text-sm text-secondary">
                         Les clients verront ces liens sur votre page boutique. Ajoutez au moins votre Instagram.
                     </p>
                     <form onSubmit={handleSaveSocial} className="flex flex-col gap-3">
                         <label className="flex flex-col gap-1">
-                            <span className="text-xs font-medium text-gray-500">Instagram</span>
+                            <span className="text-xs font-medium text-tertiary">Instagram</span>
                             <input
                                 type="text"
                                 value={instagramUrl}
@@ -314,7 +314,7 @@ function SettingsPageInner() {
                             />
                         </label>
                         <label className="flex flex-col gap-1">
-                            <span className="text-xs font-medium text-gray-500">TikTok</span>
+                            <span className="text-xs font-medium text-tertiary">TikTok</span>
                             <input
                                 type="text"
                                 value={tiktokUrl}
@@ -324,7 +324,7 @@ function SettingsPageInner() {
                             />
                         </label>
                         <label className="flex flex-col gap-1">
-                            <span className="text-xs font-medium text-gray-500">Site web</span>
+                            <span className="text-xs font-medium text-tertiary">Site web</span>
                             <input
                                 type="text"
                                 value={websiteUrl}
@@ -342,9 +342,9 @@ function SettingsPageInner() {
 
             {/* Photos */}
             <section className="animate-fade-up stagger-6 mb-10 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Photos produit</h2>
-                <div className="rounded-xl bg-white px-5 py-5 space-y-4">
-                    <p className="text-sm text-gray-600">
+                <h2 className="mb-4 text-base font-semibold text-primary">Photos produit</h2>
+                <div className="rounded-xl bg-primary px-5 py-5 space-y-4">
+                    <p className="text-sm text-secondary">
                         Améliorez automatiquement vos photos produit : détourage, fond blanc, format uniforme.
                     </p>
                     <button
@@ -355,7 +355,7 @@ function SettingsPageInner() {
                         {enhancing ? "Traitement en cours..." : "Améliorer les photos"}
                     </button>
                     {enhanceResult !== null && (
-                        <p className="text-xs text-[#4268FF]">
+                        <p className="text-xs text-brand-secondary">
                             {enhanceResult} photo(s) en cours de traitement
                         </p>
                     )}
@@ -364,12 +364,12 @@ function SettingsPageInner() {
 
             {/* Subscription */}
             <section className="animate-fade-up stagger-7 max-w-xl">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">Abonnement</h2>
-                <div className="rounded-xl bg-white px-5 py-4">
-                    <p className="text-sm font-semibold" style={{ color: "#4268FF" }}>
+                <h2 className="mb-4 text-base font-semibold text-primary">Abonnement</h2>
+                <div className="rounded-xl bg-primary px-5 py-4">
+                    <p className="text-sm font-semibold text-brand-secondary">
                         {merchant?.plan === "standard" ? "Standard" : merchant?.plan === "premium" ? "Premium" : "Gratuit"}
                     </p>
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-tertiary">
                         Two-Step est gratuit jusqu&apos;à 1 000 utilisateurs à Toulouse.
                     </p>
                 </div>

@@ -156,15 +156,15 @@ export default function DashboardPage() {
 
             {onboardingLoading ? (
                 <div className="max-w-2xl space-y-6">
-                    <div className="animate-pulse rounded-xl bg-white/60 h-20" />
-                    <div className="animate-pulse rounded-xl bg-white/60 h-32" />
+                    <div className="animate-pulse rounded-xl bg-primary h-20" />
+                    <div className="animate-pulse rounded-xl bg-primary h-32" />
                 </div>
             ) : !allDone ? (
                 /* Mode A — Onboarding incomplete */
                 <div className="max-w-2xl lg:max-w-4xl space-y-4">
                     {/* Score */}
                     {statsLoading ? (
-                        <div className="animate-pulse rounded-xl bg-white/60 h-20" />
+                        <div className="animate-pulse rounded-xl bg-primary h-20" />
                     ) : stats ? (
                         <TwoStepScore score={stats.score} />
                     ) : null}
@@ -185,9 +185,9 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="lg:col-span-1">
                             {statsLoading ? (
-                                <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                                <div className="animate-pulse rounded-xl bg-primary h-24" />
                             ) : stats ? (
-                                <div className="rounded-xl bg-white px-5 py-6">
+                                <div className="rounded-xl bg-primary px-5 py-6">
                                     <HeroStat
                                         value={stats.funnel.views.current}
                                         label="vues cette semaine"
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="lg:col-span-2">
                             {statsLoading ? (
-                                <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                                <div className="animate-pulse rounded-xl bg-primary h-24" />
                             ) : stats ? (
                                 <DiscoveryFunnel
                                     views={stats.funnel.views}
@@ -212,12 +212,12 @@ export default function DashboardPage() {
                     {/* Row 2: Score + Tasks */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {statsLoading ? (
-                            <div className="animate-pulse rounded-xl bg-white/60 h-20" />
+                            <div className="animate-pulse rounded-xl bg-primary h-20" />
                         ) : stats ? (
                             <TwoStepScore score={stats.score} />
                         ) : null}
                         {statsLoading ? (
-                            <div className="animate-pulse rounded-xl bg-white/60 h-24" />
+                            <div className="animate-pulse rounded-xl bg-primary h-24" />
                         ) : stats ? (
                             <TodayTasks stats={stats} />
                         ) : null}
@@ -231,17 +231,17 @@ export default function DashboardPage() {
 
                     {/* Suggestions widget */}
                     {suggestions.length > 0 && (
-                        <div className="rounded-xl bg-white px-5 py-4">
+                        <div className="rounded-xl bg-primary px-5 py-4">
                             <h3 className="text-xs font-semibold uppercase tracking-wider text-tertiary">
                                 Suggestions de vos clients
                             </h3>
                             <div className="mt-3 space-y-2.5">
                                 {suggestions.map((s) => (
-                                    <div key={s.id} className="flex gap-3 rounded-lg bg-gray-50 px-3.5 py-2.5">
-                                        <span className="mt-0.5 text-sm">💬</span>
+                                    <div key={s.id} className="flex gap-3 rounded-lg bg-secondary px-3.5 py-2.5">
+                                        <span aria-hidden="true" className="mt-0.5 text-sm">💬</span>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-xs text-gray-700 leading-relaxed">{s.text}</p>
-                                            <p className="mt-1 text-[10px] text-gray-400">
+                                            <p className="text-xs text-secondary leading-relaxed">{s.text}</p>
+                                            <p className="mt-1 text-[10px] text-tertiary">
                                                 {new Date(s.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                                             </p>
                                         </div>
@@ -274,34 +274,34 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
     const [expanded, setExpanded] = useState(false);
 
     return (
-        <div className="rounded-xl bg-white overflow-hidden">
+        <div className="rounded-xl bg-primary overflow-hidden">
             {/* Compact bar — always visible */}
             <button
                 type="button"
                 onClick={() => setExpanded(!expanded)}
-                className="flex w-full items-center gap-3 px-5 py-3.5 transition hover:bg-gray-50"
+                className="flex w-full items-center gap-3 px-5 py-3.5 min-h-[44px] transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
             >
                 <div className="flex-1">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-semibold text-[#1A1F36]">
+                        <span className="text-xs font-semibold text-primary">
                             Configuration boutique
                         </span>
-                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                        <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-tertiary">
                             {completed}/{steps.length}
                         </span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
                         <div
-                            className="h-full rounded-full transition-all duration-500"
+                            className={`h-full rounded-full transition-all duration-500 ${completed === steps.length ? "bg-success-solid" : "bg-brand-solid"}`}
                             style={{
                                 width: `${steps.length > 0 ? (completed / steps.length) * 100 : 0}%`,
-                                background: completed === steps.length ? "#5a9474" : "#4268FF",
                             }}
                         />
                     </div>
                 </div>
                 <svg
-                    className={`size-4 shrink-0 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                    className={`size-4 shrink-0 text-tertiary transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -315,7 +315,7 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
 
             {/* Expandable steps */}
             {expanded && (
-                <div className="border-t border-gray-100 px-5 py-3 space-y-2">
+                <div className="border-t border-secondary px-5 py-3 space-y-2">
                     {steps.map((step, i) => (
                         <div
                             key={step.label}
@@ -325,11 +325,11 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                         >
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
                                 step.checked
-                                    ? "bg-[#4268FF]/10 text-[#4268FF]"
-                                    : "bg-gray-100 text-gray-500"
+                                    ? "bg-brand-secondary text-brand-secondary"
+                                    : "bg-secondary text-tertiary"
                             }`}>
                                 {step.checked ? (
-                                    <svg className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg aria-hidden="true" className="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M2 6l3 3 5-5" />
                                     </svg>
                                 ) : (
@@ -337,12 +337,12 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-xs font-medium ${step.checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                                <p className={`text-xs font-medium ${step.checked ? "text-tertiary line-through" : "text-primary"}`}>
                                     {step.label}
                                 </p>
                             </div>
                             {!step.checked && (
-                                <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-[#4268FF] no-underline hover:underline">
+                                <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-brand-secondary no-underline hover:underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                                     {step.cta}
                                 </Link>
                             )}
@@ -356,9 +356,9 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
 
 function QuickLink({ href, label, description }: { href: string; label: string; description: string }) {
     return (
-        <Link href={href} className="group rounded-xl bg-white px-5 py-4 no-underline transition hover:shadow-sm">
-            <p className="text-sm font-semibold text-gray-900 group-hover:text-[#4268FF] transition">{label}</p>
-            <p className="mt-0.5 text-xs text-gray-400">{description}</p>
+        <Link href={href} className="group rounded-xl bg-primary px-5 py-4 no-underline transition hover:shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
+            <p className="text-sm font-semibold text-primary group-hover:text-brand-secondary transition">{label}</p>
+            <p className="mt-0.5 text-xs text-tertiary">{description}</p>
         </Link>
     );
 }
@@ -369,8 +369,7 @@ function ExternalQuickLink({ href, label, description }: { href: string; label: 
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="group rounded-xl px-5 py-4 no-underline transition hover:shadow-sm"
-            style={{ background: "#4268FF" }}
+            className="group rounded-xl bg-brand-solid px-5 py-4 no-underline transition hover:shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
         >
             <p className="text-sm font-semibold text-white transition">{label}</p>
             <p className="mt-0.5 text-xs text-white/70">{description}</p>

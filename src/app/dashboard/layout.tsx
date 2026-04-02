@@ -10,7 +10,7 @@ import { AchievementModal } from "@/components/dashboard/achievement-modal";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
         <CelebrationProvider>
-            <div className="flex h-screen" style={{ background: "var(--ts-bg-warm)" }}>
+            <div className="flex h-screen bg-secondary">
                 {/* Sidebar — tablet + desktop only */}
                 <DashboardSidebar />
 

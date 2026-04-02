@@ -67,9 +67,9 @@ export default function PromotionsPage() {
 
             {/* Create form */}
             {showForm && (
-                <form onSubmit={handleCreate} className="animate-fade-up mb-8 rounded-xl bg-white p-6 max-w-xl space-y-4">
+                <form onSubmit={handleCreate} className="animate-fade-up mb-8 rounded-xl bg-primary p-6 max-w-xl space-y-4">
                     <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Produit</label>
+                        <label className="mb-1 block text-sm font-medium text-secondary">Produit</label>
                         <select value={productId} onChange={(e) => setProductId(e.target.value)} className="search-ts w-full">
                             <option value="">Choisir un produit...</option>
                             {products.map((p) => (
@@ -80,7 +80,7 @@ export default function PromotionsPage() {
                         </select>
                     </div>
                     <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Prix promotionnel (€)</label>
+                        <label className="mb-1 block text-sm font-medium text-secondary">Prix promotionnel (€)</label>
                         <input
                             type="number"
                             step="0.01"
@@ -92,7 +92,7 @@ export default function PromotionsPage() {
                         />
                     </div>
                     <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Date de fin (optionnel)</label>
+                        <label className="mb-1 block text-sm font-medium text-secondary">Date de fin (optionnel)</label>
                         <input
                             type="date"
                             value={endsAt}
@@ -111,7 +111,7 @@ export default function PromotionsPage() {
             {loading ? (
                 <div className="flex flex-col gap-1.5">
                     {[...Array(3)].map((_, i) => (
-                        <div key={i} className="animate-pulse rounded-xl bg-white px-4 py-5" />
+                        <div key={i} className="animate-pulse rounded-xl bg-primary px-4 py-5" />
                     ))}
                 </div>
             ) : promotions.length === 0 ? (
@@ -135,27 +135,27 @@ export default function PromotionsPage() {
                         return (
                             <div
                                 key={promo.id}
-                                className={`animate-fade-up stagger-${Math.min(i + 3, 10)} flex items-center gap-4 rounded-xl bg-white px-5 py-4`}
+                                className={`animate-fade-up stagger-${Math.min(i + 3, 10)} flex items-center gap-4 rounded-xl bg-primary px-5 py-4`}
                             >
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-900">
+                                    <p className="text-sm font-semibold text-primary">
                                         {promo.products?.canonical_name ?? promo.products?.name ?? "Produit"}
                                     </p>
-                                    <p className="text-xs text-gray-400 mt-0.5">
+                                    <p className="text-xs text-tertiary mt-0.5">
                                         <span className="line-through">{promo.products?.price?.toFixed(2)} €</span>
                                         {" → "}
-                                        <span className="font-semibold text-[#4268FF]">
+                                        <span className="font-semibold text-brand-secondary">
                                             {promo.sale_price.toFixed(2)} €
                                         </span>
                                     </p>
                                 </div>
 
-                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-gray-100 text-gray-600" : "bg-emerald-50 text-[#5a9474]"}`}>
+                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-secondary text-secondary" : "bg-emerald-50 text-success-primary"}`}>
                                     {isScheduled ? "Programmée" : "Active"}
                                 </span>
 
                                 {promo.ends_at && (
-                                    <span className="text-xs text-gray-400">
+                                    <span className="text-xs text-tertiary">
                                         Fin : {new Date(promo.ends_at).toLocaleDateString("fr-FR")}
                                     </span>
                                 )}
@@ -165,14 +165,14 @@ export default function PromotionsPage() {
                                         <button
                                             type="button"
                                             onClick={() => { handleDelete(promo.id); setConfirmDeleteId(null); }}
-                                            className="rounded-lg bg-red-600 px-2.5 py-1 text-[11px] font-medium text-white"
+                                            className="rounded-lg bg-error-solid px-2.5 py-1 text-[11px] font-medium text-white focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                         >
                                             Confirmer
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setConfirmDeleteId(null)}
-                                            className="text-[11px] text-gray-400"
+                                            className="text-[11px] text-tertiary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
                                         >
                                             Annuler
                                         </button>
@@ -181,7 +181,7 @@ export default function PromotionsPage() {
                                     <button
                                         type="button"
                                         onClick={() => setConfirmDeleteId(promo.id)}
-                                        className="text-xs text-red-400 hover:text-red-600"
+                                        className="text-xs text-error-primary hover:text-error-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
                                     >
                                         Supprimer
                                     </button>

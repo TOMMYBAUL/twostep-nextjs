@@ -76,16 +76,16 @@ export default function ProductsPage() {
             />
 
             {/* Tabs */}
-            <div className="animate-fade-up stagger-1 mb-6 flex gap-1 rounded-xl bg-gray-100 p-1">
+            <div className="animate-fade-up stagger-1 mb-6 flex gap-1 rounded-xl bg-secondary p-1">
                 <button
                     onClick={() => setActiveTab("catalogue")}
-                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition ${activeTab === "catalogue" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                    className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "catalogue" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
                 >
                     Catalogue
                 </button>
                 <button
                     onClick={() => setActiveTab("incomplete")}
-                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition ${activeTab === "incomplete" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                    className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "incomplete" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
                 >
                     À compléter
                     {incompleteCount > 0 && (
@@ -121,7 +121,7 @@ export default function ProductsPage() {
                     {loading ? (
                         <div className="flex flex-col gap-1.5">
                             {[...Array(5)].map((_, i) => (
-                                <div key={i} className="animate-pulse rounded-xl bg-white px-4 py-5" />
+                                <div key={i} className="animate-pulse rounded-xl bg-primary px-4 py-5" />
                             ))}
                         </div>
                     ) : filtered.length === 0 && search === "" ? (
@@ -136,7 +136,7 @@ export default function ProductsPage() {
                             }
                         />
                     ) : filtered.length === 0 ? (
-                        <p className="py-8 text-center text-sm text-gray-400">Aucun résultat pour &quot;{search}&quot;</p>
+                        <p className="py-8 text-center text-sm text-tertiary">Aucun résultat pour &quot;{search}&quot;</p>
                     ) : (
                         <div className="flex flex-col gap-1.5">
                             {filtered.map((product, i) => {
@@ -155,9 +155,10 @@ export default function ProductsPage() {
                                             <div className="flex items-center gap-1">
                                                 <button
                                                     type="button"
+                                                    aria-label="Diminuer le stock"
                                                     onClick={() => handleDelta(product.id, -1)}
                                                     disabled={updatingId === product.id || qty <= 0}
-                                                    className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+                                                    className="flex size-8 items-center justify-center rounded-lg bg-secondary text-sm font-bold text-secondary hover:bg-secondary_hover disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 >
                                                     −
                                                 </button>
@@ -167,13 +168,14 @@ export default function ProductsPage() {
                                                     defaultValue={qty}
                                                     key={`${product.id}-${qty}`}
                                                     onBlur={(e) => handleAbsolute(product.id, e.target.value)}
-                                                    className="w-14 rounded-lg bg-gray-50 px-2 py-1.5 text-center text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-[var(--ts-accent)]/30"
+                                                    className="w-14 rounded-lg bg-secondary px-2 py-1.5 text-center text-sm font-medium text-primary outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                                                 />
                                                 <button
                                                     type="button"
+                                                    aria-label="Augmenter le stock"
                                                     onClick={() => handleDelta(product.id, 1)}
                                                     disabled={updatingId === product.id}
-                                                    className="flex size-8 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+                                                    className="flex size-8 items-center justify-center rounded-lg bg-secondary text-sm font-bold text-secondary hover:bg-secondary_hover disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 >
                                                     +
                                                 </button>
@@ -233,17 +235,17 @@ function IncompleteProductsTab({ products, merchantId, onComplete }: {
                         onComplete={() => { setEditingId(null); onComplete(); }}
                     />
                 ) : (
-                    <div key={product.id} className="flex items-center gap-4 rounded-xl bg-white px-5 py-4">
-                        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
+                    <div key={product.id} className="flex items-center gap-4 rounded-xl bg-primary px-5 py-4">
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-secondary">
                             {product.photo_url ? (
                                 <img src={product.photo_url} alt="" className="size-full rounded-xl object-cover" />
                             ) : (
-                                <ImagePlus className="size-5 text-gray-300" />
+                                <ImagePlus aria-hidden="true" className="size-5 text-tertiary" />
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate">{product.name}</p>
-                            <p className="text-xs text-gray-400">{product.category ?? "Sans catégorie"} · Pas de EAN</p>
+                            <p className="text-sm font-semibold text-primary truncate">{product.name}</p>
+                            <p className="text-xs text-tertiary">{product.category ?? "Sans catégorie"} · Pas de EAN</p>
                         </div>
                         <button
                             onClick={() => setEditingId(product.id)}
@@ -330,30 +332,30 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
     };
 
     return (
-        <div className="rounded-xl bg-white px-5 py-5 space-y-4">
+        <div className="rounded-xl bg-primary px-5 py-5 space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-gray-900">Compléter le produit</p>
-                <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
-                    <XClose className="size-4" />
+                <p className="text-sm font-semibold text-primary">Compléter le produit</p>
+                <button onClick={onCancel} aria-label="Fermer" className="text-tertiary hover:text-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                    <XClose aria-hidden="true" className="size-4" />
                 </button>
             </div>
 
             {/* Photo */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Photo</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Photo</label>
                 <div className="flex items-center gap-4">
                     <button
                         type="button"
                         onClick={() => document.getElementById(`photo-${product.id}`)?.click()}
-                        className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 transition hover:border-gray-300"
+                        className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-secondary bg-secondary transition hover:border-tertiary"
                     >
                         {photoPreview ? (
                             <img src={photoPreview} alt="" className="size-full object-cover" />
                         ) : (
-                            <ImagePlus className="size-5 text-gray-400" />
+                            <ImagePlus aria-hidden="true" className="size-5 text-tertiary" />
                         )}
                     </button>
-                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                    <p className="text-[11px] text-tertiary leading-relaxed">
                         {uploading ? "Upload en cours..." : "Fond clair, produit centré, lumière naturelle. L'arrière-plan sera automatiquement nettoyé."}
                     </p>
                 </div>
@@ -374,30 +376,30 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
 
             {/* Name */}
             <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Nom du produit</label>
+                <label className="mb-1 block text-sm font-medium text-secondary">Nom du produit</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="search-ts w-full" />
             </div>
 
             {/* One size toggle */}
             <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">Tailles</label>
+                <label className="mb-2 block text-sm font-medium text-secondary">Tailles</label>
                 <button
                     type="button"
                     onClick={() => setIsOneSize(!isOneSize)}
-                    className={`flex w-full items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm transition ${isOneSize ? "border-blue-200 bg-blue-50 text-blue-700" : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"}`}
+                    className={`flex w-full items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm transition ${isOneSize ? "border-blue-200 bg-blue-50 text-blue-700" : "border-secondary bg-secondary text-secondary hover:bg-secondary"}`}
                 >
                     <span>Taille unique</span>
-                    <span className={`flex size-5 items-center justify-center rounded-full text-xs font-bold transition ${isOneSize ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"}`}>
+                    <span className={`flex size-5 items-center justify-center rounded-full text-xs font-bold transition ${isOneSize ? "bg-brand-solid text-white" : "bg-tertiary text-tertiary"}`}>
                         {isOneSize ? "✓" : ""}
                     </span>
                 </button>
-                <p className="mt-1 text-[11px] text-gray-400">Montre, bijou, bougie, déco... tout ce qui n'a pas de taille</p>
+                <p className="mt-1 text-[11px] text-tertiary">Montre, bijou, bougie, déco... tout ce qui n'a pas de taille</p>
             </div>
 
             {/* Sizes or quantity */}
             {isOneSize ? (
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Quantité en stock</label>
+                    <label className="mb-1 block text-sm font-medium text-secondary">Quantité en stock</label>
                     <input
                         type="number"
                         min="1"
@@ -409,15 +411,15 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                 </div>
             ) : (
                 <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">Tailles disponibles</label>
+                    <label className="mb-2 block text-sm font-medium text-secondary">Tailles disponibles</label>
 
                     {sizes.length > 0 && (
                         <div className="mb-3 flex flex-wrap gap-2">
                             {sizes.map((s) => (
-                                <span key={s.size} className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
-                                    {s.size} <span className="text-gray-400">({s.quantity})</span>
-                                    <button type="button" onClick={() => removeSize(s.size)} className="text-gray-400 hover:text-red-500">
-                                        <XClose className="size-3" />
+                                <span key={s.size} className="flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-secondary">
+                                    {s.size} <span className="text-tertiary">({s.quantity})</span>
+                                    <button type="button" aria-label={`Supprimer taille ${s.size}`} onClick={() => removeSize(s.size)} className="text-tertiary hover:text-error-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                                        <XClose aria-hidden="true" className="size-3" />
                                     </button>
                                 </span>
                             ))}
@@ -441,8 +443,8 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                             className="search-ts w-20"
                             placeholder="Qté"
                         />
-                        <button type="button" onClick={addSize} className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 text-xs font-medium text-gray-600 hover:bg-gray-200 transition">
-                            <Plus className="size-3.5" /> Ajouter
+                        <button type="button" onClick={addSize} className="flex items-center gap-1 rounded-lg bg-secondary px-3 text-xs font-medium text-secondary hover:bg-secondary_hover transition">
+                            <Plus aria-hidden="true" className="size-3.5" /> Ajouter
                         </button>
                     </div>
                 </div>

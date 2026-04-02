@@ -63,11 +63,11 @@ export default function TipsHistoryPage() {
     return (
         <div className="mx-auto max-w-2xl px-4 py-6">
             <div className="mb-6">
-                <Link href="/dashboard" className="text-sm text-[#8E96B0] hover:text-[#4268FF]">
+                <Link href="/dashboard" className="text-sm text-tertiary hover:text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                     ← Retour au dashboard
                 </Link>
-                <h1 className="mt-2 text-lg font-semibold text-[#1A1F36]">Historique des conseils</h1>
-                <p className="text-sm text-[#1A1F36]">{total} conseil{total > 1 ? "s" : ""} au total</p>
+                <h1 className="mt-2 text-lg font-semibold text-primary">Historique des conseils</h1>
+                <p className="text-sm text-primary">{total} conseil{total > 1 ? "s" : ""} au total</p>
             </div>
 
             {/* Filters */}
@@ -75,10 +75,10 @@ export default function TipsHistoryPage() {
                 {CATEGORIES.map((cat) => (
                     <button key={cat.value}
                         onClick={() => { setCategory(cat.value); setPage(1); }}
-                        className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+                        className={`rounded-full border px-3.5 py-1.5 min-h-[44px] text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
                             category === cat.value
-                                ? "border-[#4268FF] bg-[#4268FF] text-white"
-                                : "border-[#E2E5F0] bg-white text-[#1A1F36] hover:border-[#4268FF] hover:text-[#4268FF]"
+                                ? "border-brand bg-brand-solid text-white"
+                                : "border-secondary bg-primary text-primary hover:border-brand hover:text-brand-secondary"
                         }`}>
                         {cat.label}
                     </button>
@@ -89,28 +89,28 @@ export default function TipsHistoryPage() {
             {loading ? (
                 <div className="space-y-4">
                     {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="animate-pulse rounded-lg bg-white/60 h-20" />
+                        <div key={i} className="animate-pulse rounded-lg bg-primary h-20" />
                     ))}
                 </div>
             ) : tips.length === 0 ? (
-                <p className="py-10 text-center text-sm text-[#8E96B0]">Aucun conseil pour le moment.</p>
+                <p className="py-10 text-center text-sm text-tertiary">Aucun conseil pour le moment.</p>
             ) : (
-                <div className="space-y-0 divide-y divide-[#f0ebe0]">
+                <div className="space-y-0 divide-y divide-secondary">
                     {tips.map((tip) => (
                         <div key={tip.id} className="flex gap-3 py-4">
-                            <div className="min-w-[60px] pt-0.5 text-[11px] text-[#8E96B0]">
+                            <div className="min-w-[60px] pt-0.5 text-[11px] text-tertiary">
                                 {formatDate(tip.created_at)}
                             </div>
                             <div className="flex-1">
                                 <span className={`inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                                     tip.type === "insight"
-                                        ? "bg-[#4268FF]/10 text-[#4268FF]"
+                                        ? "bg-brand-solid/10 text-brand-secondary"
                                         : "bg-emerald-50 text-emerald-600"
                                 }`}>
                                     {tip.emoji} {tip.type === "insight" ? "Insight" : "Action"}
                                 </span>
-                                <p className="mt-1 text-[13px] leading-relaxed text-[#1A1F36]">{tip.text}</p>
-                                <p className="mt-1 text-[11px] text-[#8E96B0]">
+                                <p className="mt-1 text-[13px] leading-relaxed text-primary">{tip.text}</p>
+                                <p className="mt-1 text-[11px] text-tertiary">
                                     {CATEGORIES.find((c) => c.value === tip.category)?.label || tip.category}
                                 </p>
                             </div>
@@ -125,14 +125,14 @@ export default function TipsHistoryPage() {
                     <button
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={page <= 1}
-                        className="rounded-lg border border-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36] disabled:opacity-40">
+                        className="rounded-lg border border-secondary px-3 py-1.5 min-h-[44px] text-xs text-primary disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
                         ← Précédent
                     </button>
-                    <span className="text-xs text-[#8E96B0]">{page} / {totalPages}</span>
+                    <span className="text-xs text-tertiary">{page} / {totalPages}</span>
                     <button
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={page >= totalPages}
-                        className="rounded-lg border border-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36] disabled:opacity-40">
+                        className="rounded-lg border border-secondary px-3 py-1.5 min-h-[44px] text-xs text-primary disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
                         Suivant →
                     </button>
                 </div>

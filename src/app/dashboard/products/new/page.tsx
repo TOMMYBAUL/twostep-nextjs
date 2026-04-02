@@ -51,7 +51,7 @@ export default function NewProductPage() {
                 title="Nouveau"
                 titleAccent="produit"
                 action={
-                    <Link href="/dashboard/products" className="text-sm text-gray-400 hover:text-gray-600 no-underline">
+                    <Link href="/dashboard/products" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         ← Retour
                     </Link>
                 }
@@ -68,18 +68,18 @@ export default function NewProductPage() {
             )}
 
             {activeTab === "invoice" && (
-                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "#F5F6FA" }}>
+                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-secondary bg-secondary py-16 text-center">
                     <p className="text-3xl mb-3">📄</p>
-                    <p className="text-sm font-medium text-gray-400">Import facture — Disponible prochainement</p>
-                    <p className="text-xs text-gray-300 mt-1">L&apos;IA analysera vos factures fournisseur automatiquement</p>
+                    <p className="text-sm font-medium text-tertiary">Import facture — Disponible prochainement</p>
+                    <p className="text-xs text-tertiary mt-1">L&apos;IA analysera vos factures fournisseur automatiquement</p>
                 </div>
             )}
 
             {activeTab === "ean" && (
-                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center" style={{ background: "#F5F6FA" }}>
+                <div className="animate-fade-up stagger-3 flex flex-col items-center rounded-2xl border-2 border-dashed border-secondary bg-secondary py-16 text-center">
                     <p className="text-3xl mb-3">📱</p>
-                    <p className="text-sm font-medium text-gray-400">Scan EAN — Disponible prochainement</p>
-                    <p className="text-xs text-gray-300 mt-1">Scannez le code-barres pour remplir automatiquement</p>
+                    <p className="text-sm font-medium text-tertiary">Scan EAN — Disponible prochainement</p>
+                    <p className="text-xs text-tertiary mt-1">Scannez le code-barres pour remplir automatiquement</p>
                 </div>
             )}
         </>
