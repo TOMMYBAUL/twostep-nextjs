@@ -65,8 +65,8 @@ export function CoachTips({ data, loading }: { data: CoachTipsData | null; loadi
     if (loading) {
         return (
             <div className="space-y-3">
-                <div className="animate-pulse rounded-xl bg-white/60 h-28" />
-                <div className="animate-pulse rounded-xl bg-white/60 h-32" />
+                <div className="animate-pulse rounded-xl bg-secondary h-28" />
+                <div className="animate-pulse rounded-xl bg-secondary h-32" />
             </div>
         );
     }

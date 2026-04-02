@@ -29,7 +29,7 @@ function generateTasks(stats: DashboardStats): Task[] {
     return tasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]).slice(0, 3);
 }
 
-const priorityDot: Record<string, string> = { high: "#c4553a", medium: "#4268FF", low: "#22B86E" };
+const priorityDotClass: Record<string, string> = { high: "bg-error-solid", medium: "bg-brand-solid", low: "bg-success-solid" };
 
 export function TodayTasks({ stats }: { stats: DashboardStats }) {
     const tasks = generateTasks(stats);
@@ -49,7 +49,7 @@ export function TodayTasks({ stats }: { stats: DashboardStats }) {
             <div className="space-y-2">
                 {tasks.map((task) => (
                     <Link key={task.id} href={task.href} className="flex items-center gap-3 rounded-xl bg-primary px-4 py-3 transition hover:shadow-sm no-underline group focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
-                        <span className="size-2 shrink-0 rounded-full" style={{ background: priorityDot[task.priority] }} aria-hidden="true" />
+                        <span className={`size-2 shrink-0 rounded-full ${priorityDotClass[task.priority]}`} aria-hidden="true" />
                         <span className="flex-1 text-sm text-primary group-hover:text-brand-secondary transition">{task.label}</span>
                         <span className="text-xs text-tertiary">→</span>
                     </Link>

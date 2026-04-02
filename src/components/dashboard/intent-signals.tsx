@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { MarkerPin01 } from "@untitledui/icons";
 
 interface IntentSignal {
     id: string;
@@ -53,8 +54,8 @@ export function IntentSignals({ merchantId }: { merchantId?: string }) {
 
                     return (
                         <div key={intent.id} className="flex items-start gap-3 rounded-xl bg-primary p-3 shadow-sm border-l-[3px] border-brand">
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-secondary text-lg" aria-hidden="true">
-                                📍
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-secondary" aria-hidden="true">
+                                <MarkerPin01 className="size-5 text-brand-secondary" />
                             </div>
                             <div className="min-w-0 flex-1">
                                 <p className="text-[13px] font-semibold text-primary">{name} arrive !</p>
