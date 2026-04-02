@@ -116,7 +116,7 @@ export function DashboardSidebar() {
         <aside className="sidebar-ts hidden md:flex h-screen flex-col shrink-0">
             {/* Logo */}
             <div className="flex h-[60px] items-center gap-2.5 px-4">
-                <Image src="/logo-icon.webp?v=2" alt="Two-Step" width={36} height={36} className="shrink-0 rounded-[10px]" />
+                <Image src="/logo-icon.webp" alt="Two-Step" width={36} height={36} className="shrink-0 rounded-[10px]" />
                 <span className="logo-text font-display text-[15px] font-bold uppercase text-white whitespace-nowrap">
                     Two-Step
                 </span>
