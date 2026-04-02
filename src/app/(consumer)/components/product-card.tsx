@@ -22,10 +22,11 @@ interface ProductCardProps {
     isFavorite: boolean;
     onToggleFavorite: () => void;
     className?: string;
+    compact?: boolean;
 }
 
 export function ProductCard({
-    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className,
+    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className, compact,
 }: ProductCardProps) {
     const safeDistance = distance ?? 0;
     const formattedDistance = safeDistance < 1
@@ -104,10 +105,12 @@ export function ProductCard({
                     {name}
                 </p>
 
-                {/* Merchant · distance */}
-                <p className="mt-0.5 truncate font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
-                    {merchantName} · {formattedDistance}
-                </p>
+                {/* Merchant · distance (hidden in compact mode) */}
+                {!compact && (
+                    <p className="mt-0.5 truncate font-[family-name:var(--font-inter)] text-[11px] text-tertiary">
+                        {merchantName} · {formattedDistance}
+                    </p>
+                )}
 
                 {/* Price */}
                 <div className="mt-1 flex items-baseline gap-1.5">
