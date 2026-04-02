@@ -2,15 +2,13 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { SearchMd, XClose } from "@untitledui/icons";
-import { AnimatePresence, motion } from "motion/react";
+import { SearchMd } from "@untitledui/icons";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import { ProductCard } from "../components/product-card";
+import { SearchBar } from "../components/search-bar";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
-import { useSearch, useAutocomplete } from "../hooks/use-search";
-import { cx } from "@/utils/cx";
+import { useSearch } from "../hooks/use-search";
 import { CategoryPills } from "../components/category-pills";
 
 export default function SearchPage() {
@@ -28,7 +26,6 @@ function SearchPageInner() {
     const categoryParam = searchParams.get("category");
     const sizeParam = searchParams.get("size");
     const [query, setQuery] = useState(initialQuery);
-    const [isFocused, setIsFocused] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
     const { position } = useGeolocation();
     const lat = position?.lat ?? 43.6047;
@@ -60,7 +57,6 @@ function SearchPageInner() {
 
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
-    const { data: suggestions } = useAutocomplete(isFocused ? query : "");
 
     const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
 
@@ -70,72 +66,16 @@ function SearchPageInner() {
     const showPlaceholder = !query && !isFilterMode;
 
     return (
-        <div className="min-h-dvh bg-[#FFFFFF]">
+        <div className="min-h-dvh bg-primary">
             {/* Search header */}
-            <div className="bg-[#FFFFFF] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <div className="relative">
-                    <div
-                        className={cx(
-                            "flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 transition duration-150",
-                            isFocused ? "border-[#4268FF] shadow-[0_0_0_4px_rgba(66,104,255,0.15)]" : "border-[#E2E5F0]",
-                        )}
-                    >
-                        <SearchMd className="size-5 text-[#1A1F36]/40" aria-hidden="true" />
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                            placeholder="Nike Air Max, iPhone 15, Levi's 501..."
-                            className="flex-1 bg-transparent text-sm text-[#1A1F36] outline-none placeholder:text-[#1A1F36]/30"
-                            aria-label="Rechercher un produit"
-                        />
-                        {query && (
-                            <button
-                                type="button"
-                                onClick={() => setQuery("")}
-                                className="rounded-full bg-[#E2E5F0] p-1 text-[#1A1F36]/40"
-                                aria-label="Effacer"
-                            >
-                                <XClose className="size-3.5" />
-                            </button>
-                        )}
-                    </div>
-                    <AnimatePresence>
-                        {isFocused && suggestions && suggestions.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -4 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -4 }}
-                                className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl bg-[#E2E5F0] shadow-xl ring-1 ring-[#1A1F36]/5"
-                                role="listbox"
-                                aria-label="Suggestions"
-                            >
-                                {suggestions.map((s, i) => (
-                                    <button
-                                        key={`${s.suggestion_type}-${s.suggestion}-${i}`}
-                                        type="button"
-                                        role="option"
-                                        aria-selected={false}
-                                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm text-[#1A1F36] hover:bg-[#FFFFFF]/50"
-                                        onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            setQuery(s.suggestion);
-                                        }}
-                                    >
-                                        <span className="rounded-lg bg-[#FFFFFF] px-2 py-0.5 text-[10px] font-semibold text-[#1A1F36]/50">
-                                            {s.suggestion_type === "product" ? "Produit" : s.suggestion_type === "brand" ? "Marque" : "Catégorie"}
-                                        </span>
-                                        <span>{s.suggestion}</span>
-                                    </button>
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
+            <div className="bg-primary px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+                <SearchBar
+                    value={query}
+                    onChange={setQuery}
+                    onSubmit={setQuery}
+                />
 
-                {/* Category chips — same as discover page */}
+                {/* Category chips */}
                 <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
                     <CategoryPills activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
@@ -143,7 +83,9 @@ function SearchPageInner() {
                 {/* Active size badge */}
                 {sizeParam && (
                     <div className="mt-2 flex items-center gap-1.5">
-                        <span className="rounded-lg bg-[#4268FF] px-2.5 py-1 text-[11px] font-semibold text-white">Taille {sizeParam}</span>
+                        <span className="rounded-lg bg-brand-solid px-2.5 py-1 text-[11px] font-semibold text-white">
+                            Taille {sizeParam}
+                        </span>
                     </div>
                 )}
             </div>
@@ -152,8 +94,8 @@ function SearchPageInner() {
             <div className="p-4 pb-24">
                 {showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <SearchMd className="size-10 text-[#1A1F36]/15" />
-                        <p className="text-sm font-medium text-[#1A1F36]/40">
+                        <SearchMd className="size-10 text-quaternary" aria-hidden="true" />
+                        <p className="text-sm font-medium text-quaternary">
                             Tape un nom, une marque ou un code-barres
                         </p>
                     </div>
@@ -162,14 +104,14 @@ function SearchPageInner() {
                 {displayLoading && (
                     <div className="grid grid-cols-2 gap-3">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-[#E2E5F0]" />
+                            <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-secondary_hover" />
                         ))}
                     </div>
                 )}
 
                 {displayProducts && displayProducts.length > 0 && (
                     <>
-                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-xs font-medium text-[#1A1F36]/50">
+                        <p role="status" aria-live="polite" aria-atomic="true" className="mb-3 text-xs font-medium text-tertiary">
                             {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
                         <ul role="list" className="grid grid-cols-2 gap-3">
@@ -198,13 +140,13 @@ function SearchPageInner() {
 
                 {displayProducts && displayProducts.length === 0 && !showPlaceholder && (
                     <div className="flex flex-col items-center gap-2 py-16 text-center">
-                        <p className="text-sm font-medium text-[#1A1F36]/40">
+                        <p className="text-sm font-medium text-quaternary">
                             {isFilterMode
                                 ? "Aucun résultat avec ces filtres"
                                 : `Aucun résultat pour \u201c${query}\u201d`}
                         </p>
                         {!isFilterMode && (
-                            <p className="text-xs text-[#1A1F36]/30">
+                            <p className="text-xs text-tertiary">
                                 Essaie avec un autre terme
                             </p>
                         )}
