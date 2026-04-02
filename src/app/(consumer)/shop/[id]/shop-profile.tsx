@@ -403,10 +403,11 @@ export default function ShopProfileClient() {
                         {activeTab === "Promos" ? "Aucune promo en cours" : "Aucun produit"}
                     </p>
                 ) : (
-                    filteredProducts.map((p) => (
+                    filteredProducts.map((p, i) => (
                         <ProductCard
                             key={p.id}
                             compact
+                            index={i}
                             id={p.id}
                             name={p.canonical_name ?? p.name}
                             price={p.price}

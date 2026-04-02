@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Suspense, useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { ChevronRight, FilterLines, Building07 } from "@untitledui/icons";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -62,6 +62,7 @@ export default function DiscoverPage() {
 }
 
 function DiscoverContent() {
+    const prefersReducedMotion = useReducedMotion();
     const { position } = useGeolocation();
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
@@ -307,8 +308,16 @@ function DiscoverContent() {
 
             {/* ── Feed sections ── */}
             <div {...swipeHandlers}>
+            <AnimatePresence mode="wait">
             {feedTab === "explorer" ? (
-            <div className="flex flex-col gap-8 pb-24 pt-5">
+            <motion.div
+                key="explorer"
+                initial={prefersReducedMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex flex-col gap-8 pb-24 pt-5"
+            >
 
                 {/* ── 1. Promos du moment — 1 grande + 3 petites ── */}
                 {(loadingPromos || topPromos.length > 0) && (
@@ -381,9 +390,10 @@ function DiscoverContent() {
                             </div>
                         ) : trending && trending.length > 0 ? (
                             <div className="grid grid-cols-2 gap-3">
-                                {trending.slice(0, 4).map((p) => (
+                                {trending.slice(0, 4).map((p, i) => (
                                     <ProductCard
                                         key={`${p.product_id}-${p.merchant_id}`}
+                                        index={i}
                                         id={p.product_id}
                                         name={p.product_name}
                                         price={p.product_price}
@@ -470,12 +480,29 @@ function DiscoverContent() {
                 )}
                 {/* ── 6. Tout près de toi — infinite scroll ── */}
                 <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
-            </div>
+            </motion.div>
             ) : feedTab === "pour-toi" ? (
-                <ForYouFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} lat={lat} lng={lng} />
+                <motion.div
+                    key="pour-toi"
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                >
+                    <ForYouFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} lat={lat} lng={lng} />
+                </motion.div>
             ) : (
-                <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
+                <motion.div
+                    key="suivis"
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                >
+                    <FollowedFeed follows={follows} favoriteIds={favoriteIds} onToggleFav={toggleFav} category={activeCategory} size={activeSize} />
+                </motion.div>
             )}
+            </AnimatePresence>
             </div>
         </div>
     );
@@ -571,11 +598,12 @@ function InfiniteProductGrid({
             </div>
 
             <div className="grid grid-cols-2 gap-3 px-4 md:grid-cols-4 md:gap-4 md:px-6">
-                {allProducts.map((p: any) => {
+                {allProducts.map((p: any, i: number) => {
                     const isFav = favoriteIds.has(p.product_id);
                     return (
                         <ProductCard
                             key={p.product_id}
+                            index={i % 20}
                             id={p.product_id}
                             name={p.product_name}
                             price={p.product_price}
@@ -670,9 +698,10 @@ function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: { follows: 
         staleTime: 60_000,
     });
 
-    const renderProductCard = (p: DiscoverProduct) => (
+    const renderProductCard = (p: DiscoverProduct, i: number) => (
         <ProductCard
             key={p.product_id}
+            index={i}
             id={p.product_id}
             name={p.product_name}
             price={p.product_price}

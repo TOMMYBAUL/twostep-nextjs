@@ -23,10 +23,11 @@ interface ProductCardProps {
     onToggleFavorite: () => void;
     className?: string;
     compact?: boolean;
+    index?: number;
 }
 
 export function ProductCard({
-    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className, compact,
+    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className, compact, index = 0,
 }: ProductCardProps) {
     const safeDistance = distance ?? 0;
     const formattedDistance = safeDistance < 1
@@ -43,7 +44,7 @@ export function ProductCard({
         <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.35, ease: "easeOut" }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: prefersReducedMotion ? 0 : index * 0.04 }}
         >
         <Link
             ref={ref}

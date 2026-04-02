@@ -115,9 +115,10 @@ function SearchPageInner() {
                             {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
                         <ul role="list" className="grid grid-cols-2 gap-3">
-                            {displayProducts.map((r: any) => (
+                            {displayProducts.map((r: any, i: number) => (
                                 <li key={`${r.product_id}-${r.merchant_id}`}>
                                 <ProductCard
+                                    index={i}
                                     id={r.product_id}
                                     name={r.product_name}
                                     price={r.product_price}
