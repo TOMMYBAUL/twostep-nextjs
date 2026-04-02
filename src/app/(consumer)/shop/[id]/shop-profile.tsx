@@ -5,10 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useReducedMotion } from "motion/react";
-import { ArrowLeft, MarkerPin01, Clock, ChevronDown, Share07, Globe02, AlertCircle } from "@untitledui/icons";
+import { ArrowLeft, MarkerPin01, Clock, ChevronDown, Share07, Globe02, AlertCircle, Check } from "@untitledui/icons";
 import Instagram from "@/components/foundations/social-icons/instagram";
 import TikTok from "@/components/foundations/social-icons/tiktok";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
@@ -55,9 +56,11 @@ const SUB_TABS = ["Catalogue", "Promos", "Avis"];
 
 export default function ShopProfileClient() {
     const { id } = useParams<{ id: string }>();
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState("Catalogue");
     const [suggestionOpen, setSuggestionOpen] = useState(false);
-    const prefersReducedMotion = useReducedMotion();
+    const [shareCopied, setShareCopied] = useState(false);
+    const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     const { data: profile, isLoading, isError } = useQuery<MerchantProfile>({
         queryKey: ["merchant-profile", id],
@@ -156,7 +159,7 @@ export default function ShopProfileClient() {
                 {profile.merchant_cover ? (
                     <Image
                         src={profile.merchant_cover}
-                        alt=""
+                        alt={`Photo de ${profile.merchant_name}`}
                         fill
                         priority
                         sizes="100vw"
@@ -165,7 +168,7 @@ export default function ShopProfileClient() {
                 ) : profile.merchant_photo ? (
                     <Image
                         src={profile.merchant_photo}
-                        alt=""
+                        alt={`Photo de ${profile.merchant_name}`}
                         fill
                         priority
                         sizes="100vw"
@@ -181,14 +184,15 @@ export default function ShopProfileClient() {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 via-40% to-transparent" />
 
                 {/* Back button — circle, semi-transparent */}
-                <Link
-                    href="/explore"
+                <button
+                    type="button"
+                    onClick={() => window.history.length > 1 ? router.back() : router.push("/discover")}
                     className="absolute left-4 top-4 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/90 shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"
                 >
-                    <ArrowLeft className="size-5 text-primary" />
-                </Link>
+                    <ArrowLeft className="size-5 text-primary" aria-hidden="true" />
+                </button>
 
                 {/* Logo + name at bottom of cover — TGTG exact layout */}
                 <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end px-4 pb-4">
@@ -262,11 +266,11 @@ export default function ShopProfileClient() {
                         className={cx(
                             "flex-1 min-h-[44px] rounded-lg text-[13px] font-semibold transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                             isFollowing
-                                ? "border border-secondary bg-secondary text-tertiary"
-                                : "bg-brand-solid text-white",
+                                ? "border border-secondary bg-secondary text-tertiary hover:bg-secondary_hover"
+                                : "bg-brand-solid text-white hover:bg-brand-solid_hover",
                         )}
                     >
-                        {isFollowing ? "Abonné ✓" : "S'abonner"}
+                        {isFollowing ? (<><Check className="mr-1 inline size-3.5" aria-hidden="true" />Abonné</>) : "S'abonner"}
                     </button>
 
                     {/* Social icons — only shown if URL exists */}
@@ -312,13 +316,17 @@ export default function ShopProfileClient() {
                             if (navigator.share) {
                                 try { await navigator.share({ title: profile.merchant_name, text: `Découvre ${profile.merchant_name} sur Two-Step`, url }); } catch {}
                             } else {
-                                await navigator.clipboard.writeText(url);
+                                try { await navigator.clipboard.writeText(url); setShareCopied(true); setTimeout(() => setShareCopied(false), 2000); } catch {}
                             }
                         }}
                         className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-secondary bg-secondary_hover transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
-                        aria-label="Partager"
+                        aria-label={shareCopied ? "Lien copié" : "Partager"}
                     >
-                        <Share07 className="size-4 text-tertiary" />
+                        {shareCopied ? (
+                            <Check className="size-4 text-success-primary" />
+                        ) : (
+                            <Share07 className="size-4 text-tertiary" />
+                        )}
                     </button>
                 </div>
 
@@ -333,38 +341,63 @@ export default function ShopProfileClient() {
 
             {/* Sub-tabs */}
             <div className="mt-5 border-b border-secondary bg-secondary">
-                <div className="flex px-5" role="tablist">
-                    {SUB_TABS.map((tab) => (
-                        <button
-                            key={tab}
-                            type="button"
-                            role="tab"
-                            aria-selected={activeTab === tab}
-                            tabIndex={activeTab === tab ? 0 : -1}
-                            onClick={() => {
-                                if (tab === "Avis") {
-                                    setSuggestionOpen(true);
-                                } else {
-                                    setActiveTab(tab);
-                                }
-                            }}
-                            className={cx(
-                                "min-h-[44px] border-b-2 px-4 py-3 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
-                                tab === "Avis"
-                                    ? "border-transparent text-quaternary"
-                                    : activeTab === tab
+                <div className="flex px-5" role="tablist" aria-label="Sections de la boutique">
+                    {SUB_TABS.filter((t) => t !== "Avis").map((tab, index) => {
+                        const isActive = activeTab === tab;
+                        return (
+                            <button
+                                key={tab}
+                                ref={(el) => { tabRefs.current[index] = el; }}
+                                type="button"
+                                role="tab"
+                                id={`tab-${tab.toLowerCase()}`}
+                                aria-selected={isActive}
+                                aria-controls={`panel-${tab.toLowerCase()}`}
+                                tabIndex={isActive ? 0 : -1}
+                                onClick={() => setActiveTab(tab)}
+                                onKeyDown={(e) => {
+                                    const realTabs = SUB_TABS.filter((t) => t !== "Avis");
+                                    let next: number | null = null;
+                                    if (e.key === "ArrowRight") next = (index + 1) % realTabs.length;
+                                    else if (e.key === "ArrowLeft") next = (index - 1 + realTabs.length) % realTabs.length;
+                                    else if (e.key === "Home") next = 0;
+                                    else if (e.key === "End") next = realTabs.length - 1;
+                                    if (next !== null) {
+                                        e.preventDefault();
+                                        setActiveTab(realTabs[next]);
+                                        tabRefs.current[next]?.focus();
+                                    }
+                                }}
+                                className={cx(
+                                    "min-h-[44px] border-b-2 px-4 py-3 text-sm font-semibold transition-colors hover:text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
+                                    isActive
                                         ? "border-brand-solid text-brand-secondary"
                                         : "border-transparent text-quaternary",
-                            )}
-                        >
-                            {tab}
-                        </button>
-                    ))}
+                                )}
+                            >
+                                {tab}
+                            </button>
+                        );
+                    })}
+                    {/* "Avis" is NOT a tab — it opens a drawer */}
+                    <button
+                        type="button"
+                        onClick={() => setSuggestionOpen(true)}
+                        aria-haspopup="dialog"
+                        className="min-h-[44px] border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-quaternary transition-colors hover:text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                    >
+                        Avis
+                    </button>
                 </div>
             </div>
 
             {/* Product grid */}
-            <div className="grid grid-cols-2 gap-3 p-4 pb-24">
+            <div
+                id={`panel-${activeTab.toLowerCase()}`}
+                role="tabpanel"
+                aria-labelledby={`tab-${activeTab.toLowerCase()}`}
+                className="grid grid-cols-2 gap-3 p-4 pb-24"
+            >
                 {filteredProducts.length === 0 ? (
                     <p className="col-span-2 py-12 text-center text-sm text-quaternary">
                         {activeTab === "Promos" ? "Aucune promo en cours" : "Aucun produit"}
