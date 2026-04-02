@@ -53,7 +53,7 @@ export function ShopCard({
                         {productCount} produit{productCount > 1 ? "s" : ""} disponible{productCount > 1 ? "s" : ""}
                     </span>
                     {promoCount > 0 && (
-                        <span className="inline-flex items-center gap-1 text-xs text-[var(--ts-ochre)]">
+                        <span className="inline-flex items-center gap-1 text-xs text-[var(--ts-accent)]">
                             <Tag01 className="size-3" aria-hidden="true" />
                             {promoCount} promo{promoCount > 1 ? "s" : ""}
                         </span>

@@ -44,7 +44,7 @@ export default async function CityComingSoonPage({ params }: Props) {
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FFFFFF] px-6 text-center" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
             <div className="mx-auto max-w-sm">
-                <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-[#E2E5F0] text-3xl">
+                <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-[#EBEBEB] text-3xl">
                     <img src="/logo-icon.webp?v=2" alt="" className="size-10 rounded-lg" />
                 </div>
 
@@ -52,7 +52,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                     {catTitle} à {cityInfo.name}
                 </h1>
 
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#E2E5F0] px-4 py-2">
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#EBEBEB] px-4 py-2">
                     <span className="relative flex size-2">
                         <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#4268FF] opacity-75" />
                         <span className="relative inline-flex size-2 rounded-full bg-[#4268FF]" />
@@ -60,7 +60,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                     <span className="text-sm font-medium text-[#4268FF]">Arrive bientôt</span>
                 </div>
 
-                <p className="mt-6 text-sm leading-relaxed text-[#1A1F36]/50">
+                <p className="mt-6 text-sm leading-relaxed text-[#1A1A1A]/50">
                     Two-Step se lance d'abord à Toulouse. {cityInfo.name} fait partie
                     des prochaines villes sur notre liste.
                 </p>
@@ -74,15 +74,15 @@ export default async function CityComingSoonPage({ params }: Props) {
                     </Link>
                     <Link
                         href="/discover"
-                        className="rounded-xl border border-[#1A1F36]/15 px-6 py-3 text-sm font-medium text-[#1A1F36]/60 transition active:opacity-80"
+                        className="rounded-xl border border-[#1A1A1A]/15 px-6 py-3 text-sm font-medium text-[#1A1A1A]/60 transition active:opacity-80"
                     >
                         Retour à l'accueil
                     </Link>
                 </div>
 
                 {/* Other categories in this city */}
-                <nav className="mt-12 border-t border-[#1A1F36]/10 pt-6">
-                    <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-[#1A1F36]/30">
+                <nav className="mt-12 border-t border-[#1A1A1A]/10 pt-6">
+                    <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-[#1A1A1A]/30">
                         Autres catégories à {cityInfo.name}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2">
@@ -93,7 +93,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                                 <Link
                                     key={key}
                                     href={`/${city}/${key}`}
-                                    className="rounded-full bg-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36]/50 transition hover:bg-[#E2E5F0]/80"
+                                    className="rounded-full bg-[#EBEBEB] px-3 py-1.5 text-xs text-[#1A1A1A]/50 transition hover:bg-[#EBEBEB]/80"
                                 >
                                     {val.title}
                                 </Link>

@@ -11,16 +11,16 @@ function Bone({ className, delay = 0 }: { className?: string; delay?: number }) 
     );
 }
 
-/** Skeleton for a product card in a 2-col grid (Vinted-style) */
+/** Skeleton for a product card in a 2-col grid */
 export function ProductCardSkeleton({ index = 0 }: { index?: number }) {
-    const d = index * 200; // stagger 200ms per card (Instagram pattern)
+    const d = index * 200;
     return (
-        <div className="overflow-hidden rounded-[10px] border-[0.5px] border-[var(--ts-border)] bg-[var(--ts-bg-input)]">
-            <Bone className="h-[220px] w-full rounded-none" delay={d} />
-            <div className="px-2 py-2">
-                <Bone className="h-3 w-[70%]" delay={d + 50} />
-                <Bone className="mt-1.5 h-2.5 w-12" delay={d + 100} />
-                <Bone className="mt-1.5 h-2 w-[55%]" delay={d + 150} />
+        <div className="overflow-hidden rounded-[10px]">
+            <Bone className="aspect-[3/4] w-full rounded-[10px]" delay={d} />
+            <div className="px-1 pt-2.5">
+                <Bone className="h-3.5 w-[75%]" delay={d + 50} />
+                <Bone className="mt-1.5 h-2.5 w-[55%]" delay={d + 100} />
+                <Bone className="mt-1.5 h-3 w-12" delay={d + 150} />
             </div>
         </div>
     );

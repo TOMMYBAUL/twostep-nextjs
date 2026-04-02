@@ -19,7 +19,7 @@ export function FilterPills({ options, selected, onSelect }: FilterPillsProps) {
                 className={cx(
                     "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition duration-100",
                     selected === null
-                        ? "bg-[var(--ts-ochre)] text-white"
+                        ? "bg-[var(--ts-accent)] text-white"
                         : "bg-secondary text-secondary hover:bg-tertiary",
                 )}
             >
@@ -35,7 +35,7 @@ export function FilterPills({ options, selected, onSelect }: FilterPillsProps) {
                     className={cx(
                         "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition duration-100",
                         selected === option
-                            ? "bg-[var(--ts-ochre)] text-white"
+                            ? "bg-[var(--ts-accent)] text-white"
                             : "bg-secondary text-secondary hover:bg-tertiary",
                     )}
                 >

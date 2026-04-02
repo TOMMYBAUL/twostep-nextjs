@@ -96,7 +96,7 @@ function CollapsedPill({ merchant }: { merchant: Merchant }) {
     return (
         <Link
             href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
-            className="flex size-9 items-center justify-center rounded-full bg-[var(--ts-ochre)] text-xs font-bold text-white shadow-sm transition duration-100 hover:scale-110"
+            className="flex size-9 items-center justify-center rounded-full bg-[var(--ts-accent)] text-xs font-bold text-white shadow-sm transition duration-100 hover:scale-110"
             title={merchant.merchant_name}
         >
             {merchant.merchant_name.charAt(0).toUpperCase()}
@@ -111,7 +111,7 @@ function ExpandedCard({ merchant }: { merchant: Merchant }) {
             className="group flex gap-2.5 rounded-xl p-2 transition duration-100 hover:bg-secondary"
         >
             {/* Avatar */}
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--ts-ochre)] text-sm font-bold text-white">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--ts-accent)] text-sm font-bold text-white">
                 {merchant.merchant_photo ? (
                     <img src={merchant.merchant_photo} alt="" className="size-full rounded-full object-cover" />
                 ) : (
@@ -132,7 +132,7 @@ function ExpandedCard({ merchant }: { merchant: Merchant }) {
                         {merchant.product_count} produit{merchant.product_count > 1 ? "s" : ""}
                     </span>
                     {merchant.promo_count > 0 && (
-                        <span className="flex items-center gap-0.5 text-[11px] text-[var(--ts-ochre)]">
+                        <span className="flex items-center gap-0.5 text-[11px] text-[var(--ts-accent)]">
                             <Tag01 className="size-2.5" aria-hidden="true" />
                             {merchant.promo_count}
                         </span>

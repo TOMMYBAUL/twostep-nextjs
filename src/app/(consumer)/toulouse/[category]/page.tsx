@@ -70,12 +70,12 @@ export default async function CategoryPage({ params }: Props) {
                 <h1 className="font-heading text-2xl font-bold uppercase text-[var(--ts-text)]">
                     {cat.title} à Toulouse
                 </h1>
-                <p className="mt-2 text-sm text-[#1A1F36]/60">
+                <p className="mt-2 text-sm text-[#1A1A1A]/60">
                     {cat.description}
                 </p>
 
                 {merchants.length === 0 ? (
-                    <p className="mt-8 text-center text-sm text-[#1A1F36]/40">
+                    <p className="mt-8 text-center text-sm text-[#1A1A1A]/40">
                         Aucun commerce trouvé dans cette catégorie pour le moment.
                     </p>
                 ) : (
@@ -86,7 +86,7 @@ export default async function CategoryPage({ params }: Props) {
                                 <Link
                                     key={merchant.id}
                                     href={`/shop/${merchant.slug}`}
-                                    className="flex items-center gap-3 rounded-2xl bg-[#E2E5F0] p-4 transition duration-150 active:bg-[#E2E5F0]/80"
+                                    className="flex items-center gap-3 rounded-2xl bg-[#EBEBEB] p-4 transition duration-150 active:bg-[#EBEBEB]/80"
                                 >
                                     <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FFFFFF]">
                                         {logo ? (
@@ -98,8 +98,8 @@ export default async function CategoryPage({ params }: Props) {
                                         )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-[14px] font-semibold text-[#1A1F36]">{merchant.name}</p>
-                                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-[#1A1F36]/50">
+                                        <p className="truncate text-[14px] font-semibold text-[#1A1A1A]">{merchant.name}</p>
+                                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-[#1A1A1A]/50">
                                             <MarkerPin01 className="size-3 shrink-0" aria-hidden="true" />
                                             {merchant.address}
                                         </p>
@@ -111,8 +111,8 @@ export default async function CategoryPage({ params }: Props) {
                 )}
 
                 {/* Internal links for SEO */}
-                <nav className="mt-12 border-t border-[#1A1F36]/10 pt-6">
-                    <h2 className="text-sm font-semibold text-[#1A1F36]/60">Autres catégories à Toulouse</h2>
+                <nav className="mt-12 border-t border-[#1A1A1A]/10 pt-6">
+                    <h2 className="text-sm font-semibold text-[#1A1A1A]/60">Autres catégories à Toulouse</h2>
                     <div className="mt-3 flex flex-wrap gap-2">
                         {Object.entries(CATEGORY_SEO)
                             .filter(([key]) => key !== category)
@@ -120,7 +120,7 @@ export default async function CategoryPage({ params }: Props) {
                                 <Link
                                     key={key}
                                     href={`/toulouse/${key}`}
-                                    className="rounded-full bg-[#E2E5F0] px-3 py-1.5 text-xs text-[#1A1F36]/70 transition hover:bg-[#E2E5F0]/80"
+                                    className="rounded-full bg-[#EBEBEB] px-3 py-1.5 text-xs text-[#1A1A1A]/70 transition hover:bg-[#EBEBEB]/80"
                                 >
                                     {val.title}
                                 </Link>

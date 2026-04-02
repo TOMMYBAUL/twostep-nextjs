@@ -112,10 +112,10 @@ export default function NotificationsPage() {
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="flex size-10 items-center justify-center rounded-xl bg-[#E2E5F0] transition active:bg-[#FFFFFF]/50"
+                        className="flex size-10 items-center justify-center rounded-xl bg-[#EBEBEB] transition active:bg-[#FFFFFF]/50"
                         aria-label="Retour"
                     >
-                        <ArrowLeft className="size-5 text-[#1A1F36]/60" />
+                        <ArrowLeft className="size-5 text-[#1A1A1A]/60" />
                     </button>
                     <h1 className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">Notifications</h1>
                 </div>
@@ -124,13 +124,13 @@ export default function NotificationsPage() {
             {/* Settings */}
             <div className="space-y-3 p-4 pb-24">
                 {settings.map((setting) => (
-                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-[#E2E5F0] p-4">
+                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-[#EBEBEB] p-4">
                         <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${setting.iconBg}`}>
                             {setting.icon}
                         </div>
                         <div className="flex-1">
-                            <p className="text-sm font-semibold text-[#1A1F36]">{setting.label}</p>
-                            <p className="text-[11px] text-[#1A1F36]/50">{setting.description}</p>
+                            <p className="text-sm font-semibold text-[#1A1A1A]">{setting.label}</p>
+                            <p className="text-[11px] text-[#1A1A1A]/50">{setting.description}</p>
                         </div>
                         {/* Toggle — rendered client-only to avoid hydration mismatch with localStorage */}
                         {mounted ? (
@@ -154,7 +154,7 @@ export default function NotificationsPage() {
                     </div>
                 ))}
 
-                <p className="pt-4 text-center text-[11px] text-[#1A1F36]/30">
+                <p className="pt-4 text-center text-[11px] text-[#1A1A1A]/30">
                     Les notifications push nécessitent l&apos;autorisation de ton navigateur.
                 </p>
             </div>

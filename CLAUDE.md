@@ -813,7 +813,7 @@ Use background color variables to manage all fill colors for elements in your de
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **twostep-nextjs** (1716 symbols, 3248 relationships, 86 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **twostep-nextjs** (1930 symbols, 3737 relationships, 116 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

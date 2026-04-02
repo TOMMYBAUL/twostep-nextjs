@@ -56,14 +56,14 @@ export function ProductCard({
             )}
         >
             {/* Image — 3:4 ratio */}
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[10px] bg-secondary">
+            <div className="relative aspect-square w-full overflow-hidden rounded-[10px] bg-secondary">
                 {photo ? (
                     <Image
                         src={photo}
                         alt={name}
                         fill
                         sizes="(max-width: 768px) 50vw, 25vw"
-                        className="h-full w-full object-cover transition duration-300 motion-reduce:transform-none md:group-hover:scale-[1.03]"
+                        className="h-full w-full object-contain p-2 transition duration-300 motion-reduce:transform-none md:group-hover:scale-[1.03]"
                         loading="lazy"
                     />
                 ) : (

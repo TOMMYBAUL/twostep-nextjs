@@ -210,24 +210,40 @@ export default function ProductDetailClient() {
             ══════════════════════════════════════════════ */}
             <div
                 className={cx(
-                    "relative h-[65dvh] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2",
+                    "relative w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2",
                     isProcessed ? "bg-primary" : "bg-secondary",
                 )}
             >
                 {photoSrc ? (
-                    <Image
-                        src={photoSrc}
-                        alt={productName}
-                        fill
-                        priority
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className={cx(
-                            "object-center",
-                            isProcessed ? "object-contain p-6" : "object-cover",
-                        )}
-                    />
+                    <>
+                        {/* Mobile: image auto-height, no empty space */}
+                        <Image
+                            src={photoSrc}
+                            alt={productName}
+                            width={800}
+                            height={800}
+                            priority
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className={cx(
+                                "w-full object-center md:hidden",
+                                isProcessed ? "max-h-[65dvh] object-contain p-6" : "max-h-[65dvh] object-contain",
+                            )}
+                        />
+                        {/* Desktop: fill container, sticky half-screen */}
+                        <Image
+                            src={photoSrc}
+                            alt={productName}
+                            fill
+                            priority
+                            sizes="50vw"
+                            className={cx(
+                                "hidden object-center md:block",
+                                isProcessed ? "object-contain p-6" : "object-cover",
+                            )}
+                        />
+                    </>
                 ) : (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-[40dvh] w-full items-center justify-center md:h-full">
                         {!isLoading && (
                             <span
                                 className="text-6xl font-bold text-primary/15 select-none"

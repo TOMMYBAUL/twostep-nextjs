@@ -102,7 +102,7 @@ export function WelcomeGate() {
                             <h1 className="font-display text-xl font-bold uppercase text-[var(--ts-text)]">
                                 Bienvenue sur Two-Step
                             </h1>
-                            <p className="mt-1 text-sm text-[#8E96B0]/60">
+                            <p className="mt-1 text-sm text-[#AAAAAA]/60">
                                 Le produit exact que tu cherches, à deux pas de chez toi.
                             </p>
                         </div>
@@ -134,14 +134,14 @@ export function WelcomeGate() {
                         <button
                             type="button"
                             onClick={() => setMode("login")}
-                            className="mt-2 w-full rounded-2xl border-2 border-[#E2E5F0] py-3.5 text-sm font-semibold text-[#1A1F36] transition duration-150 active:bg-[#F5F6FA]"
+                            className="mt-2 w-full rounded-2xl border-2 border-[#EBEBEB] py-3.5 text-sm font-semibold text-[#1A1A1A] transition duration-150 active:bg-[#F5F5F5]"
                         >
                             J'ai déjà un compte
                         </button>
                         <button
                             type="button"
                             onClick={dismiss}
-                            className="mt-4 w-full py-2 text-xs text-[#8E96B0]/40 transition duration-150"
+                            className="mt-4 w-full py-2 text-xs text-[#AAAAAA]/40 transition duration-150"
                         >
                             Passer pour le moment
                         </button>
@@ -153,14 +153,14 @@ export function WelcomeGate() {
                             <h2 className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">
                                 Tes préférences
                             </h2>
-                            <p className="mt-1 text-xs text-[#8E96B0]/50">
+                            <p className="mt-1 text-xs text-[#AAAAAA]/50">
                                 Optionnel — pour te montrer les produits dans ta taille
                             </p>
                         </div>
 
                         {/* Clothing size */}
                         <div className="mb-5">
-                            <label className="mb-2 block text-xs font-semibold text-[#1A1F36]">Taille vêtements</label>
+                            <label className="mb-2 block text-xs font-semibold text-[#1A1A1A]">Taille vêtements</label>
                             <div className="flex flex-wrap gap-2">
                                 {CLOTHING_SIZES.map((size) => (
                                     <button
@@ -171,7 +171,7 @@ export function WelcomeGate() {
                                             "rounded-xl px-4 py-2.5 text-sm font-medium transition duration-100",
                                             clothingSize === size
                                                 ? "bg-[#4268FF] text-white shadow-sm"
-                                                : "border-2 border-[#E2E5F0] text-[#1A1F36] active:border-[#4268FF]",
+                                                : "border-2 border-[#EBEBEB] text-[#1A1A1A] active:border-[#4268FF]",
                                         )}
                                     >
                                         {size}
@@ -182,7 +182,7 @@ export function WelcomeGate() {
 
                         {/* Shoe size */}
                         <div className="mb-6">
-                            <label className="mb-2 block text-xs font-semibold text-[#1A1F36]">Pointure</label>
+                            <label className="mb-2 block text-xs font-semibold text-[#1A1A1A]">Pointure</label>
                             <div className="flex flex-wrap gap-1.5">
                                 {SHOE_SIZES.map((size) => (
                                     <button
@@ -193,7 +193,7 @@ export function WelcomeGate() {
                                             "rounded-lg px-2.5 py-2 text-xs font-medium transition duration-100",
                                             shoeSize === size
                                                 ? "bg-[#4268FF] text-white shadow-sm"
-                                                : "border-2 border-[#E2E5F0] text-[#1A1F36] active:border-[#4268FF]",
+                                                : "border-2 border-[#EBEBEB] text-[#1A1A1A] active:border-[#4268FF]",
                                         )}
                                     >
                                         {size}
@@ -223,23 +223,23 @@ export function WelcomeGate() {
 
                         <form onSubmit={handleSubmit} className="space-y-3">
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1A1A]">Email</label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[#EBEBEB] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder="ton@email.fr"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Mot de passe</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1A1A]">Mot de passe</label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-[#EBEBEB] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
                                     placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
                                     required
                                     minLength={mode === "signup" ? 8 : undefined}
@@ -258,14 +258,14 @@ export function WelcomeGate() {
                             <button
                                 type="button"
                                 onClick={() => { setMode("welcome"); setError(""); }}
-                                className="text-xs font-medium text-[#8E96B0]/50"
+                                className="text-xs font-medium text-[#AAAAAA]/50"
                             >
                                 ← Retour
                             </button>
                             <button
                                 type="button"
                                 onClick={dismiss}
-                                className="text-xs text-[#8E96B0]/40"
+                                className="text-xs text-[#AAAAAA]/40"
                             >
                                 Passer
                             </button>
@@ -284,8 +284,8 @@ function ValueProp({ icon, iconBg, title, description }: { icon: React.ReactNode
                 {icon}
             </div>
             <div>
-                <p className="text-sm font-semibold text-[#1A1F36]">{title}</p>
-                <p className="text-xs text-[#8E96B0]/50">{description}</p>
+                <p className="text-sm font-semibold text-[#1A1A1A]">{title}</p>
+                <p className="text-xs text-[#AAAAAA]/50">{description}</p>
             </div>
         </div>
     );
