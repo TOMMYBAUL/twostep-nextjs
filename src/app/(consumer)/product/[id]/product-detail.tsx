@@ -2,13 +2,31 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ChevronRight, Phone01, XClose } from "@untitledui/icons";
-import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ChevronRight, Phone01, XClose, Building07 } from "@untitledui/icons";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
+import { cx } from "@/utils/cx";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
+import { useGeolocation } from "../../hooks/use-geolocation";
+import { ShopStatusBlock } from "./shop-status-block";
+import { StickyCtaBar } from "./sticky-cta-bar";
+
+/* ── Haversine distance helper ── */
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/* ── Types ── */
 
 interface SizeVariant {
     size: string;
@@ -38,11 +56,29 @@ interface ProductDetail {
         photo_url: string | null;
         phone?: string | null;
         opening_hours?: Record<string, { open: string; close: string }> | null;
+        lat?: number | null;
+        lng?: number | null;
     };
 }
 
+/* ── Constants ── */
+
+const MAX_INLINE_CHIPS = 6;
+
+const SPRING_SHEET = { type: "spring" as const, damping: 28, stiffness: 300 };
+
+/* ── Component ── */
+
 export default function ProductDetailClient() {
     const { id } = useParams<{ id: string }>();
+    const prefersReducedMotion = useReducedMotion();
+    const { position: userPosition } = useGeolocation();
+
+    const springOrInstant = prefersReducedMotion
+        ? { duration: 0 }
+        : SPRING_SHEET;
+
+    /* ── Data fetching ── */
 
     const { data: product, isLoading } = useQuery<ProductDetail>({
         queryKey: ["product", id],
@@ -54,6 +90,8 @@ export default function ProductDetailClient() {
         },
     });
 
+    /* ── Favorites ── */
+
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
 
@@ -61,28 +99,48 @@ export default function ProductDetailClient() {
     const productUuid = product?.id;
     const isFavorite = productUuid ? favoriteIds.has(productUuid) : false;
 
+    /* ── Derived data ── */
+
     const stockData = product?.stock;
-    const quantity = Array.isArray(stockData) ? (stockData[0]?.quantity ?? 0) : ((stockData as any)?.quantity ?? 0);
+    const quantity = Array.isArray(stockData)
+        ? (stockData[0]?.quantity ?? 0)
+        : ((stockData as any)?.quantity ?? 0);
+
     const activePromo = product?.promotions?.find(
         (p) => !p.ends_at || new Date(p.ends_at) > new Date(),
     );
-    const discount = activePromo ? Math.round(((product!.price - activePromo.sale_price) / product!.price) * 100) : 0;
+    const discount = activePromo
+        ? Math.round(((product!.price - activePromo.sale_price) / product!.price) * 100)
+        : 0;
     const displayPrice = activePromo ? activePromo.sale_price : product?.price;
+    const salePrice = activePromo ? activePromo.sale_price : null;
 
     const availableSizes = product?.available_sizes ?? [];
+    const inStockSizes = availableSizes.filter((s) => s.quantity > 0);
     const hasSizes = availableSizes.length > 0;
-    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const isPointure = /^\d/.test(inStockSizes[0]?.size ?? "");
 
+    /* ── State ── */
+
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [sizeSheetOpen, setSizeSheetOpen] = useState(false);
     const [sizeChartOpen, setSizeChartOpen] = useState(false);
     const [contactSheetOpen, setContactSheetOpen] = useState(false);
     const [phoneCopied, setPhoneCopied] = useState(false);
-
     const [intentSent, setIntentSent] = useState(false);
     const [intentLoading, setIntentLoading] = useState(false);
     const [othersCount, setOthersCount] = useState(0);
 
-    // Fetch how many others are interested in this product
+    /* ── Distance ── */
+
+    const merchant = product?.merchants;
+    const distanceKm =
+        userPosition && merchant?.lat != null && merchant?.lng != null
+            ? haversineKm(userPosition.lat, userPosition.lng, merchant.lat, merchant.lng)
+            : null;
+
+    /* ── Fetch intent count ── */
+
     useEffect(() => {
         if (!product?.id) return;
         fetch(`/api/intents?product_id=${product.id}`)
@@ -90,6 +148,8 @@ export default function ProductDetailClient() {
             .then((d) => setOthersCount(d.count ?? 0))
             .catch(() => {});
     }, [product?.id, intentSent]);
+
+    /* ── Intent handler ── */
 
     const handleIntent = async () => {
         if (intentLoading || intentSent || !product) return;
@@ -108,9 +168,7 @@ export default function ProductDetailClient() {
                     selected_size: selectedSize,
                 }),
             });
-            if (res.ok) {
-                setIntentSent(true);
-            }
+            if (res.ok) setIntentSent(true);
         } catch {
             // Silently fail
         } finally {
@@ -118,39 +176,74 @@ export default function ProductDetailClient() {
         }
     };
 
-    const shopSlug = product?.merchants?.name ? generateSlug(product.merchants.name, product.merchant_id) : null;
+    /* ── Derived display ── */
 
+    const productName = product?.canonical_name ?? product?.name ?? "";
+    const photoSrc = product?.photo_processed_url ?? product?.photo_url;
+    const isProcessed = !!product?.photo_processed_url;
     const shop = product?.merchants;
 
+    /* ── Inline size chips (max 6 + overflow) ── */
+
+    const visibleChips = inStockSizes.slice(0, MAX_INLINE_CHIPS);
+    const overflowCount = inStockSizes.length - MAX_INLINE_CHIPS;
+
     return (
-        <div className="min-h-dvh bg-[#FFFFFF] md:flex md:min-h-screen md:flex-row">
-            {/* ── Image zone ── */}
-            <div className={`relative h-[300px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2 ${product?.photo_processed_url ? "bg-white" : "bg-[var(--ts-bg)]"}`}>
-                {(product?.photo_processed_url ?? product?.photo_url) ? (
-                    <img src={product.photo_processed_url ?? product.photo_url ?? "/placeholder-product.svg"} alt={product?.canonical_name ?? product?.name ?? ""} className={`h-full w-full object-center ${product?.photo_processed_url ? "object-contain p-4" : "object-cover"}`} />
+        <div className="min-h-dvh bg-primary md:flex md:min-h-screen md:flex-row">
+            {/* ══════════════════════════════════════════════
+                IMAGE HERO
+            ══════════════════════════════════════════════ */}
+            <div
+                className={cx(
+                    "relative h-[65dvh] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:w-1/2",
+                    isProcessed ? "bg-primary" : "bg-secondary",
+                )}
+            >
+                {photoSrc ? (
+                    <Image
+                        src={photoSrc}
+                        alt={productName}
+                        fill
+                        priority
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className={cx(
+                            "object-center",
+                            isProcessed ? "object-contain p-6" : "object-cover",
+                        )}
+                    />
                 ) : (
                     <div className="flex h-full items-center justify-center">
-                        {isLoading ? null : (
-                            <span className="text-6xl font-bold text-[var(--ts-border)]/30">
-                                {(product?.canonical_name ?? product?.name)?.charAt(0)}
+                        {!isLoading && (
+                            <span
+                                className="text-6xl font-bold text-primary/15 select-none"
+                                aria-hidden="true"
+                            >
+                                {productName.charAt(0)}
                             </span>
                         )}
                     </div>
                 )}
 
-                {/* Back button — mobile only */}
+                {/* Back button (mobile) */}
                 <button
                     type="button"
-                    onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/discover")}
-                    className="absolute left-4 top-4 flex size-8 items-center justify-center rounded-full md:hidden"
-                    style={{ marginTop: "env(safe-area-inset-top)", background: "rgba(26,31,54,0.55)" }}
+                    onClick={() =>
+                        window.history.length > 1
+                            ? window.history.back()
+                            : (window.location.href = "/discover")
+                    }
+                    className="absolute left-4 top-4 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-black/55 backdrop-blur-sm md:hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                    style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"
                 >
-                    <ArrowLeft className="size-4 text-white/90" />
+                    <ArrowLeft className="size-4 text-white/90" aria-hidden="true" />
                 </button>
 
-                {/* Heart button — mobile only */}
-                <div className="absolute right-4 top-4 md:hidden" style={{ marginTop: "env(safe-area-inset-top)" }}>
+                {/* Heart button (mobile) */}
+                <div
+                    className="absolute right-4 top-4 md:hidden"
+                    style={{ marginTop: "env(safe-area-inset-top)" }}
+                >
                     <HeartButton
                         isFavorite={isFavorite}
                         onToggle={() => {
@@ -158,184 +251,221 @@ export default function ProductDetailClient() {
                             if (isFavorite) remove.mutate(productUuid);
                             else add.mutate(productUuid);
                         }}
-                        ariaLabel={`${isFavorite ? "Retirer" : "Ajouter"} ${product?.canonical_name ?? product?.name ?? "produit"} des favoris`}
-                        className="!size-8 !rounded-full [background:rgba(26,31,54,0.55)]"
+                        ariaLabel={`${isFavorite ? "Retirer" : "Ajouter"} ${productName} des favoris`}
                     />
                 </div>
 
-                {/* Dot indicator — mobile only */}
+                {/* Dot indicator (mobile) */}
                 <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 md:hidden">
                     <div className="h-[5px] w-[14px] rounded-[3px] bg-white" />
                 </div>
             </div>
 
-            {/* ── Info zone ── */}
+            {/* ══════════════════════════════════════════════
+                INFO / PULL-UP CARD
+            ══════════════════════════════════════════════ */}
             {isLoading ? (
-                <div className="space-y-3 px-5 pt-6 md:w-1/2 md:px-10 md:pt-12">
-                    <div className="h-3 w-32 animate-pulse rounded bg-[var(--ts-bg-input)]" />
-                    <div className="h-6 w-48 animate-pulse rounded bg-[var(--ts-bg-input)]" />
-                    <div className="h-4 w-24 animate-pulse rounded bg-[var(--ts-bg-input)]" />
+                <div className="space-y-3 rounded-t-2xl bg-primary -mt-5 relative z-10 px-5 pt-6 md:mt-0 md:w-1/2 md:rounded-none md:px-10 md:pt-12">
+                    <div className="h-3 w-32 animate-pulse rounded bg-secondary" />
+                    <div className="h-6 w-48 animate-pulse rounded bg-secondary" />
+                    <div className="h-4 w-24 animate-pulse rounded bg-secondary" />
                 </div>
             ) : product ? (
-                <div className="px-5 pb-40 pt-5 md:w-1/2 md:overflow-y-auto md:px-10 md:pb-12 md:pt-12">
-                    {/* Brand · Category + stock tag */}
+                <div className="rounded-t-2xl bg-primary -mt-5 relative z-10 px-5 pb-44 pt-5 md:mt-0 md:w-1/2 md:overflow-y-auto md:rounded-none md:px-10 md:pb-12 md:pt-12">
+                    {/* Brand / Category */}
                     <div className="mb-1.5 flex items-center justify-between">
-                        <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">
-                            {[product.brand, product.category].filter(Boolean).join(" · ")}
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-tertiary">
+                            {[product.brand, product.category].filter(Boolean).join(" \u00B7 ")}
                         </span>
                         {quantity === 0 && (
-                            <span className="rounded-md border-[0.5px] border-[rgba(66,104,255,0.25)] px-2 py-[2px] text-[10px] font-medium text-[var(--ts-accent)]" style={{ background: "rgba(66,104,255,0.12)" }}>
-                                Épuisé en boutique
+                            <span className="rounded-md border border-brand/25 bg-brand-secondary px-2 py-[2px] text-[10px] font-medium text-brand-secondary">
+                                Indisponible
                             </span>
                         )}
                     </div>
 
                     {/* Product name */}
-                    <h1 className="mb-2.5 text-xl font-bold leading-tight tracking-tight text-[var(--ts-text)] md:text-2xl">
-                        {product.canonical_name ?? product.name}
+                    <h1 className="mb-2.5 text-xl font-bold leading-tight tracking-tight text-primary md:text-2xl">
+                        {productName}
                     </h1>
 
                     {/* Price line */}
                     <div className="mb-5 flex items-baseline gap-2.5">
-                        <span className="text-base font-normal text-[var(--ts-text-muted)]">
-                            {displayPrice?.toFixed(2)} €
+                        <span className="text-base font-normal text-secondary">
+                            {displayPrice?.toFixed(2)}&nbsp;&euro;
                         </span>
                         {activePromo && (
                             <>
-                                <span className="text-[13px] text-[var(--ts-border)] line-through">
-                                    {product.price.toFixed(2)} €
+                                <span className="text-[13px] text-tertiary line-through">
+                                    {product.price.toFixed(2)}&nbsp;&euro;
                                 </span>
-                                <span className="text-xs font-medium text-[var(--ts-accent)]">
-                                    −{discount}%
+                                <span className="text-xs font-medium text-brand-secondary">
+                                    &minus;{discount}%
                                 </span>
                             </>
                         )}
                     </div>
 
-                    {/* ── Size selector line ── */}
+                    {/* ── Inline size chips ── */}
                     {hasSizes && (
-                        <button
-                            type="button"
-                            onClick={() => setSizeSheetOpen(true)}
-                            className="flex w-full items-center justify-between border-y-[0.5px] border-[var(--ts-border)] py-4"
-                        >
-                            <span className="text-[13px] text-[var(--ts-text-secondary)]">
-                                {/^\d/.test(availableSizes[0].size) ? "Pointure" : "Taille"}
-                            </span>
-                            <span className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--ts-text)]">
-                                {selectedSize ?? "Sélectionner"}
-                                <ChevronRight className="size-4 text-[var(--ts-border)]" />
-                            </span>
-                        </button>
+                        <div className="mb-5">
+                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-tertiary">
+                                {isPointure ? "Pointure" : "Taille"}
+                            </p>
+                            <div className="flex flex-wrap gap-2" role="group" aria-label={isPointure ? "Pointures disponibles" : "Tailles disponibles"}>
+                                {visibleChips.map((s) => {
+                                    const isSelected = selectedSize === s.size;
+                                    return (
+                                        <button
+                                            key={s.size}
+                                            type="button"
+                                            onClick={() => setSelectedSize(s.size)}
+                                            aria-pressed={isSelected}
+                                            className={cx(
+                                                "min-h-[44px] rounded-lg border px-4 py-2 text-[13px] font-medium transition duration-100 motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
+                                                isSelected
+                                                    ? "border-brand bg-brand-secondary text-brand-secondary font-semibold border-[1.5px]"
+                                                    : "border-secondary bg-primary text-quaternary",
+                                            )}
+                                        >
+                                            {s.size}
+                                        </button>
+                                    );
+                                })}
+                                {overflowCount > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSizeSheetOpen(true)}
+                                        className="min-h-[44px] rounded-lg border border-secondary bg-primary px-4 py-2 text-[13px] font-medium text-quaternary transition duration-100 motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                        aria-label={`Voir ${overflowCount} tailles supplémentaires`}
+                                    >
+                                        +{overflowCount}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     )}
 
-                    {/* Size guide line — only when product has sizes */}
+                    {/* Size guide line */}
                     {hasSizes && (
                         <button
                             type="button"
                             onClick={() => setSizeChartOpen(true)}
-                            className="flex w-full items-center justify-between border-b-[0.5px] border-[var(--ts-border)] py-3.5"
+                            className="flex w-full items-center justify-between border-b border-secondary py-3.5 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
-                            <span className="text-[13px] text-[var(--ts-text-secondary)]">Correspondances de taille</span>
-                            <ChevronRight className="size-4 text-[var(--ts-border)]" />
+                            <span className="text-[13px] text-tertiary">Correspondances de taille</span>
+                            <ChevronRight className="size-4 text-tertiary" aria-hidden="true" />
                         </button>
                     )}
 
-                    {/* ── Shop line ── */}
-                    {product.merchants && (
-                        <Link
-                            href={shopSlug ? `/shop/${shopSlug}` : "#"}
-                            className="flex items-center gap-3 border-b-[0.5px] border-[var(--ts-border)] py-3.5"
-                        >
-                            <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border-[0.5px] border-[rgba(255,255,255,0.08)] bg-[var(--ts-bg-input)]">
-                                {product.merchants.photo_url ? (
-                                    <img src={product.merchants.photo_url} alt="" className="h-full w-full object-cover" />
-                                ) : (
-                                    <span className="text-lg">🏪</span>
-                                )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <p className="text-[13px] font-medium text-[var(--ts-text-muted)]">
-                                    {product.merchants.name}
-                                </p>
-                                <p className="mt-0.5 text-[11px] text-[var(--ts-text-secondary)]">
-                                    {product.merchants.address}, {product.merchants.city}
-                                </p>
-                            </div>
-                            <ChevronRight className="size-4 shrink-0 text-[var(--ts-border)]" />
-                        </Link>
+                    {/* ── Shop block ── */}
+                    {shop && (
+                        <ShopStatusBlock
+                            merchantId={product.merchant_id}
+                            name={shop.name}
+                            address={shop.address}
+                            city={shop.city}
+                            photoUrl={shop.photo_url}
+                            phone={shop.phone ?? null}
+                            openingHours={shop.opening_hours ?? null}
+                            distanceKm={distanceKm}
+                        />
                     )}
 
                     {/* ── Description ── */}
                     {product.description && (
-                        <div className="border-b-[0.5px] border-[var(--ts-border)] py-4">
-                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">Description</p>
-                            <p className="text-[13px] leading-relaxed text-[var(--ts-text-secondary)]">{product.description}</p>
+                        <div className="border-b border-secondary py-4">
+                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-tertiary">
+                                Description
+                            </p>
+                            <p className="text-[13px] leading-relaxed text-tertiary">
+                                {product.description}
+                            </p>
                         </div>
                     )}
 
-                    {/* ── J'arrive button ── */}
+                    {/* ── Social proof ── */}
+                    {othersCount > 0 && !intentSent && quantity > 0 && (
+                        <div className="mt-4 flex items-center gap-2 rounded-xl bg-error-secondary px-3.5 py-2.5">
+                            <span className="text-[13px]" aria-hidden="true">&#x1F525;</span>
+                            <p className="text-[11px] font-medium text-error-primary">
+                                {othersCount === 1
+                                    ? "1 autre personne est aussi intéressée"
+                                    : `${othersCount} autres personnes sont aussi intéressées`}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* ── Desktop J'arrive button (hidden on mobile — StickyCtaBar handles it) ── */}
                     {quantity > 0 && (
-                        <div className="pt-5">
-                            {othersCount > 0 && !intentSent && (
-                                <div className="mb-3 flex items-center gap-2 rounded-xl bg-[#FFF4F0] px-3.5 py-2.5">
-                                    <span className="text-[13px]">🔥</span>
-                                    <p className="text-[11px] font-medium text-[var(--ts-promo)]">
-                                        {othersCount === 1
-                                            ? "1 autre personne est aussi intéressée"
-                                            : `${othersCount} autres personnes sont aussi intéressées`}
-                                    </p>
-                                </div>
-                            )}
+                        <div className="hidden pt-5 md:block">
                             {intentSent ? (
                                 <button
                                     type="button"
                                     disabled
-                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[var(--ts-bg-input)] py-[13px] text-[13px] font-semibold text-[var(--ts-text-secondary)]"
+                                    className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-[14px] bg-secondary py-[13px] text-[13px] font-semibold text-tertiary"
                                 >
-                                    ✓ Le commerçant est prévenu
+                                    &#x2713; Le commerçant est prévenu
                                 </button>
                             ) : (
                                 <button
                                     type="button"
                                     onClick={handleIntent}
                                     disabled={intentLoading}
-                                    className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[var(--ts-accent)] py-[13px] text-[14px] font-bold text-white transition active:opacity-90 disabled:opacity-60"
+                                    className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-[14px] bg-brand-solid py-[13px] text-[14px] font-bold text-white transition active:opacity-90 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                 >
                                     {intentLoading ? (
                                         <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                                     ) : (
-                                        <>📍 J&apos;arrive !</>
+                                        "J'arrive !"
                                     )}
                                 </button>
                             )}
-                            <p className="mt-1.5 text-center text-[10px] text-[var(--ts-text-secondary)]">
+                            <p className="mt-1.5 text-center text-[10px] text-tertiary">
                                 {intentSent
-                                    ? `${product?.merchants?.name ?? "La boutique"} sait que tu arrives — valable 2h`
+                                    ? `${shop?.name ?? "La boutique"} sait que tu arrives — valable 2h`
                                     : "Sous réserve de disponibilité — le commerçant est prévenu"}
                             </p>
                         </div>
                     )}
 
-                    {/* ── CTA button ── */}
+                    {/* ── Contact button ── */}
                     <div className="pt-5">
                         <button
                             type="button"
                             onClick={() => setContactSheetOpen(true)}
-                            className="flex w-full items-center justify-center gap-2 rounded-[14px] border-[0.5px] border-[var(--ts-border)] bg-transparent py-[13px] text-[13px] font-medium text-[var(--ts-text-secondary)] transition active:opacity-80"
+                            className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-[14px] border border-secondary bg-transparent py-[13px] text-[13px] font-medium text-tertiary transition active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
-                            <Phone01 className="size-4" />
+                            <Phone01 className="size-4" aria-hidden="true" />
                             Contacter la boutique
                         </button>
                     </div>
                 </div>
             ) : null}
 
-            {/* ── Size bottom sheet ── */}
+            {/* ══════════════════════════════════════════════
+                STICKY CTA BAR (mobile only)
+            ══════════════════════════════════════════════ */}
+            {product && (
+                <StickyCtaBar
+                    price={product.price}
+                    salePrice={salePrice}
+                    quantity={quantity}
+                    hasSizes={hasSizes}
+                    selectedSize={selectedSize}
+                    intentSent={intentSent}
+                    intentLoading={intentLoading}
+                    onIntent={handleIntent}
+                    onOpenSizeSheet={() => setSizeSheetOpen(true)}
+                />
+            )}
+
+            {/* ══════════════════════════════════════════════
+                SIZE BOTTOM SHEET
+            ══════════════════════════════════════════════ */}
             <AnimatePresence>
                 {sizeSheetOpen && (
                     <>
-                        {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -343,34 +473,39 @@ export default function ProductDetailClient() {
                             className="fixed inset-0 z-50 bg-black/60"
                             onClick={() => setSizeSheetOpen(false)}
                         />
-
-                        {/* Sheet */}
                         <motion.div
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-[var(--ts-bg)]"
+                            transition={springOrInstant}
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[70dvh] overflow-y-auto rounded-t-2xl bg-primary"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label={isPointure ? "Sélection de pointure" : "Sélection de taille"}
                         >
                             {/* Handle + header */}
-                            <div className="sticky top-0 z-10 bg-[var(--ts-bg)] px-5 pb-3 pt-3">
-                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[var(--ts-border)]" />
+                            <div className="sticky top-0 z-10 bg-primary px-5 pb-3 pt-3">
+                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-tertiary" />
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">
-                                        {/^\d/.test(availableSizes[0]?.size ?? "") ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
+                                    <h2 className="text-[15px] font-semibold text-primary">
+                                        {isPointure ? "Sélectionnez votre pointure" : "Sélectionnez votre taille"}
                                     </h2>
-                                    <button type="button" onClick={() => setSizeSheetOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[var(--ts-bg-input)]">
-                                        <XClose className="size-4 text-[var(--ts-text-secondary)]" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setSizeSheetOpen(false)}
+                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                        aria-label="Fermer"
+                                    >
+                                        <XClose className="size-4 text-tertiary" aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>
 
                             {/* Size grid */}
                             <div className="grid grid-cols-4 gap-2 px-5 pb-4">
-                                {availableSizes.filter((s) => s.quantity > 0).map((s) => {
+                                {inStockSizes.map((s) => {
                                     const isSelected = selectedSize === s.size;
-
                                     return (
                                         <button
                                             key={s.size}
@@ -379,11 +514,13 @@ export default function ProductDetailClient() {
                                                 setSelectedSize(s.size);
                                                 setSizeSheetOpen(false);
                                             }}
-                                            className={`relative rounded-lg border py-3 text-[13px] font-medium transition duration-100 ${
+                                            aria-pressed={isSelected}
+                                            className={cx(
+                                                "relative min-h-[44px] rounded-lg border py-3 text-[13px] font-medium transition duration-100 motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                                 isSelected
-                                                    ? "border-[var(--ts-accent)] bg-[#EEF2FF] text-[var(--ts-accent)] font-semibold border-[1.5px]"
-                                                    : "border-[var(--ts-border)] bg-white text-[var(--ts-text-muted)]"
-                                            }`}
+                                                    ? "border-brand bg-brand-secondary text-brand-secondary font-semibold border-[1.5px]"
+                                                    : "border-secondary bg-primary text-quaternary",
+                                            )}
                                         >
                                             {s.size}
                                         </button>
@@ -395,27 +532,43 @@ export default function ProductDetailClient() {
                 )}
             </AnimatePresence>
 
-            {/* ── Size chart bottom sheet ── */}
+            {/* ══════════════════════════════════════════════
+                SIZE CHART BOTTOM SHEET
+            ══════════════════════════════════════════════ */}
             <AnimatePresence>
                 {sizeChartOpen && (
                     <>
                         <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             className="fixed inset-0 z-50 bg-black/60"
                             onClick={() => setSizeChartOpen(false)}
                         />
                         <motion.div
-                            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-[var(--ts-bg)]"
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={springOrInstant}
+                            className="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-y-auto rounded-t-2xl bg-primary"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Correspondances de taille"
                         >
-                            <div className="sticky top-0 z-10 bg-[var(--ts-bg)] px-5 pb-3 pt-3">
-                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[var(--ts-border)]" />
+                            <div className="sticky top-0 z-10 bg-primary px-5 pb-3 pt-3">
+                                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-tertiary" />
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">Correspondances de taille</h2>
-                                    <button type="button" onClick={() => setSizeChartOpen(false)} className="flex size-8 items-center justify-center rounded-full bg-[var(--ts-bg-input)]">
-                                        <XClose className="size-4 text-[var(--ts-text-secondary)]" />
+                                    <h2 className="text-[15px] font-semibold text-primary">
+                                        Correspondances de taille
+                                    </h2>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSizeChartOpen(false)}
+                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                        aria-label="Fermer"
+                                    >
+                                        <XClose className="size-4 text-tertiary" aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>
@@ -424,9 +577,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-left font-medium text-[var(--ts-text-secondary)]">EU</th>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-center font-medium text-[var(--ts-text-secondary)]">US</th>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-right font-medium text-[var(--ts-text-secondary)]">UK</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-left font-medium text-tertiary">EU</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-center font-medium text-tertiary">US</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-right font-medium text-tertiary">UK</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -439,9 +592,9 @@ export default function ProductDetailClient() {
                                             { eu: "45", us: "14", uk: "12.5" }, { eu: "46", us: "15", uk: "13.5" },
                                         ].map((row) => (
                                             <tr key={row.eu}>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[var(--ts-text)]">{row.eu}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[var(--ts-text-muted)]">{row.us}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[var(--ts-text-muted)]">{row.uk}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 font-medium text-primary">{row.eu}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 text-center text-secondary">{row.us}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 text-right text-secondary">{row.uk}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -450,9 +603,9 @@ export default function ProductDetailClient() {
                                 <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-left font-medium text-[var(--ts-text-secondary)]">Taille</th>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-center font-medium text-[var(--ts-text-secondary)]">EU</th>
-                                            <th className="border-b-[0.5px] border-[var(--ts-border)] px-4 py-2.5 text-right font-medium text-[var(--ts-text-secondary)]">US</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-left font-medium text-tertiary">Taille</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-center font-medium text-tertiary">EU</th>
+                                            <th className="border-b border-secondary px-4 py-2.5 text-right font-medium text-tertiary">US</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -462,9 +615,9 @@ export default function ProductDetailClient() {
                                             { label: "XL", eu: "50/52", us: "18/20" }, { label: "XXL", eu: "54/56", us: "22/24" },
                                         ].map((row) => (
                                             <tr key={row.label}>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 font-medium text-[var(--ts-text)]">{row.label}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-center text-[var(--ts-text-muted)]">{row.eu}</td>
-                                                <td className="border-b-[0.5px] border-[rgba(255,255,255,0.05)] px-4 py-3 text-right text-[var(--ts-text-muted)]">{row.us}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 font-medium text-primary">{row.label}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 text-center text-secondary">{row.eu}</td>
+                                                <td className="border-b border-tertiary px-4 py-3 text-right text-secondary">{row.us}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -475,40 +628,58 @@ export default function ProductDetailClient() {
                 )}
             </AnimatePresence>
 
-            {/* ── Contact bottom sheet ── */}
+            {/* ══════════════════════════════════════════════
+                CONTACT BOTTOM SHEET
+            ══════════════════════════════════════════════ */}
             <AnimatePresence>
                 {contactSheetOpen && shop && (
                     <>
                         <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             className="fixed inset-0 z-50 bg-black/60"
                             onClick={() => setContactSheetOpen(false)}
                         />
                         <motion.div
-                            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                            className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-[var(--ts-bg)]"
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={springOrInstant}
+                            className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-primary"
                             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Contacter la boutique"
                         >
-                            <div className="mx-auto mb-3 mt-3 h-1 w-9 rounded-full bg-white/15" />
+                            <div className="mx-auto mb-3 mt-3 h-1 w-9 rounded-full bg-tertiary" />
 
                             {/* Shop info */}
                             <div className="px-5 pb-4 text-center">
-                                <p className="text-base font-semibold text-[var(--ts-text)]">{shop.name}</p>
-                                <p className="mt-1 text-xs text-[var(--ts-text-secondary)]">{shop.address}, {shop.city}</p>
+                                <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-[10px] bg-secondary">
+                                    <Building07 className="size-5 text-brand-secondary" aria-hidden="true" />
+                                </div>
+                                <p className="text-base font-semibold text-primary">{shop.name}</p>
+                                <p className="mt-1 text-xs text-tertiary">
+                                    {shop.address}, {shop.city}
+                                </p>
                             </div>
 
                             {shop.phone ? (
                                 <>
                                     <div className="px-5 pb-4 text-center">
-                                        <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-[var(--ts-text-secondary)]">Téléphone</p>
-                                        <p className="text-[22px] font-semibold tracking-wide text-[var(--ts-text-muted)]">{shop.phone}</p>
+                                        <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-tertiary">
+                                            Téléphone
+                                        </p>
+                                        <p className="text-[22px] font-semibold tracking-wide text-secondary">
+                                            {shop.phone}
+                                        </p>
                                     </div>
 
                                     <div className="flex gap-2.5 px-5 pb-5">
                                         <a
                                             href={`tel:${shop.phone.replace(/\s/g, "")}`}
-                                            className="flex flex-1 items-center justify-center rounded-[14px] bg-[#6ecf7f] py-[14px] text-[14px] font-bold text-[#0a2a10] transition active:opacity-90"
+                                            className="flex min-h-[44px] flex-1 items-center justify-center rounded-[14px] bg-success-solid py-[14px] text-[14px] font-bold text-white transition active:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             Appeler
@@ -517,11 +688,13 @@ export default function ProductDetailClient() {
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                try { navigator.clipboard.writeText(shop.phone!); } catch {}
+                                                try {
+                                                    navigator.clipboard.writeText(shop.phone!);
+                                                } catch { /* */ }
                                                 setPhoneCopied(true);
                                                 setTimeout(() => setPhoneCopied(false), 2000);
                                             }}
-                                            className="flex flex-1 items-center justify-center rounded-[14px] border-[0.5px] border-[var(--ts-border)] py-[14px] text-[14px] font-medium text-[var(--ts-text-secondary)] transition active:opacity-80"
+                                            className="flex min-h-[44px] flex-1 items-center justify-center rounded-[14px] border border-secondary py-[14px] text-[14px] font-medium text-tertiary transition active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                         >
                                             {phoneCopied ? "Copié !" : "Copier"}
                                         </button>
@@ -529,7 +702,9 @@ export default function ProductDetailClient() {
                                 </>
                             ) : (
                                 <div className="px-5 pb-5 text-center">
-                                    <p className="text-[13px] text-[var(--ts-text-secondary)]">Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.</p>
+                                    <p className="text-[13px] text-tertiary">
+                                        Ce marchand n&apos;a pas encore renseigné son numéro de téléphone.
+                                    </p>
                                 </div>
                             )}
                         </motion.div>
