@@ -2,19 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
-import { ArrowLeft, MarkerPin01, Clock, ChevronDown, Share07, Globe02 } from "@untitledui/icons";
+import { useReducedMotion } from "motion/react";
+import { ArrowLeft, MarkerPin01, Clock, ChevronDown, Share07, Globe02, AlertCircle } from "@untitledui/icons";
 import Instagram from "@/components/foundations/social-icons/instagram";
 import TikTok from "@/components/foundations/social-icons/tiktok";
 import { useState, useEffect } from "react";
-import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFollows, useToggleFollow } from "../../hooks/use-follows";
 import { getOpenStatus, formatWeeklyHours } from "../../lib/opening-hours";
 import { cx } from "@/utils/cx";
-import { generateSlug } from "@/lib/slug";
 import { ShopBadges } from "@/components/shop/shop-badges";
 import { SuggestionDrawer } from "../../components/suggestion-drawer";
+import { ProductCard } from "../../components/product-card";
 
 interface MerchantProfile {
     merchant_id: string;
@@ -56,8 +57,9 @@ export default function ShopProfileClient() {
     const { id } = useParams<{ id: string }>();
     const [activeTab, setActiveTab] = useState("Catalogue");
     const [suggestionOpen, setSuggestionOpen] = useState(false);
+    const prefersReducedMotion = useReducedMotion();
 
-    const { data: profile } = useQuery<MerchantProfile>({
+    const { data: profile, isLoading, isError } = useQuery<MerchantProfile>({
         queryKey: ["merchant-profile", id],
         queryFn: async () => {
             const res = await fetch(`/api/merchants/${id}/profile`);
@@ -116,14 +118,31 @@ export default function ShopProfileClient() {
         return true;
     });
 
-    if (!profile) {
+    /* Loading skeleton */
+    if (isLoading) {
         return (
-            <div className="min-h-dvh bg-[#F8F9FC]">
-                <div className="h-52 animate-pulse bg-white" />
+            <div className="min-h-dvh bg-secondary">
+                <div className="h-52 animate-pulse bg-primary" />
                 <div className="space-y-3 p-4">
-                    <div className="h-6 w-48 animate-pulse rounded-xl bg-white" />
-                    <div className="h-4 w-32 animate-pulse rounded-xl bg-white" />
+                    <div className="h-6 w-48 animate-pulse rounded-xl bg-primary" />
+                    <div className="h-4 w-32 animate-pulse rounded-xl bg-primary" />
                 </div>
+            </div>
+        );
+    }
+
+    /* Error state */
+    if (isError || !profile) {
+        return (
+            <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-secondary px-6">
+                <AlertCircle className="size-12 text-tertiary" aria-hidden="true" />
+                <h1 className="text-lg font-semibold text-primary">Boutique introuvable</h1>
+                <Link
+                    href="/"
+                    className="rounded-lg bg-brand-solid px-6 py-3 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                >
+                    Retour &agrave; l&apos;accueil
+                </Link>
             </div>
         );
     }
@@ -131,15 +150,29 @@ export default function ShopProfileClient() {
     const links = profile.merchant_links ?? {};
 
     return (
-        <div className="min-h-dvh bg-[#F8F9FC]">
+        <div className="min-h-dvh bg-secondary">
             {/* Cover photo — TGTG style */}
             <div className="relative h-[45vh] min-h-[300px] max-h-[420px] w-full">
                 {profile.merchant_cover ? (
-                    <img src={profile.merchant_cover} alt="" className="h-full w-full object-cover" />
+                    <Image
+                        src={profile.merchant_cover}
+                        alt=""
+                        fill
+                        priority
+                        sizes="100vw"
+                        className="h-full w-full object-cover"
+                    />
                 ) : profile.merchant_photo ? (
-                    <img src={profile.merchant_photo} alt="" className="h-full w-full object-cover" />
+                    <Image
+                        src={profile.merchant_photo}
+                        alt=""
+                        fill
+                        priority
+                        sizes="100vw"
+                        className="h-full w-full object-cover"
+                    />
                 ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#4268FF] to-[#3558E0]">
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-solid to-brand-solid_hover">
                         <span className="text-6xl font-bold text-white/30">{profile.merchant_name.charAt(0)}</span>
                     </div>
                 )}
@@ -150,20 +183,26 @@ export default function ShopProfileClient() {
                 {/* Back button — circle, semi-transparent */}
                 <Link
                     href="/explore"
-                    className="absolute left-4 top-4 z-20 flex size-11 items-center justify-center rounded-full bg-white/90 shadow-sm"
+                    className="absolute left-4 top-4 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/90 shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"
                 >
-                    <ArrowLeft className="size-5 text-[#1A1F36]" />
+                    <ArrowLeft className="size-5 text-primary" />
                 </Link>
 
                 {/* Logo + name at bottom of cover — TGTG exact layout */}
                 <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end px-4 pb-4">
-                    <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-[2.5px] border-white/90 bg-white shadow-lg">
+                    <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-[2.5px] border-white/90 bg-primary shadow-lg">
                         {profile.merchant_logo ? (
-                            <img src={profile.merchant_logo} alt={profile.merchant_name} className="h-full w-full object-cover" />
+                            <Image
+                                src={profile.merchant_logo}
+                                alt={profile.merchant_name}
+                                width={56}
+                                height={56}
+                                className="h-full w-full object-cover"
+                            />
                         ) : (
-                            <span className="text-lg font-bold text-[#4268FF]">{profile.merchant_name.charAt(0)}</span>
+                            <span className="text-lg font-bold text-brand-secondary">{profile.merchant_name.charAt(0)}</span>
                         )}
                     </div>
                     <div className="ml-3 mb-0.5 min-w-0 flex-1">
@@ -174,28 +213,28 @@ export default function ShopProfileClient() {
             </div>
 
             {/* Info zone — clean beige below cover */}
-            <div className="bg-[#F8F9FC] px-5 pt-4">
+            <div className="bg-secondary px-5 pt-4">
                 {/* Address row — clickable like TGTG */}
                 <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(profile.merchant_address + ", " + profile.merchant_city)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 border-b border-[#E2E5F0] pb-3"
+                    className="flex items-center gap-3 border-b border-secondary pb-3"
                 >
-                    <MarkerPin01 className="size-5 shrink-0 text-[#4268FF]" aria-hidden="true" />
+                    <MarkerPin01 className="size-5 shrink-0 text-brand-secondary" aria-hidden="true" />
                     <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-[#4268FF]">{profile.merchant_address}, {profile.merchant_city}</p>
-                        <p className="text-[11px] text-[#8E96B0]/50">Plus d&apos;informations sur le commerce</p>
+                        <p className="truncate text-sm font-medium text-brand-secondary">{profile.merchant_address}, {profile.merchant_city}</p>
+                        <p className="text-[11px] text-quaternary">Plus d&apos;informations sur le commerce</p>
                     </div>
-                    <ChevronDown className="-rotate-90 size-5 text-[#8E96B0]/40" aria-hidden="true" />
+                    <ChevronDown className="-rotate-90 size-5 text-quaternary" aria-hidden="true" />
                 </a>
 
                 {/* Stats + opening hours */}
                 <div className="mt-3 flex items-center gap-2">
-                    <p className="text-xs text-[#8E96B0]/50">
-                        <span className="font-semibold text-[#1A1F36]">{profile.follower_count}</span> abonné{profile.follower_count !== 1 ? "s" : ""}
+                    <p className="text-xs text-quaternary">
+                        <span className="font-semibold text-primary">{profile.follower_count}</span> abonn&eacute;{profile.follower_count !== 1 ? "s" : ""}
                         {" · "}
-                        <span className="font-semibold text-[#1A1F36]">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
+                        <span className="font-semibold text-primary">{profile.product_count}</span> produit{profile.product_count !== 1 ? "s" : ""}
                     </p>
                     {(() => {
                         const status = getOpenStatus(profile.merchant_opening_hours);
@@ -204,8 +243,8 @@ export default function ShopProfileClient() {
                             <span className={cx(
                                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
                                 status.isOpen
-                                    ? "bg-[var(--ts-success)]/15 text-[var(--ts-success)]"
-                                    : "bg-[var(--ts-error)]/10 text-[var(--ts-error)]",
+                                    ? "bg-success-secondary text-success-primary"
+                                    : "bg-error-secondary text-error-primary",
                             )}>
                                 <Clock className="size-2.5" aria-hidden="true" />
                                 {status.isOpen ? "Ouvert" : "Fermé"}
@@ -221,10 +260,10 @@ export default function ShopProfileClient() {
                         type="button"
                         onClick={() => merchantUuid && (isFollowing ? unfollow.mutate(merchantUuid) : follow.mutate(merchantUuid))}
                         className={cx(
-                            "flex-1 rounded-lg py-2.5 text-[13px] font-semibold transition duration-150 active:scale-[0.97]",
+                            "flex-1 min-h-[44px] rounded-lg text-[13px] font-semibold transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                             isFollowing
-                                ? "border border-[#8E96B0]/15 bg-[#E2E5F0] text-[#8E96B0]/70"
-                                : "bg-[#4268FF] text-white",
+                                ? "border border-secondary bg-secondary text-tertiary"
+                                : "bg-brand-solid text-white",
                         )}
                     >
                         {isFollowing ? "Abonné ✓" : "S'abonner"}
@@ -236,10 +275,10 @@ export default function ShopProfileClient() {
                             href={links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${links.instagram.replace("@", "")}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-secondary bg-secondary_hover transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             aria-label="Instagram"
                         >
-                            <Instagram size={18} className="text-[#8E96B0]" />
+                            <Instagram size={18} className="text-tertiary" />
                         </a>
                     )}
                     {links.tiktok && (
@@ -247,10 +286,10 @@ export default function ShopProfileClient() {
                             href={links.tiktok.startsWith("http") ? links.tiktok : `https://tiktok.com/@${links.tiktok.replace("@", "")}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-secondary bg-secondary_hover transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             aria-label="TikTok"
                         >
-                            <TikTok size={18} className="text-[#8E96B0]" />
+                            <TikTok size={18} className="text-tertiary" />
                         </a>
                     )}
                     {links.website && (
@@ -258,10 +297,10 @@ export default function ShopProfileClient() {
                             href={links.website.startsWith("http") ? links.website : `https://${links.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-secondary bg-secondary_hover transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             aria-label="Site web"
                         >
-                            <Globe02 className="size-[18px] text-[#8E96B0]" />
+                            <Globe02 className="size-[18px] text-tertiary" />
                         </a>
                     )}
 
@@ -276,10 +315,10 @@ export default function ShopProfileClient() {
                                 await navigator.clipboard.writeText(url);
                             }
                         }}
-                        className="flex size-10 items-center justify-center rounded-lg border border-[#8E96B0]/15 bg-[#E2E5F0] transition duration-100 active:scale-[0.97]"
+                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-secondary bg-secondary_hover transition-colors active:scale-[0.97] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         aria-label="Partager"
                     >
-                        <Share07 className="size-4 text-[#8E96B0]" />
+                        <Share07 className="size-4 text-tertiary" />
                     </button>
                 </div>
 
@@ -288,17 +327,20 @@ export default function ShopProfileClient() {
 
                 {/* Bio + links */}
                 {profile.merchant_description && (
-                    <p className="mt-4 text-sm leading-relaxed text-[#8E96B0]/70">{profile.merchant_description}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-tertiary">{profile.merchant_description}</p>
                 )}
             </div>
 
             {/* Sub-tabs */}
-            <div className="mt-5 border-b border-[#E2E5F0] bg-[#F8F9FC]">
-                <div className="flex px-5">
+            <div className="mt-5 border-b border-secondary bg-secondary">
+                <div className="flex px-5" role="tablist">
                     {SUB_TABS.map((tab) => (
                         <button
                             key={tab}
                             type="button"
+                            role="tab"
+                            aria-selected={activeTab === tab}
+                            tabIndex={activeTab === tab ? 0 : -1}
                             onClick={() => {
                                 if (tab === "Avis") {
                                     setSuggestionOpen(true);
@@ -307,12 +349,12 @@ export default function ShopProfileClient() {
                                 }
                             }}
                             className={cx(
-                                "border-b-2 px-4 py-3 text-sm font-semibold transition duration-150",
+                                "min-h-[44px] border-b-2 px-4 py-3 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                                 tab === "Avis"
-                                    ? "border-transparent text-[#8E96B0]/40"
+                                    ? "border-transparent text-quaternary"
                                     : activeTab === tab
-                                        ? "border-[#4268FF] text-[#4268FF]"
-                                        : "border-transparent text-[#8E96B0]/40",
+                                        ? "border-brand-solid text-brand-secondary"
+                                        : "border-transparent text-quaternary",
                             )}
                         >
                             {tab}
@@ -324,72 +366,26 @@ export default function ShopProfileClient() {
             {/* Product grid */}
             <div className="grid grid-cols-2 gap-3 p-4 pb-24">
                 {filteredProducts.length === 0 ? (
-                    <p className="col-span-2 py-12 text-center text-sm text-[#8E96B0]/40">
+                    <p className="col-span-2 py-12 text-center text-sm text-quaternary">
                         {activeTab === "Promos" ? "Aucune promo en cours" : "Aucun produit"}
                     </p>
                 ) : (
-                    filteredProducts.map((p) => {
-                        const sale = promoMap.get(p.id) ?? null;
-                        const isFav = favoriteIds.has(p.id);
-                        const isOut = (p.stock?.quantity ?? 0) === 0;
-                        return (
-                            <Link key={p.id} href={`/product/${generateSlug(p.name, p.id)}`} className="group block">
-                                {/* Photo */}
-                                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#E2E5F0]">
-                                    {(p.photo_processed_url ?? p.photo_url) ? (
-                                        <img
-                                            src={p.photo_processed_url ?? p.photo_url ?? "/placeholder-product.svg"}
-                                            alt={p.canonical_name ?? p.name}
-                                            className={cx(
-                                                "h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]",
-                                                isOut && "opacity-40",
-                                            )}
-                                        />
-                                    ) : (
-                                        <div className="flex h-full items-center justify-center">
-                                            <span className="text-3xl font-light text-[#8E96B0]/15">{(p.canonical_name ?? p.name).charAt(0)}</span>
-                                        </div>
-                                    )}
-
-                                    <div className="absolute right-2 top-2">
-                                        <HeartButton
-                                            isFavorite={isFav}
-                                            onToggle={() => isFav ? remove.mutate(p.id) : add.mutate(p.id)}
-                                            ariaLabel={`${isFav ? "Retirer" : "Ajouter"} ${p.canonical_name ?? p.name} des favoris`}
-                                            className="bg-white/80 backdrop-blur-sm"
-                                        />
-                                    </div>
-
-                                    {sale && (
-                                        <div className="absolute bottom-2 left-2 rounded-md bg-[#4268FF] px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                                            -{Math.round(((p.price - sale) / p.price) * 100)}%
-                                        </div>
-                                    )}
-
-                                    {isOut && (
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <span className="rounded-lg px-2.5 py-[5px] text-[11px] font-medium text-[#6B7799]" style={{ background: "rgba(0,0,0,0.55)" }}>Indisponible</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Info */}
-                                <div className="mt-2 px-0.5">
-                                    <p className="truncate text-[13px] font-medium text-[#1A1F36]">{p.canonical_name ?? p.name}</p>
-                                    <div className="mt-0.5 flex items-baseline gap-2">
-                                        {sale ? (
-                                            <>
-                                                <span className="text-xs font-normal text-[#8E96B0]">{sale.toFixed(2)} €</span>
-                                                <span className="text-[11px] text-[#8E96B0]/60 line-through">{p.price.toFixed(2)} €</span>
-                                            </>
-                                        ) : (
-                                            <span className="text-xs font-normal text-[#8E96B0]">{p.price.toFixed(2)} €</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </Link>
-                        );
-                    })
+                    filteredProducts.map((p) => (
+                        <ProductCard
+                            key={p.id}
+                            compact
+                            id={p.id}
+                            name={p.canonical_name ?? p.name}
+                            price={p.price}
+                            photo={p.photo_processed_url ?? p.photo_url}
+                            merchantName={profile.merchant_name}
+                            distance={0}
+                            stockQuantity={p.stock?.quantity ?? 0}
+                            salePrice={promoMap.get(p.id) ?? null}
+                            isFavorite={favoriteIds.has(p.id)}
+                            onToggleFavorite={() => favoriteIds.has(p.id) ? remove.mutate(p.id) : add.mutate(p.id)}
+                        />
+                    ))
                 )}
             </div>
 
@@ -413,19 +409,20 @@ function OpeningHoursSection({ hours }: { hours: unknown }) {
             <button
                 type="button"
                 onClick={() => setExpanded((v) => !v)}
-                className="flex items-center gap-1.5 text-xs text-[#8E96B0]/60 transition duration-100 hover:text-[#1A1F36]"
+                aria-expanded={expanded}
+                className="flex items-center gap-1.5 text-xs text-tertiary transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
             >
                 <Clock className="size-3" aria-hidden="true" />
                 <span>{status.label}</span>
                 <ChevronDown className={cx("size-3 transition duration-200", expanded && "rotate-180")} aria-hidden="true" />
             </button>
             {expanded && (
-                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 rounded-xl bg-white/60 px-3 py-2.5">
+                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 rounded-xl bg-primary/60 px-3 py-2.5">
                     {weekly.map((row) => (
                         <div key={row.day} className="flex justify-between text-[11px]">
-                            <span className="font-medium text-[#1A1F36]">{row.day}</span>
+                            <span className="font-medium text-primary">{row.day}</span>
                             <span className={cx(
-                                row.hours === "Fermé" ? "text-[#D94F4F]/60" : "text-[#8E96B0]/50",
+                                row.hours === "Fermé" ? "text-error-primary" : "text-quaternary",
                             )}>{row.hours}</span>
                         </div>
                     ))}
