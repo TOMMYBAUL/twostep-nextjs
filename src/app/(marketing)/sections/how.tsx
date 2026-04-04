@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence, useInView } from "motion/react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { SPRING, slideUp } from "@/lib/motion";
 
 const steps = [
@@ -9,34 +10,90 @@ const steps = [
         num: 1,
         title: "Cherche ton produit",
         desc: "Par catégorie, marque, nom ou directement sur la carte. Filtre par taille, prix, distance.",
-        screen: "Écran recherche",
-        numBg: "bg-[#4268FF]",
-        numText: "text-white",
+        media: { type: "image" as const, src: "/images/how-it-works/carte.jpeg" },
     },
     {
         num: 2,
-        title: "Vérifie le stock en temps réel",
-        desc: 'Les boutiques connectent leur caisse. Tu vois ce qui est vraiment en rayon, maintenant — pas "en théorie".',
-        screen: "Écran fiche produit",
-        numBg: "bg-[#1A1A1A]",
-        numText: "text-white",
+        title: "Réserve en un clic",
+        desc: "Tu vois ce qui est vraiment en rayon. Clique sur \"J'arrive\" — le marchand est prévenu instantanément.",
+        media: { type: "video" as const, src: "/images/how-it-works/transition.mp4", poster: "/images/how-it-works/jarrive.jpeg" },
     },
     {
         num: 3,
-        title: 'Vas-y en 2 minutes',
-        desc: "C'est à côté, c'est ouvert, c'est en stock. Préviens le marchand avec \"J'arrive\" et récupère ton produit.",
-        screen: "Écran J'arrive",
-        numBg: "bg-[#1A1A1A]",
-        numText: "text-white",
+        title: "Vas-y en 2 minutes",
+        desc: "C'est à côté, c'est ouvert, c'est en stock. L'itinéraire s'ouvre, tu récupères ton produit.",
+        media: { type: "image" as const, src: "/images/how-it-works/google-maps.jpeg" },
     },
 ];
 
+/* ── Phone mockup with media ── */
+function PhoneMockup({ step, isActive }: { step: (typeof steps)[number]; isActive: boolean }) {
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        if (!videoRef.current) return;
+        if (isActive) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(() => {});
+        } else {
+            videoRef.current.pause();
+        }
+    }, [isActive]);
+
+    return (
+        <div className="relative mx-auto w-[280px]">
+            {/* Phone frame */}
+            <div className="relative overflow-hidden rounded-[40px] border-[6px] border-[#1A1A1A] bg-[#1A1A1A] shadow-2xl">
+                {/* Notch */}
+                <div className="absolute left-1/2 top-0 z-20 h-[26px] w-[120px] -translate-x-1/2 rounded-b-2xl bg-[#1A1A1A]" />
+
+                {/* Screen */}
+                <div className="relative aspect-[9/19.5] w-full overflow-hidden rounded-[34px] bg-white">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={step.num}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.4 }}
+                            className="absolute inset-0"
+                        >
+                            {step.media.type === "image" ? (
+                                <Image
+                                    src={step.media.src}
+                                    alt={step.title}
+                                    fill
+                                    className="object-cover object-top"
+                                    sizes="280px"
+                                />
+                            ) : (
+                                <video
+                                    ref={videoRef}
+                                    src={step.media.src}
+                                    poster={step.media.poster}
+                                    muted
+                                    playsInline
+                                    className="h-full w-full object-cover object-top"
+                                />
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </div>
+
+            {/* Bottom bar indicator */}
+            <div className="absolute bottom-2 left-1/2 h-1 w-28 -translate-x-1/2 rounded-full bg-white/30" />
+        </div>
+    );
+}
+
+/* ── Desktop step row ── */
 function StepRow({
     step,
     index,
     onActivate,
 }: {
-    step: (typeof steps)[0];
+    step: (typeof steps)[number];
     index: number;
     onActivate: (i: number) => void;
 }) {
@@ -51,22 +108,24 @@ function StepRow({
         <motion.div
             ref={ref}
             {...slideUp(index * 0.1)}
-            className="flex gap-5 py-10 border-l-[3px] pl-6 transition-all duration-200"
+            className="flex gap-5 border-l-[3px] py-10 pl-6 transition-all duration-200"
             style={{
                 borderLeftColor: inView ? "#4268FF" : "transparent",
                 opacity: inView ? 1 : 0.4,
             }}
         >
             <div
-                className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${step.numBg} ${step.numText}`}
+                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                    step.num === 1 ? "bg-[#4268FF] text-white" : "bg-[#1A1A1A] text-white"
+                }`}
             >
                 {step.num}
             </div>
             <div>
-                <h3 className="text-[17px] font-bold tracking-tight text-[#1A1A1A] mb-2 leading-snug">
+                <h3 className="mb-2 text-[17px] font-bold leading-snug tracking-tight text-[#1A1A1A]">
                     {step.title}
                 </h3>
-                <p className="text-[14px] text-[#6B7280] leading-relaxed m-0">
+                <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
                     {step.desc}
                 </p>
             </div>
@@ -74,9 +133,22 @@ function StepRow({
     );
 }
 
-function MobileStep({ step, index }: { step: (typeof steps)[0]; index: number }) {
+/* ── Mobile step ── */
+function MobileStep({ step, index }: { step: (typeof steps)[number]; index: number }) {
     const ref = useRef<HTMLDivElement>(null);
     const inView = useInView(ref, { once: true, margin: "-8%" });
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const videoInView = useInView(ref, { margin: "-20% 0px -20% 0px" });
+
+    useEffect(() => {
+        if (!videoRef.current) return;
+        if (videoInView) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(() => {});
+        } else {
+            videoRef.current.pause();
+        }
+    }, [videoInView]);
 
     return (
         <motion.div
@@ -86,22 +158,46 @@ function MobileStep({ step, index }: { step: (typeof steps)[0]; index: number })
             transition={{ ...SPRING, delay: index * 0.1 }}
             className="flex flex-col gap-4"
         >
-            {/* Mobile screenshot placeholder */}
-            <div className="h-[180px] bg-gray-100 rounded-2xl flex items-center justify-center">
-                <span className="text-sm text-gray-400 font-medium">{step.screen}</span>
+            {/* Mobile screenshot in phone frame */}
+            <div className="relative mx-auto w-[220px]">
+                <div className="relative overflow-hidden rounded-[32px] border-[5px] border-[#1A1A1A] bg-[#1A1A1A] shadow-xl">
+                    <div className="absolute left-1/2 top-0 z-20 h-[22px] w-[100px] -translate-x-1/2 rounded-b-xl bg-[#1A1A1A]" />
+                    <div className="relative aspect-[9/19.5] w-full overflow-hidden rounded-[27px] bg-white">
+                        {step.media.type === "image" ? (
+                            <Image
+                                src={step.media.src}
+                                alt={step.title}
+                                fill
+                                className="object-cover object-top"
+                                sizes="220px"
+                            />
+                        ) : (
+                            <video
+                                ref={videoRef}
+                                src={step.media.src}
+                                poster={step.media.poster}
+                                muted
+                                playsInline
+                                className="h-full w-full object-cover object-top"
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="flex gap-4">
                 <div
-                    className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${step.numBg} ${step.numText}`}
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                        step.num === 1 ? "bg-[#4268FF] text-white" : "bg-[#1A1A1A] text-white"
+                    }`}
                 >
                     {step.num}
                 </div>
                 <div>
-                    <h3 className="text-[17px] font-bold tracking-tight text-[#1A1A1A] mb-1.5 leading-snug">
+                    <h3 className="mb-1.5 text-[17px] font-bold leading-snug tracking-tight text-[#1A1A1A]">
                         {step.title}
                     </h3>
-                    <p className="text-[14px] text-[#6B7280] leading-relaxed m-0">
+                    <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
                         {step.desc}
                     </p>
                 </div>
@@ -110,17 +206,19 @@ function MobileStep({ step, index }: { step: (typeof steps)[0]; index: number })
     );
 }
 
+/* ── Main section ── */
 export function How() {
     const headerRef = useRef<HTMLDivElement>(null);
     const headerInView = useInView(headerRef, { once: true, margin: "-8%" });
     const [activeStep, setActiveStep] = useState(0);
+    const handleActivate = useCallback((i: number) => setActiveStep(i), []);
 
     return (
         <section
             id="comment"
             className="bg-white px-6 py-20 md:px-12 md:py-[120px]"
         >
-            <div className="max-w-[1100px] mx-auto">
+            <div className="mx-auto max-w-[1100px]">
                 {/* Header */}
                 <motion.div
                     ref={headerRef}
@@ -129,32 +227,19 @@ export function How() {
                     transition={{ ...SPRING }}
                     className="mb-14"
                 >
-                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF] mb-4">
+                    <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]">
                         COMMENT ÇA MARCHE
                     </p>
-                    <h2 className="text-[22px] md:text-[36px] font-[900] tracking-tight text-[#1A1A1A] m-0">
+                    <h2 className="m-0 text-[22px] font-[900] tracking-tight text-[#1A1A1A] md:text-[36px]">
                         En 3 étapes
                     </h2>
                 </motion.div>
 
                 {/* Desktop layout */}
-                <div className="hidden md:grid md:grid-cols-2 md:gap-16 md:items-start">
+                <div className="hidden md:grid md:grid-cols-2 md:items-start md:gap-16">
                     {/* Sticky phone mockup */}
                     <div className="sticky top-20">
-                        <div className="w-[280px] h-[500px] rounded-[32px] border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
-                            <AnimatePresence mode="wait">
-                                <motion.span
-                                    key={activeStep}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="text-sm text-gray-400 font-medium px-4 text-center"
-                                >
-                                    📱 {steps[activeStep].screen}
-                                </motion.span>
-                            </AnimatePresence>
-                        </div>
+                        <PhoneMockup step={steps[activeStep]} isActive={true} />
                     </div>
 
                     {/* Steps */}
@@ -164,7 +249,7 @@ export function How() {
                                 key={step.num}
                                 step={step}
                                 index={i}
-                                onActivate={setActiveStep}
+                                onActivate={handleActivate}
                             />
                         ))}
                     </div>
