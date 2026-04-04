@@ -14,7 +14,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
 
 export function Theme({ children }: { children: React.ReactNode }) {
     return (
-        <ThemeProvider attribute="class" value={{ light: "light-mode", dark: "dark-mode" }} enableSystem>
+        <ThemeProvider attribute="class" value={{ light: "light-mode", dark: "dark-mode" }} forcedTheme="light">
             {children}
         </ThemeProvider>
     );
