@@ -30,6 +30,31 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "assets.adidas.com",
             },
+            // UPCitemdb product photos (screenshots temporaires)
+            {
+                protocol: "https",
+                hostname: "n.nordstrommedia.com",
+            },
+            {
+                protocol: "https",
+                hostname: "i5.walmartimages.com",
+            },
+            {
+                protocol: "https",
+                hostname: "media.finishline.com",
+            },
+            {
+                protocol: "https",
+                hostname: "slimages.macysassets.com",
+            },
+            {
+                protocol: "http",
+                hostname: "content.nordstrom.com",
+            },
+            {
+                protocol: "http",
+                hostname: "site.unbeatablesale.com",
+            },
         ],
     },
     experimental: {

@@ -63,6 +63,8 @@ export default function DiscoverPage() {
 
 function DiscoverContent() {
     const prefersReducedMotion = useReducedMotion();
+    const [hasMounted, setHasMounted] = useState(false);
+    useEffect(() => { setHasMounted(true); }, []);
     const { position } = useGeolocation();
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
@@ -312,9 +314,9 @@ function DiscoverContent() {
             {feedTab === "explorer" ? (
             <motion.div
                 key="explorer"
-                initial={prefersReducedMotion ? false : { opacity: 0 }}
+                initial={hasMounted ? { opacity: 0 } : false}
                 animate={{ opacity: 1 }}
-                exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                exit={hasMounted ? { opacity: 0 } : undefined}
                 transition={{ duration: 0.15 }}
                 className="flex flex-col gap-8 pb-24 pt-5"
             >

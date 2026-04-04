@@ -20,7 +20,7 @@ export default function FavoritesPage() {
             {/* Header */}
             <div className="bg-secondary" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="flex items-center gap-2.5 px-4 pb-4">
-                    <Image src="/logo-icon.webp?v=2" alt="" width={28} height={28} aria-hidden="true" />
+                    <img src="/logo-icon.webp?v=2" alt="" className="size-7" aria-hidden="true" />
                     <h1 className="font-heading text-xl font-bold uppercase text-primary">Favoris</h1>
                     {favorites && favorites.length > 0 && (
                         <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-tertiary">
