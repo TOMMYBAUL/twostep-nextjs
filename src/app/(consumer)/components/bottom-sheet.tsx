@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Drawer } from "vaul";
 import { MarkerPin01, Tag01, ChevronRight, SearchLg, Clock } from "@untitledui/icons";
 import { generateSlug } from "@/lib/slug";
@@ -51,7 +52,7 @@ export function BottomSheet({ merchants, isLoading, distLabel }: BottomSheetProp
         >
             <Drawer.Portal>
                 <Drawer.Content
-                    className="fixed bottom-0 left-0 right-0 z-40 flex max-h-[92dvh] flex-col rounded-t-3xl bg-white outline-none"
+                    className="fixed bottom-0 left-0 right-0 z-40 flex max-h-[92dvh] flex-col rounded-t-3xl bg-primary outline-none"
                     aria-describedby={undefined}
                 >
                     <Drawer.Title className="sr-only">Boutiques près de chez toi</Drawer.Title>
@@ -61,19 +62,19 @@ export function BottomSheet({ merchants, isLoading, distLabel }: BottomSheetProp
                         className="flex shrink-0 cursor-grab touch-none items-center justify-center pb-2 pt-3 active:cursor-grabbing"
                         onDoubleClick={() => setSnap(snap === MIN_SNAP ? "50%" : MIN_SNAP)}
                     >
-                        <div className="h-1 w-10 rounded-full bg-[#1A1A1A]/20" />
+                        <div className="h-1 w-10 rounded-full bg-quaternary" />
                     </div>
 
                     {/* Header */}
                     <div className="flex shrink-0 items-center justify-between px-5 pb-3">
                         <div>
-                            <h2 className="text-sm font-bold text-[#1A1A1A]">
+                            <h2 className="text-sm font-bold text-primary">
                                 {isLoading
                                     ? "Recherche..."
                                     : `${merchants.length} boutique${merchants.length !== 1 ? "s" : ""}`}
                             </h2>
                             {!isLoading && merchants.length > 0 && distLabel && (
-                                <p className="text-[11px] text-[#1A1A1A]/50">
+                                <p className="text-[11px] text-tertiary">
                                     dans un rayon de {distLabel}
                                 </p>
                             )}
@@ -82,7 +83,7 @@ export function BottomSheet({ merchants, isLoading, distLabel }: BottomSheetProp
                             <button
                                 type="button"
                                 onClick={() => setSnap("50%")}
-                                className="text-xs font-semibold text-[#4268FF]"
+                                className="text-xs font-semibold text-brand-secondary"
                             >
                                 Voir tout
                             </button>
@@ -94,14 +95,14 @@ export function BottomSheet({ merchants, isLoading, distLabel }: BottomSheetProp
                         {isLoading ? (
                             <div className="flex flex-col gap-2">
                                 {Array.from({ length: 3 }).map((_, i) => (
-                                    <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-[#FAFAFA]" />
+                                    <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-secondary" />
                                 ))}
                             </div>
                         ) : merchants.length === 0 ? (
                             <div className="flex flex-col items-center gap-2 py-8 text-center">
-                                <SearchLg className="size-7 text-[#1A1A1A]/15" />
-                                <p className="text-sm font-medium text-[#1A1A1A]/40">Aucune boutique trouvée</p>
-                                <p className="text-[11px] text-[#1A1A1A]/30">Essaie d'élargir ta zone ou de changer de catégorie</p>
+                                <SearchLg className="size-7 text-quaternary" />
+                                <p className="text-sm font-medium text-tertiary">Aucune boutique trouvée</p>
+                                <p className="text-[11px] text-quaternary">Essaie d'élargir ta zone ou de changer de catégorie</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-2">
@@ -124,14 +125,14 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
     return (
         <Link
             href={`/shop/${generateSlug(merchant.merchant_name, merchant.merchant_id)}`}
-            className="flex items-center gap-3 rounded-2xl bg-[#FAFAFA] p-3 transition duration-150 active:bg-[#FAFAFA]/80"
+            className="flex items-center gap-3 rounded-2xl bg-secondary p-3 transition duration-150 active:bg-secondary/80"
         >
             {/* Avatar */}
-            <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm">
+            <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary shadow-sm">
                 {logo ? (
-                    <img src={logo} alt="" className="h-full w-full object-cover" />
+                    <Image src={logo} alt="" width={52} height={52} className="h-full w-full object-cover" />
                 ) : (
-                    <span className="text-lg font-bold text-[#4268FF]">
+                    <span className="text-lg font-bold text-brand-secondary">
                         {merchant.merchant_name.charAt(0).toUpperCase()}
                     </span>
                 )}
@@ -139,11 +140,11 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
 
             {/* Info */}
             <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-[#1A1A1A]">{merchant.merchant_name}</p>
-                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[#1A1A1A]/50">
+                <p className="truncate text-[13px] font-semibold text-primary">{merchant.merchant_name}</p>
+                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-tertiary">
                     <Clock className="size-3 shrink-0" aria-hidden="true" />
                     {minutes} min à pied
-                    <span className="text-[#1A1A1A]/30">·</span>
+                    <span className="text-quaternary">·</span>
                     <MarkerPin01 className="size-3 shrink-0" aria-hidden="true" />
                     {merchant.distance_km < 1 ? `${Math.round(merchant.distance_km * 1000)}m` : `${merchant.distance_km.toFixed(1)}km`}
                 </p>
@@ -160,7 +161,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
                 </div>
             </div>
 
-            <ChevronRight className="size-4 shrink-0 text-[#1A1A1A]/15" />
+            <ChevronRight className="size-4 shrink-0 text-quaternary" />
         </Link>
     );
 }

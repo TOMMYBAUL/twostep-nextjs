@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { signState } from "@/lib/auth/state-token";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function getBaseUrl(): string {
@@ -35,7 +36,7 @@ export const squareAdapter: IPOSAdapter = {
             client_id: process.env.SQUARE_APP_ID!,
             scope: "MERCHANT_PROFILE_READ ITEMS_READ ITEMS_WRITE INVENTORY_READ INVENTORY_WRITE",
             session: "false",
-            state: `square:${merchantId}`,
+            state: signState(`square:${merchantId}`),
         });
         return `${getBaseUrl()}/oauth2/authorize?${params}`;
     },
@@ -85,6 +86,7 @@ export const squareAdapter: IPOSAdapter = {
     async getCatalog(accessToken: string): Promise<POSProduct[]> {
         const products: POSProduct[] = [];
         const imageIdsToFetch = new Set<string>();
+        const categoryIdsToFetch = new Set<string>();
         let cursor: string | undefined;
 
         do {
@@ -102,6 +104,10 @@ export const squareAdapter: IPOSAdapter = {
                     imageIdsToFetch.add(imgId);
                 }
 
+                // Collect category ID for batch fetch
+                const categoryId = item.category_id ?? item.reporting_category?.id ?? null;
+                if (categoryId) categoryIdsToFetch.add(categoryId);
+
                 for (const variation of item.variations || []) {
                     const v = variation.item_variation_data;
                     const name =
@@ -109,12 +115,16 @@ export const squareAdapter: IPOSAdapter = {
                             ? `${item.name} — ${v.name}`
                             : item.name;
 
+                    // SKU is only a valid EAN/UPC if it's 12-13 digits
+                    const sku: string | null = v.sku || null;
+                    const ean = sku && /^\d{12,13}$/.test(sku) ? sku : null;
+
                     products.push({
                         pos_item_id: variation.id,
                         name,
-                        ean: v.sku || null,
+                        ean,
                         price: v.price_money ? Number(v.price_money.amount) / 100 : null,
-                        category: null,
+                        category: categoryId ? `__square_cat__${categoryId}` : null,
                         // Store parent item ID temporarily to resolve images later
                         photo_url: item.image_ids?.[0] ? `__square_img__${item.image_ids[0]}` : null,
                     });
@@ -123,6 +133,37 @@ export const squareAdapter: IPOSAdapter = {
 
             cursor = data.cursor;
         } while (cursor);
+
+        // Batch fetch category names from Square
+        if (categoryIdsToFetch.size > 0) {
+            const categoryMap = new Map<string, string>();
+            const ids = [...categoryIdsToFetch];
+
+            for (let i = 0; i < ids.length; i += 100) {
+                const batch = ids.slice(i, i + 100);
+                try {
+                    const data = await squareFetch("/catalog/batch-retrieve", accessToken, {
+                        method: "POST",
+                        body: JSON.stringify({ object_ids: batch }),
+                    });
+                    for (const obj of data.objects ?? []) {
+                        if (obj.type === "CATEGORY" && obj.category_data?.name) {
+                            categoryMap.set(obj.id, obj.category_data.name);
+                        }
+                    }
+                } catch {
+                    // Non-critical: products will have no category
+                }
+            }
+
+            // Resolve placeholder category IDs to names
+            for (const product of products) {
+                if (product.category?.startsWith("__square_cat__")) {
+                    const catId = product.category.slice("__square_cat__".length);
+                    product.category = categoryMap.get(catId) ?? null;
+                }
+            }
+        }
 
         // Batch fetch image URLs from Square
         if (imageIdsToFetch.size > 0) {

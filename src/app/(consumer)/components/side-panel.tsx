@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MarkerPin01, Tag01, SearchLg } from "@untitledui/icons";
 import { generateSlug } from "@/lib/slug";
 
@@ -113,7 +114,7 @@ function ExpandedCard({ merchant }: { merchant: Merchant }) {
             {/* Avatar */}
             <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--ts-accent)] text-sm font-bold text-white">
                 {merchant.merchant_photo ? (
-                    <img src={merchant.merchant_photo} alt="" className="size-full rounded-full object-cover" />
+                    <Image src={merchant.merchant_photo} alt="" width={40} height={40} className="size-full rounded-full object-cover" />
                 ) : (
                     merchant.merchant_name.charAt(0).toUpperCase()
                 )}

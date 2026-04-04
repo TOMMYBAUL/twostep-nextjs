@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
@@ -9,7 +10,7 @@ interface Props {
     params: Promise<{ id: string }>;
 }
 
-async function getProduct(slugOrId: string) {
+const getProduct = React.cache(async function getProduct(slugOrId: string) {
     const resolvedId = await resolveProductId(slugOrId);
     if (!resolvedId) return null;
     const supabase = createAdminClient();
@@ -19,7 +20,7 @@ async function getProduct(slugOrId: string) {
         .eq("id", resolvedId)
         .single();
     return data;
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params;

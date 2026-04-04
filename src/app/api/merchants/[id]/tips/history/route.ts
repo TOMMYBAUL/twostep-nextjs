@@ -37,7 +37,8 @@ export async function GET(
     const { data: tips, count, error } = await query;
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("[tips/history GET]", error.message);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
     return NextResponse.json({

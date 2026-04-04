@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
@@ -11,7 +12,7 @@ export const zettleAdapter: IPOSAdapter = {
             redirect_uri: getSiteUrl() + "/api/pos/zettle/callback",
             response_type: "code",
             scope: "READ:PRODUCT WRITE:PRODUCT READ:INVENTORY",
-            state: `zettle:${merchantId}`,
+            state: signState(`zettle:${merchantId}`),
         });
         return `https://oauth.zettle.com/authorize?${params}`;
     },
@@ -86,6 +87,16 @@ export const zettleAdapter: IPOSAdapter = {
 
             const isMultiVariant = variants.length > 1;
 
+            // Zettle Products API v2 provides:
+            // - product.category?.name for category
+            // - product.imageLookupKeys[] for images (requires separate image fetch)
+            // - product.presentation?.imageUrl for the first product image
+            const category: string | null = product.category?.name ?? null;
+            const photoUrl: string | null = product.presentation?.imageUrl
+                ?? (product.imageLookupKeys?.[0]
+                    ? `https://image.izettle.com/v2/images/o/${product.imageLookupKeys[0]}`
+                    : null);
+
             for (const variant of variants) {
                 const name = isMultiVariant
                     ? `${product.name} — ${variant.name}`
@@ -96,8 +107,8 @@ export const zettleAdapter: IPOSAdapter = {
                     name,
                     ean: variant.barcode ?? variant.sku ?? null,
                     price: variant.price ? variant.price.amount / 100 : null,
-                    category: null,
-                    photo_url: null,
+                    category,
+                    photo_url: photoUrl,
                 });
             }
         }

@@ -50,6 +50,10 @@
     --ts-warning:    #F79009;
     --ts-error:      #F04438;
     --ts-promo:      #E5390E;
+    --ts-brown:      #8B6F47;
+    --ts-brown-mid:  #A68B5B;
+    --ts-red:        var(--ts-promo);
+    --ts-orange:     var(--ts-warning);
 
     /* Override UntitledUI brand palette → bleu électrique #4268FF */
     --color-brand-25:  #EEF2FF;

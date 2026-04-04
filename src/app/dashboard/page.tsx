@@ -39,7 +39,7 @@ export default function DashboardPage() {
             const supabase = createClient();
 
             const hasPOS = merchant!.pos_type !== null;
-            const hasEmail = !!(merchant!.phone);
+            const hasPhone = !!(merchant!.phone);
             const hasPhoto = !!(merchant!.photo_url);
             const hasProfile = !!(merchant!.description && merchant!.address && merchant!.opening_hours);
 
@@ -72,7 +72,7 @@ export default function DashboardPage() {
                     description: "Pour que vos clients puissent vous joindre facilement.",
                     href: "/dashboard/store",
                     cta: "Ajouter mon téléphone",
-                    checked: hasEmail,
+                    checked: hasPhone,
                 },
                 {
                     label: "Connecter votre caisse (POS)",
@@ -91,7 +91,7 @@ export default function DashboardPage() {
             ]);
 
             // Bonus step — only appears when all 5 main steps are complete
-            const allMainDone = hasProfile && hasPhoto && hasEmail && hasPOS && hasProductPhotos;
+            const allMainDone = hasProfile && hasPhoto && hasPhone && hasPOS && hasProductPhotos;
             if (allMainDone) {
                 const { data: googleConn } = await supabase
                     .from("google_merchant_connections")
@@ -365,14 +365,12 @@ function QuickLink({ href, label, description }: { href: string; label: string; 
 
 function ExternalQuickLink({ href, label, description }: { href: string; label: string; description: string }) {
     return (
-        <a
+        <Link
             href={href}
-            target="_blank"
-            rel="noopener noreferrer"
             className="group rounded-xl bg-brand-solid px-5 py-4 no-underline transition hover:shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
         >
             <p className="text-sm font-semibold text-white transition">{label}</p>
             <p className="mt-0.5 text-xs text-white/70">{description}</p>
-        </a>
+        </Link>
     );
 }

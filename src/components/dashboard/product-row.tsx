@@ -14,15 +14,15 @@ interface ProductRowProps {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-    mode: "bg-purple-50",
-    chaussures: "bg-blue-50",
-    bijoux: "bg-amber-50",
-    beaute: "bg-pink-50",
-    cosmetique: "bg-pink-50",
-    sport: "bg-green-50",
-    deco: "bg-emerald-50",
-    epicerie: "bg-amber-50",
-    tech: "bg-slate-50",
+    mode: "bg-brand-secondary",
+    chaussures: "bg-secondary",
+    bijoux: "bg-warning-secondary",
+    beaute: "bg-error-secondary",
+    cosmetique: "bg-error-secondary",
+    sport: "bg-success-secondary",
+    deco: "bg-success-secondary",
+    epicerie: "bg-warning-secondary",
+    tech: "bg-secondary",
 };
 
 const CATEGORY_EMOJIS: Record<string, string> = {

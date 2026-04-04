@@ -12,9 +12,7 @@ export const config = {
         "/explore/:path*", "/discover/:path*", "/search/:path*", "/shop/:path*",
         "/product/:path*", "/favorites/:path*", "/profile/:path*",
         "/dashboard/:path*", "/admin/:path*", "/auth/:path*",
-        // Protected API routes
-        "/api/pos/:path*", "/api/email/:path*",
-        "/api/stripe/:path*",
-        "/api/consumer/:path*", "/api/admin/:path*",
+        // All API routes — public exceptions handled inside updateSession
+        "/api/:path*",
     ],
 };

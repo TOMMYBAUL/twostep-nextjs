@@ -12,13 +12,20 @@ export async function GET(
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    // Verify merchant belongs to authenticated user
+    const { data: merchant } = await supabase.from("merchants").select("id").eq("id", id).eq("user_id", user.id).single();
+    if (!merchant) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const { data, error } = await supabase
         .from("achievements")
         .select("id, merchant_id, type, unlocked_at")
         .eq("merchant_id", id)
         .order("unlocked_at", { ascending: false });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+        console.error("[achievements GET]", error.message);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
 
     return NextResponse.json({ achievements: data ?? [] }, {
         headers: { "Cache-Control": "private, max-age=60" },
@@ -55,7 +62,8 @@ export async function POST(
         if (error.code === "23505") {
             return NextResponse.json({ error: "Already unlocked" }, { status: 409 });
         }
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("[achievements POST]", error.message);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
     return NextResponse.json({ achievement: data }, { status: 201 });

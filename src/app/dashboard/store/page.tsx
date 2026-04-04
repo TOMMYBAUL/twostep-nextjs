@@ -181,7 +181,7 @@ export default function StorePage() {
             {/* SIRET status */}
             {merchant && (
                 <div className="animate-fade-up stagger-2 mb-8 flex items-center gap-3 rounded-xl bg-primary px-5 py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-700"}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${merchant.status === "active" ? "bg-success-secondary text-success-primary" : "bg-warning-secondary text-warning-primary"}`}>
                         {merchant.status === "active" ? "Vérifié" : "En attente"}
                     </span>
                     {merchant.siret && (

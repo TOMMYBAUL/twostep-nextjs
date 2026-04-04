@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { MarkerPin01, Tag01 } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
@@ -31,7 +32,7 @@ export function ShopCard({
         >
             <div className="relative h-32 w-full overflow-hidden bg-tertiary">
                 {photo ? (
-                    <img src={photo} alt={name} className="h-full w-full object-cover transition duration-200 group-hover:scale-105" />
+                    <Image src={photo} alt={name} fill sizes="(max-width: 640px) 100vw, 300px" className="object-cover transition duration-200 group-hover:scale-105" />
                 ) : (
                     <div className="flex h-full items-center justify-center text-2xl font-bold text-quaternary">{name.charAt(0)}</div>
                 )}

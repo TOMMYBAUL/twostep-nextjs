@@ -34,7 +34,7 @@ export default function AchievementsPage() {
                 {loading ? (
                     <div className="space-y-3">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="animate-pulse rounded-[20px] bg-white/60 h-20" />
+                            <div key={i} className="animate-pulse rounded-[20px] bg-primary/60 h-20" />
                         ))}
                     </div>
                 ) : (

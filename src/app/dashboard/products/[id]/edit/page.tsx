@@ -91,15 +91,15 @@ export default function EditProductPage() {
                 {showDeleteConfirm ? (
                     <div className="flex items-center gap-3">
                         <p className="text-sm text-error-primary">Supprimer définitivement ?</p>
-                        <button onClick={handleDelete} className="rounded-lg bg-error-solid px-3 py-1.5 text-xs font-medium text-white focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
+                        <button type="button" onClick={handleDelete} className="rounded-lg bg-error-solid px-3 py-1.5 text-xs font-medium text-white focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
                             Confirmer
                         </button>
-                        <button onClick={() => setShowDeleteConfirm(false)} className="text-xs text-tertiary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                        <button type="button" onClick={() => setShowDeleteConfirm(false)} className="text-xs text-tertiary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                             Annuler
                         </button>
                     </div>
                 ) : (
-                    <button onClick={() => setShowDeleteConfirm(true)} className="text-sm text-error-primary hover:text-error-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                    <button type="button" onClick={() => setShowDeleteConfirm(true)} className="text-sm text-error-primary hover:text-error-primary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         Supprimer ce produit
                     </button>
                 )}

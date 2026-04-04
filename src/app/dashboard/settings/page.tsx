@@ -60,10 +60,10 @@ function SettingsPageInner() {
 
     useEffect(() => {
         if (merchant) {
-            const links = (merchant as any).links ?? {};
-            setInstagramUrl((merchant as any).instagram_url ?? links.instagram ?? "");
-            setTiktokUrl((merchant as any).tiktok_url ?? links.tiktok ?? "");
-            setWebsiteUrl((merchant as any).website_url ?? links.website ?? "");
+            const links = merchant.links ?? {};
+            setInstagramUrl(merchant.instagram_url ?? links.instagram ?? "");
+            setTiktokUrl(merchant.tiktok_url ?? links.tiktok ?? "");
+            setWebsiteUrl(merchant.website_url ?? links.website ?? "");
         }
     }, [merchant]);
 
@@ -101,6 +101,7 @@ function SettingsPageInner() {
     };
 
     const handleDisconnect = async () => {
+        if (!window.confirm("Voulez-vous vraiment déconnecter votre caisse ? Vous devrez la reconnecter pour synchroniser vos produits.")) return;
         try {
             await disconnect();
             toast("POS déconnecté");
@@ -126,7 +127,7 @@ function SettingsPageInner() {
         setSavingSocial(true);
         try {
             const supabase = createClient();
-            const currentLinks = (merchant as any).links ?? {};
+            const currentLinks = merchant.links ?? {};
             const { error } = await supabase
                 .from("merchants")
                 .update({
@@ -252,10 +253,11 @@ function SettingsPageInner() {
 
                                 {isThisConnected ? (
                                     <div className="flex gap-2">
-                                        <button onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
+                                        <button type="button" onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
                                             {syncing ? "Synchronisation..." : "Synchroniser"}
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={handleDisconnect}
                                             className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-primary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                             disabled={connecting}
@@ -265,6 +267,7 @@ function SettingsPageInner() {
                                     </div>
                                 ) : (
                                     <button
+                                        type="button"
                                         onClick={() => handleConnect(id)}
                                         className="btn-ts w-full"
                                         disabled={connecting || isOtherConnected}
@@ -348,6 +351,7 @@ function SettingsPageInner() {
                         Améliorez automatiquement vos photos produit : détourage, fond blanc, format uniforme.
                     </p>
                     <button
+                        type="button"
                         onClick={handleEnhancePhotos}
                         className="btn-ts w-full"
                         disabled={enhancing}

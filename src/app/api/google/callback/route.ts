@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyState } from "@/lib/auth/state-token";
 import { createClient } from "@/lib/supabase/server";
 import { exchangeGoogleCode, getGoogleMerchantId } from "@/lib/google/merchant";
 import { encrypt } from "@/lib/email/encryption";
@@ -14,7 +15,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${baseUrl}/dashboard/google?error=missing_params`);
     }
 
-    const parts = state.split(":");
+    // Verify HMAC signature on state to prevent CSRF
+    const verifiedPayload = verifyState(state);
+    if (!verifiedPayload) {
+        return NextResponse.redirect(`${baseUrl}/dashboard/google?error=invalid_state`);
+    }
+
+    const parts = verifiedPayload.split(":");
     if (parts.length < 3 || parts[0] !== "google") {
         return NextResponse.redirect(`${baseUrl}/dashboard/google?error=invalid_state`);
     }

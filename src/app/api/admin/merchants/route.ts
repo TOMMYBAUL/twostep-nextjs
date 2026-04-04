@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
                 return NextResponse.json({ error: "Search query too long" }, { status: 400 });
             }
             // Sanitize search to prevent PostgREST filter injection
-            const safe = search.replace(/[%,.()"'\\]/g, "");
+            const safe = search.replace(/[%_*,.()"'\\]/g, "");
             if (safe) {
                 query = query.or(`name.ilike.%${safe}%,city.ilike.%${safe}%`);
             }

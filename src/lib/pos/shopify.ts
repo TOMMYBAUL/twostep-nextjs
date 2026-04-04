@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
@@ -21,7 +22,7 @@ export const shopifyAdapter: IPOSAdapter = {
             client_id: process.env.SHOPIFY_CLIENT_ID!,
             scope: "read_products,write_products,read_inventory,write_inventory",
             redirect_uri: `${baseUrl}/api/pos/shopify/callback`,
-            state: `shopify:${merchantId}`,
+            state: signState(`shopify:${merchantId}`),
         });
         return `https://accounts.shopify.com/oauth/authorize?${params}`;
     },

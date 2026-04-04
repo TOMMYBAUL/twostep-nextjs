@@ -73,7 +73,7 @@ export default function NotificationsPage() {
         {
             id: "push",
             icon: <Bell01 className="size-5" />,
-            iconBg: "bg-[#4268FF]/15 text-[#4268FF]",
+            iconBg: "bg-brand-secondary/15 text-brand-secondary",
             label: "Notifications push",
             description: "Recevoir des notifications sur ton téléphone",
             enabled: prefs.push,
@@ -81,7 +81,7 @@ export default function NotificationsPage() {
         {
             id: "promos",
             icon: <Tag01 className="size-5" />,
-            iconBg: "bg-[#4268FF]/15 text-[#4268FF]",
+            iconBg: "bg-brand-secondary/15 text-brand-secondary",
             label: "Nouvelles promos",
             description: "Quand une boutique suivie lance une promo",
             enabled: prefs.promos,
@@ -89,7 +89,7 @@ export default function NotificationsPage() {
         {
             id: "restock",
             icon: <Heart className="size-5" />,
-            iconBg: "bg-[var(--ts-error)]/15 text-[var(--ts-error)]",
+            iconBg: "bg-error-secondary text-error-primary",
             label: "Réassort d'un favori",
             description: "Quand un produit liké revient en stock",
             enabled: prefs.restock,
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
         {
             id: "shops",
             icon: <ShoppingBag01 className="size-5" />,
-            iconBg: "bg-[var(--ts-success)]/15 text-[var(--ts-success)]",
+            iconBg: "bg-success-secondary text-success-primary",
             label: "Actualités boutiques",
             description: "Nouveautés et événements des boutiques suivies",
             enabled: prefs.shops,
@@ -105,32 +105,32 @@ export default function NotificationsPage() {
     ];
 
     return (
-        <div className="min-h-dvh bg-[#FFFFFF]">
+        <div className="min-h-dvh bg-primary">
             {/* Header */}
-            <div className="bg-[#FFFFFF] px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+            <div className="bg-primary px-4 pb-4 pt-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
                 <div className="flex items-center gap-3">
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="flex size-10 items-center justify-center rounded-xl bg-[#EBEBEB] transition active:bg-[#FFFFFF]/50"
+                        className="flex size-10 items-center justify-center rounded-xl bg-secondary transition active:bg-primary/50"
                         aria-label="Retour"
                     >
-                        <ArrowLeft className="size-5 text-[#1A1A1A]/60" />
+                        <ArrowLeft className="size-5 text-tertiary" />
                     </button>
-                    <h1 className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">Notifications</h1>
+                    <h1 className="font-heading text-lg font-bold uppercase text-primary">Notifications</h1>
                 </div>
             </div>
 
             {/* Settings */}
             <div className="space-y-3 p-4 pb-24">
                 {settings.map((setting) => (
-                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-[#EBEBEB] p-4">
+                    <div key={setting.id} className="flex items-center gap-3 rounded-2xl bg-secondary p-4">
                         <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${setting.iconBg}`}>
                             {setting.icon}
                         </div>
                         <div className="flex-1">
-                            <p className="text-sm font-semibold text-[#1A1A1A]">{setting.label}</p>
-                            <p className="text-[11px] text-[#1A1A1A]/50">{setting.description}</p>
+                            <p className="text-sm font-semibold text-primary">{setting.label}</p>
+                            <p className="text-[11px] text-tertiary">{setting.description}</p>
                         </div>
                         {/* Toggle — rendered client-only to avoid hydration mismatch with localStorage */}
                         {mounted ? (
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
                                 aria-checked={setting.enabled}
                                 onClick={() => toggle(setting.id)}
                                 className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
-                                    setting.enabled ? "bg-[var(--ts-success)]" : "bg-[#FFFFFF]"
+                                    setting.enabled ? "bg-success-solid" : "bg-primary"
                                 }`}
                             >
                                 <span
@@ -149,12 +149,12 @@ export default function NotificationsPage() {
                                 />
                             </button>
                         ) : (
-                            <div className="h-7 w-12 shrink-0 rounded-full bg-[#FFFFFF]" />
+                            <div className="h-7 w-12 shrink-0 rounded-full bg-primary" />
                         )}
                     </div>
                 ))}
 
-                <p className="pt-4 text-center text-[11px] text-[#1A1A1A]/30">
+                <p className="pt-4 text-center text-[11px] text-quaternary">
                     Les notifications push nécessitent l&apos;autorisation de ton navigateur.
                 </p>
             </div>

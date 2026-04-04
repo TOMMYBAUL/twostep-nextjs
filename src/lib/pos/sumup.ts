@@ -1,5 +1,6 @@
 import crypto from "crypto";
 
+import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
@@ -12,7 +13,7 @@ export const sumupAdapter: IPOSAdapter = {
             redirect_uri: getSiteUrl() + "/api/pos/sumup/callback",
             response_type: "code",
             scope: "products",
-            state: `sumup:${merchantId}`,
+            state: signState(`sumup:${merchantId}`),
         });
         return `https://api.sumup.com/authorize?${params}`;
     },

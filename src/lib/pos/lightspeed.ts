@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { signState } from "@/lib/auth/state-token";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 const LS_API = "https://api.lightspeedapp.com/API/V3";
@@ -11,7 +12,7 @@ export const lightspeedAdapter: IPOSAdapter = {
             response_type: "code",
             client_id: process.env.LIGHTSPEED_CLIENT_ID!,
             scope: "employee:all",
-            state: `lightspeed:${merchantId}`,
+            state: signState(`lightspeed:${merchantId}`),
         });
         return `https://cloud.lightspeedapp.com/oauth/authorize.php?${params}`;
     },

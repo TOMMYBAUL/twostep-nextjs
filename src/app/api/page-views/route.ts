@@ -21,6 +21,17 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
 
+    // Verify merchant exists before inserting
+    const { data: merchant } = await supabase
+        .from("merchants")
+        .select("id")
+        .eq("id", merchant_id)
+        .single();
+
+    if (!merchant) {
+        return NextResponse.json({ error: "Merchant not found" }, { status: 404 });
+    }
+
     // Get viewer ID if authenticated (optional)
     const { data: { user } } = await supabase.auth.getUser();
 

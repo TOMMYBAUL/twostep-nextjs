@@ -150,7 +150,7 @@ export default function PromotionsPage() {
                                     </p>
                                 </div>
 
-                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-secondary text-secondary" : "bg-emerald-50 text-success-primary"}`}>
+                                <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${isScheduled ? "bg-secondary text-secondary" : "bg-success-secondary text-success-primary"}`}>
                                     {isScheduled ? "Programmée" : "Active"}
                                 </span>
 

@@ -276,17 +276,25 @@ async function updateProduct(
     provider: string,
     posProduct: POSProduct,
 ): Promise<void> {
+    const newSize = extractSize(posProduct.name);
+
+    const updates: Record<string, unknown> = {
+        name: posProduct.name,
+        price: posProduct.price,
+        ean: posProduct.ean,
+        pos_item_id: posProduct.pos_item_id,
+        pos_provider: provider,
+        photo_url: posProduct.photo_url ?? existingPhotoUrl,
+    };
+
+    // Only overwrite size if we can extract a new one; preserve existing size otherwise
+    if (newSize !== null) {
+        updates.size = newSize;
+    }
+
     await supabase
         .from("products")
-        .update({
-            name: posProduct.name,
-            price: posProduct.price,
-            ean: posProduct.ean,
-            pos_item_id: posProduct.pos_item_id,
-            pos_provider: provider,
-            photo_url: posProduct.photo_url ?? existingPhotoUrl,
-            size: extractSize(posProduct.name),
-        })
+        .update(updates)
         .eq("id", productId);
 }
 
@@ -357,13 +365,17 @@ async function groupVariantsByEAN(
 
     if (!products || products.length === 0) return;
 
-    // Mark products without EAN as not visible
+    // Products without EAN: visible if they have name + price + stock > 0
     const noEan = products.filter((p) => !p.ean);
-    if (noEan.length > 0) {
+    for (const p of noEan) {
+        const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
+        const hasNameAndPrice = !!p.name && p.name.trim().length > 0;
+        const visible = hasNameAndPrice && qty > 0;
+        const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty }] : [];
         await supabase
             .from("products")
-            .update({ visible: false })
-            .in("id", noEan.map((p) => p.id));
+            .update({ visible, available_sizes: availableSizes })
+            .eq("id", p.id);
     }
 
     // Group products with EAN by prefix (first 12 chars)

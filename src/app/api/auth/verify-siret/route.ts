@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySIRET } from "@/lib/siret";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+    const limited = await rateLimit(
+        request.headers.get("x-forwarded-for") ?? null,
+        "verify-siret",
+        10,
+    );
+    if (limited) return limited;
+
     const body = await request.json();
     const siret = body.siret as string;
 

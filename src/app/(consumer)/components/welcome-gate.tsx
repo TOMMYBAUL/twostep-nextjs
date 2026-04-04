@@ -87,11 +87,11 @@ export function WelcomeGate() {
     if (!show) return null;
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-end bg-black/30 backdrop-blur-sm sm:items-center sm:justify-center">
-            <div className="w-full rounded-t-3xl bg-white px-6 pb-8 pt-2 shadow-2xl sm:max-w-sm sm:rounded-3xl">
+        <div className="fixed inset-0 z-[60] flex items-end bg-overlay backdrop-blur-sm sm:items-center sm:justify-center">
+            <div className="w-full rounded-t-3xl bg-primary px-6 pb-8 pt-2 shadow-2xl sm:max-w-sm sm:rounded-3xl">
                 {/* Drag indicator */}
                 <div className="mb-4 flex justify-center">
-                    <div className="h-1 w-10 rounded-full bg-gray-200" />
+                    <div className="h-1 w-10 rounded-full bg-tertiary" />
                 </div>
 
                 {mode === "welcome" ? (
@@ -99,10 +99,10 @@ export function WelcomeGate() {
                         {/* Logo */}
                         <div className="mb-6 text-center">
                             <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-4 size-16 rounded-2xl shadow-md" />
-                            <h1 className="font-display text-xl font-bold uppercase text-[var(--ts-text)]">
+                            <h1 className="font-display text-xl font-bold uppercase text-primary">
                                 Bienvenue sur Two-Step
                             </h1>
-                            <p className="mt-1 text-sm text-[#AAAAAA]/60">
+                            <p className="mt-1 text-sm text-tertiary">
                                 Le produit exact que tu cherches, à deux pas de chez toi.
                             </p>
                         </div>
@@ -110,14 +110,14 @@ export function WelcomeGate() {
                         {/* Value props */}
                         <div className="mb-8 space-y-4">
                             <ValueProp
-                                icon={<MarkerPin01 className="size-4 text-[#4268FF]" />}
-                                iconBg="bg-[#4268FF]/10"
+                                icon={<MarkerPin01 className="size-4 text-brand-secondary" />}
+                                iconBg="bg-brand-secondary/10"
                                 title="Découvre ton quartier"
                                 description="Stock réel, mis à jour par les commerçants"
                             />
                             <ValueProp
-                                icon={<Heart className="size-4 text-[#D94F4F]" />}
-                                iconBg="bg-[#D94F4F]/10"
+                                icon={<Heart className="size-4 text-error-primary" />}
+                                iconBg="bg-error-secondary"
                                 title="Sauvegarde tes favoris"
                                 description="On te prévient des nouveautés et des promos"
                             />
@@ -127,21 +127,21 @@ export function WelcomeGate() {
                         <button
                             type="button"
                             onClick={() => setMode("signup")}
-                            className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                            className="w-full rounded-2xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
                         >
                             Créer un compte
                         </button>
                         <button
                             type="button"
                             onClick={() => setMode("login")}
-                            className="mt-2 w-full rounded-2xl border-2 border-[#EBEBEB] py-3.5 text-sm font-semibold text-[#1A1A1A] transition duration-150 active:bg-[#F5F5F5]"
+                            className="mt-2 w-full rounded-2xl border-2 border-secondary py-3.5 text-sm font-semibold text-primary transition duration-150 active:bg-secondary"
                         >
                             J'ai déjà un compte
                         </button>
                         <button
                             type="button"
                             onClick={dismiss}
-                            className="mt-4 w-full py-2 text-xs text-[#AAAAAA]/40 transition duration-150"
+                            className="mt-4 w-full py-2 text-xs text-quaternary transition duration-150"
                         >
                             Passer pour le moment
                         </button>
@@ -150,17 +150,17 @@ export function WelcomeGate() {
                     /* ── Sizing step (after signup) ── */
                     <>
                         <div className="mb-5 text-center">
-                            <h2 className="font-heading text-lg font-bold uppercase text-[var(--ts-text)]">
+                            <h2 className="font-heading text-lg font-bold uppercase text-primary">
                                 Tes préférences
                             </h2>
-                            <p className="mt-1 text-xs text-[#AAAAAA]/50">
+                            <p className="mt-1 text-xs text-tertiary">
                                 Optionnel — pour te montrer les produits dans ta taille
                             </p>
                         </div>
 
                         {/* Clothing size */}
                         <div className="mb-5">
-                            <label className="mb-2 block text-xs font-semibold text-[#1A1A1A]">Taille vêtements</label>
+                            <label className="mb-2 block text-xs font-semibold text-primary">Taille vêtements</label>
                             <div className="flex flex-wrap gap-2">
                                 {CLOTHING_SIZES.map((size) => (
                                     <button
@@ -170,8 +170,8 @@ export function WelcomeGate() {
                                         className={cx(
                                             "rounded-xl px-4 py-2.5 text-sm font-medium transition duration-100",
                                             clothingSize === size
-                                                ? "bg-[#4268FF] text-white shadow-sm"
-                                                : "border-2 border-[#EBEBEB] text-[#1A1A1A] active:border-[#4268FF]",
+                                                ? "bg-brand-solid text-white shadow-sm"
+                                                : "border-2 border-secondary text-primary active:border-brand",
                                         )}
                                     >
                                         {size}
@@ -182,7 +182,7 @@ export function WelcomeGate() {
 
                         {/* Shoe size */}
                         <div className="mb-6">
-                            <label className="mb-2 block text-xs font-semibold text-[#1A1A1A]">Pointure</label>
+                            <label className="mb-2 block text-xs font-semibold text-primary">Pointure</label>
                             <div className="flex flex-wrap gap-1.5">
                                 {SHOE_SIZES.map((size) => (
                                     <button
@@ -192,8 +192,8 @@ export function WelcomeGate() {
                                         className={cx(
                                             "rounded-lg px-2.5 py-2 text-xs font-medium transition duration-100",
                                             shoeSize === size
-                                                ? "bg-[#4268FF] text-white shadow-sm"
-                                                : "border-2 border-[#EBEBEB] text-[#1A1A1A] active:border-[#4268FF]",
+                                                ? "bg-brand-solid text-white shadow-sm"
+                                                : "border-2 border-secondary text-primary active:border-brand",
                                         )}
                                     >
                                         {size}
@@ -205,7 +205,7 @@ export function WelcomeGate() {
                         <button
                             type="button"
                             onClick={handleSizingSave}
-                            className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
+                            className="w-full rounded-2xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90"
                         >
                             {clothingSize || shoeSize ? "Enregistrer" : "Passer cette étape"}
                         </button>
@@ -213,33 +213,33 @@ export function WelcomeGate() {
                 ) : (
                     /* ── Login / Signup form ── */
                     <>
-                        <h2 className="mb-5 text-center font-heading text-lg font-bold uppercase text-[var(--ts-text)]">
+                        <h2 className="mb-5 text-center font-heading text-lg font-bold uppercase text-primary">
                             {mode === "signup" ? "Créer un compte" : "Se connecter"}
                         </h2>
 
                         {error && (
-                            <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-[#D94F4F]">{error}</p>
+                            <p className="mb-4 rounded-xl bg-error-secondary px-4 py-2.5 text-xs font-medium text-error-primary">{error}</p>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-3">
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1A1A]">Email</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-primary">Email</label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[#EBEBEB] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-secondary bg-primary px-4 py-3 text-sm text-primary outline-none transition duration-150 focus:border-brand focus:ring-4 focus:ring-brand-secondary/10"
                                     placeholder="ton@email.fr"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1A1A]">Mot de passe</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-primary">Mot de passe</label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-xl border-2 border-[#EBEBEB] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none transition duration-150 focus:border-[#4268FF] focus:shadow-[0_0_0_4px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border-2 border-secondary bg-primary px-4 py-3 text-sm text-primary outline-none transition duration-150 focus:border-brand focus:ring-4 focus:ring-brand-secondary/10"
                                     placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
                                     required
                                     minLength={mode === "signup" ? 8 : undefined}
@@ -248,7 +248,7 @@ export function WelcomeGate() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full rounded-2xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90 disabled:opacity-50"
+                                className="w-full rounded-2xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition duration-150 active:opacity-90 disabled:opacity-50"
                             >
                                 {loading ? "Chargement..." : mode === "signup" ? "S'inscrire" : "Se connecter"}
                             </button>
@@ -258,14 +258,14 @@ export function WelcomeGate() {
                             <button
                                 type="button"
                                 onClick={() => { setMode("welcome"); setError(""); }}
-                                className="text-xs font-medium text-[#AAAAAA]/50"
+                                className="text-xs font-medium text-tertiary"
                             >
                                 ← Retour
                             </button>
                             <button
                                 type="button"
                                 onClick={dismiss}
-                                className="text-xs text-[#AAAAAA]/40"
+                                className="text-xs text-quaternary"
                             >
                                 Passer
                             </button>
@@ -284,8 +284,8 @@ function ValueProp({ icon, iconBg, title, description }: { icon: React.ReactNode
                 {icon}
             </div>
             <div>
-                <p className="text-sm font-semibold text-[#1A1A1A]">{title}</p>
-                <p className="text-xs text-[#AAAAAA]/50">{description}</p>
+                <p className="text-sm font-semibold text-primary">{title}</p>
+                <p className="text-xs text-tertiary">{description}</p>
             </div>
         </div>
     );

@@ -55,6 +55,10 @@ const nextConfig = {
                 protocol: "http",
                 hostname: "site.unbeatablesale.com",
             },
+            {
+                protocol: "https",
+                hostname: "pub-13766eebd79a46e19db13146812e9218.r2.dev",
+            },
         ],
     },
     experimental: {

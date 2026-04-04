@@ -10,7 +10,7 @@ export function MetricCard({ label, value, variant = "default", staggerIndex = 0
         variant === "danger"
             ? "text-error-primary"
             : variant === "warn"
-              ? "text-brand-secondary"
+              ? "text-warning-primary"
               : "text-primary";
 
     return (

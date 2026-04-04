@@ -74,6 +74,7 @@ export default function TipsHistoryPage() {
             <div className="mb-5 flex flex-wrap gap-2">
                 {CATEGORIES.map((cat) => (
                     <button key={cat.value}
+                        type="button"
                         onClick={() => { setCategory(cat.value); setPage(1); }}
                         className={`rounded-full border px-3.5 py-1.5 min-h-[44px] text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
                             category === cat.value
@@ -105,7 +106,7 @@ export default function TipsHistoryPage() {
                                 <span className={`inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                                     tip.type === "insight"
                                         ? "bg-brand-solid/10 text-brand-secondary"
-                                        : "bg-emerald-50 text-emerald-600"
+                                        : "bg-success-secondary text-success-primary"
                                 }`}>
                                     {tip.emoji} {tip.type === "insight" ? "Insight" : "Action"}
                                 </span>
@@ -123,6 +124,7 @@ export default function TipsHistoryPage() {
             {totalPages > 1 && (
                 <div className="mt-6 flex items-center justify-center gap-3">
                     <button
+                        type="button"
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={page <= 1}
                         className="rounded-lg border border-secondary px-3 py-1.5 min-h-[44px] text-xs text-primary disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">
@@ -130,6 +132,7 @@ export default function TipsHistoryPage() {
                     </button>
                     <span className="text-xs text-tertiary">{page} / {totalPages}</span>
                     <button
+                        type="button"
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={page >= totalPages}
                         className="rounded-lg border border-secondary px-3 py-1.5 min-h-[44px] text-xs text-primary disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none">

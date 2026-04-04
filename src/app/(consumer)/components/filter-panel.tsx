@@ -87,8 +87,8 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                 className={cx(
                     "flex size-7 shrink-0 items-center justify-center rounded-full transition duration-100",
                     isActive
-                        ? "bg-[var(--ts-accent)] text-white"
-                        : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                        ? "bg-brand-solid text-white"
+                        : "bg-secondary text-primary/60",
                 )}
             >
                 <FilterLines className="size-3.5" aria-hidden="true" strokeWidth={2} />
@@ -96,9 +96,9 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
 
             <Drawer.Root open={open} onOpenChange={setOpen}>
                 <Drawer.Portal>
-                    <Drawer.Overlay className="fixed inset-0 z-[60] bg-black/40" />
+                    <Drawer.Overlay className="fixed inset-0 z-[60] bg-overlay" />
                     <Drawer.Content
-                        className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-2xl bg-[var(--ts-bg)] focus:outline-none"
+                        className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-2xl bg-secondary focus:outline-none"
                         style={{
                             maxHeight: "85vh",
                             paddingBottom: "env(safe-area-inset-bottom)",
@@ -108,15 +108,15 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                         <Drawer.Title className="sr-only">Filtres</Drawer.Title>
 
                         {/* Drag handle */}
-                        <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-[var(--ts-text)]/10" />
+                        <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-quaternary" />
 
                         {/* Header */}
                         <div className="flex shrink-0 items-center justify-between px-5 pb-3 pt-4">
-                            <h2 className="text-[15px] font-semibold text-[var(--ts-text)]">Filtres</h2>
+                            <h2 className="text-[15px] font-semibold text-primary">Filtres</h2>
                             <button
                                 type="button"
                                 onClick={handleReset}
-                                className="text-xs text-[var(--ts-text)]/50 transition duration-100 hover:text-[var(--ts-text)]"
+                                className="text-xs text-primary/50 transition duration-100 hover:text-primary"
                             >
                                 Réinitialiser
                             </button>
@@ -127,7 +127,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                             {/* Marque */}
                             {brands.length > 0 && (
                                 <section className="mb-5">
-                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ts-text)]/40">
+                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-primary/40">
                                         Marque
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
@@ -141,8 +141,8 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                                                 className={cx(
                                                     "rounded-full px-3 py-1.5 text-xs font-medium transition duration-100",
                                                     draft.brand === brand
-                                                        ? "bg-[var(--ts-accent)] text-white"
-                                                        : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                                                        ? "bg-brand-solid text-white"
+                                                        : "bg-secondary text-primary/60",
                                                 )}
                                             >
                                                 {brand}
@@ -155,7 +155,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                             {/* Couleur */}
                             {colors.length > 0 && (
                                 <section className="mb-5">
-                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ts-text)]/40">
+                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-primary/40">
                                         Couleur
                                     </h3>
                                     <div className="flex flex-wrap gap-2.5">
@@ -178,7 +178,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                                                     className={cx(
                                                         "size-7 rounded-full border-2 transition duration-100",
                                                         isSelected
-                                                            ? "border-[var(--ts-accent)] ring-2 ring-[var(--ts-accent)]/30"
+                                                            ? "border-brand ring-2 ring-brand/30"
                                                             : "border-transparent",
                                                     )}
                                                     style={{ backgroundColor: hex }}
@@ -192,7 +192,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                             {/* Genre */}
                             {genders.length > 0 && (
                                 <section className="mb-5">
-                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ts-text)]/40">
+                                    <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-primary/40">
                                         Genre
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
@@ -209,8 +209,8 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                                                 className={cx(
                                                     "rounded-full px-3 py-1.5 text-xs font-medium transition duration-100",
                                                     draft.gender === gender
-                                                        ? "bg-[var(--ts-accent)] text-white"
-                                                        : "bg-[var(--ts-bg-input)] text-[var(--ts-text)]/60",
+                                                        ? "bg-brand-solid text-white"
+                                                        : "bg-secondary text-primary/60",
                                                 )}
                                             >
                                                 {gender}
@@ -222,7 +222,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
 
                             {/* Prix */}
                             <section className="mb-5">
-                                <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ts-text)]/40">
+                                <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-primary/40">
                                     Prix (€)
                                 </h3>
                                 <div className="flex items-center gap-3">
@@ -237,9 +237,9 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                                                 priceMin: e.target.value ? Number(e.target.value) : null,
                                             }))
                                         }
-                                        className="w-full rounded-lg border border-[var(--ts-border)] bg-[var(--ts-bg)] px-3 py-2 text-xs text-[var(--ts-text)] placeholder:text-[var(--ts-text)]/30 focus:outline-none focus:ring-1 focus:ring-[var(--ts-accent)]"
+                                        className="w-full rounded-lg border border-secondary bg-secondary px-3 py-2 text-xs text-primary placeholder:text-primary/30 focus:outline-none focus:ring-1 focus:ring-brand"
                                     />
-                                    <span className="shrink-0 text-xs text-[var(--ts-text)]/40">—</span>
+                                    <span className="shrink-0 text-xs text-primary/40">—</span>
                                     <input
                                         type="number"
                                         min={0}
@@ -251,18 +251,18 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                                                 priceMax: e.target.value ? Number(e.target.value) : null,
                                             }))
                                         }
-                                        className="w-full rounded-lg border border-[var(--ts-border)] bg-[var(--ts-bg)] px-3 py-2 text-xs text-[var(--ts-text)] placeholder:text-[var(--ts-text)]/30 focus:outline-none focus:ring-1 focus:ring-[var(--ts-accent)]"
+                                        className="w-full rounded-lg border border-secondary bg-secondary px-3 py-2 text-xs text-primary placeholder:text-primary/30 focus:outline-none focus:ring-1 focus:ring-brand"
                                     />
                                 </div>
                             </section>
                         </div>
 
                         {/* Apply button */}
-                        <div className="shrink-0 border-t border-[var(--ts-border)] px-5 py-3">
+                        <div className="shrink-0 border-t border-secondary px-5 py-3">
                             <button
                                 type="button"
                                 onClick={handleApply}
-                                className="w-full rounded-xl bg-[var(--ts-accent)] py-3 text-[13px] font-semibold text-white transition duration-100 active:opacity-80"
+                                className="w-full rounded-xl bg-brand-solid py-3 text-[13px] font-semibold text-white transition duration-100 active:opacity-80"
                             >
                                 Voir les résultats
                             </button>

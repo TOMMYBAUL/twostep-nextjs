@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { verifyState } from "@/lib/auth/state-token";
 import { createClient } from "@/lib/supabase/server";
 import { getAdapter, POS_PROVIDERS, type POSProvider } from "@/lib/pos/index";
 import { encrypt } from "@/lib/email/encryption";
@@ -25,14 +26,20 @@ export async function GET(
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=missing_params`);
     }
 
-    // State format: {provider}:{merchantId}
-    const colonIdx = state.indexOf(":");
+    // Verify HMAC signature on state to prevent CSRF
+    const verifiedPayload = verifyState(state);
+    if (!verifiedPayload) {
+        return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_state`);
+    }
+
+    // State payload format: {provider}:{merchantId}
+    const colonIdx = verifiedPayload.indexOf(":");
     if (colonIdx === -1) {
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_state`);
     }
 
-    const stateProvider = state.slice(0, colonIdx);
-    const merchantId = state.slice(colonIdx + 1);
+    const stateProvider = verifiedPayload.slice(0, colonIdx);
+    const merchantId = verifiedPayload.slice(colonIdx + 1);
 
     // Verify state provider matches URL provider
     if (stateProvider !== provider) {

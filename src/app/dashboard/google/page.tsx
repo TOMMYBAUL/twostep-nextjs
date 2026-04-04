@@ -54,17 +54,27 @@ export default function GooglePage() {
     }, [merchant?.id]);
 
     async function handleConnect() {
-        const res = await fetch("/api/google/auth");
-        const { auth_url } = await res.json();
-        if (auth_url) window.location.href = auth_url;
+        try {
+            const res = await fetch("/api/google/auth");
+            const { auth_url } = await res.json();
+            if (auth_url) window.location.href = auth_url;
+        } catch {
+            setConnection(null);
+        }
     }
 
     async function handleDisconnect() {
+        if (!window.confirm("Voulez-vous vraiment déconnecter votre compte Google ? Vos produits ne seront plus visibles sur Google Shopping.")) return;
         setDisconnecting(true);
-        await fetch("/api/google/disconnect", { method: "POST" });
-        setConnection(null);
-        setStats(null);
-        setDisconnecting(false);
+        try {
+            await fetch("/api/google/disconnect", { method: "POST" });
+            setConnection(null);
+            setStats(null);
+        } catch {
+            // keep current state on failure
+        } finally {
+            setDisconnecting(false);
+        }
     }
 
     function formatTimeAgo(dateStr: string): string {
@@ -157,6 +167,7 @@ export default function GooglePage() {
                                 : "Vos produits apparaîtront gratuitement sur Google Shopping et Google Maps quand un client cherche un produit près de chez vous."}
                         </p>
                         <button
+                            type="button"
                             onClick={handleConnect}
                             className="mt-6 rounded-xl bg-[#4285F4] px-6 py-3 min-h-[44px] text-sm font-medium text-white transition hover:bg-[#3367D6] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
@@ -166,8 +177,8 @@ export default function GooglePage() {
                 ) : (
                     <div className="rounded-2xl border border-secondary bg-primary p-6">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                <svg aria-hidden="true" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-secondary">
+                                <svg aria-hidden="true" className="h-5 w-5 text-success-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
@@ -205,6 +216,7 @@ export default function GooglePage() {
                         </div>
 
                         <button
+                            type="button"
                             onClick={handleDisconnect}
                             disabled={disconnecting}
                             className="mt-4 text-xs text-error-primary transition hover:text-error-primary disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"

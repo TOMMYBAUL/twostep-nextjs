@@ -53,10 +53,23 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
     const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !productId) return;
 
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            setErrors((prev) => ({ ...prev, photo: "Format accepté : JPEG, PNG ou WebP" }));
+            return;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            setErrors((prev) => ({ ...prev, photo: "La photo ne doit pas dépasser 5 Mo" }));
+            return;
+        }
+
+        setErrors((prev) => { const { photo, ...rest } = prev; return rest; });
         setPhotoPreview(URL.createObjectURL(file));
         setUploading(true);
         try {

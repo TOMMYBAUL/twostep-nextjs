@@ -46,6 +46,15 @@ export async function GET(
     } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    // Ownership check: verify this merchant belongs to the authenticated user
+    const { data: ownerCheck } = await supabase
+        .from("merchants")
+        .select("id")
+        .eq("id", id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+    if (!ownerCheck) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const today = new Date().toISOString().slice(0, 10);
 
     // Check DB cache

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { verifyState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 
 /**
@@ -16,13 +17,19 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=missing_params`);
     }
 
-    // State format: {provider}:{merchantId}
-    const colonIdx = state.indexOf(":");
+    // Verify HMAC signature on state to prevent CSRF
+    const verifiedPayload = verifyState(state);
+    if (!verifiedPayload) {
+        return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_state`);
+    }
+
+    // State payload format: {provider}:{merchantId}
+    const colonIdx = verifiedPayload.indexOf(":");
     if (colonIdx === -1) {
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_state`);
     }
 
-    const provider = state.slice(0, colonIdx);
+    const provider = verifiedPayload.slice(0, colonIdx);
 
     // Forward all query params to the new callback route
     const params = new URLSearchParams(request.nextUrl.searchParams);

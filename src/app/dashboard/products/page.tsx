@@ -78,18 +78,20 @@ export default function ProductsPage() {
             {/* Tabs */}
             <div className="animate-fade-up stagger-1 mb-6 flex gap-1 rounded-xl bg-secondary p-1">
                 <button
+                    type="button"
                     onClick={() => setActiveTab("catalogue")}
                     className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "catalogue" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
                 >
                     Catalogue
                 </button>
                 <button
+                    type="button"
                     onClick={() => setActiveTab("incomplete")}
                     className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "incomplete" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
                 >
                     À compléter
                     {incompleteCount > 0 && (
-                        <span className="ml-1.5 inline-flex size-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                        <span className="ml-1.5 inline-flex size-5 items-center justify-center rounded-full bg-warning-solid text-[10px] font-bold text-white">
                             {incompleteCount}
                         </span>
                     )}
@@ -220,7 +222,7 @@ function IncompleteProductsTab({ products, merchantId, onComplete }: {
 
     return (
         <div className="space-y-3">
-            <div className="rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-700">
+            <div className="rounded-xl bg-warning-secondary px-4 py-3 text-xs text-warning-primary">
                 <p className="font-semibold">Ces produits ne sont pas visibles par les clients</p>
                 <p className="mt-0.5">Ils n'ont pas de code EAN. Complétez-les manuellement pour les publier.</p>
             </div>
@@ -248,6 +250,7 @@ function IncompleteProductsTab({ products, merchantId, onComplete }: {
                             <p className="text-xs text-tertiary">{product.category ?? "Sans catégorie"} · Pas de EAN</p>
                         </div>
                         <button
+                            type="button"
                             onClick={() => setEditingId(product.id)}
                             className="btn-ts text-xs"
                         >
@@ -278,6 +281,10 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
     const [oneSizeQty, setOneSizeQty] = useState("1");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [photoError, setPhotoError] = useState<string | null>(null);
+
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
     const addSize = () => {
         if (!newSize.trim()) return;
@@ -335,7 +342,7 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
         <div className="rounded-xl bg-primary px-5 py-5 space-y-4">
             <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-primary">Compléter le produit</p>
-                <button onClick={onCancel} aria-label="Fermer" className="text-tertiary hover:text-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                <button type="button" onClick={onCancel} aria-label="Fermer" className="text-tertiary hover:text-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                     <XClose aria-hidden="true" className="size-4" />
                 </button>
             </div>
@@ -366,12 +373,21 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                     className="hidden"
                     onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) {
-                            setPhotoFile(file);
-                            setPhotoPreview(URL.createObjectURL(file));
+                        if (!file) return;
+                        if (!ALLOWED_TYPES.includes(file.type)) {
+                            setPhotoError("Format accepté : JPEG, PNG ou WebP");
+                            return;
                         }
+                        if (file.size > MAX_FILE_SIZE) {
+                            setPhotoError("La photo ne doit pas dépasser 5 Mo");
+                            return;
+                        }
+                        setPhotoError(null);
+                        setPhotoFile(file);
+                        setPhotoPreview(URL.createObjectURL(file));
                     }}
                 />
+                {photoError && <p className="mt-1 text-xs text-error-primary">{photoError}</p>}
             </div>
 
             {/* Name */}
@@ -452,6 +468,7 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
 
             {/* Submit */}
             <button
+                type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !name.trim() || (!isOneSize && sizes.length === 0)}
                 className="btn-ts w-full"

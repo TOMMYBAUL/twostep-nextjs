@@ -73,14 +73,12 @@ export function AchievementBadgeCard({ def, unlocked, unlockedAt }: BadgeCardPro
     return (
         <div
             className={`flex items-center gap-3.5 rounded-[20px] px-5 py-4 transition ${
-                unlocked ? "bg-primary" : "bg-secondary opacity-60"
+                unlocked ? "bg-primary" : "bg-secondary opacity-60 border-2 border-secondary"
             }`}
             style={unlocked ? {
                 border: `2px solid ${def.color}`,
                 boxShadow: `0 2px 12px ${def.color}25`,
-            } : {
-                border: "2px solid #e5e7eb",
-            }}
+            } : undefined}
         >
             <AchievementBadge def={def} unlocked={unlocked} unlockedAt={unlockedAt} size="lg" />
             <div className="flex-1 min-w-0">

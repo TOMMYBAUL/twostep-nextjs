@@ -24,9 +24,26 @@ export async function updateSession(request: NextRequest) {
 
         const pathname = request.nextUrl.pathname;
 
+        // Public API routes that don't require authentication
+        const PUBLIC_API_PREFIXES = [
+            "/api/webhooks/",        // Webhook endpoints (own signature verification)
+            "/api/cron/",            // Cron jobs (Bearer token auth)
+            "/api/auth/",            // Auth-related (verify-siret, etc.)
+            "/api/page-views",       // Analytics (anonymous allowed)
+            "/api/search",           // Public search
+            "/api/discover",         // Public discovery
+            "/api/nearby",           // Public nearby
+            "/api/autocomplete",     // Public autocomplete
+            "/api/pioneers",         // Public waitlist
+            "/api/products/discover",// Public product discovery
+            "/api/shops/",           // Public shop info
+        ];
+        const isPublicApi = pathname.startsWith("/api/") &&
+            PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+
         if (!user) {
-            // Return 401 JSON for unauthenticated API calls
-            if (pathname.startsWith("/api/")) {
+            // Return 401 JSON for unauthenticated API calls (except public routes)
+            if (pathname.startsWith("/api/") && !isPublicApi) {
                 return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
                     status: 401,
                     headers: { "Content-Type": "application/json" },

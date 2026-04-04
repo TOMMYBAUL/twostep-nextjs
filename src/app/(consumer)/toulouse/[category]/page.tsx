@@ -66,16 +66,16 @@ export default async function CategoryPage({ params }: Props) {
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
-            <div className="min-h-dvh bg-[#FFFFFF] px-4 pb-24" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
-                <h1 className="font-heading text-2xl font-bold uppercase text-[var(--ts-text)]">
+            <div className="min-h-dvh bg-primary px-4 pb-24" style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}>
+                <h1 className="font-heading text-2xl font-bold uppercase text-primary">
                     {cat.title} à Toulouse
                 </h1>
-                <p className="mt-2 text-sm text-[#1A1A1A]/60">
+                <p className="mt-2 text-sm text-secondary">
                     {cat.description}
                 </p>
 
                 {merchants.length === 0 ? (
-                    <p className="mt-8 text-center text-sm text-[#1A1A1A]/40">
+                    <p className="mt-8 text-center text-sm text-tertiary">
                         Aucun commerce trouvé dans cette catégorie pour le moment.
                     </p>
                 ) : (
@@ -86,20 +86,20 @@ export default async function CategoryPage({ params }: Props) {
                                 <Link
                                     key={merchant.id}
                                     href={`/shop/${merchant.slug}`}
-                                    className="flex items-center gap-3 rounded-2xl bg-[#EBEBEB] p-4 transition duration-150 active:bg-[#EBEBEB]/80"
+                                    className="flex items-center gap-3 rounded-2xl bg-secondary p-4 transition duration-150 active:bg-secondary/80"
                                 >
-                                    <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FFFFFF]">
+                                    <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary">
                                         {logo ? (
-                                            <Image src={logo} alt="" fill className="object-cover" />
+                                            <Image src={logo} alt="" fill sizes="56px" className="object-cover" />
                                         ) : (
-                                            <span className="text-lg font-bold text-[#4268FF]">
+                                            <span className="text-lg font-bold text-brand-secondary">
                                                 {merchant.name.charAt(0)}
                                             </span>
                                         )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-[14px] font-semibold text-[#1A1A1A]">{merchant.name}</p>
-                                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-[#1A1A1A]/50">
+                                        <p className="truncate text-[14px] font-semibold text-primary">{merchant.name}</p>
+                                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-tertiary">
                                             <MarkerPin01 className="size-3 shrink-0" aria-hidden="true" />
                                             {merchant.address}
                                         </p>
@@ -111,8 +111,8 @@ export default async function CategoryPage({ params }: Props) {
                 )}
 
                 {/* Internal links for SEO */}
-                <nav className="mt-12 border-t border-[#1A1A1A]/10 pt-6">
-                    <h2 className="text-sm font-semibold text-[#1A1A1A]/60">Autres catégories à Toulouse</h2>
+                <nav className="mt-12 border-t border-tertiary pt-6">
+                    <h2 className="text-sm font-semibold text-secondary">Autres catégories à Toulouse</h2>
                     <div className="mt-3 flex flex-wrap gap-2">
                         {Object.entries(CATEGORY_SEO)
                             .filter(([key]) => key !== category)
@@ -120,7 +120,7 @@ export default async function CategoryPage({ params }: Props) {
                                 <Link
                                     key={key}
                                     href={`/toulouse/${key}`}
-                                    className="rounded-full bg-[#EBEBEB] px-3 py-1.5 text-xs text-[#1A1A1A]/70 transition hover:bg-[#EBEBEB]/80"
+                                    className="rounded-full bg-secondary px-3 py-1.5 text-xs text-secondary transition hover:bg-secondary/80"
                                 >
                                     {val.title}
                                 </Link>

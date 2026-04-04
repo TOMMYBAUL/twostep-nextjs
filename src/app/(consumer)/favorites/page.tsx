@@ -153,7 +153,7 @@ function EmptyStateWithSuggestions() {
                                                 {p.product_name?.charAt(0)}
                                             </div>
                                         )}
-                                        <div className="absolute right-[7px] top-[7px]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                                        <div className="absolute right-[7px] top-[7px]" role="presentation" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} onKeyDown={(e) => { e.stopPropagation(); }}>
                                             <HeartButton
                                                 isFavorite={isFav}
                                                 onToggle={() => {

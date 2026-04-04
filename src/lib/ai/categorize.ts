@@ -157,6 +157,7 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
                 .from("products")
                 .update({
                     category_id: cat.id,
+                    category: cat.slug.toLowerCase(),
                     subcategory_id: subcat?.id ?? null,
                     ai_categorized_at: new Date().toISOString(),
                     ai_confidence: result.confidence,
