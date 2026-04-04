@@ -39,9 +39,10 @@ export function FeedHeader({ activeTab, onTabChange }: FeedHeaderProps) {
 
     return (
         <div
-            className="flex border-b border-secondary"
+            className="sticky top-0 z-30 flex border-b border-secondary bg-primary/95 backdrop-blur-md"
             role="tablist"
             aria-label="Feed"
+            style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
             {TABS.map((label, index) => {
                 const value = TAB_MAP[label];
