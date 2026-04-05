@@ -73,7 +73,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="fr" suppressHydrationWarning>
+        <html lang="fr" className="light-mode" style={{ colorScheme: "light" }} suppressHydrationWarning>
             <body
                 className={cx(archivoBlack.variable, barlow.variable, inter.variable, "antialiased")}
                 style={{
