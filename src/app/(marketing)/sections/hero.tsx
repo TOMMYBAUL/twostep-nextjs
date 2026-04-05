@@ -18,7 +18,7 @@ export function Hero() {
                 style={{ y: bgY, scale: bgScale }}
             >
                 <Image
-                    src="/images/hero-street-v2.png"
+                    src="/images/hero-street.webp"
                     alt="Rue commerçante à Toulouse"
                     fill
                     priority
