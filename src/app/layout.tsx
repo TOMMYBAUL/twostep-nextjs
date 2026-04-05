@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
     themeColor: "#FFFFFF",
-    colorScheme: "light",
+    colorScheme: "only light",
     viewportFit: "cover",
 };
 
@@ -73,7 +73,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="fr" className="light-mode" style={{ colorScheme: "light" }} suppressHydrationWarning>
+        <html lang="fr" className="light-mode" style={{ colorScheme: "only light" }} suppressHydrationWarning>
             <body
                 className={cx(archivoBlack.variable, barlow.variable, inter.variable, "antialiased")}
                 style={{
