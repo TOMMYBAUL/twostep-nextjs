@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
     const { lat, lng, radius, section, category: rawCategory } = parsed.data;
     const category = rawCategory?.toLowerCase() ?? null;
     const size = request.nextUrl.searchParams.get("size") || null;
+    const brand = request.nextUrl.searchParams.get("brand") || null;
+    const color = request.nextUrl.searchParams.get("color") || null;
+    const gender = request.nextUrl.searchParams.get("gender") || null;
+    const priceMin = request.nextUrl.searchParams.get("priceMin") ? parseFloat(request.nextUrl.searchParams.get("priceMin")!) : null;
+    const priceMax = request.nextUrl.searchParams.get("priceMax") ? parseFloat(request.nextUrl.searchParams.get("priceMax")!) : null;
 
     try {
 
@@ -40,15 +45,19 @@ export async function GET(request: NextRequest) {
 
         // Deduplicate by product_id+merchant_id
         const seen = new Set<string>();
-        const products = (data ?? [])
+        let promoItems = (data ?? [])
             .filter((row: any) => {
                 const key = `${row.product_id}::${row.merchant_id}`;
                 if (seen.has(key)) return false;
                 seen.add(key);
                 return true;
             })
-            .filter((row: any) => !category || categoryMap.get(row.product_id) === category)
-            .map((row: any) => ({
+            .filter((row: any) => !category || categoryMap.get(row.product_id) === category);
+
+        // Apply brand/color/gender/price filters
+        promoItems = await applyTagAndPriceFilters(supabase, promoItems, brand, color, gender, priceMin, priceMax);
+
+        const products = promoItems.map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
                 product_price: row.product_price,
@@ -108,6 +117,9 @@ export async function GET(request: NextRequest) {
         items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
     }
 
+    // Apply brand/color/gender/price filters
+    items = await applyTagAndPriceFilters(supabase, items, brand, color, gender, priceMin, priceMax);
+
     // For "nearby", re-sort by distance instead of feed_score
     if (section === "nearby") {
         items = [...items].sort((a: any, b: any) => a.distance_km - b.distance_km);
@@ -135,6 +147,52 @@ export async function GET(request: NextRequest) {
         captureError(err, { route: "discover" });
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
+}
+
+/** Filter items by product_tags (brand/color/gender) and price range */
+async function applyTagAndPriceFilters(
+    supabase: any,
+    items: any[],
+    brand: string | null,
+    color: string | null,
+    gender: string | null,
+    priceMin: number | null,
+    priceMax: number | null,
+): Promise<any[]> {
+    if (!brand && !color && !gender && priceMin == null && priceMax == null) return items;
+
+    let productIds = items.map((r: any) => r.product_id);
+
+    // Tag filters: intersect matching IDs for each active filter
+    if (brand || color || gender) {
+        const tagFilters: { type: string; value: string }[] = [];
+        if (brand) tagFilters.push({ type: "brand", value: brand });
+        if (color) tagFilters.push({ type: "color", value: color });
+        if (gender) tagFilters.push({ type: "gender", value: gender });
+
+        for (const tf of tagFilters) {
+            if (productIds.length === 0) break;
+            const { data: tagData } = await supabase
+                .from("product_tags")
+                .select("product_id")
+                .eq("tag_type", tf.type)
+                .eq("tag_value", tf.value)
+                .in("product_id", productIds);
+            const matchIds = new Set((tagData ?? []).map((t: any) => t.product_id));
+            items = items.filter((r: any) => matchIds.has(r.product_id));
+            productIds = items.map((r: any) => r.product_id);
+        }
+    }
+
+    // Price filters
+    if (priceMin != null) {
+        items = items.filter((r: any) => r.product_price >= priceMin);
+    }
+    if (priceMax != null) {
+        items = items.filter((r: any) => r.product_price <= priceMax);
+    }
+
+    return items;
 }
 
 /** Fetch merchant photos for a list of merchant IDs in one query */

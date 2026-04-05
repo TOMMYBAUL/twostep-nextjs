@@ -12,7 +12,6 @@ const POS_PROVIDERS = [
     { id: "square" as const, name: "Square", icon: "□" },
     { id: "shopify" as const, name: "Shopify", icon: "🛍" },
     { id: "lightspeed" as const, name: "Lightspeed", icon: "⚡" },
-    { id: "sumup" as const, name: "SumUp", icon: "💳" },
     { id: "zettle" as const, name: "Zettle", icon: "🅿️" },
 ] as const;
 
@@ -92,7 +91,7 @@ function SettingsPageInner() {
         }
     };
 
-    const handleConnect = async (provider: "square" | "lightspeed" | "shopify" | "sumup" | "zettle") => {
+    const handleConnect = async (provider: "square" | "lightspeed" | "shopify" | "zettle") => {
         try {
             await connect(provider);
         } catch (err) {

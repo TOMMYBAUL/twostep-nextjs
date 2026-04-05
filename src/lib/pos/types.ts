@@ -28,7 +28,7 @@ export type POSAdapterOptions = {
 };
 
 export interface IPOSAdapter {
-    /** Nom du POS (square, lightspeed, shopify, sumup, zettle) */
+    /** Nom du POS (square, lightspeed, shopify, zettle) */
     name: string;
 
     /** Génère l'URL d'autorisation OAuth */

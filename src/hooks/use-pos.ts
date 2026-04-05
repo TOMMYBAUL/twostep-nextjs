@@ -11,7 +11,7 @@ type SyncResult = {
     promos_imported: number;
 };
 
-const SUPPORTED_POS = ["square", "lightspeed", "shopify", "sumup", "zettle"] as const;
+const SUPPORTED_POS = ["square", "lightspeed", "shopify", "zettle"] as const;
 type POSProvider = (typeof SUPPORTED_POS)[number];
 
 export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
@@ -77,8 +77,8 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         }
     }, [onUpdate]);
 
-    // Auto-sync: 5 min for SumUp (no webhook), 15 min for others (webhook-backed)
-    const syncIntervalMs = connectedProvider === "sumup" ? 5 * 60 * 1000 : 15 * 60 * 1000;
+    // Auto-sync: 15 min (webhook-backed POS providers)
+    const syncIntervalMs = 15 * 60 * 1000;
 
     const hasMountedRef = useRef(false);
     useEffect(() => {

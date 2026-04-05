@@ -18,6 +18,7 @@ import { HeartButton } from "../components/heart-button";
 import { CategoryPills } from "../components/category-pills";
 import { FeedHeader, type FeedTab } from "../components/feed-header";
 import { ProductCardSkeleton, PromoCardSkeleton } from "../components/feed-skeleton";
+import { FilterPanel, type Filters } from "../components/filter-panel";
 
 interface DiscoverProduct {
     product_id: string;
@@ -73,6 +74,7 @@ function DiscoverContent() {
     const [shoeSizeFilter, setShoeSizeFilter] = useState<number | null>(null);
     const [showSizeFilters, setShowSizeFilters] = useState(false);
     const hasActiveSizeFilter = sizeFilter !== null || shoeSizeFilter !== null;
+    const [filters, setFilters] = useState<Filters>({ brand: null, color: null, gender: null, priceMin: null, priceMax: null });
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -114,12 +116,23 @@ function DiscoverContent() {
 
     const activeSize = sizeFilter ?? (shoeSizeFilter ? String(shoeSizeFilter) : null);
     const isExplorer = feedTab === "explorer";
+
+    /** Append active filter params to a URLSearchParams instance */
+    const appendFilterParams = (params: URLSearchParams) => {
+        if (filters.brand) params.set("brand", filters.brand);
+        if (filters.color) params.set("color", filters.color);
+        if (filters.gender) params.set("gender", filters.gender);
+        if (filters.priceMin != null) params.set("priceMin", String(filters.priceMin));
+        if (filters.priceMax != null) params.set("priceMax", String(filters.priceMax));
+    };
+
     const { data: promos, isLoading: loadingPromos } = useQuery<DiscoverProduct[]>({
-        queryKey: ["discover", "promos", lat, lng, activeCategory, activeSize],
+        queryKey: ["discover", "promos", lat, lng, activeCategory, activeSize, filters],
         queryFn: async () => {
             const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "promos", radius: "10" });
             if (activeCategory) params.set("category", activeCategory);
             if (activeSize) params.set("size", activeSize);
+            appendFilterParams(params);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) return [];
             const data = await res.json();
@@ -129,11 +142,12 @@ function DiscoverContent() {
         enabled: isExplorer,
     });
     const { data: trending, isLoading: loadingTrending } = useQuery<DiscoverProduct[]>({
-        queryKey: ["discover", "trending", lat, lng, activeCategory, activeSize],
+        queryKey: ["discover", "trending", lat, lng, activeCategory, activeSize, filters],
         queryFn: async () => {
             const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "trending", radius: "10" });
             if (activeCategory) params.set("category", activeCategory);
             if (activeSize) params.set("size", activeSize);
+            appendFilterParams(params);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) return [];
             const data = await res.json();
@@ -143,11 +157,12 @@ function DiscoverContent() {
         enabled: isExplorer,
     });
     const { data: nearby, isLoading: loadingNearby } = useQuery<DiscoverProduct[]>({
-        queryKey: ["discover", "nearby", lat, lng, activeCategory, activeSize],
+        queryKey: ["discover", "nearby", lat, lng, activeCategory, activeSize, filters],
         queryFn: async () => {
             const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "nearby", radius: "10" });
             if (activeCategory) params.set("category", activeCategory);
             if (activeSize) params.set("size", activeSize);
+            appendFilterParams(params);
             const res = await fetch(`/api/discover?${params}`);
             if (!res.ok) return [];
             const data = await res.json();
@@ -222,6 +237,14 @@ function DiscoverContent() {
                             </span>
                         )}
                     </button>
+
+                    <FilterPanel
+                        categorySlug={activeCategory}
+                        lat={lat}
+                        lng={lng}
+                        filters={filters}
+                        onFiltersChange={setFilters}
+                    />
 
                     <CategoryPills activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
@@ -481,7 +504,7 @@ function DiscoverContent() {
                     </section>
                 )}
                 {/* ── 6. Tout près de toi — infinite scroll ── */}
-                <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
+                <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} filters={filters} favoriteIds={favoriteIds} onToggleFav={toggleFav} />
             </motion.div>
             ) : feedTab === "pour-toi" ? (
                 <motion.div
@@ -512,9 +535,9 @@ function DiscoverContent() {
 
 /* ── Infinite scroll product grid ── */
 function InfiniteProductGrid({
-    lat, lng, category, size, favoriteIds, onToggleFav,
+    lat, lng, category, size, filters, favoriteIds, onToggleFav,
 }: {
-    lat: number; lng: number; category: string | null; size: string | null;
+    lat: number; lng: number; category: string | null; size: string | null; filters: Filters;
     favoriteIds: Set<string>; onToggleFav: (id: string) => void;
 }) {
     const [pages, setPages] = useState<any[][]>([]);
@@ -526,16 +549,18 @@ function InfiniteProductGrid({
     const hasMoreRef = useRef(true);
     const categoryRef = useRef(category);
     const sizeRef = useRef(size);
+    const filtersRef = useRef(filters);
 
-    // Reset when category or size changes
+    // Reset when category, size, or filters change
     useEffect(() => {
         categoryRef.current = category;
         sizeRef.current = size;
+        filtersRef.current = filters;
         setPages([]);
         pageRef.current = 1;
         hasMoreRef.current = true;
         setTotal(0);
-    }, [category, size]);
+    }, [category, size, filters]);
 
     // Stable loadMore — no state in dependencies
     const loadMore = useCallback(async () => {
@@ -549,6 +574,12 @@ function InfiniteProductGrid({
             });
             if (categoryRef.current) params.set("category", categoryRef.current);
             if (sizeRef.current) params.set("size", sizeRef.current);
+            const f = filtersRef.current;
+            if (f.brand) params.set("brand", f.brand);
+            if (f.color) params.set("color", f.color);
+            if (f.gender) params.set("gender", f.gender);
+            if (f.priceMin != null) params.set("priceMin", String(f.priceMin));
+            if (f.priceMax != null) params.set("priceMax", String(f.priceMax));
             const res = await fetch(`/api/products/discover?${params}`);
             if (!res.ok) {
                 hasMoreRef.current = false;

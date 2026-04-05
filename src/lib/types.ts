@@ -10,7 +10,7 @@ export type Merchant = {
     description: string | null;
     photo_url: string | null;
     opening_hours: Record<string, { open: string; close: string } | null> | null;
-    pos_type: "square" | "lightspeed" | "shopify" | "sumup" | "zettle" | null;
+    pos_type: "square" | "lightspeed" | "shopify" | "zettle" | null;
     pos_last_sync: string | null;
     siret_verified: boolean;
     naf_code: string | null;

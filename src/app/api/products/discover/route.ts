@@ -9,6 +9,11 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(40, Math.max(1, parseInt(params.get("limit") ?? "20", 10)));
     const category = params.get("category")?.toLowerCase() || null;
     const size = params.get("size") || null;
+    const brand = params.get("brand") || null;
+    const color = params.get("color") || null;
+    const gender = params.get("gender") || null;
+    const priceMin = params.get("priceMin") ? parseFloat(params.get("priceMin")!) : null;
+    const priceMax = params.get("priceMax") ? parseFloat(params.get("priceMax")!) : null;
     const radius = 10;
     const offset = (page - 1) * limit;
 
@@ -26,7 +31,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!rpcError && rpcData) {
-        const products = rpcData.map((row: any) => ({
+        let items = rpcData.map((row: any) => ({
             product_id: row.product_id,
             product_name: row.product_name,
             product_price: row.product_price,
@@ -40,13 +45,37 @@ export async function GET(request: NextRequest) {
             sale_price: row.sale_price,
         }));
 
+        // Apply brand/color/gender tag filters
+        if (brand || color || gender) {
+            const tagFilters: { type: string; value: string }[] = [];
+            if (brand) tagFilters.push({ type: "brand", value: brand });
+            if (color) tagFilters.push({ type: "color", value: color });
+            if (gender) tagFilters.push({ type: "gender", value: gender });
+            for (const tf of tagFilters) {
+                if (items.length === 0) break;
+                const ids = items.map((r: any) => r.product_id);
+                const { data: tagData } = await supabase
+                    .from("product_tags")
+                    .select("product_id")
+                    .eq("tag_type", tf.type)
+                    .eq("tag_value", tf.value)
+                    .in("product_id", ids);
+                const matchIds = new Set((tagData ?? []).map((t: any) => t.product_id));
+                items = items.filter((r: any) => matchIds.has(r.product_id));
+            }
+        }
+        if (priceMin != null) items = items.filter((r: any) => r.product_price >= priceMin);
+        if (priceMax != null) items = items.filter((r: any) => r.product_price <= priceMax);
+
         const { data: countData } = await supabase.rpc("get_products_nearby_count", {
             user_lat: lat, user_lng: lng, radius_km: radius, filter_category: category, filter_size: size,
         });
-        const total = countData ?? products.length;
+        // Adjust total for tag/price filters (count RPC doesn't know about them)
+        const hasTagOrPriceFilter = brand || color || gender || priceMin != null || priceMax != null;
+        const total = hasTagOrPriceFilter ? items.length : (countData ?? items.length);
 
         return NextResponse.json(
-            { products, hasMore: offset + limit < total, total },
+            { products: items, hasMore: hasTagOrPriceFilter ? false : offset + limit < total, total },
             { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
         );
     }
@@ -91,6 +120,28 @@ export async function GET(request: NextRequest) {
         }
         items = items.filter((row: any) => catMap.get(row.product_id) === category);
     }
+
+    // Apply brand/color/gender tag filters
+    if (brand || color || gender) {
+        const tagFilters: { type: string; value: string }[] = [];
+        if (brand) tagFilters.push({ type: "brand", value: brand });
+        if (color) tagFilters.push({ type: "color", value: color });
+        if (gender) tagFilters.push({ type: "gender", value: gender });
+        for (const tf of tagFilters) {
+            if (items.length === 0) break;
+            const ids = items.map((r: any) => r.product_id);
+            const { data: tagData } = await supabase
+                .from("product_tags")
+                .select("product_id")
+                .eq("tag_type", tf.type)
+                .eq("tag_value", tf.value)
+                .in("product_id", ids);
+            const matchIds = new Set((tagData ?? []).map((t: any) => t.product_id));
+            items = items.filter((r: any) => matchIds.has(r.product_id));
+        }
+    }
+    if (priceMin != null) items = items.filter((r: any) => r.product_price >= priceMin);
+    if (priceMax != null) items = items.filter((r: any) => r.product_price <= priceMax);
 
     // Sort by distance
     items.sort((a: any, b: any) => a.distance_km - b.distance_km);
