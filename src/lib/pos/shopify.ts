@@ -75,6 +75,7 @@ export const shopifyAdapter: IPOSAdapter = {
             for (const product of data.products ?? []) {
                 for (const variant of product.variants ?? []) {
                     products.push({
+                        // Use variant.id as pos_item_id — this is what webhooks send
                         pos_item_id: String(variant.id),
                         name: product.variants.length > 1
                             ? `${product.title} — ${variant.title}`
@@ -148,19 +149,50 @@ export const shopifyAdapter: IPOSAdapter = {
     async getStock(accessToken: string, itemIds: string[], options?: POSAdapterOptions) {
         const shop = requireShop(options);
         const updates: POSStockUpdate[] = [];
-        for (const itemId of itemIds) {
+
+        // itemIds are variant_ids (from getCatalog). Shopify inventory API
+        // needs inventory_item_ids. We resolve them via /variants.json batch.
+        // Map: variant_id → inventory_item_id
+        const variantToInventory = new Map<string, string>();
+
+        for (let i = 0; i < itemIds.length; i += 50) {
+            const batch = itemIds.slice(i, i + 50);
             const res = await fetch(
-                shopApi(shop, `/inventory_levels.json?inventory_item_ids=${itemId}`),
+                shopApi(shop, `/variants.json?ids=${batch.join(",")}&fields=id,inventory_item_id`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
             const data = await res.json();
-            const level = data.inventory_levels?.[0];
-            updates.push({
-                pos_item_id: itemId,
-                quantity: level?.available ?? 0,
-                updated_at: level?.updated_at ?? new Date().toISOString(),
-            });
+            for (const v of data.variants ?? []) {
+                variantToInventory.set(String(v.id), String(v.inventory_item_id));
+            }
         }
+
+        // Now fetch inventory levels using resolved inventory_item_ids
+        const inventoryIds = [...variantToInventory.values()];
+        const inventoryToVariant = new Map<string, string>();
+        for (const [vId, iId] of variantToInventory) {
+            inventoryToVariant.set(iId, vId);
+        }
+
+        for (let i = 0; i < inventoryIds.length; i += 50) {
+            const batch = inventoryIds.slice(i, i + 50);
+            const res = await fetch(
+                shopApi(shop, `/inventory_levels.json?inventory_item_ids=${batch.join(",")}`),
+                { headers: { "X-Shopify-Access-Token": accessToken } }
+            );
+            const data = await res.json();
+
+            for (const level of data.inventory_levels ?? []) {
+                const variantId = inventoryToVariant.get(String(level.inventory_item_id));
+                if (!variantId) continue;
+                updates.push({
+                    pos_item_id: variantId,
+                    quantity: level.available ?? 0,
+                    updated_at: level.updated_at ?? new Date().toISOString(),
+                });
+            }
+        }
+
         return updates;
     },
 

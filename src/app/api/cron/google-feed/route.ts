@@ -94,3 +94,5 @@ export async function POST(req: NextRequest) {
         errors,
     });
 }
+
+export { POST as GET };

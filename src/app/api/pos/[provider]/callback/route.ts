@@ -89,7 +89,7 @@ export async function GET(
                 refresh_token: tokens.refresh_token ? encrypt(tokens.refresh_token) : null,
                 expires_at: tokens.expires_at,
                 shop_domain: shopDomain,
-            }, { onConflict: "merchant_id" });
+            }, { onConflict: "merchant_id,provider" });
 
         if (connError) {
             captureError(connError, { route: `pos/${provider}/callback`, merchantId });

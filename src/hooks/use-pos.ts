@@ -11,8 +11,10 @@ type SyncResult = {
     promos_imported: number;
 };
 
-const SUPPORTED_POS = ["square", "lightspeed", "shopify", "zettle"] as const;
+const SUPPORTED_POS = ["square", "lightspeed", "shopify", "zettle", "clictill", "fastmag"] as const;
 type POSProvider = (typeof SUPPORTED_POS)[number];
+
+const DIRECT_AUTH_POS: POSProvider[] = ["clictill", "fastmag"];
 
 export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
     const [connecting, setConnecting] = useState(false);
@@ -23,6 +25,9 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
     const isConnected = !!connectedProvider && SUPPORTED_POS.includes(connectedProvider);
 
     const connect = useCallback(async (provider: POSProvider = "square") => {
+        if (DIRECT_AUTH_POS.includes(provider)) {
+            throw new Error(`${provider} uses direct credentials — use connectDirect()`);
+        }
         setConnecting(true);
         try {
             const res = await fetch(`/api/pos/${provider}/auth`);
@@ -36,6 +41,23 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
             setConnecting(false);
         }
     }, []);
+
+    const connectDirect = useCallback(async (provider: POSProvider, credentials: Record<string, unknown>) => {
+        setConnecting(true);
+        try {
+            const res = await fetch(`/api/pos/${provider}/connect-direct`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(credentials),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Connection failed");
+            onUpdate();
+            return data;
+        } finally {
+            setConnecting(false);
+        }
+    }, [onUpdate]);
 
     const disconnect = useCallback(async () => {
         setConnecting(true);
@@ -97,5 +119,5 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         return () => clearInterval(interval);
     }, [isConnected, merchant?.pos_last_sync, silentSync, syncIntervalMs]);
 
-    return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync };
+    return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, connectDirect, disconnect, sync };
 }

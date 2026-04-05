@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 
-type EanResult = {
+export type EanResult = {
     name: string;
     brand: string | null;
     photo_url: string | null;
@@ -84,6 +84,51 @@ async function fetchFromOpenEan(ean: string): Promise<EanResult | null> {
     const data = await res.json();
     if (!data?.name) return null;
     return { ...parseOpenEanResponse(data), source: "open_ean" };
+}
+
+/**
+ * Fetch EAN data from cache or external APIs WITHOUT applying to any product.
+ * Returns enrichment fields or null if EAN is invalid / not found.
+ * Caches the result for future lookups.
+ */
+export async function fetchEanData(ean: string): Promise<EanResult | null> {
+    if (!/^\d{8}(\d{4,5})?$/.test(ean)) return null;
+
+    const supabase = createAdminClient();
+
+    // Check cache first
+    const { data: cached } = await supabase
+        .from("ean_lookups")
+        .select("*")
+        .eq("ean", ean)
+        .single();
+
+    if (cached) {
+        return {
+            name: cached.name ?? "Unknown",
+            brand: cached.brand ?? null,
+            photo_url: cached.photo_url ?? null,
+            category: cached.category ?? null,
+            source: cached.source ?? "cache",
+        };
+    }
+
+    // Try external APIs
+    const result = await fetchFromUpcDatabase(ean) ?? await fetchFromOpenEan(ean);
+    if (!result) return null;
+
+    // Cache the result
+    await supabase.from("ean_lookups").upsert({
+        ean,
+        name: result.name,
+        brand: result.brand,
+        photo_url: result.photo_url,
+        category: result.category,
+        source: result.source,
+        fetched_at: new Date().toISOString(),
+    });
+
+    return result;
 }
 
 /**

@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
             await supabase.from("stock").upsert({
                 product_id: product.id,
                 quantity: newQty,
-            });
+            }, { onConflict: "product_id" });
 
             await recalculateGroupSizesAdmin(product.id);
 

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { lookupEan } from "@/lib/ean/lookup";
+import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
+import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
 
@@ -239,16 +240,50 @@ export async function POST(
 
             productsUpdated++;
             stockUpdated++;
+
+            // Fire-and-forget: enrich existing product if missing photo
+            if (item.ean) {
+                const { data: existingProd } = await supabase
+                    .from("products")
+                    .select("photo_url")
+                    .eq("id", match.productId)
+                    .single();
+
+                if (existingProd && !existingProd.photo_url) {
+                    lookupEan(item.ean, match.productId).catch(console.error);
+                }
+            }
         } else {
+            // ── NEW PRODUCT: enrich BEFORE inserting ──────────────────
+            let enrichedName = item.name;
+            let enrichedBrand: string | null = null;
+            let enrichedCategory: string | null = null;
+
+            if (item.ean) {
+                try {
+                    const eanData = await fetchEanData(item.ean);
+                    if (eanData) {
+                        if (eanData.name && eanData.name !== "Unknown") enrichedName = eanData.name;
+                        enrichedBrand = eanData.brand;
+                        enrichedCategory = eanData.category;
+                    }
+                } catch (err) {
+                    console.error("[validate] EAN pre-enrichment failed:", err);
+                }
+            }
+
             const { data: newProduct } = await supabase
                 .from("products")
                 .insert({
                     merchant_id: merchant.id,
                     name: item.name,
+                    canonical_name: enrichedName !== item.name ? enrichedName : null,
                     ean: item.ean,
                     sku: item.sku,
                     price: sellingPrice,
                     purchase_price: item.unit_price_ht,
+                    ...(enrichedBrand && { brand: enrichedBrand }),
+                    ...(enrichedCategory && { category: enrichedCategory }),
                 })
                 .select()
                 .single();
@@ -276,7 +311,8 @@ export async function POST(
                 productsCreated++;
                 stockUpdated++;
 
-                // Fire-and-forget: enrich product with EAN data
+                // Fire-and-forget: apply photo enrichment via lookupEan
+                // (will find cached EAN data and handle image job creation)
                 if (item.ean) {
                     lookupEan(item.ean, newProduct.id).catch(console.error);
                 }
@@ -288,6 +324,11 @@ export async function POST(
         .from("invoices")
         .update({ status: "imported", validated_at: new Date().toISOString() })
         .eq("id", id);
+
+    // Fire-and-forget: AI categorization for any new/uncategorized products
+    if (productsCreated > 0) {
+        categorizeMerchantProducts(merchant.id).catch(console.error);
+    }
 
     return NextResponse.json({
         products_created: productsCreated,

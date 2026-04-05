@@ -15,6 +15,8 @@ const breadcrumbLabels: Record<string, string> = {
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
     "/dashboard/tips-history": "Historique tips",
+    "/dashboard/invoices": "Factures",
+    "/dashboard/google": "Google",
 };
 
 export function TopHeaderBar() {
@@ -136,7 +138,7 @@ export function TopHeaderBar() {
                             )}
 
                             <a
-                                href="mailto:support@twostep.fr"
+                                href="mailto:contact@twostep.fr"
                                 onClick={() => setMenuOpen(false)}
                                 className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-primary no-underline transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                             >

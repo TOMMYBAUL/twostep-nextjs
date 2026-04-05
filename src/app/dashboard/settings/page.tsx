@@ -8,12 +8,19 @@ import { useMerchant } from "@/hooks/use-merchant";
 import { usePOS } from "@/hooks/use-pos";
 import { createClient } from "@/lib/supabase/client";
 
-const POS_PROVIDERS = [
+const OAUTH_POS = [
     { id: "square" as const, name: "Square", icon: "□" },
     { id: "shopify" as const, name: "Shopify", icon: "🛍" },
     { id: "lightspeed" as const, name: "Lightspeed", icon: "⚡" },
     { id: "zettle" as const, name: "Zettle", icon: "🅿️" },
 ] as const;
+
+const DIRECT_POS = [
+    { id: "clictill" as const, name: "Clictill", icon: "🇫🇷" },
+    { id: "fastmag" as const, name: "Fastmag", icon: "🇫🇷" },
+] as const;
+
+const POS_PROVIDERS = [...OAUTH_POS, ...DIRECT_POS];
 
 export default function SettingsPage() {
     return (
@@ -38,8 +45,10 @@ function SettingsPageInner() {
             toast(error === "oauth_failed" ? "Échec de la connexion. Réessayez." : `Erreur : ${error}`, "error");
         }
     }, [searchParams, toast]);
-    const { isConnected, connectedProvider, connecting, syncing, syncResult, connect, disconnect, sync } = usePOS(merchant, refetch);
+    const { isConnected, connectedProvider, connecting, syncing, syncResult, connect, connectDirect, disconnect, sync } = usePOS(merchant, refetch);
     const [email, setEmail] = useState<string | null>(null);
+    const [directFormOpen, setDirectFormOpen] = useState<string | null>(null);
+    const [directFields, setDirectFields] = useState<Record<string, string>>({});
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -91,9 +100,20 @@ function SettingsPageInner() {
         }
     };
 
-    const handleConnect = async (provider: "square" | "lightspeed" | "shopify" | "zettle") => {
+    const handleConnect = async (provider: string) => {
         try {
-            await connect(provider);
+            await connect(provider as "square" | "lightspeed" | "shopify" | "zettle");
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur de connexion", "error");
+        }
+    };
+
+    const handleDirectConnect = async (provider: string) => {
+        try {
+            await connectDirect(provider as "clictill" | "fastmag", directFields);
+            toast("Caisse connectée avec succès !", "success");
+            setDirectFormOpen(null);
+            setDirectFields({});
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur de connexion", "error");
         }
@@ -217,6 +237,8 @@ function SettingsPageInner() {
                     {POS_PROVIDERS.map(({ id, name, icon }) => {
                         const isThisConnected = connectedProvider === id;
                         const isOtherConnected = isConnected && !isThisConnected;
+                        const isDirect = DIRECT_POS.some((p) => p.id === id);
+                        const isFormOpen = directFormOpen === id;
 
                         return (
                             <div key={id} className="rounded-xl bg-primary px-5 py-5 space-y-4">
@@ -264,6 +286,29 @@ function SettingsPageInner() {
                                             Déconnecter
                                         </button>
                                     </div>
+                                ) : isDirect ? (
+                                    <>
+                                        {!isFormOpen ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => { setDirectFormOpen(id); setDirectFields({}); }}
+                                                className="btn-ts w-full"
+                                                disabled={connecting || isOtherConnected}
+                                            >
+                                                Configurer {name}
+                                            </button>
+                                        ) : (
+                                            <DirectCredentialsForm
+                                                provider={id}
+                                                providerName={name}
+                                                fields={directFields}
+                                                setFields={setDirectFields}
+                                                onSubmit={() => handleDirectConnect(id)}
+                                                onCancel={() => { setDirectFormOpen(null); setDirectFields({}); }}
+                                                connecting={connecting}
+                                            />
+                                        )}
+                                    </>
                                 ) : (
                                     <button
                                         type="button"
@@ -378,5 +423,87 @@ function SettingsPageInner() {
                 </div>
             </section>
         </>
+    );
+}
+
+// ── Direct Credentials Form (Clictill / Fastmag) ──────────────
+
+const CLICTILL_FIELDS = [
+    { key: "baseUrl", label: "URL Clictill", placeholder: "https://votre-enseigne.clic-till.com", required: true },
+    { key: "tokenArticle", label: "Token Article", placeholder: "Token depuis Outils > Paramètres webservices", required: true },
+    { key: "tokenStock", label: "Token Stock", placeholder: "Token Stock", required: true },
+    { key: "shopCode", label: "Code magasin (optionnel)", placeholder: "Ex: LYON, PARIS…", required: false },
+];
+
+const FASTMAG_FIELDS = [
+    { key: "baseUrl", label: "URL Fastmag", placeholder: "https://votre-enseigne.fastmag.fr", required: true },
+    { key: "enseigne", label: "Enseigne", placeholder: "Nom de l'enseigne", required: true },
+    { key: "magasin", label: "Magasin", placeholder: "Code magasin", required: true },
+    { key: "compte", label: "Compte", placeholder: "Identifiant API", required: true },
+    { key: "motpasse", label: "Mot de passe", placeholder: "Mot de passe API", required: true },
+];
+
+function DirectCredentialsForm({
+    provider,
+    providerName,
+    fields,
+    setFields,
+    onSubmit,
+    onCancel,
+    connecting,
+}: {
+    provider: string;
+    providerName: string;
+    fields: Record<string, string>;
+    setFields: (fields: Record<string, string>) => void;
+    onSubmit: () => void;
+    onCancel: () => void;
+    connecting: boolean;
+}) {
+    const fieldDefs = provider === "clictill" ? CLICTILL_FIELDS : FASTMAG_FIELDS;
+
+    const allRequiredFilled = fieldDefs
+        .filter((f) => f.required)
+        .every((f) => fields[f.key]?.trim());
+
+    return (
+        <div className="space-y-3">
+            <p className="text-xs text-tertiary">
+                {provider === "clictill"
+                    ? "Retrouvez vos tokens dans Clictill : Outils > Paramètres webservices"
+                    : "Retrouvez vos identifiants dans Fastmag Connect ou contactez votre revendeur"}
+            </p>
+            {fieldDefs.map((f) => (
+                <label key={f.key} className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-tertiary">
+                        {f.label}{f.required && " *"}
+                    </span>
+                    <input
+                        type={f.key === "motpasse" ? "password" : "text"}
+                        value={fields[f.key] ?? ""}
+                        onChange={(e) => setFields({ ...fields, [f.key]: e.target.value })}
+                        placeholder={f.placeholder}
+                        className="search-ts w-full"
+                    />
+                </label>
+            ))}
+            <div className="flex gap-2">
+                <button
+                    type="button"
+                    onClick={onSubmit}
+                    className="btn-ts flex-1"
+                    disabled={connecting || !allRequiredFilled}
+                >
+                    {connecting ? "Connexion..." : `Connecter ${providerName}`}
+                </button>
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    className="rounded-lg border border-secondary px-4 py-2.5 text-xs font-medium text-secondary hover:bg-secondary transition"
+                >
+                    Annuler
+                </button>
+            </div>
+        </div>
     );
 }

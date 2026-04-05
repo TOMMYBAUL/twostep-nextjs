@@ -29,55 +29,58 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--ts-bg-warm)" }}>
+        <div className="flex min-h-dvh items-center justify-center bg-[#F8F9FC] px-4">
             <div className="w-full max-w-sm">
                 <div className="mb-8 text-center">
                     <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
-                    <h1 className="font-display text-xl font-semibold uppercase" style={{ color: "var(--ts-dark)" }}>
-                        Mot de passe oublié
+                    <h1 className="font-display text-xl font-semibold uppercase text-[#1A1F36]">
+                        Mot de passe oubli&eacute;
                     </h1>
-                    <p className="mt-1 text-sm text-gray-400">
-                        Entrez votre email pour recevoir un lien de réinitialisation
+                    <p className="mt-1 text-sm text-[#8E96B0]">
+                        Entrez votre email pour recevoir un lien de r&eacute;initialisation
                     </p>
                 </div>
 
                 {sent ? (
                     <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-center">
-                        <p className="text-sm font-medium text-green-800">Email envoyé !</p>
+                        <p className="text-sm font-medium text-green-800">Email envoy&eacute; !</p>
                         <p className="mt-1 text-xs text-green-600">
-                            Vérifiez votre boîte mail (et vos spams) pour réinitialiser votre mot de passe.
+                            V&eacute;rifiez votre bo&icirc;te mail (et vos spams) pour r&eacute;initialiser votre mot de passe.
                         </p>
                         <Link
                             href="/auth/login"
-                            className="mt-4 inline-block text-sm font-medium"
-                            style={{ color: "var(--ts-terracotta)" }}
+                            className="mt-4 inline-block text-sm font-medium text-[#4268FF]"
                         >
-                            Retour à la connexion
+                            Retour &agrave; la connexion
                         </Link>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-3">
                         <div>
-                            <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+                            <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="search-ts w-full"
+                                className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                 placeholder="vous@boutique.fr"
                                 required
                             />
                         </div>
 
-                        {error && <p className="text-xs text-red-500">{error}</p>}
+                        {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-red-600">{error}</p>}
 
-                        <button type="submit" className="btn-ts w-full" disabled={isLoading}>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50"
+                        >
                             {isLoading ? "Envoi..." : "Envoyer le lien"}
                         </button>
 
-                        <p className="text-center text-sm text-gray-400">
-                            <Link href="/auth/login" className="font-medium" style={{ color: "var(--ts-terracotta)" }}>
-                                Retour à la connexion
+                        <p className="text-center text-sm text-[#8E96B0]">
+                            <Link href="/auth/login" className="font-medium text-[#4268FF]">
+                                Retour &agrave; la connexion
                             </Link>
                         </p>
                     </form>

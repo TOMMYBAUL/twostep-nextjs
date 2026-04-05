@@ -84,7 +84,14 @@ export async function updateSession(request: NextRequest) {
             }
         }
     } catch {
-        // If middleware fails, let the request through — route handlers have their own auth
+        // Fail closed for API routes — don't let unauthenticated requests through
+        if (request.nextUrl.pathname.startsWith("/api/")) {
+            return new NextResponse(JSON.stringify({ error: "Service unavailable" }), {
+                status: 503,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        // For pages, let through — they'll handle auth client-side
         return NextResponse.next({ request });
     }
 

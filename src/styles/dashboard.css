@@ -147,6 +147,67 @@
     opacity: 1;
 }
 
+/* Secondary button */
+.btn-ts-secondary {
+    background: transparent;
+    color: var(--ts-dark);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--ts-dark-light);
+    cursor: pointer;
+    font-size: 13px;
+    transition: transform 150ms, background 150ms;
+}
+.btn-ts-secondary:hover {
+    background: var(--ts-cream-dark);
+    transform: translateY(-1px);
+}
+.btn-ts-secondary:active {
+    transform: scale(0.97);
+}
+
+/* Card */
+.card-ts {
+    background: var(--ts-bg-card);
+    border: 1px solid var(--ts-dark-light);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* Badge */
+.badge-ts {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    background: var(--ts-cream-dark);
+    color: var(--ts-dark);
+}
+
+/* Input */
+.input-ts {
+    background: white;
+    border: 1px solid var(--ts-dark-light);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--ts-dark);
+    outline: none;
+    width: 100%;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.input-ts::placeholder {
+    color: #9ca3af;
+}
+.input-ts:focus {
+    border-color: var(--ts-accent);
+    box-shadow: 0 0 0 2px rgba(66, 104, 255, 0.15);
+}
+
 /* Safe areas (iOS Dynamic Island / notch / home indicator) */
 .safe-top {
     padding-top: env(safe-area-inset-top);

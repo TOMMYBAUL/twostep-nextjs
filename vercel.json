@@ -2,13 +2,9 @@
   "crons": [
     {
       "path": "/api/images/process",
-      "schedule": "0 6 * * *"
+      "schedule": "*/30 * * * *"
     },
-    {
-      "path": "/api/cron/sync-sumup",
-      "schedule": "0 7 * * *"
-    },
-    {
+{
       "path": "/api/cron/enrich-ean",
       "schedule": "0 8 * * *"
     },

@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 
 type InvoiceItem = {
@@ -30,6 +31,7 @@ export default function InvoiceDetailPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
     const { merchant } = useMerchant();
+    const { toast } = useToast();
     const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [sellingPrices, setSellingPrices] = useState<Record<string, string>>({});
@@ -37,36 +39,55 @@ export default function InvoiceDetailPage() {
     const [result, setResult] = useState<{ products_created: number; products_updated: number; stock_updated: number; fuzzy_matched?: number } | null>(null);
 
     const fetchInvoice = useCallback(async () => {
-        const res = await fetch(`/api/invoices/${id}`);
-        if (res.ok) setInvoice(await res.json());
+        try {
+            const res = await fetch(`/api/invoices/${id}`);
+            if (res.ok) {
+                setInvoice(await res.json());
+            } else {
+                toast("Impossible de charger la facture", "error");
+            }
+        } catch {
+            toast("Erreur réseau lors du chargement", "error");
+        }
         setLoading(false);
-    }, [id]);
+    }, [id, toast]);
 
     useEffect(() => { fetchInvoice(); }, [fetchInvoice]);
 
     const handleReject = async (itemId: string) => {
-        await fetch(`/api/invoices/${id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items: [{ id: itemId, status: "rejected" }] }),
-        });
-        await fetchInvoice();
+        try {
+            const res = await fetch(`/api/invoices/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: [{ id: itemId, status: "rejected" }] }),
+            });
+            if (!res.ok) throw new Error("Erreur serveur");
+            await fetchInvoice();
+        } catch {
+            toast("Impossible de rejeter cette ligne", "error");
+        }
     };
 
     const handleValidate = async () => {
         setValidating(true);
-        const prices: Record<string, number> = {};
-        for (const [itemId, price] of Object.entries(sellingPrices)) {
-            if (price) prices[itemId] = parseFloat(price);
-        }
-        const res = await fetch(`/api/invoices/${id}/validate`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ selling_prices: prices }),
-        });
-        if (res.ok) {
-            setResult(await res.json());
-            await fetchInvoice();
+        try {
+            const prices: Record<string, number> = {};
+            for (const [itemId, price] of Object.entries(sellingPrices)) {
+                if (price) prices[itemId] = parseFloat(price);
+            }
+            const res = await fetch(`/api/invoices/${id}/validate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ selling_prices: prices }),
+            });
+            if (res.ok) {
+                setResult(await res.json());
+                await fetchInvoice();
+            } else {
+                toast("Erreur lors de la validation", "error");
+            }
+        } catch {
+            toast("Erreur réseau lors de la validation", "error");
         }
         setValidating(false);
     };

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { gmailProvider } from "@/lib/email/gmail";
 import { outlookProvider } from "@/lib/email/outlook";
 import { encrypt } from "@/lib/email/encryption";
@@ -50,18 +51,33 @@ export async function GET(request: NextRequest) {
     }
 
     try {
+        // Verify authenticated user owns the merchant
+        const userSupabase = await createClient();
+        const { data: { user } } = await userSupabase.auth.getUser();
+        if (!user) {
+            return NextResponse.redirect(
+                new URL("/dashboard/settings?email_error=auth_required", request.url)
+            );
+        }
+
         const supabase = createAdminClient();
 
-        // Verify merchant exists
+        // Verify merchant exists and belongs to authenticated user
         const { data: merchant } = await supabase
             .from("merchants")
-            .select("id")
+            .select("id, user_id")
             .eq("id", merchantId)
             .single();
 
         if (!merchant) {
             return NextResponse.redirect(
                 new URL("/dashboard/settings?email_error=merchant_not_found", request.url)
+            );
+        }
+
+        if (merchant.user_id !== user.id) {
+            return NextResponse.redirect(
+                new URL("/dashboard/settings?email_error=forbidden", request.url)
             );
         }
 

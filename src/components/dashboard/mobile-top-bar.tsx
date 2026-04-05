@@ -11,6 +11,8 @@ const pageTitles: Record<string, string> = {
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
     "/dashboard/tips-history": "Historique tips",
+    "/dashboard/invoices": "Factures",
+    "/dashboard/google": "Google",
 };
 
 export function MobileTopBar() {

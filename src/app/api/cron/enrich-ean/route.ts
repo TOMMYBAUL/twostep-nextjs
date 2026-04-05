@@ -27,3 +27,5 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ enriched, failed, total: products.length });
 }
+
+export { POST as GET };

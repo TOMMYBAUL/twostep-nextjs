@@ -3,8 +3,10 @@ import { squareAdapter } from "./square";
 import { shopifyAdapter } from "./shopify";
 import { lightspeedAdapter } from "./lightspeed";
 import { zettleAdapter } from "./zettle";
+import { clictillAdapter } from "./clictill";
+import { fastmagAdapter } from "./fastmag";
 
-export const POS_PROVIDERS = ["square", "shopify", "lightspeed", "zettle"] as const;
+export const POS_PROVIDERS = ["square", "shopify", "lightspeed", "zettle", "clictill", "fastmag"] as const;
 export type POSProvider = (typeof POS_PROVIDERS)[number];
 
 const adapters: Record<POSProvider, IPOSAdapter> = {
@@ -12,6 +14,8 @@ const adapters: Record<POSProvider, IPOSAdapter> = {
     shopify: shopifyAdapter,
     lightspeed: lightspeedAdapter,
     zettle: zettleAdapter,
+    clictill: clictillAdapter,
+    fastmag: fastmagAdapter,
 };
 
 export function getAdapter(provider: string): IPOSAdapter {

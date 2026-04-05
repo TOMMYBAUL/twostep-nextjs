@@ -22,6 +22,23 @@ export async function GET(request: Request) {
 
         const incomplete = searchParams.get("incomplete") === "true";
 
+        if (incomplete) {
+            // Incomplete products require authentication + merchant ownership
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+            const { data: ownedMerchant } = await supabase
+                .from("merchants")
+                .select("id")
+                .eq("id", merchantId)
+                .eq("user_id", user.id)
+                .single();
+            if (!ownedMerchant) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
+        }
+
         let query = supabase
             .from("products")
             .select("*, stock(quantity)")
@@ -31,8 +48,8 @@ export async function GET(request: Request) {
             // Products without EAN that need manual completion
             query = query.eq("visible", false).is("ean", null);
         } else {
-            // Normal listing: exclude variants (merchant sees only principal products)
-            query = query.is("variant_of", null);
+            // Public listing: only visible products, exclude variants
+            query = query.eq("visible", true).is("variant_of", null);
         }
 
         const { data, error } = await query.order("name");

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
             await supabase.from("stock").upsert({
                 product_id: product.id,
                 quantity: Math.max(0, update.quantity),
-            });
+            }, { onConflict: "product_id" });
 
             await recalculateGroupSizesAdmin(product.id);
 

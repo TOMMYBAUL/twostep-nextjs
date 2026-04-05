@@ -60,7 +60,7 @@ export default function InvoicesPage() {
                 titleAccent="factures"
             />
 
-            <div className="mb-8 grid grid-cols-4 gap-4">
+            <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                 <MetricCard label="Total factures" value={total} staggerIndex={0} />
                 <MetricCard label="En attente" value={pending} variant="warn" staggerIndex={1} />
                 <MetricCard label="Importées" value={imported} staggerIndex={2} />
@@ -71,8 +71,8 @@ export default function InvoicesPage() {
             <div
                 className={`mb-8 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 transition ${
                     dragOver
-                        ? "border-[var(--ts-ochre)] bg-[var(--ts-ochre-light)]"
-                        : "border-gray-200 bg-white hover:border-gray-300"
+                        ? "border-brand bg-brand-secondary"
+                        : "border-secondary bg-primary hover:border-primary"
                 } ${uploading ? "pointer-events-none opacity-60" : ""}`}
                 onClick={() => fileRef.current?.click()}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -91,15 +91,15 @@ export default function InvoicesPage() {
                     className="hidden"
                     onChange={(e) => handleFiles(e.target.files)}
                 />
-                <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-gray-100">
-                    <svg className="size-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-secondary">
+                    <svg className="size-5 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" />
                     </svg>
                 </div>
-                <p className="text-sm font-medium text-gray-700">
+                <p className="text-sm font-medium text-secondary">
                     {uploading ? "Upload en cours..." : "Glissez vos factures ici ou cliquez pour parcourir"}
                 </p>
-                <p className="mt-1 text-xs text-gray-400">PDF, XLSX, XLS, CSV — max 10 Mo</p>
+                <p className="mt-1 text-xs text-quaternary">PDF, XLSX, XLS, CSV — max 10 Mo</p>
             </div>
 
             {loading ? (

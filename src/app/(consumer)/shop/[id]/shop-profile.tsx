@@ -72,23 +72,25 @@ export default function ShopProfileClient() {
     });
 
     const { data: products } = useQuery<Product[]>({
-        queryKey: ["merchant-products", id],
+        queryKey: ["merchant-products", profile?.merchant_id],
         queryFn: async () => {
-            const res = await fetch(`/api/products?merchant_id=${id}`);
+            const res = await fetch(`/api/products?merchant_id=${profile!.merchant_id}`);
             if (!res.ok) throw new Error("Failed");
             const json = await res.json();
             return json.products;
         },
+        enabled: !!profile?.merchant_id,
     });
 
     const { data: promotions } = useQuery<Promotion[]>({
-        queryKey: ["merchant-promos", id],
+        queryKey: ["merchant-promos", profile?.merchant_id],
         queryFn: async () => {
-            const res = await fetch(`/api/promotions?merchant_id=${id}`);
+            const res = await fetch(`/api/promotions?merchant_id=${profile!.merchant_id}`);
             if (!res.ok) throw new Error("Failed");
             const json = await res.json();
             return json.promotions;
         },
+        enabled: !!profile?.merchant_id,
     });
 
     const { data: favorites } = useFavorites();

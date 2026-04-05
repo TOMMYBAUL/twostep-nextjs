@@ -4,7 +4,7 @@ import { processProductImage } from "@/lib/images/process";
 import { uploadToR2 } from "@/lib/r2";
 import { captureError } from "@/lib/error";
 
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 50;
 const MAX_ATTEMPTS = 3;
 
 export async function POST(req: NextRequest) {
@@ -84,3 +84,5 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Worker failed" }, { status: 500 });
     }
 }
+
+export { POST as GET };
