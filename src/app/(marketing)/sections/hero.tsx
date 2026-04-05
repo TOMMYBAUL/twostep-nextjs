@@ -9,7 +9,6 @@ export function Hero() {
     const { scrollY } = useScroll();
     const bgY = useTransform(scrollY, [0, 600], [0, 120]);
     const bgScale = useTransform(scrollY, [0, 600], [1, 1.08]);
-    const overlayOpacity = useTransform(scrollY, [0, 400], [0.45, 0.65]);
 
     return (
         <section className="relative flex min-h-svh items-end overflow-hidden pb-20 pt-20 md:items-center md:pb-24 md:pt-24">
@@ -19,8 +18,8 @@ export function Hero() {
                 style={{ y: bgY, scale: bgScale }}
             >
                 <Image
-                    src="/images/hero-street.webp"
-                    alt="Rue commerçante"
+                    src="/images/hero-street-v2.png"
+                    alt="Rue commerçante à Toulouse"
                     fill
                     priority
                     className="object-cover"
@@ -28,15 +27,15 @@ export function Hero() {
                 />
             </motion.div>
 
-            {/* Dark gradient overlay — stronger at bottom for text readability */}
-            <motion.div
+            {/* Dark gradient overlay */}
+            <div
                 className="absolute inset-0 -z-10 pointer-events-none"
                 style={{
                     background: "linear-gradient(to top, rgba(10,12,20,0.75) 0%, rgba(10,12,20,0.4) 40%, rgba(10,12,20,0.2) 70%, rgba(10,12,20,0.35) 100%)",
                 }}
             />
 
-            {/* Subtle blue glow at center */}
+            {/* Subtle blue glow */}
             <div
                 className="absolute inset-0 -z-10 pointer-events-none"
                 style={{
@@ -44,7 +43,7 @@ export function Hero() {
                 }}
             />
 
-            {/* Content — left-aligned on desktop like NearSt */}
+            {/* Content */}
             <div className="relative z-10 mx-auto w-full max-w-[1100px] px-6 md:px-12">
                 <div className="max-w-[560px]">
                     {/* Badge */}
@@ -76,7 +75,7 @@ export function Hero() {
                         Stock réel, mis à jour en temps réel.
                     </motion.p>
 
-                    {/* CTAs — two buttons like NearSt */}
+                    {/* CTAs */}
                     <motion.div {...slideUp(0.4)} className="mt-8 flex flex-wrap gap-3">
                         <Link
                             href="/discover"

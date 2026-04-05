@@ -23,6 +23,18 @@ export function Footer() {
                 {/* Links */}
                 <div className="flex items-center gap-5 flex-wrap justify-center">
                     <Link
+                        href="/produit"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
+                        Produit
+                    </Link>
+                    <Link
+                        href="/a-propos"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
+                        À propos
+                    </Link>
+                    <Link
                         href="/mentions-legales"
                         className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
                     >

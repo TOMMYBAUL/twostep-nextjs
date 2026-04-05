@@ -11,31 +11,36 @@ export function CTAFinal() {
     return (
         <motion.section
             ref={ref}
-            className="bg-[#4268FF] px-6 py-16 text-center md:px-12 md:py-20"
+            className="relative overflow-hidden bg-[#1A1F36] px-6 py-16 text-center md:px-12 md:py-20"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ type: "spring", stiffness: 150, damping: 30 }}
         >
-            <h2 className="mx-auto max-w-md text-[22px] font-[900] leading-tight tracking-tight text-white md:text-[28px]">
+            {/* Subtle blue radial glow */}
+            <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                    background:
+                        "radial-gradient(ellipse at 50% 40%, rgba(66,104,255,0.12) 0%, transparent 70%)",
+                }}
+            />
+
+            <h2 className="relative mx-auto max-w-md text-[22px] font-[900] leading-tight tracking-tight text-white md:text-[28px]">
                 Prêt à découvrir{" "}
                 <br />
                 ton quartier ?
             </h2>
-            <p className="mt-3 text-[13px] text-white/65">
+            <p className="relative mt-3 text-[13px] text-white/80">
                 Gratuit, sans compte, en 2 secondes.
             </p>
-            <motion.div
-                className="mt-6"
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-            >
+            <div className="relative mt-6">
                 <Link
                     href="/discover"
-                    className="inline-block rounded-xl bg-white px-7 py-3 text-[14px] font-[800] text-[#4268FF] transition-opacity hover:opacity-90"
+                    className="inline-block rounded-xl bg-[#4268FF] px-7 py-3 text-[14px] font-[800] text-white transition-colors duration-200 hover:bg-[#3558e6]"
                 >
                     Découvrir →
                 </Link>
-            </motion.div>
+            </div>
         </motion.section>
     );
 }
