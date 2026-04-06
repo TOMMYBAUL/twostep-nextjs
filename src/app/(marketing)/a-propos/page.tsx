@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
 import { useRef } from "react";
 import { slideUp, stagger, SPRING } from "@/lib/motion";
 import { LenisProvider } from "../components/lenis-provider";
@@ -85,23 +85,6 @@ const bigStats = [
 /* ── Page ── */
 
 export default function AProposPage() {
-    const heroRef = useRef<HTMLElement>(null);
-    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
-
-    const storyRef = useRef<HTMLDivElement>(null);
-    const storyInView = useInView(storyRef, { once: true, margin: "-10%" });
-
-    const statsRef = useRef<HTMLDivElement>(null);
-    const statsInView = useInView(statsRef, { once: true, margin: "-10%" });
-
-    const valuesRef = useRef<HTMLDivElement>(null);
-    const valuesInView = useInView(valuesRef, { once: true, margin: "-10%" });
-
-    const toulouseRef = useRef<HTMLDivElement>(null);
-    const toulouseInView = useInView(toulouseRef, { once: true, margin: "-10%" });
-
-    const teamRef = useRef<HTMLDivElement>(null);
-    const teamInView = useInView(teamRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
@@ -109,12 +92,11 @@ export default function AProposPage() {
             <main id="a-propos" className="bg-white">
                 {/* ── Hero ── */}
                 <section
-                    ref={heroRef}
                     className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14"
                 >
                     <motion.div
                         {...slideUp(0)}
-                        animate={heroInView ? slideUp(0).animate : slideUp(0).initial}
+                        
                     >
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
                             &Agrave; propos
@@ -122,7 +104,7 @@ export default function AProposPage() {
                     </motion.div>
                     <motion.h1
                         {...slideUp(0.05)}
-                        animate={heroInView ? slideUp(0.05).animate : slideUp(0.05).initial}
+                        
                         className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
                     >
                         Pourquoi<br />
@@ -130,7 +112,7 @@ export default function AProposPage() {
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
-                        animate={heroInView ? slideUp(0.1).animate : slideUp(0.1).initial}
+                        
                         className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
                     >
                         Le produit que vous cherchez est souvent &agrave; 5 minutes &agrave; pied.
@@ -140,7 +122,6 @@ export default function AProposPage() {
 
                 {/* ── The Story — But/Therefore ── */}
                 <section
-                    ref={storyRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -148,7 +129,7 @@ export default function AProposPage() {
                         <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
                             <motion.div
                                 initial={{ opacity: 0, x: -40 }}
-                                animate={storyInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.1 }}
                             >
                                 <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]">
@@ -166,7 +147,7 @@ export default function AProposPage() {
                             </motion.div>
                             <motion.div
                                 initial={{ opacity: 0, x: 40 }}
-                                animate={storyInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.2 }}
                                 className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-sm"
                             >
@@ -183,7 +164,7 @@ export default function AProposPage() {
                         {/* Connector */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
-                            animate={storyInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.3 }}
                             className="my-12 flex justify-center md:my-16"
                         >
@@ -196,7 +177,7 @@ export default function AProposPage() {
                         <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
                             <motion.div
                                 initial={{ opacity: 0, x: -40 }}
-                                animate={storyInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.4 }}
                                 className="order-2 overflow-hidden rounded-2xl border border-[#4268FF]/20 shadow-[0_4px_24px_rgba(66,104,255,0.1)] md:order-1"
                             >
@@ -210,7 +191,7 @@ export default function AProposPage() {
                             </motion.div>
                             <motion.div
                                 initial={{ opacity: 0, x: 40 }}
-                                animate={storyInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.5 }}
                                 className="order-1 md:order-2"
                             >
@@ -233,13 +214,12 @@ export default function AProposPage() {
 
                 {/* ── By the Numbers ── */}
                 <section
-                    ref={statsRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={statsInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -247,7 +227,7 @@ export default function AProposPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={statsInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -261,8 +241,6 @@ export default function AProposPage() {
                                     <motion.div
                                         key={stat.label}
                                         initial={su.initial}
-                                        animate={statsInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 text-center"
                                     >
                                         <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[48px]">
@@ -280,13 +258,12 @@ export default function AProposPage() {
 
                 {/* ── Values ── */}
                 <section
-                    ref={valuesRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={valuesInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -294,7 +271,7 @@ export default function AProposPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={valuesInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -308,8 +285,6 @@ export default function AProposPage() {
                                     <motion.div
                                         key={val.title}
                                         initial={su.initial}
-                                        animate={valuesInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                                     >
                                         <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#4268FF]/10">
@@ -330,7 +305,6 @@ export default function AProposPage() {
 
                 {/* ── Toulouse Section ── */}
                 <section
-                    ref={toulouseRef}
                     className="relative overflow-hidden px-6 py-16 md:px-12 md:py-24"
                 >
                     {/* Background image with overlay */}
@@ -347,7 +321,7 @@ export default function AProposPage() {
                     <div className="mx-auto max-w-[600px] text-center">
                         <motion.p
                             initial={{ opacity: 0, y: 24 }}
-                            animate={toulouseInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -355,7 +329,7 @@ export default function AProposPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={toulouseInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.1 }}
                             className="text-[22px] font-black tracking-tight text-white md:text-[32px]"
                         >
@@ -363,7 +337,7 @@ export default function AProposPage() {
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 24 }}
-                            animate={toulouseInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.2 }}
                             className="mx-auto mt-4 max-w-[480px] text-[15px] leading-relaxed text-white/70 md:text-[17px]"
                         >
@@ -377,13 +351,12 @@ export default function AProposPage() {
 
                 {/* ── Team ── */}
                 <section
-                    ref={teamRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[600px]">
                         <motion.div
                             initial={{ opacity: 0, y: 32 }}
-                            animate={teamInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 md:p-10"
                         >

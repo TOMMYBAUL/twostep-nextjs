@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
 import { useRef } from "react";
 import { slideUp, stagger, SPRING } from "@/lib/motion";
 import { LenisProvider } from "../components/lenis-provider";
@@ -163,26 +163,6 @@ const beforeAfter = {
 /* ── Page ── */
 
 export default function ProduitPage() {
-    const heroRef = useRef<HTMLElement>(null);
-    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
-
-    const stepsRef = useRef<HTMLDivElement>(null);
-    const stepsInView = useInView(stepsRef, { once: true, margin: "-10%" });
-
-    const featuresRef = useRef<HTMLDivElement>(null);
-    const featuresInView = useInView(featuresRef, { once: true, margin: "-10%" });
-
-    const showcaseRef = useRef<HTMLDivElement>(null);
-    const showcaseInView = useInView(showcaseRef, { once: true, margin: "-10%" });
-
-    const posRef = useRef<HTMLDivElement>(null);
-    const posInView = useInView(posRef, { once: true, margin: "-10%" });
-
-    const compareRef = useRef<HTMLDivElement>(null);
-    const compareInView = useInView(compareRef, { once: true, margin: "-10%" });
-
-    const statsRef = useRef<HTMLDivElement>(null);
-    const statsInView = useInView(statsRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
@@ -190,12 +170,11 @@ export default function ProduitPage() {
             <main id="produit" className="bg-white">
                 {/* ── Hero ── */}
                 <section
-                    ref={heroRef}
                     className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14"
                 >
                     <motion.div
                         {...slideUp(0)}
-                        animate={heroInView ? slideUp(0).animate : slideUp(0).initial}
+                        
                     >
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
                             Produit
@@ -203,7 +182,7 @@ export default function ProduitPage() {
                     </motion.div>
                     <motion.h1
                         {...slideUp(0.05)}
-                        animate={heroInView ? slideUp(0.05).animate : slideUp(0.05).initial}
+                        
                         className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
                     >
                         Votre caisse, connect&eacute;e<br />
@@ -211,7 +190,7 @@ export default function ProduitPage() {
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
-                        animate={heroInView ? slideUp(0.1).animate : slideUp(0.1).initial}
+                        
                         className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
                     >
                         Two-Step lit votre POS, enrichit vos donn&eacute;es par IA, et diffuse vos
@@ -219,7 +198,7 @@ export default function ProduitPage() {
                     </motion.p>
                     <motion.div
                         {...slideUp(0.15)}
-                        animate={heroInView ? slideUp(0.15).animate : slideUp(0.15).initial}
+                        
                         className="mt-7"
                     >
                         <Link
@@ -233,13 +212,12 @@ export default function ProduitPage() {
 
                 {/* ── How It Works ── */}
                 <section
-                    ref={stepsRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -247,7 +225,7 @@ export default function ProduitPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -261,8 +239,6 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={step.number}
                                         initial={su.initial}
-                                        animate={stepsInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className="relative rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                                     >
                                         <div className="mb-5 flex items-center gap-4">
@@ -291,13 +267,12 @@ export default function ProduitPage() {
 
                 {/* ── Features Grid ── */}
                 <section
-                    ref={featuresRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -305,7 +280,7 @@ export default function ProduitPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -319,8 +294,6 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={feat.title}
                                         initial={su.initial}
-                                        animate={featuresInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 transition-shadow duration-200 hover:shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
                                     >
                                         <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4268FF]/10">
@@ -341,13 +314,12 @@ export default function ProduitPage() {
 
                 {/* ── Image Showcase ── */}
                 <section
-                    ref={showcaseRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={showcaseInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -355,7 +327,7 @@ export default function ProduitPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={showcaseInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -365,7 +337,7 @@ export default function ProduitPage() {
                         <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
                             <motion.div
                                 initial={{ opacity: 0, x: -40 }}
-                                animate={showcaseInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.1 }}
                                 className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-sm"
                             >
@@ -388,7 +360,7 @@ export default function ProduitPage() {
 
                             <motion.div
                                 initial={{ opacity: 0, x: 40 }}
-                                animate={showcaseInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.2 }}
                                 className="overflow-hidden rounded-2xl border border-[#4268FF]/20 shadow-[0_4px_24px_rgba(66,104,255,0.1)]"
                             >
@@ -414,13 +386,12 @@ export default function ProduitPage() {
 
                 {/* ── POS Compatibility ── */}
                 <section
-                    ref={posRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px] text-center">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={posInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -428,7 +399,7 @@ export default function ProduitPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={posInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-4 text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -436,7 +407,7 @@ export default function ProduitPage() {
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 24 }}
-                            animate={posInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.1 }}
                             className="mx-auto mb-10 max-w-md text-[15px] leading-relaxed text-[#6B7280]"
                         >
@@ -450,8 +421,6 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={pos.name}
                                         initial={su.initial}
-                                        animate={posInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className={`flex items-center gap-3 rounded-xl border bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 ${pos.comingSoon ? "border-dashed border-[#D1D5DB] opacity-60" : "border-[#E5E7EB] hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"}`}
                                     >
                                         <span className={`h-2 w-2 rounded-full ${pos.comingSoon ? "bg-[#F59E0B]" : "bg-[#22C55E]"}`} />
@@ -472,13 +441,12 @@ export default function ProduitPage() {
 
                 {/* ── Avant / Avec Comparison ── */}
                 <section
-                    ref={compareRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
-                            animate={compareInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
                             className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
                         >
@@ -486,7 +454,7 @@ export default function ProduitPage() {
                         </motion.p>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
-                            animate={compareInView ? { opacity: 1, y: 0 } : {}}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
@@ -497,7 +465,7 @@ export default function ProduitPage() {
                             {/* Before */}
                             <motion.div
                                 initial={{ opacity: 0, x: -30 }}
-                                animate={compareInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.1 }}
                                 className="rounded-2xl border border-[#E5E7EB] bg-white p-7"
                             >
@@ -525,7 +493,7 @@ export default function ProduitPage() {
                             {/* After */}
                             <motion.div
                                 initial={{ opacity: 0, x: 30 }}
-                                animate={compareInView ? { opacity: 1, x: 0 } : {}}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.2 }}
                                 className="rounded-2xl border border-[#4268FF]/20 bg-white p-7 shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
                             >
@@ -555,7 +523,6 @@ export default function ProduitPage() {
 
                 {/* ── Stats ── */}
                 <section
-                    ref={statsRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
@@ -566,8 +533,6 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={stat.label}
                                         initial={su.initial}
-                                        animate={statsInView ? su.animate : su.initial}
-                                        transition={su.transition}
                                         className="text-center"
                                     >
                                         <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[52px]">
