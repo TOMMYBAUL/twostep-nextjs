@@ -370,7 +370,7 @@ export default function ProduitPage() {
                                 className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-sm"
                             >
                                 <Image
-                                    src="/images/how-it-works/caroucel 3.png"
+                                    src="/images/how-it-works/caroucel-invisible.webp"
                                     alt="Boutique ferm\u00e9e, invisible en ligne"
                                     width={600}
                                     height={400}
@@ -393,7 +393,7 @@ export default function ProduitPage() {
                                 className="overflow-hidden rounded-2xl border border-[#4268FF]/20 shadow-[0_4px_24px_rgba(66,104,255,0.1)]"
                             >
                                 <Image
-                                    src="/images/how-it-works/caroucel 6.png"
+                                    src="/images/how-it-works/caroucel-busy.webp"
                                     alt="Boutique pleine de clients"
                                     width={600}
                                     height={400}
