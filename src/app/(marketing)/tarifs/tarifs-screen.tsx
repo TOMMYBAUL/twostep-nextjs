@@ -164,7 +164,6 @@ export default function TarifsScreen() {
     const heroRef = useRef<HTMLElement>(null);
     const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
     const tableRef = useRef<HTMLDivElement>(null);
-    const tableInView = useInView(tableRef, { once: true, margin: "-10%" });
     const faqRef = useRef<HTMLDivElement>(null);
     const faqInView = useInView(faqRef, { once: true, margin: "-10%" });
 
@@ -199,7 +198,7 @@ export default function TarifsScreen() {
 
                 {/* ── Pricing Cards ── */}
                 <section className="mx-auto max-w-[1100px] px-6 pb-16 md:px-12 md:pb-20">
-                    <div className="grid gap-6 md:grid-cols-3">
+                    <div className="grid gap-8 md:grid-cols-3 items-start">
                         {tiers.map((tier, i) => {
                             const su = slideUp(stagger(i, 0.12));
                             return (
@@ -209,25 +208,25 @@ export default function TarifsScreen() {
                                     animate={heroInView ? su.animate : su.initial}
                                     transition={su.transition}
                                     className={[
-                                        "relative flex flex-col rounded-2xl border p-7 md:p-8",
+                                        "relative flex flex-col rounded-2xl border",
                                         tier.highlighted
-                                            ? "border-[#4268FF] shadow-[0_4px_24px_rgba(66,104,255,0.15)]"
-                                            : "border-[#E5E7EB] shadow-[0_2px_12px_rgba(0,0,0,0.04)]",
+                                            ? "border-[#4268FF] shadow-[0_4px_24px_rgba(66,104,255,0.15)] p-7 pt-10 md:p-8 md:pt-11"
+                                            : "border-[#E5E7EB] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-7 md:p-8",
                                     ].join(" ")}
                                 >
                                     {/* Badge */}
                                     {tier.badge && (
-                                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#4268FF] px-4 py-1 text-[11px] font-bold tracking-wide uppercase text-white">
+                                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#4268FF] px-4 py-1.5 text-[11px] font-bold tracking-wide uppercase text-white">
                                             {tier.badge}
                                         </span>
                                     )}
 
                                     {/* Name + description */}
                                     <h3 className="text-[18px] font-bold text-[#1A1F36]">{tier.name}</h3>
-                                    <p className="mt-1 text-[13px] leading-relaxed text-[#1A1F36]/50">{tier.description}</p>
+                                    <p className="mt-2 min-h-[40px] text-[13px] leading-relaxed text-[#1A1F36]/50">{tier.description}</p>
 
                                     {/* Price */}
-                                    <div className="mt-5 flex items-baseline gap-1">
+                                    <div className="mt-5 flex items-baseline gap-1.5">
                                         <span className="text-[40px] font-black tracking-tight text-[#1A1F36]">{tier.price}</span>
                                         {tier.priceDetail && (
                                             <span className="text-[14px] text-[#1A1F36]/40">{tier.priceDetail}</span>
@@ -253,9 +252,9 @@ export default function TarifsScreen() {
                                     {/* Features */}
                                     <ul className="flex-1 space-y-3">
                                         {tier.features.map((f) => (
-                                            <li key={f.text} className="flex items-start gap-2.5 text-[14px] text-[#1A1F36]/70">
+                                            <li key={f.text} className="flex items-start gap-2.5 text-[14px] leading-snug text-[#1A1F36]/70">
                                                 <CheckIcon className="mt-0.5 size-4 shrink-0 text-[#4268FF]" />
-                                                {f.text}
+                                                <span>{f.text}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -266,15 +265,17 @@ export default function TarifsScreen() {
                 </section>
 
                 {/* ── Trust Signals ── */}
-                <div className="flex flex-wrap items-center justify-center gap-8 px-6 pb-16 md:pb-20">
+                <div className="flex flex-wrap items-center justify-center gap-6 px-6 pb-16 md:gap-10 md:pb-20">
                     {[
-                        { text: "Sans engagement", icon: "🔓" },
-                        { text: "Sans carte bancaire", icon: "💳" },
-                        { text: "Setup en 2 minutes", icon: "⚡" },
-                        { text: "Annulable à tout moment", icon: "✓" },
+                        { text: "Sans engagement", path: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
+                        { text: "Sans carte bancaire", path: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" },
+                        { text: "Setup en 2 minutes", path: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+                        { text: "Annulable à tout moment", path: "M6 18L18 6M6 6l12 12" },
                     ].map((s) => (
                         <div key={s.text} className="flex items-center gap-2">
-                            <span className="text-[16px]">{s.icon}</span>
+                            <svg className="size-5 shrink-0 text-[#4268FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d={s.path} />
+                            </svg>
                             <span className="text-[13px] font-medium text-[#6B7280]">{s.text}</span>
                         </div>
                     ))}
@@ -282,19 +283,11 @@ export default function TarifsScreen() {
 
                 {/* ── Comparison Table ── */}
                 <section ref={tableRef} className="mx-auto max-w-[900px] px-6 pb-20 md:px-12 md:pb-28">
-                    <motion.h2
-                        {...slideUp(0)}
-                        animate={tableInView ? slideUp(0).animate : slideUp(0).initial}
-                        className="mb-8 text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]"
-                    >
+                    <h2 className="mb-8 text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]">
                         Comparer les plans
-                    </motion.h2>
+                    </h2>
 
-                    <motion.div
-                        {...slideUp(0.1)}
-                        animate={tableInView ? slideUp(0.1).animate : slideUp(0.1).initial}
-                        className="overflow-x-auto rounded-xl border border-[#E5E7EB]"
-                    >
+                    <div className="overflow-x-auto rounded-xl border border-[#E5E7EB]">
                         <table className="w-full text-left text-[14px]">
                             <thead>
                                 <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
@@ -319,7 +312,7 @@ export default function TarifsScreen() {
                                 ))}
                             </tbody>
                         </table>
-                    </motion.div>
+                    </div>
                 </section>
 
                 {/* ── FAQ ── */}
