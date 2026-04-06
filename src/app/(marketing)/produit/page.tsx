@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { slideUp, stagger, SPRING } from "@/lib/motion";
 import { LenisProvider } from "../components/lenis-provider";
@@ -163,6 +163,26 @@ const beforeAfter = {
 /* ── Page ── */
 
 export default function ProduitPage() {
+    const heroRef = useRef<HTMLElement>(null);
+    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
+
+    const stepsRef = useRef<HTMLDivElement>(null);
+    const stepsInView = useInView(stepsRef, { once: true, margin: "-10%" });
+
+    const featuresRef = useRef<HTMLDivElement>(null);
+    const featuresInView = useInView(featuresRef, { once: true, margin: "-10%" });
+
+    const showcaseRef = useRef<HTMLDivElement>(null);
+    const showcaseInView = useInView(showcaseRef, { once: true, margin: "-10%" });
+
+    const posRef = useRef<HTMLDivElement>(null);
+    const posInView = useInView(posRef, { once: true, margin: "-10%" });
+
+    const compareRef = useRef<HTMLDivElement>(null);
+    const compareInView = useInView(compareRef, { once: true, margin: "-10%" });
+
+    const statsRef = useRef<HTMLDivElement>(null);
+    const statsInView = useInView(statsRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
@@ -170,6 +190,7 @@ export default function ProduitPage() {
             <main id="produit" className="bg-white">
                 {/* ── Hero ── */}
                 <section
+                    ref={heroRef}
                     className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14"
                 >
                     <motion.div
@@ -212,6 +233,7 @@ export default function ProduitPage() {
 
                 {/* ── How It Works ── */}
                 <section
+                    ref={stepsRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -239,6 +261,8 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={step.number}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className="relative rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                                     >
                                         <div className="mb-5 flex items-center gap-4">
@@ -267,6 +291,7 @@ export default function ProduitPage() {
 
                 {/* ── Features Grid ── */}
                 <section
+                    ref={featuresRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -294,6 +319,8 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={feat.title}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 transition-shadow duration-200 hover:shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
                                     >
                                         <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4268FF]/10">
@@ -314,6 +341,7 @@ export default function ProduitPage() {
 
                 {/* ── Image Showcase ── */}
                 <section
+                    ref={showcaseRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -386,6 +414,7 @@ export default function ProduitPage() {
 
                 {/* ── POS Compatibility ── */}
                 <section
+                    ref={posRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px] text-center">
@@ -421,6 +450,8 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={pos.name}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className={`flex items-center gap-3 rounded-xl border bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 ${pos.comingSoon ? "border-dashed border-[#D1D5DB] opacity-60" : "border-[#E5E7EB] hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"}`}
                                     >
                                         <span className={`h-2 w-2 rounded-full ${pos.comingSoon ? "bg-[#F59E0B]" : "bg-[#22C55E]"}`} />
@@ -441,6 +472,7 @@ export default function ProduitPage() {
 
                 {/* ── Avant / Avec Comparison ── */}
                 <section
+                    ref={compareRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
@@ -523,6 +555,7 @@ export default function ProduitPage() {
 
                 {/* ── Stats ── */}
                 <section
+                    ref={statsRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
@@ -533,6 +566,8 @@ export default function ProduitPage() {
                                     <motion.div
                                         key={stat.label}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className="text-center"
                                     >
                                         <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[52px]">

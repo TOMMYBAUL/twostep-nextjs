@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { slideUp, stagger, SPRING } from "@/lib/motion";
 import { LenisProvider } from "../components/lenis-provider";
@@ -85,6 +85,23 @@ const bigStats = [
 /* ── Page ── */
 
 export default function AProposPage() {
+    const heroRef = useRef<HTMLElement>(null);
+    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
+
+    const storyRef = useRef<HTMLDivElement>(null);
+    const storyInView = useInView(storyRef, { once: true, margin: "-10%" });
+
+    const statsRef = useRef<HTMLDivElement>(null);
+    const statsInView = useInView(statsRef, { once: true, margin: "-10%" });
+
+    const valuesRef = useRef<HTMLDivElement>(null);
+    const valuesInView = useInView(valuesRef, { once: true, margin: "-10%" });
+
+    const toulouseRef = useRef<HTMLDivElement>(null);
+    const toulouseInView = useInView(toulouseRef, { once: true, margin: "-10%" });
+
+    const teamRef = useRef<HTMLDivElement>(null);
+    const teamInView = useInView(teamRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
@@ -92,6 +109,7 @@ export default function AProposPage() {
             <main id="a-propos" className="bg-white">
                 {/* ── Hero ── */}
                 <section
+                    ref={heroRef}
                     className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14"
                 >
                     <motion.div
@@ -122,6 +140,7 @@ export default function AProposPage() {
 
                 {/* ── The Story — But/Therefore ── */}
                 <section
+                    ref={storyRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -214,6 +233,7 @@ export default function AProposPage() {
 
                 {/* ── By the Numbers ── */}
                 <section
+                    ref={statsRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
@@ -241,6 +261,8 @@ export default function AProposPage() {
                                     <motion.div
                                         key={stat.label}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 text-center"
                                     >
                                         <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[48px]">
@@ -258,6 +280,7 @@ export default function AProposPage() {
 
                 {/* ── Values ── */}
                 <section
+                    ref={valuesRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
@@ -285,6 +308,8 @@ export default function AProposPage() {
                                     <motion.div
                                         key={val.title}
                                         initial={su.initial}
+                                        animate={su.animate}
+                                        transition={su.transition}
                                         className="rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                                     >
                                         <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#4268FF]/10">
@@ -305,52 +330,45 @@ export default function AProposPage() {
 
                 {/* ── Toulouse Section ── */}
                 <section
-                    className="relative overflow-hidden px-6 py-16 md:px-12 md:py-24"
+                    ref={toulouseRef}
+                    className="relative bg-[#1A1F36] px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16"
                 >
-                    {/* Background image with overlay */}
-                    <div className="absolute inset-0 -z-10">
-                        <Image
-                            src="/images/how-it-works/caroucel-rue.webp"
-                            alt="Rue commer\u00e7ante de Toulouse"
-                            fill
-                            className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-[#1A1F36]/80" />
-                    </div>
+                    <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(66,104,255,0.12) 0%, transparent 60%)" }} />
 
-                    <div className="mx-auto max-w-[600px] text-center">
-                        <motion.p
+                    <div className="relative mx-auto max-w-[700px] text-center">
+                        <motion.div
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5"
                         >
-                            TOULOUSE
-                        </motion.p>
+                            <span className="inline-block size-2 rounded-full bg-[#4268FF] animate-pulse" />
+                            <span className="text-[12px] font-semibold text-white/70">Toulouse, France</span>
+                        </motion.div>
                         <motion.h2
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.1 }}
-                            className="text-[22px] font-black tracking-tight text-white md:text-[32px]"
+                            className="text-[28px] font-black leading-tight tracking-tight text-white md:text-[40px]"
                         >
-                            Construit avec les commer&ccedil;ants, pas pour eux
+                            Construit <span className="text-[#4268FF]">avec</span> les commer&ccedil;ants,<br />
+                            pas pour eux.
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.2 }}
-                            className="mx-auto mt-4 max-w-[480px] text-[15px] leading-relaxed text-white/70 md:text-[17px]"
+                            className="mx-auto mt-5 max-w-[500px] text-[16px] leading-relaxed text-white/50 md:text-[17px]"
                         >
-                            Two-Step est n&eacute; &agrave; Toulouse. On travaille main dans la
-                            main avec les boutiques du quartier pour construire l&rsquo;outil
-                            dont elles ont vraiment besoin. Chaque fonctionnalit&eacute; vient
-                            d&rsquo;un vrai probl&egrave;me, observ&eacute; sur le terrain.
+                            On travaille main dans la main avec les boutiques du quartier.
+                            Chaque fonctionnalit&eacute; vient d&rsquo;un vrai probl&egrave;me, observ&eacute; sur le terrain.
                         </motion.p>
                     </div>
                 </section>
 
                 {/* ── Team ── */}
                 <section
+                    ref={teamRef}
                     className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[600px]">
