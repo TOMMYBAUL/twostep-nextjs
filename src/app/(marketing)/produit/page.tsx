@@ -36,14 +36,62 @@ function GlobeIcon({ className }: { className?: string }) {
     );
 }
 
-/* ── Metadata-like title (client component — real metadata in layout or head) ── */
+function PlugIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+        </svg>
+    );
+}
+
+function CpuIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+        </svg>
+    );
+}
+
+function UsersIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+        </svg>
+    );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+    );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className || "size-5 text-[#4268FF]"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+    );
+}
+
+function XMarkIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className || "size-5 text-[#D1D5DB]"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    );
+}
+
+/* ── Data ── */
 
 const features = [
     {
         icon: SyncIcon,
         title: "Synchronisation automatique",
         description:
-            "Connectez votre caisse (Square, Shopify, Lightspeed, Zettle, Fastmag, Clictill). Votre stock se met \u00e0 jour en temps r\u00e9el, sans aucune saisie manuelle.",
+            "Connectez votre caisse (Square, Shopify, Lightspeed, Zettle). Votre stock se met \u00e0 jour en temps r\u00e9el, sans aucune saisie manuelle.",
     },
     {
         icon: SparklesIcon,
@@ -55,121 +103,319 @@ const features = [
         icon: GlobeIcon,
         title: "Diffusion multi-canal",
         description:
-            "Vos produits apparaissent sur l\u2019app Two-Step, Google Merchant et Google Maps. Visibilit\u00e9 locale et en ligne, automatiquement.",
+            "Vos produits apparaissent sur l\u2019app Two-Step, Google Shopping et Google Maps. Visibilit\u00e9 locale et en ligne, automatiquement.",
+    },
+];
+
+const steps = [
+    {
+        number: "01",
+        icon: PlugIcon,
+        title: "Connectez votre caisse",
+        description: "En 2 clics, reliez votre POS existant. Aucune installation, aucune formation.",
+    },
+    {
+        number: "02",
+        icon: CpuIcon,
+        title: "On enrichit tout",
+        description: "Notre IA ajoute photos, descriptions, cat\u00e9gories et tailles. Votre catalogue devient professionnel.",
+    },
+    {
+        number: "03",
+        icon: UsersIcon,
+        title: "Les clients arrivent",
+        description: "Vos produits apparaissent dans l\u2019app, sur Google et Maps. Les clients vous trouvent et viennent.",
     },
 ];
 
 const posProviders = [
-    "Square",
-    "Shopify",
-    "Lightspeed",
-    "Zettle",
-    "Fastmag",
-    "Clictill",
+    { name: "Square", comingSoon: false },
+    { name: "Shopify", comingSoon: false },
+    { name: "Lightspeed", comingSoon: false },
+    { name: "Zettle", comingSoon: false },
+    { name: "Fastmag", comingSoon: true },
+    { name: "Clictill", comingSoon: true },
 ];
 
+const stats = [
+    { value: "+200 000", label: "commerces compatibles" },
+    { value: "2 min", label: "pour se lancer" },
+    { value: "0", label: "saisie manuelle" },
+];
+
+const beforeAfter = {
+    before: [
+        "Stock invisible en ligne",
+        "Saisie manuelle des produits",
+        "Pas de photos professionnelles",
+        "Aucune visibilit\u00e9 Google",
+        "Clients perdus au profit des boutiques en ligne",
+    ],
+    after: [
+        "Catalogue complet visible partout",
+        "Synchronisation 100% automatique",
+        "Photos enrichies par IA",
+        "Pr\u00e9sent sur Google Shopping et Maps",
+        "Clients qui viennent en boutique",
+    ],
+};
+
+/* ── Page ── */
+
 export default function ProduitPage() {
+    const heroRef = useRef<HTMLElement>(null);
+    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
+
+    const stepsRef = useRef<HTMLDivElement>(null);
+    const stepsInView = useInView(stepsRef, { once: true, margin: "-10%" });
+
     const featuresRef = useRef<HTMLDivElement>(null);
     const featuresInView = useInView(featuresRef, { once: true, margin: "-10%" });
+
+    const showcaseRef = useRef<HTMLDivElement>(null);
+    const showcaseInView = useInView(showcaseRef, { once: true, margin: "-10%" });
 
     const posRef = useRef<HTMLDivElement>(null);
     const posInView = useInView(posRef, { once: true, margin: "-10%" });
 
-    const ctaRef = useRef<HTMLDivElement>(null);
-    const ctaInView = useInView(ctaRef, { once: true, margin: "-10%" });
+    const compareRef = useRef<HTMLDivElement>(null);
+    const compareInView = useInView(compareRef, { once: true, margin: "-10%" });
+
+    const statsRef = useRef<HTMLDivElement>(null);
+    const statsInView = useInView(statsRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
             <Nav />
-            <main id="produit">
+            <main id="produit" className="bg-white">
                 {/* ── Hero ── */}
-                <section className="relative flex min-h-[70svh] items-center justify-center overflow-hidden bg-white px-6 pt-24 pb-16 md:px-12 md:pt-32 md:pb-24">
-                    {/* Subtle background gradient */}
-                    <div
-                        className="pointer-events-none absolute inset-0 -z-10"
-                        style={{
-                            background:
-                                "radial-gradient(ellipse at 50% 0%, rgba(66,104,255,0.06) 0%, transparent 60%)",
-                        }}
-                    />
-
-                    <div className="mx-auto max-w-[800px] text-center">
-                        <motion.p
-                            {...slideUp(0.05)}
-                            className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                <section
+                    ref={heroRef}
+                    className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14"
+                >
+                    <motion.div
+                        {...slideUp(0)}
+                        animate={heroInView ? slideUp(0).animate : slideUp(0).initial}
+                    >
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
+                            Produit
+                        </span>
+                    </motion.div>
+                    <motion.h1
+                        {...slideUp(0.05)}
+                        animate={heroInView ? slideUp(0.05).animate : slideUp(0.05).initial}
+                        className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
+                    >
+                        Votre caisse, connect&eacute;e<br />
+                        <span className="text-[#4268FF]">au monde entier.</span>
+                    </motion.h1>
+                    <motion.p
+                        {...slideUp(0.1)}
+                        animate={heroInView ? slideUp(0.1).animate : slideUp(0.1).initial}
+                        className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
+                    >
+                        Two-Step lit votre POS, enrichit vos donn&eacute;es par IA, et diffuse vos
+                        produits sur Google, Maps et l&rsquo;app. Automatiquement.
+                    </motion.p>
+                    <motion.div
+                        {...slideUp(0.15)}
+                        animate={heroInView ? slideUp(0.15).animate : slideUp(0.15).initial}
+                        className="mt-7"
+                    >
+                        <Link
+                            href="/onboarding"
+                            className="inline-block rounded-xl bg-[#4268FF] px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#3558e6]"
                         >
-                            PRODUIT
-                        </motion.p>
-                        <motion.h1
-                            {...slideUp(0.15)}
-                            className="font-black leading-[1.1] tracking-[-0.03em] text-[#1A1F36]"
-                            style={{ fontSize: "clamp(28px, 5vw, 48px)" }}
-                        >
-                            Votre caisse, connect&eacute;e au monde
-                        </motion.h1>
-                        <motion.p
-                            {...slideUp(0.25)}
-                            className="mx-auto mt-5 max-w-[520px] text-[15px] leading-relaxed text-[#6B7280] md:text-[17px]"
-                        >
-                            Two-Step lit votre POS, enrichit vos donn&eacute;es, et diffuse vos
-                            produits partout.
-                        </motion.p>
-                    </div>
+                            Connecter ma boutique &rarr;
+                        </Link>
+                    </motion.div>
                 </section>
 
-                {/* ── Features ── */}
+                {/* ── How It Works ── */}
                 <section
-                    ref={featuresRef}
+                    ref={stepsRef}
                     className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
-                    <div className="mx-auto grid max-w-[1100px] gap-8 md:grid-cols-3 md:gap-12">
-                        {features.map((feat, i) => {
-                            const su = slideUp(stagger(i, 0.1));
-                            return (
-                                <motion.div
-                                    key={feat.title}
-                                    initial={su.initial}
-                                    animate={featuresInView ? su.animate : su.initial}
-                                    transition={su.transition}
-                                    className="rounded-2xl bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-                                >
-                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#4268FF]/10">
-                                        <feat.icon className="size-6 text-[#4268FF]" />
-                                    </div>
-                                    <h3 className="mb-2 text-[17px] font-bold tracking-tight text-[#1A1F36]">
-                                        {feat.title}
-                                    </h3>
-                                    <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
-                                        {feat.description}
-                                    </p>
-                                </motion.div>
-                            );
-                        })}
+                    <div className="mx-auto max-w-[1100px]">
+                        <motion.p
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING }}
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                        >
+                            COMMENT &Ccedil;A MARCHE
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING, delay: 0.05 }}
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                        >
+                            3 &eacute;tapes. 2 minutes. Z&eacute;ro effort.
+                        </motion.h2>
+
+                        <div className="grid gap-8 md:grid-cols-3 md:gap-6">
+                            {steps.map((step, i) => {
+                                const su = slideUp(stagger(i, 0.12));
+                                return (
+                                    <motion.div
+                                        key={step.number}
+                                        initial={su.initial}
+                                        animate={stepsInView ? su.animate : su.initial}
+                                        transition={su.transition}
+                                        className="relative rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                                    >
+                                        <div className="mb-5 flex items-center gap-4">
+                                            <span className="text-[36px] font-black leading-none text-[#4268FF]/15">
+                                                {step.number}
+                                            </span>
+                                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#4268FF]/10">
+                                                <step.icon className="size-5 text-[#4268FF]" />
+                                            </div>
+                                        </div>
+                                        <h3 className="mb-2 text-[17px] font-bold tracking-tight text-[#1A1F36]">
+                                            {step.title}
+                                        </h3>
+                                        <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                                            {step.description}
+                                        </p>
+                                        {i < steps.length - 1 && (
+                                            <ArrowRightIcon className="absolute -right-5 top-1/2 hidden size-5 -translate-y-1/2 text-[#D1D5DB] md:block" />
+                                        )}
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </section>
 
-                {/* ── Schema Image ── */}
-                <section className="bg-white px-6 py-16 md:px-12 md:py-24">
-                    <div className="mx-auto max-w-[900px]">
-                        <motion.div {...slideUp(0.1)} className="overflow-hidden rounded-2xl border border-[#E8ECF4] bg-[#F8F9FC] p-4 shadow-sm">
-                            <Image
-                                src="/images/how-it-works/schema-compressed.jpg"
-                                alt="Sch\u00e9ma Two-Step : Fournisseurs \u2192 Caisses POS \u2192 Two-Step \u2192 Diffusion"
-                                width={900}
-                                height={500}
-                                className="w-full rounded-xl"
-                            />
-                        </motion.div>
-                        <p className="mt-4 text-center text-[13px] text-[#6B7280]">
-                            Comment Two-Step connecte votre caisse au monde
-                        </p>
+                {/* ── Features Grid ── */}
+                <section
+                    ref={featuresRef}
+                    className="bg-white px-6 py-16 md:px-12 md:py-24"
+                >
+                    <div className="mx-auto max-w-[1100px]">
+                        <motion.p
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING }}
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                        >
+                            FONCTIONNALIT&Eacute;S
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING, delay: 0.05 }}
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                        >
+                            Tout ce dont votre boutique a besoin
+                        </motion.h2>
+
+                        <div className="grid gap-8 md:grid-cols-3 md:gap-10">
+                            {features.map((feat, i) => {
+                                const su = slideUp(stagger(i, 0.1));
+                                return (
+                                    <motion.div
+                                        key={feat.title}
+                                        initial={su.initial}
+                                        animate={featuresInView ? su.animate : su.initial}
+                                        transition={su.transition}
+                                        className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 transition-shadow duration-200 hover:shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
+                                    >
+                                        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4268FF]/10">
+                                            <feat.icon className="size-7 text-[#4268FF]" />
+                                        </div>
+                                        <h3 className="mb-3 text-[18px] font-bold tracking-tight text-[#1A1F36]">
+                                            {feat.title}
+                                        </h3>
+                                        <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                                            {feat.description}
+                                        </p>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── Image Showcase ── */}
+                <section
+                    ref={showcaseRef}
+                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
+                >
+                    <div className="mx-auto max-w-[1100px]">
+                        <motion.p
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={showcaseInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING }}
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                        >
+                            LE PROBL&Egrave;ME
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={showcaseInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING, delay: 0.05 }}
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                        >
+                            D&rsquo;invisible &agrave; incontournable
+                        </motion.h2>
+
+                        <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+                            <motion.div
+                                initial={{ opacity: 0, x: -40 }}
+                                animate={showcaseInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ ...SPRING, delay: 0.1 }}
+                                className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-sm"
+                            >
+                                <Image
+                                    src="/images/how-it-works/caroucel 3.png"
+                                    alt="Boutique ferm\u00e9e, invisible en ligne"
+                                    width={600}
+                                    height={400}
+                                    className="h-[280px] w-full object-cover md:h-[340px]"
+                                />
+                                <div className="bg-white px-6 py-4">
+                                    <p className="text-[13px] font-semibold text-[#1A1F36]/40">
+                                        Sans Two-Step
+                                    </p>
+                                    <p className="mt-1 text-[14px] leading-relaxed text-[#6B7280]">
+                                        Votre boutique existe, mais personne ne le sait en ligne.
+                                    </p>
+                                </div>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, x: 40 }}
+                                animate={showcaseInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ ...SPRING, delay: 0.2 }}
+                                className="overflow-hidden rounded-2xl border border-[#4268FF]/20 shadow-[0_4px_24px_rgba(66,104,255,0.1)]"
+                            >
+                                <Image
+                                    src="/images/how-it-works/caroucel 6.png"
+                                    alt="Boutique pleine de clients"
+                                    width={600}
+                                    height={400}
+                                    className="h-[280px] w-full object-cover md:h-[340px]"
+                                />
+                                <div className="bg-white px-6 py-4">
+                                    <p className="text-[13px] font-semibold text-[#4268FF]">
+                                        Avec Two-Step
+                                    </p>
+                                    <p className="mt-1 text-[14px] leading-relaxed text-[#6B7280]">
+                                        Vos produits sont visibles. Les clients viennent.
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </div>
                     </div>
                 </section>
 
                 {/* ── POS Compatibility ── */}
                 <section
                     ref={posRef}
-                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
+                    className="bg-white px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px] text-center">
                         <motion.p
@@ -184,26 +430,39 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={posInView ? { opacity: 1, y: 0 } : {}}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-10 text-[22px] font-[900] tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-4 text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
                         >
-                            Compatible avec les principales caisses du march&eacute;
+                            Compatible avec les principales caisses
                         </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 24 }}
+                            animate={posInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING, delay: 0.1 }}
+                            className="mx-auto mb-10 max-w-md text-[15px] leading-relaxed text-[#6B7280]"
+                        >
+                            Pas de caisse ? On vous recommande Square (gratuit).
+                        </motion.p>
 
                         <div className="mx-auto flex max-w-[750px] flex-wrap items-center justify-center gap-4 md:gap-5">
-                            {posProviders.map((name, i) => {
-                                const su = slideUp(stagger(i, 0.1));
+                            {posProviders.map((pos, i) => {
+                                const su = slideUp(stagger(i, 0.08));
                                 return (
                                     <motion.div
-                                        key={name}
+                                        key={pos.name}
                                         initial={su.initial}
                                         animate={posInView ? su.animate : su.initial}
                                         transition={su.transition}
-                                        className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"
+                                        className={`flex items-center gap-3 rounded-xl border bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 ${pos.comingSoon ? "border-dashed border-[#D1D5DB] opacity-60" : "border-[#E5E7EB] hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"}`}
                                     >
-                                        <span className="h-2 w-2 rounded-full bg-[#22C55E]" />
+                                        <span className={`h-2 w-2 rounded-full ${pos.comingSoon ? "bg-[#F59E0B]" : "bg-[#22C55E]"}`} />
                                         <span className="text-[15px] font-semibold tracking-tight text-[#1A1F36]">
-                                            {name}
+                                            {pos.name}
                                         </span>
+                                        {pos.comingSoon && (
+                                            <span className="rounded-full bg-[#FEF3C7] px-2 py-0.5 text-[10px] font-semibold text-[#92400E]">
+                                                bient&ocirc;t
+                                            </span>
+                                        )}
                                     </motion.div>
                                 );
                             })}
@@ -211,38 +470,145 @@ export default function ProduitPage() {
                     </div>
                 </section>
 
-                {/* ── CTA ── */}
-                <motion.section
-                    ref={ctaRef}
-                    className="relative overflow-hidden bg-[#1A1F36] px-6 py-16 text-center md:px-12 md:py-20"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={ctaInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ type: "spring", stiffness: 150, damping: 30 }}
+                {/* ── Avant / Avec Comparison ── */}
+                <section
+                    ref={compareRef}
+                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
                 >
-                    {/* Subtle blue radial glow */}
+                    <div className="mx-auto max-w-[900px]">
+                        <motion.p
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={compareInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING }}
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                        >
+                            COMPARAISON
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 32 }}
+                            animate={compareInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ ...SPRING, delay: 0.05 }}
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                        >
+                            Avant Two-Step vs. Avec Two-Step
+                        </motion.h2>
+
+                        <div className="grid gap-6 md:grid-cols-2 md:gap-8">
+                            {/* Before */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -30 }}
+                                animate={compareInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ ...SPRING, delay: 0.1 }}
+                                className="rounded-2xl border border-[#E5E7EB] bg-white p-7"
+                            >
+                                <div className="mb-5 flex items-center gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FEE2E2]">
+                                        <XMarkIcon className="size-5 text-[#EF4444]" />
+                                    </div>
+                                    <h3 className="text-[17px] font-bold text-[#1A1F36]">
+                                        Avant Two-Step
+                                    </h3>
+                                </div>
+                                <ul className="space-y-3.5">
+                                    {beforeAfter.before.map((item) => (
+                                        <li
+                                            key={item}
+                                            className="flex items-start gap-3 text-[14px] leading-snug text-[#6B7280]"
+                                        >
+                                            <XMarkIcon className="mt-0.5 size-4 shrink-0 text-[#D1D5DB]" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+
+                            {/* After */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 30 }}
+                                animate={compareInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ ...SPRING, delay: 0.2 }}
+                                className="rounded-2xl border border-[#4268FF]/20 bg-white p-7 shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
+                            >
+                                <div className="mb-5 flex items-center gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4268FF]/10">
+                                        <CheckIcon className="size-5 text-[#4268FF]" />
+                                    </div>
+                                    <h3 className="text-[17px] font-bold text-[#1A1F36]">
+                                        Avec Two-Step
+                                    </h3>
+                                </div>
+                                <ul className="space-y-3.5">
+                                    {beforeAfter.after.map((item) => (
+                                        <li
+                                            key={item}
+                                            className="flex items-start gap-3 text-[14px] leading-snug text-[#374151]"
+                                        >
+                                            <CheckIcon className="mt-0.5 size-4 shrink-0 text-[#4268FF]" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── Stats ── */}
+                <section
+                    ref={statsRef}
+                    className="bg-white px-6 py-16 md:px-12 md:py-24"
+                >
+                    <div className="mx-auto max-w-[900px]">
+                        <div className="grid gap-8 md:grid-cols-3">
+                            {stats.map((stat, i) => {
+                                const su = slideUp(stagger(i, 0.1));
+                                return (
+                                    <motion.div
+                                        key={stat.label}
+                                        initial={su.initial}
+                                        animate={statsInView ? su.animate : su.initial}
+                                        transition={su.transition}
+                                        className="text-center"
+                                    >
+                                        <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[52px]">
+                                            {stat.value}
+                                        </p>
+                                        <p className="mt-2 text-[15px] font-medium text-[#6B7280]">
+                                            {stat.label}
+                                        </p>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── Bottom CTA ── */}
+                <section className="relative px-6 py-16 text-center md:px-12 md:py-20" style={{ background: "#1A1F36" }}>
                     <div
                         className="pointer-events-none absolute inset-0"
                         style={{
                             background:
-                                "radial-gradient(ellipse at 50% 40%, rgba(66,104,255,0.12) 0%, transparent 70%)",
+                                "radial-gradient(ellipse at 50% 50%, rgba(66,104,255,0.12) 0%, transparent 60%)",
                         }}
                     />
-
-                    <h2 className="relative mx-auto max-w-md text-[22px] font-[900] leading-tight tracking-tight text-white md:text-[28px]">
-                        Pr&ecirc;t &agrave; rendre votre stock visible ?
-                    </h2>
-                    <p className="relative mt-3 text-[13px] text-white/80">
-                        Connexion en 2 minutes. Gratuit pour d&eacute;marrer.
-                    </p>
-                    <div className="relative mt-6">
-                        <Link
-                            href="/onboarding"
-                            className="inline-block rounded-xl bg-[#4268FF] px-7 py-3 text-[14px] font-[800] text-white transition-colors duration-200 hover:bg-[#3558e6]"
-                        >
-                            Connecter ma boutique &rarr;
-                        </Link>
+                    <div className="relative z-10">
+                        <h2 className="mx-auto max-w-md text-[22px] font-black leading-tight tracking-tight text-white md:text-[28px]">
+                            Pr&ecirc;t &agrave; rendre votre stock visible ?
+                        </h2>
+                        <p className="mt-3 text-[14px] text-white/50">
+                            3 mois gratuits. Sans engagement. En 2 minutes.
+                        </p>
+                        <div className="mt-6">
+                            <Link
+                                href="/onboarding"
+                                className="inline-block rounded-xl bg-[#4268FF] px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#3558e6]"
+                            >
+                                Connecter ma boutique &rarr;
+                            </Link>
+                        </div>
                     </div>
-                </motion.section>
+                </section>
             </main>
             <Footer />
         </LenisProvider>
