@@ -27,7 +27,7 @@ export function Nav() {
                 "flex items-center justify-between",
                 "px-6 md:px-12 h-16",
                 "transition-[background-color,backdrop-filter,box-shadow] duration-300",
-                scrolled
+                scrolled || mobileOpen
                     ? "bg-[#1A1F36]/85 backdrop-blur-xl shadow-[0_2px_24px_rgba(0,0,0,0.25)]"
                     : "bg-transparent",
             ].join(" ")}
