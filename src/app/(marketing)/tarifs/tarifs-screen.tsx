@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { slideUp, stagger } from "@/lib/motion";
 import { Nav } from "../sections/nav";
@@ -161,11 +161,7 @@ function FAQItem({ q, a, delay }: { q: string; a: string; delay: number }) {
 /* ── Page ──────────────────────────────────────────────────────────── */
 
 export default function TarifsScreen() {
-    const heroRef = useRef<HTMLElement>(null);
-    const heroInView = useInView(heroRef, { once: true, margin: "-10%" });
     const tableRef = useRef<HTMLDivElement>(null);
-    const faqRef = useRef<HTMLDivElement>(null);
-    const faqInView = useInView(faqRef, { once: true, margin: "-10%" });
 
     return (
         <LenisProvider>
@@ -173,15 +169,14 @@ export default function TarifsScreen() {
             <main id="tarifs" className="bg-white">
 
                 {/* ── Hero ── */}
-                <section ref={heroRef} className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14">
-                    <motion.div {...slideUp(0)} animate={heroInView ? slideUp(0).animate : slideUp(0).initial}>
+                <section className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14">
+                    <motion.div {...slideUp(0)}>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
                             Gratuit pendant 3 mois
                         </span>
                     </motion.div>
                     <motion.h1
                         {...slideUp(0.05)}
-                        animate={heroInView ? slideUp(0.05).animate : slideUp(0.05).initial}
                         className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
                     >
                         Un prix simple.<br />
@@ -189,7 +184,6 @@ export default function TarifsScreen() {
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
-                        animate={heroInView ? slideUp(0.1).animate : slideUp(0.1).initial}
                         className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
                     >
                         Un seul client ramené en boutique rembourse votre mois. Essayez gratuitement, sans carte bancaire.
@@ -200,13 +194,10 @@ export default function TarifsScreen() {
                 <section className="mx-auto max-w-[1100px] px-6 pb-16 md:px-12 md:pb-20">
                     <div className="grid gap-8 md:grid-cols-3 items-start">
                         {tiers.map((tier, i) => {
-                            const su = slideUp(stagger(i, 0.12));
                             return (
                                 <motion.div
                                     key={tier.name}
-                                    initial={su.initial}
-                                    animate={heroInView ? su.animate : su.initial}
-                                    transition={su.transition}
+                                    {...slideUp(stagger(i, 0.12))}
                                     className={[
                                         "relative flex flex-col rounded-2xl border",
                                         tier.highlighted
@@ -319,13 +310,12 @@ export default function TarifsScreen() {
                 <section className="mx-auto max-w-[640px] px-6 pb-20 md:px-12 md:pb-28">
                     <motion.h2
                         {...slideUp(0)}
-                        animate={faqInView ? slideUp(0).animate : slideUp(0).initial}
                         className="text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]"
                     >
                         Questions fréquentes
                     </motion.h2>
 
-                    <div ref={faqRef} className="mt-8">
+                    <div className="mt-8">
                         {faqs.map((faq, i) => (
                             <FAQItem key={faq.q} q={faq.q} a={faq.a} delay={stagger(i, 0.08)} />
                         ))}
