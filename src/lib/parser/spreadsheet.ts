@@ -133,7 +133,7 @@ export const spreadsheetParser: IInvoiceParser = {
 
         // If we found at least the product name column, extract structured data directly
         if (mapping.name !== null) {
-            console.log("[spreadsheet-parser] Headers detected, extracting structured data directly");
+            // Headers detected, extracting structured data directly
             const items = extractStructured(rows, mapping);
 
             if (items.length === 0) {
@@ -148,7 +148,7 @@ export const spreadsheetParser: IInvoiceParser = {
         }
 
         // Headers not recognized: convert to text and fall through to AI parsers
-        console.log("[spreadsheet-parser] Headers not recognized, falling through to AI parsers");
+        // Headers not recognized — fall through to AI parsers
         const textContent = sheetToText(rows);
 
         if (!textContent.trim()) {
