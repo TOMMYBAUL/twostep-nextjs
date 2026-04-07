@@ -43,6 +43,15 @@ export async function POST(request: Request) {
 
             if (!product) continue;
 
+            // Read current stock before update
+            const { data: currentStock } = await supabase
+                .from("stock")
+                .select("quantity")
+                .eq("product_id", product.id)
+                .single();
+
+            const previousQty = currentStock?.quantity ?? 0;
+
             // Atomic stock update
             await supabase.from("stock").upsert({
                 product_id: product.id,
@@ -52,15 +61,17 @@ export async function POST(request: Request) {
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);
 
-            // Emit restock feed_event
-            await supabase.from("feed_events").insert({
-                merchant_id: product.merchant_id,
-                product_id: product.id,
-                event_type: "restock",
-            });
+            // Emit restock feed_event only when stock goes from 0 to positive
+            if (previousQty === 0 && update.quantity > 0) {
+                await supabase.from("feed_events").insert({
+                    merchant_id: product.merchant_id,
+                    product_id: product.id,
+                    event_type: "restock",
+                });
+            }
 
-            // Push notification to users who favorited this product
-            if (update.quantity > 0) {
+            // Push notification only when back in stock (was 0, now positive)
+            if (previousQty === 0 && update.quantity > 0) {
                 const { data: productInfo } = await supabase
                     .from("products")
                     .select("name")
