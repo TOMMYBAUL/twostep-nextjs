@@ -12,7 +12,7 @@ const highlights = [
         prefix: "+",
         display: null,
         label: "Commerces déjà compatibles",
-        sub: "Square · Shopify · Lightspeed · Zettle · Fastmag · Clictill",
+        sub: "Square · Shopify · Lightspeed · Zettle · Fastmag · Clictill (bientôt)",
         color: "#FFFFFF",
     },
     {

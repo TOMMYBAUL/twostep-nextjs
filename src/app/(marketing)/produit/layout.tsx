@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Produit — Votre caisse, connectée au monde | Two-Step",
         description:
-            "Synchronisation POS automatique, enrichissement IA, diffusion multi-canal. Compatible Square, Shopify, Lightspeed, Zettle, Fastmag, Clictill.",
+            "Synchronisation POS automatique, enrichissement IA, diffusion multi-canal. Compatible Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt.",
     },
 };
 

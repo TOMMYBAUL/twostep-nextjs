@@ -48,7 +48,7 @@ const steps = [
     {
         number: "1",
         title: "Connectez votre caisse",
-        desc: "Square, Shopify, Lightspeed, Zettle, Fastmag ou Clictill",
+        desc: "Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt",
     },
     {
         number: "2",

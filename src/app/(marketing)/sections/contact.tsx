@@ -7,7 +7,7 @@ import Link from "next/link";
 import { slideUp } from "@/lib/motion";
 
 const bullets = [
-    "Compatible Square, Shopify, Lightspeed, Zettle, Fastmag, Clictill",
+    "Compatible Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt",
     "Stock synchronisé automatiquement en temps réel",
     "Enrichissement IA : photos, catégories, tailles",
     "Diffusion Google Merchant, Google Maps, app Two-Step",
