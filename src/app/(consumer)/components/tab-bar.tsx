@@ -8,8 +8,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const tabs = [
-    { href: "/discover", label: "Accueil", icon: Home02 },
     { href: "/explore", label: "Recherche", icon: SearchMd },
+    { href: "/discover", label: "Explorer", icon: Home02 },
     { href: "/search?filter=promos", label: "Promos", icon: Tag01 },
     { href: "/profile", label: "Profil", icon: User01 },
 ] as const;
