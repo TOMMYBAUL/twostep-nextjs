@@ -48,6 +48,21 @@ export async function resolveProductId(slugOrId: string): Promise<string | null>
         return data?.id ?? null;
     }
 
+    // Try exact slug match first
     const { data } = await supabase.from("products").select("id").eq("slug", slugOrId).single();
-    return data?.id ?? null;
+    if (data?.id) return data.id;
+
+    // Fallback: extract the 8-char ID suffix from the slug and search by ID prefix
+    const idSuffix = slugOrId.slice(-8);
+    if (/^[0-9a-f]{8}$/i.test(idSuffix)) {
+        const { data: fallback } = await supabase
+            .from("products")
+            .select("id")
+            .like("id", `${idSuffix}%`)
+            .limit(1)
+            .single();
+        return fallback?.id ?? null;
+    }
+
+    return null;
 }
