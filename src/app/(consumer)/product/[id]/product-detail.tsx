@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, ChevronRight, Phone01, XClose, Building07, AlertCircle, Lightning02 } from "@untitledui/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
@@ -71,6 +71,7 @@ const SPRING_SHEET = { type: "spring" as const, damping: 28, stiffness: 300 };
 
 export default function ProductDetailClient() {
     const { id } = useParams<{ id: string }>();
+    const router = useRouter();
     const prefersReducedMotion = useReducedMotion();
     const { position: userPosition } = useGeolocation();
 
@@ -84,8 +85,13 @@ export default function ProductDetailClient() {
         queryKey: ["product", id],
         queryFn: async () => {
             const res = await fetch(`/api/products/${id}`);
-            if (!res.ok) throw new Error("Failed");
             const json = await res.json();
+            // Variant redirect: API returns 301 with redirect path
+            if (json.redirect) {
+                router.replace(json.redirect);
+                return null as any;
+            }
+            if (!res.ok) throw new Error("Failed");
             return json.product;
         },
     });

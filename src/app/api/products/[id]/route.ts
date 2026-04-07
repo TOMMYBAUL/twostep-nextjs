@@ -27,6 +27,29 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             .single();
 
         if (error || !data) {
+            // If not found, check if it's a hidden variant → redirect to principal product
+            const admin = createAdminClient();
+            const { data: variant } = await admin
+                .from("products")
+                .select("variant_of, slug")
+                .eq("id", productId)
+                .not("variant_of", "is", null)
+                .single();
+
+            if (variant?.variant_of) {
+                const { data: principal } = await admin
+                    .from("products")
+                    .select("slug")
+                    .eq("id", variant.variant_of)
+                    .single();
+                if (principal?.slug) {
+                    return NextResponse.json(
+                        { redirect: `/product/${principal.slug}` },
+                        { status: 301 },
+                    );
+                }
+            }
+
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 

@@ -18,6 +18,7 @@ const getProduct = React.cache(async function getProduct(slugOrId: string) {
         .from("products")
         .select("slug, name, canonical_name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
         .eq("id", resolvedId)
+        .eq("visible", true)
         .single();
     return data;
 });
