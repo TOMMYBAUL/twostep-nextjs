@@ -40,6 +40,10 @@ export function WelcomeGate() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        if (mode === "signup" && password.length < 8) {
+            setError("Le mot de passe doit contenir au moins 8 caractères");
+            return;
+        }
         setLoading(true);
         try {
             const supabase = createClient();
