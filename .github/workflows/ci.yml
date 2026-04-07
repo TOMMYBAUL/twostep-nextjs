@@ -23,7 +23,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: TypeScript check
-        run: npx tsc --noEmit
+        run: node --max-old-space-size=4096 ./node_modules/.bin/tsc --noEmit
 
       - name: Tests
         run: npm run test:run
