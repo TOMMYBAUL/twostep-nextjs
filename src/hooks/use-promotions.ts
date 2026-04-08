@@ -7,17 +7,16 @@ type PromotionWithProduct = Promotion & {
     products: { name: string; canonical_name: string | null; price: number | null; photo_url: string | null; merchant_id: string };
 };
 
-export function usePromotions(merchantId: string | undefined) {
+export function usePromotions(_merchantId?: string | undefined) {
     const [promotions, setPromotions] = useState<PromotionWithProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchPromotions = useCallback(async () => {
-        if (!merchantId) return;
         setLoading(true);
         setError(null);
         try {
-            const res = await window.fetch(`/api/promotions?merchant_id=${merchantId}`);
+            const res = await window.fetch("/api/promotions");
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
             setPromotions(data.promotions ?? []);
@@ -26,7 +25,7 @@ export function usePromotions(merchantId: string | undefined) {
         } finally {
             setLoading(false);
         }
-    }, [merchantId]);
+    }, []);
 
     useEffect(() => { fetchPromotions(); }, [fetchPromotions]);
 

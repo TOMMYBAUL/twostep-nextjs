@@ -4,24 +4,29 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { promotionBody, parseBody } from "@/lib/validation";
 import { notifyMerchantFollowers } from "@/lib/push-send";
-import { resolveMerchantId } from "@/lib/slug";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         const supabase = await createClient();
-        const { searchParams } = new URL(request.url);
-        const merchantIdParam = searchParams.get("merchant_id");
+        const { data: { user } } = await supabase.auth.getUser();
 
-        if (!merchantIdParam) {
-            return NextResponse.json({ error: "merchant_id is required" }, { status: 400 });
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const merchantId = await resolveMerchantId(merchantIdParam);
-        if (!merchantId) {
-            return NextResponse.json({ promotions: [] });
+        // Resolve the merchant belonging to this authenticated user
+        const { data: merchant } = await supabase
+            .from("merchants")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+        if (!merchant) {
+            return NextResponse.json({ error: "Merchant not found" }, { status: 403 });
         }
 
-        const { data: products } = await supabase.from("products").select("id").eq("merchant_id", merchantId);
+        const { data: products } = await supabase.from("products").select("id").eq("merchant_id", merchant.id);
         const productIds = (products ?? []).map((p) => p.id);
 
         if (productIds.length === 0) {
@@ -46,6 +51,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "promotions:post", 10);
+    if (limited) return limited;
+
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

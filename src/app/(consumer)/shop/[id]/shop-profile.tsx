@@ -16,6 +16,7 @@ import { cx } from "@/utils/cx";
 import { ShopBadges } from "@/components/shop/shop-badges";
 import { SuggestionDrawer } from "../../components/suggestion-drawer";
 import { ProductCard } from "../../components/product-card";
+import { createClient } from "@/lib/supabase/client";
 
 interface MerchantProfile {
     merchant_id: string;
@@ -85,10 +86,19 @@ export default function ShopProfileClient() {
     const { data: promotions } = useQuery<Promotion[]>({
         queryKey: ["merchant-promos", profile?.merchant_id],
         queryFn: async () => {
-            const res = await fetch(`/api/promotions?merchant_id=${profile!.merchant_id}`);
-            if (!res.ok) throw new Error("Failed");
-            const json = await res.json();
-            return json.promotions;
+            const supabase = createClient();
+            const { data: products } = await supabase
+                .from("products")
+                .select("id")
+                .eq("merchant_id", profile!.merchant_id);
+            const productIds = (products ?? []).map((p) => p.id);
+            if (productIds.length === 0) return [];
+            const { data } = await supabase
+                .from("promotions")
+                .select("id, product_id, sale_price")
+                .in("product_id", productIds)
+                .or("ends_at.is.null,ends_at.gt.now()");
+            return data ?? [];
         },
         enabled: !!profile?.merchant_id,
     });
