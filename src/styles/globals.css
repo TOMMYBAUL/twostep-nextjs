@@ -116,8 +116,10 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-/* ── Tab bar safe area (iOS PWA) — DISABLED for testing ── */
-/* .ts-tab-bar { padding-bottom: env(safe-area-inset-bottom, 0px); } */
+/* ── Tab bar safe area (iOS PWA) ── */
+.ts-tab-bar {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
 /* Hide the default clear button (X) from search inputs. */
 input[type="search"]::-webkit-search-cancel-button {
