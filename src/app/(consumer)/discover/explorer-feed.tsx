@@ -9,7 +9,6 @@ import { ProductCardSkeleton, PromoCardSkeleton } from "../components/feed-skele
 import { generateSlug } from "@/lib/slug";
 import type { DiscoverProduct } from "./types";
 import type { Filters } from "../components/filter-panel";
-import type { FollowItem } from "../types";
 import { InfiniteProductGrid } from "./infinite-product-grid";
 
 interface ExplorerFeedProps {
@@ -18,7 +17,6 @@ interface ExplorerFeedProps {
     trending: DiscoverProduct[] | undefined;
     loadingTrending: boolean;
     nearby: DiscoverProduct[] | undefined;
-    follows: FollowItem[] | undefined;
     activeCategory: string | null;
     activeSize: string | null;
     lat: number;
@@ -34,7 +32,6 @@ export function ExplorerFeed({
     trending,
     loadingTrending,
     nearby,
-    follows,
     activeCategory,
     activeSize,
     lat,
@@ -195,38 +192,6 @@ export function ExplorerFeed({
                 </section>
             )}
 
-            {/* ── 4. Tes boutiques (followed shops) ── */}
-            {follows && follows.length > 0 && (
-                <section className="px-4">
-                    <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Tes boutiques</h2>
-                    <div className="mt-3 flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
-                        {follows.map((f) => {
-                            const merchant = f.merchants;
-                            if (!merchant) return null;
-                            return (
-                                <Link
-                                    key={f.merchant_id}
-                                    href={`/shop/${generateSlug(merchant.name || "", f.merchant_id)}`}
-                                    className="flex w-16 shrink-0 flex-col items-center gap-1.5 rounded-xl focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
-                                >
-                                    <div className="relative size-14 overflow-hidden rounded-full bg-secondary ring-2 ring-brand/20">
-                                        {merchant.photo_url ? (
-                                            <Image src={merchant.photo_url} alt={merchant.name} fill sizes="56px" className="object-cover" />
-                                        ) : (
-                                            <div className="flex h-full items-center justify-center font-[family-name:var(--font-barlow)] text-base font-bold text-brand-secondary">
-                                                {merchant.name.charAt(0)}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <span className="w-full truncate text-center font-[family-name:var(--font-inter)] text-[10px] font-medium text-quaternary">
-                                        {merchant.name}
-                                    </span>
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </section>
-            )}
 
             {/* ── 5. Tout près de toi — infinite scroll ── */}
             <InfiniteProductGrid lat={lat} lng={lng} category={activeCategory} size={activeSize} filters={filters} favoriteIds={favoriteIds} onToggleFav={onToggleFav} />

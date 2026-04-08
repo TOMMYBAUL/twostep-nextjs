@@ -211,7 +211,6 @@ function DiscoverContent() {
                     trending={trending}
                     loadingTrending={loadingTrending}
                     nearby={nearby}
-                    follows={follows}
                     activeCategory={activeCategory}
                     activeSize={activeSize}
                     lat={lat}
