@@ -28,14 +28,37 @@ export async function syncMerchantPOS(
     const supabase = await createClient();
     const adapter = getAdapter(provider);
 
+    // ─── Acquire sync lock (advisory via syncing_since) ─────────
+    const LOCK_TIMEOUT_MIN = 10;
+    const staleThreshold = new Date(Date.now() - LOCK_TIMEOUT_MIN * 60_000).toISOString();
+    const { data: lockRows } = await supabase
+        .from("pos_connections")
+        .update({ syncing_since: new Date().toISOString() })
+        .eq("merchant_id", merchantId)
+        .eq("provider", provider)
+        .or(`syncing_since.is.null,syncing_since.lt.${staleThreshold}`)
+        .select("id");
+
+    if (!lockRows || lockRows.length === 0) {
+        // Another sync is running for this merchant — skip
+        return {
+            products_created: 0,
+            products_updated: 0,
+            stock_updated: 0,
+            promos_imported: 0,
+            products_enriched: 0,
+        };
+    }
+
+    const connId = lockRows[0].id;
+
     try {
         // ─── Token retrieval & refresh ───────────────────────────────
 
         const { data: conn, error: connError } = await supabase
             .from("pos_connections")
             .select("id, access_token, refresh_token, expires_at, shop_domain")
-            .eq("merchant_id", merchantId)
-            .eq("provider", provider)
+            .eq("id", connId)
             .single();
 
         if (connError || !conn) {
@@ -180,8 +203,8 @@ export async function syncMerchantPOS(
 
         await supabase
             .from("pos_connections")
-            .update({ last_sync_at: now, last_sync_status: "success", last_sync_error: null })
-            .eq("id", conn.id);
+            .update({ last_sync_at: now, last_sync_status: "success", last_sync_error: null, syncing_since: null })
+            .eq("id", connId);
 
         await supabase
             .from("merchants")
@@ -196,7 +219,7 @@ export async function syncMerchantPOS(
 
         await supabase
             .from("pos_connections")
-            .update({ last_sync_status: "error", last_sync_error: message })
+            .update({ last_sync_status: "error", last_sync_error: message, syncing_since: null })
             .eq("merchant_id", merchantId)
             .eq("provider", provider);
 
