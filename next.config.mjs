@@ -6,6 +6,7 @@ const nextConfig = {
     images: {
         formats: ["image/avif", "image/webp"],
         remotePatterns: [
+            // ── Static / known ────────────────────────────────
             {
                 protocol: "https",
                 hostname: "images.unsplash.com",
@@ -16,6 +17,11 @@ const nextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "pub-13766eebd79a46e19db13146812e9218.r2.dev",
+            },
+            // ── POS CDNs ──────────────────────────────────────
+            {
+                protocol: "https",
                 hostname: "cdn.shopify.com",
             },
             {
@@ -24,40 +30,34 @@ const nextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "connect.squareupsandbox.com",
+            },
+            {
+                protocol: "https",
+                hostname: "items-images-production.s3.us-west-2.amazonaws.com", // Square product images
+            },
+            {
+                protocol: "https",
+                hostname: "image.izettle.com",
+            },
+            {
+                protocol: "https",
+                hostname: "**.lightspeedapp.com",
+            },
+            {
+                protocol: "https",
+                hostname: "**.fastmag.fr",
+            },
+            // ── Google ────────────────────────────────────────
+            {
+                protocol: "https",
                 hostname: "lh3.googleusercontent.com",
             },
+            // ── EAN / UPCitemdb / OpenEAN — images come from
+            //    any retailer domain, so we allow all HTTPS ───
             {
                 protocol: "https",
-                hostname: "assets.adidas.com",
-            },
-            // UPCitemdb product photos (screenshots temporaires)
-            {
-                protocol: "https",
-                hostname: "n.nordstrommedia.com",
-            },
-            {
-                protocol: "https",
-                hostname: "i5.walmartimages.com",
-            },
-            {
-                protocol: "https",
-                hostname: "media.finishline.com",
-            },
-            {
-                protocol: "https",
-                hostname: "slimages.macysassets.com",
-            },
-            {
-                protocol: "http",
-                hostname: "content.nordstrom.com",
-            },
-            {
-                protocol: "http",
-                hostname: "site.unbeatablesale.com",
-            },
-            {
-                protocol: "https",
-                hostname: "pub-13766eebd79a46e19db13146812e9218.r2.dev",
+                hostname: "**",
             },
         ],
     },
