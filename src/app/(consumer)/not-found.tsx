@@ -11,7 +11,7 @@ export default function ConsumerNotFound() {
                 Cette page n&apos;existe pas ou a été déplacée.
             </p>
             <Link
-                href="/discover"
+                href="/explore"
                 className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--ts-accent)] px-5 py-2.5 text-sm font-semibold text-white transition duration-150 active:opacity-90"
             >
                 Retour à l&apos;accueil

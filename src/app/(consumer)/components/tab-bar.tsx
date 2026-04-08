@@ -28,8 +28,8 @@ function TabBarInner() {
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
                     const isActive =
-                        tab.href === "/discover"
-                            ? pathname === "/discover" || pathname === "/"
+                        tab.href === "/explore"
+                            ? pathname === "/explore" || pathname === "/"
                             : tab.href.startsWith("/search")
                                 ? pathname === "/search" && searchParams.get("filter") === "promos"
                                 : pathname.startsWith(tab.href);

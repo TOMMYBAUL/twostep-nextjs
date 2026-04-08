@@ -81,7 +81,7 @@ export function Nav() {
                     Connexion
                 </Link>
                 <Link
-                    href="/discover"
+                    href="/explore"
                     className="hidden md:inline-block px-4 py-2 rounded-lg bg-brand-solid text-white text-[13px] font-bold no-underline hover:bg-brand-solid_hover transition-colors duration-150"
                 >
                     Découvrir
@@ -132,7 +132,7 @@ export function Nav() {
                             Connexion
                         </Link>
                         <Link
-                            href="/discover"
+                            href="/explore"
                             onClick={() => setMobileOpen(false)}
                             className="mt-1 rounded-xl bg-brand-solid px-4 py-3 text-center text-[15px] font-bold text-white no-underline hover:bg-brand-solid_hover transition"
                         >
