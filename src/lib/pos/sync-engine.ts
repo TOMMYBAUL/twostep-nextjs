@@ -195,6 +195,19 @@ export async function syncMerchantPOS(
             }
         }
 
+        // ─── Mark removed POS products as invisible ─────────────────
+        const currentPosItemIds = new Set(catalog.map((p) => p.pos_item_id));
+        const orphanIds = (existingProducts ?? [])
+            .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
+            .map((p) => p.id);
+
+        if (orphanIds.length > 0) {
+            await supabase
+                .from("products")
+                .update({ visible: false })
+                .in("id", orphanIds);
+        }
+
         // ─── Promos sync ─────────────────────────────────────────────
 
         for (const promo of promos) {
