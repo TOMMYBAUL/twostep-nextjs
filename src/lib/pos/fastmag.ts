@@ -152,8 +152,13 @@ function parseEdiResponse(raw: string): string[][] {
 const ARTICLES_SQL = `SELECT a.Reference, a.Designation, a.CodeBarre, a.PrixTTC, a.Famille, a.SousFamille, a.Marque, a.ImageURL FROM Articles a WHERE a.Actif = 1 ORDER BY a.Reference`;
 
 // Stock: reference, magasin, quantite
+// Sanitize refs: only allow alphanumeric + dash/underscore/dot (prevents SQL injection)
+function sanitizeRef(ref: string): string {
+    return ref.replace(/[^a-zA-Z0-9\-_.]/g, "");
+}
+
 const STOCK_SQL = (refs: string[]) =>
-    `SELECT s.Reference, s.Magasin, s.Quantite FROM Stock s WHERE s.Reference IN ('${refs.map(r => r.replace(/'/g, "''")).join("','")}')`;
+    `SELECT s.Reference, s.Magasin, s.Quantite FROM Stock s WHERE s.Reference IN ('${refs.map(sanitizeRef).join("','")}')`;
 
 // ── Adapter ────────────────────────────────────────────────────
 

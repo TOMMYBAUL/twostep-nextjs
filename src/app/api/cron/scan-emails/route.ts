@@ -261,3 +261,5 @@ export async function POST(request: NextRequest) {
         deliveries_confirmed: totalDeliveries,
     });
 }
+
+export { POST as GET };
