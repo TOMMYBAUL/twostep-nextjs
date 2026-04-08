@@ -116,16 +116,16 @@ function StepRow({
         >
             <div
                 className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
-                    step.num === 1 ? "bg-[#4268FF] text-white" : "bg-[#1A1A1A] text-white"
+                    step.num === 1 ? "bg-brand-solid text-white" : "bg-[#1A1A1A] text-white"
                 }`}
             >
                 {step.num}
             </div>
             <div>
-                <h3 className="mb-2 text-[17px] font-bold leading-snug tracking-tight text-[#1A1A1A]">
+                <h3 className="mb-2 text-[17px] font-bold leading-snug tracking-tight text-primary">
                     {step.title}
                 </h3>
-                <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                <p className="m-0 text-[14px] leading-relaxed text-tertiary">
                     {step.desc}
                 </p>
             </div>
@@ -188,16 +188,16 @@ function MobileStep({ step, index }: { step: (typeof steps)[number]; index: numb
             <div className="flex gap-4">
                 <div
                     className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
-                        step.num === 1 ? "bg-[#4268FF] text-white" : "bg-[#1A1A1A] text-white"
+                        step.num === 1 ? "bg-brand-solid text-white" : "bg-[#1A1A1A] text-white"
                     }`}
                 >
                     {step.num}
                 </div>
                 <div>
-                    <h3 className="mb-1.5 text-[17px] font-bold leading-snug tracking-tight text-[#1A1A1A]">
+                    <h3 className="mb-1.5 text-[17px] font-bold leading-snug tracking-tight text-primary">
                         {step.title}
                     </h3>
-                    <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                    <p className="m-0 text-[14px] leading-relaxed text-tertiary">
                         {step.desc}
                     </p>
                 </div>
@@ -227,10 +227,10 @@ export function How() {
                     transition={{ ...SPRING }}
                     className="mb-14"
                 >
-                    <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]">
+                    <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary">
                         COMMENT ÇA MARCHE
                     </p>
-                    <h2 className="m-0 text-[22px] font-[900] tracking-tight text-[#1A1A1A] md:text-[36px]">
+                    <h2 className="m-0 text-[22px] font-[900] tracking-tight text-primary md:text-[36px]">
                         En 3 étapes
                     </h2>
                 </motion.div>

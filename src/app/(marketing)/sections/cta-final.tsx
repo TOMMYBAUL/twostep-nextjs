@@ -36,7 +36,7 @@ export function CTAFinal() {
             <div className="relative mt-6">
                 <Link
                     href="/discover"
-                    className="inline-block rounded-xl bg-[#4268FF] px-7 py-3 text-[14px] font-[800] text-white transition-colors duration-200 hover:bg-[#3558e6]"
+                    className="inline-block rounded-xl bg-brand-solid px-7 py-3 text-[14px] font-[800] text-white transition-colors duration-200 hover:bg-brand-solid_hover"
                 >
                     Découvrir →
                 </Link>

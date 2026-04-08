@@ -82,7 +82,7 @@ export function Nav() {
                 </Link>
                 <Link
                     href="/discover"
-                    className="hidden md:inline-block px-4 py-2 rounded-lg bg-[#4268FF] text-white text-[13px] font-bold no-underline hover:bg-[#3558e6] transition-colors duration-150"
+                    className="hidden md:inline-block px-4 py-2 rounded-lg bg-brand-solid text-white text-[13px] font-bold no-underline hover:bg-brand-solid_hover transition-colors duration-150"
                 >
                     Découvrir
                 </Link>
@@ -134,7 +134,7 @@ export function Nav() {
                         <Link
                             href="/discover"
                             onClick={() => setMobileOpen(false)}
-                            className="mt-1 rounded-xl bg-[#4268FF] px-4 py-3 text-center text-[15px] font-bold text-white no-underline hover:bg-[#3558e6] transition"
+                            className="mt-1 rounded-xl bg-brand-solid px-4 py-3 text-center text-[15px] font-bold text-white no-underline hover:bg-brand-solid_hover transition"
                         >
                             Découvrir les boutiques
                         </Link>

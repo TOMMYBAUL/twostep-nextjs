@@ -116,7 +116,7 @@ const faqs = [
 
 function CheckIcon({ className }: { className?: string }) {
     return (
-        <svg className={className || "size-5 text-[#4268FF]"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg className={className || "size-5 text-brand-secondary"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
     );
@@ -133,14 +133,14 @@ function XIcon({ className }: { className?: string }) {
 function FAQItem({ q, a, delay }: { q: string; a: string; delay: number }) {
     const [open, setOpen] = useState(false);
     return (
-        <motion.div {...slideUp(delay)} className="border-b border-[#E5E7EB] last:border-b-0">
+        <motion.div {...slideUp(delay)} className="border-b border-secondary last:border-b-0">
             <button
                 onClick={() => setOpen(!open)}
                 className="flex w-full items-center justify-between py-5 text-left"
             >
-                <span className="text-[15px] font-semibold text-[#1A1F36]">{q}</span>
+                <span className="text-[15px] font-semibold text-primary">{q}</span>
                 <span
-                    className="ml-4 shrink-0 text-[18px] text-[#1A1F36]/50 transition-transform duration-200"
+                    className="ml-4 shrink-0 text-[18px] text-primary/50 transition-transform duration-200"
                     style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)" }}
                 >
                     +
@@ -152,7 +152,7 @@ function FAQItem({ q, a, delay }: { q: string; a: string; delay: number }) {
                 transition={{ duration: 0.25, ease: "easeInOut" }}
                 className="overflow-hidden"
             >
-                <p className="pb-5 text-[14px] leading-relaxed text-[#1A1F36]/60">{a}</p>
+                <p className="pb-5 text-[14px] leading-relaxed text-tertiary">{a}</p>
             </motion.div>
         </motion.div>
     );
@@ -171,20 +171,20 @@ export default function TarifsScreen() {
                 {/* ── Hero ── */}
                 <section className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14">
                     <motion.div {...slideUp(0)}>
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary px-3.5 py-1 text-[12px] font-semibold text-brand-secondary">
                             Gratuit pendant 3 mois
                         </span>
                     </motion.div>
                     <motion.h1
                         {...slideUp(0.05)}
-                        className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
+                        className="mt-5 text-[32px] font-black leading-tight tracking-tight text-primary md:text-[48px]"
                     >
                         Un prix simple.<br />
-                        <span className="text-[#4268FF]">Un ROI immédiat.</span>
+                        <span className="text-brand-secondary">Un ROI immédiat.</span>
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
-                        className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
+                        className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-tertiary md:text-[17px]"
                     >
                         Un seul client ramené en boutique rembourse votre mois. Essayez gratuitement, sans carte bancaire.
                     </motion.p>
@@ -201,26 +201,26 @@ export default function TarifsScreen() {
                                     className={[
                                         "relative flex flex-col rounded-2xl border",
                                         tier.highlighted
-                                            ? "border-[#4268FF] shadow-[0_4px_24px_rgba(66,104,255,0.15)] p-7 pt-10 md:p-8 md:pt-11"
-                                            : "border-[#E5E7EB] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-7 md:p-8",
+                                            ? "border-brand shadow-[0_4px_24px_rgba(66,104,255,0.15)] p-7 pt-10 md:p-8 md:pt-11"
+                                            : "border-secondary shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-7 md:p-8",
                                     ].join(" ")}
                                 >
                                     {/* Badge */}
                                     {tier.badge && (
-                                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#4268FF] px-4 py-1.5 text-[11px] font-bold tracking-wide uppercase text-white">
+                                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-solid px-4 py-1.5 text-[11px] font-bold tracking-wide uppercase text-white">
                                             {tier.badge}
                                         </span>
                                     )}
 
                                     {/* Name + description */}
-                                    <h3 className="text-[18px] font-bold text-[#1A1F36]">{tier.name}</h3>
-                                    <p className="mt-2 min-h-[40px] text-[13px] leading-relaxed text-[#1A1F36]/50">{tier.description}</p>
+                                    <h3 className="text-[18px] font-bold text-primary">{tier.name}</h3>
+                                    <p className="mt-2 min-h-[40px] text-[13px] leading-relaxed text-tertiary">{tier.description}</p>
 
                                     {/* Price */}
                                     <div className="mt-5 flex items-baseline gap-1.5">
-                                        <span className="text-[40px] font-black tracking-tight text-[#1A1F36]">{tier.price}</span>
+                                        <span className="text-[40px] font-black tracking-tight text-primary">{tier.price}</span>
                                         {tier.priceDetail && (
-                                            <span className="text-[14px] text-[#1A1F36]/40">{tier.priceDetail}</span>
+                                            <span className="text-[14px] text-quaternary">{tier.priceDetail}</span>
                                         )}
                                     </div>
 
@@ -230,21 +230,21 @@ export default function TarifsScreen() {
                                         className={[
                                             "mt-6 block rounded-xl py-3.5 text-center text-[14px] font-bold transition duration-100 ease-linear no-underline",
                                             tier.highlighted
-                                                ? "bg-[#4268FF] text-white hover:bg-[#3558e6]"
-                                                : "border border-[#E5E7EB] text-[#1A1F36] hover:bg-[#F9FAFB]",
+                                                ? "bg-brand-solid text-white hover:bg-brand-solid_hover"
+                                                : "border border-secondary text-primary hover:bg-secondary",
                                         ].join(" ")}
                                     >
                                         {tier.cta}
                                     </Link>
 
                                     {/* Divider */}
-                                    <div className="my-6 h-px bg-[#E5E7EB]" />
+                                    <div className="my-6 h-px bg-secondary" />
 
                                     {/* Features */}
                                     <ul className="flex-1 space-y-3">
                                         {tier.features.map((f) => (
-                                            <li key={f.text} className="flex items-start gap-2.5 text-[14px] leading-snug text-[#1A1F36]/70">
-                                                <CheckIcon className="mt-0.5 size-4 shrink-0 text-[#4268FF]" />
+                                            <li key={f.text} className="flex items-start gap-2.5 text-[14px] leading-snug text-secondary">
+                                                <CheckIcon className="mt-0.5 size-4 shrink-0 text-brand-secondary" />
                                                 <span>{f.text}</span>
                                             </li>
                                         ))}
@@ -264,39 +264,39 @@ export default function TarifsScreen() {
                         { text: "Annulable à tout moment", path: "M6 18L18 6M6 6l12 12" },
                     ].map((s) => (
                         <div key={s.text} className="flex items-center gap-2">
-                            <svg className="size-5 shrink-0 text-[#4268FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="size-5 shrink-0 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d={s.path} />
                             </svg>
-                            <span className="text-[13px] font-medium text-[#6B7280]">{s.text}</span>
+                            <span className="text-[13px] font-medium text-tertiary">{s.text}</span>
                         </div>
                     ))}
                 </div>
 
                 {/* ── Comparison Table ── */}
                 <section ref={tableRef} className="mx-auto max-w-[900px] px-6 pb-20 md:px-12 md:pb-28">
-                    <h2 className="mb-8 text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]">
+                    <h2 className="mb-8 text-center text-[24px] font-bold text-primary md:text-[28px]">
                         Comparer les plans
                     </h2>
 
-                    <div className="overflow-x-auto rounded-xl border border-[#E5E7EB]">
+                    <div className="overflow-x-auto rounded-xl border border-secondary">
                         <table className="w-full text-left text-[14px]">
                             <thead>
-                                <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                                    <th className="px-5 py-4 font-semibold text-[#1A1F36]">Fonctionnalité</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-[#1A1F36]">Découverte</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-[#4268FF]">Pro</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-[#1A1F36]">Business</th>
+                                <tr className="border-b border-secondary bg-secondary">
+                                    <th className="px-5 py-4 font-semibold text-primary">Fonctionnalité</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-primary">Découverte</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-brand-secondary">Pro</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-primary">Business</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {comparisons.map((row, i) => (
-                                    <tr key={row.feature} className={i < comparisons.length - 1 ? "border-b border-[#F3F4F6]" : ""}>
-                                        <td className="px-5 py-3.5 text-[#1A1F36]/70">{row.feature}</td>
+                                    <tr key={row.feature} className={i < comparisons.length - 1 ? "border-b border-secondary" : ""}>
+                                        <td className="px-5 py-3.5 text-secondary">{row.feature}</td>
                                         {[row.free, row.pro, row.business].map((val, j) => (
                                             <td key={j} className="px-5 py-3.5 text-center">
-                                                {val === true ? <CheckIcon className="mx-auto size-4 text-[#4268FF]" /> :
+                                                {val === true ? <CheckIcon className="mx-auto size-4 text-brand-secondary" /> :
                                                  val === false ? <XIcon className="mx-auto size-4 text-[#D1D5DB]" /> :
-                                                 <span className="text-[13px] text-[#1A1F36]/60">{val}</span>}
+                                                 <span className="text-[13px] text-tertiary">{val}</span>}
                                             </td>
                                         ))}
                                     </tr>
@@ -310,7 +310,7 @@ export default function TarifsScreen() {
                 <section className="mx-auto max-w-[640px] px-6 pb-20 md:px-12 md:pb-28">
                     <motion.h2
                         {...slideUp(0)}
-                        className="text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]"
+                        className="text-center text-[24px] font-bold text-primary md:text-[28px]"
                     >
                         Questions fréquentes
                     </motion.h2>
@@ -334,7 +334,7 @@ export default function TarifsScreen() {
                         3 mois gratuits. Sans engagement. En 2 minutes.
                     </p>
                     <div className="mt-6">
-                        <Link href="/onboarding" className="inline-block rounded-xl bg-[#4268FF] px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#3558e6]">
+                        <Link href="/onboarding" className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover">
                             Commencer gratuitement →
                         </Link>
                     </div>

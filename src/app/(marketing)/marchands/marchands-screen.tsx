@@ -16,7 +16,7 @@ const problems = [
         solution:
             "Two-Step lit votre caisse et publie vos produits en ligne automatiquement. Zéro saisie.",
         icon: (
-            <svg className="size-6 text-[#4268FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="size-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242M21 21l-4.879-4.879" />
             </svg>
         ),
@@ -26,7 +26,7 @@ const problems = [
         solution:
             "Vos produits apparaissent sur Google, Google Maps et l'app Two-Step. Les clients à proximité vous trouvent.",
         icon: (
-            <svg className="size-6 text-[#4268FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="size-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -37,7 +37,7 @@ const problems = [
         solution:
             "Connexion en 2 minutes. Ensuite, tout est automatique. On enrichit même vos photos et descriptions avec l'IA.",
         icon: (
-            <svg className="size-6 text-[#4268FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="size-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
         ),
@@ -88,15 +88,15 @@ export default function MarchandsScreen() {
                     <motion.h1
                         {...slideUp(0)}
                         animate={heroInView ? slideUp(0).animate : slideUp(0).initial}
-                        className="mx-auto max-w-[640px] text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
+                        className="mx-auto max-w-[640px] text-[32px] font-black leading-tight tracking-tight text-primary md:text-[48px]"
                     >
                         Faites-vous trouver par vos{" "}
-                        <span className="text-[#4268FF]">futurs clients</span>
+                        <span className="text-brand-secondary">futurs clients</span>
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
                         animate={heroInView ? slideUp(0.1).animate : slideUp(0.1).initial}
-                        className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
+                        className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-tertiary md:text-[17px]"
                     >
                         Vos produits sont en boutique. Vos clients sont sur leur téléphone. Two-Step fait le lien.
                     </motion.p>
@@ -113,23 +113,23 @@ export default function MarchandsScreen() {
                                     initial={su.initial}
                                     animate={problemsInView ? su.animate : su.initial}
                                     transition={su.transition}
-                                    className="rounded-2xl border border-[#E5E7EB] p-6 shadow-[0_2px_16px_rgba(0,0,0,0.05)] md:p-7"
+                                    className="rounded-2xl border border-secondary p-6 shadow-[0_2px_16px_rgba(0,0,0,0.05)] md:p-7"
                                 >
                                     {/* Icon */}
-                                    <div className="flex size-10 items-center justify-center rounded-xl bg-[#4268FF]/10">
+                                    <div className="flex size-10 items-center justify-center rounded-xl bg-brand-primary">
                                         {item.icon}
                                     </div>
 
                                     {/* Problem */}
-                                    <h3 className="mt-4 text-[16px] font-bold text-[#1A1F36]">
+                                    <h3 className="mt-4 text-[16px] font-bold text-primary">
                                         {item.problem}
                                     </h3>
 
                                     {/* Divider */}
-                                    <div className="my-3 h-px bg-[#E5E7EB]" />
+                                    <div className="my-3 h-px bg-secondary" />
 
                                     {/* Solution */}
-                                    <p className="text-[14px] leading-relaxed text-[#1A1F36]/60">
+                                    <p className="text-[14px] leading-relaxed text-tertiary">
                                         {item.solution}
                                     </p>
                                 </motion.div>
@@ -180,11 +180,11 @@ export default function MarchandsScreen() {
                 </section>
 
                 {/* How it works */}
-                <section className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24">
+                <section className="bg-secondary px-6 py-16 md:px-12 md:py-24">
                     <motion.h2
                         {...slideUp(0)}
                         animate={stepsInView ? slideUp(0).animate : slideUp(0).initial}
-                        className="text-center text-[24px] font-bold text-[#1A1F36] md:text-[28px]"
+                        className="text-center text-[24px] font-bold text-primary md:text-[28px]"
                     >
                         Comment ça marche
                     </motion.h2>
@@ -203,13 +203,13 @@ export default function MarchandsScreen() {
                                     transition={su.transition}
                                     className="text-center"
                                 >
-                                    <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-[#4268FF] text-[16px] font-bold text-white">
+                                    <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-brand-solid text-[16px] font-bold text-white">
                                         {step.number}
                                     </div>
-                                    <h3 className="mt-4 text-[16px] font-bold text-[#1A1F36]">
+                                    <h3 className="mt-4 text-[16px] font-bold text-primary">
                                         {step.title}
                                     </h3>
-                                    <p className="mt-2 text-[14px] leading-relaxed text-[#1A1F36]/55">
+                                    <p className="mt-2 text-[14px] leading-relaxed text-tertiary">
                                         {step.desc}
                                     </p>
                                 </motion.div>
@@ -228,11 +228,11 @@ export default function MarchandsScreen() {
                     >
                         <Link
                             href="/onboarding"
-                            className="inline-flex items-center rounded-xl bg-[#4268FF] px-7 py-3.5 text-[15px] font-bold text-white transition duration-100 ease-linear no-underline hover:bg-[#3558e6] active:scale-[0.97]"
+                            className="inline-flex items-center rounded-xl bg-brand-solid px-7 py-3.5 text-[15px] font-bold text-white transition duration-100 ease-linear no-underline hover:bg-brand-solid_hover active:scale-[0.97]"
                         >
                             Inscrire ma boutique gratuitement →
                         </Link>
-                        <p className="mt-4 text-[13px] text-[#1A1F36]/40">
+                        <p className="mt-4 text-[13px] text-quaternary">
                             Gratuit, sans engagement, en 2 minutes.
                         </p>
                     </motion.div>

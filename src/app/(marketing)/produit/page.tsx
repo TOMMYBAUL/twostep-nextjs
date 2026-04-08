@@ -70,7 +70,7 @@ function ArrowRightIcon({ className }: { className?: string }) {
 
 function CheckIcon({ className }: { className?: string }) {
     return (
-        <svg className={className || "size-5 text-[#4268FF]"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg className={className || "size-5 text-brand-secondary"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
     );
@@ -197,22 +197,22 @@ export default function ProduitPage() {
                         {...slideUp(0)}
                         
                     >
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4268FF]/10 px-3.5 py-1 text-[12px] font-semibold text-[#4268FF]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary px-3.5 py-1 text-[12px] font-semibold text-brand-secondary">
                             Produit
                         </span>
                     </motion.div>
                     <motion.h1
                         {...slideUp(0.05)}
                         
-                        className="mt-5 text-[32px] font-black leading-tight tracking-tight text-[#1A1F36] md:text-[48px]"
+                        className="mt-5 text-[32px] font-black leading-tight tracking-tight text-primary md:text-[48px]"
                     >
                         Votre caisse, connect&eacute;e<br />
-                        <span className="text-[#4268FF]">au monde entier.</span>
+                        <span className="text-brand-secondary">au monde entier.</span>
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
                         
-                        className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#1A1F36]/60 md:text-[17px]"
+                        className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-tertiary md:text-[17px]"
                     >
                         Two-Step lit votre POS, enrichit vos donn&eacute;es par IA, et diffuse vos
                         produits sur Google, Maps et l&rsquo;app. Automatiquement.
@@ -224,7 +224,7 @@ export default function ProduitPage() {
                     >
                         <Link
                             href="/onboarding"
-                            className="inline-block rounded-xl bg-[#4268FF] px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#3558e6]"
+                            className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover"
                         >
                             Connecter ma boutique &rarr;
                         </Link>
@@ -234,14 +234,14 @@ export default function ProduitPage() {
                 {/* ── How It Works ── */}
                 <section
                     ref={stepsRef}
-                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
+                    className="bg-secondary px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary"
                         >
                             COMMENT &Ccedil;A MARCHE
                         </motion.p>
@@ -249,7 +249,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
                             3 &eacute;tapes. 2 minutes. Z&eacute;ro effort.
                         </motion.h2>
@@ -263,20 +263,20 @@ export default function ProduitPage() {
                                         initial={su.initial}
                                         animate={su.animate}
                                         transition={su.transition}
-                                        className="relative rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                                        className="relative rounded-2xl border border-secondary bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                                     >
                                         <div className="mb-5 flex items-center gap-4">
-                                            <span className="text-[36px] font-black leading-none text-[#4268FF]/15">
+                                            <span className="text-[36px] font-black leading-none text-brand-secondary/15">
                                                 {step.number}
                                             </span>
-                                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#4268FF]/10">
-                                                <step.icon className="size-5 text-[#4268FF]" />
+                                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-primary">
+                                                <step.icon className="size-5 text-brand-secondary" />
                                             </div>
                                         </div>
-                                        <h3 className="mb-2 text-[17px] font-bold tracking-tight text-[#1A1F36]">
+                                        <h3 className="mb-2 text-[17px] font-bold tracking-tight text-primary">
                                             {step.title}
                                         </h3>
-                                        <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                                        <p className="m-0 text-[14px] leading-relaxed text-tertiary">
                                             {step.description}
                                         </p>
                                         {i < steps.length - 1 && (
@@ -299,7 +299,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary"
                         >
                             FONCTIONNALIT&Eacute;S
                         </motion.p>
@@ -307,7 +307,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
                             Tout ce dont votre boutique a besoin
                         </motion.h2>
@@ -321,15 +321,15 @@ export default function ProduitPage() {
                                         initial={su.initial}
                                         animate={su.animate}
                                         transition={su.transition}
-                                        className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-8 transition-shadow duration-200 hover:shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
+                                        className="rounded-2xl border border-secondary bg-secondary p-8 transition-shadow duration-200 hover:shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
                                     >
-                                        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4268FF]/10">
-                                            <feat.icon className="size-7 text-[#4268FF]" />
+                                        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-primary">
+                                            <feat.icon className="size-7 text-brand-secondary" />
                                         </div>
-                                        <h3 className="mb-3 text-[18px] font-bold tracking-tight text-[#1A1F36]">
+                                        <h3 className="mb-3 text-[18px] font-bold tracking-tight text-primary">
                                             {feat.title}
                                         </h3>
-                                        <p className="m-0 text-[14px] leading-relaxed text-[#6B7280]">
+                                        <p className="m-0 text-[14px] leading-relaxed text-tertiary">
                                             {feat.description}
                                         </p>
                                     </motion.div>
@@ -342,14 +342,14 @@ export default function ProduitPage() {
                 {/* ── Image Showcase ── */}
                 <section
                     ref={showcaseRef}
-                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
+                    className="bg-secondary px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[1100px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary"
                         >
                             LE PROBL&Egrave;ME
                         </motion.p>
@@ -357,7 +357,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
                             D&rsquo;invisible &agrave; incontournable
                         </motion.h2>
@@ -367,7 +367,7 @@ export default function ProduitPage() {
                                 initial={{ opacity: 0, x: -40 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.1 }}
-                                className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-sm"
+                                className="overflow-hidden rounded-2xl border border-secondary shadow-sm"
                             >
                                 <Image
                                     src="/images/how-it-works/caroucel-invisible.webp"
@@ -377,10 +377,10 @@ export default function ProduitPage() {
                                     className="h-[280px] w-full object-cover md:h-[340px]"
                                 />
                                 <div className="bg-white px-6 py-4">
-                                    <p className="text-[13px] font-semibold text-[#1A1F36]/40">
+                                    <p className="text-[13px] font-semibold text-quaternary">
                                         Sans Two-Step
                                     </p>
-                                    <p className="mt-1 text-[14px] leading-relaxed text-[#6B7280]">
+                                    <p className="mt-1 text-[14px] leading-relaxed text-tertiary">
                                         Votre boutique existe, mais personne ne le sait en ligne.
                                     </p>
                                 </div>
@@ -400,10 +400,10 @@ export default function ProduitPage() {
                                     className="h-[280px] w-full object-cover md:h-[340px]"
                                 />
                                 <div className="bg-white px-6 py-4">
-                                    <p className="text-[13px] font-semibold text-[#4268FF]">
+                                    <p className="text-[13px] font-semibold text-brand-secondary">
                                         Avec Two-Step
                                     </p>
-                                    <p className="mt-1 text-[14px] leading-relaxed text-[#6B7280]">
+                                    <p className="mt-1 text-[14px] leading-relaxed text-tertiary">
                                         Vos produits sont visibles. Les clients viennent.
                                     </p>
                                 </div>
@@ -422,7 +422,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary"
                         >
                             COMPATIBILIT&Eacute;
                         </motion.p>
@@ -430,7 +430,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-4 text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-4 text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
                             Compatible avec les principales caisses
                         </motion.h2>
@@ -438,7 +438,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.1 }}
-                            className="mx-auto mb-10 max-w-md text-[15px] leading-relaxed text-[#6B7280]"
+                            className="mx-auto mb-10 max-w-md text-[15px] leading-relaxed text-tertiary"
                         >
                             Pas de caisse ? On vous recommande Square (gratuit).
                         </motion.p>
@@ -452,10 +452,10 @@ export default function ProduitPage() {
                                         initial={su.initial}
                                         animate={su.animate}
                                         transition={su.transition}
-                                        className={`flex items-center gap-3 rounded-xl border bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 ${pos.comingSoon ? "border-dashed border-[#D1D5DB] opacity-60" : "border-[#E5E7EB] hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"}`}
+                                        className={`flex items-center gap-3 rounded-xl border bg-white px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-150 ${pos.comingSoon ? "border-dashed border-[#D1D5DB] opacity-60" : "border-secondary hover:border-[#4268FF]/30 hover:shadow-[0_2px_8px_rgba(66,104,255,0.1)]"}`}
                                     >
                                         <span className={`h-2 w-2 rounded-full ${pos.comingSoon ? "bg-[#F59E0B]" : "bg-[#22C55E]"}`} />
-                                        <span className="text-[15px] font-semibold tracking-tight text-[#1A1F36]">
+                                        <span className="text-[15px] font-semibold tracking-tight text-primary">
                                             {pos.name}
                                         </span>
                                         {pos.comingSoon && (
@@ -473,14 +473,14 @@ export default function ProduitPage() {
                 {/* ── Avant / Avec Comparison ── */}
                 <section
                     ref={compareRef}
-                    className="bg-[#FAFAFA] px-6 py-16 md:px-12 md:py-24"
+                    className="bg-secondary px-6 py-16 md:px-12 md:py-24"
                 >
                     <div className="mx-auto max-w-[900px]">
                         <motion.p
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING }}
-                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#4268FF]"
+                            className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary"
                         >
                             COMPARAISON
                         </motion.p>
@@ -488,7 +488,7 @@ export default function ProduitPage() {
                             initial={{ opacity: 0, y: 32 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...SPRING, delay: 0.05 }}
-                            className="mb-12 text-center text-[24px] font-black tracking-tight text-[#1A1F36] md:text-[32px]"
+                            className="mb-12 text-center text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
                             Avant Two-Step vs. Avec Two-Step
                         </motion.h2>
@@ -499,13 +499,13 @@ export default function ProduitPage() {
                                 initial={{ opacity: 0, x: -30 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ ...SPRING, delay: 0.1 }}
-                                className="rounded-2xl border border-[#E5E7EB] bg-white p-7"
+                                className="rounded-2xl border border-secondary bg-white p-7"
                             >
                                 <div className="mb-5 flex items-center gap-3">
                                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FEE2E2]">
                                         <XMarkIcon className="size-5 text-[#EF4444]" />
                                     </div>
-                                    <h3 className="text-[17px] font-bold text-[#1A1F36]">
+                                    <h3 className="text-[17px] font-bold text-primary">
                                         Avant Two-Step
                                     </h3>
                                 </div>
@@ -513,7 +513,7 @@ export default function ProduitPage() {
                                     {beforeAfter.before.map((item) => (
                                         <li
                                             key={item}
-                                            className="flex items-start gap-3 text-[14px] leading-snug text-[#6B7280]"
+                                            className="flex items-start gap-3 text-[14px] leading-snug text-tertiary"
                                         >
                                             <XMarkIcon className="mt-0.5 size-4 shrink-0 text-[#D1D5DB]" />
                                             <span>{item}</span>
@@ -530,10 +530,10 @@ export default function ProduitPage() {
                                 className="rounded-2xl border border-[#4268FF]/20 bg-white p-7 shadow-[0_4px_24px_rgba(66,104,255,0.08)]"
                             >
                                 <div className="mb-5 flex items-center gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4268FF]/10">
-                                        <CheckIcon className="size-5 text-[#4268FF]" />
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-primary">
+                                        <CheckIcon className="size-5 text-brand-secondary" />
                                     </div>
-                                    <h3 className="text-[17px] font-bold text-[#1A1F36]">
+                                    <h3 className="text-[17px] font-bold text-primary">
                                         Avec Two-Step
                                     </h3>
                                 </div>
@@ -541,9 +541,9 @@ export default function ProduitPage() {
                                     {beforeAfter.after.map((item) => (
                                         <li
                                             key={item}
-                                            className="flex items-start gap-3 text-[14px] leading-snug text-[#374151]"
+                                            className="flex items-start gap-3 text-[14px] leading-snug text-secondary"
                                         >
-                                            <CheckIcon className="mt-0.5 size-4 shrink-0 text-[#4268FF]" />
+                                            <CheckIcon className="mt-0.5 size-4 shrink-0 text-brand-secondary" />
                                             <span>{item}</span>
                                         </li>
                                     ))}
@@ -570,10 +570,10 @@ export default function ProduitPage() {
                                         transition={su.transition}
                                         className="text-center"
                                     >
-                                        <p className="text-[40px] font-black tracking-tight text-[#4268FF] md:text-[52px]">
+                                        <p className="text-[40px] font-black tracking-tight text-brand-secondary md:text-[52px]">
                                             {stat.value}
                                         </p>
-                                        <p className="mt-2 text-[15px] font-medium text-[#6B7280]">
+                                        <p className="mt-2 text-[15px] font-medium text-tertiary">
                                             {stat.label}
                                         </p>
                                     </motion.div>
@@ -602,7 +602,7 @@ export default function ProduitPage() {
                         <div className="mt-6">
                             <Link
                                 href="/onboarding"
-                                className="inline-block rounded-xl bg-[#4268FF] px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#3558e6]"
+                                className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover"
                             >
                                 Connecter ma boutique &rarr;
                             </Link>

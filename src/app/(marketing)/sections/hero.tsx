@@ -49,7 +49,7 @@ export function Hero() {
                     {/* Badge */}
                     <motion.div {...slideUp(0.1)}>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/80 backdrop-blur-sm">
-                            <span className="inline-block size-1.5 rounded-full bg-[#4268FF] animate-pulse" />
+                            <span className="inline-block size-1.5 rounded-full bg-brand-solid animate-pulse" />
                             Disponible à Toulouse
                         </span>
                     </motion.div>
@@ -61,7 +61,7 @@ export function Hero() {
                         style={{ fontSize: "clamp(32px, 5.5vw, 56px)" }}
                     >
                         Le stock de ton quartier,{" "}
-                        <span className="text-[#4268FF]">à deux pas</span>{" "}
+                        <span className="text-brand-secondary">à deux pas</span>{" "}
                         de chez toi
                     </motion.h1>
 
@@ -79,7 +79,7 @@ export function Hero() {
                     <motion.div {...slideUp(0.4)} className="mt-8 flex flex-wrap gap-3">
                         <Link
                             href="/discover"
-                            className="inline-flex items-center rounded-xl bg-[#4268FF] px-6 py-3.5 text-[14px] font-bold text-white transition duration-100 ease-linear hover:bg-[#3558e8] active:scale-[0.97]"
+                            className="inline-flex items-center rounded-xl bg-brand-solid px-6 py-3.5 text-[14px] font-bold text-white transition duration-100 ease-linear hover:bg-brand-solid_hover active:scale-[0.97]"
                         >
                             Découvrir les boutiques →
                         </Link>
