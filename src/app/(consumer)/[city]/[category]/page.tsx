@@ -73,7 +73,7 @@ export default async function CityComingSoonPage({ params }: Props) {
                         Découvrir Toulouse
                     </Link>
                     <Link
-                        href="/explore"
+                        href="/discover"
                         className="rounded-xl border border-secondary px-6 py-3 text-sm font-medium text-secondary transition active:opacity-80"
                     >
                         Retour à l'accueil

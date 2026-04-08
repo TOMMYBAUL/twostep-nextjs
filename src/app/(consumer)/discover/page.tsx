@@ -6,6 +6,7 @@ import { FilterLines } from "@untitledui/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useSwipeable } from "react-swipeable";
+import { SearchBar } from "../components/search-bar";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useFollows } from "../hooks/use-follows";
 import { useGeolocation } from "../hooks/use-geolocation";
@@ -44,6 +45,10 @@ function DiscoverContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
+    const [searchQuery, setSearchQuery] = useState("");
+    const handleSearch = (q: string) => {
+        if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
+    };
     const tabParam = searchParams.get("tab");
     const feedTab: "explorer" | "pour-toi" | "suivis" =
         tabParam === "pour-toi" || tabParam === "suivis" ? tabParam : "explorer";
@@ -143,6 +148,17 @@ function DiscoverContent() {
         <div className="min-h-dvh bg-primary">
             <h1 className="sr-only">Découvrir — Two-Step</h1>
             <FeedHeader activeTab={feedTab} onTabChange={setFeedTab} />
+
+            {/* ── Search bar ── */}
+            {feedTab === "explorer" && (
+                <div className="px-4 pt-3">
+                    <SearchBar
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        onSubmit={handleSearch}
+                    />
+                </div>
+            )}
 
             {/* ── Category pills + size filter (Explorer tab only) ── */}
             <div className="px-4 pb-2 pt-3">

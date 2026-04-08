@@ -78,7 +78,7 @@ export function Hero() {
                     {/* CTAs */}
                     <motion.div {...slideUp(0.4)} className="mt-8 flex flex-wrap gap-3">
                         <Link
-                            href="/explore"
+                            href="/discover"
                             className="inline-flex items-center rounded-xl bg-brand-solid px-6 py-3.5 text-[14px] font-bold text-white transition duration-100 ease-linear hover:bg-brand-solid_hover active:scale-[0.97]"
                         >
                             Découvrir les boutiques →

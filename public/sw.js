@@ -3,13 +3,12 @@
  * Bump CACHE_VERSION on each deploy to bust stale caches.
  */
 
-const CACHE_VERSION = 10;
+const CACHE_VERSION = 11;
 const CACHE_NAME = `twostep-v${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = [
-    "/launch",
-    "/explore",
+    "/discover",
     "/offline.html",
     "/icons/icon-192.png",
     "/icons/icon-512.png",

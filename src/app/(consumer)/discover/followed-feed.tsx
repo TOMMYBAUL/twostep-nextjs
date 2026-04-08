@@ -45,7 +45,7 @@ export function FollowedFeed({ follows, favoriteIds, onToggleFav, category, size
                     Abonne-toi à des boutiques pour les retrouver ici.
                 </p>
                 <Link
-                    href="/explore"
+                    href="/discover"
                     className="mt-4 rounded-full bg-brand-solid px-5 py-2.5 text-sm font-semibold text-white transition active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                     Explorer les boutiques

@@ -125,7 +125,7 @@ function EmptyStateWithSuggestions() {
 
             {/* CTA */}
             <Link
-                href="/explore"
+                href="/discover"
                 className="mt-4 inline-flex items-center gap-1.5 rounded-[20px] border-[0.5px] border-brand bg-transparent px-4 py-2 text-xs font-medium text-brand-secondary transition active:opacity-80 min-h-[44px] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
             >
                 Explorer les boutiques &rarr;

@@ -8,8 +8,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { cx } from "@/utils/cx";
 
 const tabs = [
-    { href: "/explore", label: "Recherche", icon: SearchMd },
-    { href: "/discover", label: "Explorer", icon: Home02 },
+    { href: "/discover", label: "Accueil", icon: Home02 },
+    { href: "/explore", label: "Découvrir", icon: SearchMd },
     { href: "/search?filter=promos", label: "Promos", icon: Tag01 },
     { href: "/profile", label: "Profil", icon: User01 },
 ] as const;
@@ -28,8 +28,8 @@ function TabBarInner() {
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
                     const isActive =
-                        tab.href === "/explore"
-                            ? pathname === "/explore" || pathname === "/"
+                        tab.href === "/discover"
+                            ? pathname === "/discover" || pathname === "/"
                             : tab.href.startsWith("/search")
                                 ? pathname === "/search" && searchParams.get("filter") === "promos"
                                 : pathname.startsWith(tab.href);

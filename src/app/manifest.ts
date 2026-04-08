@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Two-Step — Le stock de ton quartier",
         short_name: "Two-Step",
         description: "Le produit exact que tu cherches, à deux pas de chez toi.",
-        start_url: "/launch",
+        start_url: "/discover",
         display: "standalone",
         orientation: "portrait",
         background_color: "#FFFFFF",
