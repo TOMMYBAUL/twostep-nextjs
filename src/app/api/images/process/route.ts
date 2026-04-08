@@ -15,13 +15,17 @@ export async function POST(req: NextRequest) {
     try {
         const supabase = createAdminClient();
 
-        // Grab pending jobs
-        const { data: jobs } = await supabase
+        // Reset stuck jobs (processing for more than 10 minutes = crashed)
+        await supabase
             .from("image_jobs")
-            .select("*")
-            .eq("status", "pending")
-            .order("created_at", { ascending: true })
-            .limit(BATCH_SIZE);
+            .update({ status: "pending" })
+            .eq("status", "processing")
+            .lt("updated_at", new Date(Date.now() - 10 * 60_000).toISOString());
+
+        // Atomically claim pending jobs (SKIP LOCKED prevents double-processing)
+        const { data: jobs } = await supabase.rpc("claim_image_jobs", {
+            p_limit: BATCH_SIZE,
+        });
 
         if (!jobs || jobs.length === 0) {
             return NextResponse.json({ processed: 0 });
@@ -30,12 +34,6 @@ export async function POST(req: NextRequest) {
         let processed = 0;
 
         for (const job of jobs) {
-            // Mark as processing
-            await supabase
-                .from("image_jobs")
-                .update({ status: "processing" })
-                .eq("id", job.id);
-
             try {
                 // Process image: download → rembg → sharp → WebP
                 const webpBuffer = await processProductImage(job.source_url);
