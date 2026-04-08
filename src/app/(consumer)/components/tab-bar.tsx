@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Home02, SearchMd, Tag01, User01 } from "@untitledui/icons";
@@ -19,11 +19,19 @@ function TabBarInner() {
     const searchParams = useSearchParams();
     const prefersReducedMotion = useReducedMotion();
 
+    // iOS PWA: safe-area-inset-bottom isn't resolved on first paint in standalone mode.
+    // Force a re-layout after mount so the inset is recalculated.
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            window.dispatchEvent(new Event("resize"));
+        });
+    }, []);
+
     return (
         <nav
             className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
             aria-label="Navigation principale"
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
@@ -71,7 +79,7 @@ function TabBarInner() {
 
 function TabBarSkeleton() {
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {[0, 1, 2, 3].map((i) => (
                     <div key={i} className="flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5">
