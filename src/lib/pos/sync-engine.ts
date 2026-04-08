@@ -117,47 +117,82 @@ export async function syncMerchantPOS(
 
         const posItemToProductId = new Map<string, string>();
 
+        // ─── Pre-fetch all existing products for this merchant ──────
+        const { data: existingProducts } = await supabase
+            .from("products")
+            .select("id, pos_item_id, ean, photo_url, photo_processed_url")
+            .eq("merchant_id", merchantId);
+
+        type ExistingProduct = NonNullable<typeof existingProducts>[number];
+        const byPosItemId = new Map<string, ExistingProduct>();
+        const byEan = new Map<string, ExistingProduct>();
+        for (const p of existingProducts ?? []) {
+            if (p.pos_item_id) byPosItemId.set(p.pos_item_id, p);
+            if (p.ean) byEan.set(p.ean, p);
+        }
+
+        // ─── Classify: update vs create ─────────────────────────────
+        const toUpdate: Array<{ existingId: string; existingPhotoUrl: string | null; posProduct: POSProduct }> = [];
+        const toCreate: POSProduct[] = [];
+
         for (const posProduct of catalog) {
-            const productId = await upsertProduct(supabase, merchantId, provider, posProduct, result);
+            const matchByPosId = byPosItemId.get(posProduct.pos_item_id);
+            if (matchByPosId) {
+                toUpdate.push({ existingId: matchByPosId.id, existingPhotoUrl: matchByPosId.photo_url, posProduct });
+                posItemToProductId.set(posProduct.pos_item_id, matchByPosId.id);
+                continue;
+            }
+            if (posProduct.ean) {
+                const matchByEan = byEan.get(posProduct.ean);
+                if (matchByEan) {
+                    toUpdate.push({ existingId: matchByEan.id, existingPhotoUrl: matchByEan.photo_url, posProduct });
+                    posItemToProductId.set(posProduct.pos_item_id, matchByEan.id);
+                    continue;
+                }
+            }
+            toCreate.push(posProduct);
+        }
+
+        // ─── Update existing products ───────────────────────────────
+        for (const { existingId, existingPhotoUrl, posProduct } of toUpdate) {
+            await updateProduct(supabase, existingId, existingPhotoUrl, provider, posProduct);
+        }
+        result.products_updated = toUpdate.length;
+
+        // ─── Create new products (sequential — uses RPC) ────────────
+        for (const posProduct of toCreate) {
+            const productId = await createProduct(supabase, merchantId, provider, posProduct, result);
             posItemToProductId.set(posProduct.pos_item_id, productId);
         }
 
-        // ─── Image jobs ────────────────────────────────────────────
+        // ─── Batch stock upsert ─────────────────────────────────────
+        const stockRows = stockUpdates
+            .filter((s) => posItemToProductId.has(s.pos_item_id))
+            .map((s) => ({
+                product_id: posItemToProductId.get(s.pos_item_id)!,
+                quantity: s.quantity,
+                updated_at: s.updated_at,
+            }));
 
+        if (stockRows.length > 0) {
+            const BATCH_SIZE = 500;
+            for (let i = 0; i < stockRows.length; i += BATCH_SIZE) {
+                await supabase
+                    .from("stock")
+                    .upsert(stockRows.slice(i, i + BATCH_SIZE), { onConflict: "product_id" });
+            }
+            result.stock_updated = stockRows.length;
+        }
+
+        // ─── Image jobs (uses pre-fetched data, no extra queries) ───
         for (const posProduct of catalog) {
             if (!posProduct.photo_url) continue;
             const productId = posItemToProductId.get(posProduct.pos_item_id);
             if (!productId) continue;
-
-            const { data: prod } = await supabase
-                .from("products")
-                .select("photo_processed_url")
-                .eq("id", productId)
-                .single();
-
-            if (!prod?.photo_processed_url) {
+            const existing = byPosItemId.get(posProduct.pos_item_id) ?? (posProduct.ean ? byEan.get(posProduct.ean) : undefined);
+            if (!existing?.photo_processed_url) {
                 await createImageJob(productId, merchantId, posProduct.photo_url);
             }
-        }
-
-        // ─── Stock sync ──────────────────────────────────────────────
-
-        for (const stock of stockUpdates) {
-            const productId = posItemToProductId.get(stock.pos_item_id);
-            if (!productId) continue;
-
-            await supabase
-                .from("stock")
-                .upsert(
-                    {
-                        product_id: productId,
-                        quantity: stock.quantity,
-                        updated_at: stock.updated_at,
-                    },
-                    { onConflict: "product_id" },
-                );
-
-            result.stock_updated++;
         }
 
         // ─── Promos sync ─────────────────────────────────────────────
@@ -228,47 +263,15 @@ export async function syncMerchantPOS(
     }
 }
 
-// ─── Product upsert with 3-tier matching ─────────────────────────────
+// ─── Product creation (matching done via pre-fetch) ─────────────────
 
-async function upsertProduct(
+async function createProduct(
     supabase: Awaited<ReturnType<typeof createClient>>,
     merchantId: string,
     provider: string,
     posProduct: POSProduct,
     result: SyncResult,
 ): Promise<string> {
-    // Match 1: by pos_item_id
-    const { data: byPosId } = await supabase
-        .from("products")
-        .select("id, photo_url")
-        .eq("merchant_id", merchantId)
-        .eq("pos_item_id", posProduct.pos_item_id)
-        .maybeSingle();
-
-    if (byPosId) {
-        await updateProduct(supabase, byPosId.id, byPosId.photo_url, provider, posProduct);
-        result.products_updated++;
-        return byPosId.id;
-    }
-
-    // Match 2: by EAN
-    if (posProduct.ean) {
-        const { data: byEan } = await supabase
-            .from("products")
-            .select("id, photo_url")
-            .eq("merchant_id", merchantId)
-            .eq("ean", posProduct.ean)
-            .not("ean", "is", null)
-            .maybeSingle();
-
-        if (byEan) {
-            await updateProduct(supabase, byEan.id, byEan.photo_url, provider, posProduct);
-            result.products_updated++;
-            return byEan.id;
-        }
-    }
-
-    // Match 3: create new product
     const { data: created, error: createError } = await supabase.rpc("create_product_with_stock", {
         p_merchant_id: merchantId,
         p_name: posProduct.name,
@@ -282,7 +285,6 @@ async function upsertProduct(
 
     if (createError) throw new Error(`create_product_with_stock failed: ${createError.message}`);
 
-    // Set size after creation
     const size = extractSize(posProduct.name);
     if (size) {
         await supabase.from("products").update({ size }).eq("id", created as string);
