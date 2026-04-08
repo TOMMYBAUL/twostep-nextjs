@@ -21,9 +21,8 @@ function TabBarInner() {
 
     return (
         <nav
-            className="fixed left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
+            className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
             aria-label="Navigation principale"
-            style={{ bottom: 0 }}
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
@@ -65,16 +64,13 @@ function TabBarInner() {
                     );
                 })}
             </div>
-            {/* Safe area spacer — fills the area below the tab content on notched iPhones.
-                Uses a CSS-only approach that doesn't conflict with iOS PWA standalone layout. */}
-            <div className="bg-white/95 backdrop-blur-md" style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
         </nav>
     );
 }
 
 function TabBarSkeleton() {
     return (
-        <div className="fixed left-0 right-0 z-50 border-t border-secondary bg-white" style={{ bottom: 0 }}>
+        <div className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white">
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {[0, 1, 2, 3].map((i) => (
                     <div key={i} className="flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5">
@@ -83,7 +79,6 @@ function TabBarSkeleton() {
                     </div>
                 ))}
             </div>
-            <div className="bg-white" style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
         </div>
     );
 }
