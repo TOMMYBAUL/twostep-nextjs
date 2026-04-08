@@ -21,7 +21,7 @@ function TabBarInner() {
 
     return (
         <nav
-            className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
+            className="ts-tab-bar shrink-0 border-t border-secondary bg-white"
             aria-label="Navigation principale"
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
@@ -70,7 +70,7 @@ function TabBarInner() {
 
 function TabBarSkeleton() {
     return (
-        <div className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white">
+        <div className="ts-tab-bar shrink-0 border-t border-secondary bg-white">
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {[0, 1, 2, 3].map((i) => (
                     <div key={i} className="flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5">
