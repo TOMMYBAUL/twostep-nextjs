@@ -5,6 +5,7 @@ import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
+import { updateStockAtomic } from "@/lib/pos/update-stock";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -39,20 +40,9 @@ export async function POST(request: NextRequest) {
 
             if (!product) continue;
 
-            // Lightspeed sends relative decrements — fetch current stock then apply delta
-            const { data: currentStock } = await supabase
-                .from("stock")
-                .select("quantity")
-                .eq("product_id", product.id)
-                .single();
-
-            const currentQty = currentStock?.quantity ?? 0;
-            const newQty = Math.max(0, currentQty + update.quantity);
-
-            await supabase.from("stock").upsert({
-                product_id: product.id,
-                quantity: newQty,
-            }, { onConflict: "product_id" });
+            // Atomic delta stock update — eliminates TOCTOU race condition
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta");
+            const newQty = Math.max(0, previousQty + update.quantity);
 
             await recalculateGroupSizesAdmin(product.id);
 
@@ -63,7 +53,7 @@ export async function POST(request: NextRequest) {
             });
 
             // Notify favorites when product restocked (quantity went up)
-            if (update.quantity > 0 && newQty > 0 && currentQty === 0) {
+            if (update.quantity > 0 && newQty > 0 && previousQty === 0) {
                 const { data: productInfo } = await supabase
                     .from("products")
                     .select("name")

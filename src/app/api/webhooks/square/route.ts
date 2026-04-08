@@ -6,6 +6,7 @@ import { captureError } from "@/lib/error";
 import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
+import { updateStockAtomic } from "@/lib/pos/update-stock";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -43,20 +44,8 @@ export async function POST(request: Request) {
 
             if (!product) continue;
 
-            // Read current stock before update
-            const { data: currentStock } = await supabase
-                .from("stock")
-                .select("quantity")
-                .eq("product_id", product.id)
-                .single();
-
-            const previousQty = currentStock?.quantity ?? 0;
-
-            // Atomic stock update
-            await supabase.from("stock").upsert({
-                product_id: product.id,
-                quantity: Math.max(0, update.quantity),
-            }, { onConflict: "product_id" });
+            // Atomic stock update — eliminates TOCTOU race condition
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute");
 
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);
