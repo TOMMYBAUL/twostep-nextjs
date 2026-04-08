@@ -36,7 +36,11 @@ export async function updateSession(request: NextRequest) {
             "/api/autocomplete",     // Public autocomplete
             "/api/pioneers",         // Public waitlist
             "/api/products/discover",// Public product discovery
+            "/api/products/available-sizes", // Public available sizes
+            "/api/products/by-merchants", // Public products by merchant
+            "/api/products/",        // Public product detail
             "/api/shops/",           // Public shop info
+            "/api/intents",          // Public intent signals
         ];
         const isPublicApi = pathname.startsWith("/api/") &&
             PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
