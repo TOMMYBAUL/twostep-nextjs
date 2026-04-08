@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     const [{ data: stockData }, { data: promoData }] = await Promise.all([
         supabase.from("stock").select("product_id, quantity").in("product_id", productIds),
-        supabase.from("promotions").select("product_id, sale_price").in("product_id", productIds).gte("ends_at", new Date().toISOString()),
+        supabase.from("promotions").select("product_id, sale_price").in("product_id", productIds).lte("starts_at", new Date().toISOString()).gte("ends_at", new Date().toISOString()),
     ]);
 
     const stockMap = new Map((stockData ?? []).map((s: any) => [s.product_id, s.quantity]));

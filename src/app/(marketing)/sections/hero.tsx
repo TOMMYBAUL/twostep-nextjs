@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
 import { slideUp } from "@/lib/motion";
@@ -16,11 +17,13 @@ export function Hero() {
                 className="absolute inset-0 -z-20"
                 style={{ y: bgY, scale: bgScale }}
             >
-                <img
-                    src="/images/hero-street.webp?v=2"
+                <Image
+                    src="/images/hero-street.webp"
                     alt="Rue commerçante à Toulouse"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="eager"
+                    fill
+                    priority
+                    sizes="100vw"
+                    className="object-cover"
                 />
             </motion.div>
 

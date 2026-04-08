@@ -345,10 +345,12 @@ async function upsertPromo(
 
         if (!product?.price) continue;
 
-        const salePrice =
+        const salePrice = Math.max(
+            0,
             promo.type === "percentage"
                 ? Math.round(product.price * (1 - promo.value / 100) * 100) / 100
-                : Math.round((product.price - promo.value) * 100) / 100;
+                : Math.round((product.price - promo.value) * 100) / 100,
+        );
 
         await supabase
             .from("promotions")
