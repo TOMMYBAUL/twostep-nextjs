@@ -105,18 +105,37 @@ export async function POST(request: NextRequest) {
                 const hasDeliveryKeyword = DELIVERY_KEYWORDS.some((kw) => text.includes(kw));
 
                 if (isFromCarrier && hasDeliveryKeyword) {
-                    // This looks like a delivery confirmation — activate all incoming stock
-                    const { data: incoming } = await supabase
+                    // Try to extract a tracking number from the email subject
+                    const trackingMatch = email.subject.match(
+                        /\b([A-Z0-9]{2}\d{9}[A-Z]{2}|1Z[A-Z0-9]{16}|\d{12,22}|[A-Z]{2}\d{9}[A-Z]{2})\b/i
+                    );
+                    const _trackingNumber = trackingMatch?.[1] ?? null;
+
+                    // Get merchant product IDs
+                    const { data: merchantProducts } = await supabase
+                        .from("products")
+                        .select("id")
+                        .eq("merchant_id", conn.merchant_id);
+                    const merchantProductIds = merchantProducts?.map((p: { id: string }) => p.id) ?? [];
+                    if (!merchantProductIds.length) continue;
+
+                    // Only activate incoming stock created within the last 7 days
+                    // (not ALL incoming stock ever) to avoid marking unrelated orders as received
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+                    const query = supabase
                         .from("stock_incoming")
-                        .select("id, product_id, quantity")
+                        .select("id, product_id, quantity, invoice_id")
                         .eq("status", "incoming")
-                        .in("product_id",
-                            (await supabase
-                                .from("products")
-                                .select("id")
-                                .eq("merchant_id", conn.merchant_id)
-                            ).data?.map((p: { id: string }) => p.id) ?? []
-                        );
+                        .in("product_id", merchantProductIds)
+                        .gte("created_at", sevenDaysAgo.toISOString());
+
+                    // If we extracted a tracking number, try to match via invoice supplier
+                    // (tracking stored in invoice metadata would allow exact matching)
+                    // For now, the 7-day window is the primary safety filter
+
+                    const { data: incoming } = await query;
 
                     if (incoming?.length) {
                         for (const item of incoming) {
