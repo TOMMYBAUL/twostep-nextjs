@@ -10,6 +10,7 @@ import { generateSlug } from "@/lib/slug";
 import { cx } from "@/utils/cx";
 import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
+import { useFocusTrap } from "../../hooks/use-focus-trap";
 import { useGeolocation } from "../../hooks/use-geolocation";
 import { ShopStatusBlock } from "./shop-status-block";
 import { StickyCtaBar } from "./sticky-cta-bar";
@@ -137,6 +138,11 @@ export default function ProductDetailClient() {
     const [intentLoading, setIntentLoading] = useState(false);
     const [intentError, setIntentError] = useState(false);
     const [othersCount, setOthersCount] = useState(0);
+
+    /* ── Focus trapping for sheets ── */
+    const sizeSheetRef = useFocusTrap(sizeSheetOpen);
+    const sizeChartRef = useFocusTrap(sizeChartOpen);
+    const contactSheetRef = useFocusTrap(contactSheetOpen);
 
     /* ── Escape key handler for sheets ── */
     useEffect(() => {
@@ -536,6 +542,7 @@ export default function ProductDetailClient() {
                             onClick={() => setSizeSheetOpen(false)}
                         />
                         <motion.div
+                            ref={sizeSheetRef}
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
@@ -611,6 +618,7 @@ export default function ProductDetailClient() {
                             onClick={() => setSizeChartOpen(false)}
                         />
                         <motion.div
+                            ref={sizeChartRef}
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
@@ -710,6 +718,7 @@ export default function ProductDetailClient() {
                             onClick={() => setContactSheetOpen(false)}
                         />
                         <motion.div
+                            ref={contactSheetRef}
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}

@@ -9,6 +9,7 @@ import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { createClient } from "@/lib/supabase/client";
 import { useFavorites } from "../hooks/use-favorites";
+import { useFocusTrap } from "../hooks/use-focus-trap";
 import { useFollows, useToggleFollow } from "../hooks/use-follows";
 import { generateSlug } from "@/lib/slug";
 
@@ -106,6 +107,10 @@ export default function ProfilePage() {
             setAvatarError("Erreur inattendue");
         }
     };
+
+    // Focus trapping for bottom sheets
+    const followsSheetRef = useFocusTrap(followsOpen);
+    const shareSheetRef = useFocusTrap(shareOpen);
 
     // Escape key handler for bottom sheets
     useEffect(() => {
@@ -378,6 +383,7 @@ export default function ProfilePage() {
                             aria-label="Fermer"
                         />
                         <motion.div
+                            ref={followsSheetRef}
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
@@ -468,6 +474,7 @@ export default function ProfilePage() {
                             aria-label="Fermer"
                         />
                         <motion.div
+                            ref={shareSheetRef}
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
