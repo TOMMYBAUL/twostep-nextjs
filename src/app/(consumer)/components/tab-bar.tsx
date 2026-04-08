@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Home02, SearchMd, Tag01, User01 } from "@untitledui/icons";
@@ -19,19 +19,52 @@ function TabBarInner() {
     const searchParams = useSearchParams();
     const prefersReducedMotion = useReducedMotion();
 
-    // iOS PWA: safe-area-inset-bottom isn't resolved on first paint in standalone mode.
-    // Force a re-layout after mount so the inset is recalculated.
+    // iOS PWA: env(safe-area-inset-bottom) isn't resolved correctly on first paint
+    // or when the app returns from background. Read the actual computed value via JS
+    // and re-read on mount, resize, and visibilitychange.
+    const [safeBottom, setSafeBottom] = useState(0);
+    const probeRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
-        requestAnimationFrame(() => {
-            window.dispatchEvent(new Event("resize"));
-        });
+        // Create a hidden probe element that uses env() via CSS
+        const probe = document.createElement("div");
+        probe.style.cssText = "position:fixed;bottom:0;left:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden";
+        document.body.appendChild(probe);
+        probeRef.current = probe;
+
+        const measure = () => {
+            const val = parseInt(getComputedStyle(probe).paddingBottom) || 0;
+            setSafeBottom(val);
+        };
+
+        // Measure after a frame (first paint) + small delay for iOS
+        requestAnimationFrame(measure);
+        const t = setTimeout(measure, 100);
+
+        // Re-measure when app returns from background
+        const onVisibility = () => {
+            if (document.visibilityState === "visible") {
+                requestAnimationFrame(measure);
+                setTimeout(measure, 100);
+            }
+        };
+
+        window.addEventListener("resize", measure);
+        document.addEventListener("visibilitychange", onVisibility);
+
+        return () => {
+            clearTimeout(t);
+            window.removeEventListener("resize", measure);
+            document.removeEventListener("visibilitychange", onVisibility);
+            probe.remove();
+        };
     }, []);
 
     return (
         <nav
             className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
             aria-label="Navigation principale"
-            style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+            style={{ paddingBottom: safeBottom }}
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
