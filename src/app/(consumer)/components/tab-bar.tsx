@@ -21,7 +21,7 @@ function TabBarInner() {
 
     return (
         <nav
-            className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
+            className="ts-tab-bar fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-red-500"
             aria-label="Navigation principale"
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
