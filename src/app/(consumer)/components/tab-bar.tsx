@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Home02, SearchMd, Tag01, User01 } from "@untitledui/icons";
@@ -19,52 +19,11 @@ function TabBarInner() {
     const searchParams = useSearchParams();
     const prefersReducedMotion = useReducedMotion();
 
-    // iOS PWA: env(safe-area-inset-bottom) isn't resolved correctly on first paint
-    // or when the app returns from background. Read the actual computed value via JS
-    // and re-read on mount, resize, and visibilitychange.
-    const [safeBottom, setSafeBottom] = useState(0);
-    const probeRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        // Create a hidden probe element that uses env() via CSS
-        const probe = document.createElement("div");
-        probe.style.cssText = "position:fixed;bottom:0;left:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden";
-        document.body.appendChild(probe);
-        probeRef.current = probe;
-
-        const measure = () => {
-            const val = parseInt(getComputedStyle(probe).paddingBottom) || 0;
-            setSafeBottom(val);
-        };
-
-        // Measure after a frame (first paint) + small delay for iOS
-        requestAnimationFrame(measure);
-        const t = setTimeout(measure, 100);
-
-        // Re-measure when app returns from background
-        const onVisibility = () => {
-            if (document.visibilityState === "visible") {
-                requestAnimationFrame(measure);
-                setTimeout(measure, 100);
-            }
-        };
-
-        window.addEventListener("resize", measure);
-        document.addEventListener("visibilitychange", onVisibility);
-
-        return () => {
-            clearTimeout(t);
-            window.removeEventListener("resize", measure);
-            document.removeEventListener("visibilitychange", onVisibility);
-            probe.remove();
-        };
-    }, []);
-
     return (
         <nav
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
+            className="fixed left-0 right-0 z-50 border-t border-secondary bg-white/95 backdrop-blur-md"
             aria-label="Navigation principale"
-            style={{ paddingBottom: safeBottom }}
+            style={{ bottom: 0 }}
         >
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {tabs.map((tab) => {
@@ -106,13 +65,16 @@ function TabBarInner() {
                     );
                 })}
             </div>
+            {/* Safe area spacer — fills the area below the tab content on notched iPhones.
+                Uses a CSS-only approach that doesn't conflict with iOS PWA standalone layout. */}
+            <div className="bg-white/95 backdrop-blur-md" style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
         </nav>
     );
 }
 
 function TabBarSkeleton() {
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-secondary bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <div className="fixed left-0 right-0 z-50 border-t border-secondary bg-white" style={{ bottom: 0 }}>
             <div className="mx-auto flex max-w-lg items-center justify-around">
                 {[0, 1, 2, 3].map((i) => (
                     <div key={i} className="flex min-h-[48px] flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5">
@@ -121,6 +83,7 @@ function TabBarSkeleton() {
                     </div>
                 ))}
             </div>
+            <div className="bg-white" style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
         </div>
     );
 }
