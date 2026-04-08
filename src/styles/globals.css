@@ -116,13 +116,8 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-/* ── Tab bar safe area (iOS PWA) ── */
-/* CSS-only approach: padding via stylesheet is more reliable than inline styles
-   for env() on iOS standalone first paint. */
-.ts-tab-bar {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-bottom: constant(safe-area-inset-bottom, 0px); /* iOS 11.0-11.2 */
-}
+/* ── Tab bar safe area (iOS PWA) — DISABLED for testing ── */
+/* .ts-tab-bar { padding-bottom: env(safe-area-inset-bottom, 0px); } */
 
 /* Hide the default clear button (X) from search inputs. */
 input[type="search"]::-webkit-search-cancel-button {
