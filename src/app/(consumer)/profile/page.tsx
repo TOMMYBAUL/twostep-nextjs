@@ -412,7 +412,7 @@ export default function ProfilePage() {
                                 </p>
                             ) : (
                                 <div className="space-y-2">
-                                    {follows.map((f: any) => {
+                                    {follows.map((f) => {
                                         const merchant = f.merchants;
                                         if (!merchant) return null;
                                         return (

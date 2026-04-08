@@ -82,7 +82,7 @@ export default function ProductDetailClient() {
 
     /* ── Data fetching ── */
 
-    const { data: product, isLoading } = useQuery<ProductDetail>({
+    const { data: product, isLoading } = useQuery<ProductDetail | null>({
         queryKey: ["product", id],
         queryFn: async () => {
             const res = await fetch(`/api/products/${id}`);
@@ -90,7 +90,7 @@ export default function ProductDetailClient() {
             // Variant redirect: API returns 301 with redirect path
             if (json.redirect) {
                 router.replace(json.redirect);
-                return null as any;
+                return null;
             }
             if (!res.ok) throw new Error("Failed");
             return json.product;
@@ -111,7 +111,9 @@ export default function ProductDetailClient() {
     const stockData = product?.stock;
     const quantity = Array.isArray(stockData)
         ? (stockData[0]?.quantity ?? 0)
-        : ((stockData as any)?.quantity ?? 0);
+        : (stockData && typeof stockData === "object" && "quantity" in stockData
+            ? (stockData as { quantity: number }).quantity
+            : 0);
 
     const activePromo = product?.promotions?.find(
         (p) => !p.ends_at || new Date(p.ends_at) > new Date(),

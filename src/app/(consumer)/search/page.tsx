@@ -10,6 +10,7 @@ import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useSearch } from "../hooks/use-search";
 import { CategoryPills } from "../components/category-pills";
+import type { ProductResult } from "../types";
 
 export default function SearchPage() {
     return (
@@ -36,7 +37,7 @@ function SearchPageInner() {
 
     // Filter mode: discover section (promos, trending)
     const isFilterMode = !!filterParam && !query;
-    const { data: filterResults, isLoading: filterLoading } = useQuery<any[]>({
+    const { data: filterResults, isLoading: filterLoading } = useQuery<ProductResult[]>({
         queryKey: ["discover-filter", filterParam, lat, lng, activeCategory, sizeParam],
         queryFn: async () => {
             const params = new URLSearchParams({
@@ -115,7 +116,7 @@ function SearchPageInner() {
                             {displayProducts.length} résultat{displayProducts.length > 1 ? "s" : ""}
                         </p>
                         <ul role="list" className="grid grid-cols-2 gap-3">
-                            {displayProducts.map((r: any, i: number) => (
+                            {displayProducts.map((r, i) => (
                                 <li key={`${r.product_id}-${r.merchant_id}`}>
                                 <ProductCard
                                     index={i}

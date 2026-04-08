@@ -2,16 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../components/toast";
+import type { FavoriteItem } from "../types";
 
 export function useFavorites() {
     return useQuery({
         queryKey: ["favorites"],
-        queryFn: async () => {
+        queryFn: async (): Promise<FavoriteItem[]> => {
             const res = await fetch("/api/favorites");
             if (res.status === 401) return [];
             if (!res.ok) throw new Error("Failed to fetch favorites");
             const data = await res.json();
-            return data.favorites as Array<{ product_id: string; [key: string]: unknown }>;
+            return data.favorites as FavoriteItem[];
         },
     });
 }

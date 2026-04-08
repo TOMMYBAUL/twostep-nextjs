@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MarkerPin01 } from "@untitledui/icons";
 import { notFound } from "next/navigation";
 import { CATEGORY_SEO } from "@/lib/categories";
+import type { CategoryMerchant } from "../../types";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -34,7 +35,7 @@ export default async function CategoryPage({ params }: Props) {
     const cat = CATEGORY_SEO[category];
     if (!cat) notFound();
 
-    let merchants: any[] = [];
+    let merchants: CategoryMerchant[] = [];
     try {
         const supabase = await createClient();
         const { data: products } = await supabase
@@ -45,11 +46,11 @@ export default async function CategoryPage({ params }: Props) {
 
         const seen = new Set<string>();
         merchants = (products ?? [])
-            .map((p: any) => p.merchants)
-            .filter((m: any) => {
+            .map((p) => p.merchants as unknown as CategoryMerchant | null)
+            .filter((m): m is CategoryMerchant => {
                 if (!m || seen.has(m.id)) return false;
                 seen.add(m.id);
-                return m.city?.toLowerCase().includes("toulouse");
+                return m.city?.toLowerCase().includes("toulouse") ?? false;
             });
     } catch { /* graceful: show empty state if DB unavailable */ }
 
@@ -80,7 +81,7 @@ export default async function CategoryPage({ params }: Props) {
                     </p>
                 ) : (
                     <div className="mt-6 space-y-3">
-                        {merchants.map((merchant: any) => {
+                        {merchants.map((merchant) => {
                             const logo = merchant.logo_url || merchant.photo_url;
                             return (
                                 <Link

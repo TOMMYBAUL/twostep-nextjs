@@ -8,6 +8,7 @@ import { StockBadge } from "../components/stock-badge";
 import { useFavorites, useToggleFavorite } from "../hooks/use-favorites";
 import { useGeolocation } from "../hooks/use-geolocation";
 import { generateSlug } from "@/lib/slug";
+import type { FavoriteItem, ProductResult } from "../types";
 
 export default function FavoritesPage() {
     const { data: favorites, isLoading: loadingFavs } = useFavorites();
@@ -39,7 +40,7 @@ export default function FavoritesPage() {
                     ) : !hasFavs ? (
                         <EmptyStateWithSuggestions />
                     ) : (
-                        favorites.filter((fav: any) => fav.products).map((fav: any) => {
+                        favorites.filter((fav) => fav.products).map((fav) => {
                             const product = fav.products;
                             const quantity = product.stock?.[0]?.quantity ?? 0;
                             const merchant = product.merchants;
@@ -92,7 +93,7 @@ function EmptyStateWithSuggestions() {
     const lat = position?.lat ?? 43.6047;
     const lng = position?.lng ?? 1.4442;
 
-    const { data: trending } = useQuery<any[]>({
+    const { data: trending } = useQuery<ProductResult[]>({
         queryKey: ["discover", "trending", lat, lng, null],
         queryFn: async () => {
             const params = new URLSearchParams({ lat: lat.toString(), lng: lng.toString(), section: "trending", radius: "10" });
@@ -106,7 +107,7 @@ function EmptyStateWithSuggestions() {
 
     const { data: favorites } = useFavorites();
     const { add, remove } = useToggleFavorite();
-    const favoriteIds = new Set(favorites?.map((f: any) => f.product_id) ?? []);
+    const favoriteIds = new Set(favorites?.map((f) => f.product_id) ?? []);
 
     const suggestions = (trending ?? []).slice(0, 4);
 
@@ -137,7 +138,7 @@ function EmptyStateWithSuggestions() {
                         À découvrir autour de toi
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                        {suggestions.map((p: any) => {
+                        {suggestions.map((p) => {
                             const isFav = favoriteIds.has(p.product_id);
                             return (
                                 <Link

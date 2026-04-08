@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProductId } from "@/lib/slug";
 import ProductDetailClient from "./product-detail";
+import type { ProductWithMerchant } from "../../types";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -10,7 +11,7 @@ interface Props {
     params: Promise<{ id: string }>;
 }
 
-const getProduct = React.cache(async function getProduct(slugOrId: string) {
+const getProduct = React.cache(async function getProduct(slugOrId: string): Promise<ProductWithMerchant | null> {
     const resolvedId = await resolveProductId(slugOrId);
     if (!resolvedId) return null;
     const supabase = await createClient();
@@ -20,7 +21,7 @@ const getProduct = React.cache(async function getProduct(slugOrId: string) {
         .eq("id", resolvedId)
         .eq("visible", true)
         .single();
-    return data;
+    return data as unknown as ProductWithMerchant | null;
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -30,8 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const data = await getProduct(id);
         if (!data) return {};
 
-        const merchant = (data as any).merchants;
-        const displayName = (data as any).canonical_name ?? data.name;
+        const merchant = data.merchants;
+        const displayName = data.canonical_name ?? data.name;
         const title = displayName;
         const description = `${displayName}${data.price ? ` à ${data.price.toFixed(2)} €` : ""}${merchant?.name ? ` chez ${merchant.name}` : ""}${merchant?.city ? ` à ${merchant.city}` : ""}. Vérifiez le stock en temps réel sur Two-Step.`;
         const productSlug = data.slug;
@@ -68,8 +69,8 @@ export default async function Page({ params }: Props) {
     try {
         const data = await getProduct(id);
         if (data) {
-            const merchant = (data as any).merchants;
-            const displayName = (data as any).canonical_name ?? data.name;
+            const merchant = data.merchants;
+            const displayName = data.canonical_name ?? data.name;
             breadcrumbLd = {
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",

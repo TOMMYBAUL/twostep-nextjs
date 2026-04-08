@@ -415,7 +415,7 @@ function MerchantListCard({ merchant }: { merchant: NearbyMerchant }) {
     const logo = merchant.merchant_logo || merchant.merchant_photo;
     const { data: follows } = useFollows();
     const { follow, unfollow } = useToggleFollow();
-    const isFollowing = follows?.some((f: any) => f.merchant_id === merchant.merchant_id) ?? false;
+    const isFollowing = follows?.some((f) => f.merchant_id === merchant.merchant_id) ?? false;
 
     return (
         <div className="flex items-center gap-3 rounded-2xl bg-secondary p-3">

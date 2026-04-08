@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { resolveMerchantId } from "@/lib/slug";
 import ShopProfileClient from "./shop-profile";
+import type { OpeningHoursSpec } from "../../types";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -59,13 +60,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 }
 
-function parseOpeningHours(hours: any): any[] | undefined {
+function parseOpeningHours(hours: Record<string, unknown>): OpeningHoursSpec[] | undefined {
     if (!hours || typeof hours !== "object") return undefined;
     const dayMap: Record<string, string> = {
         lundi: "Monday", mardi: "Tuesday", mercredi: "Wednesday",
         jeudi: "Thursday", vendredi: "Friday", samedi: "Saturday", dimanche: "Sunday",
     };
-    const specs: any[] = [];
+    const specs: OpeningHoursSpec[] = [];
     for (const [day, value] of Object.entries(hours)) {
         const mapped = dayMap[day.toLowerCase()];
         if (!mapped || !value) continue;
@@ -108,8 +109,8 @@ export default async function Page({ params }: Props) {
                     addressLocality: data.city,
                     addressCountry: "FR",
                 },
-                ...(data.opening_hours && {
-                    openingHoursSpecification: parseOpeningHours(data.opening_hours),
+                ...(data.opening_hours && typeof data.opening_hours === "object" && !Array.isArray(data.opening_hours) && {
+                    openingHoursSpecification: parseOpeningHours(data.opening_hours as Record<string, unknown>),
                 }),
             };
         }

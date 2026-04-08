@@ -2,16 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../components/toast";
+import type { FollowItem } from "../types";
 
 export function useFollows() {
     return useQuery({
         queryKey: ["follows"],
-        queryFn: async () => {
+        queryFn: async (): Promise<FollowItem[]> => {
             const res = await fetch("/api/follows");
             if (res.status === 401) return [];
             if (!res.ok) throw new Error("Failed to fetch follows");
             const data = await res.json();
-            return data.follows as Array<{ merchant_id: string; [key: string]: unknown }>;
+            return data.follows as FollowItem[];
         },
     });
 }
