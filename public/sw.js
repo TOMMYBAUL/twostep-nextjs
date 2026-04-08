@@ -3,12 +3,12 @@
  * Bump CACHE_VERSION on each deploy to bust stale caches.
  */
 
-const CACHE_VERSION = 8;
+const CACHE_VERSION = 9;
 const CACHE_NAME = `twostep-v${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = [
-    "/discover",
+    "/explore",
     "/offline.html",
     "/icons/icon-192.png",
     "/icons/icon-512.png",
@@ -87,7 +87,7 @@ self.addEventListener("fetch", (event) => {
 
 // Push notifications
 self.addEventListener("push", (event) => {
-    const defaultData = { title: "Two-Step", body: "Nouvelle notification", url: "/discover" };
+    const defaultData = { title: "Two-Step", body: "Nouvelle notification", url: "/explore" };
     let data = defaultData;
 
     try {
@@ -110,7 +110,7 @@ self.addEventListener("push", (event) => {
 // Notification click: open the target URL
 self.addEventListener("notificationclick", (event) => {
     event.notification.close();
-    const url = event.notification.data?.url || "/discover";
+    const url = event.notification.data?.url || "/explore";
 
     event.waitUntil(
         clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
