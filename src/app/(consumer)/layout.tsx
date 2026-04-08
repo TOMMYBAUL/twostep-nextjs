@@ -19,8 +19,8 @@ export default function ConsumerLayout({
     return (
         <QueryProvider>
             <ToastProvider>
-                <div className="flex h-dvh flex-col">
-                    <main id="main-content" className="flex-1 overflow-y-auto">{children}</main>
+                <div className="flex min-h-dvh flex-col">
+                    <main id="main-content" className="flex-1 pb-20">{children}</main>
                     <TabBar />
                 </div>
                 <WelcomeGate />

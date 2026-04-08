@@ -108,7 +108,7 @@ export default function ExplorePage() {
     }, []);
 
     return (
-        <div className="relative h-full bg-[#e8eaed]">
+        <div className="fixed inset-0 bg-[#e8eaed]">
             {/* Map — always mounted, hidden in liste mode */}
             <div className={cx("absolute inset-0", viewMode === "liste" && "invisible")}>
                 <MapView
