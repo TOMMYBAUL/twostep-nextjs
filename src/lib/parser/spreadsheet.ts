@@ -57,12 +57,13 @@ function detectColumns(headers: string[]): ColumnMapping {
         const h = headers[i];
         if (!h) continue;
 
-        if (mapping.name === null && matchesAny(h, NAME_HEADERS)) {
+        // Check SKU before name — "Réf. article" contains both "ref" (SKU) and "article" (name)
+        if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
+            mapping.sku = i;
+        } else if (mapping.name === null && matchesAny(h, NAME_HEADERS)) {
             mapping.name = i;
         } else if (mapping.ean === null && matchesAny(h, EAN_HEADERS)) {
             mapping.ean = i;
-        } else if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
-            mapping.sku = i;
         } else if (mapping.quantity === null && matchesAny(h, QUANTITY_HEADERS)) {
             mapping.quantity = i;
         } else if (mapping.unit_price === null && matchesAny(h, UNIT_PRICE_HEADERS)) {
@@ -127,21 +128,35 @@ export const spreadsheetParser: IInvoiceParser = {
             throw new Error("Spreadsheet has fewer than 2 rows (need header + data)");
         }
 
-        // Try to auto-detect columns from header row
-        const headers = rows[0].map(String);
-        const mapping = detectColumns(headers);
+        // Scan the first 30 rows to find the header row (real invoices have
+        // supplier info, addresses, etc. above the product table)
+        let headerRowIndex = -1;
+        let mapping: ColumnMapping = { name: null, ean: null, sku: null, quantity: null, unit_price: null };
 
-        // If we found at least the product name column, extract structured data directly
-        if (mapping.name !== null) {
-            // Headers detected, extracting structured data directly
-            const items = extractStructured(rows, mapping);
+        const scanLimit = Math.min(rows.length, 30);
+        for (let r = 0; r < scanLimit; r++) {
+            const candidate = rows[r].map(String);
+            const candidateMapping = detectColumns(candidate);
+            // Need at least name + one of (ean, quantity, price) to consider it a header
+            if (candidateMapping.name !== null &&
+                (candidateMapping.ean !== null || candidateMapping.quantity !== null || candidateMapping.unit_price !== null)) {
+                headerRowIndex = r;
+                mapping = candidateMapping;
+                break;
+            }
+        }
+
+        if (headerRowIndex >= 0) {
+            // Extract data rows starting AFTER the header
+            const dataRows = rows.slice(headerRowIndex); // includes header at [0]
+            const items = extractStructured(dataRows, mapping);
 
             if (items.length === 0) {
                 throw new Error("No items extracted from spreadsheet despite matching headers");
             }
 
             return {
-                supplier_name: null, // Not available from spreadsheet structure alone
+                supplier_name: null,
                 invoice_date: null,
                 items,
             };
