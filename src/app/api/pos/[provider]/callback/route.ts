@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 import { verifyState } from "@/lib/auth/state-token";
 import { createClient } from "@/lib/supabase/server";
@@ -102,12 +102,14 @@ export async function GET(
             .update({ pos_type: provider })
             .eq("id", merchantId);
 
-        // Trigger first sync (non-blocking — don't fail callback if sync fails)
-        try {
-            await syncMerchantPOS(merchantId, provider);
-        } catch (syncErr) {
-            captureError(syncErr, { route: `pos/${provider}/callback`, merchantId, phase: "first_sync" });
-        }
+        // Trigger first sync (non-blocking — runs after response is sent)
+        after(async () => {
+            try {
+                await syncMerchantPOS(merchantId, provider);
+            } catch (syncErr) {
+                captureError(syncErr, { route: `pos/${provider}/callback`, merchantId, phase: "first_sync" });
+            }
+        });
 
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?pos=connected`);
     } catch (err) {
