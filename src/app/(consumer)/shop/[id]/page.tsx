@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { resolveMerchantId } from "@/lib/slug";
 import ShopProfileClient from "./shop-profile";
 
@@ -12,7 +12,7 @@ interface Props {
 async function getMerchant(slugOrId: string) {
     const resolvedId = await resolveMerchantId(slugOrId);
     if (!resolvedId) return null;
-    const supabase = createAdminClient();
+    const supabase = await createClient();
     const { data } = await supabase
         .from("merchants")
         .select("id, slug, name, description, city, address, photo_url, logo_url, phone, opening_hours")

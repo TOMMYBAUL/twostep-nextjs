@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { resolveProductId } from "@/lib/slug";
 import ProductDetailClient from "./product-detail";
 
@@ -13,7 +13,7 @@ interface Props {
 const getProduct = React.cache(async function getProduct(slugOrId: string) {
     const resolvedId = await resolveProductId(slugOrId);
     if (!resolvedId) return null;
-    const supabase = createAdminClient();
+    const supabase = await createClient();
     const { data } = await supabase
         .from("products")
         .select("slug, name, canonical_name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")

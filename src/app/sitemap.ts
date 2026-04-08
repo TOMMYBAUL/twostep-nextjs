@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     try {
-        const supabase = createAdminClient();
+        const supabase = await createClient();
 
         const [{ data: products }, { data: merchants }] = await Promise.all([
             supabase.from("products").select("slug, updated_at").eq("visible", true).is("variant_of", null).order("updated_at", { ascending: false }).limit(1000),

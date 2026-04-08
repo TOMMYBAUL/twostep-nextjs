@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { MarkerPin01 } from "@untitledui/icons";
 import { notFound } from "next/navigation";
 import { CATEGORY_SEO } from "@/lib/categories";
@@ -36,7 +36,7 @@ export default async function CategoryPage({ params }: Props) {
 
     let merchants: any[] = [];
     try {
-        const supabase = createAdminClient();
+        const supabase = await createClient();
         const { data: products } = await supabase
             .from("products")
             .select("merchant_id, merchants(id, slug, name, address, city, photo_url, logo_url)")
