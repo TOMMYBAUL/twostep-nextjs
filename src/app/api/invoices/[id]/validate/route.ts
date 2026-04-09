@@ -109,7 +109,31 @@ export async function POST(
         (item: { status: string }) => item.status !== "rejected"
     );
 
+    // ── Pre-group items by base product name (strip size) ──
+    // "Nike Dunk Low taille 42" + "Nike Dunk Low taille 43" → same group
+    // This prevents creating duplicate products for each size variant.
+    type GroupedItem = typeof validItems[number] & { _size: string | null; _cleanName: string };
+    const itemGroups = new Map<string, GroupedItem[]>();
+
     for (const item of validItems) {
+        const size = extractSize(item.name);
+        const cleanName = size ? stripSize(item.name) : item.name;
+        const key = normalize(cleanName);
+        const grouped: GroupedItem = { ...item, _size: size, _cleanName: cleanName };
+        const group = itemGroups.get(key) ?? [];
+        group.push(grouped);
+        itemGroups.set(key, group);
+    }
+
+    // Track products created within this validation to avoid re-creating
+    // when multiple sizes of a new product appear in the same invoice
+    const createdInThisBatch = new Map<string, string>(); // normalizedName → productId
+
+    for (const [groupKey, groupItems] of itemGroups) {
+    // Use the first item for matching, but collect all sizes
+    const item = groupItems[0];
+    const allSizes = [...new Set(groupItems.map(g => g._size).filter(Boolean))] as string[];
+    const cleanName = item._cleanName;
         let match: MatchResult | null = null;
 
         // 1) Exact EAN match — BEST: guaranteed same physical product
@@ -197,77 +221,74 @@ export async function POST(
         }
 
         const sellingPrice = sellingPrices[item.id] ?? null;
+        const firstEan = groupItems.find(g => g.ean)?.ean ?? null;
+        const firstSku = groupItems.find(g => g.sku)?.sku ?? null;
 
         if (match) {
             // Fuzzy matches require human review — don't auto-update stock
             if (match.matchType === "fuzzy") {
-                await supabase
-                    .from("invoice_items")
-                    .update({
-                        product_id: match.productId,
-                        status: "pending_review",
-                        match_type: "fuzzy",
-                    })
-                    .eq("id", item.id);
-                // Don't update stock or product — wait for human confirmation
+                for (const gi of groupItems) {
+                    await supabase
+                        .from("invoice_items")
+                        .update({
+                            product_id: match.productId,
+                            status: "pending_review",
+                            match_type: "fuzzy",
+                        })
+                        .eq("id", gi.id);
+                }
+                fuzzyMatched++;
                 continue;
             }
 
-            // Exact matches (EAN, SKU, name) — safe to auto-validate
-            const itemSize = extractSize(item.name);
-            const cleanItemName = itemSize ? stripSize(item.name) : item.name;
-
-            // Facture name is the source of truth — override generic POS names
-            // Set canonical_name so the consumer sees the proper product name
+            // Exact matches — update product with facture data
             const updateFields: Record<string, unknown> = {
                 purchase_price: item.unit_price_ht,
-                canonical_name: cleanItemName,
+                canonical_name: cleanName,
                 ...(sellingPrice && { price: sellingPrice }),
-                ...(item.ean && { ean: item.ean }),
-                ...(item.sku && { sku: item.sku }),
+                ...(firstEan && { ean: firstEan }),
+                ...(firstSku && { sku: firstSku }),
             };
-            await supabase.from("products").update(updateFields).eq("id", match.productId);
 
-            // Add size to available_sizes if extracted
-            if (itemSize) {
+            // Merge all sizes from this group into available_sizes
+            if (allSizes.length > 0) {
                 const { data: existingProduct } = await supabase
                     .from("products")
                     .select("available_sizes")
                     .eq("id", match.productId)
                     .single();
 
-                const sizes: string[] = existingProduct?.available_sizes ?? [];
-                if (!sizes.includes(itemSize)) {
-                    sizes.push(itemSize);
-                    await supabase.from("products")
-                        .update({ available_sizes: sizes })
-                        .eq("id", match.productId);
-                }
+                const existingSizes: string[] = existingProduct?.available_sizes ?? [];
+                const mergedSizes = [...new Set([...existingSizes, ...allSizes])];
+                updateFields.available_sizes = mergedSizes;
             }
 
-            // Stock goes to "incoming" — NOT available yet.
-            // The merchant confirms receipt, or POS sale triggers availability.
-            await supabase.from("stock_incoming").insert({
-                product_id: match.productId,
-                quantity: item.quantity,
-                invoice_id: id,
-                status: "incoming",
-            });
+            await supabase.from("products").update(updateFields).eq("id", match.productId);
 
-            await supabase
-                .from("invoice_items")
-                .update({
+            // Stock incoming for EACH item in the group (preserves per-size quantity)
+            for (const gi of groupItems) {
+                await supabase.from("stock_incoming").insert({
                     product_id: match.productId,
-                    status: "validated",
-                    match_type: match.matchType,
-                })
-                .eq("id", item.id);
+                    quantity: gi.quantity,
+                    invoice_id: id,
+                    status: "incoming",
+                });
+
+                await supabase
+                    .from("invoice_items")
+                    .update({
+                        product_id: match.productId,
+                        status: "validated",
+                        match_type: match.matchType,
+                    })
+                    .eq("id", gi.id);
+            }
 
             productsUpdated++;
-            stockUpdated++;
+            stockUpdated += groupItems.length;
 
-            // Fire-and-forget: enrich existing product if missing photo
-            if (item.ean) {
+            // Fire-and-forget: enrich if missing photo
+            if (firstEan) {
                 const { data: existingProd } = await supabase
                     .from("products")
                     .select("photo_url")
@@ -275,18 +296,40 @@ export async function POST(
                     .single();
 
                 if (existingProd && !existingProd.photo_url) {
-                    lookupEan(item.ean, match.productId).catch(console.error);
+                    lookupEan(firstEan, match.productId).catch(console.error);
                 }
             }
         } else {
-            // ── NEW PRODUCT: enrich BEFORE inserting ──────────────────
-            let enrichedName = item.name;
+            // ── NEW PRODUCT ──
+            // Check if we already created this product in this batch
+            // (another group with slightly different name might have matched)
+            const existingBatchId = createdInThisBatch.get(groupKey);
+            if (existingBatchId) {
+                // Just add sizes and stock to the already-created product
+                if (allSizes.length > 0) {
+                    const { data: p } = await supabase
+                        .from("products").select("available_sizes").eq("id", existingBatchId).single();
+                    const merged = [...new Set([...(p?.available_sizes ?? []), ...allSizes])];
+                    await supabase.from("products").update({ available_sizes: merged }).eq("id", existingBatchId);
+                }
+                for (const gi of groupItems) {
+                    await supabase.from("stock_incoming").insert({
+                        product_id: existingBatchId, quantity: gi.quantity, invoice_id: id, status: "incoming",
+                    });
+                    await supabase.from("invoice_items").update({ product_id: existingBatchId, status: "validated" }).eq("id", gi.id);
+                }
+                stockUpdated += groupItems.length;
+                continue;
+            }
+
+            // Enrich before inserting
+            let enrichedName = cleanName;
             let enrichedBrand: string | null = null;
             let enrichedCategory: string | null = null;
 
-            if (item.ean) {
+            if (firstEan) {
                 try {
-                    const eanData = await fetchEanData(item.ean);
+                    const eanData = await fetchEanData(firstEan);
                     if (eanData) {
                         if (eanData.name && eanData.name !== "Unknown") enrichedName = eanData.name;
                         enrichedBrand = eanData.brand;
@@ -297,53 +340,41 @@ export async function POST(
                 }
             }
 
-            const newItemSize = extractSize(item.name);
-            const cleanName = newItemSize ? stripSize(item.name) : item.name;
-
             const { data: newProduct } = await supabase
                 .from("products")
                 .insert({
                     merchant_id: merchant.id,
                     name: cleanName,
-                    canonical_name: enrichedName !== item.name ? enrichedName : null,
-                    ean: item.ean,
-                    sku: item.sku,
+                    canonical_name: enrichedName !== cleanName ? enrichedName : null,
+                    ean: firstEan,
+                    sku: firstSku,
                     price: sellingPrice,
                     purchase_price: item.unit_price_ht,
                     ...(enrichedBrand && { brand: enrichedBrand }),
                     ...(enrichedCategory && { category: enrichedCategory }),
-                    ...(newItemSize && { available_sizes: [newItemSize] }),
+                    ...(allSizes.length > 0 && { available_sizes: allSizes }),
                 })
                 .select()
                 .single();
 
             if (newProduct) {
-                // Create product with zero stock — not available yet
-                await supabase.from("stock").insert({
-                    product_id: newProduct.id,
-                    quantity: 0,
-                });
+                createdInThisBatch.set(groupKey, newProduct.id);
 
-                // Stock goes to incoming — merchant confirms when received
-                await supabase.from("stock_incoming").insert({
-                    product_id: newProduct.id,
-                    quantity: item.quantity,
-                    invoice_id: id,
-                    status: "incoming",
-                });
+                await supabase.from("stock").insert({ product_id: newProduct.id, quantity: 0 });
 
-                await supabase
-                    .from("invoice_items")
-                    .update({ product_id: newProduct.id, status: "validated" })
-                    .eq("id", item.id);
+                // Stock incoming for each item (preserves per-size quantity)
+                for (const gi of groupItems) {
+                    await supabase.from("stock_incoming").insert({
+                        product_id: newProduct.id, quantity: gi.quantity, invoice_id: id, status: "incoming",
+                    });
+                    await supabase.from("invoice_items").update({ product_id: newProduct.id, status: "validated" }).eq("id", gi.id);
+                }
 
                 productsCreated++;
-                stockUpdated++;
+                stockUpdated += groupItems.length;
 
-                // Fire-and-forget: apply photo enrichment via lookupEan
-                // (will find cached EAN data and handle image job creation)
-                if (item.ean) {
-                    lookupEan(item.ean, newProduct.id).catch(console.error);
+                if (firstEan) {
+                    lookupEan(firstEan, newProduct.id).catch(console.error);
                 }
             }
         }

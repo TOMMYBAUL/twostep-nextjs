@@ -67,10 +67,10 @@ export async function syncMerchantPOS(
 
         let accessToken = decrypt(conn.access_token);
 
-        const expiresAt = new Date(conn.expires_at).getTime();
+        const expiresAt = conn.expires_at ? new Date(conn.expires_at).getTime() : Infinity;
         const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
 
-        if (expiresAt < fiveMinFromNow) {
+        if (expiresAt < fiveMinFromNow && conn.refresh_token) {
             const refreshResult = await adapter.refreshToken(decrypt(conn.refresh_token));
 
             if (!refreshResult) {
