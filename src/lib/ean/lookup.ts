@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
+import { searchProductImage } from "@/lib/images/serper";
 
 export type EanResult = {
     name: string;
@@ -149,7 +150,7 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         .single();
 
     if (cached) {
-        await applyEnrichment(supabase, productId, cached);
+        await applyEnrichment(supabase, productId, cached, ean);
         return true;
     }
 
@@ -168,7 +169,7 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         fetched_at: new Date().toISOString(),
     });
 
-    await applyEnrichment(supabase, productId, result);
+    await applyEnrichment(supabase, productId, result, ean);
     return true;
 }
 
@@ -176,26 +177,59 @@ async function applyEnrichment(
     supabase: ReturnType<typeof createAdminClient>,
     productId: string,
     data: { name?: string | null; brand?: string | null; photo_url?: string | null; category?: string | null },
+    ean?: string,
 ): Promise<void> {
     const updateData: Record<string, unknown> = {};
+
+    // Fetch current product for validation and photo check
+    const { data: prod } = await supabase
+        .from("products")
+        .select("merchant_id, photo_url, name, brand")
+        .eq("id", productId)
+        .single();
+
+    // Validate UPC brand coherence — reject if brand doesn't match product name
+    // e.g. "Nike Dunk Low" with UPC brand "Partsynergy" → reject UPC brand
+    if (data.brand && prod?.name) {
+        const productNameLower = prod.name.toLowerCase();
+        const upcBrandLower = data.brand.toLowerCase();
+        // Accept if brand appears in product name OR product name appears in brand
+        const isCoherent =
+            productNameLower.includes(upcBrandLower) ||
+            upcBrandLower.includes(productNameLower.split(" ")[0]);
+        if (!isCoherent) {
+            console.warn(`[enrich] UPC brand "${data.brand}" rejected — doesn't match product "${prod.name}"`);
+            data.brand = null;
+            data.category = null; // category from wrong product is also unreliable
+        }
+    }
 
     if (data.brand) updateData.brand = data.brand;
     if (data.category) updateData.category = data.category;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
 
-    // Fetch current product to check for existing photo before overwriting
-    const { data: prod } = await supabase
-        .from("products")
-        .select("merchant_id, photo_url")
-        .eq("id", productId)
-        .single();
+    // Determine photo URL: prefer EAN source, fall back to Serper Google Images
+    let photoUrl = data.photo_url;
+    let photoSource: "ean" | "serper" = "ean";
 
-    const shouldSetPhoto = data.photo_url && prod && !prod.photo_url;
+    if (!photoUrl && prod && !prod.photo_url) {
+        // No photo from EAN databases — try Serper with product name
+        const serperUrl = await searchProductImage(
+            prod.name,
+            data.brand ?? prod.brand,
+            ean ?? null,
+        );
+        if (serperUrl) {
+            photoUrl = serperUrl;
+            photoSource = "serper";
+        }
+    }
+
+    const shouldSetPhoto = photoUrl && prod && !prod.photo_url;
     if (shouldSetPhoto) {
-        // Only set photo when product has none — never overwrite POS original
-        updateData.photo_url = data.photo_url;
-        updateData.photo_processed_url = null; // clear any stale processed image
-        updateData.photo_source = "ean";
+        updateData.photo_url = photoUrl;
+        updateData.photo_processed_url = null;
+        updateData.photo_source = photoSource;
     }
 
     if (Object.keys(updateData).length > 0) {
@@ -203,6 +237,6 @@ async function applyEnrichment(
     }
 
     if (shouldSetPhoto && prod) {
-        await createImageJob(productId, prod.merchant_id, data.photo_url!, supabase as any);
+        await createImageJob(productId, prod.merchant_id, photoUrl!, supabase as any);
     }
 }

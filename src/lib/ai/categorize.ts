@@ -16,6 +16,7 @@ type CategorizedProduct = {
     id: string;
     category_slug: string;
     subcategory_slug: string | null;
+    secondary_categories?: string[];
     brand: string | null;
     color: string | null;
     gender: "homme" | "femme" | "mixte" | "enfant" | null;
@@ -75,8 +76,9 @@ ${productLines}
 Pour chaque produit, retourne un JSON array. Chaque élément :
 {
   "id": "uuid du produit",
-  "category_slug": "slug de la catégorie niveau 1",
+  "category_slug": "slug de la catégorie PRINCIPALE niveau 1",
   "subcategory_slug": "slug de la sous-catégorie (ou null)",
+  "secondary_categories": ["slug1", "slug2"],
   "brand": "marque détectée (ou null)",
   "color": "couleur principale détectée (ou null)",
   "gender": "homme|femme|mixte|enfant (ou null)",
@@ -87,6 +89,11 @@ Pour chaque produit, retourne un JSON array. Chaque élément :
 Règles :
 - category_slug DOIT être un slug valide de la liste ci-dessus
 - subcategory_slug DOIT être un slug valide OU null
+- secondary_categories = catégories SUPPLÉMENTAIRES où le produit devrait aussi apparaître (slugs niveau 1 valides). Exemples :
+  * Nike Dunk Low → catégorie principale "chaussures", secondaires ["mode", "sport-outdoor"]
+  * Veste en jean → catégorie principale "mode", secondaires []
+  * Chaussures de running → catégorie principale "chaussures", secondaires ["sport-outdoor"]
+  * Lunettes de soleil sport → catégorie principale "bijoux-accessoires", secondaires ["sport-outdoor"]
 - confidence = 95+ si le nom est explicite, 70-94 si deviné, <70 si incertain
 - tags = mots-clés utiles pour la recherche (matière, style, usage...)
 - Retourne UNIQUEMENT le JSON array, rien d'autre`,
@@ -170,6 +177,16 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
             if (result.gender) tags.push({ product_id: result.id, tag_type: "gender", tag_value: result.gender, source: "ai", confidence: result.confidence });
             for (const tag of result.tags) {
                 tags.push({ product_id: result.id, tag_type: "custom", tag_value: tag, source: "ai", confidence: result.confidence });
+            }
+
+            // Secondary categories — product appears in multiple category filters
+            if (result.secondary_categories) {
+                for (const secSlug of result.secondary_categories) {
+                    const secCat = tree.find((c: any) => c.slug === secSlug);
+                    if (secCat) {
+                        tags.push({ product_id: result.id, tag_type: "category", tag_value: secSlug, source: "ai", confidence: result.confidence });
+                    }
+                }
             }
 
             if (tags.length > 0) {

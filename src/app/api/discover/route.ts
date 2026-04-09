@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
                 seen.add(key);
                 return true;
             })
-            .filter((row: any) => !category || categoryMap.get(row.product_id) === category);
+            .filter((row: any) => !category || categoryMap.get(row.product_id)?.includes(category));
 
         // Apply brand/color/gender/price filters
         promoItems = await applyTagAndPriceFilters(supabase, promoItems, brand, color, gender, priceMin, priceMax);
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
                 merchant_name: row.merchant_name,
                 distance_km: row.distance_km,
                 sale_price: row.sale_price,
-                category: categoryMap.get(row.product_id) ?? null,
+                category: categoryMap.get(row.product_id)?.[0] ?? null,
             }));
 
         return NextResponse.json({ products }, {
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 
     // Filter by category if provided
     if (category) {
-        items = items.filter((row: any) => categoryMap.get(row.product_id) === category);
+        items = items.filter((row: any) => categoryMap.get(row.product_id)?.includes(category));
     }
 
     // Apply brand/color/gender/price filters
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
         merchant_photo: merchantPhotoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
         sale_price: row.sale_price ?? promoMap.get(row.product_id) ?? null,
-        category: categoryMap.get(row.product_id) ?? null,
+        category: categoryMap.get(row.product_id)?.[0] ?? null,
     }));
 
     return NextResponse.json({ products }, {
@@ -212,21 +212,43 @@ async function resolveMerchantPhotos(
     return map;
 }
 
-/** Fetch categories for a list of product IDs in one query */
+/** Fetch categories (primary + secondary) for a list of product IDs */
 async function resolveCategories(
     supabase: any,
     productIds: string[],
-): Promise<Map<string, string>> {
+): Promise<Map<string, string[]>> {
     if (productIds.length === 0) return new Map();
     const unique = [...new Set(productIds)];
-    const { data } = await supabase
+
+    // Primary category from products table
+    const { data: products } = await supabase
         .from("products")
         .select("id, category")
         .in("id", unique);
-    const map = new Map<string, string>();
-    for (const row of data ?? []) {
-        if (row.category) map.set(row.id, row.category.toLowerCase());
+
+    const map = new Map<string, string[]>();
+    for (const row of products ?? []) {
+        if (row.category) {
+            map.set(row.id, [row.category.toLowerCase()]);
+        }
     }
+
+    // Secondary categories from product_tags
+    const { data: tags } = await supabase
+        .from("product_tags")
+        .select("product_id, tag_value")
+        .in("product_id", unique)
+        .eq("tag_type", "category");
+
+    for (const tag of tags ?? []) {
+        const existing = map.get(tag.product_id) ?? [];
+        const val = tag.tag_value.toLowerCase();
+        if (!existing.includes(val)) {
+            existing.push(val);
+            map.set(tag.product_id, existing);
+        }
+    }
+
     return map;
 }
 

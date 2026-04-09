@@ -71,6 +71,19 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             delete merchant.location;
         }
 
+        // Normalize available_sizes: DB stores ["S","M"] but frontend expects [{size,quantity}]
+        const totalStock = (data as any).stock?.[0]?.quantity ?? 0;
+        const rawSizes = (data as any).available_sizes;
+        if (Array.isArray(rawSizes) && rawSizes.length > 0) {
+            (data as any).available_sizes = rawSizes.map((entry: unknown) => {
+                if (typeof entry === "string") {
+                    // Distribute total stock evenly across sizes as estimate
+                    return { size: entry, quantity: Math.max(1, Math.floor(totalStock / rawSizes.length)) };
+                }
+                return entry; // already {size, quantity}
+            });
+        }
+
         return NextResponse.json({ product: data });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

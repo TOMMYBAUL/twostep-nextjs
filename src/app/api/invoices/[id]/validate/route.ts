@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
+import { extractSize, stripSize } from "@/lib/pos/extract-size";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
 
@@ -213,12 +214,36 @@ export async function POST(
             }
 
             // Exact matches (EAN, SKU, name) — safe to auto-validate
-            await supabase.from("products").update({
+            const itemSize = extractSize(item.name);
+            const cleanItemName = itemSize ? stripSize(item.name) : item.name;
+
+            // Facture name is the source of truth — override generic POS names
+            // Set canonical_name so the consumer sees the proper product name
+            const updateFields: Record<string, unknown> = {
                 purchase_price: item.unit_price_ht,
+                canonical_name: cleanItemName,
                 ...(sellingPrice && { price: sellingPrice }),
                 ...(item.ean && { ean: item.ean }),
                 ...(item.sku && { sku: item.sku }),
-            }).eq("id", match.productId);
+            };
+            await supabase.from("products").update(updateFields).eq("id", match.productId);
+
+            // Add size to available_sizes if extracted
+            if (itemSize) {
+                const { data: existingProduct } = await supabase
+                    .from("products")
+                    .select("available_sizes")
+                    .eq("id", match.productId)
+                    .single();
+
+                const sizes: string[] = existingProduct?.available_sizes ?? [];
+                if (!sizes.includes(itemSize)) {
+                    sizes.push(itemSize);
+                    await supabase.from("products")
+                        .update({ available_sizes: sizes })
+                        .eq("id", match.productId);
+                }
+            }
 
             // Stock goes to "incoming" — NOT available yet.
             // The merchant confirms receipt, or POS sale triggers availability.
@@ -272,11 +297,14 @@ export async function POST(
                 }
             }
 
+            const newItemSize = extractSize(item.name);
+            const cleanName = newItemSize ? stripSize(item.name) : item.name;
+
             const { data: newProduct } = await supabase
                 .from("products")
                 .insert({
                     merchant_id: merchant.id,
-                    name: item.name,
+                    name: cleanName,
                     canonical_name: enrichedName !== item.name ? enrichedName : null,
                     ean: item.ean,
                     sku: item.sku,
@@ -284,6 +312,7 @@ export async function POST(
                     purchase_price: item.unit_price_ht,
                     ...(enrichedBrand && { brand: enrichedBrand }),
                     ...(enrichedCategory && { category: enrichedCategory }),
+                    ...(newItemSize && { available_sizes: [newItemSize] }),
                 })
                 .select()
                 .single();
@@ -322,7 +351,7 @@ export async function POST(
 
     await supabase
         .from("invoices")
-        .update({ status: "imported", validated_at: new Date().toISOString() })
+        .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
     // Fire-and-forget: AI categorization for any new/uncategorized products

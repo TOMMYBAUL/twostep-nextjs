@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { lookupEan } from "@/lib/ean/lookup";
+import { searchProductImage } from "@/lib/images/serper";
+import { createImageJob } from "@/lib/images/jobs";
 import { captureError } from "@/lib/error";
 
 type ProductToEnrich = { id: string; ean: string };
@@ -53,5 +55,45 @@ export async function enrichNewProducts(merchantId: string): Promise<{ enriched:
         }
     }
 
+    // Second pass: products WITHOUT EAN that still have no photo → Serper only
+    await enrichProductsWithoutEan(merchantId);
+
     return { enriched, failed };
+}
+
+/**
+ * Find photos via Serper for products that have no EAN and no photo.
+ */
+async function enrichProductsWithoutEan(merchantId: string): Promise<void> {
+    const supabase = createAdminClient();
+
+    const { data: products } = await supabase
+        .from("products")
+        .select("id, name, brand, merchant_id")
+        .eq("merchant_id", merchantId)
+        .is("ean", null)
+        .is("photo_url", null)
+        .limit(50);
+
+    if (!products || products.length === 0) return;
+
+    for (const product of products) {
+        try {
+            const photoUrl = await searchProductImage(product.name, product.brand);
+            if (photoUrl) {
+                await supabase
+                    .from("products")
+                    .update({
+                        photo_url: photoUrl,
+                        photo_processed_url: null,
+                        photo_source: "serper",
+                    })
+                    .eq("id", product.id);
+
+                await createImageJob(product.id, product.merchant_id, photoUrl, supabase as any);
+            }
+        } catch (err) {
+            captureError(err, { productId: product.id, context: "serper-enrich-no-ean" });
+        }
+    }
 }
