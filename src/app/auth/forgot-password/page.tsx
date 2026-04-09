@@ -29,14 +29,14 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="flex min-h-dvh items-center justify-center bg-[#F8F9FC] px-4">
+        <div className="flex min-h-dvh items-center justify-center bg-secondary px-4">
             <div className="w-full max-w-sm">
                 <div className="mb-8 text-center">
                     <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
-                    <h1 className="font-display text-xl font-semibold uppercase text-[#1A1F36]">
+                    <h1 className="font-display text-xl font-semibold uppercase text-primary">
                         Mot de passe oubli&eacute;
                     </h1>
-                    <p className="mt-1 text-sm text-[#8E96B0]">
+                    <p className="mt-1 text-sm text-tertiary">
                         Entrez votre email pour recevoir un lien de r&eacute;initialisation
                     </p>
                 </div>
@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
                         </p>
                         <Link
                             href="/auth/login"
-                            className="mt-4 inline-block text-sm font-medium text-[#4268FF]"
+                            className="mt-4 inline-block text-sm font-medium text-brand-secondary"
                         >
                             Retour &agrave; la connexion
                         </Link>
@@ -57,12 +57,12 @@ export default function ForgotPasswordPage() {
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-3">
                         <div>
-                            <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
+                            <label className="mb-1.5 block text-xs font-semibold text-primary">Email</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                 placeholder="vous@boutique.fr"
                                 required
                             />
@@ -73,13 +73,13 @@ export default function ForgotPasswordPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50"
+                            className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50"
                         >
                             {isLoading ? "Envoi..." : "Envoyer le lien"}
                         </button>
 
-                        <p className="text-center text-sm text-[#8E96B0]">
-                            <Link href="/auth/login" className="font-medium text-[#4268FF]">
+                        <p className="text-center text-sm text-tertiary">
+                            <Link href="/auth/login" className="font-medium text-brand-secondary">
                                 Retour &agrave; la connexion
                             </Link>
                         </p>

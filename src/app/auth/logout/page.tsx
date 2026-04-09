@@ -16,8 +16,8 @@ export default function LogoutPage() {
     }, []);
 
     return (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <p style={{ color: "#6b7280" }}>Déconnexion en cours...</p>
+        <div className="flex min-h-dvh items-center justify-center">
+            <p className="text-tertiary">Déconnexion en cours...</p>
         </div>
     );
 }

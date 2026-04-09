@@ -13,12 +13,19 @@ export default function ResetPasswordPage() {
     const [hasSession, setHasSession] = useState(false);
 
     useEffect(() => {
-        // Supabase redirects with a hash fragment containing the access token.
-        // The client library auto-picks it up when we create the client.
         const supabase = createClient();
+
+        // Check existing session (set by /auth/callback after PKCE code exchange)
         supabase.auth.getSession().then(({ data }) => {
             if (data.session) setHasSession(true);
         });
+
+        // Also listen for auth state changes (e.g. PASSWORD_RECOVERY event)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session) setHasSession(true);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const handleSubmit = async (e: FormEvent) => {
@@ -61,14 +68,14 @@ export default function ResetPasswordPage() {
     };
 
     return (
-        <div className="flex min-h-dvh items-center justify-center bg-[#F8F9FC] px-4">
+        <div className="flex min-h-dvh items-center justify-center bg-secondary px-4">
             <div className="w-full max-w-sm">
                 <div className="mb-8 text-center">
                     <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
-                    <h1 className="font-display text-xl font-semibold uppercase text-[#1A1F36]">
+                    <h1 className="font-display text-xl font-semibold uppercase text-primary">
                         Nouveau mot de passe
                     </h1>
-                    <p className="mt-1 text-sm text-[#8E96B0]">
+                    <p className="mt-1 text-sm text-tertiary">
                         Choisissez un nouveau mot de passe s&eacute;curis&eacute;
                     </p>
                 </div>
@@ -88,7 +95,7 @@ export default function ResetPasswordPage() {
                         </p>
                         <Link
                             href="/auth/forgot-password"
-                            className="mt-4 inline-block text-sm font-medium text-[#4268FF]"
+                            className="mt-4 inline-block text-sm font-medium text-brand-secondary"
                         >
                             Renvoyer un lien
                         </Link>
@@ -96,28 +103,28 @@ export default function ResetPasswordPage() {
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-3">
                         <div>
-                            <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">
+                            <label className="mb-1.5 block text-xs font-semibold text-primary">
                                 Nouveau mot de passe
                             </label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                 placeholder="8 caractères minimum"
                                 required
                                 minLength={8}
                             />
                         </div>
                         <div>
-                            <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">
+                            <label className="mb-1.5 block text-xs font-semibold text-primary">
                                 Confirmer le mot de passe
                             </label>
                             <input
                                 type="password"
                                 value={confirm}
                                 onChange={(e) => setConfirm(e.target.value)}
-                                className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                 placeholder="Confirmer"
                                 required
                                 minLength={8}
@@ -129,7 +136,7 @@ export default function ResetPasswordPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50"
+                            className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50"
                         >
                             {isLoading ? "Mise à jour..." : "Changer le mot de passe"}
                         </button>

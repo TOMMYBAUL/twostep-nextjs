@@ -146,7 +146,7 @@ export default function SignupPage() {
     const merchantStepIndex = ["account", "siret", "profile"].indexOf(step);
 
     return (
-        <div className="flex min-h-dvh items-center justify-center bg-[#F8F9FC] px-4 py-8">
+        <div className="flex min-h-dvh items-center justify-center bg-secondary px-4 py-8">
             <div className="w-full max-w-sm">
                 {/* Logo */}
                 <div className="mb-6 text-center">
@@ -158,7 +158,7 @@ export default function SignupPage() {
                 {/* ══════════ Role selector ══════════ */}
                 {!role && (
                     <>
-                        <h1 className="mb-6 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Créer un compte</h1>
+                        <h1 className="mb-6 text-center font-display text-xl font-bold uppercase text-primary">Créer un compte</h1>
                         <div className="space-y-3">
                             <button
                                 type="button"
@@ -167,8 +167,8 @@ export default function SignupPage() {
                             >
                                 <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#4268FF]/10 text-lg">🛍️</span>
                                 <div>
-                                    <p className="text-sm font-semibold text-[#1A1F36]">Je suis un acheteur</p>
-                                    <p className="mt-0.5 text-xs text-[#8E96B0]">Découvrir les boutiques et produits près de chez moi</p>
+                                    <p className="text-sm font-semibold text-primary">Je suis un acheteur</p>
+                                    <p className="mt-0.5 text-xs text-tertiary">Découvrir les boutiques et produits près de chez moi</p>
                                 </div>
                             </button>
                             <button
@@ -178,8 +178,8 @@ export default function SignupPage() {
                             >
                                 <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#4268FF]/10 text-lg">🏪</span>
                                 <div>
-                                    <p className="text-sm font-semibold text-[#1A1F36]">Je suis un commerçant</p>
-                                    <p className="mt-0.5 text-xs text-[#8E96B0]">Rendre mon stock visible aux clients du quartier</p>
+                                    <p className="text-sm font-semibold text-primary">Je suis un commerçant</p>
+                                    <p className="mt-0.5 text-xs text-tertiary">Rendre mon stock visible aux clients du quartier</p>
                                 </div>
                             </button>
                         </div>
@@ -189,55 +189,55 @@ export default function SignupPage() {
                 {/* ══════════ User signup ══════════ */}
                 {role === "user" && (
                     <>
-                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Inscription</h1>
-                        <p className="mb-6 text-center text-xs text-[#8E96B0]">Créez votre compte en quelques secondes</p>
+                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-primary">Inscription</h1>
+                        <p className="mb-6 text-center text-xs text-tertiary">Créez votre compte en quelques secondes</p>
 
                         <form onSubmit={handleUserSubmit} className="space-y-3">
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-primary">Email</label>
                                 <input
                                     type="email"
                                     name="email"
                                     autoComplete="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                     placeholder="ton@email.fr"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Mot de passe</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-primary">Mot de passe</label>
                                 <input
                                     type="password"
                                     name="password"
                                     autoComplete="new-password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                     placeholder="8 caractères minimum"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Confirmer le mot de passe</label>
+                                <label className="mb-1.5 block text-xs font-semibold text-primary">Confirmer le mot de passe</label>
                                 <input
                                     type="password"
                                     name="confirm-password"
                                     autoComplete="new-password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                    className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                     placeholder="Confirmer"
                                     required
                                 />
                             </div>
-                            <button type="submit" disabled={isLoading} className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
+                            <button type="submit" disabled={isLoading} className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
                                 {isLoading ? "Inscription..." : "Créer mon compte"}
                             </button>
                         </form>
 
-                        <button type="button" onClick={() => { setRole(null); setError(""); }} className="mt-4 w-full text-center text-xs text-[#8E96B0]">
+                        <button type="button" onClick={() => { setRole(null); setError(""); }} className="mt-4 w-full text-center text-xs text-tertiary">
                             ← Retour au choix
                         </button>
                     </>
@@ -246,8 +246,8 @@ export default function SignupPage() {
                 {/* ══════════ Merchant signup ══════════ */}
                 {role === "merchant" && (
                     <>
-                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-[#1A1F36]">Inscription marchand</h1>
-                        <p className="mb-4 text-center text-xs text-[#8E96B0]">3 étapes rapides pour démarrer</p>
+                        <h1 className="mb-1 text-center font-display text-xl font-bold uppercase text-primary">Inscription marchand</h1>
+                        <p className="mb-4 text-center text-xs text-tertiary">3 étapes rapides pour démarrer</p>
 
                         {/* Step indicator */}
                         <div className="mb-6 flex justify-center gap-2">
@@ -255,9 +255,9 @@ export default function SignupPage() {
                                 <div
                                     key={s}
                                     className={`h-1.5 w-12 rounded-full transition-all ${
-                                        merchantStepIndex === i ? "bg-[#4268FF]"
+                                        merchantStepIndex === i ? "bg-brand-solid"
                                         : merchantStepIndex > i ? "bg-[#4268FF]/40"
-                                        : "bg-[#E2E5F0]"
+                                        : "bg-tertiary"
                                     }`}
                                 />
                             ))}
@@ -267,19 +267,19 @@ export default function SignupPage() {
                         {step === "account" && (
                             <form onSubmit={handleAccountSubmit} className="space-y-3">
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Email</label>
-                                    <input type="email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="vous@boutique.fr" required />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Email</label>
+                                    <input type="email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="vous@boutique.fr" required />
                                 </div>
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Mot de passe</label>
-                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères minimum" required />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Mot de passe</label>
+                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères minimum" required />
                                 </div>
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Confirmer le mot de passe</label>
-                                    <input type="password" name="confirm-password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="Confirmer" required />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Confirmer le mot de passe</label>
+                                    <input type="password" name="confirm-password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="Confirmer" required />
                                 </div>
-                                <button type="submit" className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90">Continuer</button>
-                                <button type="button" onClick={() => { setRole(null); setError(""); }} className="w-full text-center text-xs text-[#8E96B0]">← Retour au choix</button>
+                                <button type="submit" className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90">Continuer</button>
+                                <button type="button" onClick={() => { setRole(null); setError(""); }} className="w-full text-center text-xs text-tertiary">← Retour au choix</button>
                             </form>
                         )}
 
@@ -287,21 +287,21 @@ export default function SignupPage() {
                         {step === "siret" && (
                             <div className="space-y-3">
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Numéro SIRET</label>
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Numéro SIRET</label>
                                     <input
                                         type="text"
                                         value={siret}
                                         onChange={(e) => setSiret(e.target.value.replace(/\D/g, "").slice(0, 14))}
-                                        className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
+                                        className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
                                         placeholder="14 chiffres"
                                         maxLength={14}
                                     />
-                                    <p className="mt-1.5 text-[11px] text-[#8E96B0]">Le SIRET permet de vérifier que vous êtes un commerce enregistré</p>
+                                    <p className="mt-1.5 text-[11px] text-tertiary">Le SIRET permet de vérifier que vous êtes un commerce enregistré</p>
                                 </div>
-                                <button onClick={handleSiretVerify} disabled={siret.length !== 14 || isLoading} className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
+                                <button onClick={handleSiretVerify} disabled={siret.length !== 14 || isLoading} className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
                                     {isLoading ? "Vérification..." : "Vérifier"}
                                 </button>
-                                <button type="button" onClick={() => { setStep("account"); setError(""); }} className="w-full text-center text-xs text-[#8E96B0]">← Retour</button>
+                                <button type="button" onClick={() => { setStep("account"); setError(""); }} className="w-full text-center text-xs text-tertiary">← Retour</button>
                             </div>
                         )}
 
@@ -314,33 +314,33 @@ export default function SignupPage() {
                                     </div>
                                 )}
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Nom de la boutique</label>
-                                    <input type="text" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" required />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Nom de la boutique</label>
+                                    <input type="text" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" required />
                                 </div>
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Adresse</label>
-                                    <input type="text" value={storeAddress} onChange={(e) => setStoreAddress(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Adresse</label>
+                                    <input type="text" value={storeAddress} onChange={(e) => setStoreAddress(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" />
                                 </div>
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Ville</label>
-                                    <input type="text" value={storeCity} onChange={(e) => setStoreCity(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Ville</label>
+                                    <input type="text" value={storeCity} onChange={(e) => setStoreCity(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" />
                                 </div>
                                 <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-[#1A1F36]">Téléphone</label>
-                                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-xl border border-[#E2E5F0] bg-white px-4 py-3 text-sm text-[#1A1F36] outline-none transition focus:border-[#4268FF] focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="06 12 34 56 78" />
+                                    <label className="mb-1.5 block text-xs font-semibold text-primary">Téléphone</label>
+                                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="06 12 34 56 78" />
                                 </div>
-                                <button type="submit" disabled={isLoading} className="w-full rounded-xl bg-[#4268FF] py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
+                                <button type="submit" disabled={isLoading} className="w-full rounded-xl bg-brand-solid py-3.5 text-sm font-bold text-white shadow-sm transition active:opacity-90 disabled:opacity-50">
                                     {isLoading ? "Inscription..." : "Créer mon compte"}
                                 </button>
-                                <button type="button" onClick={() => { setStep("siret"); setError(""); }} className="w-full text-center text-xs text-[#8E96B0]">← Retour</button>
+                                <button type="button" onClick={() => { setStep("siret"); setError(""); }} className="w-full text-center text-xs text-tertiary">← Retour</button>
                             </form>
                         )}
                     </>
                 )}
 
-                <p className="mt-6 text-center text-sm text-[#8E96B0]">
+                <p className="mt-6 text-center text-sm text-tertiary">
                     Déjà inscrit ?{" "}
-                    <Link href="/auth/login" className="font-medium text-[#4268FF]">
+                    <Link href="/auth/login" className="font-medium text-brand-secondary">
                         Connectez-vous
                     </Link>
                 </p>
