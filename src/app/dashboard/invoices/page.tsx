@@ -1,12 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useInvoices } from "@/hooks/use-invoices";
+
+type IncomingItem = {
+    id: string;
+    quantity: number;
+    created_at: string;
+    invoice_id: string | null;
+    product_id: string;
+    products: { id: string; name: string; merchant_id: string };
+};
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
     received: { label: "Reçue", className: "badge-ts badge-info" },
@@ -26,6 +35,41 @@ export default function InvoicesPage() {
     const fileRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
     const [dragOver, setDragOver] = useState(false);
+    const [incoming, setIncoming] = useState<IncomingItem[]>([]);
+    const [confirming, setConfirming] = useState<string | null>(null);
+
+    const fetchIncoming = useCallback(async () => {
+        try {
+            const res = await fetch("/api/stock/incoming");
+            if (res.ok) {
+                const data = await res.json();
+                setIncoming(data.incoming ?? []);
+            }
+        } catch { /* silently fail */ }
+    }, []);
+
+    useEffect(() => { fetchIncoming(); }, [fetchIncoming]);
+
+    const handleConfirmDelivery = async (invoiceId: string) => {
+        setConfirming(invoiceId);
+        try {
+            const res = await fetch("/api/stock/receive", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ invoice_id: invoiceId }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                toast(`${data.received} produit(s) reçu(s) — stock mis à jour`);
+                await fetchIncoming();
+            } else {
+                toast("Erreur lors de la confirmation", "error");
+            }
+        } catch {
+            toast("Erreur réseau", "error");
+        }
+        setConfirming(null);
+    };
 
     const total = invoices.length;
     const pending = invoices.filter((i) => ["received", "extracting", "parsed"].includes(i.status)).length;
@@ -66,6 +110,63 @@ export default function InvoicesPage() {
                 <MetricCard label="Importées" value={imported} staggerIndex={2} />
                 <MetricCard label="Échouées" value={failed} variant="danger" staggerIndex={3} />
             </div>
+
+            {/* Deliveries pending confirmation */}
+            {incoming.length > 0 && (() => {
+                // Group by invoice_id
+                const byInvoice = new Map<string, IncomingItem[]>();
+                for (const item of incoming) {
+                    const key = item.invoice_id ?? "sans-facture";
+                    const list = byInvoice.get(key) ?? [];
+                    list.push(item);
+                    byInvoice.set(key, list);
+                }
+
+                return (
+                    <div className="mb-8">
+                        <h2 className="text-primary mb-3 text-base font-semibold">
+                            Livraisons en attente ({incoming.length} produit{incoming.length > 1 ? "s" : ""})
+                        </h2>
+                        <div className="space-y-3">
+                            {Array.from(byInvoice.entries()).map(([invoiceId, items]) => {
+                                const matchingInvoice = invoices.find((inv) => inv.id === invoiceId);
+                                return (
+                                    <div key={invoiceId} className="card-ts p-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-primary text-sm font-medium">
+                                                    {matchingInvoice?.supplier_name ?? "Livraison"}
+                                                </p>
+                                                <p className="text-tertiary text-xs">
+                                                    {items.length} produit{items.length > 1 ? "s" : ""} —{" "}
+                                                    commandé le {new Date(items[0].created_at).toLocaleDateString("fr-FR")}
+                                                </p>
+                                                <ul className="text-secondary mt-1 space-y-0.5 text-xs">
+                                                    {items.slice(0, 5).map((item) => (
+                                                        <li key={item.id}>
+                                                            {item.products.name} × {item.quantity}
+                                                        </li>
+                                                    ))}
+                                                    {items.length > 5 && (
+                                                        <li className="text-tertiary">+ {items.length - 5} autre(s)...</li>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                            <button
+                                                onClick={() => handleConfirmDelivery(invoiceId)}
+                                                disabled={confirming === invoiceId}
+                                                className="btn-ts shrink-0 text-sm"
+                                            >
+                                                {confirming === invoiceId ? "Confirmation..." : "Reçu ✓"}
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* Upload zone */}
             <div

@@ -36,7 +36,9 @@ export default function InvoiceDetailPage() {
     const [loading, setLoading] = useState(true);
     const [sellingPrices, setSellingPrices] = useState<Record<string, string>>({});
     const [validating, setValidating] = useState(false);
+    const [activating, setActivating] = useState(false);
     const [result, setResult] = useState<{ products_created: number; products_updated: number; stock_updated: number; fuzzy_matched?: number } | null>(null);
+    const [activateResult, setActivateResult] = useState<{ pushed: number; synced: boolean } | null>(null);
 
     const fetchInvoice = useCallback(async () => {
         try {
@@ -92,10 +94,32 @@ export default function InvoiceDetailPage() {
         setValidating(false);
     };
 
+    const handleActivate = async () => {
+        setActivating(true);
+        try {
+            const res = await fetch(`/api/invoices/${id}/activate`, {
+                method: "POST",
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setActivateResult(data);
+                toast(`${data.pushed} produits poussés vers la caisse`, "success");
+                await fetchInvoice();
+            } else {
+                const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+                toast(err.error || "Erreur lors de l'activation", "error");
+            }
+        } catch {
+            toast("Erreur réseau lors de l'activation", "error");
+        }
+        setActivating(false);
+    };
+
     if (loading) return <p className="text-secondary py-8 text-center">Chargement...</p>;
     if (!invoice) return <p className="text-secondary py-8 text-center">Facture non trouvée.</p>;
 
     const isImported = invoice.status === "imported";
+    const isValidated = invoice.status === "validated";
     const activeItems = invoice.invoice_items.filter((i) => i.status !== "rejected");
 
     return (
@@ -151,8 +175,8 @@ export default function InvoiceDetailPage() {
                             <th className="text-secondary px-4 py-3 font-medium">Prix achat HT</th>
                             <th className="text-secondary px-4 py-3 font-medium">EAN</th>
                             <th className="text-secondary px-4 py-3 font-medium">Statut</th>
-                            {!isImported && <th className="text-secondary px-4 py-3 font-medium">Prix vente</th>}
-                            {!isImported && <th className="text-secondary px-4 py-3 font-medium">Actions</th>}
+                            {!isImported && !isValidated && <th className="text-secondary px-4 py-3 font-medium">Prix vente</th>}
+                            {!isImported && !isValidated && <th className="text-secondary px-4 py-3 font-medium">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -172,7 +196,7 @@ export default function InvoiceDetailPage() {
                                         </span>
                                     )}
                                 </td>
-                                {!isImported && (
+                                {!isImported && !isValidated && (
                                     <td className="px-4 py-3">
                                         {item.status !== "rejected" && (
                                             <input
@@ -186,7 +210,7 @@ export default function InvoiceDetailPage() {
                                         )}
                                     </td>
                                 )}
-                                {!isImported && (
+                                {!isImported && !isValidated && (
                                     <td className="px-4 py-3">
                                         {item.status !== "rejected" && (
                                             <button onClick={() => handleReject(item.id)} className="text-error-primary text-sm hover:underline">
@@ -201,13 +225,34 @@ export default function InvoiceDetailPage() {
                 </table>
             </div>
 
-            {!isImported && activeItems.length > 0 && (
+            {activateResult && (
+                <div className="bg-success-secondary mb-6 rounded-lg p-4 text-sm">
+                    <p className="text-success-primary font-medium">Envoi vers la caisse terminé !</p>
+                    <p className="text-primary">
+                        {activateResult.pushed} produits poussés
+                        {activateResult.synced ? " — synchronisation OK" : " — synchronisation en attente"}
+                    </p>
+                </div>
+            )}
+
+            {!isImported && !isValidated && activeItems.length > 0 && (
                 <div className="mt-6 flex gap-4">
                     <button onClick={() => router.push("/dashboard/invoices")} className="btn-ts-secondary">
                         Retour
                     </button>
                     <button onClick={handleValidate} disabled={validating} className="btn-ts">
-                        {validating ? "Import en cours..." : `Valider et importer (${activeItems.length} lignes)`}
+                        {validating ? "Validation en cours..." : `Valider (${activeItems.length} lignes)`}
+                    </button>
+                </div>
+            )}
+
+            {isValidated && (
+                <div className="mt-6 flex gap-4">
+                    <button onClick={() => router.push("/dashboard/invoices")} className="btn-ts-secondary">
+                        Retour
+                    </button>
+                    <button onClick={handleActivate} disabled={activating} className="btn-ts">
+                        {activating ? "Envoi en cours..." : "Pousser vers la caisse"}
                     </button>
                 </div>
             )}

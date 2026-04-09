@@ -5,6 +5,7 @@ const nextConfig = {
     serverExternalPackages: ["web-push"],
     images: {
         formats: ["image/avif", "image/webp"],
+        localPatterns: [{ pathname: "/**" }],
         remotePatterns: [
             // ── Static / known ────────────────────────────────
             {

@@ -84,7 +84,7 @@ export function Hero() {
                             Découvrir les boutiques →
                         </Link>
                         <Link
-                            href="/onboarding"
+                            href="/auth/login?role=merchant"
                             className="inline-flex items-center rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-sm transition duration-100 ease-linear hover:bg-white/20 active:scale-[0.97]"
                         >
                             Je suis commerçant

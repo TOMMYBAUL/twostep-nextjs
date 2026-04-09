@@ -49,7 +49,7 @@ export function ProductCard({
         <Link
             ref={ref}
             href={`/product/${generateSlug(name, id)}`}
-            aria-label={`${name} — ${merchantName} — ${hasPromo ? salePrice!.toFixed(2) : price.toFixed(2)} €`}
+            aria-label={`${name} — ${merchantName} — ${hasPromo ? salePrice!.toFixed(2) : price != null ? price.toFixed(2) : "—"} €`}
             className={cx(
                 "group block overflow-hidden rounded-[10px] transition duration-100 motion-reduce:transform-none active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none",
                 className,
@@ -121,12 +121,12 @@ export function ProductCard({
                                 {salePrice!.toFixed(2)} €
                             </span>
                             <span className="font-[family-name:var(--font-inter)] text-[11px] text-tertiary line-through">
-                                {price.toFixed(2)} €
+                                {price != null ? price.toFixed(2) : "—"} €
                             </span>
                         </>
                     ) : (
                         <span className="font-[family-name:var(--font-barlow)] text-[13px] font-extrabold text-primary">
-                            {price.toFixed(2)} €
+                            {price != null ? price.toFixed(2) : "—"} €
                         </span>
                     )}
                 </div>
