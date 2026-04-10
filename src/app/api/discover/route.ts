@@ -220,17 +220,19 @@ async function resolveCategories(
     if (productIds.length === 0) return new Map();
     const unique = [...new Set(productIds)];
 
-    // Primary category from products table
+    // Primary category + subcategory from products table
     const { data: products } = await supabase
         .from("products")
-        .select("id, category")
+        .select("id, category, subcategory_id, categories!subcategory_id(slug)")
         .in("id", unique);
 
     const map = new Map<string, string[]>();
     for (const row of products ?? []) {
-        if (row.category) {
-            map.set(row.id, [row.category.toLowerCase()]);
-        }
+        const cats: string[] = [];
+        if (row.category) cats.push(row.category.toLowerCase());
+        const subSlug = (row as any).categories?.slug;
+        if (subSlug) cats.push(subSlug.toLowerCase());
+        if (cats.length > 0) map.set(row.id, cats);
     }
 
     // Secondary categories from product_tags
