@@ -84,7 +84,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             });
         }
 
-        return NextResponse.json({ product: data });
+        return NextResponse.json({ product: data }, {
+            headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
+        });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
