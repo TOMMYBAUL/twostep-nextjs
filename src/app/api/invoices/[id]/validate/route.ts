@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
@@ -104,10 +104,13 @@ export async function POST(
     let productsUpdated = 0;
     let stockUpdated = 0;
     let fuzzyMatched = 0;
+    const productsToEnrich: { ean: string | null; productId: string }[] = [];
 
     const validItems = invoice.invoice_items.filter(
         (item: { status: string }) => item.status !== "rejected"
     );
+
+    console.log("[validate] validItems count:", validItems.length, "items:", validItems.map((i: any) => i.name));
 
     // ── Pre-group items by base product name (strip size) ──
     // "Nike Dunk Low taille 42" + "Nike Dunk Low taille 43" → same group
@@ -128,6 +131,8 @@ export async function POST(
     // Track products created within this validation to avoid re-creating
     // when multiple sizes of a new product appear in the same invoice
     const createdInThisBatch = new Map<string, string>(); // normalizedName → productId
+
+    console.log("[validate] groups:", itemGroups.size, [...itemGroups.keys()]);
 
     for (const [groupKey, groupItems] of itemGroups) {
     // Use the first item for matching, but collect all sizes
@@ -247,7 +252,6 @@ export async function POST(
                 canonical_name: cleanName,
                 ...(sellingPrice && { price: sellingPrice }),
                 ...(firstEan && { ean: firstEan }),
-                ...(firstSku && { sku: firstSku }),
             };
 
             // Merge all sizes from this group into available_sizes
@@ -263,11 +267,11 @@ export async function POST(
                 updateFields.available_sizes = mergedSizes;
             }
 
-            await supabase.from("products").update(updateFields).eq("id", match.productId);
+            await adminSupabase.from("products").update(updateFields).eq("id", match.productId);
 
             // Stock incoming for EACH item in the group (preserves per-size quantity)
             for (const gi of groupItems) {
-                await supabase.from("stock_incoming").insert({
+                await adminSupabase.from("stock_incoming").insert({
                     product_id: match.productId,
                     quantity: gi.quantity,
                     invoice_id: id,
@@ -300,6 +304,7 @@ export async function POST(
                 }
             }
         } else {
+            console.log("[validate] NEW PRODUCT for group:", groupKey, "cleanName:", cleanName, "sizes:", allSizes);
             // ── NEW PRODUCT ──
             // Check if we already created this product in this batch
             // (another group with slightly different name might have matched)
@@ -310,13 +315,13 @@ export async function POST(
                     const { data: p } = await supabase
                         .from("products").select("available_sizes").eq("id", existingBatchId).single();
                     const merged = [...new Set([...(p?.available_sizes ?? []), ...allSizes])];
-                    await supabase.from("products").update({ available_sizes: merged }).eq("id", existingBatchId);
+                    await adminSupabase.from("products").update({ available_sizes: merged }).eq("id", existingBatchId);
                 }
                 for (const gi of groupItems) {
-                    await supabase.from("stock_incoming").insert({
+                    await adminSupabase.from("stock_incoming").insert({
                         product_id: existingBatchId, quantity: gi.quantity, invoice_id: id, status: "incoming",
                     });
-                    await supabase.from("invoice_items").update({ product_id: existingBatchId, status: "validated" }).eq("id", gi.id);
+                    await adminSupabase.from("invoice_items").update({ product_id: existingBatchId, status: "validated" }).eq("id", gi.id);
                 }
                 stockUpdated += groupItems.length;
                 continue;
@@ -340,14 +345,13 @@ export async function POST(
                 }
             }
 
-            const { data: newProduct } = await supabase
+            const { data: newProduct, error: insertErr } = await adminSupabase
                 .from("products")
                 .insert({
                     merchant_id: merchant.id,
                     name: cleanName,
                     canonical_name: enrichedName !== cleanName ? enrichedName : null,
                     ean: firstEan,
-                    sku: firstSku,
                     price: sellingPrice,
                     purchase_price: item.unit_price_ht,
                     ...(enrichedBrand && { brand: enrichedBrand }),
@@ -357,37 +361,57 @@ export async function POST(
                 .select()
                 .single();
 
+            console.log("[validate] insert result:", newProduct ? "OK id=" + newProduct.id : "FAILED", "insertErr:", insertErr?.message, "cleanName:", cleanName);
             if (newProduct) {
                 createdInThisBatch.set(groupKey, newProduct.id);
 
-                await supabase.from("stock").insert({ product_id: newProduct.id, quantity: 0 });
+                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: 0 });
 
                 // Stock incoming for each item (preserves per-size quantity)
                 for (const gi of groupItems) {
-                    await supabase.from("stock_incoming").insert({
+                    await adminSupabase.from("stock_incoming").insert({
                         product_id: newProduct.id, quantity: gi.quantity, invoice_id: id, status: "incoming",
                     });
-                    await supabase.from("invoice_items").update({ product_id: newProduct.id, status: "validated" }).eq("id", gi.id);
+                    await adminSupabase.from("invoice_items").update({ product_id: newProduct.id, status: "validated" }).eq("id", gi.id);
                 }
 
                 productsCreated++;
                 stockUpdated += groupItems.length;
 
-                if (firstEan) {
-                    lookupEan(firstEan, newProduct.id).catch(console.error);
-                }
+                // Collect products for post-response enrichment
+                productsToEnrich.push({ ean: firstEan, productId: newProduct.id });
             }
         }
     }
 
-    await supabase
+    await adminSupabase
         .from("invoices")
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
-    // Fire-and-forget: AI categorization for any new/uncategorized products
-    if (productsCreated > 0) {
-        categorizeMerchantProducts(merchant.id).catch(console.error);
+    // Run enrichment AFTER response is sent but BEFORE function is killed
+    // (Next.js `after()` guarantees execution in serverless)
+    if (productsToEnrich.length > 0 || productsCreated > 0) {
+        after(async () => {
+            // Photo enrichment via EAN → Serper
+            for (const { ean, productId } of productsToEnrich) {
+                if (ean) {
+                    try {
+                        await lookupEan(ean, productId);
+                    } catch (err) {
+                        console.error("[validate:after] lookupEan failed:", err);
+                    }
+                }
+            }
+            // AI categorization
+            if (productsCreated > 0) {
+                try {
+                    await categorizeMerchantProducts(merchant.id);
+                } catch (err) {
+                    console.error("[validate:after] categorize failed:", err);
+                }
+            }
+        });
     }
 
     return NextResponse.json({

@@ -50,7 +50,9 @@ export function stripSize(name: string): string {
     const idx = name.lastIndexOf(size);
     if (idx === -1) return name.trim();
 
-    const before = name.slice(0, idx);
+    let before = name.slice(0, idx);
     const after = name.slice(idx + size.length);
+    // Also strip "taille", "size", "t." that precede the size number
+    before = before.replace(/\s*(?:taille|size|t\.)\s*$/i, "");
     return (before + after).replace(/[\s\-\/,()]+/g, " ").replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
 }

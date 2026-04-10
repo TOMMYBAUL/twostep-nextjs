@@ -156,21 +156,27 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
 
     // Try external APIs: UPCitemdb first (better coverage), then OpenEAN
     const result = await fetchFromUpcDatabase(ean) ?? await fetchFromOpenEan(ean);
-    if (!result) return false;
 
-    // Cache the result
-    await supabase.from("ean_lookups").upsert({
-        ean,
-        name: result.name,
-        brand: result.brand,
-        photo_url: result.photo_url,
-        category: result.category,
-        source: result.source,
-        fetched_at: new Date().toISOString(),
-    });
+    if (result) {
+        // Cache the result
+        await supabase.from("ean_lookups").upsert({
+            ean,
+            name: result.name,
+            brand: result.brand,
+            photo_url: result.photo_url,
+            category: result.category,
+            source: result.source,
+            fetched_at: new Date().toISOString(),
+        });
 
-    await applyEnrichment(supabase, productId, result, ean);
-    return true;
+        await applyEnrichment(supabase, productId, result, ean);
+        return true;
+    }
+
+    // UPC/OpenEAN didn't find anything — still try Serper for the photo
+    // This is critical: many French products aren't in UPC databases
+    await applyEnrichment(supabase, productId, { name: null, brand: null, photo_url: null, category: null }, ean);
+    return false;
 }
 
 async function applyEnrichment(
