@@ -29,8 +29,8 @@ type SerperImageResult = {
     imageUrl: string;
     title: string;
     source: string;
-    width: number;
-    height: number;
+    imageWidth: number;
+    imageHeight: number;
 };
 
 /**
@@ -44,7 +44,10 @@ export async function searchProductImage(
     ean?: string | null,
 ): Promise<string | null> {
     const apiKey = process.env.SERPER_API_KEY;
-    if (!apiKey) return null;
+    if (!apiKey) {
+        console.error("[serper] SERPER_API_KEY is not set!");
+        return null;
+    }
 
     // Strategy 1: EAN + name → finds the EXACT product variant
     if (ean) {
@@ -94,23 +97,27 @@ async function searchSerperImages(apiKey: string, query: string): Promise<string
         const data = await res.json();
         const images: SerperImageResult[] = data.images ?? [];
 
+        console.log("[serper] Query:", query, "→", images.length, "images raw");
+
         if (images.length === 0) return null;
 
-        // Filter: min 300px, HTTPS only
+        // Filter: HTTPS only, min 200px (some product images are 256x256)
         const good = images.filter(
-            (img) => img.width >= 300 && img.height >= 300 && img.imageUrl.startsWith("https"),
+            (img) => img.imageWidth >= 200 && img.imageHeight >= 200 && img.imageUrl.startsWith("https"),
         );
+
+        console.log("[serper] After filter:", good.length, "images ≥200px");
 
         if (good.length === 0) return null;
 
         // Score by aspect ratio: product photos are near-square (1:1)
         // Lifestyle/banner photos are wide (16:9) or tall (9:16)
         const scored = good.map((img) => {
-            const ratio = img.width / img.height;
+            const ratio = img.imageWidth / img.imageHeight;
             // Perfect square = 1.0 → score 1.0, extreme rectangles → lower score
             const squareScore = 1 - Math.abs(ratio - 1) / 2;
             // Prefer larger images
-            const sizeScore = Math.min(img.width, 1200) / 1200;
+            const sizeScore = Math.min(img.imageWidth, 1200) / 1200;
             return { img, score: squareScore * 0.7 + sizeScore * 0.3 };
         }).sort((a, b) => b.score - a.score);
 

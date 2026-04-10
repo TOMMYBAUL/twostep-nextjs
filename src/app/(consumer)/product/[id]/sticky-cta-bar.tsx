@@ -31,11 +31,11 @@ export function StickyCtaBar({
                 {/* Price */}
                 <div className="flex items-baseline gap-1.5 tabular-nums">
                     <span className="text-[15px] font-bold text-primary">
-                        {displayPrice.toFixed(2)} €
+                        {displayPrice != null ? displayPrice.toFixed(2) : "—"} €
                     </span>
                     {salePrice != null && salePrice < price && (
                         <span className="text-[12px] text-tertiary line-through">
-                            {price.toFixed(2)} €
+                            {price != null ? price.toFixed(2) : "—"} €
                         </span>
                     )}
                 </div>
