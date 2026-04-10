@@ -1,7 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
 type ProductInput = {
     id: string;
@@ -56,13 +53,7 @@ export async function categorizeProducts(
         .map((c) => `  ${c.parent_slug} > ${c.slug} (${c.label})`)
         .join("\n");
 
-    const response = await anthropic.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 4096,
-        messages: [
-            {
-                role: "user",
-                content: `Tu es un expert en catégorisation de produits de commerce de détail français.
+    const prompt = `Tu es un expert en catégorisation de produits de commerce de détail français.
 
 CATÉGORIES NIVEAU 1 :
 ${treeText}
@@ -96,12 +87,29 @@ Règles :
   * Lunettes de soleil sport → catégorie principale "bijoux-accessoires", secondaires ["sport-outdoor"]
 - confidence = 95+ si le nom est explicite, 70-94 si deviné, <70 si incertain
 - tags = mots-clés utiles pour la recherche (matière, style, usage...)
-- Retourne UNIQUEMENT le JSON array, rien d'autre`,
-            },
-        ],
-    });
+- Retourne UNIQUEMENT le JSON array, rien d'autre`;
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (!geminiKey) throw new Error("GEMINI_API_KEY not set");
+
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
+            }),
+        },
+    );
+
+    if (!response.ok) {
+        throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
     try {
         const jsonStr = text.replace(/```json?\s*/g, "").replace(/```/g, "").trim();
