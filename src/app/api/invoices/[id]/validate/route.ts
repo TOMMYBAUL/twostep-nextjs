@@ -1,10 +1,9 @@
 import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { fetchEanData } from "@/lib/ean/lookup";
+import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
-import { searchProductImage } from "@/lib/images/serper";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
 
@@ -391,31 +390,17 @@ export async function POST(
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
-    // Enrichment: find photos via Serper directly (bypasses UPCitemdb which blocks)
-    console.log("[validate] Starting photo enrichment for", productsToEnrich.length, "products");
+    // Enrichment via lookupEan: EAN → UPCitemdb (brand/category) → Serper (photo)
+    console.log("[validate] Starting enrichment for", productsToEnrich.length, "products via lookupEan");
     for (const { ean, productId } of productsToEnrich) {
-        try {
-            // Get product name for search query
-            const { data: prod } = await adminSupabase
-                .from("products")
-                .select("name, photo_url")
-                .eq("id", productId)
-                .single();
-
-            if (prod && !prod.photo_url) {
-                console.log("[validate] Searching photo for:", prod.name, "EAN:", ean);
-                const photoUrl = await searchProductImage(prod.name, null, ean);
-                if (photoUrl) {
-                    await adminSupabase.from("products")
-                        .update({ photo_url: photoUrl, photo_source: "serper" })
-                        .eq("id", productId);
-                    console.log("[validate] ✓ Photo found for", prod.name);
-                } else {
-                    console.log("[validate] ✗ No photo found for", prod.name);
-                }
+        if (ean) {
+            try {
+                console.log("[validate] lookupEan:", ean, "→ product", productId);
+                await lookupEan(ean, productId);
+                console.log("[validate] ✓ lookupEan done for", ean);
+            } catch (err) {
+                console.error("[validate] lookupEan failed for", ean, ":", err);
             }
-        } catch (err) {
-            console.error("[validate] Photo enrichment failed for", productId, ":", err);
         }
     }
 
