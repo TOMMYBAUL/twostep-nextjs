@@ -29,9 +29,29 @@ type SerperImageResult = {
     imageUrl: string;
     title: string;
     source: string;
+    domain: string;
     imageWidth: number;
     imageHeight: number;
 };
+
+// E-commerce domains get priority — their product photos are clean and reliable
+const ECOMMERCE_DOMAINS = new Set([
+    // Marketplaces
+    "amazon.fr", "amazon.com", "zalando.fr", "zalando.com", "asos.com",
+    "cdiscount.com", "fnac.com", "darty.com", "ldlc.com",
+    // Fashion retailers
+    "wethenew.com", "courir.com", "footlocker.fr", "jdsports.fr",
+    "galerieslafayette.com", "printemps.com", "placedestendances.com",
+    // Brand official sites
+    "nike.com", "adidas.com", "adidas.fr", "levi.com",
+    "sezane.com", "apc.fr", "veja-store.com", "newbalance.com",
+    "carhartt-wip.com", "armorlux.com", "petitbateau.com",
+    // Beauty
+    "sephora.fr", "nocibe.fr", "marionnaud.fr",
+    // General e-commerce
+    "intersport.fr", "decathlon.fr", "manomano.fr",
+    "boulanger.com", "cultura.com", "laredoute.fr",
+]);
 
 /**
  * Search Google Images for a product photo.
@@ -110,15 +130,15 @@ async function searchSerperImages(apiKey: string, query: string): Promise<string
 
         if (good.length === 0) return null;
 
-        // Score by aspect ratio: product photos are near-square (1:1)
-        // Lifestyle/banner photos are wide (16:9) or tall (9:16)
+        // Score: e-commerce domain bonus + aspect ratio + size
         const scored = good.map((img) => {
             const ratio = img.imageWidth / img.imageHeight;
-            // Perfect square = 1.0 → score 1.0, extreme rectangles → lower score
             const squareScore = 1 - Math.abs(ratio - 1) / 2;
-            // Prefer larger images
             const sizeScore = Math.min(img.imageWidth, 1200) / 1200;
-            return { img, score: squareScore * 0.7 + sizeScore * 0.3 };
+            // E-commerce domains get a big bonus — their photos are product shots
+            const domain = img.domain?.replace(/^www\./, "") ?? "";
+            const ecomBonus = ECOMMERCE_DOMAINS.has(domain) ? 0.5 : 0;
+            return { img, score: squareScore * 0.4 + sizeScore * 0.2 + ecomBonus + 0.4 };
         }).sort((a, b) => b.score - a.score);
 
         // Try top candidates in score order, verify each URL
