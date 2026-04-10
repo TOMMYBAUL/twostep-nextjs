@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET() {
     try {
@@ -24,6 +25,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "consumer:preferences", 10);
+    if (limited) return limited;
+
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

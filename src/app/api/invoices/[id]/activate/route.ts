@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { activateInvoice } from "@/lib/invoice/activate";
 import { captureError } from "@/lib/error";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(
     _request: Request,
     { params }: { params: Promise<{ id: string }> },
 ) {
+    const limited = await rateLimit(_request.headers.get("x-forwarded-for") ?? null, "invoices:activate", 5);
+    if (limited) return limited;
+
     try {
         const { id } = await params;
 

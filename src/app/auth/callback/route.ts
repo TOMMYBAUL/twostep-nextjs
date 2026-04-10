@@ -5,12 +5,19 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get("code");
+    const next = searchParams.get("next");
 
     if (code) {
         const supabase = await createClient();
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!error) {
-            // Check if user is a merchant → dashboard, otherwise → discover
+            // If a "next" param was provided (e.g. password reset → /auth/reset-password),
+            // redirect there instead of the default destination.
+            if (next && next.startsWith("/")) {
+                return NextResponse.redirect(`${origin}${next}`);
+            }
+
+            // Default: check if user is a merchant → dashboard, otherwise → discover
             const { data: { user } } = await supabase.auth.getUser();
             let dest = "/discover";
             if (user) {

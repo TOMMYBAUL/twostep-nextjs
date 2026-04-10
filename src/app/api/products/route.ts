@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { productBody, parseBody } from "@/lib/validation";
 import { resolveMerchantId } from "@/lib/slug";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: Request) {
     try {
@@ -65,6 +66,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "products:post", 10);
+    if (limited) return limited;
+
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

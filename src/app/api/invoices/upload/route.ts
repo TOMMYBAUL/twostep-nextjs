@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { parseInvoice } from "@/lib/parser";
 import { captureError } from "@/lib/error";
+import { rateLimit } from "@/lib/rate-limit";
 
 const ACCEPTED_TYPES = new Set([
     "application/pdf",
@@ -13,6 +14,9 @@ const ACCEPTED_TYPES = new Set([
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(request: NextRequest) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "invoices:upload", 5);
+    if (limited) return limited;
+
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
