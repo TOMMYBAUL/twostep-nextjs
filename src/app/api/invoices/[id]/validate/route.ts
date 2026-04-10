@@ -269,16 +269,20 @@ export async function POST(
 
             await adminSupabase.from("products").update(updateFields).eq("id", match.productId);
 
-            // Stock incoming for EACH item in the group (preserves per-size quantity)
-            for (const gi of groupItems) {
-                await adminSupabase.from("stock_incoming").insert({
-                    product_id: match.productId,
-                    quantity: gi.quantity,
-                    invoice_id: id,
-                    status: "incoming",
-                });
+            // Add stock directly (invoice = goods received)
+            const matchTotalQty = groupItems.reduce((sum, gi) => sum + gi.quantity, 0);
+            const { data: currentStock } = await adminSupabase
+                .from("stock")
+                .select("quantity")
+                .eq("product_id", match.productId)
+                .maybeSingle();
+            await adminSupabase.from("stock").upsert({
+                product_id: match.productId,
+                quantity: (currentStock?.quantity ?? 0) + matchTotalQty,
+            });
 
-                await supabase
+            for (const gi of groupItems) {
+                await adminSupabase
                     .from("invoice_items")
                     .update({
                         product_id: match.productId,
@@ -366,13 +370,12 @@ export async function POST(
             if (newProduct) {
                 createdInThisBatch.set(groupKey, newProduct.id);
 
-                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: 0 });
+                // Stock = total quantity from all sizes in this group
+                const totalQty = groupItems.reduce((sum, gi) => sum + gi.quantity, 0);
+                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: totalQty });
 
-                // Stock incoming for each item (preserves per-size quantity)
+                // Update each invoice item
                 for (const gi of groupItems) {
-                    await adminSupabase.from("stock_incoming").insert({
-                        product_id: newProduct.id, quantity: gi.quantity, invoice_id: id, status: "incoming",
-                    });
                     await adminSupabase.from("invoice_items").update({ product_id: newProduct.id, status: "validated" }).eq("id", gi.id);
                 }
 
