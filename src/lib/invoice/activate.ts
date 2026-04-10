@@ -1,14 +1,14 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdapter, type POSProduct } from "@/lib/pos";
 import { decrypt } from "@/lib/email/encryption";
-import { syncMerchantPOS } from "@/lib/pos/sync-engine";
 import { captureError } from "@/lib/error";
 
 /**
- * Activate an invoice: push parsed items to the merchant's POS,
- * then trigger a sync to pull them into Two-Step.
+ * Activate an invoice: push the GROUPED products (created by validate)
+ * to the merchant's POS. Does NOT trigger a sync — the products are
+ * already in Two-Step's DB from validate.
  *
- * Flow: invoice_items → POSProduct[] → pushCatalog → sync engine
+ * Flow: products (from validate) → POSProduct[] → pushCatalog
  */
 export async function activateInvoice(invoiceId: string): Promise<{
     pushed: number;
@@ -17,7 +17,7 @@ export async function activateInvoice(invoiceId: string): Promise<{
 }> {
     const supabase = createAdminClient();
 
-    // 1. Get invoice + merchant + items
+    // 1. Get invoice
     const { data: invoice, error: invoiceErr } = await supabase
         .from("invoices")
         .select("id, merchant_id, supplier_name, status")
@@ -32,17 +32,31 @@ export async function activateInvoice(invoiceId: string): Promise<{
         throw new Error(`Invoice status must be 'parsed' or 'validated', got '${invoice.status}'`);
     }
 
-    const { data: items, error: itemsErr } = await supabase
+    // 2. Get the PRODUCTS created by validate (not the raw invoice_items)
+    //    These are already grouped by model with sizes consolidated.
+    const { data: invoiceItems } = await supabase
         .from("invoice_items")
-        .select("id, name, ean, sku, quantity, unit_price_ht, status")
+        .select("product_id")
         .eq("invoice_id", invoiceId)
-        .in("status", ["detected", "enriched", "validated"]);
+        .not("product_id", "is", null);
 
-    if (itemsErr || !items || items.length === 0) {
-        throw new Error("No items to activate");
+    if (!invoiceItems || invoiceItems.length === 0) {
+        throw new Error("No validated products to push — run validate first");
     }
 
-    // 2. Get merchant POS connection
+    // Get unique product IDs (multiple invoice_items point to same product after grouping)
+    const productIds = [...new Set(invoiceItems.map((i) => i.product_id as string))];
+
+    const { data: products, error: prodErr } = await supabase
+        .from("products")
+        .select("id, name, canonical_name, ean, price, category, photo_url, pos_item_id")
+        .in("id", productIds);
+
+    if (prodErr || !products || products.length === 0) {
+        throw new Error("Products not found in database");
+    }
+
+    // 3. Get merchant POS connection
     const { data: conn, error: connErr } = await supabase
         .from("pos_connections")
         .select("provider, access_token, shop_domain")
@@ -56,19 +70,31 @@ export async function activateInvoice(invoiceId: string): Promise<{
     const adapter = getAdapter(conn.provider);
     const accessToken = decrypt(conn.access_token);
 
-    // 3. Convert invoice items to POS products
-    const products: POSProduct[] = items.map((item) => ({
-        pos_item_id: `inv-${item.id}`,
-        name: item.name,
-        ean: item.ean ?? null,
-        price: item.unit_price_ht ? Number(item.unit_price_ht) : null,
-        category: null,
-        photo_url: null,
-    }));
+    // 4. Convert grouped products to POS format
+    const posProducts: POSProduct[] = products
+        .filter((p) => !p.pos_item_id) // Only push products not already in POS
+        .map((p) => ({
+            pos_item_id: `ts-${p.id}`,
+            name: p.canonical_name ?? p.name,
+            ean: p.ean ?? null,
+            price: p.price ? Number(p.price) : null,
+            category: p.category ?? null,
+            photo_url: p.photo_url ?? null,
+        }));
 
-    // 4. Push to POS
+    if (posProducts.length === 0) {
+        // All products already exist in POS — just update status
+        await supabase
+            .from("invoices")
+            .update({ status: "imported", validated_at: new Date().toISOString() })
+            .eq("id", invoiceId);
+
+        return { pushed: 0, synced: false };
+    }
+
+    // 5. Push to POS
     try {
-        await adapter.pushCatalog(accessToken, products, {
+        await adapter.pushCatalog(accessToken, posProducts, {
             shopDomain: conn.shop_domain ?? undefined,
         });
     } catch (pushErr) {
@@ -76,27 +102,14 @@ export async function activateInvoice(invoiceId: string): Promise<{
         throw new Error(`Failed to push to ${conn.provider}: ${pushErr instanceof Error ? pushErr.message : String(pushErr)}`);
     }
 
-    // 5. Update invoice status
+    // 6. Update invoice status
     await supabase
         .from("invoices")
         .update({ status: "imported", validated_at: new Date().toISOString() })
         .eq("id", invoiceId);
 
-    // 6. Update invoice_items status
-    await supabase
-        .from("invoice_items")
-        .update({ status: "validated" })
-        .eq("invoice_id", invoiceId)
-        .in("status", ["detected", "enriched"]);
+    // NO sync trigger — products are already in Two-Step DB from validate.
+    // The next scheduled sync (every 15 min) will reconcile if needed.
 
-    // 7. Trigger sync to pull the new products from POS into Two-Step
-    let synced = false;
-    try {
-        await syncMerchantPOS(invoice.merchant_id, conn.provider);
-        synced = true;
-    } catch (syncErr) {
-        captureError(syncErr, { invoiceId, phase: "post-activate-sync" });
-    }
-
-    return { pushed: products.length, synced };
+    return { pushed: posProducts.length, synced: false };
 }

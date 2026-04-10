@@ -36,7 +36,6 @@ export default function InvoiceDetailPage() {
     const [loading, setLoading] = useState(true);
     const [sellingPrices, setSellingPrices] = useState<Record<string, string>>({});
     const [validating, setValidating] = useState(false);
-    const [activating, setActivating] = useState(false);
     const [result, setResult] = useState<{ products_created: number; products_updated: number; stock_updated: number; fuzzy_matched?: number } | null>(null);
     const [activateResult, setActivateResult] = useState<{ pushed: number; synced: boolean } | null>(null);
 
@@ -70,56 +69,51 @@ export default function InvoiceDetailPage() {
         }
     };
 
-    const handleValidate = async () => {
+    const handleValidateAndPush = async () => {
         setValidating(true);
         try {
+            // Step 1: Validate (group, match, create products)
             const prices: Record<string, number> = {};
             for (const [itemId, price] of Object.entries(sellingPrices)) {
                 if (price) prices[itemId] = parseFloat(price);
             }
-            const res = await fetch(`/api/invoices/${id}/validate`, {
+            const validateRes = await fetch(`/api/invoices/${id}/validate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ selling_prices: prices }),
             });
-            if (res.ok) {
-                setResult(await res.json());
-                await fetchInvoice();
-            } else {
+            if (!validateRes.ok) {
                 toast("Erreur lors de la validation", "error");
+                setValidating(false);
+                return;
             }
-        } catch {
-            toast("Erreur réseau lors de la validation", "error");
-        }
-        setValidating(false);
-    };
+            const validateData = await validateRes.json();
+            setResult(validateData);
 
-    const handleActivate = async () => {
-        setActivating(true);
-        try {
-            const res = await fetch(`/api/invoices/${id}/activate`, {
+            // Step 2: Push to POS (uses grouped products from validate)
+            const activateRes = await fetch(`/api/invoices/${id}/activate`, {
                 method: "POST",
             });
-            if (res.ok) {
-                const data = await res.json();
-                setActivateResult(data);
-                toast(`${data.pushed} produits poussés vers la caisse`, "success");
-                await fetchInvoice();
+            if (activateRes.ok) {
+                const activateData = await activateRes.json();
+                setActivateResult(activateData);
+                toast(`${validateData.products_created + validateData.products_updated} produits importés et poussés vers la caisse`);
             } else {
-                const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
-                toast(err.error || "Erreur lors de l'activation", "error");
+                // Validate worked but push failed — still OK, products are in Two-Step
+                toast("Produits importés — l'envoi vers la caisse a échoué, réessayez plus tard", "error");
             }
+
+            await fetchInvoice();
         } catch {
-            toast("Erreur réseau lors de l'activation", "error");
+            toast("Erreur réseau", "error");
         }
-        setActivating(false);
+        setValidating(false);
     };
 
     if (loading) return <p className="text-secondary py-8 text-center">Chargement...</p>;
     if (!invoice) return <p className="text-secondary py-8 text-center">Facture non trouvée.</p>;
 
     const isImported = invoice.status === "imported";
-    const isValidated = invoice.status === "validated";
     const activeItems = invoice.invoice_items.filter((i) => i.status !== "rejected");
 
     return (
@@ -175,8 +169,8 @@ export default function InvoiceDetailPage() {
                             <th className="text-secondary px-4 py-3 font-medium">Prix achat HT</th>
                             <th className="text-secondary px-4 py-3 font-medium">EAN</th>
                             <th className="text-secondary px-4 py-3 font-medium">Statut</th>
-                            {!isImported && !isValidated && <th className="text-secondary px-4 py-3 font-medium">Prix vente</th>}
-                            {!isImported && !isValidated && <th className="text-secondary px-4 py-3 font-medium">Actions</th>}
+                            {!isImported && <th className="text-secondary px-4 py-3 font-medium">Prix vente</th>}
+                            {!isImported && <th className="text-secondary px-4 py-3 font-medium">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -196,7 +190,7 @@ export default function InvoiceDetailPage() {
                                         </span>
                                     )}
                                 </td>
-                                {!isImported && !isValidated && (
+                                {!isImported && (
                                     <td className="px-4 py-3">
                                         {item.status !== "rejected" && (
                                             <input
@@ -210,7 +204,7 @@ export default function InvoiceDetailPage() {
                                         )}
                                     </td>
                                 )}
-                                {!isImported && !isValidated && (
+                                {!isImported && (
                                     <td className="px-4 py-3">
                                         {item.status !== "rejected" && (
                                             <button onClick={() => handleReject(item.id)} className="text-error-primary text-sm hover:underline">
@@ -235,24 +229,13 @@ export default function InvoiceDetailPage() {
                 </div>
             )}
 
-            {!isImported && !isValidated && activeItems.length > 0 && (
+            {!isImported && activeItems.length > 0 && (
                 <div className="mt-6 flex gap-4">
                     <button onClick={() => router.push("/dashboard/invoices")} className="btn-ts-secondary">
                         Retour
                     </button>
-                    <button onClick={handleValidate} disabled={validating} className="btn-ts">
-                        {validating ? "Validation en cours..." : `Valider (${activeItems.length} lignes)`}
-                    </button>
-                </div>
-            )}
-
-            {isValidated && (
-                <div className="mt-6 flex gap-4">
-                    <button onClick={() => router.push("/dashboard/invoices")} className="btn-ts-secondary">
-                        Retour
-                    </button>
-                    <button onClick={handleActivate} disabled={activating} className="btn-ts">
-                        {activating ? "Envoi en cours..." : "Pousser vers la caisse"}
+                    <button onClick={handleValidateAndPush} disabled={validating} className="btn-ts">
+                        {validating ? "Import en cours..." : `Valider et importer (${activeItems.length} lignes)`}
                     </button>
                 </div>
             )}
