@@ -223,15 +223,30 @@ async function resolveCategories(
     // Primary category + subcategory from products table
     const { data: products } = await supabase
         .from("products")
-        .select("id, category, subcategory_id, categories!subcategory_id(slug)")
+        .select("id, category, subcategory_id")
         .in("id", unique);
+
+    // Get all subcategory IDs to resolve their slugs
+    const subIds = (products ?? []).map((p: any) => p.subcategory_id).filter(Boolean);
+    const subSlugMap = new Map<string, string>();
+    if (subIds.length > 0) {
+        const { data: subCats } = await supabase
+            .from("categories")
+            .select("id, slug")
+            .in("id", [...new Set(subIds)]);
+        for (const sc of subCats ?? []) {
+            subSlugMap.set(sc.id, sc.slug.toLowerCase());
+        }
+    }
 
     const map = new Map<string, string[]>();
     for (const row of products ?? []) {
         const cats: string[] = [];
         if (row.category) cats.push(row.category.toLowerCase());
-        const subSlug = (row as any).categories?.slug;
-        if (subSlug) cats.push(subSlug.toLowerCase());
+        if (row.subcategory_id) {
+            const subSlug = subSlugMap.get(row.subcategory_id);
+            if (subSlug) cats.push(subSlug);
+        }
         if (cats.length > 0) map.set(row.id, cats);
     }
 

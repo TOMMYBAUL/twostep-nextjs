@@ -407,11 +407,15 @@ export async function POST(
         }
     }
 
-    // AI categorization (fire-and-forget is OK here — not critical)
-    if (productsCreated > 0) {
-        categorizeMerchantProducts(merchant.id).catch((err) =>
-            console.error("[validate] categorize failed:", err)
-        );
+    // AI categorization — synchronous (must complete before response)
+    if (productsCreated > 0 || productsUpdated > 0) {
+        try {
+            console.log("[validate] Starting AI categorization");
+            await categorizeMerchantProducts(merchant.id);
+            console.log("[validate] ✓ Categorization done");
+        } catch (err) {
+            console.error("[validate] categorize failed:", err);
+        }
     }
 
     return NextResponse.json({
