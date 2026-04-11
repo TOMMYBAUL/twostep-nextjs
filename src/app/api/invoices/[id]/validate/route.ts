@@ -295,7 +295,14 @@ export async function POST(
             productsUpdated++;
             stockUpdated += groupItems.length;
 
-            // Fire-and-forget: enrich if missing photo
+            // Feed event for restock
+            await adminSupabase.from("feed_events").insert({
+                merchant_id: merchant.id,
+                product_id: match.productId,
+                event_type: "restock",
+            });
+
+            // Enrich if missing photo
             // Enrich matched product if missing photo
             if (firstEan) {
                 const { data: existingProd } = await adminSupabase
@@ -378,6 +385,13 @@ export async function POST(
                 for (const gi of groupItems) {
                     await adminSupabase.from("invoice_items").update({ product_id: newProduct.id, status: "validated" }).eq("id", gi.id);
                 }
+
+                // Create feed event so product appears in consumer discover feed
+                await adminSupabase.from("feed_events").insert({
+                    merchant_id: merchant.id,
+                    product_id: newProduct.id,
+                    event_type: "new_product",
+                });
 
                 productsCreated++;
                 stockUpdated += groupItems.length;
