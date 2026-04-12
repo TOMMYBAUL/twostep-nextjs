@@ -89,9 +89,9 @@ function XMarkIcon({ className }: { className?: string }) {
 const features = [
     {
         icon: SyncIcon,
-        title: "Synchronisation automatique",
+        title: "Import universel",
         description:
-            "Connectez votre caisse (Square, Shopify, Lightspeed, Zettle). Votre stock se met \u00e0 jour en temps r\u00e9el, sans aucune saisie manuelle.",
+            "Importez votre catalogue depuis n\u2019importe quel logiciel (CSV, Excel). Synchro POS automatique disponible pour Square, Shopify, Lightspeed, Zettle, Clictill et Fastmag.",
     },
     {
         icon: SparklesIcon,
@@ -111,20 +111,20 @@ const steps = [
     {
         number: "01",
         icon: PlugIcon,
-        title: "Connectez votre caisse",
-        description: "En 2 clics, reliez votre POS existant. Aucune installation, aucune formation.",
+        title: "Importez votre catalogue",
+        description: "Un export CSV depuis votre logiciel actuel. Compatible avec tous les syst\u00e8mes de caisse, sans exception.",
     },
     {
         number: "02",
         icon: CpuIcon,
         title: "On enrichit tout",
-        description: "Notre IA ajoute photos, descriptions, cat\u00e9gories et tailles. Votre catalogue devient professionnel.",
+        description: "Notre IA ajoute photos, descriptions, cat\u00e9gories et tailles. Votre catalogue devient professionnel en quelques minutes.",
     },
     {
         number: "03",
         icon: UsersIcon,
         title: "Les clients arrivent",
-        description: "Vos produits apparaissent dans l\u2019app, sur Google et Maps. Les clients vous trouvent et viennent.",
+        description: "Vos produits apparaissent dans l\u2019app, sur Google Shopping et Maps. Les clients vous trouvent et viennent en boutique.",
     },
 ];
 
@@ -133,28 +133,29 @@ const posProviders = [
     { name: "Shopify", comingSoon: false },
     { name: "Lightspeed", comingSoon: false },
     { name: "Zettle", comingSoon: false },
-    { name: "Fastmag", comingSoon: true },
-    { name: "Clictill", comingSoon: true },
+    { name: "Fastmag", comingSoon: false },
+    { name: "Clictill", comingSoon: false },
+    { name: "CSV / Excel", comingSoon: false },
 ];
 
 const stats = [
-    { value: "+200 000", label: "commerces compatibles" },
-    { value: "2 min", label: "pour se lancer" },
-    { value: "0", label: "saisie manuelle" },
+    { value: "100%", label: "des commerces compatibles" },
+    { value: "10 min", label: "pour \u00eatre en ligne" },
+    { value: "15\u20ac", label: "par mois, tout inclus" },
 ];
 
 const beforeAfter = {
     before: [
         "Stock invisible en ligne",
-        "Saisie manuelle des produits",
+        "Saisie manuelle des produits un par un",
         "Pas de photos professionnelles",
         "Aucune visibilit\u00e9 Google",
         "Clients perdus au profit des boutiques en ligne",
     ],
     after: [
         "Catalogue complet visible partout",
-        "Synchronisation 100% automatique",
-        "Photos enrichies par IA",
+        "Import CSV une seule fois, factures ensuite",
+        "Photos trouv\u00e9es automatiquement par IA",
         "Pr\u00e9sent sur Google Shopping et Maps",
         "Clients qui viennent en boutique",
     ],
@@ -206,16 +207,16 @@ export default function ProduitPage() {
                         
                         className="mt-5 text-[32px] font-black leading-tight tracking-tight text-primary md:text-[48px]"
                     >
-                        Votre caisse, connect&eacute;e<br />
-                        <span className="text-brand-secondary">au monde entier.</span>
+                        Votre catalogue,<br />
+                        <span className="text-brand-secondary">visible partout.</span>
                     </motion.h1>
                     <motion.p
                         {...slideUp(0.1)}
                         
                         className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-tertiary md:text-[17px]"
                     >
-                        Two-Step lit votre POS, enrichit vos donn&eacute;es par IA, et diffuse vos
-                        produits sur Google, Maps et l&rsquo;app. Automatiquement.
+                        Importez votre catalogue, notre IA enrichit chaque produit, et on diffuse
+                        sur Google, Maps et l&rsquo;app. Compatible avec tous les logiciels.
                     </motion.p>
                     <motion.div
                         {...slideUp(0.15)}
@@ -226,7 +227,7 @@ export default function ProduitPage() {
                             href="/onboarding"
                             className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover"
                         >
-                            Connecter ma boutique &rarr;
+                            Essayer gratuitement &rarr;
                         </Link>
                     </motion.div>
                 </section>
@@ -251,7 +252,7 @@ export default function ProduitPage() {
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-12 text-center text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
-                            3 &eacute;tapes. 2 minutes. Z&eacute;ro effort.
+                            3 &eacute;tapes. 10 minutes. Z&eacute;ro effort.
                         </motion.h2>
 
                         <div className="grid gap-8 md:grid-cols-3 md:gap-6">
@@ -432,7 +433,7 @@ export default function ProduitPage() {
                             transition={{ ...SPRING, delay: 0.05 }}
                             className="mb-4 text-[24px] font-black tracking-tight text-primary md:text-[32px]"
                         >
-                            Compatible avec les principales caisses
+                            Compatible avec tous les logiciels
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 24 }}
@@ -440,7 +441,7 @@ export default function ProduitPage() {
                             transition={{ ...SPRING, delay: 0.1 }}
                             className="mx-auto mb-10 max-w-md text-[15px] leading-relaxed text-tertiary"
                         >
-                            Pas de caisse ? On vous recommande Square (gratuit).
+                            Synchro POS automatique ou import CSV/Excel — vous choisissez.
                         </motion.p>
 
                         <div className="mx-auto flex max-w-[750px] flex-wrap items-center justify-center gap-4 md:gap-5">
@@ -597,14 +598,14 @@ export default function ProduitPage() {
                             Pr&ecirc;t &agrave; rendre votre stock visible ?
                         </h2>
                         <p className="mt-3 text-[14px] text-white/50">
-                            3 mois gratuits. Sans engagement. En 2 minutes.
+                            3 mois gratuits. 15&euro;/mois ensuite. Sans engagement.
                         </p>
                         <div className="mt-6">
                             <Link
                                 href="/onboarding"
                                 className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover"
                             >
-                                Connecter ma boutique &rarr;
+                                Essayer gratuitement &rarr;
                             </Link>
                         </div>
                     </div>

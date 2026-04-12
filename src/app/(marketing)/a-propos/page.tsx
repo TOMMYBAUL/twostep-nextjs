@@ -60,7 +60,7 @@ const values = [
         icon: CheckCircleIcon,
         title: "Z\u00e9ro friction",
         description:
-            "Pas de saisie, pas de formation, pas d\u2019abonnement pour commencer. On se branche sur votre caisse existante et tout fonctionne.",
+            "Un seul fichier CSV pour d\u00e9marrer. Pas de formation, pas de changement d\u2019habitudes. Compatible avec tous les logiciels de caisse.",
     },
     {
         icon: ChartIcon,
@@ -77,9 +77,9 @@ const values = [
 ];
 
 const bigStats = [
-    { value: "6", label: "POS int\u00e9gr\u00e9s" },
+    { value: "100%", label: "des commerces compatibles" },
     { value: "2 412", label: "commerces identifi\u00e9s \u00e0 Toulouse" },
-    { value: "< 2 min", label: "de setup" },
+    { value: "10 min", label: "pour \u00eatre en ligne" },
 ];
 
 /* ── Page ── */
@@ -221,9 +221,9 @@ export default function AProposPage() {
                                     On a cr&eacute;&eacute; Two-Step pour connecter les deux.
                                 </h2>
                                 <p className="text-[15px] leading-relaxed text-tertiary md:text-[16px]">
-                                    Two-Step se branche sur la caisse du commer&ccedil;ant et rend
-                                    son stock visible &mdash; sur l&rsquo;app, sur Google, sur
-                                    Maps. Automatiquement, en temps r&eacute;el, sans effort.
+                                    Two-Step rend le stock du commer&ccedil;ant visible &mdash;
+                                    sur l&rsquo;app, sur Google, sur Maps. Un simple import
+                                    de catalogue suffit. Z&eacute;ro effort au quotidien.
                                     Faire du commerce local la premi&egrave;re option.
                                 </p>
                             </motion.div>
