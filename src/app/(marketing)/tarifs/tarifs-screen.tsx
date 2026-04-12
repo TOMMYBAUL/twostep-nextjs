@@ -12,42 +12,42 @@ import { LenisProvider } from "../components/lenis-provider";
 
 const tiers = [
     {
-        name: "Découverte",
-        description: "Pour tester Two-Step gratuitement et voir les résultats.",
+        name: "Essai gratuit",
+        description: "3 mois pour tester Two-Step sans rien payer.",
         price: "0€",
         priceDetail: "pendant 3 mois",
         features: [
             { text: "Produits illimités", included: true },
-            { text: "Synchronisation stock automatique", included: true },
+            { text: "Import catalogue CSV/Excel", included: true },
+            { text: "Enrichissement photos IA", included: true },
             { text: "Page boutique Two-Step", included: true },
             { text: "Visible sur la carte", included: true },
             { text: "Notifications \"J'arrive\"", included: true },
-            { text: "Enrichissement photos IA", included: true },
-            { text: "Support par email", included: true },
+            { text: "Dashboard gestion de stock", included: true },
         ],
         cta: "Commencer gratuitement",
-        href: "/onboarding",
+        href: "/auth/login?role=merchant",
         highlighted: false,
         badge: null,
     },
     {
-        name: "Pro",
-        description: "Tout ce qu'il faut pour attirer des clients en boutique.",
-        price: "49€",
+        name: "Two-Step",
+        description: "Tout inclus. Un prix. Compatible avec tous les commerces.",
+        price: "15€",
         priceDetail: "/ mois",
         features: [
-            { text: "Tout le plan Découverte", included: true },
-            { text: "Google Shopping & Maps", included: true },
-            { text: "Dashboard analytics complet", included: true },
-            { text: "Enrichissement IA avancé", included: true },
-            { text: "Promotions et soldes", included: true },
-            { text: "Pipeline fournisseurs", included: true },
-            { text: "Support prioritaire", included: true },
+            { text: "Tout l'essai gratuit, sans limite", included: true },
+            { text: "Google Shopping & Google Maps", included: true },
+            { text: "Import factures fournisseur", included: true },
+            { text: "Synchro POS automatique (si compatible)", included: true },
+            { text: "Enrichissement IA photos + catégories", included: true },
+            { text: "Récap du jour (décrémentation simplifiée)", included: true },
+            { text: "Support par email", included: true },
         ],
-        cta: "Essayer gratuitement",
-        href: "/onboarding",
+        cta: "Essayer 3 mois gratuit",
+        href: "/auth/login?role=merchant",
         highlighted: true,
-        badge: "Le plus populaire",
+        badge: "Tout inclus",
     },
     {
         name: "Business",
@@ -55,7 +55,7 @@ const tiers = [
         price: "Sur mesure",
         priceDetail: null,
         features: [
-            { text: "Tout le plan Pro", included: true },
+            { text: "Tout le plan Two-Step", included: true },
             { text: "Multi-boutiques", included: true },
             { text: "Rapports consolidés", included: true },
             { text: "Intégration POS sur mesure", included: true },
@@ -72,31 +72,31 @@ const tiers = [
 
 const comparisons = [
     { feature: "Produits", free: "Illimités", pro: "Illimités", business: "Illimités" },
-    { feature: "Sync stock automatique", free: true, pro: true, business: true },
+    { feature: "Import catalogue CSV/Excel", free: true, pro: true, business: true },
+    { feature: "Enrichissement photos IA", free: true, pro: true, business: true },
     { feature: "Page boutique", free: true, pro: true, business: true },
     { feature: "Visible sur la carte", free: true, pro: true, business: true },
     { feature: "Notifications \"J'arrive\"", free: true, pro: true, business: true },
-    { feature: "Enrichissement photos IA", free: "Basique", pro: "Avancé", business: "Avancé" },
+    { feature: "Récap du jour", free: true, pro: true, business: true },
     { feature: "Google Shopping & Maps", free: false, pro: true, business: true },
-    { feature: "Dashboard analytics", free: "Basique", pro: "Complet", business: "Complet" },
-    { feature: "Promotions & soldes", free: false, pro: true, business: true },
-    { feature: "Pipeline fournisseurs", free: false, pro: true, business: true },
+    { feature: "Import factures fournisseur", free: false, pro: true, business: true },
+    { feature: "Synchro POS automatique", free: false, pro: true, business: true },
     { feature: "Multi-boutiques", free: false, pro: false, business: true },
-    { feature: "Support", free: "Email", pro: "Prioritaire", business: "Dédié" },
+    { feature: "Support", free: "Email", pro: "Email", business: "Dédié" },
 ];
 
 const faqs = [
     {
         q: "Comment fonctionne l'essai gratuit ?",
-        a: "Vous avez 3 mois pour tester toutes les fonctionnalités gratuitement. Pas de carte bancaire requise. À la fin de l'essai, vous choisissez de continuer ou non.",
+        a: "Vous avez 3 mois pour tester toutes les fonctionnalités gratuitement. Pas de carte bancaire requise. À la fin de l'essai, vous choisissez de continuer à 15€/mois ou non.",
     },
     {
-        q: "Quelles caisses sont compatibles ?",
-        a: "Square, Shopify, Lightspeed, Zettle — et bientôt Fastmag et Clictill. Si vous n'avez pas de caisse, on vous recommande Square (gratuit).",
+        q: "Mon logiciel de caisse est-il compatible ?",
+        a: "Oui, tous les logiciels sont compatibles. Vous exportez votre catalogue en CSV ou Excel depuis votre logiciel actuel (SumUp, Zettle, Lightspeed, ProgMag, ou tout autre), et on s'occupe du reste. Pour Square, Shopify, Lightspeed et Zettle, la synchronisation est même automatique.",
     },
     {
         q: "Combien de temps pour se lancer ?",
-        a: "Moins de 2 minutes. Vous connectez votre caisse, et vos produits apparaissent automatiquement. Zéro saisie.",
+        a: "Environ 10 minutes. Vous exportez votre catalogue, vous l'importez dans Two-Step, et nos algorithmes enrichissent automatiquement chaque produit avec photos et descriptions.",
     },
     {
         q: "Puis-je annuler à tout moment ?",
@@ -104,11 +104,15 @@ const faqs = [
     },
     {
         q: "Est-ce que ça fonctionne si je n'ai pas de photos produit ?",
-        a: "Oui. Notre IA enrichit automatiquement vos fiches produit avec des photos, descriptions et catégories. Vous n'avez rien à faire.",
+        a: "Oui. Notre IA trouve automatiquement les photos de vos produits grâce aux codes-barres et aux noms. Pour les marques connues, le taux de réussite dépasse 95%.",
     },
     {
         q: "Comment Two-Step m'apporte des clients ?",
-        a: "Vos produits apparaissent dans l'app Two-Step, sur Google Shopping et Google Maps. Les consommateurs qui cherchent un produit près de chez eux voient votre boutique et viennent.",
+        a: "Vos produits apparaissent dans l'app Two-Step, sur Google Shopping et Google Maps. Les consommateurs qui cherchent un produit près de chez eux voient votre boutique et viennent directement.",
+    },
+    {
+        q: "Comment je mets à jour mon stock ?",
+        a: "Trois options selon vos habitudes : le Récap du jour (2 minutes le soir), les boutons +/- sur chaque produit, ou un nouvel import CSV pour tout recaler. Si vous avez un POS compatible, c'est même automatique.",
     },
 ];
 
@@ -260,7 +264,7 @@ export default function TarifsScreen() {
                     {[
                         { text: "Sans engagement", path: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
                         { text: "Sans carte bancaire", path: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" },
-                        { text: "Setup en 2 minutes", path: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+                        { text: "Setup en 10 minutes", path: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
                         { text: "Annulable à tout moment", path: "M6 18L18 6M6 6l12 12" },
                     ].map((s) => (
                         <div key={s.text} className="flex items-center gap-2">
@@ -331,7 +335,7 @@ export default function TarifsScreen() {
                         Prêt à rendre votre stock visible ?
                     </h2>
                     <p className="mt-3 text-[14px] text-white/50">
-                        3 mois gratuits. Sans engagement. En 2 minutes.
+                        3 mois gratuits. Sans engagement. Compatible avec tous les commerces.
                     </p>
                     <div className="mt-6">
                         <Link href="/onboarding" className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover">

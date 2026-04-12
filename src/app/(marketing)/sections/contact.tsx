@@ -7,11 +7,11 @@ import Link from "next/link";
 import { slideUp } from "@/lib/motion";
 
 const bullets = [
-    "Compatible Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt",
-    "Stock synchronisé automatiquement en temps réel",
-    "Enrichissement IA : photos, catégories, tailles",
-    "Diffusion Google Merchant, Google Maps, app Two-Step",
-    "Dashboard avec métriques et conseils personnalisés",
+    "Compatible avec tous les logiciels de caisse — un simple export suffit",
+    "Photos et descriptions enrichies automatiquement par IA",
+    "Visible sur Google Shopping, Google Maps et l'app Two-Step",
+    "Import factures fournisseur pour alimenter le stock",
+    "15€/mois tout inclus — 3 mois gratuits pour commencer",
 ];
 
 export function Contact() {
@@ -75,9 +75,9 @@ export function Contact() {
                             className="mb-6 max-w-[480px] text-gray-500"
                             style={{ fontSize: 13, lineHeight: 1.6 }}
                         >
-                            Connectez votre caisse en 2 minutes. Vos produits apparaissent
+                            Importez votre catalogue une seule fois. Vos produits apparaissent
                             automatiquement auprès des clients de votre quartier et sur
-                            Google. Gratuit pour commencer.
+                            Google. 3 mois gratuits pour commencer.
                         </motion.p>
 
                         {/* Bullets */}
