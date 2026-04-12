@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { StockTabs } from "@/components/dashboard/stock-tabs";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useInvoices } from "@/hooks/use-invoices";
@@ -100,9 +101,11 @@ export default function InvoicesPage() {
         <>
             <PageHeader
                 storeName={merchant?.name}
-                title="Mes"
-                titleAccent="factures"
+                title="Mon"
+                titleAccent="stock"
             />
+
+            <StockTabs />
 
             <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                 <MetricCard label="Total factures" value={total} staggerIndex={0} />

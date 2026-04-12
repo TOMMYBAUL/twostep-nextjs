@@ -19,7 +19,8 @@ const tabs = [
     },
     {
         href: "/dashboard/products",
-        label: "Produits",
+        label: "Mon stock",
+        matchAlso: ["/dashboard/invoices", "/dashboard/recap"],
         icon: (
             <svg className="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.5 7.28L12 2 3.5 7.28M20.5 7.28V16.72L12 22M20.5 7.28L12 12.56M3.5 7.28V16.72L12 22M3.5 7.28L12 12.56M12 22V12.56" />
@@ -70,9 +71,10 @@ export function BottomTabBar() {
         <>
             <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-secondary bg-primary safe-bottom md:hidden">
                 {tabs.map((tab) => {
+                    const matchPaths = "matchAlso" in tab ? [tab.href, ...(tab as any).matchAlso] : [tab.href];
                     const isActive = "exact" in tab && tab.exact
                         ? pathname === tab.href
-                        : pathname.startsWith(tab.href);
+                        : matchPaths.some((p: string) => pathname.startsWith(p));
                     return (
                         <TabItem
                             key={tab.href}

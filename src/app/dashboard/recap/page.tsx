@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Check } from "@untitledui/icons";
+import { PageHeader } from "@/components/dashboard/page-header";
+import { StockTabs } from "@/components/dashboard/stock-tabs";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
@@ -90,16 +92,15 @@ export default function RecapPage() {
 
     return (
         <div className="mx-auto max-w-lg">
-            {/* Header */}
-            <div className="mb-6 flex items-center gap-3">
-                <Link href="/dashboard/products" className="text-fg-quaternary hover:text-fg-secondary">
-                    <ArrowLeft className="size-5" />
-                </Link>
-                <div>
-                    <h1 className="text-xl font-semibold text-primary">Récap du jour</h1>
-                    <p className="text-sm text-tertiary">Combien avez-vous vendu aujourd'hui ?</p>
-                </div>
-            </div>
+            <PageHeader
+                storeName={merchant?.name}
+                title="Mon"
+                titleAccent="stock"
+            />
+
+            <StockTabs />
+
+            <p className="mb-6 text-sm text-tertiary">Combien avez-vous vendu aujourd'hui ?</p>
 
             {loading ? (
                 <div className="py-20 text-center text-sm text-tertiary">Chargement...</div>
