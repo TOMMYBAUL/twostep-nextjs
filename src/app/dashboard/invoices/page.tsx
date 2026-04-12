@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StockTabs } from "@/components/dashboard/stock-tabs";
+import { EmailInboundBanner } from "@/components/dashboard/email-inbound-banner";
+import { EmailSetupGuide } from "@/components/dashboard/email-setup-guide";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useInvoices } from "@/hooks/use-invoices";
@@ -38,6 +40,8 @@ export default function InvoicesPage() {
     const [dragOver, setDragOver] = useState(false);
     const [incoming, setIncoming] = useState<IncomingItem[]>([]);
     const [confirming, setConfirming] = useState<string | null>(null);
+    const [showGuide, setShowGuide] = useState(false);
+    const [inboundAddress, setInboundAddress] = useState("");
 
     const fetchIncoming = useCallback(async () => {
         try {
@@ -50,6 +54,13 @@ export default function InvoicesPage() {
     }, []);
 
     useEffect(() => { fetchIncoming(); }, [fetchIncoming]);
+
+    useEffect(() => {
+        fetch("/api/email/inbound-address")
+            .then((r) => r.json())
+            .then((data) => { if (data.address) setInboundAddress(data.address); })
+            .catch(() => {});
+    }, []);
 
     const handleConfirmDelivery = async (invoiceId: string) => {
         setConfirming(invoiceId);
@@ -113,6 +124,8 @@ export default function InvoicesPage() {
                 <MetricCard label="Importées" value={imported} staggerIndex={2} />
                 <MetricCard label="Échouées" value={failed} variant="danger" staggerIndex={3} />
             </div>
+
+            <EmailInboundBanner onShowGuide={() => setShowGuide(true)} />
 
             {/* Deliveries pending confirmation */}
             {incoming.length > 0 && (() => {
@@ -232,8 +245,13 @@ export default function InvoicesPage() {
                                 const status = STATUS_LABELS[invoice.status] ?? STATUS_LABELS.received;
                                 return (
                                     <tr key={invoice.id} className="border-secondary hover:bg-secondary border-b transition">
-                                        <td className="text-primary px-4 py-3 font-medium">
-                                            {invoice.supplier_name ?? invoice.sender_email ?? "—"}
+                                        <td className="px-4 py-3">
+                                            <p className="text-primary font-medium">
+                                                {invoice.supplier_name ?? invoice.sender_email ?? "—"}
+                                            </p>
+                                            <p className="text-tertiary text-[11px]">
+                                                {invoice.source === "email" ? "via email" : "upload manuel"}
+                                            </p>
                                         </td>
                                         <td className="text-secondary px-4 py-3">
                                             {new Date(invoice.received_at).toLocaleDateString("fr-FR")}
@@ -258,6 +276,13 @@ export default function InvoicesPage() {
                         </tbody>
                     </table>
                 </div>
+            )}
+
+            {showGuide && inboundAddress && (
+                <EmailSetupGuide
+                    address={inboundAddress}
+                    onClose={() => setShowGuide(false)}
+                />
             )}
         </>
     );
