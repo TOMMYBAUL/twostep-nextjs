@@ -9,6 +9,8 @@ type SyncResult = {
     products_updated: number;
     stock_updated: number;
     promos_imported: number;
+    pos_items_total?: number;
+    visible_count?: number;
 };
 
 const SUPPORTED_POS = ["square", "lightspeed", "shopify", "zettle", "clictill", "fastmag"] as const;
@@ -89,6 +91,22 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         }
     }, [onUpdate]);
 
+    // Force re-sync: nuke POS products and rebuild from POS catalog
+    const resync = useCallback(async () => {
+        setSyncing(true);
+        setSyncResult(null);
+        try {
+            const res = await fetch("/api/pos/resync", { method: "POST" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Re-sync failed");
+            setSyncResult(data);
+            onUpdate();
+            return data;
+        } finally {
+            setSyncing(false);
+        }
+    }, [onUpdate]);
+
     // Silent sync (no toast, no setSyncResult)
     const silentSync = useCallback(async () => {
         try {
@@ -119,5 +137,5 @@ export function usePOS(merchant: Merchant | null, onUpdate: () => void) {
         return () => clearInterval(interval);
     }, [isConnected, merchant?.pos_last_sync, silentSync, syncIntervalMs]);
 
-    return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, connectDirect, disconnect, sync };
+    return { isConnected, connectedProvider, connecting, syncing, syncResult, connect, connectDirect, disconnect, sync, resync };
 }

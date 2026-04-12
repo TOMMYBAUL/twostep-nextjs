@@ -224,7 +224,7 @@ export const fastmagAdapter: IPOSAdapter = {
         return null;
     },
 
-    async pushCatalog(_accessToken: string, _products: POSProduct[], _options?: POSAdapterOptions): Promise<void> {
+    async pushCatalog(_accessToken: string, _products: POSProduct[], _options?: POSAdapterOptions): Promise<Record<string, string>> {
         throw new Error("Fastmag pushCatalog not implemented — Two-Step reads only");
     },
 };

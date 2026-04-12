@@ -58,8 +58,6 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
     await upcRateLimiter.acquire();
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
-    // Paid plan: /prod/v1/lookup with user_key header
-    // Free plan: /prod/trial/lookup without auth
     const url = apiKey
         ? `https://api.upcitemdb.com/prod/v1/lookup?upc=${ean}`
         : `https://api.upcitemdb.com/prod/trial/lookup?upc=${ean}`;
@@ -72,7 +70,45 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
     const data = await res.json();
     const parsed = parseUpcItemDbResponse(data);
     if (!parsed) return null;
-    return { ...parsed, source: "upc_database" };
+    // Never use UPCitemdb photos — Serper has better e-commerce quality
+    return { ...parsed, photo_url: null, source: "upc_database" };
+}
+
+/**
+ * Reverse search: find the EAN from a product name.
+ * Used when invoices have product names but no barcode.
+ * Returns the first matching EAN + brand + category (no photo — Serper handles that).
+ */
+export async function searchEanByName(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    await upcRateLimiter.acquire();
+
+    const apiKey = process.env.UPCITEMDB_API_KEY;
+    const query = brand ? `${brand} ${productName}` : productName;
+    const url = apiKey
+        ? `https://api.upcitemdb.com/prod/v1/search?s=${encodeURIComponent(query)}&type=product`
+        : `https://api.upcitemdb.com/prod/trial/search?s=${encodeURIComponent(query)}&type=product`;
+    const headers: Record<string, string> = { "Accept": "application/json" };
+    if (apiKey) headers["user_key"] = apiKey;
+
+    const res = await fetchWithRetry(url, { headers });
+    if (!res) return null;
+
+    const data = await res.json();
+    const items = data.items as Array<Record<string, unknown>> | undefined;
+    if (!items || items.length === 0) return null;
+
+    const item = items[0];
+    const ean = item.ean ? String(item.ean) : null;
+    if (!ean || !/^\d{12,13}$/.test(ean)) return null;
+
+    return {
+        ean,
+        brand: item.brand ? String(item.brand) : null,
+        category: item.category ? String(item.category).toLowerCase() : null,
+    };
 }
 
 async function fetchFromOpenEan(ean: string): Promise<EanResult | null> {
@@ -84,7 +120,8 @@ async function fetchFromOpenEan(ean: string): Promise<EanResult | null> {
 
     const data = await res.json();
     if (!data?.name) return null;
-    return { ...parseOpenEanResponse(data), source: "open_ean" };
+    // Never use OpenEAN photos — Serper has better e-commerce quality
+    return { ...parseOpenEanResponse(data), photo_url: null, source: "open_ean" };
 }
 
 /**
@@ -190,7 +227,7 @@ async function applyEnrichment(
     // Fetch current product for validation and photo check
     const { data: prod } = await supabase
         .from("products")
-        .select("merchant_id, photo_url, name, brand")
+        .select("merchant_id, photo_url, name, brand, sku")
         .eq("id", productId)
         .single();
 
@@ -219,11 +256,12 @@ async function applyEnrichment(
     let photoSource: "ean" | "serper" = "ean";
 
     if (!photoUrl && prod && !prod.photo_url) {
-        // No photo from EAN databases — try Serper with product name
+        // No photo from EAN databases — try Serper with SKU (most precise), EAN, then name
         const serperUrl = await searchProductImage(
             prod.name,
             data.brand ?? prod.brand,
             ean ?? null,
+            (prod as any).sku ?? null,
         );
         if (serperUrl) {
             photoUrl = serperUrl;

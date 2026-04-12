@@ -4,7 +4,7 @@ import MarchandsScreen from "./marchands-screen";
 export const metadata: Metadata = {
     title: "Marchands",
     description:
-        "Faites-vous trouver par vos futurs clients. Two-Step connecte votre caisse et rend vos produits visibles en ligne automatiquement.",
+        "Faites-vous trouver par vos futurs clients. Two-Step rend vos produits visibles en ligne automatiquement. Compatible avec tous les logiciels de caisse.",
     openGraph: {
         title: "Marchands | Two-Step",
         description:

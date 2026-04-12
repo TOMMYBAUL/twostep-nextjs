@@ -97,10 +97,11 @@ export const shopifyAdapter: IPOSAdapter = {
         return products;
     },
 
-    async pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions) {
+    async pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions): Promise<Record<string, string>> {
         const shop = requireShop(options);
+        const idMappings: Record<string, string> = {};
         for (const p of products) {
-            await fetch(shopApi(shop, "/products.json"), {
+            const res = await fetch(shopApi(shop, "/products.json"), {
                 method: "POST",
                 headers: {
                     "X-Shopify-Access-Token": accessToken,
@@ -117,7 +118,14 @@ export const shopifyAdapter: IPOSAdapter = {
                     },
                 }),
             });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.product?.id) {
+                    idMappings[p.pos_item_id || p.name] = String(data.product.id);
+                }
+            }
         }
+        return idMappings;
     },
 
     async fetchPromos(accessToken: string, options?: POSAdapterOptions): Promise<POSPromo[]> {

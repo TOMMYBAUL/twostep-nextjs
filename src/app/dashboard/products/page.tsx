@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ImagePlus, Plus, XClose } from "@untitledui/icons";
+import { useRef, useState } from "react";
+import { ImagePlus, Plus, Upload01, XClose } from "@untitledui/icons";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
@@ -22,6 +22,27 @@ export default function ProductsPage() {
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"catalogue" | "incomplete">("catalogue");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const recalRef = useRef<HTMLInputElement>(null);
+
+    const handleCatalogImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        e.target.value = ""; // reset for re-upload
+
+        toast("Import en cours...");
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("/api/catalog/import", { method: "POST", body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            toast(`Stock recalé : ${data.products_updated} mis à jour, ${data.products_created} créés`);
+            window.location.reload();
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur d'import", "error");
+        }
+    };
 
     const handleDelta = async (productId: string, delta: number) => {
         setUpdatingId(productId);
@@ -74,6 +95,42 @@ export default function ProductsPage() {
                     </Link>
                 }
             />
+
+            {/* Stock management tip — only if no POS connected */}
+            {merchant && !merchant.pos_type && products.length > 0 && (
+                <div className="animate-fade-up stagger-05 mb-4 rounded-2xl border border-brand bg-brand-section_subtle p-4">
+                    <p className="mb-2 text-sm font-semibold text-primary">Comment mettre à jour votre stock ?</p>
+                    <div className="flex flex-col gap-1.5 text-sm text-secondary">
+                        <p>📝 <strong>Vous notez vos ventes ?</strong> → Utilisez le <strong>Récap du jour</strong> le soir en fermant</p>
+                        <p>📊 <strong>Vous gérez sur Excel ?</strong> → Exportez et cliquez <strong>Recaler mon stock</strong></p>
+                        <p>🧠 <strong>Vous gérez de tête ?</strong> → Les boutons ± sur chaque produit ci-dessous</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Quick actions */}
+            <div className="animate-fade-up stagger-05 mb-4 flex flex-wrap gap-2">
+                <Link
+                    href="/dashboard/recap"
+                    className="inline-flex items-center gap-2 rounded-xl border border-brand bg-brand-secondary px-4 py-2.5 text-sm font-medium text-brand-secondary no-underline hover:bg-brand-primary_alt"
+                >
+                    <span>☀️→🌙</span> Récap du jour
+                </Link>
+                <button
+                    type="button"
+                    onClick={() => recalRef.current?.click()}
+                    className="inline-flex items-center gap-2 rounded-xl border border-secondary bg-primary px-4 py-2.5 text-sm font-medium text-secondary hover:bg-primary_hover"
+                >
+                    <Upload01 className="size-4" /> Recaler mon stock
+                </button>
+                <input
+                    ref={recalRef}
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    className="hidden"
+                    onChange={handleCatalogImport}
+                />
+            </div>
 
             {/* Tabs */}
             <div className="animate-fade-up stagger-1 mb-6 flex gap-1 rounded-xl bg-secondary p-1">

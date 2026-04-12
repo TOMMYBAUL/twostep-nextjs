@@ -16,6 +16,8 @@ export type SyncResult = {
     stock_updated: number;
     promos_imported: number;
     products_enriched: number;
+    pos_items_total: number;
+    visible_count: number;
 };
 
 // ─── Main sync function ─────────────────────────────────────────────
@@ -47,6 +49,8 @@ export async function syncMerchantPOS(
             stock_updated: 0,
             promos_imported: 0,
             products_enriched: 0,
+            pos_items_total: 0,
+            visible_count: 0,
         };
     }
 
@@ -113,6 +117,8 @@ export async function syncMerchantPOS(
             stock_updated: 0,
             promos_imported: 0,
             products_enriched: 0,
+            pos_items_total: catalog.length,
+            visible_count: 0,
         };
 
         const posItemToProductId = new Map<string, string>();
@@ -184,6 +190,27 @@ export async function syncMerchantPOS(
             result.stock_updated = stockRows.length;
         }
 
+        // ─── Default stock for POS items without inventory tracking ──
+        // Square only returns items with IN_STOCK state; untracked items
+        // get no stock data and stay at 0 from create_product_with_stock.
+        // Default new untracked products to stock=1 so they appear in feeds.
+        const trackedPosItemIds = new Set(stockUpdates.map((s) => s.pos_item_id));
+        const untrackedNewProducts = toCreate
+            .filter((p) => !trackedPosItemIds.has(p.pos_item_id))
+            .map((p) => posItemToProductId.get(p.pos_item_id))
+            .filter((id): id is string => !!id);
+
+        if (untrackedNewProducts.length > 0) {
+            await supabase.from("stock").upsert(
+                untrackedNewProducts.map((id) => ({
+                    product_id: id,
+                    quantity: 1,
+                    updated_at: new Date().toISOString(),
+                })),
+                { onConflict: "product_id" },
+            );
+        }
+
         // ─── Image jobs (uses pre-fetched data, no extra queries) ───
         for (const posProduct of catalog) {
             if (!posProduct.photo_url) continue;
@@ -226,7 +253,7 @@ export async function syncMerchantPOS(
 
         // ─── Variant grouping by EAN ────────────────────────────────
 
-        await groupVariantsByEAN(supabase, merchantId);
+        result.visible_count = await groupVariantsByEAN(supabase, merchantId);
 
         // ─── Google inventory push (best-effort) ────────────────────
 
@@ -325,6 +352,11 @@ async function updateProduct(
         photo_url: posProduct.photo_url ?? existingPhotoUrl,
     };
 
+    // Sync category from POS (only if POS provides one — preserve AI-assigned categories)
+    if (posProduct.category) {
+        updates.category = posProduct.category.toLowerCase();
+    }
+
     // Only overwrite size if we can extract a new one; preserve existing size otherwise
     if (newSize !== null) {
         updates.size = newSize;
@@ -396,21 +428,25 @@ async function upsertPromo(
 async function groupVariantsByEAN(
     supabase: SupabaseClient,
     merchantId: string,
-): Promise<void> {
+): Promise<number> {
     const { data: products } = await supabase
         .from("products")
-        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, stock(quantity)")
+        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, stock(quantity)")
         .eq("merchant_id", merchantId)
         .is("variant_of", null);
 
-    if (!products || products.length === 0) return;
+    if (!products || products.length === 0) return 0;
 
-    // Products without EAN: visible if they have name + price + stock > 0
-    const noEan = products.filter((p) => !p.ean);
+    let visibleCount = 0;
+
+    // Products without EAN (or with short EAN < 12 chars like EAN-8)
+    const noEan = products.filter((p) => !p.ean || p.ean.length < 12);
     for (const p of noEan) {
         const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
         const hasNameAndPrice = !!p.name && p.name.trim().length > 0;
+        // Untracked POS products have stock defaulted to 1, so qty > 0 works for all
         const visible = hasNameAndPrice && qty > 0;
+        if (visible) visibleCount++;
         const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty }] : [];
         await supabase
             .from("products")
@@ -435,6 +471,7 @@ async function groupVariantsByEAN(
             const p = group[0];
             const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
             const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
+            visibleCount++;
             await supabase
                 .from("products")
                 .update({ visible: true, variant_of: null, available_sizes: availableSizes })
@@ -466,6 +503,8 @@ async function groupVariantsByEAN(
 
         const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
+        visibleCount++; // principal is visible
+
         // Update principal
         await supabase
             .from("products")
@@ -486,6 +525,8 @@ async function groupVariantsByEAN(
                 .in("id", variantIds);
         }
     }
+
+    return visibleCount;
 }
 
 // ─── Recalculate available_sizes for a product group ─────────────────

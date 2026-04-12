@@ -284,7 +284,9 @@ export const squareAdapter: IPOSAdapter = {
         }
     },
 
-    async pushCatalog(accessToken: string, products: POSProduct[]): Promise<void> {
+    async pushCatalog(accessToken: string, products: POSProduct[]): Promise<Record<string, string>> {
+        const idMappings: Record<string, string> = {};
+
         const objects = products.map((p) => ({
             type: "ITEM",
             id: `#${p.pos_item_id || crypto.randomUUID()}`,
@@ -312,14 +314,25 @@ export const squareAdapter: IPOSAdapter = {
 
         for (let i = 0; i < objects.length; i += 1000) {
             const batch = objects.slice(i, i + 1000);
-            await squareFetch("/catalog/batch-upsert", accessToken, {
+            const result = await squareFetch("/catalog/batch-upsert", accessToken, {
                 method: "POST",
                 body: JSON.stringify({
                     idempotency_key: crypto.randomUUID(),
                     batches: [{ objects: batch }],
                 }),
             });
+
+            // Extract temp→real ID mappings from Square response
+            for (const mapping of result.id_mappings ?? []) {
+                if (mapping.client_object_id && mapping.object_id) {
+                    // Remove the # prefix from our temp ID
+                    const tempId = mapping.client_object_id.replace(/^#/, "");
+                    idMappings[tempId] = mapping.object_id;
+                }
+            }
         }
+
+        return idMappings;
     },
 
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null {

@@ -8,6 +8,59 @@
 
 const SERPER_API_URL = "https://google.serper.dev/images";
 
+/**
+ * Ask Claude Haiku to verify if a product photo matches the expected product.
+ * Returns true if the photo matches, false if it doesn't or on error.
+ * Cost: ~$0.001 per call.
+ */
+async function verifyPhotoWithAI(imageUrl: string, productName: string, brand?: string | null): Promise<boolean> {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) return true; // Skip verification if no API key
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10_000);
+
+        const productDesc = brand ? `${brand} ${productName}` : productName;
+
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey,
+                "anthropic-version": "2023-06-01",
+            },
+            body: JSON.stringify({
+                model: "claude-haiku-4-5-20251001",
+                max_tokens: 10,
+                messages: [{
+                    role: "user",
+                    content: [
+                        { type: "image", source: { type: "url", url: imageUrl } },
+                        { type: "text", text: `Le produit attendu est : "${productDesc}". Cette photo montre-t-elle ce produit (même modèle, même couleur) ? Réponds UNIQUEMENT "oui" ou "non".` },
+                    ],
+                }],
+            }),
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+        if (!res.ok) return true; // On error, don't block — accept the photo
+
+        const data = await res.json();
+        const answer = (data.content?.[0]?.text ?? "").toLowerCase().trim();
+        const isMatch = answer.startsWith("oui");
+
+        if (!isMatch) {
+            console.log(`[serper-ai] Photo rejected for "${productDesc}" — AI said: ${answer}`);
+        }
+
+        return isMatch;
+    } catch {
+        return true; // On error, accept the photo rather than blocking
+    }
+}
+
 /** HEAD-check that an image URL actually responds 200 */
 async function verifyImageUrl(url: string): Promise<boolean> {
     try {
@@ -55,13 +108,14 @@ const ECOMMERCE_DOMAINS = new Set([
 
 /**
  * Search Google Images for a product photo.
- * Strategy: EAN+name first (exact match), then name-only fallback.
+ * Strategy cascade: SKU (most precise) → EAN+name → name-only fallback.
  * Returns the best verified image URL or null.
  */
 export async function searchProductImage(
     productName: string,
     brand?: string | null,
     ean?: string | null,
+    sku?: string | null,
 ): Promise<string | null> {
     const apiKey = process.env.SERPER_API_KEY;
     if (!apiKey) {
@@ -69,24 +123,36 @@ export async function searchProductImage(
         return null;
     }
 
-    // Strategy 1: EAN + name → finds the EXACT product variant
+    // Strategy 1: SKU/reference → most precise (e.g. "DD1391-100" = one exact product)
+    if (sku && sku.length >= 4) {
+        const skuQuery = brand ? `${sku} ${brand}` : `${sku} ${productName}`;
+        const skuResult = await searchSerperImages(apiKey, skuQuery, productName, brand);
+        if (skuResult) return skuResult;
+    }
+
+    // Strategy 2: EAN + name → finds the EXACT product variant
     if (ean) {
         const eanQuery = `${ean} ${productName}`;
-        const eanResult = await searchSerperImages(apiKey, eanQuery);
+        const eanResult = await searchSerperImages(apiKey, eanQuery, productName, brand);
         if (eanResult) return eanResult;
     }
 
-    // Strategy 2: brand + name + "fiche produit" → e-commerce catalog shots
+    // Strategy 3: brand + name + "fiche produit" → e-commerce catalog shots
     const parts = [];
     if (brand) parts.push(brand);
     parts.push(productName);
     parts.push("fiche produit");
     const query = parts.join(" ");
 
-    return searchSerperImages(apiKey, query);
+    return searchSerperImages(apiKey, query, productName, brand);
 }
 
-async function searchSerperImages(apiKey: string, query: string): Promise<string | null> {
+async function searchSerperImages(
+    apiKey: string,
+    query: string,
+    productName?: string,
+    brand?: string | null,
+): Promise<string | null> {
 
     try {
         const controller = new AbortController();
@@ -141,10 +207,18 @@ async function searchSerperImages(apiKey: string, query: string): Promise<string
             return { img, score: squareScore * 0.4 + sizeScore * 0.2 + ecomBonus + 0.4 };
         }).sort((a, b) => b.score - a.score);
 
-        // Try top candidates in score order, verify each URL
+        // Try top candidates in score order: verify URL exists, then AI-verify content
         for (const { img } of scored.slice(0, 5)) {
             const alive = await verifyImageUrl(img.imageUrl);
-            if (alive) return img.imageUrl;
+            if (!alive) continue;
+
+            // AI verification: does this photo actually show the expected product?
+            if (productName) {
+                const aiMatch = await verifyPhotoWithAI(img.imageUrl, productName, brand);
+                if (!aiMatch) continue; // Wrong product — try next candidate
+            }
+
+            return img.imageUrl;
         }
 
         return null;

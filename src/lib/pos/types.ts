@@ -55,6 +55,6 @@ export interface IPOSAdapter {
     /** Parse un événement webhook en mise à jour de stock */
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null;
 
-    /** Pousse les nouveaux produits dans le POS du commerçant */
-    pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions): Promise<void>;
+    /** Pousse les nouveaux produits dans le POS du commerçant. Returns temp→real ID mappings. */
+    pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions): Promise<Record<string, string>>;
 }

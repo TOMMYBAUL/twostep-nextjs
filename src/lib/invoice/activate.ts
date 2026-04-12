@@ -92,9 +92,10 @@ export async function activateInvoice(invoiceId: string): Promise<{
         return { pushed: 0, synced: false };
     }
 
-    // 5. Push to POS
+    // 5. Push to POS and get ID mappings
+    let idMappings: Record<string, string> = {};
     try {
-        await adapter.pushCatalog(accessToken, posProducts, {
+        idMappings = await adapter.pushCatalog(accessToken, posProducts, {
             shopDomain: conn.shop_domain ?? undefined,
         });
     } catch (pushErr) {
@@ -102,7 +103,19 @@ export async function activateInvoice(invoiceId: string): Promise<{
         throw new Error(`Failed to push to ${conn.provider}: ${pushErr instanceof Error ? pushErr.message : String(pushErr)}`);
     }
 
-    // 6. Update invoice status
+    // 6. Store POS IDs on our products — links Two-Step ↔ POS
+    for (const product of products) {
+        const tempId = `ts-${product.id}`;
+        const posId = idMappings[tempId];
+        if (posId) {
+            await supabase
+                .from("products")
+                .update({ pos_item_id: posId, pos_provider: conn.provider })
+                .eq("id", product.id);
+        }
+    }
+
+    // 7. Update invoice status
     await supabase
         .from("invoices")
         .update({ status: "imported", validated_at: new Date().toISOString() })

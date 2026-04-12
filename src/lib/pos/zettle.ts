@@ -200,7 +200,7 @@ export const zettleAdapter: IPOSAdapter = {
     },
 
     // POS-3: catalog push not yet implemented
-    async pushCatalog(_accessToken: string, _products: POSProduct[]): Promise<void> {
-        // stub
+    async pushCatalog(_accessToken: string, _products: POSProduct[]): Promise<Record<string, string>> {
+        return {};
     },
 };

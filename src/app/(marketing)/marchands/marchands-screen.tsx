@@ -14,7 +14,7 @@ const problems = [
     {
         problem: "Votre stock est invisible",
         solution:
-            "Two-Step lit votre caisse et publie vos produits en ligne automatiquement. Zéro saisie.",
+            "Importez votre catalogue une seule fois. On enrichit vos produits avec photos, descriptions et catégories automatiquement.",
         icon: (
             <svg className="size-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242M21 21l-4.879-4.879" />
@@ -35,7 +35,7 @@ const problems = [
     {
         problem: "Vous n'avez pas le temps",
         solution:
-            "Connexion en 2 minutes. Ensuite, tout est automatique. On enrichit même vos photos et descriptions avec l'IA.",
+            "10 minutes pour tout mettre en ligne. Ensuite, vos factures fournisseur alimentent le stock automatiquement. Zéro effort au quotidien.",
         icon: (
             <svg className="size-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -47,18 +47,18 @@ const problems = [
 const steps = [
     {
         number: "1",
-        title: "Connectez votre caisse",
-        desc: "Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt",
+        title: "Importez votre catalogue",
+        desc: "Un export CSV depuis votre logiciel actuel — compatible avec tous les systèmes de caisse",
     },
     {
         number: "2",
-        title: "On s'occupe du reste",
-        desc: "Enrichissement, catégorisation, mise en ligne",
+        title: "On s'occupe de tout",
+        desc: "Photos, descriptions, catégories — notre IA enrichit chaque produit automatiquement",
     },
     {
         number: "3",
         title: "Les clients viennent à vous",
-        desc: "Ils voient votre stock, cliquent sur 'J'arrive', et passent en boutique",
+        desc: "Vos produits apparaissent sur Google et l'app Two-Step. Les clients cliquent \"J'arrive\" et passent en boutique",
     },
 ];
 
@@ -150,8 +150,8 @@ export default function MarchandsScreen() {
                                 label: "du stock en boutique est invisible en ligne",
                             },
                             {
-                                stat: "200 000+",
-                                label: "commerces déjà compatibles avec Two-Step",
+                                stat: "100%",
+                                label: "des commerces compatibles — quel que soit votre logiciel",
                             },
                             {
                                 stat: "72%",
@@ -218,23 +218,42 @@ export default function MarchandsScreen() {
                     </div>
                 </section>
 
-                {/* CTA */}
+                {/* Pricing */}
                 <section className="px-6 py-16 text-center md:px-12 md:py-24">
                     <motion.div
                         ref={ctaRef}
                         initial={slideUp(0).initial}
                         animate={ctaInView ? slideUp(0).animate : slideUp(0).initial}
                         transition={slideUp(0).transition}
+                        className="mx-auto max-w-md"
                     >
-                        <Link
-                            href="/onboarding"
-                            className="inline-flex items-center rounded-xl bg-brand-solid px-7 py-3.5 text-[15px] font-bold text-white transition duration-100 ease-linear no-underline hover:bg-brand-solid_hover active:scale-[0.97]"
-                        >
-                            Inscrire ma boutique gratuitement →
-                        </Link>
-                        <p className="mt-4 text-[13px] text-quaternary">
-                            Gratuit, sans engagement, en 2 minutes.
-                        </p>
+                        <div className="rounded-2xl border border-secondary bg-primary p-8 shadow-sm">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary">
+                                UN SEUL PRIX, TOUT INCLUS
+                            </p>
+                            <p className="mt-4 text-[48px] font-black leading-none tracking-tight text-primary">
+                                15<span className="text-[24px] font-bold text-tertiary">€/mois</span>
+                            </p>
+                            <p className="mt-2 text-[14px] font-semibold text-brand-secondary">
+                                3 mois gratuits pour commencer
+                            </p>
+                            <ul className="mt-6 space-y-2 text-left text-[14px] text-secondary">
+                                <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Catalogue en ligne avec photos automatiques</li>
+                                <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Visible sur Google, Maps et l'app Two-Step</li>
+                                <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Compatible avec tous les logiciels de caisse</li>
+                                <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Import factures fournisseur automatique</li>
+                                <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Dashboard de gestion de stock</li>
+                            </ul>
+                            <Link
+                                href="/auth/login?role=merchant"
+                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-brand-solid px-7 py-3.5 text-[15px] font-bold text-white transition duration-100 ease-linear no-underline hover:bg-brand-solid_hover active:scale-[0.97]"
+                            >
+                                Essayer gratuitement →
+                            </Link>
+                            <p className="mt-3 text-[12px] text-quaternary">
+                                Sans engagement · Annulez à tout moment
+                            </p>
+                        </div>
                     </motion.div>
                 </section>
             </main>

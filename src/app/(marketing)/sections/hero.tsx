@@ -72,7 +72,7 @@ export function Hero() {
                         style={{ maxWidth: 440 }}
                     >
                         Découvre ce qui est vraiment disponible dans les boutiques autour de toi.
-                        Stock réel, mis à jour en temps réel.
+                        Produits réels, boutiques réelles, à côté de chez toi.
                     </motion.p>
 
                     {/* CTAs */}

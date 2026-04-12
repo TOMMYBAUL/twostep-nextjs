@@ -132,14 +132,15 @@ export const lightspeedAdapter: IPOSAdapter = {
         return promos;
     },
 
-    async pushCatalog(accessToken: string, products: POSProduct[]) {
+    async pushCatalog(accessToken: string, products: POSProduct[]): Promise<Record<string, string>> {
         const accountRes = await fetch(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         const { Account } = await accountRes.json();
 
+        const idMappings: Record<string, string> = {};
         for (const p of products) {
-            await fetch(`${LS_API}/Account/${Account.accountID}/Item.json`, {
+            const res = await fetch(`${LS_API}/Account/${Account.accountID}/Item.json`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -151,7 +152,14 @@ export const lightspeedAdapter: IPOSAdapter = {
                     Prices: p.price ? { ItemPrice: [{ amount: p.price.toString(), useType: "Default" }] } : undefined,
                 }),
             });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.Item?.itemID) {
+                    idMappings[p.pos_item_id || p.name] = String(data.Item.itemID);
+                }
+            }
         }
+        return idMappings;
     },
 
     async getStock(accessToken: string, itemIds: string[]) {

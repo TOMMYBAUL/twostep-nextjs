@@ -191,7 +191,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
         // Verify ownership: product must belong to a merchant owned by this user
         const { data: product } = await supabase
             .from("products")
-            .select("id, merchants!inner(user_id)")
+            .select("id, pos_item_id, merchants!inner(user_id)")
             .eq("id", id)
             .single();
 
@@ -199,6 +199,26 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
             return NextResponse.json({ error: "Not found or unauthorized" }, { status: 404 });
         }
 
+        // POS-sourced products: soft delete only (POS is source of truth)
+        // To permanently remove, merchant must delete from their POS
+        if ((product as any).pos_item_id) {
+            const { error } = await supabase
+                .from("products")
+                .update({ visible: false })
+                .eq("id", id);
+
+            if (error) {
+                return NextResponse.json({ error: "Failed to hide product" }, { status: 500 });
+            }
+
+            return NextResponse.json({
+                success: true,
+                soft_deleted: true,
+                message: "Produit masqué. Pour le supprimer définitivement, retirez-le de votre caisse.",
+            });
+        }
+
+        // Manual products: hard delete
         const { error } = await supabase.from("products").delete().eq("id", id);
 
         if (error) {

@@ -1,5 +1,7 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
 import { captureError } from "@/lib/error";
 import { rateLimit } from "@/lib/rate-limit";
@@ -51,11 +53,29 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Upload to Supabase storage
         const buffer = Buffer.from(await file.arrayBuffer());
-        const storagePath = `${merchant.id}/${Date.now()}_${file.name}`;
 
-        const { error: storageError } = await supabase.storage
+        // Dedup: hash file content to prevent duplicate imports
+        const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
+        const { data: existing } = await supabase
+            .from("invoices")
+            .select("id")
+            .eq("merchant_id", merchant.id)
+            .eq("file_hash", fileHash)
+            .maybeSingle();
+
+        if (existing) {
+            return NextResponse.json(
+                { error: "Ce fichier a déjà été importé." },
+                { status: 409 },
+            );
+        }
+
+        // Upload to Supabase storage (admin client bypasses RLS on storage)
+        const storagePath = `${merchant.id}/${Date.now()}_${file.name}`;
+        const adminStorage = createAdminClient();
+
+        const { error: storageError } = await adminStorage.storage
             .from("invoices")
             .upload(storagePath, buffer, { contentType: file.type });
 
@@ -63,7 +83,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Erreur d'upload du fichier." }, { status: 500 });
         }
 
-        const { data: signedUrlData } = await supabase.storage
+        const { data: signedUrlData } = await adminStorage.storage
             .from("invoices")
             .createSignedUrl(storagePath, 60 * 60 * 24 * 7); // 7 days
 
@@ -77,6 +97,7 @@ export async function POST(request: NextRequest) {
                 source: "upload",
                 status: "extracting",
                 file_url: fileUrl,
+                file_hash: fileHash,
                 supplier_name: supplierName || null,
                 received_at: new Date().toISOString(),
             })

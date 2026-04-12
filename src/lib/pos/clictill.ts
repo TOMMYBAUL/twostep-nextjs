@@ -312,7 +312,7 @@ export const clictillAdapter: IPOSAdapter = {
         return null;
     },
 
-    async pushCatalog(_accessToken: string, _products: POSProduct[], _options?: POSAdapterOptions): Promise<void> {
+    async pushCatalog(_accessToken: string, _products: POSProduct[], _options?: POSAdapterOptions): Promise<Record<string, string>> {
         // Push not implemented yet — Two-Step is read-only for now
         throw new Error("Clictill pushCatalog not implemented — Two-Step reads only");
     },
