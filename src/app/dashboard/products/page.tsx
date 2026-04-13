@@ -222,6 +222,8 @@ export default function ProductsPage() {
                                         stockQuantity={qty}
                                         photoUrl={product.photo_processed_url ?? product.photo_url}
                                         staggerIndex={i}
+                                        sizes={product.available_sizes}
+                                        hasPOS={hasPOS}
                                         stockControls={hasPOS ? (
                                             <div className="flex items-center gap-1">
                                                 <button

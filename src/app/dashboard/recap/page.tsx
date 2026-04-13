@@ -10,6 +10,8 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
+import { SizeDisplay } from "@/components/dashboard/size-display";
+import type { SizeEntry } from "@/lib/types";
 
 /* ── POS branch: automatic sync stats ── */
 
@@ -52,6 +54,7 @@ type ProductWithStock = {
     category: string | null;
     photo_url: string | null;
     photo_processed_url: string | null;
+    available_sizes?: SizeEntry[] | null;
     stock?: { quantity: number }[];
 };
 
@@ -264,6 +267,9 @@ function ProductToggleRow({
                 <p className="truncate text-sm font-medium text-primary">{name}</p>
                 {product.category && (
                     <p className="text-xs text-tertiary">{product.category}</p>
+                )}
+                {product.available_sizes && product.available_sizes.length > 0 && (
+                    <SizeDisplay sizes={product.available_sizes} hasPOS={false} />
                 )}
             </div>
 

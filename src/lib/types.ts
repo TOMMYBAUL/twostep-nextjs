@@ -35,6 +35,8 @@ export type MerchantPOSCredentials = {
     updated_at: string;
 };
 
+export type SizeEntry = { size: string; quantity: number };
+
 export type Product = {
     id: string;
     merchant_id: string;
@@ -51,6 +53,7 @@ export type Product = {
     brand: string | null;
     purchase_price: number | null;
     category_auto: string | null;
+    available_sizes?: SizeEntry[] | null;
     created_at: string;
     updated_at: string;
 };

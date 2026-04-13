@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { StockBadge } from "./stock-badge";
+import { SizeDisplay } from "./size-display";
+import type { SizeEntry } from "@/lib/types";
 
 interface ProductRowProps {
     id: string;
@@ -11,6 +13,8 @@ interface ProductRowProps {
     photoUrl: string | null;
     staggerIndex: number;
     stockControls?: React.ReactNode;
+    sizes?: SizeEntry[] | null;
+    hasPOS?: boolean;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -37,7 +41,7 @@ const CATEGORY_EMOJIS: Record<string, string> = {
     tech: "📱",
 };
 
-export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex, stockControls }: ProductRowProps) {
+export function ProductRow({ id, name, category, price, stockQuantity, photoUrl, staggerIndex, stockControls, sizes, hasPOS = true }: ProductRowProps) {
     const bg = CATEGORY_COLORS[category ?? ""] ?? "bg-secondary";
     const emoji = CATEGORY_EMOJIS[category ?? ""] ?? "📦";
 
@@ -53,6 +57,7 @@ export function ProductRow({ id, name, category, price, stockQuantity, photoUrl,
         <div className="flex-1 min-w-0">
             <p className="truncate text-sm font-semibold text-primary">{name}</p>
             {category && <p className="text-xs text-quaternary">{category}</p>}
+            {sizes && sizes.length > 0 && <SizeDisplay sizes={sizes} hasPOS={hasPOS} />}
         </div>
     );
 
