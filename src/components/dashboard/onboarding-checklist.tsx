@@ -36,14 +36,26 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             const totalProducts = products?.length ?? 0;
             const withPhoto = products?.filter((p: any) => p.photo_url).length ?? 0;
             const hasProductPhotos = totalProducts > 0 && withPhoto >= Math.min(totalProducts, 3);
+            const hasProducts = totalProducts > 0;
 
-            setItems([
-                { label: "Connecter votre caisse (POS)", href: "/dashboard/settings", cta: "Connecter", checked: hasPOS },
-                { label: "Ajouter votre téléphone de contact", href: "/dashboard/store", cta: "Ajouter", checked: hasPhone },
-                { label: "Ajouter une photo de boutique", href: "/dashboard/store", cta: "Ajouter", checked: hasPhoto },
-                { label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile },
-                { label: "Ajouter des photos à vos produits", href: "/dashboard/products", cta: "Ajouter", checked: hasProductPhotos },
-            ]);
+            const checklist: ChecklistItem[] = [];
+
+            // Step 1: POS or import
+            if (hasPOS) {
+                checklist.push({ label: "Caisse connectée", href: "/dashboard/settings", cta: "Voir", checked: true });
+            } else {
+                checklist.push({ label: "Importer votre catalogue", href: "/dashboard/invoices", cta: "Importer", checked: hasProducts });
+            }
+
+            // Step 2: Email factures (for all)
+            checklist.push({ label: "Activer le transfert de factures par email", href: "/dashboard/invoices", cta: "Activer", checked: false }); // TODO: check if email is configured
+
+            // Step 3-5: Profile
+            checklist.push({ label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile });
+            checklist.push({ label: "Ajouter une photo de boutique", href: "/dashboard/store", cta: "Ajouter", checked: hasPhoto });
+            checklist.push({ label: "Ajouter votre téléphone de contact", href: "/dashboard/store", cta: "Ajouter", checked: hasPhone });
+
+            setItems(checklist);
             setLoading(false);
         }
 

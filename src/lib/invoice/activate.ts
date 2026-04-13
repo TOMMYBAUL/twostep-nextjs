@@ -56,15 +56,22 @@ export async function activateInvoice(invoiceId: string): Promise<{
         throw new Error("Products not found in database");
     }
 
-    // 3. Get merchant POS connection
-    const { data: conn, error: connErr } = await supabase
+    // 3. Get merchant POS connection (optional for non-POS merchants)
+    const { data: conn } = await supabase
         .from("pos_connections")
         .select("provider, access_token, shop_domain")
         .eq("merchant_id", invoice.merchant_id)
-        .single();
+        .maybeSingle();
 
-    if (connErr || !conn) {
-        throw new Error("Merchant has no POS connected");
+    // Non-POS merchants: products are already in Two-Step DB from validate.
+    // Just update invoice status — no POS push needed.
+    if (!conn) {
+        await supabase
+            .from("invoices")
+            .update({ status: "imported", validated_at: new Date().toISOString() })
+            .eq("id", invoiceId);
+
+        return { pushed: 0, synced: false };
     }
 
     const adapter = getAdapter(conn.provider);

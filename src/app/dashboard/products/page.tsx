@@ -75,6 +75,7 @@ export default function ProductsPage() {
         p.name.toLowerCase().includes(search.toLowerCase()),
     );
 
+    const hasPOS = !!merchant?.pos_type;
     const totalProducts = products.length;
     const inStock = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) > 0).length;
     const lowStock = products.filter((p) => {
@@ -101,13 +102,12 @@ export default function ProductsPage() {
 
             {/* Stock management tip — only if no POS connected */}
             {merchant && !merchant.pos_type && products.length > 0 && (
-                <div className="animate-fade-up stagger-05 mb-4 rounded-2xl border border-brand bg-brand-section_subtle p-4">
-                    <p className="mb-2 text-sm font-semibold text-primary">Comment mettre à jour votre stock ?</p>
-                    <div className="flex flex-col gap-1.5 text-sm text-secondary">
-                        <p>📝 <strong>Vous notez vos ventes ?</strong> → Utilisez le <strong>Récap du jour</strong> le soir en fermant</p>
-                        <p>📊 <strong>Vous gérez sur Excel ?</strong> → Exportez et cliquez <strong>Recaler mon stock</strong></p>
-                        <p>🧠 <strong>Vous gérez de tête ?</strong> → Les boutons ± sur chaque produit ci-dessous</p>
-                    </div>
+                <div className="animate-fade-up stagger-05 mb-4 rounded-2xl border border-secondary bg-secondary p-4">
+                    <p className="mb-2 text-sm font-semibold text-primary">Gestion simplifiée</p>
+                    <p className="text-sm text-tertiary">
+                        Vos produits sont marqués <strong className="text-secondary">disponibles</strong> ou <strong className="text-secondary">indisponibles</strong>.
+                        Le soir, allez dans l'onglet <strong className="text-secondary">Ventes</strong> pour mettre à jour en 15 secondes.
+                    </p>
                 </div>
             )}
 
@@ -117,14 +117,14 @@ export default function ProductsPage() {
                     href="/dashboard/recap"
                     className="inline-flex items-center gap-2 rounded-xl border border-brand bg-brand-secondary px-4 py-2.5 text-sm font-medium text-brand-secondary no-underline hover:bg-brand-primary_alt"
                 >
-                    <span>☀️→🌙</span> Récap du jour
+                    {hasPOS ? "Voir mes stats" : "Mettre à jour"}
                 </Link>
                 <button
                     type="button"
                     onClick={() => recalRef.current?.click()}
                     className="inline-flex items-center gap-2 rounded-xl border border-secondary bg-primary px-4 py-2.5 text-sm font-medium text-secondary hover:bg-primary_hover"
                 >
-                    <Upload01 className="size-4" /> Recaler mon stock
+                    <Upload01 className="size-4" /> Réimporter mon catalogue
                 </button>
                 <input
                     ref={recalRef}
@@ -163,9 +163,18 @@ export default function ProductsPage() {
                     {/* Metrics */}
                     <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                         <MetricCard label="Total produits" value={totalProducts} staggerIndex={0} />
-                        <MetricCard label="En stock" value={inStock} staggerIndex={1} />
-                        <MetricCard label="Stock bas" value={lowStock} variant="warn" staggerIndex={2} />
-                        <MetricCard label="Ruptures" value={outOfStock} variant="danger" staggerIndex={3} />
+                        {hasPOS ? (
+                            <>
+                                <MetricCard label="En stock" value={inStock} staggerIndex={1} />
+                                <MetricCard label="Stock bas" value={lowStock} variant="warn" staggerIndex={2} />
+                                <MetricCard label="Ruptures" value={outOfStock} variant="danger" staggerIndex={3} />
+                            </>
+                        ) : (
+                            <>
+                                <MetricCard label="Disponibles" value={inStock} staggerIndex={1} />
+                                <MetricCard label="Indisponibles" value={outOfStock} variant={outOfStock > 0 ? "danger" : undefined} staggerIndex={2} />
+                            </>
+                        )}
                     </div>
 
                     {/* Search */}
@@ -213,7 +222,7 @@ export default function ProductsPage() {
                                         stockQuantity={qty}
                                         photoUrl={product.photo_processed_url ?? product.photo_url}
                                         staggerIndex={i}
-                                        stockControls={
+                                        stockControls={hasPOS ? (
                                             <div className="flex items-center gap-1">
                                                 <button
                                                     type="button"
@@ -241,9 +250,18 @@ export default function ProductsPage() {
                                                 >
                                                     +
                                                 </button>
-                                                <StockBadge quantity={qty} />
+                                                <StockBadge quantity={qty} hasPOS />
                                             </div>
-                                        }
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleAbsolute(product.id, qty > 0 ? "0" : "1")}
+                                                disabled={updatingId === product.id}
+                                                className="shrink-0"
+                                            >
+                                                <StockBadge quantity={qty} hasPOS={false} />
+                                            </button>
+                                        )}
                                     />
                                 );
                             })}
@@ -254,6 +272,7 @@ export default function ProductsPage() {
                 <IncompleteProductsTab
                     products={incompleteProducts}
                     merchantId={merchant?.id}
+                    hasPOS={hasPOS}
                     onComplete={() => { refetchIncomplete(); toast("Produit publié"); }}
                 />
             )}
@@ -263,19 +282,45 @@ export default function ProductsPage() {
 
 /* ── Incomplete products tab ── */
 
-function IncompleteProductsTab({ products, merchantId, onComplete }: {
+function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
     products: { id: string; name: string; category: string | null; price: number | null; photo_url: string | null }[];
     merchantId: string | undefined;
+    hasPOS: boolean;
     onComplete: () => void;
 }) {
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [publishing, setPublishing] = useState<string | null>(null);
+    const { toast } = useToast();
+
+    // Non-POS: quick publish (just set visible: true, no EAN needed)
+    const handleQuickPublish = async (productId: string) => {
+        setPublishing(productId);
+        try {
+            await fetch(`/api/products/${productId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ visible: true }),
+            });
+            // Set stock to 1 (available) if not already
+            await fetch("/api/stock", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ product_id: productId, quantity: 1 }),
+            });
+            onComplete();
+        } catch {
+            toast("Erreur de publication", "error");
+        } finally {
+            setPublishing(null);
+        }
+    };
 
     if (products.length === 0) {
         return (
             <EmptyState
                 icon="✅"
                 title="Tout est à jour"
-                description="Aucun produit en attente de complétion. Les produits sans code EAN apparaîtront ici."
+                description="Tous vos produits sont visibles par les clients."
             />
         );
     }
@@ -283,8 +328,13 @@ function IncompleteProductsTab({ products, merchantId, onComplete }: {
     return (
         <div className="space-y-3">
             <div className="rounded-xl bg-warning-secondary px-4 py-3 text-xs text-warning-primary">
-                <p className="font-semibold">Ces produits ne sont pas visibles par les clients</p>
-                <p className="mt-0.5">Ils n'ont pas de code EAN. Complétez-les manuellement pour les publier.</p>
+                <p className="font-semibold">Ces produits ne sont pas encore visibles par les clients</p>
+                <p className="mt-0.5">
+                    {hasPOS
+                        ? "Complétez les informations manquantes pour les publier."
+                        : "Publiez-les en un clic ou complétez leurs informations."
+                    }
+                </p>
             </div>
 
             {products.map((product) => (
@@ -307,18 +357,48 @@ function IncompleteProductsTab({ products, merchantId, onComplete }: {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-primary truncate">{product.name}</p>
-                            <p className="text-xs text-tertiary">{product.category ?? "Sans catégorie"} · Pas de EAN</p>
+                            <p className="text-xs text-tertiary">
+                                {product.category ?? "Sans catégorie"}
+                                {!product.photo_url && " · Pas de photo"}
+                            </p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => setEditingId(product.id)}
-                            className="btn-ts text-xs"
-                        >
-                            Compléter
-                        </button>
+                        <div className="flex shrink-0 gap-2">
+                            {!hasPOS && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleQuickPublish(product.id)}
+                                    disabled={publishing === product.id}
+                                    className="rounded-lg bg-brand-solid px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-solid_hover disabled:opacity-50"
+                                >
+                                    {publishing === product.id ? "..." : "Publier"}
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => setEditingId(product.id)}
+                                className="rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-secondary transition hover:bg-secondary_hover"
+                            >
+                                Modifier
+                            </button>
+                        </div>
                     </div>
                 )
             ))}
+
+            {/* Bulk publish for non-POS */}
+            {!hasPOS && products.length > 1 && (
+                <button
+                    type="button"
+                    onClick={async () => {
+                        for (const p of products) {
+                            await handleQuickPublish(p.id);
+                        }
+                    }}
+                    className="w-full rounded-xl border border-brand bg-brand-secondary px-4 py-3 text-sm font-semibold text-brand-secondary transition hover:bg-brand-primary_alt"
+                >
+                    Tout publier ({products.length} produits)
+                </button>
+            )}
         </div>
     );
 }

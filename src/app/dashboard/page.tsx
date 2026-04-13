@@ -51,47 +51,65 @@ export default function DashboardPage() {
             const totalProducts = products?.length ?? 0;
             const withPhoto = products?.filter((p: any) => p.photo_url).length ?? 0;
             const hasProductPhotos = totalProducts > 0 && withPhoto >= Math.min(totalProducts, 3);
+            const hasProducts = totalProducts > 0;
 
-            setSteps([
-                {
-                    label: "Compléter votre profil boutique",
-                    description: "Bio, adresse et horaires d'ouverture — les infos qui donnent envie de vous rendre visite.",
-                    href: "/dashboard/store",
-                    cta: "Compléter mon profil",
-                    checked: hasProfile,
-                },
-                {
-                    label: "Ajouter une photo de boutique",
-                    description: "Votre vitrine ou votre intérieur — c'est la première chose que les clients voient.",
-                    href: "/dashboard/store",
-                    cta: "Ajouter ma photo",
-                    checked: hasPhoto,
-                },
-                {
-                    label: "Ajouter votre téléphone de contact",
-                    description: "Pour que vos clients puissent vous joindre facilement.",
-                    href: "/dashboard/store",
-                    cta: "Ajouter mon téléphone",
-                    checked: hasPhone,
-                },
-                {
-                    label: "Connecter votre caisse (POS)",
-                    description: "Square, Lightspeed ou Shopify — votre stock et vos produits se synchronisent automatiquement.",
+            const stepsList: Step[] = [];
+
+            // Step 1: POS or import catalogue
+            if (hasPOS) {
+                stepsList.push({
+                    label: "Caisse connectée",
+                    description: "Votre stock se synchronise automatiquement.",
                     href: "/dashboard/settings",
-                    cta: "Connecter ma caisse",
-                    checked: hasPOS,
-                },
-                {
-                    label: "Vérifier vos produits (photos, noms, stock)",
-                    description: "Les produits avec photo attirent 3× plus de clics. Complétez ce que le POS ne fournit pas.",
-                    href: "/dashboard/products",
-                    cta: "Vérifier mes produits",
-                    checked: hasProductPhotos,
-                },
-            ]);
+                    cta: "Voir",
+                    checked: true,
+                });
+            } else {
+                stepsList.push({
+                    label: "Importer votre catalogue",
+                    description: "Uploadez un fichier CSV ou une facture fournisseur pour ajouter vos produits.",
+                    href: "/dashboard/invoices",
+                    cta: "Importer",
+                    checked: hasProducts,
+                });
+            }
 
-            // Bonus step — only appears when all 5 main steps are complete
-            const allMainDone = hasProfile && hasPhoto && hasPhone && hasPOS && hasProductPhotos;
+            // Step 2: Email factures (for all)
+            stepsList.push({
+                label: "Activer le transfert de factures",
+                description: "Transférez vos factures fournisseurs par email — vos produits se mettent à jour automatiquement.",
+                href: "/dashboard/invoices",
+                cta: "Activer",
+                checked: false, // TODO: detect if email forwarding is configured
+            });
+
+            // Step 3-5: Profile
+            stepsList.push({
+                label: "Compléter votre profil boutique",
+                description: "Bio, adresse et horaires d'ouverture — les infos qui donnent envie de vous rendre visite.",
+                href: "/dashboard/store",
+                cta: "Compléter mon profil",
+                checked: hasProfile,
+            });
+            stepsList.push({
+                label: "Ajouter une photo de boutique",
+                description: "Votre vitrine ou votre intérieur — c'est la première chose que les clients voient.",
+                href: "/dashboard/store",
+                cta: "Ajouter ma photo",
+                checked: hasPhoto,
+            });
+            stepsList.push({
+                label: "Ajouter votre téléphone de contact",
+                description: "Pour que vos clients puissent vous joindre facilement.",
+                href: "/dashboard/store",
+                cta: "Ajouter mon téléphone",
+                checked: hasPhone,
+            });
+
+            setSteps(stepsList);
+
+            // Bonus step — only appears when all main steps are complete
+            const allMainDone = hasProfile && hasPhoto && hasPhone && (hasPOS || hasProducts);
             if (allMainDone) {
                 const { data: googleConn } = await supabase
                     .from("google_merchant_connections")

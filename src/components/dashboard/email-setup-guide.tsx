@@ -29,7 +29,7 @@ const STEPS: Record<Provider, { step: string; detail: string }[]> = {
     ],
     other: [
         { step: "Ouvrez les paramètres de votre boîte mail", detail: "Cherchez \"Transfert\", \"Redirection\" ou \"Forwarding\"" },
-        { step: "Ajoutez l'adresse Two-Step", detail: "Collez votre adresse factures-...@in.twostep.fr" },
+        { step: "Ajoutez l'adresse Two-Step", detail: "Collez votre adresse factures-...@twostep.fr" },
         { step: "Activez et confirmez", detail: "Certains fournisseurs demandent une vérification par email" },
     ],
 };

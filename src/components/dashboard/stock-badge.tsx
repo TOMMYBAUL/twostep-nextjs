@@ -2,9 +2,26 @@ import { cx } from "@/utils/cx";
 
 interface StockBadgeProps {
     quantity: number;
+    hasPOS?: boolean;
 }
 
-export function StockBadge({ quantity }: StockBadgeProps) {
+export function StockBadge({ quantity, hasPOS = true }: StockBadgeProps) {
+    const available = quantity > 0;
+
+    if (!hasPOS) {
+        return (
+            <span className={cx(
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                available
+                    ? "bg-success-secondary text-success-primary"
+                    : "bg-error-secondary text-error-primary",
+            )}>
+                <span className={cx("size-1.5 rounded-full", available ? "bg-success-solid" : "bg-error-solid")} />
+                {available ? "Disponible" : "Indisponible"}
+            </span>
+        );
+    }
+
     const level = quantity === 0 ? "out" : quantity <= 10 ? "low" : "ok";
 
     const styles = {

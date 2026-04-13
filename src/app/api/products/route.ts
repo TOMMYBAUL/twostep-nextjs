@@ -46,8 +46,8 @@ export async function GET(request: Request) {
             .eq("merchant_id", merchantId);
 
         if (incomplete) {
-            // Products without EAN that need manual completion
-            query = query.eq("visible", false).is("ean", null);
+            // Products not yet visible — need completion (EAN, photo, etc.)
+            query = query.eq("visible", false);
         } else {
             // Public listing: only visible products, exclude variants
             query = query.eq("visible", true).is("variant_of", null);

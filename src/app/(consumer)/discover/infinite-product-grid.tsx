@@ -121,6 +121,7 @@ export function InfiniteProductGrid({
                             merchantName={p.merchant_name}
                             distance={p.distance_km}
                             stockQuantity={p.stock_quantity ?? 99}
+                            merchantPosType={p.merchant_pos_type}
                             salePrice={p.sale_price}
                             isFavorite={isFav}
                             onToggleFavorite={() => onToggleFav(p.product_id)}

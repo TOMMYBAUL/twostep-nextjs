@@ -90,6 +90,7 @@ export function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: ForY
             merchantName={p.merchant_name}
             distance={p.distance_km}
             stockQuantity={p.stock_quantity}
+            merchantPosType={p.merchant_pos_type}
             salePrice={p.sale_price}
             isFavorite={favoriteIds.has(p.product_id)}
             onToggleFavorite={() => onToggleFav(p.product_id)}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "in.twostep.fr";
+const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "twostep.fr";
 
 export async function GET() {
     const supabase = await createClient();

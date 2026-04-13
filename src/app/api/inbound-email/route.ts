@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
 import { captureError } from "@/lib/error";
 
-const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "in.twostep.fr";
+const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "twostep.fr";
 const WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET ?? "";
 
 const ACCEPTED_EXTENSIONS = new Set([".pdf", ".xlsx", ".xls", ".csv"]);

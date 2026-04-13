@@ -3,81 +3,105 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Check } from "@untitledui/icons";
+import { Check, RefreshCw05 } from "@untitledui/icons";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StockTabs } from "@/components/dashboard/stock-tabs";
+import { MetricCard } from "@/components/dashboard/metric-card";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
 
-type SoldEntry = { productId: string; qty: number };
+/* ── POS branch: automatic sync stats ── */
 
-const QTY_OPTIONS = [0, 1, 2, 3, 4, 5] as const;
+function POSView({ merchant }: { merchant: { name: string; pos_type: string; pos_last_sync: string | null } }) {
+    const lastSync = merchant.pos_last_sync
+        ? new Date(merchant.pos_last_sync).toLocaleString("fr-FR", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })
+        : "jamais";
 
-export default function RecapPage() {
-    const { merchant } = useMerchant();
-    const { products, loading, updateStock } = useProducts(merchant?.id);
+    return (
+        <div className="flex flex-col items-center gap-6 py-12">
+            <div className="flex size-20 items-center justify-center rounded-full bg-success-secondary">
+                <Check className="size-10 text-fg-success-primary" />
+            </div>
+            <div className="text-center">
+                <h2 className="text-xl font-semibold text-primary">Synchro automatique</h2>
+                <p className="mt-2 text-sm text-tertiary">
+                    Votre caisse <strong className="text-secondary">{merchant.pos_type}</strong> met
+                    à jour vos ventes en temps réel.
+                </p>
+                <p className="mt-1 text-xs text-quaternary">
+                    Dernière synchro : {lastSync}
+                </p>
+            </div>
+            <Link
+                href="/dashboard/products"
+                className="rounded-xl bg-brand-solid px-6 py-3 text-sm font-semibold text-white no-underline hover:bg-brand-solid_hover"
+            >
+                Voir mon catalogue
+            </Link>
+        </div>
+    );
+}
+
+/* ── Non-POS branch: availability toggles ── */
+
+type ProductWithStock = {
+    id: string;
+    name: string;
+    canonical_name: string | null;
+    category: string | null;
+    photo_url: string | null;
+    photo_processed_url: string | null;
+    stock?: { quantity: number }[];
+};
+
+function NonPOSView({
+    products,
+    loading,
+    updateStock,
+}: {
+    products: ProductWithStock[];
+    loading: boolean;
+    updateStock: (productId: string, delta?: number, absolute?: number) => Promise<void>;
+}) {
     const { toast } = useToast();
-    const [sold, setSold] = useState<Map<string, number>>(new Map());
-    const [submitting, setSubmitting] = useState(false);
-    const [done, setDone] = useState(false);
+    const [toggling, setToggling] = useState<Set<string>>(new Set());
+    const [confirmed, setConfirmed] = useState(false);
 
-    // Only show products with stock > 0, sorted by most recent sales (created_at as proxy)
-    const inStock = products
-        .filter((p) => (p.stock?.[0]?.quantity ?? 0) > 0)
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const available = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) > 0);
+    const unavailable = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) === 0);
 
-    const handleSelect = (productId: string, qty: number) => {
-        setSold((prev) => {
-            const next = new Map(prev);
-            if (qty === 0) {
-                next.delete(productId);
-            } else {
-                next.set(productId, qty);
-            }
-            return next;
-        });
-    };
-
-    const totalSold = Array.from(sold.values()).reduce((sum, q) => sum + q, 0);
-
-    const handleSubmit = async () => {
-        if (sold.size === 0) {
-            toast("Aucune vente à enregistrer");
-            return;
-        }
-
-        setSubmitting(true);
-        let errors = 0;
-
-        for (const [productId, qty] of sold) {
-            try {
-                await updateStock(productId, -qty);
-            } catch {
-                errors++;
-            }
-        }
-
-        setSubmitting(false);
-
-        if (errors === 0) {
-            setDone(true);
-            toast(`${totalSold} vente${totalSold > 1 ? "s" : ""} enregistrée${totalSold > 1 ? "s" : ""}`);
-        } else {
-            toast(`${errors} erreur${errors > 1 ? "s" : ""} sur ${sold.size} produits`, "error");
+    const handleMarkUnavailable = async (product: ProductWithStock) => {
+        setToggling((prev) => new Set(prev).add(product.id));
+        try {
+            await updateStock(product.id, undefined, 0);
+            toast(`${product.canonical_name ?? product.name} — marqué épuisé`);
+        } catch {
+            toast("Erreur de mise à jour", "error");
+        } finally {
+            setToggling((prev) => {
+                const next = new Set(prev);
+                next.delete(product.id);
+                return next;
+            });
         }
     };
 
-    if (done) {
+    const handleAllOk = () => {
+        setConfirmed(true);
+        toast("Stock confirmé — tout est disponible");
+    };
+
+    if (confirmed) {
         return (
             <div className="flex flex-col items-center justify-center gap-6 py-20">
                 <div className="flex size-16 items-center justify-center rounded-full bg-success-secondary">
                     <Check className="size-8 text-fg-success-primary" />
                 </div>
                 <div className="text-center">
-                    <h2 className="text-xl font-semibold text-primary">Récap enregistré</h2>
+                    <h2 className="text-xl font-semibold text-primary">Stock confirmé</h2>
                     <p className="mt-1 text-sm text-tertiary">
-                        {totalSold} vente{totalSold > 1 ? "s" : ""} — stock mis à jour
+                        {available.length} produit{available.length > 1 ? "s" : ""} disponible{available.length > 1 ? "s" : ""}
                     </p>
                 </div>
                 <Link
@@ -91,6 +115,177 @@ export default function RecapPage() {
     }
 
     return (
+        <>
+            <div className="mb-6 grid grid-cols-2 gap-3">
+                <MetricCard label="Disponibles" value={available.length} staggerIndex={0} />
+                <MetricCard label="Indisponibles" value={unavailable.length} variant={unavailable.length > 0 ? "danger" : undefined} staggerIndex={1} />
+            </div>
+
+            <p className="mb-4 text-sm text-tertiary">
+                Touchez un produit pour changer son statut. Si tout est bon, confirmez en bas.
+            </p>
+
+            {loading ? (
+                <div className="py-20 text-center text-sm text-tertiary">Chargement...</div>
+            ) : products.length === 0 ? (
+                <div className="flex flex-col items-center gap-4 py-16">
+                    <p className="text-sm text-tertiary">Aucun produit dans votre catalogue.</p>
+                    <Link
+                        href="/dashboard/invoices"
+                        className="rounded-xl bg-brand-solid px-6 py-3 text-sm font-semibold text-white no-underline hover:bg-brand-solid_hover"
+                    >
+                        Importer mon catalogue
+                    </Link>
+                </div>
+            ) : (
+                <>
+                    {/* Available products — can be marked as épuisé */}
+                    {available.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-quaternary">
+                                En rayon ({available.length})
+                            </h3>
+                            <div className="flex flex-col gap-2">
+                                {available.map((product) => (
+                                    <ProductToggleRow
+                                        key={product.id}
+                                        product={product}
+                                        isAvailable
+                                        isToggling={toggling.has(product.id)}
+                                        onToggle={() => handleMarkUnavailable(product)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Unavailable products — read only, restock via Entrées */}
+                    {unavailable.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-quaternary">
+                                Épuisés ({unavailable.length})
+                            </h3>
+                            <p className="mb-3 text-xs text-tertiary">
+                                Ces produits redeviendront disponibles quand vous recevrez du stock (onglet Entrées).{" "}
+                                <Link href="/dashboard/products" className="font-medium text-brand-secondary no-underline hover:text-brand-secondary_hover">
+                                    Une erreur ? Modifier dans Catalogue →
+                                </Link>
+                            </p>
+                            <div className="flex flex-col gap-2 opacity-60">
+                                {unavailable.map((product) => {
+                                    const photo = product.photo_processed_url ?? product.photo_url;
+                                    const name = product.canonical_name ?? product.name;
+                                    return (
+                                        <div
+                                            key={product.id}
+                                            className="flex items-center gap-3 rounded-2xl border border-secondary bg-primary p-4"
+                                        >
+                                            {photo ? (
+                                                <Image
+                                                    src={photo}
+                                                    alt={name}
+                                                    width={40}
+                                                    height={40}
+                                                    className="size-10 shrink-0 rounded-lg object-cover grayscale"
+                                                />
+                                            ) : (
+                                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-lg">
+                                                    📦
+                                                </div>
+                                            )}
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate text-sm font-medium text-tertiary">{name}</p>
+                                            </div>
+                                            <span className="rounded-lg bg-error-secondary px-3 py-1.5 text-xs font-semibold text-error-primary">
+                                                Épuisé
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Confirm button — only if there are available products */}
+                    {available.length > 0 && (
+                        <div className="sticky bottom-20 z-10 mt-4 md:bottom-4">
+                            <button
+                                type="button"
+                                onClick={handleAllOk}
+                                className="w-full rounded-2xl bg-brand-solid px-6 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-solid_hover"
+                            >
+                                Tout est OK — confirmer
+                            </button>
+                        </div>
+                    )}
+                </>
+            )}
+        </>
+    );
+}
+
+/* ── Toggle row component ── */
+
+function ProductToggleRow({
+    product,
+    isAvailable,
+    isToggling,
+    onToggle,
+}: {
+    product: ProductWithStock;
+    isAvailable: boolean;
+    isToggling: boolean;
+    onToggle: () => void;
+}) {
+    const photo = product.photo_processed_url ?? product.photo_url;
+    const name = product.canonical_name ?? product.name;
+
+    return (
+        <button
+            type="button"
+            onClick={onToggle}
+            disabled={isToggling}
+            className={`flex w-full items-center gap-3 rounded-2xl border border-secondary bg-primary p-4 text-left transition hover:bg-primary_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${isToggling ? "opacity-60" : ""}`}
+        >
+            {photo ? (
+                <Image
+                    src={photo}
+                    alt={name}
+                    width={40}
+                    height={40}
+                    className="size-10 shrink-0 rounded-lg object-cover"
+                />
+            ) : (
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-lg">
+                    📦
+                </div>
+            )}
+            <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-primary">{name}</p>
+                {product.category && (
+                    <p className="text-xs text-tertiary">{product.category}</p>
+                )}
+            </div>
+
+            {isToggling ? (
+                <RefreshCw05 className="size-4 shrink-0 animate-spin text-tertiary" />
+            ) : (
+                <span className="shrink-0 rounded-lg bg-error-secondary px-3 py-1.5 text-xs font-semibold text-error-primary transition">
+                    Épuisé
+                </span>
+            )}
+        </button>
+    );
+}
+
+/* ── Main page ── */
+
+export default function RecapPage() {
+    const { merchant } = useMerchant();
+    const { products, loading, updateStock } = useProducts(merchant?.id);
+    const hasPOS = !!merchant?.pos_type;
+
+    return (
         <div className="mx-auto max-w-lg">
             <PageHeader
                 storeName={merchant?.name}
@@ -100,92 +295,10 @@ export default function RecapPage() {
 
             <StockTabs />
 
-            <p className="mb-6 text-sm text-tertiary">Combien avez-vous vendu aujourd'hui ?</p>
-
-            {loading ? (
-                <div className="py-20 text-center text-sm text-tertiary">Chargement...</div>
-            ) : inStock.length === 0 ? (
-                <div className="py-20 text-center text-sm text-tertiary">Aucun produit en stock</div>
+            {hasPOS && merchant ? (
+                <POSView merchant={{ name: merchant.name, pos_type: merchant.pos_type!, pos_last_sync: merchant.pos_last_sync }} />
             ) : (
-                <>
-                    {/* Product list */}
-                    <div className="flex flex-col gap-3">
-                        {inStock.map((product) => {
-                            const qty = product.stock?.[0]?.quantity ?? 0;
-                            const selectedQty = sold.get(product.id) ?? 0;
-                            const photo = product.photo_processed_url ?? product.photo_url;
-
-                            return (
-                                <div
-                                    key={product.id}
-                                    className="rounded-2xl border border-secondary bg-primary p-4"
-                                >
-                                    {/* Product info */}
-                                    <div className="mb-3 flex items-center gap-3">
-                                        {photo ? (
-                                            <Image
-                                                src={photo}
-                                                alt={product.name}
-                                                width={40}
-                                                height={40}
-                                                className="size-10 shrink-0 rounded-lg object-cover"
-                                            />
-                                        ) : (
-                                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-lg">
-                                                📦
-                                            </div>
-                                        )}
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium text-primary">
-                                                {product.canonical_name ?? product.name}
-                                            </p>
-                                            <p className="text-xs text-tertiary">
-                                                {qty} en stock
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Quantity buttons */}
-                                    <div className="flex gap-2">
-                                        {QTY_OPTIONS.map((q) => (
-                                            <button
-                                                key={q}
-                                                type="button"
-                                                onClick={() => handleSelect(product.id, q)}
-                                                disabled={q > qty}
-                                                className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition-all ${
-                                                    selectedQty === q && q > 0
-                                                        ? "bg-brand-solid text-white shadow-sm"
-                                                        : selectedQty === 0 && q === 0
-                                                            ? "bg-secondary text-tertiary"
-                                                            : "bg-secondary text-secondary hover:bg-secondary_hover"
-                                                } ${q > qty ? "cursor-not-allowed opacity-30" : ""}`}
-                                            >
-                                                {q === 0 ? "—" : q === 5 ? "5+" : q}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Submit bar */}
-                    <div className="sticky bottom-20 z-10 mt-6 md:bottom-4">
-                        <button
-                            type="button"
-                            onClick={handleSubmit}
-                            disabled={submitting || sold.size === 0}
-                            className="w-full rounded-2xl bg-brand-solid px-6 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-solid_hover disabled:opacity-40"
-                        >
-                            {submitting
-                                ? "Enregistrement..."
-                                : sold.size === 0
-                                    ? "Sélectionnez vos ventes"
-                                    : `Enregistrer ${totalSold} vente${totalSold > 1 ? "s" : ""}`}
-                        </button>
-                    </div>
-                </>
+                <NonPOSView products={products} loading={loading} updateStock={updateStock} />
             )}
         </div>
     );

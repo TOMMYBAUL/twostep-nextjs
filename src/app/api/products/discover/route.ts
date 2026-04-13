@@ -45,6 +45,17 @@ export async function GET(request: NextRequest) {
             sale_price: row.sale_price,
         }));
 
+        // Enrich with merchant pos_type (POS vs non-POS affects consumer display)
+        const merchantIds = [...new Set(items.map((r: any) => r.merchant_id))];
+        if (merchantIds.length > 0) {
+            const { data: merchants } = await supabase
+                .from("merchants")
+                .select("id, pos_type")
+                .in("id", merchantIds);
+            const posMap = new Map((merchants ?? []).map((m: any) => [m.id, m.pos_type]));
+            items = items.map((r: any) => ({ ...r, merchant_pos_type: posMap.get(r.merchant_id) ?? null }));
+        }
+
         // Apply brand/color/gender tag filters
         if (brand || color || gender) {
             const tagFilters: { type: string; value: string }[] = [];

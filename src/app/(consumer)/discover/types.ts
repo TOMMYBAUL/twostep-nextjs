@@ -9,6 +9,7 @@ export interface DiscoverProduct {
     merchant_id: string;
     merchant_name: string;
     merchant_photo: string | null;
+    merchant_pos_type: string | null;
     distance_km: number;
     sale_price: number | null;
 }

@@ -18,6 +18,7 @@ interface ProductCardProps {
     merchantName: string;
     distance: number;
     stockQuantity: number;
+    merchantPosType?: string | null;
     salePrice?: number | null;
     isFavorite: boolean;
     onToggleFavorite: () => void;
@@ -27,14 +28,15 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
-    id, name, price, photo, merchantName, distance, stockQuantity, salePrice, isFavorite, onToggleFavorite, className, compact, index = 0,
+    id, name, price, photo, merchantName, distance, stockQuantity, merchantPosType, salePrice, isFavorite, onToggleFavorite, className, compact, index = 0,
 }: ProductCardProps) {
     const safeDistance = distance ?? 0;
     const formattedDistance = safeDistance < 1
         ? `${Math.round(safeDistance * 1000)}m`
         : `${safeDistance.toFixed(1)}km`;
 
-    const isLow = stockQuantity > 0 && stockQuantity <= 3;
+    const hasPOS = !!merchantPosType;
+    const isLow = hasPOS && stockQuantity > 0 && stockQuantity <= 3;
     const hasPromo = salePrice != null && salePrice < price;
     const ref = useRef<HTMLAnchorElement>(null);
     const prefersReducedMotion = useReducedMotion();
