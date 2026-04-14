@@ -262,7 +262,7 @@ export default function InvoicesPage() {
                                 <th className="text-secondary px-4 py-3 font-medium">Date</th>
                                 <th className="text-secondary px-4 py-3 font-medium">Statut</th>
                                 <th className="text-secondary px-4 py-3 font-medium">Lignes</th>
-                                <th className="text-secondary px-4 py-3 font-medium">Actions</th>
+                                <th className="text-secondary px-4 py-3 font-medium"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -292,7 +292,7 @@ export default function InvoicesPage() {
                                                 href={`/dashboard/invoices/${invoice.id}`}
                                                 className="text-brand-secondary hover:text-brand-secondary_hover text-sm font-medium no-underline"
                                             >
-                                                Voir
+                                                {invoice.status === "parsed" ? "Valider" : invoice.status === "validated" || invoice.status === "imported" ? "Consulter" : "Traiter"}
                                             </Link>
                                         </td>
                                     </tr>

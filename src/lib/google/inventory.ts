@@ -35,7 +35,8 @@ export async function pushInventoryToGoogle(
         const parent = `accounts/${connection.google_merchant_id}`;
 
         for (const product of products) {
-            const quantity = (product as any).stock?.[0]?.quantity ?? 0;
+            const s = (product as any).stock;
+            const quantity = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
             try {
                 await googleMerchantFetch(
                     `/inventories/v1beta/${parent}/localInventories:insert`,

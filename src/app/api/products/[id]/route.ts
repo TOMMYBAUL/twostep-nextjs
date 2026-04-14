@@ -72,7 +72,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         }
 
         // Normalize available_sizes: DB stores ["S","M"] but frontend expects [{size,quantity}]
-        const totalStock = (data as any).stock?.[0]?.quantity ?? 0;
+        const s = (data as any).stock;
+        const totalStock = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
         const rawSizes = (data as any).available_sizes;
         if (Array.isArray(rawSizes) && rawSizes.length > 0) {
             (data as any).available_sizes = rawSizes.map((entry: unknown) => {

@@ -25,7 +25,8 @@ type GoogleProduct = {
 };
 
 export function transformProductToGoogle(product: ProductRow, storeCode: string): GoogleProduct {
-    const quantity = product.stock?.[0]?.quantity ?? 0;
+    const s = (product as any).stock;
+    const quantity = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
 
     return {
         offerId: product.id,

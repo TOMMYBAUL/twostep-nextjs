@@ -78,12 +78,19 @@ export default function ProductsPage() {
 
     const hasPOS = !!merchant?.pos_type;
     const totalProducts = products.length;
-    const inStock = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) > 0).length;
+    // stock can be an object {quantity} or array [{quantity}] depending on Supabase join
+    const getQty = (p: any): number => {
+        const s = p.stock;
+        if (!s) return 0;
+        if (Array.isArray(s)) return s[0]?.quantity ?? 0;
+        return s.quantity ?? 0;
+    };
+    const inStock = products.filter((p) => getQty(p) > 0).length;
     const lowStock = products.filter((p) => {
-        const q = p.stock?.[0]?.quantity ?? 0;
+        const q = getQty(p);
         return q > 0 && q <= 5;
     }).length;
-    const outOfStock = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) === 0).length;
+    const outOfStock = products.filter((p) => getQty(p) === 0).length;
 
     return (
         <>
@@ -212,7 +219,7 @@ export default function ProductsPage() {
                     ) : (
                         <div className="flex flex-col gap-1.5">
                             {filtered.map((product, i) => {
-                                const qty = product.stock?.[0]?.quantity ?? 0;
+                                const qty = getQty(product);
                                 return (
                                     <ProductRow
                                         key={product.id}

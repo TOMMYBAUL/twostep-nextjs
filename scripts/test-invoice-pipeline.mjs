@@ -19,7 +19,7 @@ const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, serviceKey);
 
-const MERCHANT_ID = "1e24990c-9421-49a2-8c71-70d89780fc9f"; // Two-Step Test Store
+const MERCHANT_ID = "72cef56c-b2b9-4567-bd1a-46e14bafae05"; // Dear Skin Shop (Test)
 
 async function main() {
     console.log("=== TEST PIPELINE FACTURE DEAR SKIN ===\n");

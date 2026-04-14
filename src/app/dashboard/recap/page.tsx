@@ -71,8 +71,9 @@ function NonPOSView({
     const [toggling, setToggling] = useState<Set<string>>(new Set());
     const [confirmed, setConfirmed] = useState(false);
 
-    const available = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) > 0);
-    const unavailable = products.filter((p) => (p.stock?.[0]?.quantity ?? 0) === 0);
+    const getQty = (p: any): number => { const s = p.stock; if (!s) return 0; if (Array.isArray(s)) return s[0]?.quantity ?? 0; return s.quantity ?? 0; };
+    const available = products.filter((p) => getQty(p) > 0);
+    const unavailable = products.filter((p) => getQty(p) === 0);
 
     const handleMarkUnavailable = async (product: ProductWithStock) => {
         setToggling((prev) => new Set(prev).add(product.id));

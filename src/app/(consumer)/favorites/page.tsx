@@ -42,7 +42,8 @@ export default function FavoritesPage() {
                     ) : (
                         favorites.filter((fav) => fav.products).map((fav) => {
                             const product = fav.products;
-                            const quantity = product.stock?.[0]?.quantity ?? 0;
+                            const s = (product as any).stock;
+                            const quantity = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
                             const merchant = product.merchants;
 
                             return (
