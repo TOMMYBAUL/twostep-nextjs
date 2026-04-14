@@ -413,23 +413,51 @@ export async function POST(
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
-    // Enrichment via lookupEan: EAN → UPCitemdb (brand/category) → Serper (photo)
-    for (const { ean, productId } of productsToEnrich) {
-        if (ean) {
-            try {
-                await lookupEan(ean, productId);
-            } catch (err) {
-                console.error("[validate] lookupEan failed for", ean, ":", err);
-            }
-        }
-    }
+    // Enrichment: EAN → UPCitemdb (brand/category) → Serper (photo)
+    // For products WITHOUT EAN: search EAN by name first, then enrich
+    const { searchEanByName } = await import("@/lib/ean/lookup");
 
-    // Enrich products WITHOUT EAN — search photos by product name via Serper
-    try {
-        const { enrichProductsWithoutEan } = await import("@/lib/ean/enrich");
-        await enrichProductsWithoutEan(merchant.id);
-    } catch (err) {
-        console.error("[validate] enrichProductsWithoutEan failed:", err);
+    for (const { ean, productId } of productsToEnrich) {
+        try {
+            if (ean) {
+                // Has EAN → direct lookup
+                await lookupEan(ean, productId);
+            } else {
+                // No EAN → reverse search by product name to find EAN
+                const { data: prod } = await adminSupabase
+                    .from("products")
+                    .select("name, brand")
+                    .eq("id", productId)
+                    .single();
+
+                if (prod) {
+                    const found = await searchEanByName(prod.name, prod.brand);
+                    if (found) {
+                        // Found EAN by name → save it and enrich
+                        await adminSupabase
+                            .from("products")
+                            .update({ ean: found.ean, brand: found.brand ?? undefined, category: found.category ?? undefined })
+                            .eq("id", productId);
+                        await lookupEan(found.ean, productId);
+                    } else {
+                        // No EAN found → search photo by name via Serper directly
+                        const { searchProductImage } = await import("@/lib/images/serper");
+                        const photoUrl = await searchProductImage(prod.name, prod.brand);
+                        if (photoUrl) {
+                            await adminSupabase
+                                .from("products")
+                                .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
+                                .eq("id", productId);
+
+                            const { createImageJob } = await import("@/lib/images/jobs");
+                            await createImageJob(productId, merchant.id, photoUrl);
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error("[validate] enrichment failed for", productId, ":", err);
+        }
     }
 
     // AI categorization — synchronous (must complete before response)
