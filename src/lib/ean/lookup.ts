@@ -364,7 +364,7 @@ async function applyEnrichment(
             prod.name,
             data.brand ?? prod.brand,
             ean ?? null,
-            (prod as any).sku ?? null,
+            prod.sku ?? null,
         );
         if (serperUrl) {
             photoUrl = serperUrl;

@@ -109,7 +109,7 @@ export async function POST(
     let productsUpdated = 0;
     let stockUpdated = 0;
     let fuzzyMatched = 0;
-    const productsToEnrich: { ean: string | null; productId: string }[] = [];
+    const productsToEnrich: { ean: string | null; sku: string | null; productId: string }[] = [];
 
     const validItems = invoice.invoice_items.filter(
         (item: { status: string }) => item.status !== "rejected"
@@ -304,18 +304,15 @@ export async function POST(
                 event_type: "restock",
             });
 
-            // Enrich if missing photo
             // Enrich matched product if missing photo
-            if (firstEan) {
-                const { data: existingProd } = await adminSupabase
-                    .from("products")
-                    .select("name, photo_url")
-                    .eq("id", match.productId)
-                    .single();
+            const { data: existingProd } = await adminSupabase
+                .from("products")
+                .select("name, photo_url")
+                .eq("id", match.productId)
+                .single();
 
-                if (existingProd && !existingProd.photo_url) {
-                    productsToEnrich.push({ ean: firstEan, productId: match.productId });
-                }
+            if (existingProd && !existingProd.photo_url) {
+                productsToEnrich.push({ ean: firstEan, sku: firstSku, productId: match.productId });
             }
         } else {
             if (process.env.NODE_ENV === "development") {
@@ -368,6 +365,7 @@ export async function POST(
                     name: cleanName,
                     canonical_name: enrichedName !== cleanName ? enrichedName : null,
                     ean: firstEan,
+                    ...(firstSku && { sku: firstSku }),
                     price: sellingPrice,
                     purchase_price: item.unit_price_ht,
                     ...(enrichedBrand && { brand: enrichedBrand }),
@@ -403,7 +401,7 @@ export async function POST(
                 stockUpdated += groupItems.length;
 
                 // Collect products for post-response enrichment
-                productsToEnrich.push({ ean: firstEan, productId: newProduct.id });
+                productsToEnrich.push({ ean: firstEan, sku: firstSku, productId: newProduct.id });
             }
         }
     }
@@ -413,46 +411,73 @@ export async function POST(
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
-    // Enrichment: EAN → UPCitemdb (brand/category) → Serper (photo)
-    // For products WITHOUT EAN: search EAN by name first, then enrich
+    // Enrichment cascade:
+    // 1. EAN direct → lookupEan (cascade all sources + Serper photo)
+    // 2. No EAN but SKU → check our ean_lookups if another product with same SKU has an EAN
+    // 3. No EAN → reverse search by name → lookupEan
+    // 4. Nothing found → Serper photo by name+brand+SKU directly
     const { searchEanByName } = await import("@/lib/ean/lookup");
+    const { searchProductImage } = await import("@/lib/images/serper");
+    const { createImageJob } = await import("@/lib/images/jobs");
 
-    for (const { ean, productId } of productsToEnrich) {
+    for (const { ean, sku, productId } of productsToEnrich) {
         try {
             if (ean) {
-                // Has EAN → direct lookup
+                // Has EAN → direct lookup (enriches brand/category/photo)
                 await lookupEan(ean, productId);
-            } else {
-                // No EAN → reverse search by product name to find EAN
-                const { data: prod } = await adminSupabase
+                continue;
+            }
+
+            // No EAN — try to find one
+            const { data: prod } = await adminSupabase
+                .from("products")
+                .select("name, brand")
+                .eq("id", productId)
+                .single();
+            if (!prod) continue;
+
+            let foundEan: string | null = null;
+
+            // Strategy A: SKU → check if another product in our DB has this SKU with an EAN
+            if (sku) {
+                const { data: skuMatch } = await adminSupabase
                     .from("products")
-                    .select("name, brand")
-                    .eq("id", productId)
+                    .select("ean")
+                    .eq("sku", sku)
+                    .not("ean", "is", null)
+                    .neq("id", productId)
+                    .limit(1)
                     .single();
+                if (skuMatch?.ean) foundEan = skuMatch.ean;
+            }
 
-                if (prod) {
-                    const found = await searchEanByName(prod.name, prod.brand);
-                    if (found) {
-                        // Found EAN by name → save it and enrich
-                        await adminSupabase
-                            .from("products")
-                            .update({ ean: found.ean, brand: found.brand ?? undefined, category: found.category ?? undefined })
-                            .eq("id", productId);
-                        await lookupEan(found.ean, productId);
-                    } else {
-                        // No EAN found → search photo by name via Serper directly
-                        const { searchProductImage } = await import("@/lib/images/serper");
-                        const photoUrl = await searchProductImage(prod.name, prod.brand);
-                        if (photoUrl) {
-                            await adminSupabase
-                                .from("products")
-                                .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                                .eq("id", productId);
+            // Strategy B: reverse search by name via EAN-Search + UPCitemdb
+            if (!foundEan) {
+                const found = await searchEanByName(prod.name, prod.brand);
+                if (found) {
+                    foundEan = found.ean;
+                    // Save brand/category from reverse search immediately
+                    const updates: Record<string, unknown> = { ean: found.ean };
+                    if (found.brand) updates.brand = found.brand;
+                    if (found.category) updates.category = found.category;
+                    await adminSupabase.from("products").update(updates).eq("id", productId);
+                }
+            }
 
-                            const { createImageJob } = await import("@/lib/images/jobs");
-                            await createImageJob(productId, merchant.id, photoUrl);
-                        }
-                    }
+            if (foundEan) {
+                // Found EAN → save it and run full enrichment
+                if (!foundEan) continue; // type guard
+                await adminSupabase.from("products").update({ ean: foundEan }).eq("id", productId);
+                await lookupEan(foundEan, productId);
+            } else {
+                // Last resort: Serper photo by name+brand+SKU
+                const photoUrl = await searchProductImage(prod.name, prod.brand, null, sku);
+                if (photoUrl) {
+                    await adminSupabase
+                        .from("products")
+                        .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
+                        .eq("id", productId);
+                    await createImageJob(productId, merchant.id, photoUrl);
                 }
             }
         } catch (err) {
