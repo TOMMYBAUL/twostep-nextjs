@@ -75,12 +75,22 @@ export default function DashboardPage() {
             }
 
             // Step 2: Email factures (for all)
+            let hasReceivedEmail = false;
+            try {
+                const emailRes = await fetch("/api/email/inbound-address");
+                if (emailRes.ok) {
+                    const emailData = await emailRes.json();
+                    hasReceivedEmail = emailData.has_received === true;
+                }
+            } catch {
+                // laisser unchecked en cas d'erreur
+            }
             stepsList.push({
                 label: "Activer le transfert de factures",
                 description: "Transférez vos factures fournisseurs par email — vos produits se mettent à jour automatiquement.",
                 href: "/dashboard/invoices",
                 cta: "Activer",
-                checked: false, // TODO: detect if email forwarding is configured
+                checked: hasReceivedEmail,
             });
 
             // Step 3-5: Profile
@@ -385,6 +395,8 @@ function ExternalQuickLink({ href, label, description }: { href: string; label: 
     return (
         <Link
             href={href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group rounded-xl bg-brand-solid px-5 py-4 no-underline transition hover:shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
         >
             <p className="text-sm font-semibold text-white transition">{label}</p>

@@ -17,7 +17,7 @@ const getProduct = React.cache(async function getProduct(slugOrId: string): Prom
     const supabase = await createClient();
     const { data } = await supabase
         .from("products")
-        .select("slug, name, canonical_name, price, photo_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
+        .select("slug, name, canonical_name, price, photo_url, photo_processed_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
         .eq("id", resolvedId)
         .eq("visible", true)
         .single();
@@ -45,15 +45,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 title: `${displayName} | Two-Step`,
                 description,
                 url: `${BASE_URL}/product/${productSlug}`,
-                ...(data.photo_url && {
-                    images: [{ url: data.photo_url, width: 800, height: 800, alt: displayName }],
+                ...((data.photo_processed_url || data.photo_url) && {
+                    images: [{ url: (data.photo_processed_url ?? data.photo_url) as string, width: 800, height: 800, alt: displayName }],
                 }),
             },
             twitter: {
                 card: "summary_large_image",
                 title: `${displayName} | Two-Step`,
                 description,
-                ...(data.photo_url && { images: [data.photo_url] }),
+                ...((data.photo_processed_url || data.photo_url) && { images: [(data.photo_processed_url ?? data.photo_url) as string] }),
             },
         };
     } catch {
@@ -86,7 +86,7 @@ export default async function Page({ params }: Props) {
                 "@type": "Product",
                 name: displayName,
                 description: data.description ?? undefined,
-                image: data.photo_url ?? undefined,
+                image: (data.photo_processed_url ?? data.photo_url) ?? undefined,
                 sku: data.ean ?? undefined,
                 category: data.category ?? undefined,
                 url: `${BASE_URL}/product/${data.slug}`,

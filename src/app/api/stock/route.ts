@@ -55,7 +55,8 @@ export async function PATCH(request: NextRequest) {
                 .eq("product_id", product_id)
                 .maybeSingle();
 
-            const newQty = Math.max(0, (current?.quantity ?? 0) + delta);
+            const previousQty = current?.quantity ?? 0;
+            const newQty = Math.max(0, previousQty + delta);
 
             // Upsert: creates the row if missing, updates if exists
             const { data, error } = await supabase
@@ -65,18 +66,47 @@ export async function PATCH(request: NextRequest) {
                 .single();
 
             if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
+
+            // Restock event: produit remis en stock (0 → N)
+            if (previousQty === 0 && newQty > 0) {
+                await supabase.from("feed_events").insert({
+                    merchant_id: (product as any).merchant_id,
+                    product_id,
+                    event_type: "restock",
+                });
+            }
+
             return NextResponse.json({ stock: data });
         }
 
         if (quantity !== undefined) {
             // Absolute update (e.g., invoice import)
+            const { data: current } = await supabase
+                .from("stock")
+                .select("quantity")
+                .eq("product_id", product_id)
+                .maybeSingle();
+
+            const previousQty = current?.quantity ?? 0;
+            const newQty = Math.max(0, quantity as number);
+
             const { data, error } = await supabase
                 .from("stock")
-                .upsert({ product_id, quantity: Math.max(0, quantity) })
+                .upsert({ product_id, quantity: newQty })
                 .select()
                 .single();
 
             if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
+
+            // Restock event: produit remis en stock (0 → N)
+            if (previousQty === 0 && newQty > 0) {
+                await supabase.from("feed_events").insert({
+                    merchant_id: (product as any).merchant_id,
+                    product_id,
+                    event_type: "restock",
+                });
+            }
+
             return NextResponse.json({ stock: data });
         }
 

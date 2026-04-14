@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
+import { rateLimit } from "@/lib/rate-limit";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
 
@@ -55,6 +56,9 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "invoices:validate", 10);
+    if (limited) return limited;
+
     const { id } = await params;
 
     if (!id || typeof id !== "string") {
@@ -110,7 +114,25 @@ export async function POST(
         (item: { status: string }) => item.status !== "rejected"
     );
 
-    console.log("[validate] validItems count:", validItems.length, "items:", validItems.map((i: any) => i.name));
+    if (process.env.NODE_ENV === "development") {
+        console.log("[validate] validItems count:", validItems.length, "items:", validItems.map((i: any) => i.name));
+    }
+
+    // ── Pre-load ALL merchant products once (avoid N+1 queries) ──────────
+    const { data: allMerchantProducts } = await adminSupabase
+        .from("products")
+        .select("id, name, ean, sku")
+        .eq("merchant_id", merchant.id);
+
+    const productsByEan = new Map<string, string>(); // ean → id
+    const productsBySku = new Map<string, string>(); // sku → id
+    const productsByName = new Map<string, string>(); // normalized name → id
+
+    for (const p of allMerchantProducts ?? []) {
+        if (p.ean) productsByEan.set(p.ean, p.id);
+        if (p.sku) productsBySku.set(p.sku, p.id);
+        if (p.name) productsByName.set(normalize(p.name.toLowerCase()), p.id);
+    }
 
     // ── Pre-group items by base product name (strip size) ──
     // "Nike Dunk Low taille 42" + "Nike Dunk Low taille 43" → same group
@@ -132,7 +154,9 @@ export async function POST(
     // when multiple sizes of a new product appear in the same invoice
     const createdInThisBatch = new Map<string, string>(); // normalizedName → productId
 
-    console.log("[validate] groups:", itemGroups.size, [...itemGroups.keys()]);
+    if (process.env.NODE_ENV === "development") {
+        console.log("[validate] groups:", itemGroups.size, [...itemGroups.keys()]);
+    }
 
     for (const [groupKey, groupItems] of itemGroups) {
     // Use the first item for matching, but collect all sizes
@@ -141,87 +165,58 @@ export async function POST(
     const cleanName = item._cleanName;
         let match: MatchResult | null = null;
 
-        // 1) Exact EAN match — BEST: guaranteed same physical product
-        if (item.ean) {
-            const { data: existing } = await supabase
-                .from("products")
-                .select("id")
-                .eq("merchant_id", merchant.id)
-                .eq("ean", item.ean)
-                .single();
-
-            if (existing) match = { productId: existing.id, matchType: "exact_ean" };
+        // 1) Exact EAN match — Map lookup (O(1), no DB query)
+        if (item.ean && productsByEan.has(item.ean)) {
+            match = { productId: productsByEan.get(item.ean)!, matchType: "exact_ean" };
         }
 
-        // 2) Exact SKU match — supplier reference
-        if (!match && item.sku) {
-            const { data: existing } = await supabase
-                .from("products")
-                .select("id")
-                .eq("merchant_id", merchant.id)
-                .eq("sku", item.sku)
-                .single();
-
-            if (existing) match = { productId: existing.id, matchType: "exact_sku" };
+        // 2) Exact SKU match — Map lookup
+        if (!match && item.sku && productsBySku.has(item.sku)) {
+            match = { productId: productsBySku.get(item.sku)!, matchType: "exact_sku" };
         }
 
-        // 3) Exact name match (case-insensitive)
+        // 3) Exact name match (case-insensitive) — Map lookup
         if (!match) {
-            const { data: existing } = await supabase
-                .from("products")
-                .select("id")
-                .eq("merchant_id", merchant.id)
-                .ilike("name", item.name)
-                .single();
-
-            if (existing) match = { productId: existing.id, matchType: "exact_name" };
+            const normalizedItemName = normalize(item.name.toLowerCase());
+            if (productsByName.has(normalizedItemName)) {
+                match = { productId: productsByName.get(normalizedItemName)!, matchType: "exact_name" };
+            }
         }
 
         // 4) Fuzzy name match — NEVER auto-validates, always requires human review
-        if (!match) {
+        // Uses the pre-loaded allMerchantProducts (no extra DB query)
+        if (!match && allMerchantProducts && allMerchantProducts.length > 0) {
             const normalizedItem = normalize(item.name);
+            let bestId: string | null = null;
+            let bestScore = 0;
 
-            const { data: allProducts } = await supabase
-                .from("products")
-                .select("id, name")
-                .eq("merchant_id", merchant.id);
+            for (const product of allMerchantProducts) {
+                const normalizedProduct = normalize(product.name);
 
-            if (allProducts && allProducts.length > 0) {
-                let bestId: string | null = null;
-                let bestScore = 0;
-                let bestName = "";
-
-                for (const product of allProducts) {
-                    const normalizedProduct = normalize(product.name);
-
-                    // Check containment (one name contains the other)
-                    if (
-                        normalizedItem.includes(normalizedProduct) ||
-                        normalizedProduct.includes(normalizedItem)
-                    ) {
-                        const score = Math.min(normalizedItem.length, normalizedProduct.length) /
-                            Math.max(normalizedItem.length, normalizedProduct.length);
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestId = product.id;
-                            bestName = product.name;
-                        }
-                        continue;
-                    }
-
-                    // Levenshtein similarity
-                    const score = similarity(normalizedItem, normalizedProduct);
+                // Check containment (one name contains the other)
+                if (
+                    normalizedItem.includes(normalizedProduct) ||
+                    normalizedProduct.includes(normalizedItem)
+                ) {
+                    const score = Math.min(normalizedItem.length, normalizedProduct.length) /
+                        Math.max(normalizedItem.length, normalizedProduct.length);
                     if (score > bestScore) {
                         bestScore = score;
                         bestId = product.id;
-                        bestName = product.name;
                     }
+                    continue;
                 }
 
-                if (bestId && bestScore >= FUZZY_THRESHOLD) {
-                    match = { productId: bestId, matchType: "fuzzy" };
-                    fuzzyMatched++;
+                // Levenshtein similarity
+                const score = similarity(normalizedItem, normalizedProduct);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestId = product.id;
                 }
+            }
+
+            if (bestId && bestScore >= FUZZY_THRESHOLD) {
+                match = { productId: bestId, matchType: "fuzzy" };
             }
         }
 
@@ -322,7 +317,9 @@ export async function POST(
                 }
             }
         } else {
-            console.log("[validate] NEW PRODUCT for group:", groupKey, "cleanName:", cleanName, "sizes:", allSizes);
+            if (process.env.NODE_ENV === "development") {
+                console.log("[validate] NEW PRODUCT for group:", groupKey, "cleanName:", cleanName, "sizes:", allSizes);
+            }
             // ── NEW PRODUCT ──
             // Check if we already created this product in this batch
             // (another group with slightly different name might have matched)
@@ -379,7 +376,9 @@ export async function POST(
                 .select()
                 .single();
 
-            console.log("[validate] insert result:", newProduct ? "OK id=" + newProduct.id : "FAILED", "insertErr:", insertErr?.message, "cleanName:", cleanName);
+            if (process.env.NODE_ENV === "development") {
+                console.log("[validate] insert result:", newProduct ? "OK id=" + newProduct.id : "FAILED", "insertErr:", insertErr?.message, "cleanName:", cleanName);
+            }
             if (newProduct) {
                 createdInThisBatch.set(groupKey, newProduct.id);
 
@@ -414,13 +413,10 @@ export async function POST(
         .eq("id", id);
 
     // Enrichment via lookupEan: EAN → UPCitemdb (brand/category) → Serper (photo)
-    console.log("[validate] Starting enrichment for", productsToEnrich.length, "products via lookupEan");
     for (const { ean, productId } of productsToEnrich) {
         if (ean) {
             try {
-                console.log("[validate] lookupEan:", ean, "→ product", productId);
                 await lookupEan(ean, productId);
-                console.log("[validate] ✓ lookupEan done for", ean);
             } catch (err) {
                 console.error("[validate] lookupEan failed for", ean, ":", err);
             }
@@ -430,9 +426,7 @@ export async function POST(
     // AI categorization — synchronous (must complete before response)
     if (productsCreated > 0 || productsUpdated > 0) {
         try {
-            console.log("[validate] Starting AI categorization");
             await categorizeMerchantProducts(merchant.id);
-            console.log("[validate] ✓ Categorization done");
         } catch (err) {
             console.error("[validate] categorize failed:", err);
         }

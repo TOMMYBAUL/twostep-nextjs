@@ -19,6 +19,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Valid merchant_id required" }, { status: 400 });
     }
 
+    const VALID_PAGE_TYPES = ["shop", "product", "promo"] as const;
+    type PageType = typeof VALID_PAGE_TYPES[number];
+    const resolvedPageType: PageType = (VALID_PAGE_TYPES as readonly string[]).includes(page_type ?? "")
+        ? (page_type as PageType)
+        : "shop";
+
     const supabase = await createClient();
 
     // Verify merchant exists before inserting
@@ -38,7 +44,7 @@ export async function POST(request: NextRequest) {
     await supabase.from("page_views").insert({
         merchant_id,
         viewer_id: user?.id ?? null,
-        page_type: page_type ?? "shop",
+        page_type: resolvedPageType,
         product_id: product_id ?? null,
     });
 

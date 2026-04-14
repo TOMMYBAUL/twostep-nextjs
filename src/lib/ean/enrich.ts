@@ -25,6 +25,8 @@ export async function selectProductsToEnrich(
         query = query.eq("merchant_id", merchantId);
     }
 
+    query = query.order("created_at", { ascending: false });
+
     if (limit) {
         query = query.limit(limit);
     }

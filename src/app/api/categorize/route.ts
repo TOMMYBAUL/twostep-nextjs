@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { captureError } from "@/lib/error";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "categorize", 3);
+    if (limited) return limited;
+
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

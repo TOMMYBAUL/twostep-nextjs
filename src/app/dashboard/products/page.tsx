@@ -293,6 +293,7 @@ function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
 }) {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [publishing, setPublishing] = useState<string | null>(null);
+    const [publishingCount, setPublishingCount] = useState<{ done: number; total: number } | null>(null);
     const { toast } = useToast();
 
     // Non-POS: quick publish (just set visible: true, no EAN needed)
@@ -392,14 +393,25 @@ function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
             {!hasPOS && products.length > 1 && (
                 <button
                     type="button"
+                    disabled={publishingCount !== null}
                     onClick={async () => {
-                        for (const p of products) {
-                            await handleQuickPublish(p.id);
-                        }
+                        setPublishingCount({ done: 0, total: products.length });
+                        let done = 0;
+                        await Promise.allSettled(
+                            products.map(async (p) => {
+                                await handleQuickPublish(p.id);
+                                done += 1;
+                                setPublishingCount({ done, total: products.length });
+                            })
+                        );
+                        setPublishingCount(null);
                     }}
-                    className="w-full rounded-xl border border-brand bg-brand-secondary px-4 py-3 text-sm font-semibold text-brand-secondary transition hover:bg-brand-primary_alt"
+                    className="w-full rounded-xl border border-brand bg-brand-secondary px-4 py-3 text-sm font-semibold text-brand-secondary transition hover:bg-brand-primary_alt disabled:opacity-60"
                 >
-                    Tout publier ({products.length} produits)
+                    {publishingCount !== null
+                        ? `${publishingCount.done}/${publishingCount.total} publiés...`
+                        : `Tout publier (${products.length} produits)`
+                    }
                 </button>
             )}
         </div>

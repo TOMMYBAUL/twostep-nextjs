@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Champs manquants" }, { status: 400 });
     }
 
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(merchant_id)) {
+        return NextResponse.json({ error: "merchant_id invalide" }, { status: 400 });
+    }
+
     const trimmed = text.trim();
     if (trimmed.length === 0 || trimmed.length > 500) {
         return NextResponse.json({ error: "Message entre 1 et 500 caractères" }, { status: 400 });

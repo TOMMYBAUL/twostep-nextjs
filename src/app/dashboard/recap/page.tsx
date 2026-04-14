@@ -295,8 +295,8 @@ export default function RecapPage() {
         <div className="mx-auto max-w-lg">
             <PageHeader
                 storeName={merchant?.name}
-                title="Mon"
-                titleAccent="stock"
+                title="Mes"
+                titleAccent="ventes"
             />
 
             <StockTabs />

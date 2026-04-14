@@ -17,6 +17,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "SIRET requis" }, { status: 400 });
     }
 
+    if (!/^\d{14}$/.test(siret)) {
+        return NextResponse.json({ error: "SIRET invalide (14 chiffres requis)" }, { status: 400 });
+    }
+
     const result = await verifySIRET(siret);
 
     if (!result.valid) {

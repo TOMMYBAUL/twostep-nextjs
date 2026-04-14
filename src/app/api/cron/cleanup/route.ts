@@ -16,5 +16,3 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, cleaned_at: new Date().toISOString() });
 }
-
-export { POST as GET };

@@ -55,6 +55,20 @@ export async function POST(request: NextRequest) {
 
         const buffer = Buffer.from(await file.arrayBuffer());
 
+        // Verify magic bytes to prevent MIME spoofing
+        const isPdf = buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46; // %PDF
+        const isXlsx = buffer[0] === 0x50 && buffer[1] === 0x4B && buffer[2] === 0x03 && buffer[3] === 0x04; // PK (ZIP/XLSX)
+        const isCsv = file.type === "text/csv"; // CSV = text, no magic bytes check needed
+        if (!isPdf && !isXlsx && !isCsv) {
+            return NextResponse.json(
+                { error: "Contenu du fichier invalide (magic bytes incorrects)." },
+                { status: 400 },
+            );
+        }
+
+        // Sanitise filename
+        const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+
         // Dedup: hash file content to prevent duplicate imports
         const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
         const { data: existing } = await supabase
@@ -72,7 +86,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Upload to Supabase storage (admin client bypasses RLS on storage)
-        const storagePath = `${merchant.id}/${Date.now()}_${file.name}`;
+        const storagePath = `${merchant.id}/${Date.now()}_${safeFilename}`;
         const adminStorage = createAdminClient();
 
         const { error: storageError } = await adminStorage.storage

@@ -41,6 +41,13 @@ export async function POST() {
             return NextResponse.json({ error: "Failed to update merchant" }, { status: 500 });
         }
 
+        // Dissocier les produits du POS sans les rendre invisibles :
+        // le marchand peut passer en mode manuel et continuer à gérer son stock.
+        await supabase
+            .from("products")
+            .update({ pos_item_id: null })
+            .eq("merchant_id", merchant.id);
+
         return NextResponse.json({ ok: true });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

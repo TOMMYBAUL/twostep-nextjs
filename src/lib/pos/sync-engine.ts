@@ -343,6 +343,9 @@ async function updateProduct(
 ): Promise<void> {
     const newSize = extractSize(posProduct.name);
 
+    // Si la photo POS a changé, forcer le retraitement (reset photo_processed_url)
+    const photoChanged = posProduct.photo_url !== null && posProduct.photo_url !== existingPhotoUrl;
+
     const updates: Record<string, unknown> = {
         name: posProduct.name,
         price: posProduct.price,
@@ -350,6 +353,7 @@ async function updateProduct(
         pos_item_id: posProduct.pos_item_id,
         pos_provider: provider,
         photo_url: posProduct.photo_url ?? existingPhotoUrl,
+        ...(photoChanged && { photo_processed_url: null }),
     };
 
     // Sync category from POS (only if POS provides one — preserve AI-assigned categories)

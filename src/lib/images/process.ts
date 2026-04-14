@@ -22,8 +22,15 @@ export async function removeBackground(imageBuffer: Buffer): Promise<Buffer> {
 }
 
 export async function processProductImage(sourceUrl: string): Promise<Buffer> {
-    // 1. Download source image
-    const res = await fetch(sourceUrl);
+    // 1. Download source image (timeout 30s)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30_000);
+    let res: Response;
+    try {
+        res = await fetch(sourceUrl, { signal: controller.signal });
+    } finally {
+        clearTimeout(timeoutId);
+    }
     if (!res.ok) throw new Error(`Failed to download image: ${res.status}`);
     const sourceBuffer = Buffer.from(await res.arrayBuffer());
 

@@ -74,6 +74,7 @@ export interface ProductWithMerchant {
     canonical_name: string | null;
     price: number;
     photo_url: string | null;
+    photo_processed_url: string | null;
     category: string | null;
     description: string | null;
     ean: string | null;

@@ -1,3 +1,4 @@
+// NOTE: Dashboard-only component — consumer never shows unavailable sizes
 import type { SizeEntry } from "@/lib/types";
 
 interface SizeDisplayProps {

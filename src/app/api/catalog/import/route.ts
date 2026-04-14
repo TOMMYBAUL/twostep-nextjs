@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
 
         const buffer = Buffer.from(await file.arrayBuffer());
 
+        // Sanitise filename (used for parsing only, no storage path here)
+        const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+
         // Dedup: block identical file re-import
         const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
         const { data: existingImport } = await supabase
@@ -66,7 +69,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Parse the file
-        const parsed = await parseInvoice(buffer, file.name);
+        const parsed = await parseInvoice(buffer, safeFilename);
         if (parsed.items.length === 0) {
             return NextResponse.json({ error: "Aucun produit détecté dans le fichier." }, { status: 400 });
         }
@@ -196,6 +199,13 @@ export async function POST(request: NextRequest) {
                         visible: true,
                     }).eq("id", newId);
                 }
+
+                // Feed event pour le nouveau produit
+                await admin.from("feed_events").insert({
+                    merchant_id: merchant.id,
+                    product_id: newId,
+                    event_type: "new_product",
+                });
 
                 // Track for dedup within this import
                 if (firstItem.ean) byEan.set(firstItem.ean, newId);

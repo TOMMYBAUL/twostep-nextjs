@@ -58,14 +58,37 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: `source must be one of: ${validSources.join(", ")}` }, { status: 400 });
         }
 
+        // Validate optional fields
+        const senderEmail = body.sender_email ?? null;
+        if (senderEmail !== null) {
+            if (typeof senderEmail !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) {
+                return NextResponse.json({ error: "sender_email format invalide" }, { status: 400 });
+            }
+        }
+
+        const fileUrl = body.file_url ?? null;
+        if (fileUrl !== null) {
+            if (typeof fileUrl !== "string") {
+                return NextResponse.json({ error: "file_url doit être une chaîne" }, { status: 400 });
+            }
+            try {
+                const parsed = new URL(fileUrl);
+                if (!["http:", "https:"].includes(parsed.protocol)) {
+                    return NextResponse.json({ error: "file_url doit être une URL http(s)" }, { status: 400 });
+                }
+            } catch {
+                return NextResponse.json({ error: "file_url format invalide" }, { status: 400 });
+            }
+        }
+
         const { data: invoice, error } = await supabase
             .from("invoices")
             .insert({
                 merchant_id: merchant.id,
                 source,
-                sender_email: body.sender_email ?? null,
+                sender_email: senderEmail,
                 supplier_name: body.supplier_name ?? null,
-                file_url: body.file_url ?? null,
+                file_url: fileUrl,
             })
             .select()
             .single();

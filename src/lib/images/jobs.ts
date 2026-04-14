@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
+type SupabaseClient = ReturnType<typeof createAdminClient>;
 
 export async function createImageJob(
     productId: string,
@@ -8,7 +8,7 @@ export async function createImageJob(
     sourceUrl: string,
     supabaseClient?: SupabaseClient,
 ): Promise<boolean> {
-    const supabase = supabaseClient ?? await createClient();
+    const supabase = supabaseClient ?? createAdminClient();
 
     // Dédoublonnage : pas de job pending/processing pour ce produit
     const { data: existing } = await supabase
@@ -30,7 +30,7 @@ export async function createImageJob(
 }
 
 export async function createImageJobsForMerchant(merchantId: string, supabaseClient?: SupabaseClient): Promise<number> {
-    const supabase = supabaseClient ?? await createClient();
+    const supabase = supabaseClient ?? createAdminClient();
 
     // Produits avec photo_url mais sans photo_processed_url
     const { data: products } = await supabase

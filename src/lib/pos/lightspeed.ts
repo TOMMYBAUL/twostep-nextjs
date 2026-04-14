@@ -83,7 +83,10 @@ export const lightspeedAdapter: IPOSAdapter = {
                         ? parseFloat(item.Prices.ItemPrice[0].amount)
                         : null,
                     category: item.Category?.name?.toLowerCase() ?? null,
-                    photo_url: item.Images?.Image?.baseImageURL ?? null,
+                    photo_url: (() => {
+                        const url = item.Images?.Image?.baseImageURL;
+                        return typeof url === "string" && url.startsWith("https://") ? url : null;
+                    })(),
                 });
             }
 

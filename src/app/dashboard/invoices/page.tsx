@@ -112,8 +112,8 @@ export default function InvoicesPage() {
         <>
             <PageHeader
                 storeName={merchant?.name}
-                title="Mon"
-                titleAccent="stock"
+                title="Mes"
+                titleAccent="entrées"
             />
 
             <StockTabs />
@@ -186,12 +186,16 @@ export default function InvoicesPage() {
 
             {/* Upload zone */}
             <div
+                role="button"
+                tabIndex={0}
+                aria-label="Glissez vos factures ici ou cliquez pour parcourir"
                 className={`mb-8 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 transition ${
                     dragOver
                         ? "border-brand bg-brand-secondary"
                         : "border-secondary bg-primary hover:border-primary"
                 } ${uploading ? "pointer-events-none opacity-60" : ""}`}
                 onClick={() => fileRef.current?.click()}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") fileRef.current?.click(); }}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={(e) => {

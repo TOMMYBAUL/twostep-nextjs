@@ -48,7 +48,17 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             }
 
             // Step 2: Email factures (for all)
-            checklist.push({ label: "Activer le transfert de factures par email", href: "/dashboard/invoices", cta: "Activer", checked: false }); // TODO: check if email is configured
+            let hasReceivedEmail = false;
+            try {
+                const emailRes = await fetch("/api/email/inbound-address");
+                if (emailRes.ok) {
+                    const emailData = await emailRes.json();
+                    hasReceivedEmail = emailData.has_received === true;
+                }
+            } catch {
+                // laisser unchecked en cas d'erreur
+            }
+            checklist.push({ label: "Activer le transfert de factures par email", href: "/dashboard/invoices", cta: "Activer", checked: hasReceivedEmail });
 
             // Step 3-5: Profile
             checklist.push({ label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile });

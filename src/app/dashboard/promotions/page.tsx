@@ -24,6 +24,13 @@ export default function PromotionsPage() {
     const handleCreate = async (e: FormEvent) => {
         e.preventDefault();
         if (!productId || !salePrice) return;
+
+        const selectedProduct = products.find((p) => p.id === productId);
+        if (selectedProduct?.price !== undefined && selectedProduct.price !== null && Number(salePrice) >= selectedProduct.price) {
+            toast("Le prix promo doit être inférieur au prix original", "error");
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             await createPromotion({

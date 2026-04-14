@@ -82,5 +82,3 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Worker failed" }, { status: 500 });
     }
 }
-
-export { POST as GET };

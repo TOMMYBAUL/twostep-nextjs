@@ -64,7 +64,7 @@ export function IntentSignals({ merchantId }: { merchantId?: string }) {
                                 </p>
                             </div>
                             <span className="shrink-0 text-[10px] text-tertiary">
-                                il y a {minutesAgo < 1 ? "1" : minutesAgo} min
+                                {minutesAgo < 1 ? "à l'instant" : `il y a ${minutesAgo} min`}
                             </span>
                         </div>
                     );
