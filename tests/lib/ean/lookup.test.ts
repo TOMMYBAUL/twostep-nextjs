@@ -1,25 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
-import { parseOpenEanResponse, parseUpcItemDbResponse } from "@/lib/ean/lookup";
+import { describe, expect, it } from "vitest";
+import { parseUpcItemDbResponse } from "@/lib/ean/lookup";
 
 describe("EAN lookup", () => {
-    it("parses Open EAN Database response", () => {
-        const response = {
-            name: "Coca-Cola 33cl",
-            brand: "Coca-Cola",
-            image: "https://example.com/coca.jpg",
-        };
-        const result = parseOpenEanResponse(response);
-        expect(result.name).toBe("Coca-Cola 33cl");
-        expect(result.brand).toBe("Coca-Cola");
-        expect(result.photo_url).toBe("https://example.com/coca.jpg");
-    });
-
-    it("handles missing fields", () => {
-        const result = parseOpenEanResponse({ name: "Unknown Product" });
-        expect(result.brand).toBeNull();
-        expect(result.photo_url).toBeNull();
-    });
-
     it("parses UPCitemdb paid API response", () => {
         const response = {
             items: [{
@@ -33,12 +15,27 @@ describe("EAN lookup", () => {
         expect(result).not.toBeNull();
         expect(result!.name).toBe("New Balance 574 Core Grey");
         expect(result!.brand).toBe("New Balance");
-        expect(result!.photo_url).toBe("https://example.com/nb574.jpg");
+        // photo_url is always null — Serper handles photos with better quality
+        expect(result!.photo_url).toBeNull();
         expect(result!.category).toBe("shoes > athletic");
     });
 
     it("returns null for empty UPCitemdb response", () => {
         const result = parseUpcItemDbResponse({ items: [] });
         expect(result).toBeNull();
+    });
+
+    it("returns null for missing items array", () => {
+        const result = parseUpcItemDbResponse({});
+        expect(result).toBeNull();
+    });
+
+    it("handles item with minimal fields", () => {
+        const result = parseUpcItemDbResponse({ items: [{ title: "Test Product" }] });
+        expect(result).not.toBeNull();
+        expect(result!.name).toBe("Test Product");
+        expect(result!.brand).toBeNull();
+        expect(result!.photo_url).toBeNull();
+        expect(result!.category).toBeNull();
     });
 });
