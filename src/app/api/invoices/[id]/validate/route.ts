@@ -262,9 +262,15 @@ export async function POST(
                     .eq("id", match.productId)
                     .single();
 
-                const existingSizes: string[] = existingProduct?.available_sizes ?? [];
-                const mergedSizes = [...new Set([...existingSizes, ...allSizes])];
-                updateFields.available_sizes = mergedSizes;
+                const existingSizes: { size: string; quantity: number }[] = existingProduct?.available_sizes ?? [];
+                // Merge sizes as {size, quantity} objects (not raw strings)
+                const sizeMap = new Map(existingSizes.map((s: any) => [typeof s === "string" ? s : s.size, typeof s === "object" ? s.quantity : 0]));
+                for (const gi of groupItems) {
+                    if (gi._size) {
+                        sizeMap.set(gi._size, (sizeMap.get(gi._size) ?? 0) + gi.quantity);
+                    }
+                }
+                updateFields.available_sizes = Array.from(sizeMap.entries()).map(([size, quantity]) => ({ size, quantity }));
             }
 
             await adminSupabase.from("products").update(updateFields).eq("id", match.productId);
@@ -368,7 +374,7 @@ export async function POST(
                     purchase_price: item.unit_price_ht,
                     ...(enrichedBrand && { brand: enrichedBrand }),
                     ...(enrichedCategory && { category: enrichedCategory }),
-                    ...(allSizes.length > 0 && { available_sizes: allSizes }),
+                    ...(allSizes.length > 0 && { available_sizes: groupItems.filter(gi => gi._size).map(gi => ({ size: gi._size!, quantity: gi.quantity })) }),
                 })
                 .select()
                 .single();

@@ -14,10 +14,14 @@ function getExtension(filename: string): string {
 }
 
 export async function POST(request: NextRequest) {
-    // Verify shared secret
+    // Verify shared secret (constant-time comparison)
     const authHeader = request.headers.get("authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
-    if (WEBHOOK_SECRET && token !== WEBHOOK_SECRET) {
+    if (!WEBHOOK_SECRET) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (token.length !== WEBHOOK_SECRET.length ||
+        !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(WEBHOOK_SECRET))) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -44,7 +48,7 @@ export async function POST(request: NextRequest) {
         .maybeSingle();
 
     if (!merchant) {
-        return NextResponse.json({ ok: true, ignored: "no matching merchant for slug: " + slug });
+        return NextResponse.json({ ok: true, ignored: "no matching merchant" });
     }
 
     try {
@@ -78,8 +82,9 @@ export async function POST(request: NextRequest) {
 
             if (existing) continue;
 
-            // Upload to storage
-            const storagePath = `${merchant.id}/${Date.now()}_${att.filename}`;
+            // Upload to storage (sanitize filename to prevent path traversal)
+            const safeFilename = att.filename!.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+            const storagePath = `${merchant.id}/${Date.now()}_${safeFilename}`;
             const { error: storageError } = await supabase.storage
                 .from("invoices")
                 .upload(storagePath, buffer, { contentType: att.mimeType ?? "application/octet-stream" });

@@ -16,8 +16,9 @@ function getExtension(filename: string): string {
 }
 
 function verifyWebhookSignature(body: string, signature: string): boolean {
-    if (!WEBHOOK_SECRET) return true; // Skip in dev
+    if (!WEBHOOK_SECRET) return false; // Never skip — reject if secret not configured
     const expected = crypto.createHmac("sha256", WEBHOOK_SECRET).update(body).digest("hex");
+    if (signature.length !== expected.length) return false;
     try {
         return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
     } catch {
@@ -110,8 +111,9 @@ export async function POST(request: NextRequest) {
 
             if (existing) continue;
 
-            // Upload to storage
-            const storagePath = `${merchantId}/${Date.now()}_${att.filename}`;
+            // Upload to storage (sanitize filename to prevent path traversal)
+            const safeFilename = att.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+            const storagePath = `${merchantId}/${Date.now()}_${safeFilename}`;
             const { error: storageError } = await supabase.storage
                 .from("invoices")
                 .upload(storagePath, buffer, { contentType: att.content_type });
