@@ -48,6 +48,7 @@ function scoreNameMatch(originalName: string, candidateName: string, brand?: str
 }
 
 const REVERSE_SEARCH_THRESHOLD = 0.55; // Minimum score to accept a reverse search result
+const AI_VERIFY_THRESHOLD = 0.85; // Above this score, skip AI verification (high confidence)
 
 type ReverseSearchCandidate = {
     ean: string;
@@ -57,12 +58,69 @@ type ReverseSearchCandidate = {
     score: number;
 };
 
-/** Pick the best candidate above threshold from a list */
-function pickBestCandidate(
+/**
+ * Ask Claude Haiku to verify if an EAN result matches the expected product.
+ * Only called for medium-confidence matches (score between 0.55 and 0.85).
+ * Cost: ~$0.001 per call.
+ */
+async function verifyEanMatchWithAI(
+    originalName: string,
+    candidateName: string,
+    brand?: string | null,
+): Promise<boolean> {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) return true; // No API key → accept (fallback to scoring only)
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8_000);
+
+        const productDesc = brand ? `${brand} ${originalName}` : originalName;
+
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey,
+                "anthropic-version": "2023-06-01",
+            },
+            body: JSON.stringify({
+                model: "claude-haiku-4-5-20251001",
+                max_tokens: 20,
+                messages: [{
+                    role: "user",
+                    content: `Le produit sur la facture est : "${productDesc}"
+La base de données EAN propose : "${candidateName}"
+Est-ce le MÊME produit (même marque, même modèle, même type) ? Les différences de format (volume, contenance, langue) sont acceptables.
+Réponds UNIQUEMENT "oui" ou "non".`,
+                }],
+            }),
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+        if (!res.ok) return true; // On error, accept rather than block
+
+        const data = await res.json();
+        const answer = (data.content?.[0]?.text ?? "").toLowerCase().trim();
+        const isMatch = answer.startsWith("oui");
+
+        if (!isMatch && process.env.NODE_ENV === "development") {
+            console.log(`[ean-ai] Rejected: "${productDesc}" ≠ "${candidateName}" — AI said: ${answer}`);
+        }
+
+        return isMatch;
+    } catch {
+        return true; // On error, accept
+    }
+}
+
+/** Pick the best candidate above threshold from a list, with AI verification for uncertain matches */
+async function pickBestCandidate(
     candidates: ReverseSearchCandidate[],
     originalName: string,
     brand?: string | null,
-): { ean: string; brand: string | null; category: string | null } | null {
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
     if (candidates.length === 0) return null;
 
     // Score each candidate
@@ -71,10 +129,24 @@ function pickBestCandidate(
         score: scoreNameMatch(originalName, c.name, brand),
     })).sort((a, b) => b.score - a.score);
 
-    const best = scored[0];
-    if (best.score < REVERSE_SEARCH_THRESHOLD) return null;
+    // Try candidates in score order
+    for (const best of scored) {
+        if (best.score < REVERSE_SEARCH_THRESHOLD) break; // No more candidates worth checking
 
-    return { ean: best.ean, brand: best.brand, category: best.category };
+        if (best.score >= AI_VERIFY_THRESHOLD) {
+            // High confidence — accept without AI check
+            return { ean: best.ean, brand: best.brand, category: best.category };
+        }
+
+        // Medium confidence — ask AI to verify
+        const aiConfirmed = await verifyEanMatchWithAI(originalName, best.name, brand);
+        if (aiConfirmed) {
+            return { ean: best.ean, brand: best.brand, category: best.category };
+        }
+        // AI rejected — try next candidate
+    }
+
+    return null;
 }
 
 export type EanResult = {
@@ -189,7 +261,7 @@ export async function searchEanByNameEanSearch(
         });
     }
 
-    const result = pickBestCandidate(candidates, productName, brand);
+    const result = await pickBestCandidate(candidates, productName, brand);
     if (process.env.NODE_ENV === "development") {
         const bestScore = candidates.length > 0
             ? Math.max(...candidates.map(c => scoreNameMatch(productName, c.name, brand)))
@@ -282,7 +354,7 @@ async function searchEanByNameUpc(
         });
     }
 
-    return pickBestCandidate(candidates, productName, brand);
+    return await pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Open Beauty Facts (FREE — cosmetics, skincare) ──
@@ -339,7 +411,7 @@ async function searchEanByNameOpenBeautyFacts(
         });
     }
 
-    return pickBestCandidate(candidates, productName, brand);
+    return await pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Open Products Facts (FREE — electronics, toys, clothes) ──
@@ -396,7 +468,7 @@ async function searchEanByNameOpenProductsFacts(
         });
     }
 
-    return pickBestCandidate(candidates, productName, brand);
+    return await pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Main lookup — cascade through all sources ──
