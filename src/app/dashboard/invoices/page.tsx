@@ -229,7 +229,7 @@ export default function InvoicesPage() {
                     </p>
                 </div>
             ) : (
-                <div className="card-ts overflow-hidden">
+                <div className="card-ts overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead>
                             <tr className="border-secondary border-b">

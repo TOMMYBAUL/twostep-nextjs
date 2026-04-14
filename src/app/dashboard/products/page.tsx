@@ -17,7 +17,7 @@ import { useIncompleteProducts } from "@/hooks/use-incomplete-products";
 
 export default function ProductsPage() {
     const { merchant } = useMerchant();
-    const { products, loading, updateStock } = useProducts(merchant?.id);
+    const { products, loading, updateStock, refetch: refetchProducts } = useProducts(merchant?.id);
     const { products: incompleteProducts, count: incompleteCount, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
     const { toast } = useToast();
     const [search, setSearch] = useState("");
@@ -39,7 +39,8 @@ export default function ProductsPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
             toast(`Stock recalé : ${data.products_updated} mis à jour, ${data.products_created} créés`);
-            window.location.reload();
+            await refetchProducts();
+            refetchIncomplete();
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur d'import", "error");
         }
@@ -161,7 +162,7 @@ export default function ProductsPage() {
             {activeTab === "catalogue" ? (
                 <>
                     {/* Metrics */}
-                    <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+                    <div className={`mb-8 grid grid-cols-2 gap-3 ${hasPOS ? "md:grid-cols-4" : "md:grid-cols-3"} md:gap-4`}>
                         <MetricCard label="Total produits" value={totalProducts} staggerIndex={0} />
                         {hasPOS ? (
                             <>

@@ -35,10 +35,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     return (
         <ToastContext.Provider value={{ toast }}>
             {children}
-            <div className="fixed right-4 bottom-4 z-50 flex flex-col gap-2">
+            <div className="fixed right-4 bottom-4 z-50 flex flex-col gap-2" aria-live="polite">
                 {toasts.map((t) => (
                     <div
                         key={t.id}
+                        role="alert"
                         className={cx(
                             "animate-fade-up rounded-lg px-4 py-3 text-sm font-medium shadow-lg",
                             t.type === "success"

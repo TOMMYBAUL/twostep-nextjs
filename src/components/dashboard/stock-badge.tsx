@@ -14,9 +14,9 @@ export function StockBadge({ quantity, hasPOS = true }: StockBadgeProps) {
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold",
                 available
                     ? "bg-success-secondary text-success-primary"
-                    : "bg-error-secondary text-error-primary",
+                    : "bg-secondary text-tertiary",
             )}>
-                <span className={cx("size-1.5 rounded-full", available ? "bg-success-solid" : "bg-error-solid")} />
+                <span className={cx("size-1.5 rounded-full", available ? "bg-success-solid" : "bg-quaternary")} />
                 {available ? "Disponible" : "Indisponible"}
             </span>
         );

@@ -280,7 +280,7 @@ function SettingsPageInner() {
                                         <button
                                             type="button"
                                             onClick={handleDisconnect}
-                                            className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-primary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                            className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-secondary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                                             disabled={connecting}
                                         >
                                             Déconnecter
