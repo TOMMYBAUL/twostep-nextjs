@@ -13,6 +13,7 @@ Extrais les informations et retourne UNIQUEMENT du JSON valide :
       "name": "nom COMPLET du produit incluant marque, modèle, couleur et taille si présents",
       "ean": "code EAN/GTIN à 13 chiffres ou UPC à 12 chiffres, ou null",
       "sku": "référence fournisseur / code article si présent, ou null",
+      "brand": "marque du produit si identifiable, ou null",
       "quantity": nombre_entier,
       "unit_price": prix_unitaire_HT_decimal_ou_null
     }
@@ -60,6 +61,7 @@ export function parseJsonResponse(raw: string): ParsedInvoice {
             name: String(item.name ?? ""),
             ean: item.ean ? String(item.ean) : null,
             sku: item.sku ? String(item.sku) : null,
+            brand: item.brand ? String(item.brand) : null,
             quantity: Number(item.quantity) || 1,
             unit_price: item.unit_price != null ? Number(item.unit_price) : null,
         })),

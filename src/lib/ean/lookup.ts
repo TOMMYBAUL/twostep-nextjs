@@ -220,27 +220,30 @@ async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null
 
 /**
  * Fetch EAN data from cache or external APIs WITHOUT applying to any product.
+ * @param skipCache — set true when caller already checked the cache (avoids double read)
  */
-export async function fetchEanData(ean: string): Promise<EanResult | null> {
+export async function fetchEanData(ean: string, skipCache = false): Promise<EanResult | null> {
     if (!/^\d{8}(\d{4,5})?$/.test(ean)) return null;
 
     const supabase = createAdminClient();
 
     // 1. Check our own cache first (instant, free)
-    const { data: cached } = await supabase
-        .from("ean_lookups")
-        .select("*")
-        .eq("ean", ean)
-        .single();
+    if (!skipCache) {
+        const { data: cached } = await supabase
+            .from("ean_lookups")
+            .select("*")
+            .eq("ean", ean)
+            .single();
 
-    if (cached) {
-        return {
-            name: cached.name ?? "Unknown",
-            brand: cached.brand ?? null,
-            photo_url: cached.photo_url ?? null,
-            category: cached.category ?? null,
-            source: cached.source ?? "cache",
-        };
+        if (cached) {
+            return {
+                name: cached.name ?? "Unknown",
+                brand: cached.brand ?? null,
+                photo_url: cached.photo_url ?? null,
+                category: cached.category ?? null,
+                source: cached.source ?? "cache",
+            };
+        }
     }
 
     // 2. EAN-Search.org (primary — best EU coverage, 1.1 billion products)
@@ -311,8 +314,8 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         return true;
     }
 
-    // Cascade through all sources
-    const result = await fetchEanData(ean);
+    // Cascade through all sources (skip cache — already checked above)
+    const result = await fetchEanData(ean, true);
 
     if (result) {
         await applyEnrichment(supabase, productId, result, ean);

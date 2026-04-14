@@ -172,6 +172,7 @@ export async function POST(request: NextRequest) {
                             unit_price_ht: item.unit_price,
                             ean: item.ean,
                             sku: item.sku,
+                            brand: item.brand,
                             status: "detected",
                         })),
                     );

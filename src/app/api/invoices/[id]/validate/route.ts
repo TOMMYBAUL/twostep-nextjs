@@ -466,7 +466,6 @@ export async function POST(
 
             if (foundEan) {
                 // Found EAN → save it and run full enrichment
-                if (!foundEan) continue; // type guard
                 await adminSupabase.from("products").update({ ean: foundEan }).eq("id", productId);
                 await lookupEan(foundEan, productId);
             } else {
