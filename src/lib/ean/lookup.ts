@@ -139,11 +139,30 @@ export async function searchEanByName(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
-    // Try EAN-Search first (better EU coverage)
+    // 1. EAN-Search (best EU coverage, 1.1B products)
     const eanSearchResult = await searchEanByNameEanSearch(productName, brand);
     if (eanSearchResult) return eanSearchResult;
 
-    // Fallback to UPCitemdb
+    // 2. UPCitemdb (good US coverage)
+    const upcResult = await searchEanByNameUpc(productName, brand);
+    if (upcResult) return upcResult;
+
+    // 3. Open Beauty Facts (cosmetics, skincare, Korean beauty)
+    const beautyResult = await searchEanByNameOpenBeautyFacts(productName, brand);
+    if (beautyResult) return beautyResult;
+
+    // 4. Open Products Facts (electronics, toys, clothing)
+    const productsResult = await searchEanByNameOpenProductsFacts(productName, brand);
+    if (productsResult) return productsResult;
+
+    return null;
+}
+
+/** UPCitemdb reverse search (extracted for clarity) */
+async function searchEanByNameUpc(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
     await upcRateLimiter.acquire();
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
@@ -194,6 +213,39 @@ async function fetchFromOpenBeautyFacts(ean: string): Promise<EanResult | null> 
     };
 }
 
+/**
+ * Reverse search via Open Beauty Facts: find EAN from product name.
+ * Especially good for Korean/niche cosmetics brands.
+ */
+async function searchEanByNameOpenBeautyFacts(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    const query = brand ? `${brand} ${productName}` : productName;
+    const res = await fetchWithRetry(
+        `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=5`,
+        {},
+    );
+    if (!res) return null;
+
+    const data = await res.json();
+    const products = data.products as Array<Record<string, unknown>> | undefined;
+    if (!products || products.length === 0) return null;
+
+    // Find the best match — prefer products with a barcode
+    for (const product of products) {
+        const ean = product.code ? String(product.code) : null;
+        if (!ean || !/^\d{8,13}$/.test(ean)) continue;
+
+        return {
+            ean,
+            brand: product.brands ? String(product.brands) : null,
+            category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
+        };
+    }
+    return null;
+}
+
 // ── Open Products Facts (FREE — electronics, toys, clothes) ──
 
 async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null> {
@@ -214,6 +266,38 @@ async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null
         category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
         source: "open_products_facts",
     };
+}
+
+/**
+ * Reverse search via Open Products Facts: find EAN from product name.
+ * Good for electronics, toys, clothing.
+ */
+async function searchEanByNameOpenProductsFacts(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    const query = brand ? `${brand} ${productName}` : productName;
+    const res = await fetchWithRetry(
+        `https://world.openproductsfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=5`,
+        {},
+    );
+    if (!res) return null;
+
+    const data = await res.json();
+    const products = data.products as Array<Record<string, unknown>> | undefined;
+    if (!products || products.length === 0) return null;
+
+    for (const product of products) {
+        const ean = product.code ? String(product.code) : null;
+        if (!ean || !/^\d{8,13}$/.test(ean)) continue;
+
+        return {
+            ean,
+            brand: product.brands ? String(product.brands) : null,
+            category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
+        };
+    }
+    return null;
 }
 
 // ── Main lookup — cascade through all sources ──
