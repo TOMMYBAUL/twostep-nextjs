@@ -11,20 +11,12 @@ export type EanResult = {
     source: string;
 };
 
-// Rate limiter: 6 req/min (free) or 25 req/min (paid, when UPCITEMDB_API_KEY is set)
+// Rate limiters per service
 const upcRateLimiter = createRateLimiter(
     process.env.UPCITEMDB_API_KEY ? 25 : 6,
     60_000,
 );
-
-export function parseOpenEanResponse(data: Record<string, unknown>): Omit<EanResult, "source"> {
-    return {
-        name: String(data.name ?? "Unknown"),
-        brand: data.brand ? String(data.brand) : null,
-        photo_url: data.image ? String(data.image) : null,
-        category: data.category_name ? String(data.category_name).toLowerCase() : null,
-    };
-}
+const eanSearchRateLimiter = createRateLimiter(10, 60_000); // ~5000/month = ~10/min safe
 
 export function parseUpcItemDbResponse(data: Record<string, unknown>): Omit<EanResult, "source"> | null {
     const items = data.items as Array<Record<string, unknown>> | undefined;
@@ -33,7 +25,7 @@ export function parseUpcItemDbResponse(data: Record<string, unknown>): Omit<EanR
     return {
         name: item.title ? String(item.title) : "Unknown",
         brand: item.brand ? String(item.brand) : null,
-        photo_url: Array.isArray(item.images) && item.images.length > 0 ? String(item.images[0]) : null,
+        photo_url: null, // Never use UPCitemdb photos — Serper has better quality
         category: item.category ? String(item.category).toLowerCase() : null,
     };
 }
@@ -54,6 +46,73 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = 1): P
     return null;
 }
 
+// ── EAN-Search.org (PRIMARY — 1.1 billion products, excellent EU coverage) ──
+
+async function fetchFromEanSearch(ean: string): Promise<EanResult | null> {
+    const token = process.env.EAN_SEARCH_API_TOKEN;
+    if (!token) return null;
+
+    await eanSearchRateLimiter.acquire();
+
+    const res = await fetchWithRetry(
+        `https://api.ean-search.org/api?token=${token}&op=barcode-lookup&ean=${ean}&format=json`,
+        {},
+    );
+    if (!res) return null;
+
+    const data = await res.json();
+    if (!data || data.error) return null;
+
+    // EAN-Search returns: { name, categoryName, categoryId, issuingCountry }
+    const items = Array.isArray(data) ? data : [data];
+    const item = items[0];
+    if (!item?.name || item.name === "unknown") return null;
+
+    return {
+        name: String(item.name),
+        brand: null, // EAN-Search doesn't return brand separately
+        photo_url: null, // Serper handles photos
+        category: item.categoryName ? String(item.categoryName).toLowerCase() : null,
+        source: "ean_search",
+    };
+}
+
+/**
+ * Reverse search via EAN-Search.org: find EAN from product name.
+ */
+export async function searchEanByNameEanSearch(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    const token = process.env.EAN_SEARCH_API_TOKEN;
+    if (!token) return null;
+
+    await eanSearchRateLimiter.acquire();
+
+    const query = brand ? `${brand} ${productName}` : productName;
+    const res = await fetchWithRetry(
+        `https://api.ean-search.org/api?token=${token}&op=product-search&name=${encodeURIComponent(query)}&format=json`,
+        {},
+    );
+    if (!res) return null;
+
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : [];
+    if (items.length === 0 || items[0]?.error) return null;
+
+    const item = items[0];
+    const ean = item.ean ? String(item.ean) : null;
+    if (!ean || !/^\d{8,13}$/.test(ean)) return null;
+
+    return {
+        ean,
+        brand: null,
+        category: item.categoryName ? String(item.categoryName).toLowerCase() : null,
+    };
+}
+
+// ── UPCitemdb (SECONDARY — US-centric, free tier) ──
+
 async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
     await upcRateLimiter.acquire();
 
@@ -70,19 +129,21 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
     const data = await res.json();
     const parsed = parseUpcItemDbResponse(data);
     if (!parsed) return null;
-    // Never use UPCitemdb photos — Serper has better e-commerce quality
-    return { ...parsed, photo_url: null, source: "upc_database" };
+    return { ...parsed, source: "upc_database" };
 }
 
 /**
- * Reverse search: find the EAN from a product name.
- * Used when invoices have product names but no barcode.
- * Returns the first matching EAN + brand + category (no photo — Serper handles that).
+ * Reverse search via UPCitemdb: find EAN from product name.
  */
 export async function searchEanByName(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    // Try EAN-Search first (better EU coverage)
+    const eanSearchResult = await searchEanByNameEanSearch(productName, brand);
+    if (eanSearchResult) return eanSearchResult;
+
+    // Fallback to UPCitemdb
     await upcRateLimiter.acquire();
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
@@ -102,7 +163,7 @@ export async function searchEanByName(
 
     const item = items[0];
     const ean = item.ean ? String(item.ean) : null;
-    if (!ean || !/^\d{12,13}$/.test(ean)) return null;
+    if (!ean || !/^\d{8,13}$/.test(ean)) return null;
 
     return {
         ean,
@@ -111,30 +172,61 @@ export async function searchEanByName(
     };
 }
 
-async function fetchFromOpenEan(ean: string): Promise<EanResult | null> {
+// ── Open Beauty Facts (FREE — cosmetics, skincare) ──
+
+async function fetchFromOpenBeautyFacts(ean: string): Promise<EanResult | null> {
     const res = await fetchWithRetry(
-        `https://openean.fdcc.info/EANOpenSearch?ean=${ean}&format=json`,
+        `https://world.openbeautyfacts.org/api/v2/product/${ean}.json`,
         {},
     );
     if (!res) return null;
 
     const data = await res.json();
-    if (!data?.name) return null;
-    // Never use OpenEAN photos — Serper has better e-commerce quality
-    return { ...parseOpenEanResponse(data), photo_url: null, source: "open_ean" };
+    if (!data?.product || data.status === 0) return null;
+
+    const product = data.product;
+    return {
+        name: product.product_name ?? "Unknown",
+        brand: product.brands ?? null,
+        photo_url: null, // Serper handles photos
+        category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
+        source: "open_beauty_facts",
+    };
 }
+
+// ── Open Products Facts (FREE — electronics, toys, clothes) ──
+
+async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null> {
+    const res = await fetchWithRetry(
+        `https://world.openproductsfacts.org/api/v2/product/${ean}.json`,
+        {},
+    );
+    if (!res) return null;
+
+    const data = await res.json();
+    if (!data?.product || data.status === 0) return null;
+
+    const product = data.product;
+    return {
+        name: product.product_name ?? "Unknown",
+        brand: product.brands ?? null,
+        photo_url: null,
+        category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
+        source: "open_products_facts",
+    };
+}
+
+// ── Main lookup — cascade through all sources ──
 
 /**
  * Fetch EAN data from cache or external APIs WITHOUT applying to any product.
- * Returns enrichment fields or null if EAN is invalid / not found.
- * Caches the result for future lookups.
  */
 export async function fetchEanData(ean: string): Promise<EanResult | null> {
     if (!/^\d{8}(\d{4,5})?$/.test(ean)) return null;
 
     const supabase = createAdminClient();
 
-    // Check cache first
+    // 1. Check our own cache first (instant, free)
     const { data: cached } = await supabase
         .from("ean_lookups")
         .select("*")
@@ -151,11 +243,42 @@ export async function fetchEanData(ean: string): Promise<EanResult | null> {
         };
     }
 
-    // Try external APIs
-    const result = await fetchFromUpcDatabase(ean) ?? await fetchFromOpenEan(ean);
-    if (!result) return null;
+    // 2. EAN-Search.org (primary — best EU coverage, 1.1 billion products)
+    const eanSearchResult = await fetchFromEanSearch(ean);
+    if (eanSearchResult) {
+        await cacheResult(supabase, ean, eanSearchResult);
+        return eanSearchResult;
+    }
 
-    // Cache the result
+    // 3. UPCitemdb (secondary — good US coverage)
+    const upcResult = await fetchFromUpcDatabase(ean);
+    if (upcResult) {
+        await cacheResult(supabase, ean, upcResult);
+        return upcResult;
+    }
+
+    // 4. Open Beauty Facts (free — cosmetics/skincare)
+    const beautyResult = await fetchFromOpenBeautyFacts(ean);
+    if (beautyResult) {
+        await cacheResult(supabase, ean, beautyResult);
+        return beautyResult;
+    }
+
+    // 5. Open Products Facts (free — electronics, toys, clothes)
+    const productsResult = await fetchFromOpenProductsFacts(ean);
+    if (productsResult) {
+        await cacheResult(supabase, ean, productsResult);
+        return productsResult;
+    }
+
+    return null;
+}
+
+async function cacheResult(
+    supabase: ReturnType<typeof createAdminClient>,
+    ean: string,
+    result: EanResult,
+): Promise<void> {
     await supabase.from("ean_lookups").upsert({
         ean,
         name: result.name,
@@ -165,16 +288,13 @@ export async function fetchEanData(ean: string): Promise<EanResult | null> {
         source: result.source,
         fetched_at: new Date().toISOString(),
     });
-
-    return result;
 }
 
 /**
- * Lookup EAN in cache, then external APIs.
+ * Lookup EAN in cache, then cascade through all external APIs.
  * Updates product and ean_lookups cache.
  */
 export async function lookupEan(ean: string, productId: string): Promise<boolean> {
-    // Validate EAN format (8, 12, or 13 digits)
     if (!/^\d{8}(\d{4,5})?$/.test(ean)) return false;
 
     const supabase = createAdminClient();
@@ -191,27 +311,15 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         return true;
     }
 
-    // Try external APIs: UPCitemdb first (better coverage), then OpenEAN
-    const result = await fetchFromUpcDatabase(ean) ?? await fetchFromOpenEan(ean);
+    // Cascade through all sources
+    const result = await fetchEanData(ean);
 
     if (result) {
-        // Cache the result
-        await supabase.from("ean_lookups").upsert({
-            ean,
-            name: result.name,
-            brand: result.brand,
-            photo_url: result.photo_url,
-            category: result.category,
-            source: result.source,
-            fetched_at: new Date().toISOString(),
-        });
-
         await applyEnrichment(supabase, productId, result, ean);
         return true;
     }
 
-    // UPC/OpenEAN didn't find anything — still try Serper for the photo
-    // This is critical: many French products aren't in UPC databases
+    // No source found anything — still try Serper for the photo
     await applyEnrichment(supabase, productId, { name: null, brand: null, photo_url: null, category: null }, ean);
     return false;
 }
@@ -224,26 +332,22 @@ async function applyEnrichment(
 ): Promise<void> {
     const updateData: Record<string, unknown> = {};
 
-    // Fetch current product for validation and photo check
     const { data: prod } = await supabase
         .from("products")
         .select("merchant_id, photo_url, name, brand, sku")
         .eq("id", productId)
         .single();
 
-    // Validate UPC brand coherence — reject if brand doesn't match product name
-    // e.g. "Nike Dunk Low" with UPC brand "Partsynergy" → reject UPC brand
+    // Validate UPC brand coherence
     if (data.brand && prod?.name) {
         const productNameLower = prod.name.toLowerCase();
         const upcBrandLower = data.brand.toLowerCase();
-        // Accept if brand appears in product name OR product name appears in brand
         const isCoherent =
             productNameLower.includes(upcBrandLower) ||
             upcBrandLower.includes(productNameLower.split(" ")[0]);
         if (!isCoherent) {
-            console.warn(`[enrich] UPC brand "${data.brand}" rejected — doesn't match product "${prod.name}"`);
             data.brand = null;
-            data.category = null; // category from wrong product is also unreliable
+            data.category = null;
         }
     }
 
@@ -251,12 +355,11 @@ async function applyEnrichment(
     if (data.category) updateData.category = data.category;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
 
-    // Determine photo URL: prefer EAN source, fall back to Serper Google Images
+    // Photo: prefer Serper (better e-commerce quality)
     let photoUrl = data.photo_url;
     let photoSource: "ean" | "serper" = "ean";
 
     if (!photoUrl && prod && !prod.photo_url) {
-        // No photo from EAN databases — try Serper with SKU (most precise), EAN, then name
         const serperUrl = await searchProductImage(
             prod.name,
             data.brand ?? prod.brand,
