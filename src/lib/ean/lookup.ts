@@ -3,6 +3,80 @@ import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
 
+// ── Name similarity scoring for reverse EAN search ──
+
+/** Normalize: lowercase, remove special chars, collapse whitespace */
+function normalizeName(s: string): string {
+    return s.toLowerCase().replace(/[''`\-/().,"]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/** Levenshtein distance */
+function levenshtein(a: string, b: string): number {
+    const m = a.length, n = b.length;
+    const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+        let prev = dp[0];
+        dp[0] = i;
+        for (let j = 1; j <= n; j++) {
+            const tmp = dp[j];
+            dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+            prev = tmp;
+        }
+    }
+    return dp[n];
+}
+
+/** Score how well a candidate name matches the original product name (0..1) */
+function scoreNameMatch(originalName: string, candidateName: string, brand?: string | null): number {
+    const normOriginal = normalizeName(brand ? `${brand} ${originalName}` : originalName);
+    const normCandidate = normalizeName(candidateName);
+
+    // Levenshtein similarity
+    const maxLen = Math.max(normOriginal.length, normCandidate.length);
+    if (maxLen === 0) return 1;
+    const levScore = 1 - levenshtein(normOriginal, normCandidate) / maxLen;
+
+    // Word overlap: what % of original words appear in the candidate
+    const origWords = new Set(normOriginal.split(" ").filter(w => w.length > 2));
+    const candWords = new Set(normCandidate.split(" ").filter(w => w.length > 2));
+    let overlap = 0;
+    for (const w of origWords) { if (candWords.has(w)) overlap++; }
+    const overlapScore = origWords.size > 0 ? overlap / origWords.size : 0;
+
+    // Combined: weight word overlap more (avoids penalizing minor formatting differences)
+    return levScore * 0.4 + overlapScore * 0.6;
+}
+
+const REVERSE_SEARCH_THRESHOLD = 0.55; // Minimum score to accept a reverse search result
+
+type ReverseSearchCandidate = {
+    ean: string;
+    name: string;
+    brand: string | null;
+    category: string | null;
+    score: number;
+};
+
+/** Pick the best candidate above threshold from a list */
+function pickBestCandidate(
+    candidates: ReverseSearchCandidate[],
+    originalName: string,
+    brand?: string | null,
+): { ean: string; brand: string | null; category: string | null } | null {
+    if (candidates.length === 0) return null;
+
+    // Score each candidate
+    const scored = candidates.map(c => ({
+        ...c,
+        score: scoreNameMatch(originalName, c.name, brand),
+    })).sort((a, b) => b.score - a.score);
+
+    const best = scored[0];
+    if (best.score < REVERSE_SEARCH_THRESHOLD) return null;
+
+    return { ean: best.ean, brand: best.brand, category: best.category };
+}
+
 export type EanResult = {
     name: string;
     brand: string | null;
@@ -101,15 +175,28 @@ export async function searchEanByNameEanSearch(
     const items = Array.isArray(data) ? data : (data.productlist ?? []);
     if (items.length === 0 || items[0]?.error) return null;
 
-    const item = items[0];
-    const ean = item.ean ? String(item.ean) : null;
-    if (!ean || !/^\d{8,13}$/.test(ean)) return null;
+    // Score all results and pick the best match
+    const candidates: ReverseSearchCandidate[] = [];
+    for (const item of items.slice(0, 10)) {
+        const ean = item.ean ? String(item.ean) : null;
+        if (!ean || !/^\d{8,13}$/.test(ean)) continue;
+        candidates.push({
+            ean,
+            name: item.name ? String(item.name) : "",
+            brand: null, // EAN-Search doesn't return brand separately
+            category: item.categoryName ? String(item.categoryName).toLowerCase() : null,
+            score: 0,
+        });
+    }
 
-    return {
-        ean,
-        brand: null,
-        category: item.categoryName ? String(item.categoryName).toLowerCase() : null,
-    };
+    const result = pickBestCandidate(candidates, productName, brand);
+    if (process.env.NODE_ENV === "development") {
+        const bestScore = candidates.length > 0
+            ? Math.max(...candidates.map(c => scoreNameMatch(productName, c.name, brand)))
+            : 0;
+        console.log(`[ean-search] "${query}" → ${items.length} results, ${candidates.length} valid, best score: ${bestScore.toFixed(3)}, accepted: ${!!result}`);
+    }
+    return result;
 }
 
 // ── UPCitemdb (SECONDARY — US-centric, free tier) ──
@@ -159,7 +246,7 @@ export async function searchEanByName(
     return null;
 }
 
-/** UPCitemdb reverse search (extracted for clarity) */
+/** UPCitemdb reverse search — scores all results */
 async function searchEanByNameUpc(
     productName: string,
     brand?: string | null,
@@ -167,6 +254,7 @@ async function searchEanByNameUpc(
     await upcRateLimiter.acquire();
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
+    if (apiKey === "TODO_SET_YOUR_KEY") return null; // Skip placeholder key
     const query = brand ? `${brand} ${productName}` : productName;
     const url = apiKey
         ? `https://api.upcitemdb.com/prod/v1/search?s=${encodeURIComponent(query)}&type=product`
@@ -181,15 +269,20 @@ async function searchEanByNameUpc(
     const items = data.items as Array<Record<string, unknown>> | undefined;
     if (!items || items.length === 0) return null;
 
-    const item = items[0];
-    const ean = item.ean ? String(item.ean) : null;
-    if (!ean || !/^\d{8,13}$/.test(ean)) return null;
+    const candidates: ReverseSearchCandidate[] = [];
+    for (const item of items.slice(0, 10)) {
+        const ean = item.ean ? String(item.ean) : null;
+        if (!ean || !/^\d{8,13}$/.test(ean)) continue;
+        candidates.push({
+            ean,
+            name: item.title ? String(item.title) : "",
+            brand: item.brand ? String(item.brand) : null,
+            category: item.category ? String(item.category).toLowerCase() : null,
+            score: 0,
+        });
+    }
 
-    return {
-        ean,
-        brand: item.brand ? String(item.brand) : null,
-        category: item.category ? String(item.category).toLowerCase() : null,
-    };
+    return pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Open Beauty Facts (FREE — cosmetics, skincare) ──
@@ -224,7 +317,7 @@ async function searchEanByNameOpenBeautyFacts(
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
     const query = brand ? `${brand} ${productName}` : productName;
     const res = await fetchWithRetry(
-        `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=5`,
+        `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=10`,
         {},
     );
     if (!res) return null;
@@ -233,18 +326,20 @@ async function searchEanByNameOpenBeautyFacts(
     const products = data.products as Array<Record<string, unknown>> | undefined;
     if (!products || products.length === 0) return null;
 
-    // Find the best match — prefer products with a barcode
+    const candidates: ReverseSearchCandidate[] = [];
     for (const product of products) {
         const ean = product.code ? String(product.code) : null;
         if (!ean || !/^\d{8,13}$/.test(ean)) continue;
-
-        return {
+        candidates.push({
             ean,
+            name: product.product_name ? String(product.product_name) : "",
             brand: product.brands ? String(product.brands) : null,
             category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
-        };
+            score: 0,
+        });
     }
-    return null;
+
+    return pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Open Products Facts (FREE — electronics, toys, clothes) ──
@@ -279,7 +374,7 @@ async function searchEanByNameOpenProductsFacts(
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
     const query = brand ? `${brand} ${productName}` : productName;
     const res = await fetchWithRetry(
-        `https://world.openproductsfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=5`,
+        `https://world.openproductsfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=10`,
         {},
     );
     if (!res) return null;
@@ -288,17 +383,20 @@ async function searchEanByNameOpenProductsFacts(
     const products = data.products as Array<Record<string, unknown>> | undefined;
     if (!products || products.length === 0) return null;
 
+    const candidates: ReverseSearchCandidate[] = [];
     for (const product of products) {
         const ean = product.code ? String(product.code) : null;
         if (!ean || !/^\d{8,13}$/.test(ean)) continue;
-
-        return {
+        candidates.push({
             ean,
+            name: product.product_name ? String(product.product_name) : "",
             brand: product.brands ? String(product.brands) : null,
             category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
-        };
+            score: 0,
+        });
     }
-    return null;
+
+    return pickBestCandidate(candidates, productName, brand);
 }
 
 // ── Main lookup — cascade through all sources ──
