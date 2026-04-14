@@ -368,6 +368,9 @@ function OnboardingBar({ steps, completed }: { steps: Step[]; completed: number 
                                 <p className={`text-xs font-medium ${step.checked ? "text-tertiary line-through" : "text-primary"}`}>
                                     {step.label}
                                 </p>
+                                {!step.checked && step.description && (
+                                    <p className="text-[10px] text-tertiary">{step.description}</p>
+                                )}
                             </div>
                             {!step.checked && (
                                 <Link href={step.href} className="shrink-0 text-[10px] font-semibold text-brand-secondary no-underline hover:underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">

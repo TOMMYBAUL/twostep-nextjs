@@ -421,7 +421,7 @@ function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
 /* ── Form to complete an incomplete product ── */
 
 function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
-    product: { id: string; name: string };
+    product: { id: string; name: string; photo_url?: string | null };
     merchantId: string | undefined;
     onCancel: () => void;
     onComplete: () => void;
@@ -543,6 +543,9 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                     }}
                 />
                 {photoError && <p className="mt-1 text-xs text-error-primary">{photoError}</p>}
+                {!photoFile && !product.photo_url && (
+                    <p className="mt-1 text-xs text-warning-primary">Sans photo, votre produit sera moins attractif</p>
+                )}
             </div>
 
             {/* Name */}

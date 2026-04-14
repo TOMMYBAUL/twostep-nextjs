@@ -46,10 +46,12 @@ export async function POST(request: NextRequest) {
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);
 
+            // Negative delta = sale (stock consumed), positive = restock/return
+            const eventType = update.quantity < 0 ? "sale" : "restock";
             await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,
                 product_id: product.id,
-                event_type: "sale",
+                event_type: eventType,
             });
 
             // Notify favorites when product restocked (quantity went up)

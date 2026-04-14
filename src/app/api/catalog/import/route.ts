@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
+import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 import { captureError } from "@/lib/error";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -213,6 +214,13 @@ export async function POST(request: NextRequest) {
                 productsCreated++;
                 stockReplaced++;
             }
+        }
+
+        // Group variants by EAN (same logic as POS sync — CSV imports don't go through sync-engine)
+        try {
+            await groupVariantsByEAN(admin, merchant.id);
+        } catch (err) {
+            captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
         }
 
         return NextResponse.json({

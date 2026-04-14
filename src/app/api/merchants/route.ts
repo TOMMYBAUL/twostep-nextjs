@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
         const { data, error } = await supabase
             .from("merchants")
-            .select("*")
+            .select("id, name, address, city, siret, phone, description, photo_url, opening_hours, status, pos_type, plan, location, slug, created_at, updated_at")
             .eq("user_id", user.id)
             .single();
 
@@ -68,6 +68,20 @@ export async function POST(request: NextRequest) {
 
         if (siret !== undefined && siret !== null && typeof siret !== "string") {
             return NextResponse.json({ error: "siret must be a string" }, { status: 400 });
+        }
+
+        if (photo_url !== undefined && photo_url !== null) {
+            if (typeof photo_url !== "string") {
+                return NextResponse.json({ error: "photo_url must be a string" }, { status: 400 });
+            }
+            try {
+                const parsed = new URL(photo_url);
+                if (parsed.protocol !== "https:") {
+                    return NextResponse.json({ error: "photo_url must use https://" }, { status: 400 });
+                }
+            } catch {
+                return NextResponse.json({ error: "photo_url must be a valid URL" }, { status: 400 });
+            }
         }
 
         if (!isFinite(lat) || !isFinite(lng)) {

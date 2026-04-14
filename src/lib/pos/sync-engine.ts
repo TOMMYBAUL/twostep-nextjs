@@ -123,6 +123,18 @@ export async function syncMerchantPOS(
 
         const posItemToProductId = new Map<string, string>();
 
+        // ─── Build parent→variant mapping for Shopify promo matching ─
+        // Shopify promos reference parent product IDs; we track variant IDs.
+        // This map lets upsertPromo expand parent IDs to all known variant IDs.
+        const posParentToVariants = new Map<string, string[]>();
+        for (const p of catalog) {
+            if (p.pos_parent_id) {
+                const list = posParentToVariants.get(p.pos_parent_id) ?? [];
+                list.push(p.pos_item_id);
+                posParentToVariants.set(p.pos_parent_id, list);
+            }
+        }
+
         // ─── Pre-fetch all existing products for this merchant ──────
         const { data: existingProducts } = await supabase
             .from("products")
@@ -238,7 +250,7 @@ export async function syncMerchantPOS(
         // ─── Promos sync ─────────────────────────────────────────────
 
         for (const promo of promos) {
-            await upsertPromo(supabase, merchantId, provider, promo, posItemToProductId, result);
+            await upsertPromo(supabase, merchantId, provider, promo, posItemToProductId, posParentToVariants, result);
         }
 
         // ─── EAN enrichment (best-effort) ────────────────────────────
@@ -380,9 +392,23 @@ async function upsertPromo(
     provider: string,
     promo: POSPromo,
     posItemToProductId: Map<string, string>,
+    posParentToVariants: Map<string, string[]>,
     result: SyncResult,
 ): Promise<void> {
-    for (const posItemId of promo.product_ids) {
+    // Expand promo.product_ids: some adapters (Shopify) use parent product IDs,
+    // not variant IDs. Resolve parent → all variant IDs via posParentToVariants.
+    const resolvedItemIds: string[] = [];
+    for (const id of promo.product_ids) {
+        const variants = posParentToVariants.get(id);
+        if (variants && variants.length > 0) {
+            resolvedItemIds.push(...variants);
+        } else {
+            // Already a variant ID or non-Shopify adapter — use as-is
+            resolvedItemIds.push(id);
+        }
+    }
+
+    for (const posItemId of resolvedItemIds) {
         const productId = posItemToProductId.get(posItemId);
         if (!productId) continue;
 
@@ -424,12 +450,12 @@ async function upsertPromo(
 // ─── Variant grouping by EAN prefix ─────────────────────────────────
 
 /**
- * After sync, group products by EAN prefix (first 12 chars).
+ * After sync, group products by EAN prefix (first 12 chars for EAN-13, 8 chars for EAN-8).
  * Products sharing the same EAN prefix are size variants of the same model.
  * Elects a principal product, computes available_sizes, marks others as variants.
  * Products without EAN are marked as not visible (merchant must complete them).
  */
-async function groupVariantsByEAN(
+export async function groupVariantsByEAN(
     supabase: SupabaseClient,
     merchantId: string,
 ): Promise<number> {
@@ -443,8 +469,8 @@ async function groupVariantsByEAN(
 
     let visibleCount = 0;
 
-    // Products without EAN (or with short EAN < 12 chars like EAN-8)
-    const noEan = products.filter((p) => !p.ean || p.ean.length < 12);
+    // Products without EAN (or with EAN shorter than 8 chars — EAN-8 and EAN-13 both valid)
+    const noEan = products.filter((p) => !p.ean || p.ean.length < 8);
     for (const p of noEan) {
         const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
         const hasNameAndPrice = !!p.name && p.name.trim().length > 0;
@@ -458,12 +484,15 @@ async function groupVariantsByEAN(
             .eq("id", p.id);
     }
 
-    // Group products with EAN by prefix (first 12 chars)
-    const withEan = products.filter((p) => p.ean && p.ean.length >= 12);
+    // Group products with EAN by prefix
+    // EAN-8 : 8 chars total (use all 8 as prefix)
+    // EAN-13 : use first 12 chars as prefix (last digit is check digit)
+    const withEan = products.filter((p) => p.ean && p.ean.length >= 8);
     const groups = new Map<string, typeof withEan>();
 
     for (const product of withEan) {
-        const prefix = product.ean!.slice(0, 12);
+        // EAN-8 → use full 8 chars; EAN-13 → use first 12 (strip check digit)
+        const prefix = product.ean!.length <= 8 ? product.ean! : product.ean!.slice(0, 12);
         const group = groups.get(prefix) ?? [];
         group.push(product);
         groups.set(prefix, group);
@@ -471,14 +500,15 @@ async function groupVariantsByEAN(
 
     for (const [, group] of groups) {
         if (group.length <= 1) {
-            // Solo product with EAN — ensure visible, set available_sizes if it has a size
+            // Solo product with EAN — visible only if stock > 0
             const p = group[0];
             const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
             const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
-            visibleCount++;
+            const visible = qty > 0;
+            if (visible) visibleCount++;
             await supabase
                 .from("products")
-                .update({ visible: true, variant_of: null, available_sizes: availableSizes })
+                .update({ visible, variant_of: null, available_sizes: availableSizes })
                 .eq("id", p.id);
             continue;
         }

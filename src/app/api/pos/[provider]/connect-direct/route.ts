@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { POS_PROVIDERS, type POSProvider } from "@/lib/pos/index";
@@ -90,12 +90,15 @@ export async function POST(
             .update({ pos_type: provider })
             .eq("id", merchant.id);
 
-        // Trigger first sync (non-blocking)
-        try {
-            await syncMerchantPOS(merchant.id, provider);
-        } catch (syncErr) {
-            captureError(syncErr, { route: `pos/${provider}/connect-direct`, merchantId: merchant.id, phase: "first_sync" });
-        }
+        // Trigger first sync after response — non-blocking (same pattern as OAuth callback)
+        const merchantId = merchant.id;
+        after(async () => {
+            try {
+                await syncMerchantPOS(merchantId, provider);
+            } catch (syncErr) {
+                captureError(syncErr, { route: `pos/${provider}/connect-direct`, merchantId, phase: "first_sync" });
+            }
+        });
 
         return NextResponse.json({ success: true });
     } catch (err) {
@@ -110,8 +113,12 @@ function validateCredentials(provider: string, body: Record<string, unknown>): R
         if (!baseUrl || !tokenArticle || !tokenStock) {
             throw new Error("Clictill requires: baseUrl, tokenArticle, tokenStock");
         }
+        const clictillBaseUrl = String(baseUrl);
+        if (!clictillBaseUrl.startsWith("https://")) {
+            throw new Error("baseUrl must start with https://");
+        }
         return {
-            baseUrl: String(baseUrl),
+            baseUrl: clictillBaseUrl,
             tokenArticle: String(tokenArticle),
             tokenStock: String(tokenStock),
             tokenMarkdown: tokenMarkdown ? String(tokenMarkdown) : undefined,
@@ -125,8 +132,12 @@ function validateCredentials(provider: string, body: Record<string, unknown>): R
         if (!baseUrl || !enseigne || !magasin || !compte || !motpasse) {
             throw new Error("Fastmag requires: baseUrl, enseigne, magasin, compte, motpasse");
         }
+        const fastmagBaseUrl = String(baseUrl);
+        if (!fastmagBaseUrl.startsWith("https://")) {
+            throw new Error("baseUrl must start with https://");
+        }
         return {
-            baseUrl: String(baseUrl),
+            baseUrl: fastmagBaseUrl,
             enseigne: String(enseigne),
             magasin: String(magasin),
             compte: String(compte),

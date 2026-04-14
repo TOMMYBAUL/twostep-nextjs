@@ -4,7 +4,7 @@ import { processProductImage } from "@/lib/images/process";
 import { uploadToR2 } from "@/lib/r2";
 import { captureError } from "@/lib/error";
 
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 200;
 const MAX_ATTEMPTS = 3;
 
 export async function POST(req: NextRequest) {

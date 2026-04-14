@@ -1,5 +1,7 @@
 export type POSProduct = {
     pos_item_id: string;
+    /** Optional parent product ID (Shopify: variant → product). Used for promo matching. */
+    pos_parent_id?: string;
     name: string;
     ean: string | null;
     price: number | null;

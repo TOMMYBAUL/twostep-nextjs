@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ products: [] });
     }
 
-    const ids = merchantIds.split(",").filter(Boolean).slice(0, 50);
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const ids = merchantIds.split(",").filter((id) => uuidRegex.test(id.trim())).slice(0, 50);
     if (ids.length === 0) {
         return NextResponse.json({ products: [] });
     }

@@ -38,7 +38,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             .from("merchants")
             .update({ status })
             .eq("id", id)
-            .select()
+            .select("id, name, address, city, status, phone, pos_type, plan, created_at")
             .single();
 
         if (error) {

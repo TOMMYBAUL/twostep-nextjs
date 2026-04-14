@@ -29,6 +29,7 @@ export default function GooglePage() {
     const [stats, setStats] = useState<GoogleStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
+    const [confirmDisconnect, setConfirmDisconnect] = useState(false);
 
     useEffect(() => {
         if (!merchant?.id) return;
@@ -64,7 +65,11 @@ export default function GooglePage() {
     }
 
     async function handleDisconnect() {
-        if (!window.confirm("Voulez-vous vraiment déconnecter votre compte Google ? Vos produits ne seront plus visibles sur Google Shopping.")) return;
+        if (!confirmDisconnect) {
+            setConfirmDisconnect(true);
+            return;
+        }
+        setConfirmDisconnect(false);
         setDisconnecting(true);
         try {
             await fetch("/api/google/disconnect", { method: "POST" });
@@ -215,14 +220,34 @@ export default function GooglePage() {
                             </div>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handleDisconnect}
-                            disabled={disconnecting}
-                            className="mt-4 text-xs text-error-primary transition hover:text-error-primary disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
-                        >
-                            {disconnecting ? "Déconnexion..." : "Déconnecter de Google"}
-                        </button>
+                        {!confirmDisconnect ? (
+                            <button
+                                type="button"
+                                onClick={() => setConfirmDisconnect(true)}
+                                disabled={disconnecting}
+                                className="mt-4 text-xs text-error-primary transition hover:text-error-primary disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
+                            >
+                                {disconnecting ? "Déconnexion..." : "Déconnecter de Google"}
+                            </button>
+                        ) : (
+                            <div className="mt-4 flex items-center gap-2 rounded-lg bg-error-secondary px-4 py-2.5">
+                                <p className="flex-1 text-xs font-medium text-error-primary">Vos produits ne seront plus visibles sur Google Shopping.</p>
+                                <button
+                                    type="button"
+                                    onClick={handleDisconnect}
+                                    className="rounded-lg bg-error-solid px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90"
+                                >
+                                    Confirmer
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setConfirmDisconnect(false)}
+                                    className="rounded-lg border border-secondary px-3 py-1.5 text-xs font-medium text-secondary transition hover:bg-secondary"
+                                >
+                                    Annuler
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

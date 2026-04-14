@@ -20,6 +20,74 @@ type IncomingItem = {
     products: { id: string; name: string; merchant_id: string };
 };
 
+type InvoiceRef = { id: string; supplier_name: string | null };
+
+function PendingDeliveries({
+    incoming,
+    invoices,
+    confirming,
+    onConfirm,
+}: {
+    incoming: IncomingItem[];
+    invoices: InvoiceRef[];
+    confirming: string | null;
+    onConfirm: (invoiceId: string) => void;
+}) {
+    const byInvoice = new Map<string, IncomingItem[]>();
+    for (const item of incoming) {
+        const key = item.invoice_id ?? "sans-facture";
+        const list = byInvoice.get(key) ?? [];
+        list.push(item);
+        byInvoice.set(key, list);
+    }
+
+    return (
+        <div className="mb-8">
+            <h2 className="text-primary mb-3 text-base font-semibold">
+                Livraisons en attente ({incoming.length} produit{incoming.length > 1 ? "s" : ""})
+            </h2>
+            <div className="space-y-3">
+                {Array.from(byInvoice.entries()).map(([invoiceId, items]) => {
+                    const matchingInvoice = invoices.find((inv) => inv.id === invoiceId);
+                    return (
+                        <div key={invoiceId} className="card-ts p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-primary text-sm font-medium">
+                                        {matchingInvoice?.supplier_name ?? "Livraison"}
+                                    </p>
+                                    <p className="text-tertiary text-xs">
+                                        {items.length} produit{items.length > 1 ? "s" : ""} —{" "}
+                                        commandé le {new Date(items[0].created_at).toLocaleDateString("fr-FR")}
+                                    </p>
+                                    <ul className="text-secondary mt-1 space-y-0.5 text-xs">
+                                        {items.slice(0, 5).map((item) => (
+                                            <li key={item.id}>
+                                                {item.products.name} × {item.quantity}
+                                            </li>
+                                        ))}
+                                        {items.length > 5 && (
+                                            <li className="text-tertiary">+ {items.length - 5} autre(s)...</li>
+                                        )}
+                                    </ul>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => onConfirm(invoiceId)}
+                                    disabled={confirming === invoiceId}
+                                    className="btn-ts shrink-0 text-sm"
+                                >
+                                    {confirming === invoiceId ? "Confirmation..." : "Reçu ✓"}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
     received: { label: "Reçue", className: "badge-ts badge-info" },
     extracting: { label: "Extraction...", className: "badge-ts badge-info" },
@@ -128,61 +196,14 @@ export default function InvoicesPage() {
             <EmailInboundBanner onShowGuide={() => setShowGuide(true)} />
 
             {/* Deliveries pending confirmation */}
-            {incoming.length > 0 && (() => {
-                // Group by invoice_id
-                const byInvoice = new Map<string, IncomingItem[]>();
-                for (const item of incoming) {
-                    const key = item.invoice_id ?? "sans-facture";
-                    const list = byInvoice.get(key) ?? [];
-                    list.push(item);
-                    byInvoice.set(key, list);
-                }
-
-                return (
-                    <div className="mb-8">
-                        <h2 className="text-primary mb-3 text-base font-semibold">
-                            Livraisons en attente ({incoming.length} produit{incoming.length > 1 ? "s" : ""})
-                        </h2>
-                        <div className="space-y-3">
-                            {Array.from(byInvoice.entries()).map(([invoiceId, items]) => {
-                                const matchingInvoice = invoices.find((inv) => inv.id === invoiceId);
-                                return (
-                                    <div key={invoiceId} className="card-ts p-4">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-primary text-sm font-medium">
-                                                    {matchingInvoice?.supplier_name ?? "Livraison"}
-                                                </p>
-                                                <p className="text-tertiary text-xs">
-                                                    {items.length} produit{items.length > 1 ? "s" : ""} —{" "}
-                                                    commandé le {new Date(items[0].created_at).toLocaleDateString("fr-FR")}
-                                                </p>
-                                                <ul className="text-secondary mt-1 space-y-0.5 text-xs">
-                                                    {items.slice(0, 5).map((item) => (
-                                                        <li key={item.id}>
-                                                            {item.products.name} × {item.quantity}
-                                                        </li>
-                                                    ))}
-                                                    {items.length > 5 && (
-                                                        <li className="text-tertiary">+ {items.length - 5} autre(s)...</li>
-                                                    )}
-                                                </ul>
-                                            </div>
-                                            <button
-                                                onClick={() => handleConfirmDelivery(invoiceId)}
-                                                disabled={confirming === invoiceId}
-                                                className="btn-ts shrink-0 text-sm"
-                                            >
-                                                {confirming === invoiceId ? "Confirmation..." : "Reçu ✓"}
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
-            })()}
+            {incoming.length > 0 && (
+                <PendingDeliveries
+                    incoming={incoming}
+                    invoices={invoices}
+                    confirming={confirming}
+                    onConfirm={handleConfirmDelivery}
+                />
+            )}
 
             {/* Upload zone */}
             <div

@@ -30,11 +30,28 @@ export function IntentSignals({ merchantId }: { merchantId?: string }) {
             }
         }
 
+        function startInterval() {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(fetchIntents, 30_000);
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                if (intervalRef.current) clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            } else {
+                fetchIntents();
+                startInterval();
+            }
+        }
+
         fetchIntents();
-        intervalRef.current = setInterval(fetchIntents, 30_000);
+        startInterval();
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
     }, [merchantId]);
 

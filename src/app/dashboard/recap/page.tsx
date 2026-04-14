@@ -93,6 +93,8 @@ function NonPOSView({
     const handleAllOk = () => {
         setConfirmed(true);
         toast("Stock confirmé — tout est disponible");
+        // TODO: persister last_stock_confirmed_at en DB via PATCH /api/merchants/:id
+        // (champ absent de la table merchants pour l'instant — nice-to-have)
     };
 
     if (confirmed) {
@@ -129,7 +131,11 @@ function NonPOSView({
             </p>
 
             {loading ? (
-                <div className="py-20 text-center text-sm text-tertiary">Chargement...</div>
+                <div className="flex flex-col gap-2 py-4">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="animate-pulse rounded-2xl border border-secondary bg-primary p-4 h-16" />
+                    ))}
+                </div>
             ) : products.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-16">
                     <p className="text-sm text-tertiary">Aucun produit dans votre catalogue.</p>

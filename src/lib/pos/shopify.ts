@@ -77,6 +77,8 @@ export const shopifyAdapter: IPOSAdapter = {
                     products.push({
                         // Use variant.id as pos_item_id — this is what webhooks send
                         pos_item_id: String(variant.id),
+                        // Store parent product ID for promo matching (promos use product IDs, not variant IDs)
+                        pos_parent_id: String(product.id),
                         name: product.variants.length > 1
                             ? `${product.title} — ${variant.title}`
                             : product.title,
@@ -120,8 +122,10 @@ export const shopifyAdapter: IPOSAdapter = {
             });
             if (res.ok) {
                 const data = await res.json();
-                if (data.product?.id) {
-                    idMappings[p.pos_item_id || p.name] = String(data.product.id);
+                // Use variant.id — webhooks and stock APIs use variant IDs, not product IDs
+                const variantId = data.product?.variants?.[0]?.id;
+                if (variantId) {
+                    idMappings[p.pos_item_id || p.name] = String(variantId);
                 }
             }
         }

@@ -13,8 +13,14 @@ export async function POST(request: NextRequest) {
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const subscription = await request.json();
-        if (!subscription?.endpoint) {
-            return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
+        if (
+            !subscription ||
+            typeof subscription.endpoint !== "string" ||
+            !subscription.endpoint.startsWith("https://") ||
+            typeof subscription.keys?.p256dh !== "string" ||
+            typeof subscription.keys?.auth !== "string"
+        ) {
+            return NextResponse.json({ error: "Invalid subscription: requires endpoint (https), keys.p256dh and keys.auth" }, { status: 400 });
         }
 
         const { error } = await supabase.from("push_subscriptions").upsert(

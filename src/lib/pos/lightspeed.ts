@@ -68,7 +68,7 @@ export const lightspeedAdapter: IPOSAdapter = {
 
         while (true) {
             const res = await fetch(
-                `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100`,
+                `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100&load_relations=["Category"]`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
             const data = await res.json();
@@ -170,22 +170,34 @@ export const lightspeedAdapter: IPOSAdapter = {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         const { Account } = await accountRes.json();
+        const accountID = Account.accountID;
 
-        const updates: POSStockUpdate[] = [];
-        for (const itemId of itemIds) {
+        // Batch via ItemShop endpoint — avoids N+1 (1 request per item → paginated batches)
+        // ItemShop.json supports filtering by itemID via the itemID[] param
+        const qohByItemId = new Map<string, number>();
+        const PAGE_SIZE = 100;
+
+        for (let i = 0; i < itemIds.length; i += PAGE_SIZE) {
+            const batch = itemIds.slice(i, i + PAGE_SIZE);
+            const itemIdParam = batch.map((id) => `itemID[]=${id}`).join("&");
             const res = await fetch(
-                `${LS_API}/Account/${Account.accountID}/Item/${itemId}.json?load_relations=["ItemShops"]`,
+                `${LS_API}/Account/${accountID}/ItemShop.json?${itemIdParam}&limit=${PAGE_SIZE}`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
             const data = await res.json();
-            const qty = data.Item?.ItemShops?.ItemShop?.[0]?.qoh ?? 0;
-            updates.push({
-                pos_item_id: itemId,
-                quantity: parseInt(qty, 10),
-                updated_at: new Date().toISOString(),
-            });
+            const shops = Array.isArray(data.ItemShop) ? data.ItemShop : data.ItemShop ? [data.ItemShop] : [];
+            for (const shop of shops) {
+                const existing = qohByItemId.get(String(shop.itemID)) ?? 0;
+                qohByItemId.set(String(shop.itemID), existing + parseInt(shop.qoh ?? "0", 10));
+            }
         }
-        return updates;
+
+        const now = new Date().toISOString();
+        return itemIds.map((itemId) => ({
+            pos_item_id: itemId,
+            quantity: qohByItemId.get(itemId) ?? 0,
+            updated_at: now,
+        }));
     },
 
     verifyWebhook(body: string, signature: string): boolean {

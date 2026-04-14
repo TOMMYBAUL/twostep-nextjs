@@ -52,6 +52,7 @@ function SettingsPageInner() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [confirmDisconnect, setConfirmDisconnect] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
     const [enhanceResult, setEnhanceResult] = useState<number | null>(null);
     const [instagramUrl, setInstagramUrl] = useState("");
@@ -120,7 +121,11 @@ function SettingsPageInner() {
     };
 
     const handleDisconnect = async () => {
-        if (!window.confirm("Voulez-vous vraiment déconnecter votre caisse ? Vous devrez la reconnecter pour synchroniser vos produits.")) return;
+        if (!confirmDisconnect) {
+            setConfirmDisconnect(true);
+            return;
+        }
+        setConfirmDisconnect(false);
         try {
             await disconnect();
             toast("POS déconnecté");
@@ -273,18 +278,41 @@ function SettingsPageInner() {
                                 </div>
 
                                 {isThisConnected ? (
-                                    <div className="flex gap-2">
-                                        <button type="button" onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
-                                            {syncing ? "Synchronisation..." : "Synchroniser"}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={handleDisconnect}
-                                            className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-secondary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
-                                            disabled={connecting}
-                                        >
-                                            Déconnecter
-                                        </button>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                            <button type="button" onClick={handleSync} className="btn-ts flex-1" disabled={syncing}>
+                                                {syncing ? "Synchronisation..." : "Synchroniser"}
+                                            </button>
+                                            {!confirmDisconnect && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfirmDisconnect(true)}
+                                                    className="rounded-lg border border-error px-4 py-2.5 text-xs font-semibold text-error-primary hover:bg-error-secondary transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                                                    disabled={connecting}
+                                                >
+                                                    Déconnecter
+                                                </button>
+                                            )}
+                                        </div>
+                                        {confirmDisconnect && (
+                                            <div className="flex items-center gap-2 rounded-lg bg-error-secondary px-4 py-2.5">
+                                                <p className="flex-1 text-xs font-medium text-error-primary">Confirmer la déconnexion ?</p>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleDisconnect}
+                                                    className="rounded-lg bg-error-solid px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90"
+                                                >
+                                                    Confirmer
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfirmDisconnect(false)}
+                                                    className="rounded-lg border border-secondary px-3 py-1.5 text-xs font-medium text-secondary transition hover:bg-secondary"
+                                                >
+                                                    Annuler
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : isDirect ? (
                                     <>

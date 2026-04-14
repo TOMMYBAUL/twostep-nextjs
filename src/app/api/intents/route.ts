@@ -55,6 +55,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Valid product_id and merchant_id required" }, { status: 400 });
     }
 
+    if (selected_size !== undefined && selected_size !== null && selected_size.length > 20) {
+        return NextResponse.json({ error: "selected_size must be 20 characters max" }, { status: 400 });
+    }
+
     // Rate limit: max 5 signals per user per hour
     const admin = createAdminClient();
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();

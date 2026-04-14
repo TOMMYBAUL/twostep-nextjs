@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
+import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 import { rateLimit } from "@/lib/rate-limit";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
@@ -430,6 +431,13 @@ export async function POST(
         } catch (err) {
             console.error("[validate] categorize failed:", err);
         }
+    }
+
+    // Group variants by EAN (invoice imports don't go through sync-engine)
+    try {
+        await groupVariantsByEAN(adminSupabase, merchant.id);
+    } catch (err) {
+        console.error("[validate] groupVariantsByEAN failed:", err);
     }
 
     return NextResponse.json({

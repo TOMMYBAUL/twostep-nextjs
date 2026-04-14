@@ -108,7 +108,8 @@ export async function rateLimit(
             );
         }
     } catch {
-        // If Upstash is unreachable, allow the request through
+        // If Upstash is unreachable, fall back to in-memory rate limiter (fail-closed)
+        return memoryLimit(identifier, maxRequests);
     }
 
     return null;

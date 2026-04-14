@@ -7,6 +7,12 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!id || !uuidRegex.test(id)) {
+        return NextResponse.json({ error: "Invalid merchant ID" }, { status: 400 });
+    }
+
     const supabase = await createClient();
 
     // Auth check

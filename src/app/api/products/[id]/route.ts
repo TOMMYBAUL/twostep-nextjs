@@ -123,7 +123,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             }
             updates.name = name;
         }
-        if (ean !== undefined) updates.ean = ean;
+        if (ean !== undefined) {
+            if (ean !== null && (typeof ean !== "string" || !/^(\d{8}|\d{13})$/.test(ean))) {
+                return NextResponse.json({ error: "ean must be 8 or 13 digits" }, { status: 400 });
+            }
+            updates.ean = ean;
+        }
         if (description !== undefined) updates.description = description;
         if (category !== undefined) updates.category = typeof category === "string" ? category.toLowerCase() : category;
         if (price !== undefined) {
@@ -132,7 +137,22 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             }
             updates.price = price;
         }
-        if (photo_url !== undefined) updates.photo_url = photo_url;
+        if (photo_url !== undefined) {
+            if (photo_url !== null) {
+                if (typeof photo_url !== "string") {
+                    return NextResponse.json({ error: "photo_url must be a string" }, { status: 400 });
+                }
+                try {
+                    const parsed = new URL(photo_url);
+                    if (parsed.protocol !== "https:") {
+                        return NextResponse.json({ error: "photo_url must use https://" }, { status: 400 });
+                    }
+                } catch {
+                    return NextResponse.json({ error: "photo_url must be a valid URL" }, { status: 400 });
+                }
+            }
+            updates.photo_url = photo_url;
+        }
         if (available_sizes !== undefined) updates.available_sizes = available_sizes;
         if (visible !== undefined) updates.visible = visible;
 

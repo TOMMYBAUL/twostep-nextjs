@@ -42,6 +42,7 @@ export function DiscoveryFunnel({ views, favorites, follows }: FunnelProps) {
                 <div className="flex items-center"><ChevronRight className="size-3 text-tertiary" aria-hidden="true" /></div>
                 <FunnelStep Icon={Heart} value={favorites.current} label="Favoris" trend={computeTrend(favorites.current, favorites.previous)} />
                 <div className="flex items-center"><ChevronRight className="size-3 text-tertiary" aria-hidden="true" /></div>
+                {/* TODO: add follows.previous for trend display */}
                 <FunnelStep Icon={Users01} value={follows.total} label="Abonnés" />
             </div>
         </div>
