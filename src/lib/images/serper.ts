@@ -32,12 +32,15 @@ async function verifyPhotoWithAI(imageUrl: string, productName: string, brand?: 
             },
             body: JSON.stringify({
                 model: "claude-haiku-4-5-20251001",
-                max_tokens: 10,
+                max_tokens: 20,
                 messages: [{
                     role: "user",
                     content: [
                         { type: "image", source: { type: "url", url: imageUrl } },
-                        { type: "text", text: `Le produit attendu est : "${productDesc}". Cette photo montre-t-elle ce produit (même modèle, même couleur) ? Réponds UNIQUEMENT "oui" ou "non".` },
+                        { type: "text", text: `Le produit attendu est : "${productDesc}". Vérifie deux choses :
+1. Cette photo montre-t-elle ce produit (même modèle, même marque) ?
+2. La qualité est-elle suffisante pour un site e-commerce (nette, pas pixelisée, pas de watermark, pas un screenshot) ?
+Réponds UNIQUEMENT "oui" si les deux critères sont remplis, sinon "non".` },
                     ],
                 }],
             }),
@@ -99,8 +102,11 @@ const ECOMMERCE_DOMAINS = new Set([
     "nike.com", "adidas.com", "adidas.fr", "levi.com",
     "sezane.com", "apc.fr", "veja-store.com", "newbalance.com",
     "carhartt-wip.com", "armorlux.com", "petitbateau.com",
-    // Beauty
-    "sephora.fr", "nocibe.fr", "marionnaud.fr",
+    // Beauty & skincare
+    "sephora.fr", "sephora.com", "nocibe.fr", "marionnaud.fr",
+    "beautycorea.fr", "yesstyle.com", "jolse.com", "stylevana.com",
+    "cosmetique-coree.fr", "miin-cosmetics.com", "skinlyest.com",
+    "lookfantastic.fr", "cultbeauty.com", "beautybay.com",
     // General e-commerce
     "intersport.fr", "decathlon.fr", "manomano.fr",
     "boulanger.com", "cultura.com", "laredoute.fr",
@@ -187,12 +193,12 @@ async function searchSerperImages(
 
         if (images.length === 0) return null;
 
-        // Filter: HTTPS only, min 200px (some product images are 256x256)
+        // Filter: HTTPS only, min 400px (reject thumbnails and low-res)
         const good = images.filter(
-            (img) => img.imageWidth >= 200 && img.imageHeight >= 200 && img.imageUrl.startsWith("https"),
+            (img) => img.imageWidth >= 400 && img.imageHeight >= 400 && img.imageUrl.startsWith("https"),
         );
 
-        console.log("[serper] After filter:", good.length, "images ≥200px");
+        console.log("[serper] After filter:", good.length, "images ≥400px");
 
         if (good.length === 0) return null;
 
