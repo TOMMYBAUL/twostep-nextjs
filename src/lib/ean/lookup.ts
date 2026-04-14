@@ -97,7 +97,8 @@ export async function searchEanByNameEanSearch(
     if (!res) return null;
 
     const data = await res.json();
-    const items = Array.isArray(data) ? data : [];
+    // product-search returns { productlist: [...] }, not a plain array
+    const items = Array.isArray(data) ? data : (data.productlist ?? []);
     if (items.length === 0 || items[0]?.error) return null;
 
     const item = items[0];
