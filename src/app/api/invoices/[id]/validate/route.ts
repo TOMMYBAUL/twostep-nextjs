@@ -343,9 +343,9 @@ export async function POST(
                 continue;
             }
 
-            // Enrich before inserting
+            // Enrich before inserting — use brand from CSV as default
             let enrichedName = cleanName;
-            let enrichedBrand: string | null = null;
+            let enrichedBrand: string | null = (item as any).brand ?? null;
             let enrichedCategory: string | null = null;
 
             if (firstEan) {

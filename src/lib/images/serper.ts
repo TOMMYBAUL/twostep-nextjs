@@ -143,14 +143,23 @@ export async function searchProductImage(
         if (eanResult) return eanResult;
     }
 
-    // Strategy 3: brand + name + "fiche produit" → e-commerce catalog shots
+    // Strategy 3: brand + name + "product" → e-commerce catalog shots (EN for international brands)
     const parts = [];
     if (brand) parts.push(brand);
     parts.push(productName);
-    parts.push("fiche produit");
+    parts.push("product");
     const query = parts.join(" ");
 
-    return searchSerperImages(apiKey, query, productName, brand);
+    const result = await searchSerperImages(apiKey, query, productName, brand);
+    if (result) return result;
+
+    // Strategy 4: French search fallback for local brands
+    const frParts = [];
+    if (brand) frParts.push(brand);
+    frParts.push(productName);
+    frParts.push("fiche produit");
+
+    return searchSerperImages(apiKey, frParts.join(" "), productName, brand);
 }
 
 async function searchSerperImages(

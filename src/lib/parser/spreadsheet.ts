@@ -25,10 +25,16 @@ const UNIT_PRICE_HEADERS = [
     "pu ht", "prix ht", "prix unit", "price", "tarif",
 ];
 
+const BRAND_HEADERS = [
+    "marque", "brand", "fabricant", "fournisseur", "manufacturer",
+    "griffe", "enseigne", "label",
+];
+
 type ColumnMapping = {
     name: number | null;
     ean: number | null;
     sku: number | null;
+    brand: number | null;
     quantity: number | null;
     unit_price: number | null;
 };
@@ -51,7 +57,7 @@ function matchesAny(header: string, candidates: string[]): boolean {
 }
 
 function detectColumns(headers: string[]): ColumnMapping {
-    const mapping: ColumnMapping = { name: null, ean: null, sku: null, quantity: null, unit_price: null };
+    const mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null };
 
     for (let i = 0; i < headers.length; i++) {
         const h = headers[i];
@@ -64,6 +70,8 @@ function detectColumns(headers: string[]): ColumnMapping {
             mapping.name = i;
         } else if (mapping.ean === null && matchesAny(h, EAN_HEADERS)) {
             mapping.ean = i;
+        } else if (mapping.brand === null && matchesAny(h, BRAND_HEADERS)) {
+            mapping.brand = i;
         } else if (mapping.quantity === null && matchesAny(h, QUANTITY_HEADERS)) {
             mapping.quantity = i;
         } else if (mapping.unit_price === null && matchesAny(h, UNIT_PRICE_HEADERS)) {
@@ -87,11 +95,12 @@ function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvo
 
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;
         const sku = mapping.sku !== null ? String(row[mapping.sku] ?? "").trim() || null : null;
+        const brand = mapping.brand !== null ? String(row[mapping.brand] ?? "").trim() || null : null;
         const quantity = mapping.quantity !== null ? Number(row[mapping.quantity]) || 1 : 1;
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
         const unit_price = rawPrice != null && rawPrice !== "" ? Number(String(rawPrice).replace(",", ".")) || null : null;
 
-        items.push({ name, ean, sku, quantity, unit_price });
+        items.push({ name, ean, sku, brand, quantity, unit_price });
     }
 
     return items;
@@ -147,7 +156,7 @@ export const spreadsheetParser: IInvoiceParser = {
         // Scan the first 30 rows to find the header row (real invoices have
         // supplier info, addresses, etc. above the product table)
         let headerRowIndex = -1;
-        let mapping: ColumnMapping = { name: null, ean: null, sku: null, quantity: null, unit_price: null };
+        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null };
 
         const scanLimit = Math.min(rows.length, 30);
         for (let r = 0; r < scanLimit; r++) {
