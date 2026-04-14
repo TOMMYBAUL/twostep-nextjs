@@ -90,17 +90,24 @@ export default function InvoiceDetailPage() {
             const validateData = await validateRes.json();
             setResult(validateData);
 
-            // Step 2: Push to POS (uses grouped products from validate)
+            // Step 2: Push to POS (only if POS connected, otherwise just finalize)
             const activateRes = await fetch(`/api/invoices/${id}/activate`, {
                 method: "POST",
             });
             if (activateRes.ok) {
                 const activateData = await activateRes.json();
                 setActivateResult(activateData);
-                toast(`${validateData.products_created + validateData.products_updated} produits importés et poussés vers la caisse`);
+                if (merchant?.pos_type) {
+                    toast(`${validateData.products_created + validateData.products_updated} produits importés et synchronisés avec la caisse`);
+                } else {
+                    toast(`${validateData.products_created + validateData.products_updated} produits importés — catalogue mis à jour`);
+                }
             } else {
-                // Validate worked but push failed — still OK, products are in Two-Step
-                toast("Produits importés — l'envoi vers la caisse a échoué, réessayez plus tard", "error");
+                if (merchant?.pos_type) {
+                    toast("Produits importés — l'envoi vers la caisse a échoué, réessayez plus tard", "error");
+                } else {
+                    toast("Produits importés avec succès");
+                }
             }
 
             await fetchInvoice();
@@ -221,10 +228,14 @@ export default function InvoiceDetailPage() {
 
             {activateResult && (
                 <div className="bg-success-secondary mb-6 rounded-lg p-4 text-sm">
-                    <p className="text-success-primary font-medium">Envoi vers la caisse terminé !</p>
+                    <p className="text-success-primary font-medium">
+                        {merchant?.pos_type ? "Envoi vers la caisse terminé !" : "Catalogue mis à jour !"}
+                    </p>
                     <p className="text-primary">
-                        {activateResult.pushed} produits poussés
-                        {activateResult.synced ? " — synchronisation OK" : " — synchronisation en attente"}
+                        {merchant?.pos_type
+                            ? `${activateResult.pushed} produits poussés${activateResult.synced ? " — synchronisation OK" : " — synchronisation en attente"}`
+                            : "Vos produits sont maintenant visibles par les consommateurs"
+                        }
                     </p>
                 </div>
             )}

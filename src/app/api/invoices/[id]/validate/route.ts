@@ -424,6 +424,14 @@ export async function POST(
         }
     }
 
+    // Enrich products WITHOUT EAN — search photos by product name via Serper
+    try {
+        const { enrichProductsWithoutEan } = await import("@/lib/ean/enrich");
+        await enrichProductsWithoutEan(merchant.id);
+    } catch (err) {
+        console.error("[validate] enrichProductsWithoutEan failed:", err);
+    }
+
     // AI categorization — synchronous (must complete before response)
     if (productsCreated > 0 || productsUpdated > 0) {
         try {

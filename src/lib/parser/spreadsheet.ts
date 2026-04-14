@@ -104,16 +104,32 @@ function sheetToText(rows: string[][]): string {
 }
 
 export function parseSpreadsheetBuffer(fileBuffer: Buffer): string[][] {
-    const workbook = XLSX.read(fileBuffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
+    // Try default parsing first
+    let workbook = XLSX.read(fileBuffer, { type: "buffer" });
+    let sheetName = workbook.SheetNames[0];
     if (!sheetName) throw new Error("Spreadsheet contains no sheets");
 
-    const sheet = workbook.Sheets[sheetName];
-    const rows: string[][] = XLSX.utils.sheet_to_json(sheet, {
+    let sheet = workbook.Sheets[sheetName];
+    let rows: string[][] = XLSX.utils.sheet_to_json(sheet, {
         header: 1,
         defval: "",
         rawNumbers: false,
     });
+
+    // If CSV was parsed as single column (semicolon separator not detected),
+    // re-parse with FS option to force semicolon delimiter
+    if (rows.length > 1 && rows[0].length === 1 && String(rows[0][0]).includes(";")) {
+        workbook = XLSX.read(fileBuffer, { type: "buffer", FS: ";" });
+        sheetName = workbook.SheetNames[0];
+        if (sheetName) {
+            sheet = workbook.Sheets[sheetName];
+            rows = XLSX.utils.sheet_to_json(sheet, {
+                header: 1,
+                defval: "",
+                rawNumbers: false,
+            });
+        }
+    }
 
     return rows;
 }

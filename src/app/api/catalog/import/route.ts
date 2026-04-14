@@ -223,6 +223,14 @@ export async function POST(request: NextRequest) {
             captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
         }
 
+        // Enrich products WITHOUT EAN — search photos by product name via Serper
+        try {
+            const { enrichProductsWithoutEan } = await import("@/lib/ean/enrich");
+            await enrichProductsWithoutEan(merchant.id);
+        } catch (err) {
+            captureError(err, { route: "catalog/import", phase: "enrich-no-ean", merchantId: merchant.id });
+        }
+
         return NextResponse.json({
             catalog_import: true,
             products_created: productsCreated,

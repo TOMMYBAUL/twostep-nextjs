@@ -66,7 +66,7 @@ export async function enrichNewProducts(merchantId: string): Promise<{ enriched:
 /**
  * Find photos via Serper for products that have no EAN and no photo.
  */
-async function enrichProductsWithoutEan(merchantId: string): Promise<void> {
+export async function enrichProductsWithoutEan(merchantId: string): Promise<void> {
     const supabase = createAdminClient();
 
     const { data: products } = await supabase
