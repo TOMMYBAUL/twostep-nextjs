@@ -28,6 +28,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${BASE_URL}/a-propos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
         { url: `${BASE_URL}/mentions-legales`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
         { url: `${BASE_URL}/confidentialite`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
+        { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+        { url: `${BASE_URL}/blog/boutique-visible-google`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+        { url: `${BASE_URL}/blog/logiciel-de-caisse-commerce`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+        { url: `${BASE_URL}/blog/boutiques-mode-toulouse`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+        { url: `${BASE_URL}/blog/shopping-sneakers-toulouse`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     ];
 
     // Toulouse category pages (active)

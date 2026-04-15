@@ -52,6 +52,12 @@ export function Footer() {
                     >
                         Tarifs
                     </Link>
+                    <Link
+                        href="/blog"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
+                        Blog
+                    </Link>
                     <a
                         href="mailto:contact@twostep.fr"
                         className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
