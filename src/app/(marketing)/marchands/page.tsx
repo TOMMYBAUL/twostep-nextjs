@@ -10,6 +10,9 @@ export const metadata: Metadata = {
         description:
             "Vos produits sont en boutique. Vos clients sont sur leur téléphone. Two-Step fait le lien.",
     },
+    alternates: {
+        canonical: "https://www.twostep.fr/marchands",
+    },
 };
 
 export default function MarchandsPage() {

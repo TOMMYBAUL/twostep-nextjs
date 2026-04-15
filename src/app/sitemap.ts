@@ -5,6 +5,17 @@ const BASE_URL = "https://www.twostep.fr";
 
 export const revalidate = 3600; // regenerate sitemap every hour
 
+const CATEGORY_SLUGS = [
+    "mode", "chaussures", "bijoux", "sport", "decoration", "beaute",
+    "epicerie", "boulangeries", "fromageries", "epiceries", "cavistes",
+    "bouchers", "poissonneries", "patisseries", "traiteurs", "primeurs", "chocolatiers",
+];
+
+const COMING_SOON_CITIES = [
+    "paris", "lyon", "bordeaux", "montpellier", "marseille",
+    "nantes", "lille", "strasbourg", "rennes", "nice",
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes: MetadataRoute.Sitemap = [
         { url: BASE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
@@ -17,18 +28,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${BASE_URL}/a-propos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
         { url: `${BASE_URL}/mentions-legales`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
         { url: `${BASE_URL}/confidentialite`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
-        { url: `${BASE_URL}/auth/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-        { url: `${BASE_URL}/auth/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     ];
 
-    // Category pages for local SEO
-    const categories = ["mode", "chaussures", "bijoux", "sport", "decoration", "boulangeries", "fromageries", "epiceries", "cavistes", "bouchers", "poissonneries", "patisseries", "traiteurs", "primeurs", "chocolatiers"];
-    const categoryRoutes: MetadataRoute.Sitemap = categories.map((cat) => ({
+    // Toulouse category pages (active)
+    const categoryRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.map((cat) => ({
         url: `${BASE_URL}/toulouse/${cat}`,
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.8,
     }));
+
+    // Coming-soon city pages (10 cities × 17 categories = 170 pages SEO)
+    const comingSoonRoutes: MetadataRoute.Sitemap = COMING_SOON_CITIES.flatMap((city) =>
+        CATEGORY_SLUGS.map((cat) => ({
+            url: `${BASE_URL}/${city}/${cat}`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.4,
+        })),
+    );
 
     try {
         const supabase = createAdminClient();
@@ -52,8 +70,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.7,
         }));
 
-        return [...staticRoutes, ...categoryRoutes, ...merchantRoutes, ...productRoutes];
+        return [...staticRoutes, ...categoryRoutes, ...comingSoonRoutes, ...merchantRoutes, ...productRoutes];
     } catch {
-        return [...staticRoutes, ...categoryRoutes];
+        return [...staticRoutes, ...categoryRoutes, ...comingSoonRoutes];
     }
 }

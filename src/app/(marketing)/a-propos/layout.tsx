@@ -9,6 +9,9 @@ export const metadata: Metadata = {
         description:
             "Le commerce local a un problème de visibilité. On le résout. Lancé à Toulouse, construit avec les commerçants.",
     },
+    alternates: {
+        canonical: "https://www.twostep.fr/a-propos",
+    },
 };
 
 export default function AProposLayout({

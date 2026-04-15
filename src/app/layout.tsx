@@ -43,13 +43,13 @@ export const metadata: Metadata = {
         type: "website",
         siteName: "Two-Step",
         url: "https://www.twostep.fr",
-        images: [{ url: "https://www.twostep.fr/og-image.png", width: 1200, height: 630, alt: "Two-Step — Le stock local" }],
+        images: [{ url: "https://www.twostep.fr/opengraph-image.png", width: 1200, height: 630, alt: "Two-Step — Le stock local" }],
     },
     twitter: {
         card: "summary_large_image",
         title: "Two-Step — Le stock local, visible en temps réel",
         description: "Le produit exact que tu cherches, à deux pas de chez toi.",
-        images: ["https://www.twostep.fr/og-image.png"],
+        images: ["https://www.twostep.fr/opengraph-image.png"],
     },
     appleWebApp: {
         capable: true,
@@ -72,6 +72,9 @@ export const metadata: Metadata = {
     },
     formatDetection: {
         telephone: false,
+    },
+    alternates: {
+        canonical: "https://www.twostep.fr",
     },
 };
 

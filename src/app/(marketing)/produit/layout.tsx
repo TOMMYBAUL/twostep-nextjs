@@ -9,6 +9,9 @@ export const metadata: Metadata = {
         description:
             "Synchronisation POS automatique, enrichissement IA, diffusion multi-canal. Compatible Square, Shopify, Lightspeed, Zettle — Fastmag et Clictill bientôt.",
     },
+    alternates: {
+        canonical: "https://www.twostep.fr/produit",
+    },
 };
 
 export default function ProduitLayout({
