@@ -14,15 +14,19 @@ function getExtension(filename: string): string {
 }
 
 export async function POST(request: NextRequest) {
+    // Debug: check if env var is loaded (TEMPORARY — remove after fix)
+    const secretLength = WEBHOOK_SECRET.length;
+    console.log(`[inbound-email-cf] WEBHOOK_SECRET length: ${secretLength}, first4: ${WEBHOOK_SECRET.slice(0, 4) || "EMPTY"}`);
+
     // Verify shared secret (constant-time comparison)
     const authHeader = request.headers.get("authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
     if (!WEBHOOK_SECRET) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "Unauthorized", debug: "secret_empty" }, { status: 401 });
     }
     if (token.length !== WEBHOOK_SECRET.length ||
         !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(WEBHOOK_SECRET))) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "Unauthorized", debug: "mismatch", tokenLen: token.length, secretLen: WEBHOOK_SECRET.length }, { status: 401 });
     }
 
     const to = request.headers.get("x-email-to") ?? "";
