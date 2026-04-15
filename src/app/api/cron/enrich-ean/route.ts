@@ -3,7 +3,16 @@ import { selectProductsToEnrich } from "@/lib/ean/enrich";
 import { lookupEan } from "@/lib/ean/lookup";
 import { captureError } from "@/lib/error";
 
+// Vercel Cron sends GET requests
+export async function GET(req: NextRequest) {
+    return handleEnrich(req);
+}
+
 export async function POST(req: NextRequest) {
+    return handleEnrich(req);
+}
+
+async function handleEnrich(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
