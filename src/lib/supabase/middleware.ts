@@ -41,6 +41,8 @@ export async function updateSession(request: NextRequest) {
             "/api/products/",        // Public product detail
             "/api/shops/",           // Public shop info
             "/api/intents",          // Public intent signals
+            "/api/inbound-email/",   // Inbound email webhooks (own secret verification)
+            "/api/stripe/",          // Stripe webhooks (own signature verification)
         ];
         const isPublicApi = pathname.startsWith("/api/") &&
             PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
