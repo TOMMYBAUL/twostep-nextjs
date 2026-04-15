@@ -269,7 +269,7 @@ export default function InvoicesPage() {
                             {invoices.map((invoice) => {
                                 const status = STATUS_LABELS[invoice.status] ?? STATUS_LABELS.received;
                                 return (
-                                    <tr key={invoice.id} className="border-secondary hover:bg-secondary border-b transition">
+                                    <tr key={invoice.id} className={`border-secondary border-b transition ${invoice.status === "validated" || invoice.status === "imported" ? "bg-success-secondary/30 hover:bg-success-secondary/50" : "hover:bg-secondary"}`}>
                                         <td className="px-4 py-3">
                                             <p className="text-primary font-medium">
                                                 {invoice.supplier_name ?? invoice.sender_email ?? "—"}
@@ -292,7 +292,7 @@ export default function InvoicesPage() {
                                                 href={`/dashboard/invoices/${invoice.id}`}
                                                 className="text-brand-secondary hover:text-brand-secondary_hover text-sm font-medium no-underline"
                                             >
-                                                {invoice.status === "parsed" ? "Valider" : invoice.status === "validated" || invoice.status === "imported" ? "Consulter" : "Traiter"}
+                                                {invoice.status === "parsed" ? "Valider →" : invoice.status === "validated" || invoice.status === "imported" ? "✓ Consulter" : "Traiter →"}
                                             </Link>
                                         </td>
                                     </tr>
