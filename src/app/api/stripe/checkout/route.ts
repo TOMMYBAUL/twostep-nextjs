@@ -14,12 +14,13 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const plan = body.plan as string;
-    if (plan !== "standard" && plan !== "premium") {
+    if (!(plan in PLANS)) {
         return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
+    const validPlan = plan as keyof typeof PLANS;
 
     const stripe = getStripe();
-    const planConfig = PLANS[plan];
+    const planConfig = PLANS[validPlan];
     const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         customer_email: user.email,

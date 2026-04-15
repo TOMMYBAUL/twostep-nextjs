@@ -14,7 +14,7 @@ export type Merchant = {
     pos_last_sync: string | null;
     siret_verified: boolean;
     naf_code: string | null;
-    plan: "free" | "standard" | "premium";
+    plan: "free" | "pioneer" | "early" | "standard";
     free_until: string | null;
     launch_cohort: number | null;
     slug: string | null;

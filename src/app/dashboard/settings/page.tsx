@@ -443,7 +443,7 @@ function SettingsPageInner() {
                 <h2 className="mb-4 text-base font-semibold text-primary">Abonnement</h2>
                 <div className="rounded-xl bg-primary px-5 py-4">
                     <p className="text-sm font-semibold text-brand-secondary">
-                        {merchant?.plan === "standard" ? "Standard" : merchant?.plan === "premium" ? "Premium" : "Gratuit"}
+                        {merchant?.plan === "pioneer" ? "Pionnier (19€/mois)" : merchant?.plan === "early" ? "Early Adopter (29€/mois)" : merchant?.plan === "standard" ? "Standard (39€/mois)" : "Gratuit"}
                     </p>
                     <p className="mt-1 text-xs text-tertiary">
                         Two-Step est gratuit jusqu&apos;à 1 000 utilisateurs à Toulouse.
