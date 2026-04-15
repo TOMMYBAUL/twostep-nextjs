@@ -1,0 +1,131 @@
+<h2>Onglet Promos — Le feed des bons plans</h2>
+<p class="subtitle">L'onglet 3 de la bottom nav. Dédié aux promotions. Comment on les présente ?</p>
+
+<div class="cards">
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Header -->
+        <div style="padding: 14px 16px 0;">
+          <p style="margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.5px; color: #1a1a1a;">Promos</p>
+          <p style="margin: 2px 0 0; font-size: 11px; color: #aaa;">Les bons plans près de chez toi</p>
+        </div>
+        <!-- Filter pills -->
+        <div style="display: flex; gap: 6px; padding: 10px 16px; overflow: hidden;">
+          <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;">Tout</span>
+          <span style="background: #f5f5f5; padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #666;">👗 Mode</span>
+          <span style="background: #f5f5f5; padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #666;">👟 Chaussures</span>
+        </div>
+        <!-- Promo cards list -->
+        <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px;">
+          <!-- Card 1 — big discount -->
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: #fafafa; border-radius: 12px;">
+            <div style="width: 76px; height: 76px; background: #f0f0f0; border-radius: 10px; flex-shrink: 0; position: relative;">
+              <span style="position: absolute; top: -4px; right: -4px; background: #4268FF; color: white; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 8px;">-40%</span>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="margin: 0; font-size: 13px; font-weight: 700; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nike Air Force 1 '07 Triple White</p>
+              <p style="margin: 2px 0; font-size: 11px; color: #aaa;">Sneakers District · 300m</p>
+              <div style="display: flex; gap: 6px; align-items: baseline; margin-top: 2px;">
+                <span style="font-size: 14px; font-weight: 800; color: #1a1a1a;">53,40 €</span>
+                <span style="font-size: 11px; color: #ccc; text-decoration: line-through;">89,00 €</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: #fafafa; border-radius: 12px;">
+            <div style="width: 76px; height: 76px; background: #f0f0f0; border-radius: 10px; flex-shrink: 0; position: relative;">
+              <span style="position: absolute; top: -4px; right: -4px; background: #4268FF; color: white; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 8px;">-25%</span>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="margin: 0; font-size: 13px; font-weight: 700; color: #1a1a1a;">Veste Carhartt WIP Michigan</p>
+              <p style="margin: 2px 0; font-size: 11px; color: #aaa;">Urban Store · 1.2km</p>
+              <div style="display: flex; gap: 6px; align-items: baseline; margin-top: 2px;">
+                <span style="font-size: 14px; font-weight: 800; color: #1a1a1a;">104,25 €</span>
+                <span style="font-size: 11px; color: #ccc; text-decoration: line-through;">139,00 €</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 with urgency -->
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: #fafafa; border-radius: 12px; border-left: 3px solid #f59e0b;">
+            <div style="width: 76px; height: 76px; background: #f0f0f0; border-radius: 10px; flex-shrink: 0; position: relative;">
+              <span style="position: absolute; top: -4px; right: -4px; background: #f59e0b; color: white; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 8px;">-30%</span>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="margin: 0; font-size: 13px; font-weight: 700; color: #1a1a1a;">New Balance 574</p>
+              <p style="margin: 2px 0; font-size: 11px; color: #f59e0b; font-weight: 600;">⏱ Dernier jour · Plus que 1</p>
+              <div style="display: flex; gap: 6px; align-items: baseline; margin-top: 2px;">
+                <span style="font-size: 14px; font-weight: 800; color: #1a1a1a;">76,30 €</span>
+                <span style="font-size: 11px; color: #ccc; text-decoration: line-through;">109,00 €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Liste compacte (recommandée)</h3>
+      <p>Cards horizontales (image à gauche, infos à droite). Badge % en bleu. Urgence signalée par bordure orange + texte "Dernier jour" quand la promo expire dans &lt;24h. Trié par % de réduction × proximité.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Header -->
+        <div style="padding: 14px 16px 0;">
+          <p style="margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.5px; color: #1a1a1a;">Promos</p>
+          <p style="margin: 2px 0 0; font-size: 11px; color: #aaa;">Les bons plans près de chez toi</p>
+        </div>
+        <!-- Filter pills -->
+        <div style="display: flex; gap: 6px; padding: 10px 16px; overflow: hidden;">
+          <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;">Tout</span>
+          <span style="background: #f5f5f5; padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #666;">👗 Mode</span>
+          <span style="background: #f5f5f5; padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #666;">👟 Chaussures</span>
+        </div>
+        <!-- Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 16px;">
+          <div>
+            <div style="height: 180px; background: #f5f5f5; border-radius: 10px; position: relative;">
+              <span style="position: absolute; top: 8px; left: 8px; background: #4268FF; color: white; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px;">-40%</span>
+              <div style="position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">♡</div>
+            </div>
+            <p style="margin: 6px 0 0; font-size: 12px; font-weight: 700; color: #1a1a1a;">Air Force 1</p>
+            <p style="margin: 1px 0; font-size: 11px; color: #aaa;">Sneakers District · 300m</p>
+            <div style="display: flex; gap: 6px; align-items: baseline; margin-top: 2px;">
+              <span style="font-size: 13px; font-weight: 800; color: #1a1a1a;">53,40 €</span>
+              <span style="font-size: 10px; color: #ccc; text-decoration: line-through;">89,00 €</span>
+            </div>
+          </div>
+          <div>
+            <div style="height: 180px; background: #f5f5f5; border-radius: 10px; position: relative;">
+              <span style="position: absolute; top: 8px; left: 8px; background: #f59e0b; color: white; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px;">-30%</span>
+              <div style="position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">♡</div>
+              <div style="position: absolute; bottom: 8px; left: 8px;">
+                <span style="background: rgba(0,0,0,0.5); color: #fbbf24; font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 6px;">⏱ Dernier jour</span>
+              </div>
+            </div>
+            <p style="margin: 6px 0 0; font-size: 12px; font-weight: 700; color: #1a1a1a;">NB 574</p>
+            <p style="margin: 1px 0; font-size: 11px; color: #aaa;">Foot Concept · 800m</p>
+            <div style="display: flex; gap: 6px; align-items: baseline; margin-top: 2px;">
+              <span style="font-size: 13px; font-weight: 800; color: #1a1a1a;">76,30 €</span>
+              <span style="font-size: 10px; color: #ccc; text-decoration: line-through;">109,00 €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Grille avec images</h3>
+      <p>Même grille que le feed principal mais avec badge % sur chaque image. "Dernier jour" en badge orange sur l'image. Plus visuel, on voit les produits. Cœur favori sur chaque card.</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+  <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.6;">
+    <strong>Dans les deux cas :</strong> les CategoryPills dynamiques sont en haut pour filtrer par catégorie. Le tri par défaut est % réduction × proximité. Scroll infini avec "Tu as tout vu 📍" en bas.
+  </p>
+</div>

@@ -1,0 +1,79 @@
+<h2>Les cards produit — l'élément le plus vu de l'app</h2>
+<p class="subtitle">Direction V1 (clean + bold accents). Quelle densité d'information sur chaque card ?</p>
+
+<div class="cards">
+  <!-- Card A: Minimal -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #fafafa;">
+      <div style="max-width: 170px; margin: 0 auto;">
+        <div style="height: 210px; background: #f0f0f0; border-radius: 10px; position: relative;">
+          <div style="position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+            <span style="font-size: 12px;">♡</span>
+          </div>
+        </div>
+        <p style="margin: 8px 0 0; font-size: 13px; font-weight: 700; letter-spacing: -0.2px; color: #1a1a1a;">Nike Air Force 1</p>
+        <p style="margin: 2px 0; font-size: 13px; font-weight: 800; color: #1a1a1a;">89,00 €</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Ultra minimal</h3>
+      <p>Image + nom + prix. C'est tout. Pas de boutique, pas de distance. L'info supplémentaire est sur la page détail.</p>
+      <p style="font-size: 11px; color: #6b7280;">Inspiré de : Apple Store, Cos, Arket</p>
+    </div>
+  </div>
+
+  <!-- Card B: Équilibrée -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #fafafa;">
+      <div style="max-width: 170px; margin: 0 auto;">
+        <div style="height: 210px; background: #f0f0f0; border-radius: 10px; position: relative;">
+          <div style="position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+            <span style="font-size: 12px;">♡</span>
+          </div>
+        </div>
+        <p style="margin: 8px 0 0; font-size: 13px; font-weight: 700; letter-spacing: -0.2px; color: #1a1a1a;">Nike Air Force 1</p>
+        <p style="margin: 2px 0; font-size: 11px; color: #aaa;">Sneakers District · 300m</p>
+        <p style="margin: 2px 0; font-size: 13px; font-weight: 800; color: #1a1a1a;">89,00 €</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Équilibrée (recommandée)</h3>
+      <p>Image + nom + boutique & distance + prix. Le consommateur sait immédiatement <strong>quoi, où, combien</strong> sans cliquer.</p>
+      <p style="font-size: 11px; color: #6b7280;">Inspiré de : Vinted, Deliveroo, notre V1</p>
+    </div>
+  </div>
+
+  <!-- Card C: Riche -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #fafafa;">
+      <div style="max-width: 170px; margin: 0 auto;">
+        <div style="height: 210px; background: #f0f0f0; border-radius: 10px; position: relative;">
+          <div style="position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+            <span style="font-size: 12px;">♡</span>
+          </div>
+          <div style="position: absolute; bottom: 8px; left: 8px;">
+            <span style="background: rgba(0,0,0,0.55); color: white; font-size: 9px; font-weight: 600; padding: 3px 7px; border-radius: 6px; backdrop-filter: blur(4px);">🟢 En stock</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+          <div style="width: 18px; height: 18px; background: #e0e0e0; border-radius: 50%; flex-shrink: 0;"></div>
+          <p style="margin: 0; font-size: 10px; font-weight: 600; color: #888;">Sneakers District</p>
+        </div>
+        <p style="margin: 4px 0 0; font-size: 13px; font-weight: 700; letter-spacing: -0.2px; color: #1a1a1a;">Nike Air Force 1</p>
+        <p style="margin: 2px 0; font-size: 11px; color: #aaa;">À 4 min à pied</p>
+        <p style="margin: 2px 0; font-size: 13px; font-weight: 800; color: #1a1a1a;">89,00 €</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Riche</h3>
+      <p>Image avec badge stock + avatar boutique + nom + distance en minutes + prix. Maximum d'info sans cliquer. Plus de hauteur par card.</p>
+      <p style="font-size: 11px; color: #6b7280;">Inspiré de : Depop, StockX, notre V2 (mais en clean)</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+  <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.6;">
+    <strong>Note :</strong> Les cards en promo auraient un traitement spécial dans tous les cas — prix barré + nouveau prix. La question ici est sur les cards <strong>normales</strong> du feed.
+  </p>
+</div>

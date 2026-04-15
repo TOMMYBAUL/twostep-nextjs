@@ -1,0 +1,110 @@
+<h2>Connexion email — Placement dans l'onglet Entrées</h2>
+<p class="subtitle">Où placer le bouton "Connecter mon email" par rapport à la zone d'upload existante ?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fa;">
+      <!-- Option A: bandeau au-dessus -->
+      <div style="font-family: Inter, system-ui, sans-serif; max-width: 420px; margin: 0 auto;">
+
+        <!-- Email banner -->
+        <div style="background: linear-gradient(135deg, #4268FF15, #4268FF08); border: 1px solid #4268FF30; border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #4268FF15; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4268FF" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 13px; font-weight: 600; color: #1a1a1a;">Importez automatiquement</div>
+            <div style="font-size: 11px; color: #666; margin-top: 2px;">Connectez votre email — vos factures fournisseurs arrivent toutes seules</div>
+          </div>
+          <button style="background: #4268FF; color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">Connecter</button>
+        </div>
+
+        <!-- Upload zone -->
+        <div style="border: 2px dashed #ddd; border-radius: 12px; padding: 32px 20px; text-align: center; background: white;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+          </div>
+          <div style="font-size: 13px; font-weight: 500; color: #555;">Glissez vos factures ici</div>
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">PDF, XLSX, CSV — max 10 Mo</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Bandeau promotionnel au-dessus</h3>
+      <p>Un bandeau coloré avec CTA "Connecter" au-dessus de la zone d'upload. Visible immédiatement, disparaît une fois connecté. Le marchand voit d'abord l'option automatique, puis le manuel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fa;">
+      <!-- Option B: deux zones côte à côte -->
+      <div style="font-family: Inter, system-ui, sans-serif; max-width: 420px; margin: 0 auto;">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <!-- Email zone -->
+          <div style="border: 2px dashed #4268FF40; border-radius: 12px; padding: 24px 12px; text-align: center; background: #4268FF08; cursor: pointer;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #4268FF15; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4268FF" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; color: #4268FF;">Connecter mon email</div>
+            <div style="font-size: 10px; color: #888; margin-top: 4px;">Import automatique</div>
+          </div>
+
+          <!-- Upload zone -->
+          <div style="border: 2px dashed #ddd; border-radius: 12px; padding: 24px 12px; text-align: center; background: white; cursor: pointer;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #f0f0f0; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; color: #555;">Importer un fichier</div>
+            <div style="font-size: 10px; color: #999; margin-top: 4px;">PDF, XLSX, CSV</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Deux zones côte à côte</h3>
+      <p>Email et upload sur le même plan, deux cartes égales. Le marchand choisit sa méthode. Clean et équilibré, mais prend plus de place verticale sur mobile.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 20px; background: #f8f9fa;">
+      <!-- Option C: upload zone avec bouton email intégré -->
+      <div style="font-family: Inter, system-ui, sans-serif; max-width: 420px; margin: 0 auto;">
+
+        <div style="border: 2px dashed #ddd; border-radius: 12px; padding: 28px 20px; text-align: center; background: white;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+          </div>
+          <div style="font-size: 13px; font-weight: 500; color: #555;">Glissez vos factures ici ou cliquez pour parcourir</div>
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">PDF, XLSX, CSV — max 10 Mo</div>
+
+          <!-- Separator -->
+          <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0;">
+            <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
+            <span style="font-size: 11px; color: #999; font-weight: 500;">ou automatiquement</span>
+            <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
+          </div>
+
+          <button style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px 16px; font-size: 12px; font-weight: 500; color: #333; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4268FF" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+            Connecter mon email fournisseur
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Intégré dans la zone d'upload</h3>
+      <p>Le bouton email est DANS la zone d'upload, séparé par un "ou automatiquement". Tout est au même endroit. Plus compact, workflow naturel : "glissez OU connectez".</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top: 24px; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+  <p style="font-size: 13px; color: #666; margin: 0;">
+    <strong>Note :</strong> Une fois l'email connecté, le bandeau/bouton se transforme en indicateur de statut :
+    <span style="color: #22c55e;">●</span> <em>contact@fournisseur.fr — Dernière vérification il y a 12 min</em>
+  </p>
+</div>

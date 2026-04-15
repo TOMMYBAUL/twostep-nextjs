@@ -1,0 +1,133 @@
+<h2>Dashboard — Page Produits (+ Stock intégré)</h2>
+<p class="subtitle">La page unifiée Produits + Stock qu'on a fusionnée en Phase 2. Comment on la rend sobre et efficace ?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <div style="padding: 24px;">
+          <!-- Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.4px; color: #1a1a1a;">Produits</p>
+            <div style="display: flex; gap: 8px;">
+              <span style="padding: 6px 12px; background: #f5f5f5; border-radius: 8px; font-size: 11px; font-weight: 600; color: #666;">Exporter</span>
+              <span style="padding: 6px 12px; background: #4268FF; border-radius: 8px; font-size: 11px; font-weight: 600; color: white;">+ Ajouter</span>
+            </div>
+          </div>
+
+          <!-- Stock metrics -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            <div style="padding: 10px 12px; border: 1px solid #f0f0f0; border-radius: 8px;">
+              <p style="margin: 0; font-size: 10px; color: #aaa;">Total</p>
+              <p style="margin: 2px 0 0; font-size: 18px; font-weight: 800; color: #1a1a1a;">96</p>
+            </div>
+            <div style="padding: 10px 12px; border: 1px solid #f0f0f0; border-radius: 8px;">
+              <p style="margin: 0; font-size: 10px; color: #2e7d32;">En stock</p>
+              <p style="margin: 2px 0 0; font-size: 18px; font-weight: 800; color: #2e7d32;">84</p>
+            </div>
+            <div style="padding: 10px 12px; border: 1px solid #f0f0f0; border-radius: 8px;">
+              <p style="margin: 0; font-size: 10px; color: #f59e0b;">Stock bas</p>
+              <p style="margin: 2px 0 0; font-size: 18px; font-weight: 800; color: #f59e0b;">7</p>
+            </div>
+            <div style="padding: 10px 12px; border: 1px solid #f0f0f0; border-radius: 8px;">
+              <p style="margin: 0; font-size: 10px; color: #dc2626;">Rupture</p>
+              <p style="margin: 2px 0 0; font-size: 18px; font-weight: 800; color: #dc2626;">5</p>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div style="display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0;">
+            <div style="padding: 8px 16px; font-size: 12px; font-weight: 700; color: #1a1a1a; border-bottom: 2px solid #4268FF;">Catalogue</div>
+            <div style="padding: 8px 16px; font-size: 12px; color: #ccc;">Incomplets</div>
+          </div>
+
+          <!-- Search bar -->
+          <div style="background: #f5f5f5; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+            <span style="font-size: 12px; color: #ccc;">🔍</span>
+            <span style="font-size: 12px; color: #bbb;">Rechercher un produit...</span>
+          </div>
+
+          <!-- Product table -->
+          <div style="display: flex; flex-direction: column; gap: 0;">
+            <!-- Header row -->
+            <div style="display: grid; grid-template-columns: 44px 1fr 80px 100px 60px; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+              <span style="font-size: 10px; color: #aaa;"></span>
+              <span style="font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px;">Produit</span>
+              <span style="font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px;">Prix</span>
+              <span style="font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px;">Stock</span>
+              <span style="font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px;">État</span>
+            </div>
+
+            <!-- Row 1 -->
+            <div style="display: grid; grid-template-columns: 44px 1fr 80px 100px 60px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f8f8f8;">
+              <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 6px;"></div>
+              <div>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Air Force 1 '07</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Nike · Taille 42</p>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #1a1a1a;">89,00 €</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #1a1a1a; width: 28px; text-align: center;">3</span>
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">+</div>
+              </div>
+              <span style="background: #e8f5e9; color: #2e7d32; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">OK</span>
+            </div>
+
+            <!-- Row 2 — low stock -->
+            <div style="display: grid; grid-template-columns: 44px 1fr 80px 100px 60px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f8f8f8;">
+              <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 6px;"></div>
+              <div>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">NB 574 Grey</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">New Balance · Taille 43</p>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #1a1a1a;">109,00 €</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #f59e0b; width: 28px; text-align: center;">2</span>
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">+</div>
+              </div>
+              <span style="background: #fef3c7; color: #92400e; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Bas</span>
+            </div>
+
+            <!-- Row 3 — out of stock -->
+            <div style="display: grid; grid-template-columns: 44px 1fr 80px 100px 60px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f8f8f8; opacity: 0.5;">
+              <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 6px;"></div>
+              <div>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Vans Old Skool</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Vans · Taille 41</p>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #1a1a1a;">79,00 €</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #ccc;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #dc2626; width: 28px; text-align: center;">0</span>
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">+</div>
+              </div>
+              <span style="background: #fee2e2; color: #dc2626; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Rupture</span>
+            </div>
+
+            <!-- Row 4 -->
+            <div style="display: grid; grid-template-columns: 44px 1fr 80px 100px 60px; gap: 10px; align-items: center; padding: 10px 0;">
+              <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 6px;"></div>
+              <div>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Sac Lancaster</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Lancaster</p>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #1a1a1a;">120,00 €</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #1a1a1a; width: 28px; text-align: center;">8</span>
+                <div style="width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999;">+</div>
+              </div>
+              <span style="background: #e8f5e9; color: #2e7d32; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">OK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Produits — Tableau sobre avec stock inline</h3>
+      <p>4 métriques stock en haut. Tabs Catalogue/Incomplets. Barre de recherche. Tableau avec miniature, nom+marque+taille, prix, contrôles stock (−/nombre/+), badge état (OK vert, Bas orange, Rupture rouge). Les produits en rupture sont en opacité réduite.</p>
+    </div>
+  </div>
+</div>

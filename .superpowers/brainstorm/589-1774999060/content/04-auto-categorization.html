@@ -1,0 +1,93 @@
+<h2>Comment auto-catégoriser les produits POS ?</h2>
+<p class="subtitle">Le marchand connecte sa caisse → 200 produits tombent → comment leur assigner une catégorie sans intervention humaine ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Catégorie au niveau MARCHAND uniquement</h3>
+      <p>Le marchand choisit sa catégorie principale lors de l'onboarding ("Je suis une boutique de chaussures"). <strong>Tous ses produits héritent</strong> de cette catégorie. Pas de catégorisation produit par produit.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Ultra simple — 1 choix, 1 fois, c'est fait</li>
+          <li>Précis à 95% (un magasin de chaussures vend des chaussures)</li>
+          <li>Zéro coût technique</li>
+          <li>Le marchand sait mieux que quiconque ce qu'il vend</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Un concept store qui vend mode + déco + bougies → une seule catégorie ?</li>
+          <li>Pas de filtrage fin par produit (tout est "Chaussures")</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Catégorie marchand + sous-catégorisation auto par produit</h3>
+      <p>Le marchand choisit sa catégorie principale. Ensuite, un algo analyse le <strong>nom du produit + l'EAN</strong> pour assigner une sous-catégorie et des tags.</p>
+      <p style="margin-top: 8px; padding: 10px; background: #f3f4f6; border-radius: 8px; font-size: 12px; font-family: monospace;">
+        Marchand : "Sneakers District" → catégorie <strong>Chaussures</strong><br>
+        Produit : "AIR FORCE 1 07 BLC 42"<br>
+        → sous-catégorie : <strong>Sneakers</strong><br>
+        → tags : <strong>Nike, blanc, 42</strong><br>
+        → taille : <strong>42</strong>
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Filtrage fin possible (Chaussures > Sneakers vs Chaussures > Bottes)</li>
+          <li>Les tags enrichissent la recherche (marque, couleur, taille)</li>
+          <li>Fonctionne même pour les concept stores multi-catégories</li>
+          <li>L'EAN donne la marque + catégorie exacte via les bases produit</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>L'algo peut se tromper (besoin d'un fallback "Non catégorisé")</li>
+          <li>Les noms POS sont souvent abrégés/cryptiques</li>
+          <li>Coût technique : pipeline d'extraction à construire</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Multi-catégories marchand + auto par produit</h3>
+      <p>Le marchand choisit <strong>jusqu'à 3 catégories</strong> à l'onboarding ("Mode + Déco + Beauté" pour un concept store). L'algo assigne chaque produit à la catégorie la plus probable parmi celles du marchand.</p>
+      <p style="margin-top: 8px; padding: 10px; background: #f3f4f6; border-radius: 8px; font-size: 12px; font-family: monospace;">
+        Marchand : concept store → catégories <strong>Mode, Déco, Beauté</strong><br>
+        Produit "Robe lin naturel" → <strong>Mode</strong><br>
+        Produit "Bougie Diptyque" → <strong>Déco</strong> (ou Beauté ?)<br>
+        Produit "Crème Caudalie" → <strong>Beauté</strong>
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Couvre le cas concept store / multi-activité</li>
+          <li>L'algo a un périmètre restreint (3 catégories max) → moins d'erreurs</li>
+          <li>Le consommateur retrouve les produits dans la bonne catégorie</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Plus complexe à l'onboarding (choix multiple)</li>
+          <li>L'algo doit quand même deviner entre 3 catégories</li>
+          <li>Rare en pratique — 90% des marchands ont 1 catégorie dominante</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+  <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Ma recommandation : B (pragmatique)</h3>
+  <p style="margin: 0; font-size: 13px; line-height: 1.6;">
+    <strong>1 catégorie principale par marchand</strong> (choisie à l'onboarding, modifiable) + <strong>extraction auto de tags</strong> depuis le nom du produit et l'EAN.
+    <br><br>
+    Pourquoi pas C ? Parce que 90% des marchands ont une spécialité claire. Le cas concept store est réel mais rare — on peut le gérer plus tard en permettant au marchand d'ajouter des catégories secondaires. Ne pas complexifier l'onboarding au démarrage.
+    <br><br>
+    <strong>Pipeline d'extraction :</strong><br>
+    1. L'EAN donne la marque (via UPCitemdb, notre pipeline existant)<br>
+    2. Le nom du produit donne la taille ("42", "M", "XL") — déjà implémenté dans <code>extract-size.ts</code><br>
+    3. Le nom donne des tags candidats par matching de mots-clés ("robe" → tag robe, "Air Force" → tag sneakers)<br>
+    4. La sous-catégorie = le tag le plus pertinent mappé sur l'arbre
+  </p>
+</div>

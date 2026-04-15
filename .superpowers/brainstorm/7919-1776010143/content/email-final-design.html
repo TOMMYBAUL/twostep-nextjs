@@ -1,0 +1,244 @@
+<h2>Onglet Entrées — Design final</h2>
+<p class="subtitle">Bandeau email + zone upload + état connecté. Voici ce que le marchand verra.</p>
+
+<div class="section">
+  <h3>État 1 — Email non connecté (première visite)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Dashboard › Mon stock › Entrées</div>
+    <div class="mockup-body" style="padding: 24px; background: #fafafa; font-family: Inter, system-ui, sans-serif;">
+
+      <!-- Metrics row -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Total factures</div>
+          <div style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-top: 4px;">0</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">En attente</div>
+          <div style="font-size: 22px; font-weight: 700; color: #f59e0b; margin-top: 4px;">0</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Importées</div>
+          <div style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-top: 4px;">0</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Échouées</div>
+          <div style="font-size: 22px; font-weight: 700; color: #ef4444; margin-top: 4px;">0</div>
+        </div>
+      </div>
+
+      <!-- EMAIL BANNER — not connected -->
+      <div style="background: linear-gradient(135deg, #4268FF10, #4268FF05); border: 1px solid #4268FF25; border-radius: 14px; padding: 20px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #4268FF12; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4268FF" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">Recevez vos factures automatiquement</div>
+            <div style="font-size: 12px; color: #666; margin-top: 4px; line-height: 1.5;">Activez le transfert automatique depuis votre boîte mail. Vos factures fournisseurs arriveront ici toutes seules.</div>
+
+            <!-- The email address to copy -->
+            <div style="margin-top: 14px; display: flex; align-items: center; gap: 8px;">
+              <div style="flex: 1; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; color: #333; letter-spacing: -0.3px;">
+                factures-dear-skin@in.twostep.fr
+              </div>
+              <button style="background: #4268FF; color: white; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copier
+              </button>
+            </div>
+
+            <!-- Help link -->
+            <div style="margin-top: 10px;">
+              <a href="#" style="font-size: 12px; color: #4268FF; text-decoration: none; font-weight: 500;">Comment activer le transfert automatique ? →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload zone -->
+      <div style="border: 2px dashed #ddd; border-radius: 14px; padding: 36px 20px; text-align: center; background: white; cursor: pointer;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: #f5f5f5; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+        </div>
+        <div style="font-size: 13px; font-weight: 500; color: #555;">Ou glissez vos factures ici</div>
+        <div style="font-size: 11px; color: #aaa; margin-top: 4px;">PDF, XLSX, CSV — max 10 Mo</div>
+      </div>
+
+      <!-- Empty state -->
+      <div style="text-align: center; padding: 40px 20px; color: #999;">
+        <div style="font-size: 13px;">Aucune facture pour le moment.</div>
+        <div style="font-size: 12px; margin-top: 4px; color: #bbb;">Activez le transfert email ci-dessus ou importez un fichier.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 32px;">
+  <h3>État 2 — Email connecté (transfert actif)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Dashboard › Mon stock › Entrées</div>
+    <div class="mockup-body" style="padding: 24px; background: #fafafa; font-family: Inter, system-ui, sans-serif;">
+
+      <!-- Metrics row -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Total factures</div>
+          <div style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-top: 4px;">12</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">En attente</div>
+          <div style="font-size: 22px; font-weight: 700; color: #f59e0b; margin-top: 4px;">2</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Importées</div>
+          <div style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-top: 4px;">9</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee;">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Échouées</div>
+          <div style="font-size: 22px; font-weight: 700; color: #ef4444; margin-top: 4px;">1</div>
+        </div>
+      </div>
+
+      <!-- EMAIL BANNER — connected -->
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #dcfce7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 13px; font-weight: 600; color: #166534;">Transfert email actif</div>
+            <div style="font-size: 12px; color: #15803d; margin-top: 2px;">
+              factures-dear-skin@in.twostep.fr — Dernière facture reçue il y a 2h
+            </div>
+          </div>
+          <button style="background: none; border: 1px solid #bbf7d0; border-radius: 8px; padding: 6px 12px; font-size: 11px; color: #15803d; cursor: pointer;">
+            Copier l'adresse
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload zone (smaller when connected) -->
+      <div style="border: 1.5px dashed #e0e0e0; border-radius: 12px; padding: 20px; text-align: center; background: white; cursor: pointer; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+          <span style="font-size: 12px; color: #888;">Importer un fichier manuellement</span>
+        </div>
+      </div>
+
+      <!-- Invoices list -->
+      <div style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 80px; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">
+          <div>Fournisseur</div>
+          <div>Date</div>
+          <div>Statut</div>
+          <div></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 80px; padding: 12px 16px; border-bottom: 1px solid #f5f5f5; align-items: center;">
+          <div>
+            <div style="font-size: 13px; font-weight: 500; color: #1a1a1a;">Nike France</div>
+            <div style="font-size: 11px; color: #999;">via email</div>
+          </div>
+          <div style="font-size: 12px; color: #666;">12 avril</div>
+          <div><span style="background: #fef3c7; color: #92400e; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500;">En attente</span></div>
+          <div><a href="#" style="font-size: 12px; color: #4268FF; text-decoration: none; font-weight: 500;">Voir</a></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 80px; padding: 12px 16px; border-bottom: 1px solid #f5f5f5; align-items: center;">
+          <div>
+            <div style="font-size: 13px; font-weight: 500; color: #1a1a1a;">Adidas Distribution</div>
+            <div style="font-size: 11px; color: #999;">via email</div>
+          </div>
+          <div style="font-size: 12px; color: #666;">10 avril</div>
+          <div><span style="background: #dcfce7; color: #166534; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500;">Importée</span></div>
+          <div><a href="#" style="font-size: 12px; color: #4268FF; text-decoration: none; font-weight: 500;">Voir</a></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 80px; padding: 12px 16px; align-items: center;">
+          <div>
+            <div style="font-size: 13px; font-weight: 500; color: #1a1a1a;">Carhartt WIP</div>
+            <div style="font-size: 11px; color: #999;">upload manuel</div>
+          </div>
+          <div style="font-size: 12px; color: #666;">8 avril</div>
+          <div><span style="background: #dcfce7; color: #166534; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500;">Importée</span></div>
+          <div><a href="#" style="font-size: 12px; color: #4268FF; text-decoration: none; font-weight: 500;">Voir</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 32px;">
+  <h3>Le lien "Comment activer ?" ouvre un guide pas-à-pas</h3>
+  <div class="mockup">
+    <div class="mockup-header">Guide — Transfert automatique</div>
+    <div class="mockup-body" style="padding: 24px; background: white; font-family: Inter, system-ui, sans-serif;">
+
+      <div style="font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px;">Activez le transfert en 30 secondes</div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Gmail -->
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22 6l-10 7L2 6" fill="none" stroke="#EA4335" stroke-width="2"/><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="#4285F4" stroke-width="1.5"/></svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #1a1a1a;">Gmail</div>
+              <div style="font-size: 11px; color: #888;">3 étapes — 30 secondes</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- Outlook -->
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="#0078D4" stroke-width="1.5"/><path d="M22 7l-10 7L2 7" fill="none" stroke="#0078D4" stroke-width="2"/></svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #1a1a1a;">Outlook / Hotmail</div>
+              <div style="font-size: 11px; color: #888;">3 étapes — 30 secondes</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- Yahoo -->
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #6001D2;">Y!</div>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #1a1a1a;">Yahoo</div>
+              <div style="font-size: 11px; color: #888;">3 étapes — 30 secondes</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- Other -->
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #1a1a1a;">Autre fournisseur (Orange, Free, SFR...)</div>
+              <div style="font-size: 11px; color: #888;">Guide général</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; padding: 14px; background: #f8f9fa; border-radius: 10px;">
+        <div style="font-size: 12px; color: #666; line-height: 1.6;">
+          <strong style="color: #333;">Besoin d'aide ?</strong> Lors de notre prochaine visite, nous pouvons l'activer ensemble en 30 secondes sur votre téléphone.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

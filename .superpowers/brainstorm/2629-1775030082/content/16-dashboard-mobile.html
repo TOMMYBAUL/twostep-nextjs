@@ -1,0 +1,207 @@
+<h2>Dashboard — Version mobile</h2>
+<p class="subtitle">Le marchand gère sa boutique depuis son téléphone. Comment on adapte le dashboard sobre ?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Mobile top bar -->
+        <div style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a1a;">Accueil</p>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span style="font-size: 16px; color: #ccc;">🔔</span>
+            <div style="width: 28px; height: 28px; background: #f0f0f0; border-radius: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 16px;">
+          <!-- Greeting -->
+          <p style="margin: 0; font-size: 16px; font-weight: 700; color: #1a1a1a;">Bonjour, Thomas</p>
+          <p style="margin: 2px 0 0; font-size: 11px; color: #bbb;">Sync il y a 3 min</p>
+
+          <!-- Metrics 2x2 -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;">
+            <div style="padding: 12px; border: 1px solid #f0f0f0; border-radius: 10px;">
+              <p style="margin: 0; font-size: 10px; color: #aaa;">Vues</p>
+              <p style="margin: 2px 0 0; font-size: 20px; font-weight: 800; color: #1a1a1a;">127</p>
+              <p style="margin: 1px 0 0; font-size: 10px; color: #2e7d32;">↑ 12%</p>
+            </div>
+            <div style="padding: 12px; border: 1px solid #f0f0f0; border-radius: 10px;">
+              <p style="margin: 0; font-size: 10px; color: #aaa;">En stock</p>
+              <p style="margin: 2px 0 0; font-size: 20px; font-weight: 800; color: #1a1a1a;">84</p>
+              <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">sur 96</p>
+            </div>
+            <div style="padding: 12px; border: 1px solid #f0f0f0; border-radius: 10px;">
+              <p style="margin: 0; font-size: 10px; color: #aaa;">Promos</p>
+              <p style="margin: 2px 0 0; font-size: 20px; font-weight: 800; color: #1a1a1a;">3</p>
+            </div>
+            <div style="padding: 12px; border: 1px solid #4268FF; border-radius: 10px; background: #fafbff;">
+              <p style="margin: 0; font-size: 10px; color: #4268FF;">J'arrive</p>
+              <p style="margin: 2px 0 0; font-size: 20px; font-weight: 800; color: #4268FF;">3</p>
+              <p style="margin: 1px 0 0; font-size: 10px; color: #4268FF;">Voir →</p>
+            </div>
+          </div>
+
+          <!-- Onboarding compact -->
+          <div style="margin-top: 14px; padding: 14px; border: 1px solid #f0f0f0; border-radius: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <p style="margin: 0; font-size: 12px; font-weight: 700; color: #1a1a1a;">Configuration</p>
+              <span style="font-size: 10px; color: #aaa;">3/5</span>
+            </div>
+            <div style="height: 3px; background: #f0f0f0; border-radius: 2px; margin-bottom: 10px;">
+              <div style="height: 3px; background: #4268FF; border-radius: 2px; width: 60%;"></div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <p style="margin: 0; font-size: 11px; font-weight: 600; color: #1a1a1a;">Connecter votre caisse</p>
+              <span style="font-size: 11px; font-weight: 600; color: #4268FF;">→</span>
+            </div>
+          </div>
+
+          <!-- Coach tip -->
+          <div style="margin-top: 10px; padding: 12px; border: 1px solid #f0f0f0; border-radius: 10px; border-left: 3px solid #4268FF;">
+            <p style="margin: 0; font-size: 10px; font-weight: 700; color: #4268FF;">Conseil</p>
+            <p style="margin: 3px 0 0; font-size: 11px; color: #666; line-height: 1.5;">5 produits sans photo — ajoutez-en pour 3× plus de vues.</p>
+          </div>
+        </div>
+
+        <!-- Bottom tab bar -->
+        <div style="display: flex; border-top: 1px solid #f3f4f6; padding: 8px 0 12px;">
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🏠</div>
+            <p style="margin: 2px 0 0; font-size: 9px; font-weight: 600; color: #4268FF;">Accueil</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">📦</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Produits</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🔥</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Promos</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🏪</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Boutique</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">⚙️</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Plus</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Mobile — Même contenu, layout adapté</h3>
+      <p>Métriques en grille 2×2 au lieu de 4 colonnes. Onboarding compact (1 ligne). Tip coach raccourci. Bottom tab bar avec 5 onglets : Accueil, Produits, Promos, Boutique, Plus (réglages + trophées + Google).</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Mobile top bar -->
+        <div style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a1a;">Produits</p>
+          <div style="display: flex; gap: 8px;">
+            <span style="padding: 5px 10px; background: #f5f5f5; border-radius: 6px; font-size: 10px; font-weight: 600; color: #666;">Exporter</span>
+            <span style="padding: 5px 10px; background: #4268FF; border-radius: 6px; font-size: 10px; font-weight: 600; color: white;">+ Ajouter</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 12px 16px;">
+          <!-- Metrics compact -->
+          <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow: hidden;">
+            <span style="padding: 5px 10px; background: #f5f5f5; border-radius: 6px; font-size: 10px; font-weight: 600; color: #1a1a1a;">96 total</span>
+            <span style="padding: 5px 10px; background: #e8f5e9; border-radius: 6px; font-size: 10px; font-weight: 600; color: #2e7d32;">84 en stock</span>
+            <span style="padding: 5px 10px; background: #fef3c7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #92400e;">7 bas</span>
+            <span style="padding: 5px 10px; background: #fee2e2; border-radius: 6px; font-size: 10px; font-weight: 600; color: #dc2626;">5 rupture</span>
+          </div>
+
+          <!-- Search -->
+          <div style="background: #f5f5f5; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+            <span style="font-size: 12px; color: #ccc;">🔍</span>
+            <span style="font-size: 11px; color: #bbb;">Rechercher...</span>
+          </div>
+
+          <!-- Product cards mobile -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Card 1 -->
+            <div style="display: flex; gap: 10px; align-items: center; padding: 10px; background: #fafafa; border-radius: 10px;">
+              <div style="width: 48px; height: 48px; background: #f0f0f0; border-radius: 8px; flex-shrink: 0;"></div>
+              <div style="flex: 1; min-width: 0;">
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Air Force 1 '07</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Nike · 42 · 89,00 €</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 3px;">
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #1a1a1a; width: 22px; text-align: center;">3</span>
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">+</div>
+              </div>
+            </div>
+            <!-- Card 2 low -->
+            <div style="display: flex; gap: 10px; align-items: center; padding: 10px; background: #fafafa; border-radius: 10px;">
+              <div style="width: 48px; height: 48px; background: #f0f0f0; border-radius: 8px; flex-shrink: 0;"></div>
+              <div style="flex: 1; min-width: 0;">
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">NB 574 Grey</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">New Balance · 43 · 109,00 €</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 3px;">
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #f59e0b; width: 22px; text-align: center;">2</span>
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">+</div>
+              </div>
+            </div>
+            <!-- Card 3 out -->
+            <div style="display: flex; gap: 10px; align-items: center; padding: 10px; background: #fafafa; border-radius: 10px; opacity: 0.5;">
+              <div style="width: 48px; height: 48px; background: #f0f0f0; border-radius: 8px; flex-shrink: 0;"></div>
+              <div style="flex: 1; min-width: 0;">
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Vans Old Skool</p>
+                <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Vans · 41 · 79,00 €</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 3px;">
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #ccc;">−</div>
+                <span style="font-size: 12px; font-weight: 700; color: #dc2626; width: 22px; text-align: center;">0</span>
+                <div style="width: 22px; height: 22px; border: 1px solid #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom tab bar -->
+        <div style="display: flex; border-top: 1px solid #f3f4f6; padding: 8px 0 12px; margin-top: 8px;">
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🏠</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Accueil</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">📦</div>
+            <p style="margin: 2px 0 0; font-size: 9px; font-weight: 600; color: #4268FF;">Produits</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🔥</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Promos</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">🏪</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Boutique</p>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 16px;">⚙️</div>
+            <p style="margin: 2px 0 0; font-size: 9px; color: #ccc;">Plus</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Page Produits mobile</h3>
+      <p>Métriques en pills horizontaux (compact). Recherche. Cards produit horizontales (image + nom/marque/prix + contrôles ± stock). Stock bas en orange, rupture en rouge avec opacité. Même bottom bar 5 onglets.</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+  <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.6;">
+    <strong>Adaptation mobile :</strong> La sidebar disparaît → remplacée par la bottom tab bar 5 onglets. Le tableau desktop → cards horizontales. Les métriques 4 colonnes → grille 2×2 (accueil) ou pills (produits). Le contenu reste identique, seul le layout change.
+  </p>
+</div>

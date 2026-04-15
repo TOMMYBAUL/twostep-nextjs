@@ -16,7 +16,7 @@ async function getMerchant(slugOrId: string) {
     const supabase = await createClient();
     const { data } = await supabase
         .from("merchants")
-        .select("id, slug, name, description, city, address, photo_url, logo_url, phone, opening_hours")
+        .select("id, slug, name, description, city, address, photo_url, logo_url, phone, opening_hours, latitude, longitude")
         .eq("id", resolvedId)
         .single();
     return data;
@@ -109,6 +109,13 @@ export default async function Page({ params }: Props) {
                     addressLocality: data.city,
                     addressCountry: "FR",
                 },
+                ...(data.latitude && data.longitude && {
+                    geo: {
+                        "@type": "GeoCoordinates",
+                        latitude: data.latitude,
+                        longitude: data.longitude,
+                    },
+                }),
                 ...(data.opening_hours && typeof data.opening_hours === "object" && !Array.isArray(data.opening_hours) && {
                     openingHoursSpecification: parseOpeningHours(data.opening_hours as Record<string, unknown>),
                 }),

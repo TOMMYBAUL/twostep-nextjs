@@ -1,0 +1,127 @@
+<h2>Quelle précision attendre de l'IA ?</h2>
+<p class="subtitle">Estimation honnête basée sur la qualité variable des noms POS</p>
+
+<div style="margin-top: 1.5rem;">
+
+  <!-- Précision par type de nom -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 16px;">Tout dépend de ce que le POS nous donne</h3>
+
+    <!-- Cas facile -->
+    <div style="padding: 14px; background: #f0fdf4; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 700; font-size: 14px; color: #166534;">😎 Nom clair et complet</span>
+        <span style="background: #166534; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;">~95-98%</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; background: white; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;">
+        "Nike Air Force 1 '07 Blanc Homme Taille 42"
+      </div>
+      <p style="margin: 0; font-size: 12px; color: #6b7280;">→ Catégorie, sous-catégorie, marque, couleur, genre, taille — tout est dans le nom. L'IA ne peut presque pas se tromper.</p>
+    </div>
+
+    <!-- Cas moyen -->
+    <div style="padding: 14px; background: #fffbeb; border-radius: 10px; border: 1px solid #fde68a; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 700; font-size: 14px; color: #92400e;">🤔 Nom abrégé mais lisible</span>
+        <span style="background: #92400e; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;">~80-90%</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; background: white; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;">
+        "AF1 07 BLC 42" &nbsp;•&nbsp; "Robe lin nat M" &nbsp;•&nbsp; "NB 574 GR"
+      </div>
+      <p style="margin: 0; font-size: 12px; color: #6b7280;">→ L'IA comprend "AF1" = Air Force 1, "NB" = New Balance, "BLC" = blanc. Les LLM sont très forts sur les abréviations commerciales. La catégorie (Chaussures) est évidente, la sous-catégorie (Sneakers) aussi.</p>
+    </div>
+
+    <!-- Cas difficile -->
+    <div style="padding: 14px; background: #fef2f2; border-radius: 10px; border: 1px solid #fecaca; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 700; font-size: 14px; color: #991b1b;">😬 Code interne / cryptique</span>
+        <span style="background: #991b1b; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;">~40-60%</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; background: white; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;">
+        "REF-2847-BLK" &nbsp;•&nbsp; "ART.5923" &nbsp;•&nbsp; "PROD-001"
+      </div>
+      <p style="margin: 0; font-size: 12px; color: #6b7280;">→ Aucune info exploitable dans le nom seul. MAIS : si on a l'EAN, on retrouve tout via la base produit. Si on a la photo, on peut aussi déduire. Sans rien → "Non catégorisé".</p>
+    </div>
+  </div>
+
+  <!-- Ce qui booste la précision -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 16px;">Ce qui booste la précision au-delà du nom seul</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div style="padding: 14px; background: #f9fafb; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-weight: 600; font-size: 13px;">📊 EAN / Code-barres</p>
+          <span style="background: #4268FF; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">+15-20%</span>
+        </div>
+        <p style="margin: 6px 0 0; font-size: 12px; color: #6b7280;">L'EAN donne la marque exacte et souvent la catégorie via UPCitemdb. Transforme un "REF-2847" en "Nike Air Max 90".</p>
+      </div>
+
+      <div style="padding: 14px; background: #f9fafb; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-weight: 600; font-size: 13px;">🏪 Contexte boutique</p>
+          <span style="background: #4268FF; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">+5-10%</span>
+        </div>
+        <p style="margin: 6px 0 0; font-size: 12px; color: #6b7280;">Si 180/200 produits sont des chaussures, le produit ambigu "ART.5923" est probablement une chaussure aussi.</p>
+      </div>
+
+      <div style="padding: 14px; background: #f9fafb; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-weight: 600; font-size: 13px;">📸 Photo produit</p>
+          <span style="background: #4268FF; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">+10-15%</span>
+        </div>
+        <p style="margin: 6px 0 0; font-size: 12px; color: #6b7280;">Vision IA sur la photo → "c'est une sneaker blanche". Possible mais plus cher (modèle vision). Phase 2 du pipeline.</p>
+      </div>
+
+      <div style="padding: 14px; background: #f9fafb; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0; font-weight: 600; font-size: 13px;">💰 Prix</p>
+          <span style="background: #4268FF; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">+5%</span>
+        </div>
+        <p style="margin: 6px 0 0; font-size: 12px; color: #6b7280;">Un produit à 3€ dans une parfumerie n'est pas un parfum (probablement un accessoire). Le prix aide à discriminer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estimation réaliste -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 16px;">📊 Estimation réaliste pour Two-Step</h3>
+    <p style="margin: 0 0 12px; font-size: 13px; color: #6b7280;">En combinant nom + EAN + contexte boutique (sans vision photo) :</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div style="padding: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: center;">
+        <p style="margin: 0; font-size: 32px; font-weight: 800; color: #166534;">~90%</p>
+        <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: #166534;">Catégorie niveau 1</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">(Chaussures, Mode, Tech...)</p>
+      </div>
+      <div style="padding: 16px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-radius: 10px; text-align: center;">
+        <p style="margin: 0; font-size: 32px; font-weight: 800; color: #92400e;">~75%</p>
+        <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: #92400e;">Sous-catégorie</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">(Sneakers vs Bottes vs Ville)</p>
+      </div>
+      <div style="padding: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: center;">
+        <p style="margin: 0; font-size: 32px; font-weight: 800; color: #166534;">~95%</p>
+        <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: #166534;">Marque</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">(via EAN surtout)</p>
+      </div>
+      <div style="padding: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: center;">
+        <p style="margin: 0; font-size: 32px; font-weight: 800; color: #166534;">~92%</p>
+        <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: #166534;">Taille / Pointure</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">(déjà implémenté dans extract-size.ts)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparaison -->
+  <div style="padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+    <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Pour mettre en perspective</h3>
+    <p style="margin: 0; font-size: 13px; line-height: 1.7;">
+      <strong>90% de précision sur la catégorie = 180 produits bien classés sur 200.</strong><br>
+      Les 20 restants seront soit "Non catégorisé" (si confiance basse), soit mal classés.<br><br>
+      Le marchand peut corriger en 2 minutes dans le dashboard. Mais même sans correction, 90% c'est largement suffisant pour que le consommateur trouve les produits via la recherche et les filtres.<br><br>
+      <strong>Alternative sans IA :</strong> le marchand catégorise 200 produits à la main = 30-45 minutes de travail ennuyeux = il ne le fera jamais.<br><br>
+      <strong>Conclusion :</strong> 90% automatique + correction optionnelle > 0% parce que le marchand n'a pas le temps.
+    </p>
+  </div>
+
+</div>

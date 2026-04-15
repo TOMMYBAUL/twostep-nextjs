@@ -17,7 +17,7 @@ const getProduct = React.cache(async function getProduct(slugOrId: string): Prom
     const supabase = await createClient();
     const { data } = await supabase
         .from("products")
-        .select("slug, name, canonical_name, price, photo_url, photo_processed_url, category, description, ean, merchant_id, merchants(name, city, address, slug)")
+        .select("slug, name, canonical_name, price, photo_url, photo_processed_url, category, description, ean, brand, merchant_id, merchants(name, city, address, slug)")
         .eq("id", resolvedId)
         .eq("visible", true)
         .single();
@@ -88,6 +88,12 @@ export default async function Page({ params }: Props) {
                 description: data.description ?? undefined,
                 image: (data.photo_processed_url ?? data.photo_url) ?? undefined,
                 sku: data.ean ?? undefined,
+                ...(data.brand && {
+                    brand: {
+                        "@type": "Brand",
+                        name: data.brand,
+                    },
+                }),
                 category: data.category ?? undefined,
                 url: `${BASE_URL}/product/${data.slug}`,
                 ...(data.price && {

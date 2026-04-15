@@ -1,0 +1,152 @@
+<h2>Fiche boutique — Comment on présente un marchand ?</h2>
+<p class="subtitle">C'est la page qu'on atteint en cliquant sur une boutique. Direction V1 (clean + bold accents).</p>
+
+<div class="cards">
+  <!-- Option A: Cover immersive -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Cover photo -->
+        <div style="height: 200px; background: linear-gradient(135deg, #2a3050, #1a1f36); position: relative;">
+          <!-- Gradient overlay -->
+          <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);"></div>
+          <!-- Back button -->
+          <div style="position: absolute; top: 12px; left: 12px; width: 36px; height: 36px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">←</div>
+          <!-- Logo + name on cover -->
+          <div style="position: absolute; bottom: 14px; left: 14px; display: flex; align-items: center; gap: 10px;">
+            <div style="width: 48px; height: 48px; background: white; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4268FF; font-size: 16px;">SD</div>
+            <div>
+              <p style="margin: 0; font-size: 17px; font-weight: 800; color: white; letter-spacing: -0.3px; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">Sneakers District</p>
+              <p style="margin: 2px 0 0; font-size: 11px; color: rgba(255,255,255,0.7);">12 Rue des Filatiers · Toulouse</p>
+            </div>
+          </div>
+        </div>
+        <!-- Info zone -->
+        <div style="padding: 14px 16px;">
+          <!-- Stats row -->
+          <div style="display: flex; gap: 12px; align-items: center; font-size: 11px; color: #999;">
+            <span><strong style="color: #1a1a1a;">234</strong> abonnés</span>
+            <span>·</span>
+            <span><strong style="color: #1a1a1a;">84</strong> produits</span>
+            <span style="margin-left: auto; background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 10px;">Ouvert</span>
+          </div>
+          <!-- Buttons row -->
+          <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <div style="flex: 1; padding: 9px; background: #4268FF; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 700; color: white;">S'abonner</div>
+            <div style="width: 38px; height: 38px; border: 1px solid #e5e7eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px;">📸</div>
+            <div style="width: 38px; height: 38px; border: 1px solid #e5e7eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>
+            <div style="width: 38px; height: 38px; border: 1px solid #e5e7eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px;">↗</div>
+          </div>
+          <!-- Tabs -->
+          <div style="display: flex; margin-top: 14px; border-bottom: 1px solid #f3f4f6;">
+            <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 700; color: #1a1a1a; border-bottom: 2px solid #4268FF;">Catalogue</div>
+            <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; color: #ccc;">Promos</div>
+            <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; color: #ccc;">Avis</div>
+          </div>
+          <!-- Products grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div>
+              <div style="height: 130px; background: #f5f5f5; border-radius: 8px;"></div>
+              <p style="margin: 4px 0 0; font-size: 11px; font-weight: 700; color: #1a1a1a;">Air Force 1</p>
+              <p style="margin: 1px 0; font-size: 12px; font-weight: 800;">89 €</p>
+            </div>
+            <div>
+              <div style="height: 130px; background: #f5f5f5; border-radius: 8px;"></div>
+              <p style="margin: 4px 0 0; font-size: 11px; font-weight: 700; color: #1a1a1a;">NB 574</p>
+              <p style="margin: 1px 0; font-size: 12px; font-weight: 800;">109 €</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Cover immersive (actuel amélioré)</h3>
+      <p>Grande photo de couverture avec gradient, logo + nom superposé en bas. Stats, boutons sociaux, puis tabs Catalogue/Promos/Avis. Comme Instagram profil mais en clean.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Compact header -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 360px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        <!-- Compact header -->
+        <div style="padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f3f4f6;">
+          <div style="font-size: 16px;">←</div>
+          <p style="margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a1a; flex: 1;">Sneakers District</p>
+          <div style="font-size: 14px;">↗</div>
+        </div>
+        <!-- Profile row -->
+        <div style="padding: 16px; display: flex; gap: 14px;">
+          <!-- Avatar -->
+          <div style="width: 64px; height: 64px; background: #f0f0f0; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4268FF; font-size: 20px;">SD</div>
+          <!-- Info -->
+          <div style="flex: 1;">
+            <div style="display: flex; gap: 16px; font-size: 12px; color: #999;">
+              <div style="text-align: center;">
+                <p style="margin: 0; font-size: 16px; font-weight: 800; color: #1a1a1a;">84</p>
+                <p style="margin: 0; font-size: 10px;">produits</p>
+              </div>
+              <div style="text-align: center;">
+                <p style="margin: 0; font-size: 16px; font-weight: 800; color: #1a1a1a;">234</p>
+                <p style="margin: 0; font-size: 10px;">abonnés</p>
+              </div>
+              <div style="text-align: center;">
+                <p style="margin: 0; font-size: 16px; font-weight: 800; color: #4268FF;">4.8</p>
+                <p style="margin: 0; font-size: 10px;">★ avis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Address -->
+        <div style="padding: 0 16px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px;">📍</span>
+          <p style="margin: 0; font-size: 12px; color: #4268FF; font-weight: 500;">12 Rue des Filatiers, Toulouse · 300m</p>
+        </div>
+        <!-- Buttons -->
+        <div style="display: flex; gap: 8px; padding: 12px 16px;">
+          <div style="flex: 1; padding: 9px; background: #4268FF; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 700; color: white;">S'abonner</div>
+          <div style="flex: 1; padding: 9px; background: #f5f5f5; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 600; color: #1a1a1a;">J'arrive 👋</div>
+        </div>
+        <!-- Social row -->
+        <div style="display: flex; gap: 10px; padding: 0 16px 12px; justify-content: center;">
+          <span style="font-size: 16px;">📸</span>
+          <span style="font-size: 16px;">🎵</span>
+          <span style="font-size: 16px;">🌐</span>
+        </div>
+        <!-- Tabs -->
+        <div style="display: flex; border-bottom: 1px solid #f3f4f6; border-top: 1px solid #f3f4f6;">
+          <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 700; color: #1a1a1a; border-bottom: 2px solid #4268FF;">Catalogue</div>
+          <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; color: #ccc;">Promos</div>
+          <div style="flex: 1; text-align: center; padding: 8px 0; font-size: 12px; color: #ccc;">Avis</div>
+        </div>
+        <!-- Products -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px;">
+          <div>
+            <div style="height: 130px; background: #f5f5f5; border-radius: 8px;"></div>
+            <p style="margin: 4px 0 0; font-size: 11px; font-weight: 700; color: #1a1a1a;">Air Force 1</p>
+            <p style="margin: 1px 0; font-size: 12px; font-weight: 800;">89 €</p>
+          </div>
+          <div>
+            <div style="height: 130px; background: #f5f5f5; border-radius: 8px;"></div>
+            <p style="margin: 4px 0 0; font-size: 11px; font-weight: 700; color: #1a1a1a;">NB 574</p>
+            <p style="margin: 1px 0; font-size: 12px; font-weight: 800;">109 €</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Compact Instagram-style</h3>
+      <p>Pas de cover photo. Avatar carré arrondi + stats en colonnes (produits/abonnés/avis) comme Instagram. Bouton "J'arrive" visible immédiatement. Icônes sociales centrées. Plus compact, on arrive aux produits plus vite.</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+  <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Ma recommandation : A</h3>
+  <p style="margin: 0; font-size: 13px; line-height: 1.6;">
+    La cover immersive donne de la personnalité à chaque boutique. C'est ce qui différencie une fiche "vivante" d'une fiche "annuaire".
+    Le marchand a déjà sa photo de boutique — autant la montrer en grand.
+    <br><br>
+    Le B est plus efficace (on voit les produits plus vite) mais moins émotionnel. Pour une app de <strong>découverte locale</strong>, l'émotion compte.
+  </p>
+</div>

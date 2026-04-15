@@ -1,0 +1,127 @@
+<h2>Comment le consommateur utilise les tags ?</h2>
+<p class="subtitle">Les tags (marque, couleur, style...) sont extraits automatiquement des produits POS. Comment les rendre utiles au consommateur ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Filtres dans le panneau "Filtres" (style Vinted)</h3>
+      <p>Les tags alimentent les <strong>filtres contextuels</strong> du panneau de filtres. Le consommateur tape sur l'icône filtre → panneau slide → il voit Marque, Couleur, Genre, etc. avec les valeurs disponibles.</p>
+
+      <div style="margin-top: 12px; background: #f9fafb; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup — Panneau filtres</p>
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="margin: 0; font-weight: 700; font-size: 15px;">Filtres</p>
+            <span style="font-size: 12px; color: #4268FF; font-weight: 600; cursor: pointer;">Réinitialiser</span>
+          </div>
+
+          <p style="margin: 0 0 6px; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Marque</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+            <span style="background: #4268FF; color: white; padding: 4px 10px; border-radius: 16px; font-size: 11px;">Nike</span>
+            <span style="background: #f3f4f6; padding: 4px 10px; border-radius: 16px; font-size: 11px;">New Balance</span>
+            <span style="background: #f3f4f6; padding: 4px 10px; border-radius: 16px; font-size: 11px;">Adidas</span>
+            <span style="background: #f3f4f6; padding: 4px 10px; border-radius: 16px; font-size: 11px;">Puma</span>
+            <span style="background: #f3f4f6; padding: 4px 10px; border-radius: 16px; font-size: 11px;">Vans</span>
+          </div>
+
+          <p style="margin: 0 0 6px; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Couleur</p>
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: white; border: 2px solid #4268FF; box-shadow: inset 0 0 0 2px white;"></div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; border: 2px solid transparent;"></div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #dc2626; border: 2px solid transparent;"></div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #2563eb; border: 2px solid transparent;"></div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #16a34a; border: 2px solid transparent;"></div>
+          </div>
+
+          <p style="margin: 0 0 6px; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Prix</p>
+          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 14px;">
+            <input style="flex: 1; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px;" placeholder="Min €">
+            <span style="font-size: 12px; color: #9ca3af;">—</span>
+            <input style="flex: 1; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px;" placeholder="Max €">
+          </div>
+
+          <button style="width: 100%; padding: 10px; background: #4268FF; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px;">
+            Voir les résultats (42)
+          </button>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Pattern connu et éprouvé (Vinted, Zalando, ASOS)</li>
+          <li>Tout est groupé au même endroit</li>
+          <li>Nombre de résultats visible avant de valider</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Un tap de plus pour y accéder (icône filtre → panneau)</li>
+          <li>L'utilisateur doit savoir qu'il peut filtrer par marque</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Recherche intelligente (les tags nourrissent l'autocomplete)</h3>
+      <p>Le consommateur tape "Nike blanc" dans la barre de recherche → l'autocomplete propose des résultats basés sur les tags : produits Nike de couleur blanche disponibles à proximité.</p>
+
+      <div style="margin-top: 12px; background: #f9fafb; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup — Recherche</p>
+        <div style="background: white; border-radius: 10px; padding: 10px 14px; border: 1px solid #4268FF; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 14px; color: #9ca3af;">🔍</span>
+          <span style="font-size: 13px; color: #1a1a1a;">nike blanc</span>
+          <span style="font-size: 13px; color: #9ca3af; margin-left: auto;">✕</span>
+        </div>
+        <div style="background: white; border-radius: 10px; margin-top: 4px; border: 1px solid #e5e7eb; overflow: hidden;">
+          <div style="padding: 10px 14px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12px;">🏷️</span>
+            <div>
+              <p style="margin: 0; font-size: 13px; font-weight: 500;">Nike · Blanc</p>
+              <p style="margin: 2px 0 0; font-size: 11px; color: #6b7280;">23 produits dans 4 boutiques</p>
+            </div>
+          </div>
+          <div style="padding: 10px 14px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12px;">👟</span>
+            <div>
+              <p style="margin: 0; font-size: 13px; font-weight: 500;">Nike Air Force 1 Blanc</p>
+              <p style="margin: 2px 0 0; font-size: 11px; color: #6b7280;">8 en stock près de toi</p>
+            </div>
+          </div>
+          <div style="padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12px;">🏪</span>
+            <div>
+              <p style="margin: 0; font-size: 13px; font-weight: 500;">Sneakers District</p>
+              <p style="margin: 2px 0 0; font-size: 11px; color: #6b7280;">12 produits Nike · 500m</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Ultra naturel — on tape ce qu'on cherche</li>
+          <li>Combine marque + couleur + taille en une seule requête</li>
+          <li>Résultats mixtes : produits ET boutiques</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>L'utilisateur doit savoir quoi chercher (pas de découverte)</li>
+          <li>Nécessite un moteur de recherche plus avancé</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+  <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Ma recommandation : Les deux (A + B)</h3>
+  <p style="margin: 0; font-size: 13px; line-height: 1.6;">
+    Ce n'est pas un choix exclusif. Les tags alimentent <strong>à la fois</strong> :
+    <br><br>
+    <strong>1. Le panneau de filtres</strong> (quand on browse une catégorie → on affine par marque/couleur/prix)<br>
+    <strong>2. La recherche intelligente</strong> (quand on sait ce qu'on cherche → "nike blanc 42")
+    <br><br>
+    C'est exactement ce que fait Vinted : tu peux filtrer par marque dans les filtres, OU taper "Nike" dans la recherche. Les deux mènent aux mêmes résultats.
+  </p>
+</div>

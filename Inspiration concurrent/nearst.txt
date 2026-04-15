@@ -1,0 +1,50 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="NearSt" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NearSt — Connect in-store inventory to the web</title>
+    <meta name="description" content="The leading in-store inventory feed platform for retail. Connect your products to Google, Meta and more.">
+    <meta name="author" content="NearSt" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YVWG8XZ7EW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-YVWG8XZ7EW');
+    </script>
+
+    <!-- Fallback OG tags for social crawlers that don't execute JS -->
+    <meta property="og:title" content="NearSt — Connect in-store inventory to the web" />
+    <meta property="og:description" content="The leading in-store inventory feed platform for retail. Connect your products to Google, Meta and more." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://near.st" />
+    <meta property="og:image" content="https://near.st/og-image.png" />
+    <meta property="og:site_name" content="NearSt" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@nearst" />
+    <meta name="twitter:title" content="NearSt — Connect in-store inventory to the web" />
+    <meta name="twitter:description" content="The leading in-store inventory feed platform for retail. Connect your products to Google, Meta and more." />
+    <meta name="twitter:image" content="https://near.st/og-image.png" />
+
+    <!-- HubSpot Forms Embed -->
+    <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+  <script type="module" crossorigin src="/assets/index-DFs86kPD.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BLp9xK1U.css">
+<script defer src="/~flock.js" data-proxy-url="/~api/analytics"></script></head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

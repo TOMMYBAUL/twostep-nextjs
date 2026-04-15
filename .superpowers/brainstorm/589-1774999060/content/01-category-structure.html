@@ -1,0 +1,80 @@
+<h2>Comment structurer ~95 types de commerces ?</h2>
+<p class="subtitle">3 approches possibles — chacune avec des conséquences sur l'UX et la scalabilité</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Liste plate élargie (15-20 catégories)</h3>
+      <p>Comme aujourd'hui mais avec plus de choix : Mode, Chaussures, Bijoux, Beauté, Sport, Déco, Épicerie, <strong>+ Livres, Jouets, Tech, Vins, Musique, Animaux, Maison, Enfants, Auto...</strong></p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Simple à implémenter</li>
+          <li>L'utilisateur voit tout d'un coup</li>
+          <li>Pas de navigation profonde</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>20 pills horizontaux → ça déborde, on scroll sans fin</li>
+          <li>Un magasin de running vs un magasin de golf = tous les deux "Sport"</li>
+          <li>Ne scale pas au-delà de 20</li>
+          <li>Le marchand doit choisir UNE catégorie (ou on devine)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Arbre hiérarchique 2 niveaux (comme Vinted)</h3>
+      <p><strong>Niveau 1 :</strong> 10-12 grandes catégories (Mode, Sport, Tech, Maison...)<br>
+      <strong>Niveau 2 :</strong> Sous-catégories au clic (Mode → Femme / Homme / Enfant / Chaussures / Accessoires)</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Scale à l'infini — on ajoute des sous-catégories sans changer l'UI</li>
+          <li>Familier (Vinted, Amazon, Leboncoin)</li>
+          <li>Permet des filtres précis ("Sport > Running" vs "Sport > Golf")</li>
+          <li>Le marchand peut être classé plus finement</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Plus complexe côté UI (dropdown, drawer, ou page dédiée)</li>
+          <li>L'auto-catégorisation depuis le POS est plus dure (2 niveaux à deviner)</li>
+          <li>Risque d'arbre vide au début (sous-catégories sans produits)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Tags multiples + catégorie principale (hybride)</h3>
+      <p><strong>1 catégorie principale</strong> par marchand (parmi 12-15) + <strong>tags libres</strong> sur les produits (sneakers, vintage, bio, running, vegan...).<br>
+      L'utilisateur filtre par catégorie ET/OU par tags. Les tags se remplissent progressivement.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Flexible — un produit peut avoir plusieurs tags</li>
+          <li>Scale naturellement (nouveaux tags = 0 changement UI)</li>
+          <li>Les tags populaires remontent automatiquement</li>
+          <li>Le POS donne le nom → on extrait des tags ("Air Force" → sneakers, Nike)</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Moins structuré — le consommateur ne peut pas "browser par rayon"</li>
+          <li>Les tags doivent être normalisés (sinon chaos : "chaussure" vs "shoes" vs "sneakers")</li>
+          <li>Demande un système d'extraction/suggestion de tags</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+  <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Ma recommandation : B + C hybride</h3>
+  <p style="margin: 0; line-height: 1.6;">
+    <strong>Catégorie principale hiérarchique</strong> (2 niveaux, assignée au marchand) pour le browsing structuré +
+    <strong>Tags extraits automatiquement</strong> des noms de produits POS pour le filtrage fin.
+    <br><br>
+    Exemple : Marchand "Sneakers District" → Catégorie <code>Mode > Chaussures</code> + ses produits ont les tags auto-extraits <code>sneakers, Nike, New Balance, running</code>.
+    <br>Le consommateur peut browser "Mode > Chaussures" OU chercher le tag "Nike".
+  </p>
+</div>

@@ -1,15 +1,20 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const PLANS = {
+    pioneer: {
+        name: "Pionnier",
+        price: 1900, // cents — 30 premiers marchands
+        stripePriceId: process.env.STRIPE_PIONEER_PRICE_ID ?? "",
+    },
+    early: {
+        name: "Early Adopter",
+        price: 2900, // cents — marchands 31 à 50
+        stripePriceId: process.env.STRIPE_EARLY_PRICE_ID ?? "",
+    },
     standard: {
         name: "Standard",
-        price: 2900, // cents
+        price: 3900, // cents — à partir du 51e
         stripePriceId: process.env.STRIPE_STANDARD_PRICE_ID ?? "",
-    },
-    premium: {
-        name: "Premium",
-        price: 4900,
-        stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID ?? "",
     },
 } as const;
 

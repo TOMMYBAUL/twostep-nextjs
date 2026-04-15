@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Step — Carousels Meta Ads (Final)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0A0C14;
+    color: white;
+    padding: 40px 20px;
+  }
+
+  h1 { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+  h1 span { color: #4268FF; }
+  .subtitle { text-align: center; color: #8E96B0; font-size: 14px; margin-bottom: 48px; }
+
+  .concept { margin-bottom: 64px; }
+  .concept-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .concept-meta { font-size: 12px; color: #8E96B0; line-height: 1.6; margin-bottom: 16px; }
+  .concept-meta strong { color: #4268FF; }
+
+  .carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+  }
+  .carousel::-webkit-scrollbar { height: 4px; }
+  .carousel::-webkit-scrollbar-track { background: #1a1d2e; border-radius: 2px; }
+  .carousel::-webkit-scrollbar-thumb { background: #4268FF; border-radius: 2px; }
+
+  .card {
+    flex-shrink: 0;
+    width: 360px;
+    height: 360px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+
+  .card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Dark overlay for text readability on photos */
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px;
+  }
+
+  .overlay-bottom {
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.0) 100%);
+  }
+
+  .overlay-full {
+    background: rgba(0,0,0,0.55);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .overlay-dark-top {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.0) 70%, rgba(0,0,0,0.7) 100%);
+    justify-content: space-between;
+  }
+
+  .overlay-blue {
+    background: rgba(66,104,255,0.80);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Card without image (solid background) */
+  .card-solid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 32px;
+  }
+
+  .card-solid-blue { background: linear-gradient(135deg, #4268FF 0%, #2B4FE0 100%); }
+  .card-solid-dark { background: linear-gradient(135deg, #1A1F36 0%, #0A0C14 100%); border: 1px solid rgba(66,104,255,0.15); }
+  .card-solid-gradient { background: linear-gradient(135deg, #0A0C14 0%, #1a2340 50%, #4268FF 100%); }
+
+  /* Typography */
+  .card-num {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.6;
+    color: white;
+    z-index: 2;
+  }
+
+  .card-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-tag-warm {
+    background: rgba(66,104,255,0.15);
+    color: #4268FF;
+  }
+
+  .card-hook {
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: white;
+  }
+
+  .card-hook em {
+    font-style: normal;
+    color: #4268FF;
+  }
+
+  .card-hook-dark { color: #1A1F36; }
+  .card-hook-dark em { color: #4268FF; }
+
+  .card-body {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 8px;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .card-body-dark { color: #6B7280; }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4268FF;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 16px;
+  }
+
+  .card-cta-white {
+    background: white;
+    color: #1A1F36;
+  }
+
+  .card-logo {
+    position: absolute;
+    bottom: 14px;
+    right: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: -0.3px;
+    z-index: 2;
+  }
+  .card-logo span { color: #4268FF; }
+
+  .card-stat { font-size: 64px; font-weight: 900; color: #4268FF; letter-spacing: -3px; line-height: 1; }
+  .card-stat-label { font-size: 18px; font-weight: 700; margin-top: 8px; color: white; }
+
+  .framework-note {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(66,104,255,0.05);
+    border-left: 3px solid #4268FF;
+    border-radius: 0 8px 8px 0;
+    font-size: 11px;
+    color: #8E96B0;
+    line-height: 1.5;
+  }
+  .framework-note strong { color: #4268FF; }
+
+  .img-path { display: block; font-size: 9px; color: #555; text-align: center; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Meta Ads — 4 <span>Carousels</span> (Final)</h1>
+<p class="subtitle">Images generees + texte overlay — pret pour export</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- CONCEPT 1 — "Ta taille est a 200m" (Consommateur) -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-title">Concept 1 — "Ta taille est a 200m"</div>
+  <div class="concept-meta"><strong>Cible :</strong> 18-35 ans, Toulouse, mode/sneakers &middot; <strong>Hook :</strong> achat en ligne vs local</div>
+
+  <div class="carousel">
+
+    <!-- C1 Card 1 — HOOK (caroucel hook.png) -->
+    <div class="card">
+      <div class="card-num">1/5</div>
+      <img class="card-img" src="img-hook.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-hook">Tu attends <em>5 jours</em> un colis...<br>alors que c'est dispo <em>a 200m</em>.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C1 Card 2 — Rue Toulouse (caroucel.png) -->
+    <div class="card">
+      <div class="card-num">2/5</div>
+      <img class="card-img" src="img-rue.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-tag card-tag-warm">POURTANT</div>
+        <div class="card-hook">Les boutiques de ton quartier ont <em>exactement</em> ce que tu cherches.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C1 Card 3 — App (solid blue) -->
+    <div class="card card-solid card-solid-blue">
+      <div class="card-num">3/5</div>
+      <div class="card-tag" style="background:rgba(255,255,255,0.25);">DONC</div>
+      <div class="card-hook">On te montre le <em style="color:white;text-decoration:underline;text-underline-offset:4px;">stock reel</em> autour de toi.</div>
+      <div class="card-body" style="color:rgba(255,255,255,0.85);">Marques. Tailles. Dispo. En temps reel.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C1 Card 4 — Happy entering (caroucel 1.png) -->
+    <div class="card">
+      <div class="card-num">4/5</div>
+      <img class="card-img" src="img-entering.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-hook">Verifie. <em>Trouve.</em> Vas-y.</div>
+        <div class="card-body">Plus de colis. Plus d'attente. Tu l'as dans les mains aujourd'hui.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C1 Card 5 — CTA -->
+    <div class="card card-solid card-solid-dark">
+      <div class="card-num">5/5</div>
+      <div class="card-hook" style="font-size:22px;">Le stock de ton quartier,<br><em>a deux pas.</em></div>
+      <div class="card-cta">Essaie gratuitement →</div>
+      <div class="card-body" style="margin-top:12px;font-size:12px;opacity:0.5;">twostep.fr &middot; Gratuit</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- CONCEPT 2 — "Le trajet inutile" (Consommateur) -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-title">Concept 2 — "Le trajet inutile"</div>
+  <div class="concept-meta"><strong>Cible :</strong> 20-40 ans, Toulouse &middot; <strong>Hook :</strong> deplacement pour rien vs savoir avant</div>
+
+  <div class="carousel">
+
+    <!-- C2 Card 1 — Wasted trip (caroucel 2.png) -->
+    <div class="card">
+      <div class="card-num">1/4</div>
+      <img class="card-img" src="img-couch.png" alt="">
+      <div class="card-overlay overlay-dark-top">
+        <div style="padding-top:8px;"></div>
+        <div>
+          <div class="card-hook">Tu <em>commandes en ligne</em> par reflexe ?</div>
+          <div class="card-body">Et si tu pouvais savoir ce qui est dispo a cote... avant de commander ?</div>
+        </div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C2 Card 2 — Solution (solid blue) -->
+    <div class="card card-solid card-solid-blue">
+      <div class="card-num">2/4</div>
+      <div class="card-tag" style="background:rgba(255,255,255,0.25);">IMAGINE</div>
+      <div class="card-hook">Savoir <em style="color:white;text-decoration:underline;text-underline-offset:4px;">avant</em> si c'est dispo.</div>
+      <div class="card-body" style="color:rgba(255,255,255,0.85);">La bonne taille. Le bon magasin. Avant de bouger.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C2 Card 3 — Rue Toulouse (caroucel.png) -->
+    <div class="card">
+      <div class="card-num">3/4</div>
+      <img class="card-img" src="img-rue.png" alt="">
+      <div class="card-overlay overlay-blue">
+        <div class="card-hook" style="font-size:22px;">Stock <em style="color:white;">reel</em>. Temps <em style="color:white;">reel</em>.<br>Autour de <em style="color:white;">toi</em>.</div>
+        <div class="card-body" style="color:rgba(255,255,255,0.85);margin-top:12px;">Two-Step se connecte aux caisses des boutiques et te montre ce qui est vraiment disponible.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C2 Card 4 — CTA -->
+    <div class="card card-solid card-solid-gradient">
+      <div class="card-num">4/4</div>
+      <div class="card-hook" style="font-size:20px;">Ne commande plus <em>les yeux fermes</em>.</div>
+      <div class="card-cta">Decouvrir Two-Step →</div>
+      <div class="card-body" style="font-size:12px;margin-top:12px;opacity:0.5;">Gratuit &middot; twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- CONCEPT 3 — "90% invisibles" (Consommateur) -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-title">Concept 3 — "90% invisibles"</div>
+  <div class="concept-meta"><strong>Cible :</strong> 18-45 ans, Toulouse, sensibles commerce local &middot; <strong>Hook :</strong> stat choc + curiosite</div>
+
+  <div class="carousel">
+
+    <!-- C3 Card 1 — Invisible (caroucel 3.png) -->
+    <div class="card">
+      <div class="card-num">1/4</div>
+      <img class="card-img" src="img-invisible.png" alt="">
+      <div class="card-overlay overlay-full">
+        <div class="card-stat">90%</div>
+        <div class="card-stat-label">des boutiques sont <em style="color:#4268FF;font-style:normal;">invisibles</em> en ligne.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C3 Card 2 — Interieur magnifique (caroucel 5.png) -->
+    <div class="card">
+      <div class="card-num">2/4</div>
+      <img class="card-img" src="img-boutique.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-tag card-tag-warm">POURTANT</div>
+        <div class="card-hook">Elles ont <em>exactement</em> ce que tu cherches.</div>
+        <div class="card-body">La bonne marque, la bonne taille, le bon prix. A cote de chez toi.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C3 Card 3 — Solution (solid blue) -->
+    <div class="card card-solid card-solid-blue">
+      <div class="card-num">3/4</div>
+      <div class="card-hook" style="font-size:22px;">On les a <em style="color:white;text-decoration:underline;text-underline-offset:4px;">connectees</em>.</div>
+      <div style="width:40px;height:3px;background:rgba(255,255,255,0.4);border-radius:2px;margin:16px auto;"></div>
+      <div class="card-body" style="color:rgba(255,255,255,0.85);">Leur stock apparait en temps reel sur Two-Step. Tu cherches, tu trouves, tu y vas.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C3 Card 4 — CTA -->
+    <div class="card card-solid card-solid-gradient">
+      <div class="card-num">4/4</div>
+      <div class="card-hook" style="font-size:20px;">Decouvre ce qui t'attend <em>a deux pas</em>.</div>
+      <div class="card-cta">Explorer les boutiques →</div>
+      <div class="card-body" style="font-size:12px;margin-top:12px;opacity:0.5;">Gratuit &middot; twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- CONCEPT 4 — "Vos clients vous cherchent" (MARCHAND) -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-title">Concept 4 — "Vos clients vous cherchent" (MARCHAND)</div>
+  <div class="concept-meta"><strong>Cible :</strong> Commercants 30-55 ans, Toulouse &middot; <strong>Hook :</strong> ventes perdues au profit du web &middot; <strong>Usage :</strong> Meta Ads OU montrer en visite terrain</div>
+
+  <div class="carousel">
+
+    <!-- C4 Card 1 — Boutique vide (caroucel 4.png) -->
+    <div class="card">
+      <div class="card-num">1/5</div>
+      <img class="card-img" src="img-owner-alone.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-hook">Vos clients vous cherchent <em>en ligne</em>...</div>
+        <div class="card-body">Ils tapent le produit. La marque. La taille.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C4 Card 2 — Probleme (solid dark) -->
+    <div class="card card-solid card-solid-dark">
+      <div class="card-num">2/5</div>
+      <div class="card-tag" style="background:rgba(255,66,66,0.15);color:#FF6B6B;">MAIS</div>
+      <div class="card-hook">Ils trouvent les <em style="color:#FF6B6B;">boutiques en ligne</em> a la place.</div>
+      <div class="card-body">Chaque recherche sans resultat local = une vente perdue pour vous.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C4 Card 3 — Solution (solid blue) -->
+    <div class="card card-solid card-solid-blue">
+      <div class="card-num">3/5</div>
+      <div class="card-tag" style="background:rgba(255,255,255,0.25);">DONC</div>
+      <div class="card-hook" style="font-size:20px;">Two-Step connecte <em style="color:white;text-decoration:underline;text-underline-offset:4px;">votre caisse</em>.</div>
+      <div class="card-body" style="color:rgba(255,255,255,0.85);">Vos produits apparaissent automatiquement. Zero saisie. 2 minutes.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C4 Card 4 — Boutique pleine (caroucel 6.png) -->
+    <div class="card">
+      <div class="card-num">4/5</div>
+      <img class="card-img" src="img-busy.png" alt="">
+      <div class="card-overlay overlay-bottom">
+        <div class="card-tag" style="background:rgba(66,255,130,0.15);color:#42FF82;">RESULTAT</div>
+        <div class="card-hook"><em>Ils viennent</em> chez vous.</div>
+        <div class="card-body">Les clients voient votre stock, verifient leur taille, et se deplacent.</div>
+      </div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- C4 Card 5 — CTA pricing -->
+    <div class="card card-solid card-solid-dark">
+      <div class="card-num">5/5</div>
+      <div class="card-hook" style="font-size:22px;"><em>Gratuit</em> pendant 3 mois.</div>
+      <div class="card-body" style="opacity:1;font-size:15px;font-weight:600;margin-top:8px;">Puis 49 EUR/mois. Annulable a tout moment.</div>
+      <div class="card-cta">Connecter ma boutique →</div>
+      <div class="card-body" style="font-size:12px;opacity:0.5;margin-top:8px;">twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

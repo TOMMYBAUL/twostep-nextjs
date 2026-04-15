@@ -1,0 +1,85 @@
+<h2>Dashboard — Page Réglages</h2>
+<p class="subtitle">Toutes les configurations du marchand. Sections empilées, formulaires sobres.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <div style="max-width: 500px; margin: 0 auto; background: #fafafa; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb; padding: 24px;">
+        <!-- Title -->
+        <p style="margin: 0 0 20px; font-size: 18px; font-weight: 800; letter-spacing: -0.4px; color: #1a1a1a;">Réglages</p>
+
+        <!-- Section 1: POS -->
+        <div style="background: white; border: 1px solid #f0f0f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1a1a1a;">Connexion caisse</p>
+            <span style="background: #e8f5e9; color: #2e7d32; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">Connecté</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #fafafa; border-radius: 8px;">
+            <div style="width: 32px; height: 32px; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px;">□</div>
+            <div style="flex: 1;">
+              <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1a1a1a;">Square</p>
+              <p style="margin: 1px 0 0; font-size: 10px; color: #aaa;">Dernière sync il y a 3 min</p>
+            </div>
+            <span style="font-size: 11px; font-weight: 600; color: #4268FF;">Sync ↻</span>
+          </div>
+        </div>
+
+        <!-- Section 2: Social links -->
+        <div style="background: white; border: 1px solid #f0f0f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+          <p style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #1a1a1a;">Réseaux sociaux & Site web</p>
+          <p style="margin: 0 0 14px; font-size: 11px; color: #aaa;">Visibles sur votre page boutique</p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div>
+              <p style="margin: 0 0 4px; font-size: 11px; font-weight: 600; color: #888;">Instagram</p>
+              <div style="padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 12px; color: #1a1a1a;">@sneakers_district</div>
+            </div>
+            <div>
+              <p style="margin: 0 0 4px; font-size: 11px; font-weight: 600; color: #888;">TikTok</p>
+              <div style="padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 12px; color: #ccc;">@votre_boutique</div>
+            </div>
+            <div>
+              <p style="margin: 0 0 4px; font-size: 11px; font-weight: 600; color: #888;">Site web</p>
+              <div style="padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 12px; color: #ccc;">https://</div>
+            </div>
+          </div>
+          <span style="display: inline-block; margin-top: 12px; padding: 7px 14px; background: #4268FF; border-radius: 8px; font-size: 11px; font-weight: 600; color: white;">Enregistrer</span>
+        </div>
+
+        <!-- Section 3: Account -->
+        <div style="background: white; border: 1px solid #f0f0f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+          <p style="margin: 0 0 14px; font-size: 14px; font-weight: 700; color: #1a1a1a;">Compte</p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div>
+              <p style="margin: 0 0 4px; font-size: 11px; font-weight: 600; color: #888;">Email</p>
+              <div style="padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 12px; color: #aaa; background: #fafafa;">thomas@sneakersdistrict.fr</div>
+            </div>
+            <div>
+              <p style="margin: 0 0 4px; font-size: 11px; font-weight: 600; color: #888;">Mot de passe</p>
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1; padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 12px; color: #ccc;">••••••••</div>
+                <span style="padding: 8px 12px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 11px; font-weight: 600; color: #666;">Modifier</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Photos -->
+        <div style="background: white; border: 1px solid #f0f0f0; border-radius: 10px; padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1a1a1a;">Photos produits</p>
+              <p style="margin: 2px 0 0; font-size: 11px; color: #aaa;">Amélioration automatique par IA</p>
+            </div>
+            <span style="padding: 7px 14px; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 11px; font-weight: 600; color: #666;">Lancer ↻</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Réglages — Sections empilées</h3>
+      <p>Chaque section est une carte blanche avec bordure fine. Sections : Connexion caisse (avec état), Réseaux sociaux (3 champs), Compte (email + mot de passe), Photos (amélioration IA). Formulaires minimalistes, labels en gris, inputs avec bordure claire.</p>
+    </div>
+  </div>
+</div>

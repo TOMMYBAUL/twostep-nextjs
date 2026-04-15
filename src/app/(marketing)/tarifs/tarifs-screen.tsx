@@ -12,83 +12,85 @@ import { LenisProvider } from "../components/lenis-provider";
 
 const tiers = [
     {
-        name: "Essai gratuit",
-        description: "3 mois pour tester Two-Step sans rien payer.",
-        price: "0€",
-        priceDetail: "pendant 3 mois",
+        name: "Pionnier",
+        description: "Les 30 premiers marchands. Un tarif exclusif, verrouillé à vie.",
+        price: "19€",
+        priceDetail: "/ mois",
         features: [
+            { text: "2 mois d'essai gratuit", included: true },
             { text: "Produits illimités", included: true },
             { text: "Import catalogue CSV/Excel", included: true },
             { text: "Enrichissement photos IA", included: true },
             { text: "Page boutique Two-Step", included: true },
             { text: "Visible sur la carte", included: true },
             { text: "Notifications \"J'arrive\"", included: true },
-            { text: "Dashboard gestion de stock", included: true },
+            { text: "Google Shopping & Google Maps", included: true },
+            { text: "Import factures fournisseur", included: true },
+            { text: "Synchro POS automatique (si compatible)", included: true },
+            { text: "Support prioritaire", included: true },
         ],
-        cta: "Commencer gratuitement",
+        cta: "Essayer 2 mois gratuit",
+        href: "/auth/login?role=merchant",
+        highlighted: true,
+        badge: "30 places",
+    },
+    {
+        name: "Early Adopter",
+        description: "Du 31ᵉ au 50ᵉ marchand. Tout inclus, même fonctionnalités.",
+        price: "29€",
+        priceDetail: "/ mois",
+        features: [
+            { text: "2 mois d'essai gratuit", included: true },
+            { text: "Toutes les fonctionnalités Pionnier", included: true },
+            { text: "Enrichissement IA photos + catégories", included: true },
+            { text: "Récap du jour (décrémentation simplifiée)", included: true },
+            { text: "Dashboard gestion de stock", included: true },
+            { text: "Support par email", included: true },
+        ],
+        cta: "Essayer 2 mois gratuit",
         href: "/auth/login?role=merchant",
         highlighted: false,
         badge: null,
     },
     {
-        name: "Two-Step",
-        description: "Tout inclus. Un prix. Compatible avec tous les commerces.",
-        price: "15€",
+        name: "Standard",
+        description: "À partir du 51ᵉ marchand. Le tarif normal Two-Step.",
+        price: "39€",
         priceDetail: "/ mois",
         features: [
-            { text: "Tout l'essai gratuit, sans limite", included: true },
-            { text: "Google Shopping & Google Maps", included: true },
-            { text: "Import factures fournisseur", included: true },
-            { text: "Synchro POS automatique (si compatible)", included: true },
-            { text: "Enrichissement IA photos + catégories", included: true },
-            { text: "Récap du jour (décrémentation simplifiée)", included: true },
-            { text: "Support par email", included: true },
-        ],
-        cta: "Essayer 3 mois gratuit",
-        href: "/auth/login?role=merchant",
-        highlighted: true,
-        badge: "Tout inclus",
-    },
-    {
-        name: "Business",
-        description: "Pour les enseignes avec plusieurs points de vente.",
-        price: "Sur mesure",
-        priceDetail: null,
-        features: [
-            { text: "Tout le plan Two-Step", included: true },
-            { text: "Multi-boutiques", included: true },
-            { text: "Rapports consolidés", included: true },
+            { text: "2 mois d'essai gratuit", included: true },
+            { text: "Toutes les fonctionnalités incluses", included: true },
+            { text: "Multi-boutiques disponible", included: true },
             { text: "Intégration POS sur mesure", included: true },
             { text: "Onboarding personnalisé", included: true },
-            { text: "Gestionnaire de compte dédié", included: true },
-            { text: "SLA garanti", included: true },
+            { text: "Support par email", included: true },
         ],
-        cta: "Nous contacter",
-        href: "mailto:contact@twostep.fr",
+        cta: "Essayer 2 mois gratuit",
+        href: "/auth/login?role=merchant",
         highlighted: false,
         badge: null,
     },
 ];
 
 const comparisons = [
-    { feature: "Produits", free: "Illimités", pro: "Illimités", business: "Illimités" },
+    { feature: "Produits illimités", free: true, pro: true, business: true },
     { feature: "Import catalogue CSV/Excel", free: true, pro: true, business: true },
     { feature: "Enrichissement photos IA", free: true, pro: true, business: true },
     { feature: "Page boutique", free: true, pro: true, business: true },
     { feature: "Visible sur la carte", free: true, pro: true, business: true },
     { feature: "Notifications \"J'arrive\"", free: true, pro: true, business: true },
+    { feature: "Google Shopping & Maps", free: true, pro: true, business: true },
+    { feature: "Import factures fournisseur", free: true, pro: true, business: true },
+    { feature: "Synchro POS automatique", free: true, pro: true, business: true },
     { feature: "Récap du jour", free: true, pro: true, business: true },
-    { feature: "Google Shopping & Maps", free: false, pro: true, business: true },
-    { feature: "Import factures fournisseur", free: false, pro: true, business: true },
-    { feature: "Synchro POS automatique", free: false, pro: true, business: true },
     { feature: "Multi-boutiques", free: false, pro: false, business: true },
-    { feature: "Support", free: "Email", pro: "Email", business: "Dédié" },
+    { feature: "Support", free: "Prioritaire", pro: "Email", business: "Email" },
 ];
 
 const faqs = [
     {
         q: "Comment fonctionne l'essai gratuit ?",
-        a: "Vous avez 3 mois pour tester toutes les fonctionnalités gratuitement. Pas de carte bancaire requise. À la fin de l'essai, vous choisissez de continuer à 15€/mois ou non.",
+        a: "Vous commencez par 2 mois gratuits, sans carte bancaire. Votre tarif ensuite dépend de quand vous nous rejoignez : les 30 premiers marchands paient 19€/mois (verrouillé à vie), puis c'est 29€, puis 39€. Plus vous venez tôt, moins vous payez — et ce tarif ne changera jamais.",
     },
     {
         q: "Mon logiciel de caisse est-il compatible ?",
@@ -176,7 +178,7 @@ export default function TarifsScreen() {
                 <section className="px-6 pt-28 pb-10 text-center md:px-12 md:pt-36 md:pb-14">
                     <motion.div {...slideUp(0)}>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary px-3.5 py-1 text-[12px] font-semibold text-brand-secondary">
-                            Gratuit pendant 3 mois
+                            Plus vous arrivez tôt, moins vous payez
                         </span>
                     </motion.div>
                     <motion.h1
@@ -287,9 +289,9 @@ export default function TarifsScreen() {
                             <thead>
                                 <tr className="border-b border-secondary bg-secondary">
                                     <th className="px-5 py-4 font-semibold text-primary">Fonctionnalité</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-primary">Découverte</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-brand-secondary">Pro</th>
-                                    <th className="px-5 py-4 text-center font-semibold text-primary">Business</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-brand-secondary">Pionnier — 19€</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-primary">Early — 29€</th>
+                                    <th className="px-5 py-4 text-center font-semibold text-primary">Standard — 39€</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -335,7 +337,7 @@ export default function TarifsScreen() {
                         Prêt à rendre votre stock visible ?
                     </h2>
                     <p className="mt-3 text-[14px] text-white/50">
-                        3 mois gratuits. Sans engagement. Compatible avec tous les commerces.
+                        2 mois gratuits. Sans engagement. Tarif verrouillé à vie.
                     </p>
                     <div className="mt-6">
                         <Link href="/onboarding" className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover">

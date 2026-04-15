@@ -141,7 +141,7 @@ const posProviders = [
 const stats = [
     { value: "100%", label: "des commerces compatibles" },
     { value: "10 min", label: "pour \u00eatre en ligne" },
-    { value: "15\u20ac", label: "par mois, tout inclus" },
+    { value: "19\u20ac", label: "par mois pour les pionniers" },
 ];
 
 const beforeAfter = {
@@ -598,7 +598,7 @@ export default function ProduitPage() {
                             Pr&ecirc;t &agrave; rendre votre stock visible ?
                         </h2>
                         <p className="mt-3 text-[14px] text-white/50">
-                            3 mois gratuits. 15&euro;/mois ensuite. Sans engagement.
+                            2 mois gratuits. &Agrave; partir de 19&euro;/mois ensuite. Tarif verrouill&eacute; &agrave; vie.
                         </p>
                         <div className="mt-6">
                             <Link

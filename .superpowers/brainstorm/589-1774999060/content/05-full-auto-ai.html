@@ -1,0 +1,137 @@
+<h2>Full auto par IA — Le marchand ne choisit rien</h2>
+<p class="subtitle">Le POS se connecte, les produits tombent, l'IA catégorise tout. Zéro intervention.</p>
+
+<div style="margin-top: 1.5rem;">
+
+  <!-- Le pipeline -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 16px;">Le pipeline en 4 étapes</h3>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="min-width: 32px; height: 32px; background: #4268FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+        <div>
+          <p style="margin: 0; font-weight: 600; font-size: 14px;">POS sync — Les produits arrivent</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">200 produits avec nom, prix, EAN, photo. Déjà implémenté.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="min-width: 32px; height: 32px; background: #4268FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+        <div>
+          <p style="margin: 0; font-weight: 600; font-size: 14px;">EAN lookup — La marque et la catégorie standard</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">UPCitemdb donne "Nike", "Air Force 1", catégorie "Footwear". Déjà implémenté.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="min-width: 32px; height: 32px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+        <div>
+          <p style="margin: 0; font-weight: 600; font-size: 14px;">🆕 IA batch — Catégorisation intelligente</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">On envoie les 200 noms de produits en UN appel à Claude Haiku. L'IA retourne pour chaque produit :</p>
+          <div style="margin-top: 8px; padding: 10px; background: #f3f4f6; border-radius: 8px; font-family: monospace; font-size: 11px; line-height: 1.8;">
+            Entrée : "AIR FORCE 1 07 BLC 42"<br>
+            → catégorie: <strong>Chaussures</strong><br>
+            → sous-catégorie: <strong>Sneakers</strong><br>
+            → marque: <strong>Nike</strong><br>
+            → genre: <strong>Mixte</strong><br>
+            → couleur: <strong>Blanc</strong><br>
+            → taille: <strong>42</strong><br>
+            → tags: <strong>[sneakers, nike, blanc, air-force]</strong>
+          </div>
+          <div style="margin-top: 8px; padding: 10px; background: #f3f4f6; border-radius: 8px; font-family: monospace; font-size: 11px; line-height: 1.8;">
+            Entrée : "Bougie Diptyque Baies 190g"<br>
+            → catégorie: <strong>Maison & Déco</strong><br>
+            → sous-catégorie: <strong>Bougies</strong><br>
+            → marque: <strong>Diptyque</strong><br>
+            → tags: <strong>[bougie, parfum-intérieur, diptyque]</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="min-width: 32px; height: 32px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
+        <div>
+          <p style="margin: 0; font-weight: 600; font-size: 14px;">🆕 Catégorie marchand auto-déduite</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">On regarde la catégorie la plus fréquente parmi ses produits → c'est sa catégorie principale. Si 80% des produits sont "Chaussures", le marchand est classé "Chaussures".</p>
+          <div style="margin-top: 8px; padding: 10px; background: #f3f4f6; border-radius: 8px; font-family: monospace; font-size: 11px; line-height: 1.8;">
+            Sneakers District : 180 chaussures, 15 accessoires, 5 vêtements<br>
+            → catégorie marchand : <strong>Chaussures</strong> (90%)<br>
+            → catégories secondaires : <strong>Bijoux & Accessoires, Mode</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coût -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 12px;">💸 Combien ça coûte ?</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+      <div style="padding: 12px; background: #f9fafb; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; font-size: 24px; font-weight: 700; color: #4268FF;">~0.01€</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">par marchand<br>(200 produits, 1 appel batch)</p>
+      </div>
+      <div style="padding: 12px; background: #f9fafb; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; font-size: 24px; font-weight: 700; color: #4268FF;">~1€</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">pour 100 marchands<br>(lancement Toulouse)</p>
+      </div>
+      <div style="padding: 12px; background: #f9fafb; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; font-size: 24px; font-weight: 700; color: #4268FF;">1 seule fois</p>
+        <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">par produit<br>(résultat en cache, re-run si nom change)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filet de sécurité -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; margin-bottom: 16px;">
+    <h3 style="margin: 0 0 12px;">🛡️ Filet de sécurité</h3>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: flex-start; gap: 10px;">
+        <span style="color: #10b981; font-size: 16px;">✓</span>
+        <p style="margin: 0; font-size: 13px;"><strong>Confiance score</strong> — L'IA retourne un score de confiance. Si < 70%, le produit est marqué "Non catégorisé" → le marchand peut corriger dans le dashboard.</p>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 10px;">
+        <span style="color: #10b981; font-size: 16px;">✓</span>
+        <p style="margin: 0; font-size: 13px;"><strong>Correction marchand</strong> — Une page "Vérifier vos catégories" dans le dashboard. Le marchand voit les catégories auto-assignées et peut corriger d'un tap. Mais il n'est pas obligé.</p>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 10px;">
+        <span style="color: #10b981; font-size: 16px;">✓</span>
+        <p style="margin: 0; font-size: 13px;"><strong>Fallback règles</strong> — Si l'IA est indisponible, un système de mots-clés basique fait le travail (moins précis mais suffisant).</p>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 10px;">
+        <span style="color: #10b981; font-size: 16px;">✓</span>
+        <p style="margin: 0; font-size: 13px;"><strong>Apprentissage</strong> — Chaque correction du marchand améliore le système pour les marchands suivants (mots-clés → catégorie confirmée).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UX marchand -->
+  <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+    <h3 style="margin: 0 0 12px;">🎯 L'expérience marchand</h3>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px 8px 2px 2px;">
+        <span style="font-size: 18px;">1️⃣</span>
+        <p style="margin: 0; font-size: 13px;">Connecte son POS <span style="color: #6b7280;">(déjà implémenté)</span></p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 2px;">
+        <span style="font-size: 18px;">2️⃣</span>
+        <p style="margin: 0; font-size: 13px;">Ses produits se synchronisent <span style="color: #6b7280;">(déjà implémenté)</span></p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f0fdf4; border-radius: 2px; border: 1px solid #bbf7d0;">
+        <span style="font-size: 18px;">3️⃣</span>
+        <p style="margin: 0; font-size: 13px; font-weight: 600;">L'IA catégorise tout en ~30 secondes <span style="color: #10b981;">(NOUVEAU)</span></p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 2px;">
+        <span style="font-size: 18px;">4️⃣</span>
+        <p style="margin: 0; font-size: 13px;">Sa boutique est visible avec les bons filtres <span style="color: #6b7280;">(automatique)</span></p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 2px 2px 8px 8px;">
+        <span style="font-size: 18px;">5️⃣</span>
+        <p style="margin: 0; font-size: 13px; color: #6b7280;">(Optionnel) Il vérifie/corrige les catégories dans le dashboard</p>
+      </div>
+    </div>
+  </div>
+
+</div>

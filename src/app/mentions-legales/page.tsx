@@ -23,8 +23,10 @@ export default function MentionsLegalesPage() {
                             <li><strong>Forme juridique :</strong> Micro-entreprise (Entrepreneur individuel)</li>
                             <li><strong>Siège social :</strong> 30 route de Blagnac, 31200 Toulouse, France</li>
                             <li><strong>Activité :</strong> Édition et exploitation d'une plateforme numérique (SaaS) de mise en relation entre commerces locaux et consommateurs pour la consultation de stocks en temps réel</li>
-                            <li><strong>SIRET :</strong> immatriculation en cours auprès du CFE — numéro de dossier J00228703674. Cette page sera mise à jour dès réception du numéro SIRET définitif.</li>
-                            <li><strong>Date de création :</strong> 25 mars 2026</li>
+                            <li><strong>RCS :</strong> 102 932 290 R.C.S. Toulouse</li>
+                            <li><strong>N° de gestion :</strong> 2026A01800</li>
+                            <li><strong>Date d&apos;immatriculation :</strong> 13 avril 2026</li>
+                            <li><strong>Date de commencement d&apos;activité :</strong> 25 mars 2026</li>
                             <li><strong>Directeur de la publication :</strong> Thomas Bauland</li>
                             <li><strong>Email :</strong> contact@twostep.fr</li>
                             <li><strong>Téléphone :</strong> 07 83 48 87 60</li>
@@ -62,14 +64,10 @@ export default function MentionsLegalesPage() {
                             conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi
                             Informatique et Libertés du 6 janvier 1978 modifiée.
                         </p>
-                        <p className="mt-2"><strong>Données collectées :</strong></p>
-                        <ul className="mt-1 list-disc pl-5 space-y-1">
-                            <li>Marchands : nom, adresse, email, téléphone, données de stock et produits via POS</li>
-                            <li>Consommateurs : email, préférences, historique de navigation</li>
-                        </ul>
-                        <p className="mt-2"><strong>Finalités :</strong> fourniture du service, amélioration de l'expérience, communication.</p>
-                        <p className="mt-2"><strong>Durée de conservation :</strong> les données sont conservées pendant la durée de la relation commerciale et 3 ans après la dernière activité.</p>
-                        <p className="mt-2"><strong>Droits :</strong> conformément au RGPD, vous disposez d'un droit d'accès, de rectification, de suppression, de portabilité et d'opposition. Pour exercer ces droits : <strong>contact@twostep.fr</strong></p>
+                        <p className="mt-2">
+                            Pour le détail complet des traitements, consultez notre{" "}
+                            <a href="/confidentialite" className="text-[#4268FF] underline">politique de confidentialité</a>.
+                        </p>
                     </section>
 
                     <section>
@@ -98,7 +96,7 @@ export default function MentionsLegalesPage() {
                         </p>
                     </section>
 
-                    <p className="text-xs text-[#8E96B0] mt-12">Dernière mise à jour : mars 2026</p>
+                    <p className="text-xs text-[#8E96B0] mt-12">Dernière mise à jour : avril 2026</p>
                 </div>
             </div>
         </div>

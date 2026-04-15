@@ -1,0 +1,215 @@
+<h2>Homepage — Motion design intégré</h2>
+<p class="subtitle">Même structure validée, mais avec les effets de mouvement notés sur chaque section. Inspiré StringTune (sobre, pas excessif).</p>
+
+<div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0;">
+
+  <!-- Section 1: Hero -->
+  <div style="background: linear-gradient(135deg, #1a1f36, #2a3050); padding: 48px 24px; text-align: center; position: relative; border-radius: 16px 16px 0 0; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+      <p style="margin: 0; font-size: 14px; font-weight: 800; color: white;">Two-Step</p>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span style="font-size: 12px; color: rgba(255,255,255,0.6);">Comment ça marche</span>
+        <span style="font-size: 12px; color: rgba(255,255,255,0.6);">Marchands</span>
+        <span style="padding: 6px 14px; background: #4268FF; border-radius: 8px; font-size: 12px; font-weight: 600; color: white;">Découvrir</span>
+      </div>
+    </div>
+    <div style="margin-top: 32px;">
+      <p style="margin: 0; font-size: 28px; font-weight: 900; color: white; letter-spacing: -0.8px; line-height: 1.15;">Le stock de ton quartier,<br>à deux pas de chez toi</p>
+      <p style="margin: 14px 0 0; font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 400px; margin-left: auto; margin-right: auto;">Découvre ce qui est disponible maintenant dans les boutiques autour de toi.</p>
+      <div style="margin-top: 20px;">
+        <span style="display: inline-block; background: #4268FF; color: white; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 700;">Découvrir les boutiques →</span>
+      </div>
+    </div>
+  </div>
+  <!-- Motion notes -->
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — HERO</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Parallax fond</strong> — le background gradient bouge à 0.3× la vitesse du scroll. Le texte reste fixe. Crée de la profondeur.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Apparition du titre</strong> — slide-up spring (y: 80→0, stiffness: 200, damping: 30) avec delay 0.2s. Le sous-titre suit à +0.1s. Le CTA à +0.2s.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Navbar</strong> — transparente au début, fond glassmorphism (backdrop-blur: 20px) quand on scroll. Transition 300ms.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Librairie</strong> — Framer Motion <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useScroll</code> + <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useTransform</code> pour le parallax</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Ticker -->
+  <div style="background: #1a1f36; padding: 14px 24px; overflow: hidden; white-space: nowrap;">
+    <span style="font-size: 13px; color: rgba(255,255,255,0.25); letter-spacing: 4px; font-weight: 700;">SNEAKERS DISTRICT · LA FRIPERIE TOULOUSAINE · CAVE VICTOR HUGO · LIBRAIRIE OMBRES · SPORT CONCEPT ·</span>
+  </div>
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — TICKER</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Défilement infini CSS</strong> — @keyframes translate3d, durée ~22s, linear, contenu dupliqué pour boucle sans saut. Pattern TGTG exact.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">GPU optimisé</strong> — will-change: transform, backface-visibility: hidden, perspective: 1000px</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Comment ça marche (STICKY) -->
+  <div style="background: white; padding: 32px 24px;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #4268FF;">COMMENT ÇA MARCHE</p>
+    <p style="margin: 8px 0 20px; font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: #1a1a1a;">En 3 étapes</p>
+
+    <!-- Fake split layout -->
+    <div style="display: flex; gap: 24px;">
+      <!-- Left: phone mockup placeholder -->
+      <div style="width: 140px; flex-shrink: 0;">
+        <div style="width: 140px; height: 260px; background: #f5f5f5; border-radius: 20px; border: 2px solid #e5e7eb; display: flex; align-items: center; justify-content: center; position: relative;">
+          <span style="font-size: 10px; color: #ccc; text-align: center; padding: 8px;">📱 Mockup sticky<br>change à chaque étape</span>
+          <div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: #e0e0e0; border-radius: 2px;"></div>
+        </div>
+      </div>
+      <!-- Right: steps -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+        <div style="padding: 14px; background: #fafafa; border-radius: 12px; border-left: 3px solid #4268FF;">
+          <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1a1a1a;">1. Cherche ton produit</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #999;">Par catégorie, marque ou nom</p>
+        </div>
+        <div style="padding: 14px; background: #fafafa; border-radius: 12px; opacity: 0.4;">
+          <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1a1a1a;">2. Vérifie le stock en temps réel</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #999;">Disponible maintenant, pas "en théorie"</p>
+        </div>
+        <div style="padding: 14px; background: #fafafa; border-radius: 12px; opacity: 0.4;">
+          <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1a1a1a;">3. Vas-y en 2 minutes</p>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #999;">Préviens le marchand avec "J'arrive"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — COMMENT ÇA MARCHE (le plus complexe)</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Mockup téléphone sticky</strong> — position: sticky, top: 80px. Le téléphone reste fixe pendant que les 3 étapes scrollent à droite (desktop). Sur mobile, les étapes scrollent verticalement et le mockup change entre chaque.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Changement d'écran</strong> — quand l'étape 2 entre dans le viewport, le mockup fait un crossfade (opacity 300ms) vers un screenshot de l'écran stock. Étape 3 → screenshot "J'arrive". Pattern Frameship.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Étape active</strong> — l'étape en viewport a opacity: 1 + border-left bleue. Les autres ont opacity: 0.4. Transition douce 200ms.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Librairie</strong> — Framer Motion <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useInView</code> pour détecter l'étape visible + CSS sticky pour le mockup</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Stats -->
+  <div style="background: #1a1f36; padding: 32px 24px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
+      <div>
+        <p style="margin: 0; font-size: 28px; font-weight: 900; color: white;">50+</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: rgba(255,255,255,0.5);">Boutiques</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-size: 28px; font-weight: 900; color: white;">5 000+</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: rgba(255,255,255,0.5);">Produits</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-size: 28px; font-weight: 900; color: #4268FF;">Toulouse</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: rgba(255,255,255,0.5);">Et bientôt plus</p>
+      </div>
+    </div>
+  </div>
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — STATS</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Compteurs animés</strong> — quand la section entre dans le viewport, les chiffres montent de 0 à la valeur réelle en ~1.5s. Easing: cubic-bezier(0.35, 0.35, 0, 1). Pas de spring ici — un mouvement linéaire qui ralentit à la fin.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Stagger</strong> — chaque compteur démarre avec +150ms de décalage (gauche → droite)</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Chiffres réels</strong> — tirés de l'API, pas hardcodés. On a déjà les compteurs réactifs sur la homepage actuelle.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Pour les marchands -->
+  <div style="background: white; padding: 32px 24px;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #4268FF;">VOUS ÊTES COMMERÇANT ?</p>
+    <p style="margin: 8px 0 0; font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: #1a1a1a;">Rendez votre stock visible</p>
+    <p style="margin: 8px 0 16px; font-size: 13px; color: #999; line-height: 1.6;">Connectez votre caisse en 2 minutes. Gratuit pour commencer.</p>
+    <span style="display: inline-block; background: #1a1a1a; color: white; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700;">Inscrire ma boutique →</span>
+  </div>
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — MARCHANDS</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Slide-up standard</strong> — même spring que partout (stiffness: 200, damping: 30, y: 50→0). Le titre apparaît, suivi du texte (+100ms), puis du CTA (+200ms).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: CTA final -->
+  <div style="background: #4268FF; padding: 40px 24px; text-align: center; border-radius: 0 0 16px 16px;">
+    <p style="margin: 0; font-size: 22px; font-weight: 900; color: white; letter-spacing: -0.5px;">Prêt à découvrir<br>ton quartier ?</p>
+    <p style="margin: 10px 0 0; font-size: 13px; color: rgba(255,255,255,0.7);">Gratuit, sans compte, en 2 secondes.</p>
+    <div style="margin-top: 20px;">
+      <span style="display: inline-block; background: white; color: #4268FF; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 800;">Découvrir →</span>
+    </div>
+  </div>
+  <div style="background: #0d1117; padding: 10px 16px; border-left: 3px solid #58a6ff; border-radius: 0 0 8px 8px;">
+    <p style="margin: 0; font-size: 10px; font-weight: 700; color: #58a6ff; letter-spacing: 1px;">🎬 MOTION — CTA FINAL</p>
+    <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Scale-up</strong> — le bloc entier apparaît avec scale: 0.95→1, opacity: 0→1. Spring stiffness: 150, damping: 30. Effet "le fond bleu grandit vers toi".</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <span style="color: #3fb950; font-size: 11px; flex-shrink: 0;">▸</span>
+        <p style="margin: 0; font-size: 11px; color: #8b949e;"><strong style="color: #c9d1d9;">Bouton pulse</strong> — animation subtile de scale (1→1.02→1) en boucle toutes les 3s. Attire l'œil sans être agressif.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Global motion setup -->
+<div style="margin-top: 2rem; padding: 1.2rem; background: #0d1117; border-radius: 12px; border: 1px solid #30363d;">
+  <h3 style="margin: 0 0 12px; color: #c9d1d9; font-size: 14px;">🛠 Setup technique global</h3>
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <span style="color: #f0883e; font-size: 11px; flex-shrink: 0;">①</span>
+      <p style="margin: 0; font-size: 12px; color: #8b949e;"><strong style="color: #c9d1d9;">Lenis</strong> — smooth scroll global. <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">npm install lenis</code>. 4 Ko. Initialisation dans le layout. Tout le scroll de la homepage devient fluide et "buttery".</p>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <span style="color: #f0883e; font-size: 11px; flex-shrink: 0;">②</span>
+      <p style="margin: 0; font-size: 12px; color: #8b949e;"><strong style="color: #c9d1d9;">Framer Motion</strong> — déjà installé (motion v12). <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useInView</code> pour les animations d'entrée, <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useScroll</code> + <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">useTransform</code> pour le parallax et le sticky.</p>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <span style="color: #f0883e; font-size: 11px; flex-shrink: 0;">③</span>
+      <p style="margin: 0; font-size: 12px; color: #8b949e;"><strong style="color: #c9d1d9;">prefers-reduced-motion</strong> — toutes les animations désactivées si l'utilisateur le demande. Non négociable.</p>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <span style="color: #f0883e; font-size: 11px; flex-shrink: 0;">④</span>
+      <p style="margin: 0; font-size: 12px; color: #8b949e;"><strong style="color: #c9d1d9;">Spring par défaut</strong> — <code style="background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: #c9d1d9;">{ type: "spring", stiffness: 200, damping: 30 }</code> pour tout sauf les compteurs (ease-out). Défini une seule fois, réutilisé partout.</p>
+    </div>
+  </div>
+</div>

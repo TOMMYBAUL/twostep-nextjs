@@ -40,6 +40,12 @@ export function Footer() {
                     >
                         Mentions légales
                     </Link>
+                    <Link
+                        href="/confidentialite"
+                        className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"
+                    >
+                        Confidentialité
+                    </Link>
                     <a
                         href="mailto:contact@twostep.fr"
                         className="text-[12px] text-white/40 no-underline hover:text-white/60 transition-colors"

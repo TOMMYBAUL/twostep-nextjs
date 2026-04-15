@@ -1,0 +1,48 @@
+
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preconnect" href="https://cdn.shopify.com/" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.shopify.com/static/fonts/inter/v4/styles.css"
+      crossorigin
+    />
+    
+    <script type="text/json" data-serialized-id="server-data">{"buildVersion":"17475.c378cd6ccae4eebe8c1b02ae7c5f134ddd370166.0","csrfToken":"dUO9dQeOAm-wEkW7nJNuXn8Ja1TZTQgsY7VWks","sessionId":"93a8d858-e26f-4fbd-bb45-8338cfbbdef6","locale":"fr","cacheInfoArray":[],"bugsnag":{"apiKey":"8cea6c356df78fb8940a328ef6b6abad","appVersion":"c378cd6ccae4eebe8c1b02ae7c5f134ddd370166","releaseStage":"us-east-production"},"isUnifiedApp":true,"isShopifyStaff":false,"authTime":1774655894,"identityUser":{"sub":"54fed4e9-9311-44d3-905b-7eec98839386","email":"thomasbauland1304@gmail.com","givenName":"Thomas","familyName":"Bauland","displayName":"Thomas Bauland","picture":"https:\u002F\u002Faccounts.shopify.com\u002Faccounts\u002F54fed4e9-9311-44d3-905b-7eec98839386\u002Fgravatar","locale":"fr","zoneinfo":"Europe\u002FParis","emailVerified":true,"betaFeatures":[]},"geoCountryCode":"FR","urlDetails":{"hostname":"admin.shopify.com","webHost":"web.sfe.shopifyinternal.com","coreCdnHost":"cdn.shopify.com","coreHost":"app.shopify.com","adminDomain":"myshopify.com","sidekickHost":"sidekick.shopify.ai","sidekickPublicHost":"sidekick.shopify.com","storefrontAgentHost":"sidekick.shopify.ai","storefrontAgentPublicHost":"sidekick.shopify.com","devDashHost":"dev.shopify.com\u002Fdashboard"},"browser":{"userAgent":"Mozilla\u002F5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\u002F537.36 (KHTML, like Gecko) Chrome\u002F146.0.0.0 Safari\u002F537.36","supported":true},"deployStage":"us-east-production","compressionDictionariesEnabled":false,"chromeSoftNavHeuristicsEnabled":false,"importMapsEnabled":false,"sectionLoadersCommonEnabled":false}</script>
+    <script type="text/json" data-serialized-id="i18n">{"locale":"fr"}</script>
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/common-cac8ac7f763a.css" crossorigin integrity="sha256-bf7kmrX0i8o08idlpkNca6uZCB0Q6q+J9CHsfQTSLCU=" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/main-8da80ef226c8.css" crossorigin integrity="sha256-b8E4cmf7YMck2106occMDEKG5PbeXycrGFfVARvxnE0=" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+      <link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/common-1a2d4871a74a.js" crossorigin integrity="sha256-53JAEzkeJ/gM81OklMvrF592psB2KNC3xoGbU82hMZo=" fetchpriority="high" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/main-644d4fd00d7f.js" crossorigin integrity="sha256-ArJ1eAk1zL3ymvuVQQwDWpcSEcKp+MjAK8NYALbP15E=" fetchpriority="high" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+      <link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/index-fe6027c114cd.js" crossorigin integrity="sha256-5h2TFybVNMjtFDg/xpH0FiPB/Olw/PanJLIp6Dw2zmY=" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/admin-context-router-37a0d27e9338.js" crossorigin integrity="sha256-/ovqVqGPF+uIR31ETYDUssholVxo7pYIoTSn38kHORg=" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/router-fa9337b0a5b4.js" crossorigin integrity="sha256-doT+pnxye340vuqErB+PQ3d0awuHzGyO4WrJL1BbjEQ=" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/render-common-230b53c1f3a8.js" crossorigin integrity="sha256-XeP7rYUDbbk70DQ/CyXeHnuG6GiehVbXF8cDPq+XOeY=" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="modulepreload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/loaders-common-df7aada7021b.js" crossorigin integrity="sha256-xpMWkmfOh1coMI1KMxEbmeI7fsWUb1HFkWWqPpRMIfA=" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+      <link rel="preload" href="/api/operations/c0b9a15b651f47082841de0b42b2f710f7bb58995369b1dd940318066bdf6626/RequestDetails/shopify/nq11k1-69?variables=%7B%22inactiveAccount%22%3Afalse%7D" as="fetch" crossorigin nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="/api/operations/fbe8eeb64be9fbde77c693d5023f3ec6ca967ebb7a8332d7b20bf01f1d0a5888/Frame/shopify/nq11k1-69?operationName=Frame&variables=%7B%7D" as="fetch" crossorigin nonce="+qBHOuZOxzV1H8NrhymhzA==">
+      <link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-blocking.2367d4e0.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-catchAllFoundation.4e22f113.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-catchAllLegacy.241d3044.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-catchAllManifests.bac5c96f.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-catchAllShared.e33ef7e8.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+<link rel="preload" href="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/i18n/translations-bundle-fr-catchAllSharedComponents.2e0b9808.json" as="fetch" type="application/json" crossorigin="anonymous" fetchpriority="low" nonce="+qBHOuZOxzV1H8NrhymhzA==">
+      
+    
+
+  </head>
+  <body>
+    <div id="app"></div>
+    
+      <script type="module" src="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/common-1a2d4871a74a.js" crossorigin nonce="+qBHOuZOxzV1H8NrhymhzA==" fetchpriority="high" integrity="sha256-53JAEzkeJ/gM81OklMvrF592psB2KNC3xoGbU82hMZo="></script>
+<script type="module" src="https://cdn.shopify.com/shopifycloud/web/assets/v1/vite/client/en/assets/main-644d4fd00d7f.js" crossorigin nonce="+qBHOuZOxzV1H8NrhymhzA==" fetchpriority="high" integrity="sha256-ArJ1eAk1zL3ymvuVQQwDWpcSEcKp+MjAK8NYALbP15E="></script>
+      
+  </body>
+</html>

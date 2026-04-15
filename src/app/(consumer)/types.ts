@@ -78,6 +78,7 @@ export interface ProductWithMerchant {
     category: string | null;
     description: string | null;
     ean: string | null;
+    brand: string | null;
     merchant_id: string;
     merchants: {
         name: string;

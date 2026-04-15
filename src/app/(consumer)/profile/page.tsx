@@ -361,6 +361,10 @@ export default function ProfilePage() {
                     Mentions légales
                 </Link>
                 <span className="text-quaternary" aria-hidden="true">·</span>
+                <Link href="/confidentialite" className={cx("text-[11px] text-quaternary transition active:text-tertiary", FOCUS_RING)}>
+                    Confidentialité
+                </Link>
+                <span className="text-quaternary" aria-hidden="true">·</span>
                 <a href="mailto:contact@twostep.fr" className={cx("text-[11px] text-quaternary transition active:text-tertiary", FOCUS_RING)}>
                     Contact
                 </a>

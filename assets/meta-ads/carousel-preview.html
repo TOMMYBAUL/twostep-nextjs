@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Step — 4 Carousel Concepts Meta Ads</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0A0C14;
+    color: white;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  h1 span { color: #4268FF; }
+
+  .subtitle {
+    text-align: center;
+    color: #8E96B0;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .concept {
+    margin-bottom: 64px;
+  }
+
+  .concept-header {
+    margin-bottom: 20px;
+  }
+
+  .concept-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .concept-meta {
+    font-size: 12px;
+    color: #8E96B0;
+    line-height: 1.6;
+  }
+
+  .concept-meta strong { color: #4268FF; }
+
+  .carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .carousel::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .carousel::-webkit-scrollbar-track {
+    background: #1a1d2e;
+    border-radius: 2px;
+  }
+
+  .carousel::-webkit-scrollbar-thumb {
+    background: #4268FF;
+    border-radius: 2px;
+  }
+
+  .card {
+    flex-shrink: 0;
+    width: 320px;
+    height: 320px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+
+  /* ── Card styles ── */
+
+  .card-dark {
+    background: linear-gradient(135deg, #1A1F36 0%, #0A0C14 100%);
+    border: 1px solid rgba(66,104,255,0.15);
+  }
+
+  .card-blue {
+    background: linear-gradient(135deg, #4268FF 0%, #2B4FE0 100%);
+  }
+
+  .card-warm {
+    background: linear-gradient(135deg, #F8F0E8 0%, #F0E4D4 100%);
+    color: #1A1F36;
+  }
+
+  .card-white {
+    background: #FFFFFF;
+    color: #1A1F36;
+    border: 1px solid #E2E5F0;
+  }
+
+  .card-gradient {
+    background: linear-gradient(135deg, #0A0C14 0%, #1a2340 50%, #4268FF 100%);
+  }
+
+  .card-red {
+    background: linear-gradient(135deg, #2D1015 0%, #1A0A0C 100%);
+    border: 1px solid rgba(255,66,66,0.2);
+  }
+
+  .card-green {
+    background: linear-gradient(135deg, #0A2015 0%, #0A1A10 100%);
+    border: 1px solid rgba(66,255,130,0.2);
+  }
+
+  /* ── Typography ── */
+
+  .card-num {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.4;
+  }
+
+  .card-hook {
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+
+  .card-hook em {
+    font-style: normal;
+    color: #4268FF;
+  }
+
+  .card-warm .card-hook em { color: #4268FF; }
+  .card-blue .card-hook em { color: #FFFFFF; text-decoration: underline; text-underline-offset: 4px; }
+  .card-white .card-hook em { color: #4268FF; }
+
+  .card-body {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 12px;
+    opacity: 0.8;
+  }
+
+  .card-blue .card-body { opacity: 0.9; }
+  .card-warm .card-body { color: #6B5E4E; }
+
+  .card-stat {
+    font-size: 56px;
+    font-weight: 900;
+    color: #4268FF;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .card-stat-label {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4268FF;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 16px;
+  }
+
+  .card-white .card-cta { background: #1A1F36; }
+
+  .card-logo {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    opacity: 0.5;
+    letter-spacing: -0.3px;
+  }
+
+  .card-logo span { color: #4268FF; }
+
+  .card-emoji {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .card-divider {
+    width: 40px;
+    height: 3px;
+    background: #4268FF;
+    border-radius: 2px;
+    margin: 16px auto;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(66,104,255,0.15);
+    color: #4268FF;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .card-warm .tag { background: rgba(66,104,255,0.1); }
+  .card-white .tag { background: #F0F2FF; }
+
+  .framework-note {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(66,104,255,0.05);
+    border-left: 3px solid #4268FF;
+    border-radius: 0 8px 8px 0;
+    font-size: 11px;
+    color: #8E96B0;
+    line-height: 1.5;
+  }
+
+  .framework-note strong { color: #4268FF; }
+</style>
+</head>
+<body>
+
+<h1>Meta Ads — 4 <span>Carousels</span></h1>
+<p class="subtitle">Frameworks : Callaway Hooks (delay, confusion, irrelevance, disinterest) + Hormozi SPCL + But/Therefore Dance</p>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- CONCEPT 1 — "Ta taille est a 200m" -->
+<!-- ════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-header">
+    <div class="concept-title">Concept 1 — "Ta taille est a 200m"</div>
+    <div class="concept-meta">
+      <strong>Cible :</strong> 18-35 ans, Toulouse, mode/sneakers<br>
+      <strong>Hook :</strong> Pain point (rupture stock en ligne) + contraste implicite (local)<br>
+      <strong>Dance :</strong> Rupture → MAIS local → DONC Two-Step → DONC tu y vas
+    </div>
+  </div>
+
+  <div class="carousel">
+    <!-- Card 1 — Hook -->
+    <div class="card card-red">
+      <div class="card-num">1/5</div>
+      <div class="card-emoji">😤</div>
+      <div class="card-hook">Encore en <em>rupture</em> de stock ?</div>
+      <div class="card-body">Tu cherches en ligne. C'est jamais dispo. On connait.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- Card 2 — Contrast -->
+    <div class="card card-warm">
+      <div class="card-num">2/5</div>
+      <div class="tag">MAIS...</div>
+      <div class="card-hook">Ta taille est peut-etre a <em>200m</em> de chez toi.</div>
+      <div class="card-body">Les boutiques de ton quartier ont du stock. Tu ne le sais juste pas.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- Card 3 — Solution -->
+    <div class="card card-blue">
+      <div class="card-num">3/5</div>
+      <div class="tag" style="background:rgba(255,255,255,0.2);color:white;">DONC</div>
+      <div class="card-hook">On te montre le <em>stock reel</em> autour de toi.</div>
+      <div class="card-body">Marques. Tailles. Disponibilite. En temps reel.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- Card 4 — Result -->
+    <div class="card card-green">
+      <div class="card-num">4/5</div>
+      <div class="card-hook">Verifie.<br><em>Trouve.</em><br>Vas-y.</div>
+      <div class="card-body">Plus de deplacement inutile. Tu sais avant de bouger.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <!-- Card 5 — CTA -->
+    <div class="card card-dark">
+      <div class="card-num">5/5</div>
+      <div class="card-hook" style="font-size:22px;">Le stock de ton quartier,<br><em>a deux pas.</em></div>
+      <div class="card-cta">Essaie gratuitement →</div>
+      <div class="card-body" style="margin-top:16px; font-size:12px;">twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+  </div>
+
+  <div class="framework-note">
+    <strong>Callaway :</strong> Zero delay (card 1 = sujet immediat), "tu" partout (relevance), contraste implicite (en ligne vs 200m)<br>
+    <strong>Hormozi :</strong> Power (instruction claire → resultat), Likeness (emotion partagee : frustration achat en ligne)<br>
+    <strong>Storytelling :</strong> But/Therefore dance sur 5 cards, rythme varie (phrases de 2 mots → phrases explicatives)
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- CONCEPT 2 — "Le trajet inutile" -->
+<!-- ════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-header">
+    <div class="concept-title">Concept 2 — "Le trajet inutile"</div>
+    <div class="concept-meta">
+      <strong>Cible :</strong> 20-40 ans, Toulouse, acheteurs reguliers<br>
+      <strong>Hook :</strong> Pain point vecu (deplacement pour rien) + contraste stated<br>
+      <strong>Dance :</strong> Deplacement inutile → MAIS imagine savoir avant → DONC Two-Step
+    </div>
+  </div>
+
+  <div class="carousel">
+    <div class="card card-dark">
+      <div class="card-num">1/4</div>
+      <div class="card-emoji">🚶‍♂️</div>
+      <div class="card-hook">Tu t'es deja <em>deplace pour rien</em> ?</div>
+      <div class="card-body">Magasin ferme. Taille epuisee. Produit retire. Ca fait mal.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-blue">
+      <div class="card-num">2/4</div>
+      <div class="tag" style="background:rgba(255,255,255,0.2);color:white;">IMAGINE</div>
+      <div class="card-hook">Savoir <em>avant</em> si c'est dispo.</div>
+      <div class="card-body">La bonne taille. Le bon magasin. Avant de bouger.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-white">
+      <div class="card-num">3/4</div>
+      <div class="card-hook" style="font-size:22px;">Stock <em>reel</em>. Temps <em>reel</em>. Autour de <em>toi</em>.</div>
+      <div class="card-divider"></div>
+      <div class="card-body" style="color:#6B7280;">Two-Step se connecte aux caisses des boutiques et te montre ce qui est vraiment disponible.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-gradient">
+      <div class="card-num">4/4</div>
+      <div class="card-hook" style="font-size:20px;">Ne te deplace plus <em>pour rien</em>.</div>
+      <div class="card-cta">Decouvrir Two-Step →</div>
+      <div class="card-body" style="font-size:12px;">Gratuit · twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+  </div>
+
+  <div class="framework-note">
+    <strong>Callaway :</strong> Hook = question directe "tu" (relevance max), contraste stated (deplacement inutile vs savoir avant)<br>
+    <strong>Hormozi :</strong> Power (on resout le probleme concretement), Status (connecte aux caisses = credibilite technique)<br>
+    <strong>Storytelling :</strong> 4 cards, rythme ascendant (probleme → solution → preuve → CTA)
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- CONCEPT 3 — "90% invisibles" -->
+<!-- ════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-header">
+    <div class="concept-title">Concept 3 — "90% invisibles"</div>
+    <div class="concept-meta">
+      <strong>Cible :</strong> 18-45 ans, Toulouse, sensibles commerce local<br>
+      <strong>Hook :</strong> Stat choc → curiosite loop → solution<br>
+      <strong>Dance :</strong> Stat choc → MAIS elles ont du stock → DONC on les connecte → DONC decouvre
+    </div>
+  </div>
+
+  <div class="carousel">
+    <div class="card card-dark">
+      <div class="card-num">1/4</div>
+      <div class="card-stat">90%</div>
+      <div class="card-stat-label">des boutiques sont <em style="color:#4268FF;font-style:normal;">invisibles</em> en ligne.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-warm">
+      <div class="card-num">2/4</div>
+      <div class="tag">POURTANT</div>
+      <div class="card-hook">Elles ont <em>exactement</em> ce que tu cherches.</div>
+      <div class="card-body">La bonne marque, la bonne taille, le bon prix. A cote de chez toi.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-blue">
+      <div class="card-num">3/4</div>
+      <div class="card-hook" style="font-size:22px;">On les a <em>connectees</em>.</div>
+      <div class="card-divider" style="background:rgba(255,255,255,0.4);"></div>
+      <div class="card-body">Leur stock apparait en temps reel sur Two-Step. Tu cherches, tu trouves, tu y vas.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-gradient">
+      <div class="card-num">4/4</div>
+      <div class="card-hook" style="font-size:20px;">Decouvre ce qui t'attend <em>a deux pas</em>.</div>
+      <div class="card-cta">Explorer les boutiques →</div>
+      <div class="card-body" style="font-size:12px;">Gratuit · twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+  </div>
+
+  <div class="framework-note">
+    <strong>Callaway :</strong> Stat = zero delay + curiosite immediate. "POURTANT" = but/therefore dance. Contraste stated (invisible MAIS riche).<br>
+    <strong>Hormozi :</strong> Status (chiffre fort), Credibility ("on les a connectees" = preuve d'action)<br>
+    <strong>Storytelling :</strong> Rythme : chiffre geant (impact) → phrase moyenne (explication) → CTA court
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- CONCEPT 4 — "Vos clients vous cherchent" (MARCHAND) -->
+<!-- ════════════════════════════════════════════════════ -->
+
+<div class="concept">
+  <div class="concept-header">
+    <div class="concept-title">Concept 4 — "Vos clients vous cherchent" (MARCHAND)</div>
+    <div class="concept-meta">
+      <strong>Cible :</strong> Commercants independants, Toulouse, 30-55 ans<br>
+      <strong>Hook :</strong> Pain point marchand (invisible en ligne) + contraste before/after<br>
+      <strong>Usage :</strong> Meta Ads ciblage "proprietaires PME Toulouse" OU montrer pendant visite terrain
+    </div>
+  </div>
+
+  <div class="carousel">
+    <div class="card card-dark">
+      <div class="card-num">1/5</div>
+      <div class="card-emoji">🔍</div>
+      <div class="card-hook">Vos clients vous cherchent <em>en ligne</em>...</div>
+      <div class="card-body">Ils tapent le produit. Ils tapent la marque. Ils tapent la taille.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-num">2/5</div>
+      <div class="tag" style="background:rgba(255,66,66,0.15);color:#FF4242;">MAIS</div>
+      <div class="card-hook">Ils trouvent les <em>boutiques en ligne</em> a la place.</div>
+      <div class="card-body">Chaque recherche sans resultat local = une vente perdue pour vous.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-blue">
+      <div class="card-num">3/5</div>
+      <div class="tag" style="background:rgba(255,255,255,0.2);color:white;">DONC</div>
+      <div class="card-hook" style="font-size:20px;">Two-Step connecte <em>votre caisse</em>.</div>
+      <div class="card-body">Vos produits apparaissent automatiquement. Zero saisie. 2 minutes.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-green">
+      <div class="card-num">4/5</div>
+      <div class="card-emoji">🚶</div>
+      <div class="card-hook"><em>Resultat :</em> ils viennent chez vous.</div>
+      <div class="card-body">Les clients voient votre stock, verifient leur taille, et se deplacent.</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+
+    <div class="card card-dark">
+      <div class="card-num">5/5</div>
+      <div class="card-hook" style="font-size:20px;"><em>Gratuit</em> pendant 3 mois.</div>
+      <div class="card-body" style="opacity:1;font-size:15px;font-weight:600;">Puis 49 EUR/mois. Annulable a tout moment.</div>
+      <div class="card-cta">Connecter ma boutique →</div>
+      <div class="card-body" style="font-size:12px;">twostep.fr</div>
+      <div class="card-logo">two<span>step</span></div>
+    </div>
+  </div>
+
+  <div class="framework-note">
+    <strong>Callaway :</strong> Hook suspendu ("...") = curiosite sans delay. "Vous/votre" = relevance directe. Contraste stated (boutiques en ligne vs vous).<br>
+    <strong>Hormozi :</strong> Power ("connecte votre caisse → clients viennent"), Status ("zero saisie, 2 minutes"), Credibility (pricing transparent)<br>
+    <strong>Storytelling :</strong> 5 cards, but/therefore parfait, last card = CTA avec pricing (transparence = confiance)
+  </div>
+</div>
+
+</body>
+</html>

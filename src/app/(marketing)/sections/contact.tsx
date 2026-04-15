@@ -11,7 +11,7 @@ const bullets = [
     "Photos et descriptions enrichies automatiquement par IA",
     "Visible sur Google Shopping, Google Maps et l'app Two-Step",
     "Import factures fournisseur pour alimenter le stock",
-    "15€/mois tout inclus — 3 mois gratuits pour commencer",
+    "2 mois gratuits — puis à partir de 19€/mois, verrouillé à vie",
 ];
 
 export function Contact() {
@@ -77,7 +77,7 @@ export function Contact() {
                         >
                             Importez votre catalogue une seule fois. Vos produits apparaissent
                             automatiquement auprès des clients de votre quartier et sur
-                            Google. 3 mois gratuits pour commencer.
+                            Google. À partir de 19€/mois pour les pionniers.
                         </motion.p>
 
                         {/* Bullets */}

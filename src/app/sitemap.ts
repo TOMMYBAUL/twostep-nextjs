@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const BASE_URL = "https://www.twostep.fr";
 
@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${BASE_URL}/marchands`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
         { url: `${BASE_URL}/a-propos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
         { url: `${BASE_URL}/mentions-legales`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
+        { url: `${BASE_URL}/confidentialite`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
         { url: `${BASE_URL}/auth/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
         { url: `${BASE_URL}/auth/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     ];
@@ -30,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     try {
-        const supabase = await createClient();
+        const supabase = createAdminClient();
 
         const [{ data: products }, { data: merchants }] = await Promise.all([
             supabase.from("products").select("slug, updated_at").eq("visible", true).is("variant_of", null).order("updated_at", { ascending: false }).limit(1000),

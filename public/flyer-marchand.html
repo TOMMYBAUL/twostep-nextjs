@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Step — Flyer Marchand</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: A5 portrait;
+    margin: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    width: 148mm;
+    height: 210mm;
+    padding: 12mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #1A1F36;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 6mm;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+
+  .logo span { color: #4268FF; }
+
+  .tagline {
+    font-size: 11px;
+    color: #8E96B0;
+    margin-top: 2mm;
+  }
+
+  .headline {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 6mm;
+  }
+
+  .headline em {
+    font-style: normal;
+    color: #4268FF;
+  }
+
+  .benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+    margin-bottom: 6mm;
+  }
+
+  .benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    padding: 3mm 4mm;
+    background: #F4F6FB;
+    border-radius: 8px;
+  }
+
+  .benefit-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: #4268FF;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .benefit-text {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .benefit-text strong {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 1px;
+  }
+
+  .how {
+    text-align: center;
+    margin-bottom: 6mm;
+  }
+
+  .how h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 3mm;
+    color: #4268FF;
+  }
+
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 6mm;
+  }
+
+  .step {
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.3;
+    max-width: 32mm;
+  }
+
+  .step-num {
+    width: 22px;
+    height: 22px;
+    background: #4268FF;
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 2mm;
+  }
+
+  .pricing {
+    text-align: center;
+    padding: 4mm;
+    background: #1A1F36;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 6mm;
+  }
+
+  .pricing .price {
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .pricing .price span { color: #4268FF; }
+
+  .pricing .sub {
+    font-size: 10px;
+    color: #A0A8C0;
+    margin-top: 1mm;
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4mm;
+  }
+
+  .qr-placeholder {
+    width: 28mm;
+    height: 28mm;
+    border: 2px dashed #4268FF;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #8E96B0;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .contact {
+    font-size: 10px;
+    color: #8E96B0;
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  .contact strong {
+    color: #1A1F36;
+    font-size: 11px;
+  }
+
+  @media print {
+    body { width: 148mm; height: 210mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 3mm; margin-bottom: 2mm;">
+    <img src="logo-icon.webp" alt="Two-Step" style="height: 28px; width: 28px; border-radius: 6px;" />
+    <div class="logo">two<span>step</span></div>
+  </div>
+  <div class="tagline">Vos produits visibles. Vos clients en route.</div>
+</div>
+
+<div class="headline">
+  Vos clients vous cherchent en ligne.<br>
+  <em>Ils ne vous trouvent pas.</em>
+</div>
+
+<div class="benefits">
+  <div class="benefit">
+    <div class="benefit-icon">1</div>
+    <div class="benefit-text">
+      <strong>Vos produits en ligne, sans rien faire</strong>
+      On se connecte a votre caisse. Votre stock apparait automatiquement sur l'app et sur Google.
+    </div>
+  </div>
+  <div class="benefit">
+    <div class="benefit-icon">2</div>
+    <div class="benefit-text">
+      <strong>Les clients savent ce que vous avez</strong>
+      Ils cherchent une marque, une taille, un produit — et ils trouvent VOTRE boutique.
+    </div>
+  </div>
+  <div class="benefit">
+    <div class="benefit-icon">3</div>
+    <div class="benefit-text">
+      <strong>Ils viennent chez vous</strong>
+      Le bouton "J'arrive" vous previent qu'un client est en route. Plus de visites, plus de ventes.
+    </div>
+  </div>
+</div>
+
+<div class="how">
+  <h3>Comment ca marche ?</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div><br>
+      Connectez votre caisse<br>(2 minutes)
+    </div>
+    <div class="step">
+      <div class="step-num">2</div><br>
+      On enrichit vos produits automatiquement
+    </div>
+    <div class="step">
+      <div class="step-num">3</div><br>
+      Les clients vous trouvent et viennent
+    </div>
+  </div>
+</div>
+
+<div class="pricing">
+  <div class="price"><span>Gratuit</span> pendant 3 mois</div>
+  <div class="sub">Puis 49 EUR/mois — annulable a tout moment</div>
+</div>
+
+<div class="footer">
+  <div class="qr-placeholder" style="border: none; padding: 0;">
+    <img src="qr-twostep.svg" alt="QR code twostep.fr" style="width: 28mm; height: 28mm; border-radius: 6px;" />
+  </div>
+  <div class="contact">
+    <strong>Thomas Bauland</strong><br>
+    contact@twostep.fr<br>
+    twostep.fr<br>
+    Toulouse
+  </div>
+</div>
+
+</body>
+</html>

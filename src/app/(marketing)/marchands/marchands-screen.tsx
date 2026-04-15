@@ -229,13 +229,13 @@ export default function MarchandsScreen() {
                     >
                         <div className="rounded-2xl border border-secondary bg-primary p-8 shadow-sm">
                             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-secondary">
-                                UN SEUL PRIX, TOUT INCLUS
+                                Tarif Pionnier — 30 places
                             </p>
                             <p className="mt-4 text-[48px] font-black leading-none tracking-tight text-primary">
-                                15<span className="text-[24px] font-bold text-tertiary">€/mois</span>
+                                19<span className="text-[24px] font-bold text-tertiary">€/mois</span>
                             </p>
                             <p className="mt-2 text-[14px] font-semibold text-brand-secondary">
-                                3 mois gratuits pour commencer
+                                2 mois gratuits · Verrouillé à vie pour les 30 premiers
                             </p>
                             <ul className="mt-6 space-y-2 text-left text-[14px] text-secondary">
                                 <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Catalogue en ligne avec photos automatiques</li>

@@ -56,6 +56,20 @@ export const metadata: Metadata = {
         statusBarStyle: "black-translucent",
         title: "Two-Step",
     },
+    verification: {
+        google: "2enXtMIB1HWxQtA6kBrIkUBFZBwqkDMMtm7vR28_wSk",
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large" as const,
+            "max-snippet": -1,
+        },
+    },
     formatDetection: {
         telephone: false,
     },

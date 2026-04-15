@@ -1,0 +1,188 @@
+<h2>Comment le consommateur navigue dans 15 catégories ?</h2>
+<p class="subtitle">Le consumer a 15 catégories niveau 1 et ~80 sous-catégories. Comment on les affiche sans noyer l'utilisateur ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Pills scrollables + dropdown sous-catégories (style actuel amélioré)</h3>
+      <p>Les 15 catégories en pills horizontaux scrollables (comme maintenant mais avec plus de choix). Au tap sur une catégorie → un second rang de pills apparaît avec les sous-catégories.</p>
+
+      <!-- Mockup -->
+      <div style="margin-top: 12px; background: #f9fafb; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup</p>
+        <!-- Rang 1 -->
+        <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px;">
+          <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap;">Tout</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">👗 Mode</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">👟 Chaussures</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">💎 Bijoux</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">⚽ Sport</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">📱 Tech</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">🏠 Maison</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">🍷 Alimentation</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">📚 Culture</span>
+        </div>
+        <p style="margin: 0; font-size: 10px; color: #9ca3af; text-align: center;">← scroll horizontal pour voir les 15 →</p>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Pattern familier (Deliveroo, UberEats)</li>
+          <li>Rapide — tout est visible sans navigation</li>
+          <li>Fonctionne bien jusqu'à ~15 catégories</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>15 pills = beaucoup de scroll horizontal</li>
+          <li>Les dernières catégories sont "cachées" à droite</li>
+          <li>2 rangs de pills (catégorie + sous-catégorie) peut être chargé</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Grille icônes plein écran (style Deliveroo homepage)</h3>
+      <p>Une grille de 15 icônes/images catégories affichée sur la sous-page Explorer. Chaque icône mène à une vue filtrée. Pas de pills — la grille EST la navigation.</p>
+
+      <!-- Mockup -->
+      <div style="margin-top: 12px; background: #f9fafb; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup</p>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fce7f3, #fbcfe8); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">👗</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Mode</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">👟</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Chaussures</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">💎</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Bijoux</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">⚽</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Sport</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📱</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Tech</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fef9c3, #fef08a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">💄</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Beauté</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #ede9fe, #ddd6fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🏠</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Maison</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fce4ec, #f8bbd0); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🧸</div>
+            <p style="margin: 4px 0 0; font-size: 10px; font-weight: 600;">Enfants</p>
+          </div>
+        </div>
+        <p style="margin: 8px 0 0; font-size: 10px; color: #9ca3af; text-align: center;">8 sur 15 visibles — scroll pour voir le reste</p>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Visuellement riche — chaque catégorie a sa couleur/image</li>
+          <li>Pas de scroll horizontal caché</li>
+          <li>Découverte naturelle (on voit tout en scrollant)</li>
+          <li>Scalable — on ajoute des cases</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Prend de la place verticale sur l'écran</li>
+          <li>Ne fonctionne que sur Explorer — pas adapté pour Pour toi / Suivis</li>
+          <li>Le feed produit est poussé plus bas</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybride : pills compacts + page "Toutes les catégories"</h3>
+      <p>6-8 catégories principales en pills (les plus populaires) + un bouton "Tout ▾" qui ouvre une page/drawer plein écran avec les 15 catégories et leurs sous-catégories en grille. Style Vinted.</p>
+
+      <!-- Mockup -->
+      <div style="margin-top: 12px; background: #f9fafb; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup — pills + bouton</p>
+        <div style="display: flex; gap: 6px; overflow-x: auto;">
+          <span style="background: #4268FF; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap;">Tout</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">👗 Mode</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">👟 Chaussures</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">💄 Beauté</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">⚽ Sport</span>
+          <span style="background: #f3f4f6; padding: 5px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">📱 Tech</span>
+          <span style="border: 1.5px solid #4268FF; color: #4268FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap;">Tout ▾</span>
+        </div>
+
+        <p style="margin: 16px 0 8px; font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Mockup — drawer "Toutes les catégories"</p>
+        <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <p style="margin: 0; font-weight: 700; font-size: 15px;">Toutes les catégories</p>
+            <span style="font-size: 18px; cursor: pointer;">✕</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+              <span style="font-size: 13px;">👗 Mode</span>
+              <span style="font-size: 12px; color: #9ca3af;">›</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+              <span style="font-size: 13px;">👟 Chaussures</span>
+              <span style="font-size: 12px; color: #9ca3af;">›</span>
+            </div>
+            <div style="background: #f0f4ff; border-radius: 8px; padding: 10px; margin: 4px 0;">
+              <span style="font-size: 13px; font-weight: 600; color: #4268FF;">💎 Bijoux & Accessoires</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+                <span style="background: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e5e7eb;">Bijoux</span>
+                <span style="background: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e5e7eb;">Montres</span>
+                <span style="background: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e5e7eb;">Lunettes</span>
+                <span style="background: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e5e7eb;">Sacs</span>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+              <span style="font-size: 13px;">💄 Beauté</span>
+              <span style="font-size: 12px; color: #9ca3af;">›</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+              <span style="font-size: 13px;">⚽ Sport & Outdoor</span>
+              <span style="font-size: 12px; color: #9ca3af;">›</span>
+            </div>
+            <p style="margin: 4px 0 0; font-size: 10px; color: #9ca3af; text-align: center;">... et 10 autres catégories</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>Avantages</h4><ul>
+          <li>Le meilleur des deux mondes — accès rapide aux top catégories + vue complète</li>
+          <li>Les pills ne sont pas surchargés (6-8 max)</li>
+          <li>Le drawer montre l'arbre complet avec les sous-catégories</li>
+          <li>Scalable — on ajoute dans le drawer, les pills restent compacts</li>
+          <li>Exactement ce que fait Vinted</li>
+        </ul></div>
+        <div class="cons"><h4>Inconvénients</h4><ul>
+          <li>Un tap de plus pour les catégories moins populaires</li>
+          <li>Il faut décider quelles catégories sont dans les pills (les plus populaires dynamiquement ?)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.2rem; background: rgba(66,104,255,0.08); border-radius: 12px; border-left: 4px solid #4268FF;">
+  <h3 style="margin: 0 0 0.5rem 0; color: #4268FF;">💡 Ma recommandation : C (hybride Vinted)</h3>
+  <p style="margin: 0; font-size: 13px; line-height: 1.6;">
+    Les 6-8 catégories les plus populaires en pills + un bouton <strong>"Tout ▾"</strong> qui ouvre un drawer/bottom sheet avec l'arbre complet (15 catégories + sous-catégories).
+    <br><br>
+    Les pills affichés sont <strong>dynamiques</strong> — basés sur ce qui a le plus de produits dans le rayon de l'utilisateur. Si à Toulouse il y a 50 boutiques mode et 2 animaleries, Mode sera dans les pills mais pas Animaux (qui sera dans le drawer).
+    <br><br>
+    Le drawer permet de naviguer dans l'arbre : tap sur une catégorie → les sous-catégories se déroulent en dessous (accordéon). Tap sur une sous-catégorie → filtre appliqué, drawer se ferme.
+  </p>
+</div>
