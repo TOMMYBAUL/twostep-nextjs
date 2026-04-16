@@ -1,4 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
+
+const ARTICLE_IMAGES: Record<string, string> = {
+    "boutique-visible-google": "/images/blog/boutique-visible-google.webp",
+    "logiciel-de-caisse-commerce": "/images/blog/logiciel-de-caisse.webp",
+    "boutiques-mode-toulouse": "/images/blog/boutiques-mode-toulouse.webp",
+    "shopping-sneakers-toulouse": "/images/blog/shopping-sneakers-toulouse.webp",
+};
 
 interface ArticleCardProps {
     title: string;
@@ -35,13 +43,19 @@ export function ArticleCard({
             href={`/blog/${slug}`}
             className="group block rounded-2xl border border-secondary bg-primary overflow-hidden hover:shadow-lg transition-shadow duration-200 no-underline"
         >
-            <div className="relative h-[180px] bg-[#1A1F36] flex items-center justify-center overflow-hidden">
-                {/* Decorative accent */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#4268FF]/20 via-transparent to-[#1A1F36]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full bg-[#4268FF]/10 blur-3xl" />
-                <svg className="relative size-10 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
+            <div className="relative h-[180px] overflow-hidden">
+                {ARTICLE_IMAGES[slug] ? (
+                    <Image
+                        src={ARTICLE_IMAGES[slug]}
+                        alt={title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 550px"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                ) : (
+                    <div className="h-full w-full bg-[#1A1F36]" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 <span
                     className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClasses}`}
                 >
