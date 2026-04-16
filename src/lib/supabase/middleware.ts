@@ -40,8 +40,8 @@ export async function updateSession(request: NextRequest) {
             "/api/products/by-merchants", // Public products by merchant
             "/api/products/",        // Public product detail
             "/api/shops/",           // Public shop info
+            "/api/merchants/",       // Public merchant profiles (mutations have own auth check)
             "/api/intents",          // Public intent signals
-            "/api/debug-product",    // Temporary debug endpoint
             "/api/inbound-email/",   // Inbound email webhooks (own secret verification)
             "/api/stripe/",          // Stripe webhooks (own signature verification)
         ];
