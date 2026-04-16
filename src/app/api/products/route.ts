@@ -59,7 +59,9 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Operation failed" }, { status: 500 });
         }
 
-        return NextResponse.json({ products: data ?? [] });
+        return NextResponse.json({ products: data ?? [] }, {
+            headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
+        });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

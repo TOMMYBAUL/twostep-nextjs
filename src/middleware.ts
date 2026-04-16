@@ -8,11 +8,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Blocked pages (consumer + dashboard + auth)
-        "/explore/:path*", "/discover/:path*", "/search/:path*", "/shop/:path*",
-        "/product/:path*", "/favorites/:path*", "/profile/:path*",
+        // Protected pages only — consumer pages are public, no middleware needed
+        "/favorites/:path*", "/profile/:path*",
         "/dashboard/:path*", "/admin/:path*", "/auth/:path*",
-        // All API routes — public exceptions handled inside updateSession
+        // API routes — private routes checked inside updateSession
         "/api/:path*",
     ],
 };
