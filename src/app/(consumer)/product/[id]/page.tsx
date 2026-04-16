@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
 import ProductDetailClient from "./product-detail";
 import type { ProductWithMerchant } from "../../types";
@@ -14,7 +14,6 @@ interface Props {
 const getProduct = React.cache(async function getProduct(slugOrId: string): Promise<ProductWithMerchant | null> {
     const resolvedId = await resolveProductId(slugOrId);
     if (!resolvedId) return null;
-    const { createAdminClient } = await import("@/lib/supabase/admin");
     const supabase = createAdminClient();
     const { data } = await supabase
         .from("products")

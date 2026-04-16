@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveMerchantId } from "@/lib/slug";
 import ShopProfileClient from "./shop-profile";
 import type { OpeningHoursSpec } from "../../types";
@@ -13,7 +13,6 @@ interface Props {
 async function getMerchant(slugOrId: string) {
     const resolvedId = await resolveMerchantId(slugOrId);
     if (!resolvedId) return null;
-    const { createAdminClient } = await import("@/lib/supabase/admin");
     const supabase = createAdminClient();
     const { data } = await supabase
         .from("merchants")
