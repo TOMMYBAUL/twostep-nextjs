@@ -592,7 +592,7 @@ async function applyEnrichment(
 
     const { data: prod } = await supabase
         .from("products")
-        .select("merchant_id, photo_url, name, brand, sku")
+        .select("merchant_id, photo_url, name, brand, sku, category_id")
         .eq("id", productId)
         .single();
 
@@ -610,7 +610,8 @@ async function applyEnrichment(
     }
 
     if (data.brand) updateData.brand = data.brand;
-    if (data.category) updateData.category = data.category;
+    // Only set category from EAN data if AI hasn't already categorized the product
+    if (data.category && prod && !prod.category_id) updateData.category = data.category;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
 
     // Photo: prefer Serper (better e-commerce quality)
