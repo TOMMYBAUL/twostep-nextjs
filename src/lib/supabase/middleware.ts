@@ -1,6 +1,32 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
+/**
+ * Routes that REQUIRE authentication.
+ * Everything else is public by default.
+ * Each private route's handler also checks auth internally (defense in depth).
+ */
+const PRIVATE_API_PREFIXES = [
+    "/api/admin",            // Admin operations
+    "/api/catalog/import",   // Merchant catalog import
+    "/api/categorize",       // AI categorization (merchant action)
+    "/api/consumer/",        // Consumer preferences (requires login)
+    "/api/email/",           // Email connection management
+    "/api/favorites",        // User favorites (requires login)
+    "/api/follows",          // User follows (requires login)
+    "/api/google/",          // Google Merchant integration
+    "/api/images/",          // Image processing (merchant action)
+    "/api/invoices",         // Invoice management (merchant action)
+    "/api/pos/",             // POS connection/sync
+    "/api/promotions",       // Promotion management
+    "/api/push/",            // Push notification subscription
+    "/api/stock",            // Stock management
+];
+
+function isPrivateApi(pathname: string): boolean {
+    return PRIVATE_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({ request });
 
@@ -24,40 +50,16 @@ export async function updateSession(request: NextRequest) {
 
         const pathname = request.nextUrl.pathname;
 
-        // Public API routes that don't require authentication
-        const PUBLIC_API_PREFIXES = [
-            "/api/webhooks/",        // Webhook endpoints (own signature verification)
-            "/api/cron/",            // Cron jobs (Bearer token auth)
-            "/api/auth/",            // Auth-related (verify-siret, etc.)
-            "/api/page-views",       // Analytics (anonymous allowed)
-            "/api/search",           // Public search
-            "/api/discover",         // Public discovery
-            "/api/nearby",           // Public nearby
-            "/api/autocomplete",     // Public autocomplete
-            "/api/pioneers",         // Public waitlist
-            "/api/products/discover",// Public product discovery
-            "/api/products/available-sizes", // Public available sizes
-            "/api/products/by-merchants", // Public products by merchant
-            "/api/products",         // Public product listing + detail
-            "/api/shops/",           // Public shop info
-            "/api/merchants/",       // Public merchant profiles (mutations have own auth check)
-            "/api/intents",          // Public intent signals
-            "/api/inbound-email/",   // Inbound email webhooks (own secret verification)
-            "/api/stripe/",          // Stripe webhooks (own signature verification)
-        ];
-        const isPublicApi = pathname.startsWith("/api/") &&
-            PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
-
         if (!user) {
-            // Return 401 JSON for unauthenticated API calls (except public routes)
-            if (pathname.startsWith("/api/") && !isPublicApi) {
+            // Block private API routes for unauthenticated users
+            if (pathname.startsWith("/api/") && isPrivateApi(pathname)) {
                 return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
                     status: 401,
                     headers: { "Content-Type": "application/json" },
                 });
             }
 
-            // Redirect unauthenticated users trying to access /dashboard or /admin
+            // Redirect unauthenticated users trying to access /dashboard or /admin pages
             if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
                 const url = request.nextUrl.clone();
                 url.pathname = "/auth/login";
@@ -80,7 +82,7 @@ export async function updateSession(request: NextRequest) {
             }
         }
 
-        // Admin API protection: require admin role (pages are checked client-side in admin layout)
+        // Admin API protection: require admin role
         if (user && pathname.startsWith("/api/admin")) {
             const isAdmin = (user as any).app_metadata?.role === "admin";
             if (!isAdmin) {
@@ -91,14 +93,13 @@ export async function updateSession(request: NextRequest) {
             }
         }
     } catch {
-        // Fail closed for API routes — don't let unauthenticated requests through
-        if (request.nextUrl.pathname.startsWith("/api/")) {
+        // Fail closed ONLY for private API routes
+        if (request.nextUrl.pathname.startsWith("/api/") && isPrivateApi(request.nextUrl.pathname)) {
             return new NextResponse(JSON.stringify({ error: "Service unavailable" }), {
                 status: 503,
                 headers: { "Content-Type": "application/json" },
             });
         }
-        // For pages, let through — they'll handle auth client-side
         return NextResponse.next({ request });
     }
 
