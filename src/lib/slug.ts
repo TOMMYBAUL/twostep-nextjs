@@ -31,8 +31,22 @@ export async function resolveMerchantId(slugOrId: string): Promise<string | null
     }
 
     // Try slug
-    const { data } = await supabase.from("merchants").select("id").eq("slug", slugOrId).single();
-    return data?.id ?? null;
+    const { data } = await supabase.from("merchants").select("id").eq("slug", slugOrId).maybeSingle();
+    if (data?.id) return data.id;
+
+    // Fallback: slug ends with 8-char ID prefix
+    const idSuffix = slugOrId.slice(-8).toLowerCase();
+    if (/^[0-9a-f]{8}$/.test(idSuffix)) {
+        const { data: fallback } = await supabase
+            .from("merchants")
+            .select("id")
+            .like("slug", `%-${idSuffix}`)
+            .limit(1)
+            .maybeSingle();
+        return fallback?.id ?? null;
+    }
+
+    return null;
 }
 
 /**
@@ -52,16 +66,16 @@ export async function resolveProductId(slugOrId: string): Promise<string | null>
     const { data } = await supabase.from("products").select("id").eq("slug", slugOrId).single();
     if (data?.id) return data.id;
 
-    // Fallback: extract the 8-char ID suffix from the slug and search by ID prefix
-    const idSuffix = slugOrId.slice(-8);
-    if (/^[0-9a-f]{8}$/i.test(idSuffix)) {
-        const { data: fallback } = await supabase
+    // Fallback: extract the 8-char ID suffix and match slugs ending with it
+    const idSuffix = slugOrId.slice(-8).toLowerCase();
+    if (/^[0-9a-f]{8}$/.test(idSuffix)) {
+        const { data: slugFallback } = await supabase
             .from("products")
             .select("id")
-            .like("id", `${idSuffix}%`)
+            .like("slug", `%-${idSuffix}`)
             .limit(1)
-            .single();
-        return fallback?.id ?? null;
+            .maybeSingle();
+        return slugFallback?.id ?? null;
     }
 
     return null;

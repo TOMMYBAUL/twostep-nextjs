@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 
-        const supabase = await createClient();
+        const supabase = createAdminClient();
 
         const { data, error } = await supabase
             .from("products")
