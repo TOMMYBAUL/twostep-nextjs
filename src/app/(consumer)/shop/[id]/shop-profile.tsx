@@ -397,7 +397,7 @@ export default function ShopProfileClient() {
                         aria-haspopup="dialog"
                         className="min-h-[44px] border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-quaternary transition-colors hover:text-brand-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
-                        Avis
+                        Suggérer
                     </button>
                 </div>
             </div>

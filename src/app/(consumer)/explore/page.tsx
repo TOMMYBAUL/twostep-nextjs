@@ -9,7 +9,17 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-const MapView = dynamic(() => import("../components/map-view").then(m => m.MapView), { ssr: false });
+const MapView = dynamic(() => import("../components/map-view").then(m => m.MapView), {
+    ssr: false,
+    loading: () => (
+        <div className="flex h-full w-full items-center justify-center bg-[#e8eaed]">
+            <div className="text-center">
+                <div className="mx-auto mb-3 size-8 animate-spin rounded-full border-2 border-brand-solid border-t-transparent" />
+                <p className="text-sm text-tertiary">Chargement de la carte...</p>
+            </div>
+        </div>
+    ),
+});
 import { useGeolocation } from "../hooks/use-geolocation";
 import { useAutocomplete } from "../hooks/use-search";
 import { useFollows, useToggleFollow } from "../hooks/use-follows";

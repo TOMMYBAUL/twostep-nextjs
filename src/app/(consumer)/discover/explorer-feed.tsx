@@ -68,7 +68,7 @@ export function ExplorerFeed({
     return (
         <>
             {/* ── 1. Promos du moment ── */}
-            {(loadingPromos || topPromos.length > 0) && (
+            {topPromos.length > 0 && (
             <section>
                 <div className="flex items-center justify-between px-4">
                     <h2 className="font-[family-name:var(--font-archivo-black)] text-[17px] tracking-[-0.3px] text-primary">Promos du moment</h2>
@@ -116,6 +116,13 @@ export function ExplorerFeed({
                 </div>
                 )}
             </section>
+            )}
+
+            {loadingPromos && topPromos.length === 0 && (
+                <section className="px-4">
+                    <div className="h-5 w-40 animate-pulse rounded bg-secondary mb-3" />
+                    <div className="h-[76px] animate-pulse rounded-[10px] bg-secondary" />
+                </section>
             )}
 
             {/* ── 2. Tendances — 2×2 grid ── */}

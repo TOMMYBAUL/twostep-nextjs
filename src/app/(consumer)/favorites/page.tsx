@@ -35,7 +35,7 @@ export default function FavoritesPage() {
                 <div className="space-y-2">
                     {loadingFavs ? (
                         Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="h-24 animate-pulse rounded-2xl bg-secondary" />
+                            <div key={i} className="h-24 animate-pulse rounded-2xl bg-tertiary/10" />
                         ))
                     ) : !hasFavs ? (
                         <EmptyStateWithSuggestions />

@@ -300,10 +300,7 @@ export default function ProductDetailClient() {
                     />
                 </div>
 
-                {/* Dot indicator (mobile) */}
-                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 md:hidden">
-                    <div className="h-[5px] w-[14px] rounded-[3px] bg-white" />
-                </div>
+                {/* Dot indicator removed — single image, no carousel */}
             </div>
 
             {/* ══════════════════════════════════════════════
