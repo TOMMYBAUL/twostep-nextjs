@@ -103,11 +103,11 @@ export function ArticleLayout({
             {/* Body */}
             <section className="bg-primary">
                 <div className="mx-auto max-w-[1100px] pt-12 pb-20 px-6 md:px-12">
-                    <div className="flex gap-12">
+                    <div className="flex flex-col lg:flex-row gap-12">
                         {/* Article content */}
                         <article
                             className={[
-                                "flex-1 max-w-[680px]",
+                                "flex-1 min-w-0",
                                 "[&>h2]:text-[22px] [&>h2]:font-bold [&>h2]:text-primary [&>h2]:mt-10 [&>h2]:mb-4 [&>h2]:scroll-mt-24",
                                 "[&>h3]:text-[17px] [&>h3]:font-semibold [&>h3]:text-primary [&>h3]:mt-8 [&>h3]:mb-3",
                                 "[&>p]:text-[15px] [&>p]:leading-relaxed [&>p]:text-tertiary [&>p]:mb-5",
