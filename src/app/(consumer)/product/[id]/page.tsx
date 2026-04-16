@@ -14,7 +14,8 @@ interface Props {
 const getProduct = React.cache(async function getProduct(slugOrId: string): Promise<ProductWithMerchant | null> {
     const resolvedId = await resolveProductId(slugOrId);
     if (!resolvedId) return null;
-    const supabase = await createClient();
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabase = createAdminClient();
     const { data } = await supabase
         .from("products")
         .select("slug, name, canonical_name, price, photo_url, photo_processed_url, category, description, ean, brand, merchant_id, merchants(name, city, address, slug)")

@@ -13,7 +13,8 @@ interface Props {
 async function getMerchant(slugOrId: string) {
     const resolvedId = await resolveMerchantId(slugOrId);
     if (!resolvedId) return null;
-    const supabase = await createClient();
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabase = createAdminClient();
     const { data } = await supabase
         .from("merchants")
         .select("id, slug, name, description, city, address, photo_url, logo_url, phone, opening_hours, latitude, longitude")
