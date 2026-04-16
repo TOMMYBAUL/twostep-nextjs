@@ -38,7 +38,7 @@ export async function updateSession(request: NextRequest) {
             "/api/products/discover",// Public product discovery
             "/api/products/available-sizes", // Public available sizes
             "/api/products/by-merchants", // Public products by merchant
-            "/api/products/",        // Public product detail
+            "/api/products",         // Public product listing + detail
             "/api/shops/",           // Public shop info
             "/api/merchants/",       // Public merchant profiles (mutations have own auth check)
             "/api/intents",          // Public intent signals
