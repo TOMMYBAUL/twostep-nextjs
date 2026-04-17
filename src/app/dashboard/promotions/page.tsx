@@ -23,7 +23,7 @@ export default function PromotionsPage() {
 
     const handleCreate = async (e: FormEvent) => {
         e.preventDefault();
-        if (!productId || !salePrice) return;
+        if (!productId || !salePrice || Number(salePrice) <= 0) return;
 
         const selectedProduct = products.find((p) => p.id === productId);
         if (selectedProduct?.price !== undefined && selectedProduct.price !== null && Number(salePrice) >= selectedProduct.price) {

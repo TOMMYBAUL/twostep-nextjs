@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
@@ -25,10 +26,17 @@ export async function POST(request: NextRequest) {
         ? (page_type as PageType)
         : "shop";
 
+    // Use user-scoped client only for auth check
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Admin client bypasses RLS — needed because:
+    // 1. page_views SELECT RLS only allows merchant owners, not viewers (dedup would fail)
+    // 2. page_views INSERT RLS requires auth.uid() IS NOT NULL (anonymous views would fail)
+    const admin = createAdminClient();
 
     // Verify merchant exists before inserting
-    const { data: merchant } = await supabase
+    const { data: merchant } = await admin
         .from("merchants")
         .select("id")
         .eq("id", merchant_id)
@@ -38,10 +46,21 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Merchant not found" }, { status: 404 });
     }
 
-    // Get viewer ID if authenticated (optional)
-    const { data: { user } } = await supabase.auth.getUser();
+    // Dedup: one view per user per merchant per hour (if authenticated)
+    if (user) {
+        const oneHourAgo = new Date(Date.now() - 3_600_000).toISOString();
+        const { count } = await admin
+            .from("page_views")
+            .select("*", { count: "exact", head: true })
+            .eq("merchant_id", merchant_id)
+            .eq("viewer_id", user.id)
+            .gte("created_at", oneHourAgo);
+        if (count && count > 0) {
+            return NextResponse.json({ ok: true, deduplicated: true });
+        }
+    }
 
-    await supabase.from("page_views").insert({
+    await admin.from("page_views").insert({
         merchant_id,
         viewer_id: user?.id ?? null,
         page_type: resolvedPageType,

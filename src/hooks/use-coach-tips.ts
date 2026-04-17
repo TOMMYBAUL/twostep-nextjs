@@ -20,7 +20,7 @@ export type CoachTipsData = {
 export function useCoachTips() {
     const { merchant } = useMerchant();
     const [data, setData] = useState<CoachTipsData | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!merchant?.id) return;

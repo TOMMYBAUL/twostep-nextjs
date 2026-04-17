@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Verify Resend webhook signature
     const signature = request.headers.get("resend-signature") ?? "";
-    if (WEBHOOK_SECRET && !verifyWebhookSignature(rawBody, signature)) {
+    if (!WEBHOOK_SECRET || !verifyWebhookSignature(rawBody, signature)) {
         return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 

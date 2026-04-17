@@ -15,6 +15,21 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
+    // Idempotence: reject duplicate webhook deliveries
+    const webhookId = request.headers.get("x-shopify-webhook-id");
+    if (webhookId) {
+        const supabaseCheck = createAdminClient();
+        const { data: existing } = await supabaseCheck
+            .from("webhook_events")
+            .select("id")
+            .eq("webhook_id", webhookId)
+            .maybeSingle();
+        if (existing) {
+            return NextResponse.json({ ok: true, skipped: "duplicate" });
+        }
+        await supabaseCheck.from("webhook_events").insert({ webhook_id: webhookId, provider: "shopify" });
+    }
+
     let event: Record<string, unknown>;
     try {
         event = JSON.parse(body);

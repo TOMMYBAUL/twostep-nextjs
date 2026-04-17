@@ -546,7 +546,10 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                         }
                         setPhotoError(null);
                         setPhotoFile(file);
-                        setPhotoPreview(URL.createObjectURL(file));
+                        setPhotoPreview((prev) => {
+                            if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
+                            return URL.createObjectURL(file);
+                        });
                     }}
                 />
                 {photoError && <p className="mt-1 text-xs text-error-primary">{photoError}</p>}

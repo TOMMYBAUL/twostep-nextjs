@@ -73,8 +73,9 @@ export function ForYouFeed({ follows, favoriteIds, onToggleFav, lat, lng }: ForY
                 }
             }
 
-            return items.filter((p) => !followedSet.has(p.merchant_id));
+            return items;
         },
+        select: (items) => items.filter((p) => !followedSet.has(p.merchant_id)),
         enabled: hasPrefs,
         staleTime: 60_000,
     });

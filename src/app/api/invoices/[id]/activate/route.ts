@@ -48,7 +48,7 @@ export async function POST(
     } catch (e) {
         captureError(e, { route: "invoices/[id]/activate" });
         return NextResponse.json(
-            { error: e instanceof Error ? e.message : "Activation failed" },
+            { error: "Activation failed" },
             { status: 500 },
         );
     }

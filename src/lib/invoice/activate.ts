@@ -99,15 +99,18 @@ export async function activateInvoice(invoiceId: string): Promise<{
         return { pushed: 0, synced: false };
     }
 
-    // 5. Push to POS and get ID mappings
+    // 5. Push to POS and get ID mappings (skip for POS that don't support push)
     let idMappings: Record<string, string> = {};
-    try {
-        idMappings = await adapter.pushCatalog(accessToken, posProducts, {
-            shopDomain: conn.shop_domain ?? undefined,
-        });
-    } catch (pushErr) {
-        captureError(pushErr, { invoiceId, provider: conn.provider });
-        throw new Error(`Failed to push to ${conn.provider}: ${pushErr instanceof Error ? pushErr.message : String(pushErr)}`);
+    const PUSH_UNSUPPORTED = ["clictill", "fastmag"];
+    if (!PUSH_UNSUPPORTED.includes(conn.provider)) {
+        try {
+            idMappings = await adapter.pushCatalog(accessToken, posProducts, {
+                shopDomain: conn.shop_domain ?? undefined,
+            });
+        } catch (pushErr) {
+            captureError(pushErr, { invoiceId, provider: conn.provider });
+            throw new Error(`Failed to push to ${conn.provider}: ${pushErr instanceof Error ? pushErr.message : String(pushErr)}`);
+        }
     }
 
     // 6. Store POS IDs on our products — links Two-Step ↔ POS
@@ -131,5 +134,6 @@ export async function activateInvoice(invoiceId: string): Promise<{
     // NO sync trigger — products are already in Two-Step DB from validate.
     // The next scheduled sync (every 15 min) will reconcile if needed.
 
-    return { pushed: posProducts.length, synced: false };
+    const pushedCount = PUSH_UNSUPPORTED.includes(conn.provider) ? 0 : Object.keys(idMappings).length;
+    return { pushed: pushedCount, synced: false };
 }

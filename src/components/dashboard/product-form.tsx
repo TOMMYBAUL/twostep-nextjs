@@ -70,7 +70,10 @@ export function ProductForm({ initialValues, productId, onSubmit, submitLabel, i
         }
 
         setErrors((prev) => { const { photo, ...rest } = prev; return rest; });
-        setPhotoPreview(URL.createObjectURL(file));
+        setPhotoPreview((prev) => {
+            if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
+            return URL.createObjectURL(file);
+        });
         setUploading(true);
         try {
             const form = new FormData();

@@ -15,6 +15,21 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
+    // Idempotence: reject duplicate webhook deliveries (Lightspeed uses delta mode)
+    const webhookId = request.headers.get("x-lightspeed-event-id") ?? request.headers.get("x-request-id");
+    if (webhookId) {
+        const check = createAdminClient();
+        const { data: existing } = await check
+            .from("webhook_events")
+            .select("id")
+            .eq("webhook_id", webhookId)
+            .maybeSingle();
+        if (existing) {
+            return NextResponse.json({ ok: true, skipped: "duplicate" });
+        }
+        await check.from("webhook_events").insert({ webhook_id: webhookId, provider: "lightspeed" });
+    }
+
     let event: Record<string, unknown>;
     try {
         event = JSON.parse(body);

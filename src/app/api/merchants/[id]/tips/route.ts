@@ -113,7 +113,7 @@ Voici les données du marchand "${merchant?.name || "ce marchand"}" cette semain
 - Ruptures : ${stats.stock.outOfStock}
 - Avec photo : ${stats.stock.withPhoto}
 - Promos actives : ${stats.activePromos}
-- Score Two-Step : ${stats.score}/100
+- Score Two-Step : ${stats.score}/100 (fondation: ${stats.scoreBreakdown?.foundation ?? "?"}/20, engagement: ${stats.scoreBreakdown?.engagement ?? "?"}/40, activité: ${stats.scoreBreakdown?.activity ?? "?"}/20, portée: ${stats.scoreBreakdown?.reach ?? "?"}/20)
 ${merchant?.photo_url ? "- A une photo de boutique" : "- Pas de photo de boutique"}
 ${merchant?.description ? "- A une description" : "- Pas de description"}
 

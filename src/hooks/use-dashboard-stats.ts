@@ -3,6 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMerchant } from "./use-merchant";
 
+export type ScoreBreakdown = {
+    foundation: number;
+    engagement: number;
+    activity: number;
+    reach: number;
+};
+
 export type DashboardStats = {
     funnel: {
         views: { current: number; previous: number };
@@ -17,6 +24,7 @@ export type DashboardStats = {
         withPhoto: number;
     };
     score: number;
+    scoreBreakdown: ScoreBreakdown;
     activePromos: number;
 };
 

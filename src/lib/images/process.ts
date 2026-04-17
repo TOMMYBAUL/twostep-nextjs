@@ -8,11 +8,19 @@ export async function removeBackground(imageBuffer: Buffer): Promise<Buffer> {
     const formData = new FormData();
     formData.append("file", new Blob([new Uint8Array(imageBuffer)]), "image.png");
 
-    const res = await fetch(`${REMBG_URL}/api/remove`, {
-        method: "POST",
-        headers: REMBG_KEY ? { Authorization: `Bearer ${REMBG_KEY}` } : {},
-        body: formData,
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60_000);
+    let res: Response;
+    try {
+        res = await fetch(`${REMBG_URL}/api/remove`, {
+            method: "POST",
+            headers: REMBG_KEY ? { Authorization: `Bearer ${REMBG_KEY}` } : {},
+            body: formData,
+            signal: controller.signal,
+        });
+    } finally {
+        clearTimeout(timeoutId);
+    }
 
     if (!res.ok) {
         throw new Error(`rembg error: ${res.status} ${await res.text()}`);

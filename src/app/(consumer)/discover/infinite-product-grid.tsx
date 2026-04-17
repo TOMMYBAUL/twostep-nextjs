@@ -20,6 +20,7 @@ export function InfiniteProductGrid({
 }: InfiniteProductGridProps) {
     const [pages, setPages] = useState<DiscoverProduct[][]>([]);
     const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
     const [total, setTotal] = useState(0);
     const sentinelRef = useRef<HTMLDivElement>(null);
     const pageRef = useRef(1);
@@ -28,6 +29,7 @@ export function InfiniteProductGrid({
     const categoryRef = useRef(category);
     const sizeRef = useRef(size);
     const filtersRef = useRef(filters);
+    const [resetCount, setResetCount] = useState(0);
 
     // Reset when category, size, or filters change
     useEffect(() => {
@@ -37,7 +39,9 @@ export function InfiniteProductGrid({
         setPages([]);
         pageRef.current = 1;
         hasMoreRef.current = true;
+        setHasMore(true);
         setTotal(0);
+        setResetCount((c) => c + 1);
     }, [category, size, filters]);
 
     // Stable loadMore — no state in dependencies
@@ -61,16 +65,19 @@ export function InfiniteProductGrid({
             const res = await fetch(`/api/products/discover?${params}`);
             if (!res.ok) {
                 hasMoreRef.current = false;
+                setHasMore(false);
                 return;
             }
             const data = await res.json();
             const items = data.products ?? [];
             if (items.length === 0) {
                 hasMoreRef.current = false;
+                setHasMore(false);
                 return;
             }
             setPages((prev) => [...prev, items]);
             hasMoreRef.current = data.hasMore;
+            setHasMore(data.hasMore);
             setTotal(data.total);
             pageRef.current += 1;
         } finally {
@@ -79,7 +86,7 @@ export function InfiniteProductGrid({
         }
     }, [lat, lng]);
 
-    // Stable observer — only depends on lat/lng
+    // Observer — re-create on filter reset to re-trigger when sentinel is in view
     useEffect(() => {
         const el = sentinelRef.current;
         if (!el) return;
@@ -89,7 +96,7 @@ export function InfiniteProductGrid({
         );
         observer.observe(el);
         return () => observer.disconnect();
-    }, [loadMore]);
+    }, [loadMore, resetCount]);
 
     const allProducts = useMemo(() => {
         const seen = new Set<string>();
@@ -133,7 +140,7 @@ export function InfiniteProductGrid({
             {/* Sentinel */}
             <div ref={sentinelRef} className="flex h-10 items-center justify-center">
                 {loading && <p className="font-[family-name:var(--font-inter)] text-[12px] text-tertiary">Chargement...</p>}
-                {!hasMoreRef.current && !loading && allProducts.length > 0 && (
+                {!hasMore && !loading && allProducts.length > 0 && (
                     <p className="font-[family-name:var(--font-inter)] text-[12px] text-tertiary">Tu as tout vu</p>
                 )}
             </div>

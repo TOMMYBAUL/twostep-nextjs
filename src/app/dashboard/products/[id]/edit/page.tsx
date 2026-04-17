@@ -13,7 +13,7 @@ export default function EditProductPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
     const { merchant } = useMerchant();
-    const { products, updateProduct, deleteProduct } = useProducts(merchant?.id);
+    const { products, loading: productsLoading, updateProduct, deleteProduct } = useProducts(merchant?.id);
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -29,6 +29,8 @@ export default function EditProductPage() {
                 ean: values.ean || null,
                 category: values.category || null,
                 price: values.price,
+                // Preserve existing sizes — the edit form doesn't manage them
+                available_sizes: (product as any)?.available_sizes ?? null,
             });
             toast("Produit mis à jour");
             router.push("/dashboard/products");
@@ -49,7 +51,7 @@ export default function EditProductPage() {
         }
     };
 
-    if (!product && !merchant) {
+    if (!merchant || productsLoading) {
         return <div className="animate-pulse py-12 text-center text-sm text-tertiary">Chargement...</div>;
     }
 

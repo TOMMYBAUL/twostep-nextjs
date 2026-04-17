@@ -197,7 +197,7 @@ export default function ShopProfileClient() {
                 {/* Back button — circle, semi-transparent */}
                 <button
                     type="button"
-                    onClick={() => window.history.length > 1 ? router.back() : router.push("/discover")}
+                    onClick={() => (window.history.length > 1 && document.referrer.includes(window.location.origin)) ? router.back() : router.push("/discover")}
                     className="absolute left-4 top-4 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/90 shadow-sm focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"

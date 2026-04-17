@@ -115,6 +115,10 @@ export async function POST(request: NextRequest) {
                     finalLat = 43.6047;
                     finalLng = 1.4442;
                 }
+            } else {
+                // No geocoding token — default to Toulouse center
+                finalLat = 43.6047;
+                finalLng = 1.4442;
             }
         }
 

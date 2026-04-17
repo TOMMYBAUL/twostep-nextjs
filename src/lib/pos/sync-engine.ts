@@ -537,12 +537,13 @@ export async function groupVariantsByEAN(
 
         const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-        visibleCount++; // principal is visible
+        const groupVisible = totalStock > 0;
+        if (groupVisible) visibleCount++;
 
         // Update principal
         await supabase
             .from("products")
-            .update({ visible: true, variant_of: null, available_sizes: availableSizes })
+            .update({ visible: groupVisible, variant_of: null, available_sizes: availableSizes })
             .eq("id", principal.id);
 
         // Update stock of principal to reflect total

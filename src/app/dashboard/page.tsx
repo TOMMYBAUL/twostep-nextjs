@@ -194,7 +194,7 @@ export default function DashboardPage() {
                     {statsLoading ? (
                         <div className="animate-pulse rounded-xl bg-primary h-20" />
                     ) : stats ? (
-                        <TwoStepScore score={stats.score} />
+                        <TwoStepScore score={stats.score} breakdown={stats.scoreBreakdown} />
                     ) : null}
 
                     {/* Onboarding checklist — collapsible */}
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                         {statsLoading ? (
                             <div className="animate-pulse rounded-xl bg-primary h-20" />
                         ) : stats ? (
-                            <TwoStepScore score={stats.score} />
+                            <TwoStepScore score={stats.score} breakdown={stats.scoreBreakdown} />
                         ) : null}
                         {statsLoading ? (
                             <div className="animate-pulse rounded-xl bg-primary h-24" />

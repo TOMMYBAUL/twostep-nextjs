@@ -105,7 +105,10 @@ export const zettleAdapter: IPOSAdapter = {
                 products.push({
                     pos_item_id: variant.uuid,
                     name,
-                    ean: variant.barcode ?? variant.sku ?? null,
+                    ean: (() => {
+                        const code = variant.barcode ?? variant.sku ?? null;
+                        return code && /^\d{8,13}$/.test(code) ? code : null;
+                    })(),
                     price: variant.price ? variant.price.amount / 100 : null,
                     category,
                     photo_url: photoUrl,

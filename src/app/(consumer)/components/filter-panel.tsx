@@ -85,7 +85,7 @@ export function FilterPanel({ categorySlug, lat, lng, filters, onFiltersChange }
                 aria-label="Filtres"
                 onClick={handleOpen}
                 className={cx(
-                    "flex size-7 shrink-0 items-center justify-center rounded-full transition duration-100",
+                    "flex size-7 min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full transition duration-100",
                     isActive
                         ? "bg-brand-solid text-white"
                         : "bg-secondary text-primary/60",

@@ -272,11 +272,13 @@ export default function ProductDetailClient() {
                 {/* Back button (mobile) */}
                 <button
                     type="button"
-                    onClick={() =>
-                        window.history.length > 1
-                            ? window.history.back()
-                            : (window.location.href = "/discover")
-                    }
+                    onClick={() => {
+                        if (window.history.length > 1 && document.referrer.includes(window.location.origin)) {
+                            window.history.back();
+                        } else {
+                            window.location.href = "/discover";
+                        }
+                    }}
                     className="absolute left-4 top-4 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-black/55 backdrop-blur-sm md:hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
                     style={{ marginTop: "env(safe-area-inset-top)" }}
                     aria-label="Retour"

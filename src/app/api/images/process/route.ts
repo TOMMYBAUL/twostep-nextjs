@@ -7,9 +7,18 @@ import { captureError } from "@/lib/error";
 const BATCH_SIZE = 200;
 const MAX_ATTEMPTS = 3;
 
+// Vercel Cron sends GET requests
+export async function GET(req: NextRequest) {
+    return handleProcess(req);
+}
+
 export async function POST(req: NextRequest) {
+    return handleProcess(req);
+}
+
+async function handleProcess(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     try {

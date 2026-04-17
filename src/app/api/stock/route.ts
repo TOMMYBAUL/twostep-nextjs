@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { updateStockAtomic } from "@/lib/pos/update-stock";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function PATCH(request: NextRequest) {
@@ -47,67 +49,40 @@ export async function PATCH(request: NextRequest) {
             return NextResponse.json({ error: "Not found or unauthorized" }, { status: 404 });
         }
 
+        const admin = createAdminClient();
+
         if (delta !== undefined) {
-            // Read current stock (may not exist yet for POS-synced products)
-            const { data: current } = await supabase
-                .from("stock")
-                .select("quantity")
-                .eq("product_id", product_id)
-                .maybeSingle();
-
-            const previousQty = current?.quantity ?? 0;
+            // Atomic delta update — no TOCTOU race condition
+            const previousQty = await updateStockAtomic(admin, product_id, delta, "delta");
             const newQty = Math.max(0, previousQty + delta);
-
-            // Upsert: creates the row if missing, updates if exists
-            const { data, error } = await supabase
-                .from("stock")
-                .upsert({ product_id, quantity: newQty })
-                .select()
-                .single();
-
-            if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
 
             // Restock event: produit remis en stock (0 → N)
             if (previousQty === 0 && newQty > 0) {
-                await supabase.from("feed_events").insert({
+                await admin.from("feed_events").insert({
                     merchant_id: (product as any).merchant_id,
                     product_id,
                     event_type: "restock",
                 });
             }
 
-            return NextResponse.json({ stock: data });
+            return NextResponse.json({ stock: { product_id, quantity: newQty } });
         }
 
         if (quantity !== undefined) {
-            // Absolute update (e.g., invoice import)
-            const { data: current } = await supabase
-                .from("stock")
-                .select("quantity")
-                .eq("product_id", product_id)
-                .maybeSingle();
-
-            const previousQty = current?.quantity ?? 0;
+            // Absolute update
+            const previousQty = await updateStockAtomic(admin, product_id, quantity as number, "absolute");
             const newQty = Math.max(0, quantity as number);
-
-            const { data, error } = await supabase
-                .from("stock")
-                .upsert({ product_id, quantity: newQty })
-                .select()
-                .single();
-
-            if (error) return NextResponse.json({ error: "Operation failed" }, { status: 500 });
 
             // Restock event: produit remis en stock (0 → N)
             if (previousQty === 0 && newQty > 0) {
-                await supabase.from("feed_events").insert({
+                await admin.from("feed_events").insert({
                     merchant_id: (product as any).merchant_id,
                     product_id,
                     event_type: "restock",
                 });
             }
 
-            return NextResponse.json({ stock: data });
+            return NextResponse.json({ stock: { product_id, quantity: newQty } });
         }
 
         return NextResponse.json({ error: "quantity or delta required" }, { status: 400 });
