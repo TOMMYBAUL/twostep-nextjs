@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Step — Votre stock visible en temps réel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #1A1F36;
+            background: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 40px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #4268FF;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: #4268FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-url {
+            font-size: 14px;
+            color: #4268FF;
+            font-weight: 500;
+        }
+
+        /* Hero statement */
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            text-transform: uppercase;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        h1 span { color: #4268FF; }
+
+        .subtitle {
+            font-size: 16px;
+            color: #1A1F36;
+            opacity: 0.7;
+            margin-bottom: 36px;
+            max-width: 560px;
+        }
+
+        /* Problem / Solution */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+
+        .col-card {
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .col-problem {
+            background: #F5F6FA;
+        }
+
+        .col-solution {
+            background: #4268FF;
+            color: white;
+        }
+
+        .col-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .col-solution h3 { opacity: 0.8; }
+
+        .col-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .col-card li {
+            font-size: 14px;
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .col-problem li::before {
+            content: "✕";
+            position: absolute;
+            left: 0;
+            color: #E53E3E;
+            font-weight: 600;
+        }
+
+        .col-solution li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+        }
+
+        /* How it works */
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 20px 16px;
+            background: #F5F6FA;
+            border-radius: 16px;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            background: #4268FF;
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .step h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            font-size: 12px;
+            color: #1A1F36;
+            opacity: 0.6;
+        }
+
+        /* Offer stack */
+        .offer {
+            background: linear-gradient(135deg, #1A1F36 0%, #2D3555 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 36px;
+        }
+
+        .offer h2 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .offer-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        .offer-items li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+
+        .offer-items li:last-child {
+            border-bottom: none;
+        }
+
+        .offer-value {
+            text-decoration: line-through;
+            opacity: 0.5;
+            font-size: 13px;
+        }
+
+        .offer-free {
+            background: #4268FF;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .offer-total {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .offer-total-label {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .offer-total-price {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .offer-guarantee {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: rgba(66, 104, 255, 0.15);
+            border-radius: 10px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 16px;
+        }
+
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: #4268FF;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #1A1F36;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        /* FAQ */
+        .faq {
+            margin-bottom: 36px;
+        }
+
+        .faq-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #E2E5F0;
+        }
+
+        .faq-q {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 13px;
+            color: #1A1F36;
+            opacity: 0.7;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 32px;
+            background: #F5F6FA;
+            border-radius: 20px;
+        }
+
+        .cta h2 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .cta p {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .cta-contact {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .cta-contact a {
+            color: #4268FF;
+            text-decoration: none;
+        }
+
+        .cta-note {
+            margin-top: 12px;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        /* Print */
+        @media print {
+            .page { padding: 24px; }
+            body { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-icon">TS</div>
+                <span class="logo-text">Two-Step</span>
+            </div>
+            <span class="header-url">www.twostep.fr</span>
+        </div>
+
+        <!-- Hero -->
+        <h1>Vos clients vous cherchent.<br><span>Ils ne vous trouvent pas.</span></h1>
+        <p class="subtitle">
+            80% des consommateurs se renseignent en ligne avant d'acheter en magasin.
+            Mais votre stock n'est visible nulle part. Two-Step change ça.
+        </p>
+
+        <!-- Problem / Solution -->
+        <div class="two-col">
+            <div class="col-card col-problem">
+                <h3>Aujourd'hui</h3>
+                <ul>
+                    <li>Votre stock est invisible en ligne</li>
+                    <li>Les clients achètent sur internet faute de mieux</li>
+                    <li>Votre vitrine Instagram ne montre pas le stock réel</li>
+                    <li>Pas le temps de gérer un outil de plus</li>
+                </ul>
+            </div>
+            <div class="col-card col-solution">
+                <h3>Avec Two-Step</h3>
+                <ul>
+                    <li>Votre stock est visible en temps réel</li>
+                    <li>Les clients voient vos produits à 10 min à pied</li>
+                    <li>Synchronisation automatique avec votre caisse</li>
+                    <li>Zéro effort — on s'occupe de tout</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <h2 class="section-title">Comment ça marche</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h4>On connecte votre caisse</h4>
+                <p>Compatible avec tous les logiciels de caisse — un simple export CSV suffit</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h4>Votre stock se synchronise</h4>
+                <p>Automatiquement, en temps réel, sans rien toucher</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h4>Les clients vous trouvent</h4>
+                <p>Ils cherchent un produit, voient que vous l'avez, et viennent</p>
+            </div>
+        </div>
+
+        <!-- Offer stack -->
+        <div class="offer">
+            <h2>Offre pionnière Toulouse — 30 places</h2>
+            <ul class="offer-items">
+                <li>
+                    <span>Vitrine en ligne synchronisée avec votre caisse</span>
+                    <span><span class="offer-value">99 €/mois</span> <span class="offer-free">GRATUIT</span></span>
+                </li>
+                <li>
+                    <span>Configuration complète par notre équipe en 48h</span>
+                    <span><span class="offer-value">200 €</span> <span class="offer-free">GRATUIT</span></span>
+                </li>
+                <li>
+                    <span>Badge "Boutique Pionnière" — visibilité prioritaire</span>
+                    <span><span class="offer-value">49 €/mois</span> <span class="offer-free">GRATUIT</span></span>
+                </li>
+                <li>
+                    <span>Dashboard avec statistiques de visibilité</span>
+                    <span><span class="offer-value">inclus</span> <span class="offer-free">GRATUIT</span></span>
+                </li>
+            </ul>
+            <div class="offer-total">
+                <span class="offer-total-label">Votre prix aujourd'hui</span>
+                <span class="offer-total-price">0 €</span>
+            </div>
+            <div class="offer-guarantee">
+                Garantie : zéro résultat en 90 jours = on désinstalle tout. Zéro engagement, zéro risque.
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">80%</div>
+                <div class="stat-label">des consommateurs se renseignent en ligne avant d'acheter en magasin</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">79%</div>
+                <div class="stat-label">veulent soutenir le commerce local mais ne savent pas ce qui est disponible</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">48h</div>
+                <div class="stat-label">pour être en ligne — on s'occupe de tout</div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq">
+            <h2 class="section-title">Questions fréquentes</h2>
+
+            <div class="faq-item">
+                <div class="faq-q">Ça me prend combien de temps ?</div>
+                <div class="faq-a">Zéro. On vient, on connecte votre caisse, on configure votre profil. Votre stock se synchronise automatiquement ensuite. Vous n'avez rien à faire.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">J'ai déjà Instagram, pourquoi Two-Step ?</div>
+                <div class="faq-a">Instagram montre votre image, pas votre stock. Personne ne peut chercher "Nike Air Max 42" sur votre Insta et savoir si vous l'avez. Two-Step fait exactement ça.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Combien ça coûte ?</div>
+                <div class="faq-a">1 mois gratuit, sans carte bancaire. Ensuite 19€/mois pour les 30 premiers marchands — ce tarif est verrouillé à vie. Plus vous venez tôt, moins vous payez.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Je n'ai pas de logiciel de caisse connecté.</div>
+                <div class="faq-a">Pas de problème. Vous exportez votre catalogue en CSV ou Excel depuis n'importe quel logiciel, et on s'occupe du reste. Compatible avec tous les logiciels de caisse.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Et si ça ne marche pas ?</div>
+                <div class="faq-a">On désinstalle tout en 1 clic. Vous n'avez rien payé, rien signé. Zéro risque.</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta">
+            <h2>Prêt à essayer ?</h2>
+            <p>30 places disponibles pour le lancement Toulouse. Gratuit, sans engagement.</p>
+            <div class="cta-contact">
+                <a href="mailto:contact@twostep.fr">contact@twostep.fr</a>
+                <br>
+                <a href="https://www.twostep.fr">www.twostep.fr</a>
+            </div>
+            <p class="cta-note">Two-Step — Le stock local, visible en temps réel.</p>
+        </div>
+
+    </div>
+</body>
+</html>
