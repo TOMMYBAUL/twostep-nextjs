@@ -4,11 +4,11 @@ import TarifsScreen from "./tarifs-screen";
 export const metadata: Metadata = {
     title: "Tarifs",
     description:
-        "2 mois gratuits puis à partir de 19€/mois, verrouillé à vie. Rendez vos produits visibles en ligne sans engagement.",
+        "1 mois gratuit puis à partir de 19€/mois, verrouillé à vie. Rendez vos produits visibles en ligne sans engagement.",
     openGraph: {
         title: "Tarifs | Two-Step",
         description:
-            "2 mois gratuits, puis à partir de 19€/mois pour les pionniers. Compatible avec tous les logiciels de caisse.",
+            "1 mois gratuit, puis à partir de 19€/mois pour les pionniers. Compatible avec tous les logiciels de caisse.",
     },
     alternates: {
         canonical: "https://www.twostep.fr/tarifs",
@@ -24,7 +24,7 @@ const faqJsonLd = {
             name: "Comment fonctionne l'essai gratuit ?",
             acceptedAnswer: {
                 "@type": "Answer",
-                text: "Vous commencez par 2 mois gratuits, sans carte bancaire. Votre tarif ensuite dépend de quand vous nous rejoignez : les 30 premiers marchands paient 19€/mois (verrouillé à vie), puis c'est 29€, puis 39€.",
+                text: "Vous commencez par 1 mois gratuit, sans carte bancaire. Votre tarif ensuite dépend de quand vous nous rejoignez : les 30 premiers marchands paient 19€/mois (verrouillé à vie), puis c'est 29€, puis 39€.",
             },
         },
         {

@@ -235,7 +235,7 @@ export default function MarchandsScreen() {
                                 19<span className="text-[24px] font-bold text-tertiary">€/mois</span>
                             </p>
                             <p className="mt-2 text-[14px] font-semibold text-brand-secondary">
-                                2 mois gratuits · Verrouillé à vie pour les 30 premiers
+                                1 mois gratuit · Verrouillé à vie pour les 30 premiers
                             </p>
                             <ul className="mt-6 space-y-2 text-left text-[14px] text-secondary">
                                 <li className="flex items-start gap-2"><span className="text-brand-secondary">✓</span> Catalogue en ligne avec photos automatiques</li>

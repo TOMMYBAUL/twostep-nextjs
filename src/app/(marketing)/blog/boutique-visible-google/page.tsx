@@ -281,7 +281,7 @@ export default function BoutiqueVisibleGooglePage() {
                 <p>
                     Pour commencer, rendez-vous sur notre{" "}
                     <a href="/marchands">espace marchands</a>. Vous bénéficiez de{" "}
-                    <strong>2 mois gratuits</strong> pour tester le service, puis les
+                    <strong>1 mois gratuit</strong> pour tester le service, puis les
                     tarifs démarrent à{" "}
                     <a href="/tarifs">19 €/mois</a>.
                 </p>

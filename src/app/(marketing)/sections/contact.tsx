@@ -11,7 +11,7 @@ const bullets = [
     "Photos et descriptions enrichies automatiquement par IA",
     "Visible sur Google Shopping, Google Maps et l'app Two-Step",
     "Import factures fournisseur pour alimenter le stock",
-    "2 mois gratuits — puis à partir de 19€/mois, verrouillé à vie",
+    "1 mois gratuit — puis à partir de 19€/mois, verrouillé à vie",
 ];
 
 export function Contact() {

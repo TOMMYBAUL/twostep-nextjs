@@ -346,7 +346,7 @@ export default function LogicielDeCaisseCommercePage() {
                 </p>
 
                 <p>
-                    Consultez nos <a href="/tarifs">tarifs</a> : 2 mois gratuits, puis
+                    Consultez nos <a href="/tarifs">tarifs</a> : 1 mois gratuit, puis
                     à partir de 19 €/mois.
                 </p>
 

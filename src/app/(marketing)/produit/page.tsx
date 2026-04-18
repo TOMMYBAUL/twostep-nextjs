@@ -598,7 +598,7 @@ export default function ProduitPage() {
                             Pr&ecirc;t &agrave; rendre votre stock visible ?
                         </h2>
                         <p className="mt-3 text-[14px] text-white/50">
-                            2 mois gratuits. &Agrave; partir de 19&euro;/mois ensuite. Tarif verrouill&eacute; &agrave; vie.
+                            1 mois gratuit. &Agrave; partir de 19&euro;/mois ensuite. Tarif verrouill&eacute; &agrave; vie.
                         </p>
                         <div className="mt-6">
                             <Link

@@ -17,7 +17,7 @@ const tiers = [
         price: "19€",
         priceDetail: "/ mois",
         features: [
-            { text: "2 mois d'essai gratuit", included: true },
+            { text: "1 mois d'essai gratuit", included: true },
             { text: "Produits illimités", included: true },
             { text: "Import catalogue CSV/Excel", included: true },
             { text: "Enrichissement photos IA", included: true },
@@ -29,7 +29,7 @@ const tiers = [
             { text: "Synchro POS automatique (si compatible)", included: true },
             { text: "Support prioritaire", included: true },
         ],
-        cta: "Essayer 2 mois gratuit",
+        cta: "Essayer 1 mois gratuit",
         href: "/auth/login?role=merchant",
         highlighted: true,
         badge: "30 places",
@@ -40,14 +40,14 @@ const tiers = [
         price: "29€",
         priceDetail: "/ mois",
         features: [
-            { text: "2 mois d'essai gratuit", included: true },
+            { text: "1 mois d'essai gratuit", included: true },
             { text: "Toutes les fonctionnalités Pionnier", included: true },
             { text: "Enrichissement IA photos + catégories", included: true },
             { text: "Récap du jour (décrémentation simplifiée)", included: true },
             { text: "Dashboard gestion de stock", included: true },
             { text: "Support par email", included: true },
         ],
-        cta: "Essayer 2 mois gratuit",
+        cta: "Essayer 1 mois gratuit",
         href: "/auth/login?role=merchant",
         highlighted: false,
         badge: null,
@@ -58,14 +58,14 @@ const tiers = [
         price: "39€",
         priceDetail: "/ mois",
         features: [
-            { text: "2 mois d'essai gratuit", included: true },
+            { text: "1 mois d'essai gratuit", included: true },
             { text: "Toutes les fonctionnalités incluses", included: true },
             { text: "Multi-boutiques disponible", included: true },
             { text: "Intégration POS sur mesure", included: true },
             { text: "Onboarding personnalisé", included: true },
             { text: "Support par email", included: true },
         ],
-        cta: "Essayer 2 mois gratuit",
+        cta: "Essayer 1 mois gratuit",
         href: "/auth/login?role=merchant",
         highlighted: false,
         badge: null,
@@ -90,7 +90,7 @@ const comparisons = [
 const faqs = [
     {
         q: "Comment fonctionne l'essai gratuit ?",
-        a: "Vous commencez par 2 mois gratuits, sans carte bancaire. Votre tarif ensuite dépend de quand vous nous rejoignez : les 30 premiers marchands paient 19€/mois (verrouillé à vie), puis c'est 29€, puis 39€. Plus vous venez tôt, moins vous payez — et ce tarif ne changera jamais.",
+        a: "Vous commencez par 1 mois gratuit, sans engagement. Votre tarif ensuite dépend de quand vous nous rejoignez : les 30 premiers marchands paient 19€/mois (verrouillé à vie), puis c'est 29€, puis 39€. Plus vous venez tôt, moins vous payez — et ce tarif ne changera jamais.",
     },
     {
         q: "Mon logiciel de caisse est-il compatible ?",
@@ -337,7 +337,7 @@ export default function TarifsScreen() {
                         Prêt à rendre votre stock visible ?
                     </h2>
                     <p className="mt-3 text-[14px] text-white/50">
-                        2 mois gratuits. Sans engagement. Tarif verrouillé à vie.
+                        1 mois gratuit. Sans engagement. Tarif verrouillé à vie.
                     </p>
                     <div className="mt-6">
                         <Link href="/onboarding" className="inline-block rounded-xl bg-brand-solid px-7 py-3.5 text-[14px] font-bold text-white no-underline transition-colors hover:bg-brand-solid_hover">
