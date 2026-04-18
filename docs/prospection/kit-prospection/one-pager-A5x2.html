@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Two-Step One-Pager A5x2</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        @page { size: A4 landscape; margin: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #1A1F36;
+            background: #fff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .sheet {
+            width: 297mm;
+            height: 210mm;
+            display: flex;
+            page-break-after: always;
+        }
+
+        .sheet:last-child { page-break-after: avoid; }
+
+        .panel {
+            width: 148.5mm;
+            height: 210mm;
+            padding: 10mm 9mm 8mm;
+            overflow: hidden;
+            border-right: 1px dashed #ccc;
+        }
+
+        .panel:last-child { border-right: none; }
+
+        /* Typography */
+        .hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1.5px solid #4268FF;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-icon {
+            width: 22px; height: 22px;
+            background: #4268FF;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 9px;
+        }
+
+        .logo-txt {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .hdr-url {
+            font-size: 8px;
+            color: #4268FF;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 13px;
+            text-transform: uppercase;
+            line-height: 1.25;
+            margin-bottom: 4px;
+        }
+
+        h1 span { color: #4268FF; }
+
+        .sub {
+            font-size: 8px;
+            opacity: 0.6;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .stitle {
+            font-family: 'Barlow', sans-serif;
+            font-weight: 700;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 5px;
+            color: #4268FF;
+        }
+
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 6px 4px;
+            background: #F5F6FA;
+            border-radius: 6px;
+        }
+
+        .step-n {
+            width: 16px; height: 16px;
+            background: #4268FF; color: white;
+            border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 8px;
+            margin-bottom: 3px;
+        }
+
+        .step h4 { font-family: 'Barlow', sans-serif; font-size: 8px; font-weight: 700; margin-bottom: 2px; }
+        .step p { font-size: 6.5px; opacity: 0.5; line-height: 1.3; }
+
+        /* Benefits */
+        .bens {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 8px;
+            margin-bottom: 8px;
+        }
+
+        .ben {
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+            font-size: 7.5px;
+            line-height: 1.3;
+        }
+
+        .ben-i {
+            color: #4268FF;
+            font-weight: 700;
+            font-size: 8px;
+            flex-shrink: 0;
+        }
+
+        /* Offer */
+        .offer {
+            background: linear-gradient(135deg, #1A1F36, #2D3555);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .offer h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .offer .desc { font-size: 6.5px; opacity: 0.7; line-height: 1.4; }
+
+        .offer-r { text-align: center; flex-shrink: 0; }
+        .offer-price { font-family: 'Archivo Black', sans-serif; font-size: 22px; }
+        .offer-det { font-size: 7px; opacity: 0.6; }
+
+        .offer-badge {
+            display: inline-block;
+            background: #4268FF; color: white;
+            padding: 2px 7px; border-radius: 10px;
+            font-size: 7px; font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .guar {
+            text-align: center;
+            font-size: 7px;
+            opacity: 0.5;
+            font-style: italic;
+            margin-bottom: 6px;
+        }
+
+        /* CTA */
+        .cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: #F5F6FA;
+            border-radius: 8px;
+        }
+
+        .cta h3 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .cta .ct-p { font-size: 7px; opacity: 0.6; margin-bottom: 4px; }
+        .cta .ct-c { font-size: 8px; font-weight: 600; }
+        .cta .ct-c a { color: #4268FF; text-decoration: none; }
+        .cta .qr-lbl { font-size: 6px; color: #4268FF; margin-top: 2px; font-weight: 500; text-align: center; }
+
+        /* FAQ page */
+        .faq-item { padding: 5px 0; border-bottom: 1px solid #E8EAF0; }
+        .faq-q { font-weight: 600; font-size: 8px; margin-bottom: 2px; }
+        .faq-a { font-size: 7px; opacity: 0.6; line-height: 1.4; }
+
+        .tp-box {
+            background: #F5F6FA;
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .tp-box h3 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .tp-box p { font-size: 7px; opacity: 0.6; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<!-- ═══════ PAGE 1 (RECTO) : 2x le recto A5 côte à côte ═══════ -->
+<div class="sheet">
+
+  <!-- Panneau gauche -->
+  <div class="panel">
+    <div class="hdr">
+        <div class="logo-area"><div class="logo-icon">TS</div><span class="logo-txt">Two-Step</span></div>
+        <span class="hdr-url">twostep.fr</span>
+    </div>
+    <h1>Vos clients vous cherchent.<br><span>Ils ne vous trouvent pas.</span></h1>
+    <p class="sub">80% des consommateurs se renseignent en ligne avant d'acheter en magasin. Votre stock n'est visible nulle part. Two-Step change ça.</p>
+    <div class="stitle">Comment ça marche</div>
+    <div class="steps">
+        <div class="step"><div class="step-n">1</div><h4>On connecte votre caisse</h4><p>Compatible avec tous les logiciels</p></div>
+        <div class="step"><div class="step-n">2</div><h4>Votre stock se synchronise</h4><p>Automatiquement, sans rien toucher</p></div>
+        <div class="step"><div class="step-n">3</div><h4>Les clients vous trouvent</h4><p>Ils cherchent, voient, et viennent</p></div>
+    </div>
+    <div class="stitle">Ce qui est inclus</div>
+    <div class="bens">
+        <div class="ben"><span class="ben-i">✓</span>Photos e-commerce générées automatiquement</div>
+        <div class="ben"><span class="ben-i">✓</span>Vitrine pro en ligne — plus besoin de site</div>
+        <div class="ben"><span class="ben-i">✓</span>Clients notifiés des nouveaux arrivages</div>
+        <div class="ben"><span class="ben-i">✓</span>Dashboard statistiques et conseils</div>
+        <div class="ben"><span class="ben-i">✓</span>Mise en place en quelques minutes</div>
+        <div class="ben"><span class="ben-i">✓</span>Zéro effort — on s'occupe de tout</div>
+    </div>
+    <div class="offer">
+        <div>
+            <h2>Offre pionnière — 30 places</h2>
+            <p class="desc">1 mois gratuit, sans engagement, sans carte bancaire.<br>Tarif verrouillé à vie pour les 30 premiers marchands.</p>
+        </div>
+        <div class="offer-r">
+            <div class="offer-price">19€</div>
+            <div class="offer-det">/mois après l'essai</div>
+            <div class="offer-badge">1 MOIS GRATUIT</div>
+        </div>
+    </div>
+    <p class="guar">Pas convaincu après 1 mois ? On désinstalle tout en 1 clic. Zéro risque.</p>
+    <div class="cta">
+        <div>
+            <h3>Prêt à essayer ?</h3>
+            <p class="ct-p">30 places — gratuit, sans engagement</p>
+            <div class="ct-c">Thomas Bauland — <a href="mailto:bauland@twostep.fr">bauland@twostep.fr</a></div>
+        </div>
+        <div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=44x44&color=4268FF&data=https://twostep.fr/marchands?utm_source=onepager%26utm_medium=print%26utm_campaign=terrain" alt="QR" style="width:44px;height:44px;">
+            <div class="qr-lbl">twostep.fr</div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Panneau droit = copie identique -->
+  <div class="panel">
+    <div class="hdr">
+        <div class="logo-area"><div class="logo-icon">TS</div><span class="logo-txt">Two-Step</span></div>
+        <span class="hdr-url">twostep.fr</span>
+    </div>
+    <h1>Vos clients vous cherchent.<br><span>Ils ne vous trouvent pas.</span></h1>
+    <p class="sub">80% des consommateurs se renseignent en ligne avant d'acheter en magasin. Votre stock n'est visible nulle part. Two-Step change ça.</p>
+    <div class="stitle">Comment ça marche</div>
+    <div class="steps">
+        <div class="step"><div class="step-n">1</div><h4>On connecte votre caisse</h4><p>Compatible avec tous les logiciels</p></div>
+        <div class="step"><div class="step-n">2</div><h4>Votre stock se synchronise</h4><p>Automatiquement, sans rien toucher</p></div>
+        <div class="step"><div class="step-n">3</div><h4>Les clients vous trouvent</h4><p>Ils cherchent, voient, et viennent</p></div>
+    </div>
+    <div class="stitle">Ce qui est inclus</div>
+    <div class="bens">
+        <div class="ben"><span class="ben-i">✓</span>Photos e-commerce générées automatiquement</div>
+        <div class="ben"><span class="ben-i">✓</span>Vitrine pro en ligne — plus besoin de site</div>
+        <div class="ben"><span class="ben-i">✓</span>Clients notifiés des nouveaux arrivages</div>
+        <div class="ben"><span class="ben-i">✓</span>Dashboard statistiques et conseils</div>
+        <div class="ben"><span class="ben-i">✓</span>Mise en place en quelques minutes</div>
+        <div class="ben"><span class="ben-i">✓</span>Zéro effort — on s'occupe de tout</div>
+    </div>
+    <div class="offer">
+        <div>
+            <h2>Offre pionnière — 30 places</h2>
+            <p class="desc">1 mois gratuit, sans engagement, sans carte bancaire.<br>Tarif verrouillé à vie pour les 30 premiers marchands.</p>
+        </div>
+        <div class="offer-r">
+            <div class="offer-price">19€</div>
+            <div class="offer-det">/mois après l'essai</div>
+            <div class="offer-badge">1 MOIS GRATUIT</div>
+        </div>
+    </div>
+    <p class="guar">Pas convaincu après 1 mois ? On désinstalle tout en 1 clic. Zéro risque.</p>
+    <div class="cta">
+        <div>
+            <h3>Prêt à essayer ?</h3>
+            <p class="ct-p">30 places — gratuit, sans engagement</p>
+            <div class="ct-c">Thomas Bauland — <a href="mailto:bauland@twostep.fr">bauland@twostep.fr</a></div>
+        </div>
+        <div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=44x44&color=4268FF&data=https://twostep.fr/marchands?utm_source=onepager%26utm_medium=print%26utm_campaign=terrain" alt="QR" style="width:44px;height:44px;">
+            <div class="qr-lbl">twostep.fr</div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════ PAGE 2 (VERSO) : 2x le verso A5 côte à côte ═══════ -->
+<div class="sheet">
+
+  <!-- Panneau gauche verso -->
+  <div class="panel">
+    <div class="hdr">
+        <div class="logo-area"><div class="logo-icon">TS</div><span class="logo-txt">Two-Step</span></div>
+        <span class="hdr-url">Questions fréquentes</span>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <div class="faq-item"><div class="faq-q">Ça me prend combien de temps ?</div><div class="faq-a">Zéro. On connecte votre caisse, tout se synchronise. Vous n'avez rien à faire.</div></div>
+        <div class="faq-item"><div class="faq-q">J'ai déjà Instagram, pourquoi Two-Step ?</div><div class="faq-a">Instagram montre votre image, pas votre stock. Two-Step permet de chercher un produit précis et savoir si vous l'avez.</div></div>
+        <div class="faq-item"><div class="faq-q">Pas de logiciel de caisse connecté ?</div><div class="faq-a">Un simple export CSV ou Excel suffit. Compatible avec tout.</div></div>
+        <div class="faq-item"><div class="faq-q">Et si ça ne marche pas ?</div><div class="faq-a">On désinstalle en 1 clic. Rien payé, rien signé. Zéro risque.</div></div>
+        <div class="faq-item"><div class="faq-q">C'est quoi le tarif verrouillé ?</div><div class="faq-a">Les 30 premiers paient 19€/mois pour toujours. Les suivants paieront 29€, puis 39€.</div></div>
+        <div class="faq-item" style="border-bottom:none;"><div class="faq-q">Quelles caisses compatibles ?</div><div class="faq-a">Square, Shopify, Lightspeed, Zettle — auto. Tous les autres — CSV/Excel.</div></div>
+    </div>
+    <div class="stitle">Vos clients pourront</div>
+    <div class="bens" style="margin-bottom: 10px;">
+        <div class="ben"><span class="ben-i">→</span>Chercher un produit et voir votre stock</div>
+        <div class="ben"><span class="ben-i">→</span>Voir tailles et couleurs en temps réel</div>
+        <div class="ben"><span class="ben-i">→</span>S'abonner pour suivre les nouveautés</div>
+        <div class="ben"><span class="ben-i">→</span>Être notifiés à chaque arrivage</div>
+    </div>
+    <div class="tp-box">
+        <h3>Toulouse, ville pilote</h3>
+        <p>Two-Step est né à Toulouse. Nos premiers partenaires sont dans les quartiers Carmes, Saint-Étienne et Capitole. Rejoignez le mouvement.</p>
+    </div>
+    <div class="cta">
+        <div>
+            <h3>Contactez-nous</h3>
+            <div class="ct-c" style="margin-top:4px;">Thomas Bauland<br><a href="mailto:bauland@twostep.fr">bauland@twostep.fr</a></div>
+        </div>
+        <div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=44x44&color=4268FF&data=https://twostep.fr/marchands?utm_source=onepager%26utm_medium=print%26utm_campaign=terrain" alt="QR" style="width:44px;height:44px;">
+            <div class="qr-lbl">twostep.fr</div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Panneau droit verso = copie identique -->
+  <div class="panel">
+    <div class="hdr">
+        <div class="logo-area"><div class="logo-icon">TS</div><span class="logo-txt">Two-Step</span></div>
+        <span class="hdr-url">Questions fréquentes</span>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <div class="faq-item"><div class="faq-q">Ça me prend combien de temps ?</div><div class="faq-a">Zéro. On connecte votre caisse, tout se synchronise. Vous n'avez rien à faire.</div></div>
+        <div class="faq-item"><div class="faq-q">J'ai déjà Instagram, pourquoi Two-Step ?</div><div class="faq-a">Instagram montre votre image, pas votre stock. Two-Step permet de chercher un produit précis et savoir si vous l'avez.</div></div>
+        <div class="faq-item"><div class="faq-q">Pas de logiciel de caisse connecté ?</div><div class="faq-a">Un simple export CSV ou Excel suffit. Compatible avec tout.</div></div>
+        <div class="faq-item"><div class="faq-q">Et si ça ne marche pas ?</div><div class="faq-a">On désinstalle en 1 clic. Rien payé, rien signé. Zéro risque.</div></div>
+        <div class="faq-item"><div class="faq-q">C'est quoi le tarif verrouillé ?</div><div class="faq-a">Les 30 premiers paient 19€/mois pour toujours. Les suivants paieront 29€, puis 39€.</div></div>
+        <div class="faq-item" style="border-bottom:none;"><div class="faq-q">Quelles caisses compatibles ?</div><div class="faq-a">Square, Shopify, Lightspeed, Zettle — auto. Tous les autres — CSV/Excel.</div></div>
+    </div>
+    <div class="stitle">Vos clients pourront</div>
+    <div class="bens" style="margin-bottom: 10px;">
+        <div class="ben"><span class="ben-i">→</span>Chercher un produit et voir votre stock</div>
+        <div class="ben"><span class="ben-i">→</span>Voir tailles et couleurs en temps réel</div>
+        <div class="ben"><span class="ben-i">→</span>S'abonner pour suivre les nouveautés</div>
+        <div class="ben"><span class="ben-i">→</span>Être notifiés à chaque arrivage</div>
+    </div>
+    <div class="tp-box">
+        <h3>Toulouse, ville pilote</h3>
+        <p>Two-Step est né à Toulouse. Nos premiers partenaires sont dans les quartiers Carmes, Saint-Étienne et Capitole. Rejoignez le mouvement.</p>
+    </div>
+    <div class="cta">
+        <div>
+            <h3>Contactez-nous</h3>
+            <div class="ct-c" style="margin-top:4px;">Thomas Bauland<br><a href="mailto:bauland@twostep.fr">bauland@twostep.fr</a></div>
+        </div>
+        <div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=44x44&color=4268FF&data=https://twostep.fr/marchands?utm_source=onepager%26utm_medium=print%26utm_campaign=terrain" alt="QR" style="width:44px;height:44px;">
+            <div class="qr-lbl">twostep.fr</div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
