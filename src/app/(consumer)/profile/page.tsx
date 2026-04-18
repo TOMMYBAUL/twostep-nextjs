@@ -356,19 +356,19 @@ export default function ProfilePage() {
             </div>
 
             {/* ── Footer links ── */}
-            <div className="flex items-center justify-center gap-4 pb-24 pt-6">
+            <div className="flex flex-col items-center gap-2 pb-24 pt-6 px-5 md:flex-row md:justify-center md:gap-4">
                 <Link href="/mentions-legales" className={cx("text-[11px] text-quaternary transition active:text-tertiary", FOCUS_RING)}>
                     Mentions légales
                 </Link>
-                <span className="text-quaternary" aria-hidden="true">·</span>
+                <span className="hidden text-quaternary md:inline" aria-hidden="true">·</span>
                 <Link href="/confidentialite" className={cx("text-[11px] text-quaternary transition active:text-tertiary", FOCUS_RING)}>
                     Confidentialité
                 </Link>
-                <span className="text-quaternary" aria-hidden="true">·</span>
+                <span className="hidden text-quaternary md:inline" aria-hidden="true">·</span>
                 <a href="mailto:contact@twostep.fr" className={cx("text-[11px] text-quaternary transition active:text-tertiary", FOCUS_RING)}>
                     Contact
                 </a>
-                <span className="text-quaternary" aria-hidden="true">·</span>
+                <span className="hidden text-quaternary md:inline" aria-hidden="true">·</span>
                 <span className="text-[11px] text-quaternary">Two-Step</span>
             </div>
 
