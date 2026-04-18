@@ -7,8 +7,8 @@ SCREENSHOTS_DIR = os.path.join(os.path.dirname(__file__), "..", "audit-screensho
 os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
 BASE = "http://localhost:3001"
-SUPABASE_URL = "https://nagyprzjtheyeuuwxgpg.supabase.co"
-SERVICE_KEY = "sb_secret_dEVH2sdSbMxAC2TC93IYYw_ADl_OQqp"
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://nagyprzjtheyeuuwxgpg.supabase.co")
+SERVICE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]  # never hardcode secrets
 
 def get_magic_link():
     req = urllib.request.Request(
