@@ -1,0 +1,2082 @@
+[
+  {
+    "nom": "ACTURUS FRANCE SAS",
+    "raison_sociale": "ACTURUS FRANCE SAS",
+    "siren": "530868918",
+    "segment": "Mode/Vêtements",
+    "adresse": "8 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Alvaro Cebrian mosquera",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "ALPHABET",
+    "raison_sociale": "ALPHABET",
+    "siren": "392739900",
+    "segment": "Mode/Vêtements",
+    "adresse": "32 RUE D'ASTORG 39 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Patricia Delchet",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "AMA LUNA",
+    "raison_sociale": "AMA LUNA",
+    "siren": "812259299",
+    "segment": "Mode/Vêtements",
+    "adresse": "66 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Judith Soustiel",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ANDRE LELTE",
+    "raison_sociale": "",
+    "siren": "309289775",
+    "segment": "Mode/Vêtements",
+    "adresse": "20 RUE DE BAYARD 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Andre Lelte",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ANY DANSE",
+    "raison_sociale": "FREED OF LONDON PARIS",
+    "siren": "393744750",
+    "segment": "Sport",
+    "adresse": "15 PLACE DU CAPITOLE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Osamu Suzuki",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ARSENE ET LES PIPELETTES",
+    "raison_sociale": "M2V 31",
+    "siren": "809552359",
+    "segment": "Mode/Vêtements",
+    "adresse": "25 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Helene Rieunier (proudhom)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "AZED",
+    "raison_sociale": "AZED",
+    "siren": "751884123",
+    "segment": "Mode/Vêtements",
+    "adresse": "54 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Patricia Delchet (roos)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BAGWOOD",
+    "raison_sociale": "BAGWOOD",
+    "siren": "408176311",
+    "segment": "Mode/Vêtements",
+    "adresse": "75 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Therese Wood (bagneris)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BANANA-POMME",
+    "raison_sociale": "BANANA-POMME",
+    "siren": "911842607",
+    "segment": "Mode/Vêtements",
+    "adresse": "28 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Eric Bitoun",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BE UP",
+    "raison_sociale": "COSMETICS DEVELOPPEMENT",
+    "siren": "800979577",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "21 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Isabelle Dubois (menada)",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "BIAS",
+    "raison_sociale": "BIAS",
+    "siren": "980131718",
+    "segment": "Mode/Vêtements",
+    "adresse": "62 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Laura Noailles",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "BIJOUTERIE NOUGUES",
+    "raison_sociale": "BIJOUTERIE NOUGUES",
+    "siren": "730800612",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "32 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Sandra Nougues",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BURBERRYS",
+    "raison_sociale": "BURBERRY FRANCE SASU",
+    "siren": "572233864",
+    "segment": "Mode/Vêtements",
+    "adresse": "75 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Lisa Kennedy",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "CAHORS SPORT DISTRIBUTION",
+    "raison_sociale": "CAHORS SPORT DISTRIBUTION",
+    "siren": "420973075",
+    "segment": "Mode/Vêtements",
+    "adresse": "11 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Benoît Barron",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "CHAUSSURES MANIK SAS",
+    "raison_sociale": "CHAUSSURES MANIK SAS",
+    "siren": "730801248",
+    "segment": "Chaussures",
+    "adresse": "33 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Pierre Lacabanne",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "COLETTE SAINT MLEUX (PAULY)",
+    "raison_sociale": "",
+    "siren": "347463473",
+    "segment": "Mode/Vêtements",
+    "adresse": "14 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Colette Saint mleux (pauly)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "COMEBACK",
+    "raison_sociale": "COMEBACK",
+    "siren": "901868729",
+    "segment": "Chaussures",
+    "adresse": "47 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Jerome Delgado",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "COMPAGNIE MERIDIONALE DE PARFUMERIE (COMEPAR)",
+    "raison_sociale": "COMPAGNIE MERIDIONALE DE PARFUMERIE",
+    "siren": "318908100",
+    "segment": "Mode/Vêtements",
+    "adresse": "20 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Stephane Gaffino",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CONCEPT STORE THE NORTH FACE",
+    "raison_sociale": "EURL MALE",
+    "siren": "523075950",
+    "segment": "Mode/Vêtements",
+    "adresse": "52 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Emmanuel Levy",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "DIKA",
+    "raison_sociale": "E.MIROGLIO FRANCE",
+    "siren": "848415857",
+    "segment": "Mode/Vêtements",
+    "adresse": "38 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Marta Miroglio (miroglio)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DUO BOUTIQUE",
+    "raison_sociale": "COCCI",
+    "siren": "429906761",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Jean-marie Ponsot",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "EDEN",
+    "raison_sociale": "PP NEDE",
+    "siren": "810994947",
+    "segment": "Chaussures",
+    "adresse": "42 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Jean-jacques Ghebali",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "GABOR",
+    "raison_sociale": "STEINMETZ DISTRIBUTION",
+    "siren": "791511892",
+    "segment": "Chaussures",
+    "adresse": "54 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Claude Steinmetz",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "HANDY",
+    "raison_sociale": "HANDY",
+    "siren": "334991056",
+    "segment": "Chaussures",
+    "adresse": "4 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Lauren Handy",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "HERO SEVEN",
+    "raison_sociale": "LIV 2",
+    "siren": "917987125",
+    "segment": "Mode/Vêtements",
+    "adresse": "22 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "LIVAM",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "IMAGINE",
+    "raison_sociale": "IMAGINE",
+    "siren": "393981394",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "40 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Nathalie Ghenassia",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "INSTITUT DE BEAUTE YVES ROCHER",
+    "raison_sociale": "CAMUS ESTHETIQUE SARL",
+    "siren": "421534819",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "10 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Marie Camus (camus)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "KATHY. B",
+    "raison_sociale": "KATHY. B",
+    "siren": "882609688",
+    "segment": "Mode/Vêtements",
+    "adresse": "44 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Catherine Ballias",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L'EMPLACEMENT",
+    "raison_sociale": "AMIE",
+    "siren": "893038257",
+    "segment": "Mode/Vêtements",
+    "adresse": "40 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Eric Bitoun",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L'ISLA NOVA",
+    "raison_sociale": "",
+    "siren": "819913187",
+    "segment": "Mode/Vêtements",
+    "adresse": "36 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Léa Palacin noblet (noblet)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LA MAISON DE L'HOMME",
+    "raison_sociale": "TOULIC",
+    "siren": "890507932",
+    "segment": "Mode/Vêtements",
+    "adresse": "46 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Erick Haziza",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "LANCASTER",
+    "raison_sociale": "SD PYRENEES",
+    "siren": "484126636",
+    "segment": "Maroquinerie",
+    "adresse": "21 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Estelle Wang",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "LE QUOTIDIEN STORE",
+    "raison_sociale": "",
+    "siren": "831045687",
+    "segment": "Mode/Vêtements",
+    "adresse": "47 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Fatima Meric (maherouz)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "LEMAN",
+    "raison_sociale": "LEMAN",
+    "siren": "794917666",
+    "segment": "Mode/Vêtements",
+    "adresse": "45 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Emmanuel Levy",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LEWIS",
+    "raison_sociale": "LEWIS",
+    "siren": "947856100",
+    "segment": "Maroquinerie",
+    "adresse": "21 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Thierry Chan",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LILI-LEONE",
+    "raison_sociale": "SARL LEONI",
+    "siren": "529145161",
+    "segment": "Mode/Vêtements",
+    "adresse": "16 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Stephanie Roux",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "MANOUSHKA",
+    "raison_sociale": "DOSAYAMA",
+    "siren": "814281812",
+    "segment": "Mode/Vêtements",
+    "adresse": "53 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Dominique Sellem",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MEPHISTO",
+    "raison_sociale": "ETABLISSEMENTS DEJEAN ET FILS",
+    "siren": "690801311",
+    "segment": "Chaussures",
+    "adresse": "ET 2 BIS RUE ALSACE LORRAINE 30 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Isabelle Dejean",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MODI-IN",
+    "raison_sociale": "MODI-IN",
+    "siren": "404952335",
+    "segment": "Chaussures",
+    "adresse": "36 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Celine Tobalaim",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "MONPARFUMMASIGNATURE",
+    "raison_sociale": "MONPARFUMMASIGNATURE",
+    "siren": "831969860",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "42 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Sylvie Roubach (cerro)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MOSQUITOS",
+    "raison_sociale": "L DISTRIBUTION",
+    "siren": "444997753",
+    "segment": "Chaussures",
+    "adresse": "12 B RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Laurent Bensimon",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "N A L'INFINI",
+    "raison_sociale": "N A L'INFINI",
+    "siren": "817911969",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "19 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Patricia Lacombe",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "NAPAPIJRI",
+    "raison_sociale": "DENILLE ET CIE TAILLEUR",
+    "siren": "570803205",
+    "segment": "Mode/Vêtements",
+    "adresse": "36 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Stephane Gaffino",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "NEGREVERGNE",
+    "raison_sociale": "SOC NEGREVERGNE",
+    "siren": "540800240",
+    "segment": "Maroquinerie",
+    "adresse": "A GAUCHE PORTE COCHERE 27 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Geraldine Casanovas (mielvaque)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "PAMPY",
+    "raison_sociale": "PAMPY",
+    "siren": "997769906",
+    "segment": "Mode/Vêtements",
+    "adresse": "11 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Juliette Marciano (kouby)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "PAYOTE",
+    "raison_sociale": "PAYOTINE",
+    "siren": "912767100",
+    "segment": "Chaussures",
+    "adresse": "58 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Olivier Gelly",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "RACHEL HAIR INTERNATIONAL",
+    "raison_sociale": "RACHEL HAIR",
+    "siren": "945085363",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "12 RUE DE BAYARD 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Rachel Nto",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "RECOVERY",
+    "raison_sociale": "RECOVERY PROJECT",
+    "siren": "940957483",
+    "segment": "Mode/Vêtements",
+    "adresse": "48 B RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Pierre Bauguil",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SABON",
+    "raison_sociale": "SABON FRANCE",
+    "siren": "512854027",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "36 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Gregoire De lassus saint genies",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "SADIA",
+    "raison_sociale": "SADIA",
+    "siren": "918125394",
+    "segment": "Mode/Vêtements",
+    "adresse": "39 RUE DE BAYARD 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Sadia Belkelfa",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SAGA COSMETIQUES",
+    "raison_sociale": "SAGA GRENOBLE",
+    "siren": "492557004",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "49 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "GLOW UP DEVELOPMENT",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SAINT JAMES",
+    "raison_sociale": "CAPUCINE",
+    "siren": "820831592",
+    "segment": "Mode/Vêtements",
+    "adresse": "24-26 24 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Virginie Doublet (lecoq)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SAOYA",
+    "raison_sociale": "AUTAN BLANC",
+    "siren": "823051180",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "17 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Arnaud Turbe",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SARL ANDRIK",
+    "raison_sociale": "SARL ANDRIK",
+    "siren": "789487246",
+    "segment": "Mode/Vêtements",
+    "adresse": "59 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Eric Kouby",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SARL LES CUIRS DU SUD",
+    "raison_sociale": "SARL LES CUIRS DU SUD",
+    "siren": "419643291",
+    "segment": "Mode/Vêtements",
+    "adresse": "45 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Eric Gautrand (gautrand)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SARL PERLIN'S",
+    "raison_sociale": "SARL PERLIN'S",
+    "siren": "326727633",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "49 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Sylvie Schmitt (schmitt)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SERHA",
+    "raison_sociale": "SERHA",
+    "siren": "532946712",
+    "segment": "Chaussures",
+    "adresse": "37 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Nathalie Serfati (marciano)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SHILTON",
+    "raison_sociale": "MGM 81",
+    "siren": "483038006",
+    "segment": "Mode/Vêtements",
+    "adresse": "28 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Michael Guedj",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SIENNE",
+    "raison_sociale": "3 S D",
+    "siren": "428969711",
+    "segment": "Mode/Vêtements",
+    "adresse": "44-46 44 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Simon Benlolo",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SIENNE",
+    "raison_sociale": "5 SB FAMILY",
+    "siren": "538275561",
+    "segment": "Mode/Vêtements",
+    "adresse": "44-46 44 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Stephanie Berdah (benlolo)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SOCIETE CENTRALE DE DISTRIBUTION TEXTILE (SCDT)",
+    "raison_sociale": "SOCIETE CENTRALE DE DISTRIBUTION TEXTILE",
+    "siren": "339737306",
+    "segment": "Mode/Vêtements",
+    "adresse": "61 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Guy Guenoun",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SOCIETE DISTRIBUTION CASTRES (SDC)",
+    "raison_sociale": "SOCIETE DISTRIBUTION CASTRES",
+    "siren": "404272130",
+    "segment": "Sport",
+    "adresse": "11 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Benoît Barron",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SOCIETE LAKO",
+    "raison_sociale": "SOCIETE LAKO",
+    "siren": "310896709",
+    "segment": "Mode/Vêtements",
+    "adresse": "36 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Bernard Kok",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SPORT DISTRIBUTION ALBI (SDA)",
+    "raison_sociale": "SPORT DISTRIBUTION ALBI",
+    "siren": "437929961",
+    "segment": "Sport",
+    "adresse": "11 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Benoît Barron",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SPORT DISTRIBUTION LABEGE",
+    "raison_sociale": "SPORT DISTRIBUTION LABEGE",
+    "siren": "351670625",
+    "segment": "Sport",
+    "adresse": "11 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Benoît Barron",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SPORT DISTRIBUTION ROUFFIAC (S.D.R.)",
+    "raison_sociale": "SPORT DISTRIBUTION ROUFFIAC",
+    "siren": "529213498",
+    "segment": "Mode/Vêtements",
+    "adresse": "11 PL ESQUIROL 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Benoît Barron",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SUD OUEST WATCH SA (SOW)",
+    "raison_sociale": "SUD OUEST WATCH SA",
+    "siren": "319722302",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "12 PLACE DU CAPITOLE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Gaston Gayet",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SUPER33STORE",
+    "raison_sociale": "SUPER33STORE",
+    "siren": "791020936",
+    "segment": "Mode/Vêtements",
+    "adresse": "49 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Caroline Tobelaim",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SUPERDRY",
+    "raison_sociale": "SUPERHALLSTORE",
+    "siren": "820890077",
+    "segment": "Mode/Vêtements",
+    "adresse": "38 RUE D'ALSACE LORRAINE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Caroline Tobelaim",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "THE NORTH FACE TOULOUSE",
+    "raison_sociale": "TNF TOULOUSE",
+    "siren": "814222881",
+    "segment": "Mode/Vêtements",
+    "adresse": "52 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Guillaume Huguet",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TILL",
+    "raison_sociale": "TILLAMY",
+    "siren": "401862255",
+    "segment": "Chaussures",
+    "adresse": "40 RUE DE METZ 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Yann Bellamy",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TIMBERLAND",
+    "raison_sociale": "TBL 31",
+    "siren": "840571533",
+    "segment": "Chaussures",
+    "adresse": "45 RUE DES TOURNEURS 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Guillaume Huguet",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TOVLI",
+    "raison_sociale": "TOVLI",
+    "siren": "751393331",
+    "segment": "Mode/Vêtements",
+    "adresse": "17 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Robert Fellous",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "UNBOTTLED TOULOUSE",
+    "raison_sociale": "UNBOTTLED TOULOUSE",
+    "siren": "987834645",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "5 RUE DU POIDS DE L'HUILE 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "UNBOTTLED",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "VERSO",
+    "raison_sociale": "VERSO",
+    "siren": "453313181",
+    "segment": "Mode/Vêtements",
+    "adresse": "16 RUE DE LA POMME 31000 TOULOUSE",
+    "quartier": "Capitole",
+    "gerant": "Monique Baron (wambeck)",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "AMBIANCES ET SENTEURS",
+    "raison_sociale": "AMBIANCES ET SENTEURS",
+    "siren": "808837157",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "39 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Eric Gras",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "APOS 33",
+    "raison_sociale": "APOS 33",
+    "siren": "422970020",
+    "segment": "Mode/Vêtements",
+    "adresse": "ET 36 34 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Sandra Cremazy (perin)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "ARMURERIE BARRAUD",
+    "raison_sociale": "ARMURERIE BARRAUD",
+    "siren": "401784376",
+    "segment": "Sport",
+    "adresse": "45 RUE PHARAON 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Olivier Barraud (barraud)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BOSCHERIE PERE ET FILLE",
+    "raison_sociale": "BOSCHERIE PERE ET FILLE",
+    "siren": "989923834",
+    "segment": "Mode/Vêtements",
+    "adresse": "49 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Julien Boscherie",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CONCEPT TOULOUSE",
+    "raison_sociale": "CONCEPT TOULOUSE",
+    "siren": "949677249",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "9 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Mattia Bono",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "DR SWAG",
+    "raison_sociale": "DR SWAG SASU",
+    "siren": "801794504",
+    "segment": "Mode/Vêtements",
+    "adresse": "13 RUE PERCHEPINTE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Nicolas Julius",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "EQUI-SUD",
+    "raison_sociale": "EQUI-SUD",
+    "siren": "390134567",
+    "segment": "Sport",
+    "adresse": "19 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Francoise Imart (imart)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "FUTURWARE LAB",
+    "raison_sociale": "FUTURWARE LAB",
+    "siren": "410238703",
+    "segment": "Mode/Vêtements",
+    "adresse": "9 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Tatiana Descazeaux (gorchkova)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "HANNAH",
+    "raison_sociale": "HANNAH",
+    "siren": "799219837",
+    "segment": "Mode/Vêtements",
+    "adresse": "31-33 31 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Abdelkader Boukenine",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "LA FILLE DE MARGARET",
+    "raison_sociale": "ROYA",
+    "siren": "520610593",
+    "segment": "Mode/Vêtements",
+    "adresse": "35 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Sarah Pelegry (fatemi)",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "LAMA",
+    "raison_sociale": "LAMA",
+    "siren": "421370651",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Marine Lafitte",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LAORA VITTORIA",
+    "raison_sociale": "LAORA VITTORIA",
+    "siren": "412012395",
+    "segment": "Mode/Vêtements",
+    "adresse": "19 RUE OZENNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Annick Confuorto (racine)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LB7",
+    "raison_sociale": "LB7",
+    "siren": "100285386",
+    "segment": "Mode/Vêtements",
+    "adresse": "7 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Laura Mathieu",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LESLIE MONTE-CARLO",
+    "raison_sociale": "LESAMBRE TOULOUSE",
+    "siren": "801007428",
+    "segment": "Mode/Vêtements",
+    "adresse": "35 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Mireille Pietri (peyretti)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "M.J.H.",
+    "raison_sociale": "M.J.H.",
+    "siren": "453190092",
+    "segment": "Mode/Vêtements",
+    "adresse": "42 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Jean-jacques Chetritt",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MADAME GEORGES",
+    "raison_sociale": "KENTEX",
+    "siren": "830672937",
+    "segment": "Mode/Vêtements",
+    "adresse": "35 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Lionel Prevost",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "MAITYLA",
+    "raison_sociale": "MAITYKA",
+    "siren": "879994192",
+    "segment": "Mode/Vêtements",
+    "adresse": "5 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Mailys Baillet",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MATHIS ET SASHA",
+    "raison_sociale": "MATHIS ET SASHA",
+    "siren": "920475134",
+    "segment": "Mode/Vêtements",
+    "adresse": "49 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Clementine Chiodo",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MICHELE CAZAUX",
+    "raison_sociale": "",
+    "siren": "321727455",
+    "segment": "Mode/Vêtements",
+    "adresse": "39 RUE DE LA DALBADE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Michele Louge (cazaux)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "PARALLELE",
+    "raison_sociale": "FRALTIS",
+    "siren": "440867224",
+    "segment": "Chaussures",
+    "adresse": "35 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Alain Sanz",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "PLUMETIS",
+    "raison_sociale": "PLUMETIS",
+    "siren": "840763288",
+    "segment": "Mode/Vêtements",
+    "adresse": "35 RUE DE LA DALBADE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Audrey Derouard",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "POINTURE",
+    "raison_sociale": "AG TOULOUSE",
+    "siren": "994314177",
+    "segment": "Chaussures",
+    "adresse": "23 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Audrey Garcia",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SARL LES CIGALES",
+    "raison_sociale": "SARL LES CIGALES",
+    "siren": "441927951",
+    "segment": "Mode/Vêtements",
+    "adresse": "42 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Olivia Samson",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SORTILEGE",
+    "raison_sociale": "",
+    "siren": "448745604",
+    "segment": "Mode/Vêtements",
+    "adresse": "7 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Marie Guilhem",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "STEDIF",
+    "raison_sociale": "STEDIF",
+    "siren": "835196098",
+    "segment": "Mode/Vêtements",
+    "adresse": "46 RUE DES FILATIERS 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Stephanie Forgeront",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "VICOMTE A",
+    "raison_sociale": "THIERS ALBERT",
+    "siren": "534109145",
+    "segment": "Mode/Vêtements",
+    "adresse": "4 RUE BOULBONNE 31000 TOULOUSE",
+    "quartier": "Carmes",
+    "gerant": "Gregory Troch",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ABSAMY",
+    "raison_sociale": "BEAUTE CAPILLAIRE ABSAMY",
+    "siren": "811869353",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "18 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Absatou Thiam",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ASTRA COLLECTION",
+    "raison_sociale": "",
+    "siren": "982090763",
+    "segment": "Mode/Vêtements",
+    "adresse": "7 PLACE DU FER A CHEVAL 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Adem Dris",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "COSMETIC LOVERS",
+    "raison_sociale": "COSMETIC LOVERS",
+    "siren": "795374412",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "58 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Laurence Sarini",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DIALLO DIALLO GOUDOUS",
+    "raison_sociale": "DIALLO DIALLO GOUDOUS",
+    "siren": "878266683",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "24 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Abdoul Diallo",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DIVINE HAIR BEAUTY",
+    "raison_sociale": "DIVINE HAIR BEAUTY",
+    "siren": "990203333",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "22 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Fred Oumba",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "EYM BEAUTY",
+    "raison_sociale": "YM BEAUTY",
+    "siren": "897417416",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "45 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Yosief Mhretab kibrab (mhretab kibrab)",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "HABESHA",
+    "raison_sociale": "HABESHA",
+    "siren": "980687842",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "27 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Meron Gelashe",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "JAVA COSMETIC",
+    "raison_sociale": "JAVA COSMETIC",
+    "siren": "850811555",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "21 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Fitsum Abebe",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "PARFUMERIE ANN",
+    "raison_sociale": "COSMETHICS DIFFUSION",
+    "siren": "332401199",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "43 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Myriam Echevarria",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TWIX BIZNESS MALIK",
+    "raison_sociale": "TWIX BIZNESS MALIK",
+    "siren": "791450430",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "24 RUE DE LA REPUBLIQUE 31300 TOULOUSE",
+    "quartier": "Saint-Cyprien",
+    "gerant": "Malik Diallo",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "AGATHE ET ZOE",
+    "raison_sociale": "AGATHE ET ZOE",
+    "siren": "501691844",
+    "segment": "Chaussures",
+    "adresse": "29 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Ariane Dayonnet (node-langlois)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ANNE FONTAINE",
+    "raison_sociale": "LA CHEMISERIE PARISIENNE",
+    "siren": "394771075",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Ari-john Zlotkin",
+    "nb_etablissements": 5
+  },
+  {
+    "nom": "APOSTROPHE RJC",
+    "raison_sociale": "R J C",
+    "siren": "331258384",
+    "segment": "Mode/Vêtements",
+    "adresse": "23 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Raymonde Coudert (tordjmann)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BAOBAB",
+    "raison_sociale": "B.R.1",
+    "siren": "811166578",
+    "segment": "Mode/Vêtements",
+    "adresse": "15 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Christophe Chopin",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CHRISTOMET",
+    "raison_sociale": "CHRISTOMET",
+    "siren": "917739880",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "23 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Edouard Dorise (dorise)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DANYBERD",
+    "raison_sociale": "GDT",
+    "siren": "480974716",
+    "segment": "Mode/Vêtements",
+    "adresse": "HOTEL DE BONNEFOY 19 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Jean-luc Gales",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DORISE JOAILLIER TOULOUSE",
+    "raison_sociale": "DORISE JOAILLIER TOULOUSE",
+    "siren": "300485133",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "41 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Edouard Dorise (dorise)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ESTHER MICHELE",
+    "raison_sociale": "BOTE",
+    "siren": "818920985",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "35 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Isabelle Bouygue",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "FJT",
+    "raison_sociale": "SAS FRAYSSINET JOAILLIER TOULOUSE",
+    "siren": "501696819",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "33 RUE DU LANGUEDOC 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "HOLDING FRAYSSINET",
+    "nb_etablissements": 5
+  },
+  {
+    "nom": "HERVE MARIAGE",
+    "raison_sociale": "RAMSES",
+    "siren": "523860542",
+    "segment": "Mode/Vêtements",
+    "adresse": "20 RUE DU LANGUEDOC 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Aline Rouja (alric)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "JAILLET",
+    "raison_sociale": "JAILLET",
+    "siren": "901806471",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "28 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Edouard Dorise",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "JOAILLERIE PIQUEMAL-BARON",
+    "raison_sociale": "CARLA",
+    "siren": "488302654",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "27 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Catherine Piquemal-baron (maurice)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L.R.B.J",
+    "raison_sociale": "L.R.B.J",
+    "siren": "483989182",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "22 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Laurent Rieunier (rieunier)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "L'ESPION",
+    "raison_sociale": "SOCIETE SAMANTA",
+    "siren": "310602370",
+    "segment": "Mode/Vêtements",
+    "adresse": "21 B RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Simone Soudri",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LA CHEMISERIE TOULOUSAINE--LCT",
+    "raison_sociale": "LA CHEMISERIE TOULOUSAINE--LCT",
+    "siren": "403309891",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Ari Zlotkin",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "LE MAITRE MESURE",
+    "raison_sociale": "SARL GAJAF",
+    "siren": "890241078",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Gregory Baron (baron)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LES DESSOUS CHICS",
+    "raison_sociale": "CARRADE ET FILS SA",
+    "siren": "310239041",
+    "segment": "Mode/Vêtements",
+    "adresse": "29 RUE DU LANGUEDOC 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Jean-michel Carrade",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "LILITH",
+    "raison_sociale": "MADDY 31",
+    "siren": "831401260",
+    "segment": "Mode/Vêtements",
+    "adresse": "15 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Gilles Andre",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "MAC DOUGLAS",
+    "raison_sociale": "ART EXPANSION",
+    "siren": "308874601",
+    "segment": "Mode/Vêtements",
+    "adresse": "24 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Chantal Huet",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MJ CONCEPT STORE - VERSION CAMELEON",
+    "raison_sociale": "UNION STYLE",
+    "siren": "814518205",
+    "segment": "Mode/Vêtements",
+    "adresse": "46 RUE DU LANGUEDOC 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Marie-laure Servidio (crabos)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "NITYA",
+    "raison_sociale": "DUKAN DE NITYA",
+    "siren": "394862114",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Janak Datwani",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "OLD ENGLAND",
+    "raison_sociale": "OLD ENGLAND",
+    "siren": "562068296",
+    "segment": "Mode/Vêtements",
+    "adresse": "24 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Albert Goldberg",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "ROBERTO GIANNELLI",
+    "raison_sociale": "ROBERTO GIANNELLI",
+    "siren": "788804342",
+    "segment": "Chaussures",
+    "adresse": "20 RUE DU LANGUEDOC 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Carole Reynaud (lefevre)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TIABEL",
+    "raison_sociale": "TIABEL",
+    "siren": "983791369",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "41 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Armand Dorise",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "TOULOUSE MONTRES",
+    "raison_sociale": "TOULOUSE MONTRES",
+    "siren": "905343240",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "10 RUE PIERRE DE FERMAT 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Jean-marc Morillon",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TOULOUSE MONTRES",
+    "raison_sociale": "TOULOUSE MONTRES",
+    "siren": "790612089",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "10 RUE PIERRE DE FERMAT 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Jean-marc Morillon",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "UPPER",
+    "raison_sociale": "LE BOUIF",
+    "siren": "501490395",
+    "segment": "Chaussures",
+    "adresse": "22 RUE CROIX BARAGNON 31000 TOULOUSE",
+    "quartier": "Saint-Etienne",
+    "gerant": "Didier Foissard",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ASM",
+    "raison_sociale": "ASM",
+    "siren": "444108385",
+    "segment": "Chaussures",
+    "adresse": "41 39 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Felix Gabison",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "BARONS PAPILLOM BY B&B",
+    "raison_sociale": "B&B DEVELOPPEMENT",
+    "siren": "813407806",
+    "segment": "Chaussures",
+    "adresse": "14 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Amine Britel",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BELLA MODE",
+    "raison_sociale": "BELLA MODE",
+    "siren": "813115987",
+    "segment": "Mode/Vêtements",
+    "adresse": "39 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Yinqiu Jiang (ren)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "BLEU CERISE",
+    "raison_sociale": "GEORIS",
+    "siren": "491266581",
+    "segment": "Maroquinerie",
+    "adresse": "9 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Philip Nougaret",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "BODY ONE",
+    "raison_sociale": "SYLVAL",
+    "siren": "451454680",
+    "segment": "Mode/Vêtements",
+    "adresse": "41 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Joy Amsellem",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "BODY ONE LINGERIE",
+    "raison_sociale": "BODY ONE LINGERIE",
+    "siren": "420050916",
+    "segment": "Mode/Vêtements",
+    "adresse": "41 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Ariel Amsellem",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CALZEDONIA",
+    "raison_sociale": "CGS",
+    "siren": "804632990",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Graziella Perez",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "COEXIST STORE",
+    "raison_sociale": "COEXIST STORE",
+    "siren": "825285893",
+    "segment": "Mode/Vêtements",
+    "adresse": "2-4 2 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Thibault Gobbi",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "COSMYA",
+    "raison_sociale": "COSMYA",
+    "siren": "880325774",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "33 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "FI2C",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CREA CONCEPT",
+    "raison_sociale": "CREA CONCEPT EUROPE",
+    "siren": "451827141",
+    "segment": "Mode/Vêtements",
+    "adresse": "5 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Victor Bitton",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "DO MY SHOES",
+    "raison_sociale": "DO MY SHOES",
+    "siren": "531697514",
+    "segment": "Chaussures",
+    "adresse": "7 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Dominique Grosjean",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "DRESSING ROSE AND KIDS",
+    "raison_sociale": "DRESSING ROSE AND KIDS",
+    "siren": "883705923",
+    "segment": "Mode/Vêtements",
+    "adresse": "31 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Ameur Gasdallah",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "ENTRE ELLE ET MOI",
+    "raison_sociale": "ENTRE ELLE ET MOI",
+    "siren": "403883119",
+    "segment": "Mode/Vêtements",
+    "adresse": "35 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Stephane Benhamou",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ETOILE DE SONGE",
+    "raison_sociale": "ETOILE DE SONGE",
+    "siren": "842073801",
+    "segment": "Mode/Vêtements",
+    "adresse": "9 PLACE DE LA TRINITE 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Sophie Pialat",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "FC2 BOUTIQUE",
+    "raison_sociale": "FC2 BOUTIQUE",
+    "siren": "810479311",
+    "segment": "Mode/Vêtements",
+    "adresse": "8 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Francois Couillard",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "GAME TIME",
+    "raison_sociale": "SARL GAME TIME",
+    "siren": "432706513",
+    "segment": "Sport",
+    "adresse": "6 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Laurent Caramelle",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "GLAM SHOES BK",
+    "raison_sociale": "GLAM & CO",
+    "siren": "808299044",
+    "segment": "Mode/Vêtements",
+    "adresse": "29 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Chadli Hambli",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "HS & TG",
+    "raison_sociale": "HS & TG",
+    "siren": "829202886",
+    "segment": "Chaussures",
+    "adresse": "3 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Thibault Gobbi",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "I LOVE SCARPE",
+    "raison_sociale": "SCARPE",
+    "siren": "811924067",
+    "segment": "Chaussures",
+    "adresse": "3 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Alienor Lacroix",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ILANN FIVE",
+    "raison_sociale": "PMN",
+    "siren": "824966022",
+    "segment": "Mode/Vêtements",
+    "adresse": "17 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Pierre Assali",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "JO (SCOOP)",
+    "raison_sociale": "JO",
+    "siren": "447962358",
+    "segment": "Mode/Vêtements",
+    "adresse": "31 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Olivier Judkiewicz",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "KATOUNI",
+    "raison_sociale": "KATOUNI",
+    "siren": "510259757",
+    "segment": "Chaussures",
+    "adresse": "12 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Alain Salimi pak",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "KEED",
+    "raison_sociale": "ELLE AND SHE",
+    "siren": "306735440",
+    "segment": "Mode/Vêtements",
+    "adresse": "28 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Veronique Descouens (laschon-ruquet)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L'ANNEXE",
+    "raison_sociale": "NICOLE BUSATO CONCEPT",
+    "siren": "832046767",
+    "segment": "Mode/Vêtements",
+    "adresse": "38 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Nicole Busato (ben soussan)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L'OBSERVATOIRE",
+    "raison_sociale": "ALICE",
+    "siren": "491278156",
+    "segment": "Mode/Vêtements",
+    "adresse": "4 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Jonnhy Dunal",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LA SUITE...",
+    "raison_sociale": "M & B",
+    "siren": "518036629",
+    "segment": "Mode/Vêtements",
+    "adresse": "22 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Anouar-adil Boudraa",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LEVI'S STORE",
+    "raison_sociale": "NOTOS",
+    "siren": "985170638",
+    "segment": "Mode/Vêtements",
+    "adresse": "30 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "SWELL",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "LINEA MODA",
+    "raison_sociale": "V.A MODA",
+    "siren": "884782228",
+    "segment": "Maroquinerie",
+    "adresse": "31 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Veronique Notte (choplin)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MADAME MARCHAND",
+    "raison_sociale": "CELU & CIE",
+    "siren": "828890442",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "25 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Karim Djeffal",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "MAISON DE LA SAPP",
+    "raison_sociale": "MAISON DE LA SAPP",
+    "siren": "910827138",
+    "segment": "Mode/Vêtements",
+    "adresse": "14 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Latifa Linoubli",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MAKEUP SHOW",
+    "raison_sociale": "SAINT ROME ACCESSOIRES",
+    "siren": "814911608",
+    "segment": "Cosmétique/Beauté",
+    "adresse": "21 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Adlen Guedacha-asfour",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MICHAEL DRILHOLE CONCEPT (MD CONCEPT)",
+    "raison_sociale": "MICHAEL DRILHOLE CONCEPT",
+    "siren": "819061649",
+    "segment": "Mode/Vêtements",
+    "adresse": "31 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Michael Drilhole",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MIRA MIRA",
+    "raison_sociale": "MERCURE",
+    "siren": "928558550",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "23 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Arnaud Turbe",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MY LOOK",
+    "raison_sociale": "CLZ",
+    "siren": "802191163",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Liyan Chen (zhang alias tchang)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "NEW CASTING",
+    "raison_sociale": "P & G",
+    "siren": "793787037",
+    "segment": "Chaussures",
+    "adresse": "19 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Qian Gan (han)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "OUTDOOR DIFFUSION SUD OUEST",
+    "raison_sociale": "OUTDOOR DIFFUSION SUD OUEST",
+    "siren": "102885449",
+    "segment": "Sport",
+    "adresse": "45 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Clovis Houdart",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "PASSION FILLE",
+    "raison_sociale": "LES QUATRE FILLES",
+    "siren": "522655141",
+    "segment": "Mode/Vêtements",
+    "adresse": "14 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Kangle Wang",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "PAUL MARIUS TOULOUSE",
+    "raison_sociale": "SAS PM1",
+    "siren": "814932943",
+    "segment": "Maroquinerie",
+    "adresse": "29 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Tiffany Loubeyre (desautes)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "PAUSE",
+    "raison_sociale": "PAUSE",
+    "siren": "985210459",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "23 RUE DE LA TRINITE 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Jonathan Blaise",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "POBIEDA",
+    "raison_sociale": "POBIEDA",
+    "siren": "831015748",
+    "segment": "Mode/Vêtements",
+    "adresse": "16 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Svitlana Labau (yurevych)",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "POINDRELLE",
+    "raison_sociale": "POINDRELLE",
+    "siren": "324454735",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "15 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Liliane Poindrelle",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "REVERIES SARL",
+    "raison_sociale": "REVERIES SARL",
+    "siren": "818210007",
+    "segment": "Mode/Vêtements",
+    "adresse": "2 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Chrystalla Theodoridou",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "RL.COM",
+    "raison_sociale": "RL.COM",
+    "siren": "879698066",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "17 RUE DES ARTS 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Romain Mussato",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "ROGER GERSON",
+    "raison_sociale": "",
+    "siren": "570701078",
+    "segment": "Mode/Vêtements",
+    "adresse": "26 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Roger Gerson",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "SANTA FE",
+    "raison_sociale": "PALMA",
+    "siren": "380999664",
+    "segment": "Mode/Vêtements",
+    "adresse": "17 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Marc Fridman",
+    "nb_etablissements": 5
+  },
+  {
+    "nom": "SARL TROPIQUE SUD",
+    "raison_sociale": "SARL TROPIQUE SUD",
+    "siren": "392540167",
+    "segment": "Mode/Vêtements",
+    "adresse": "7 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Lucien Chetrit",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "SARL YAOYI",
+    "raison_sociale": "SARL YAOYI",
+    "siren": "798798112",
+    "segment": "Mode/Vêtements",
+    "adresse": "38 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Xiaoyi Pigal (wang)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SAS YOOK",
+    "raison_sociale": "SAS YOOK",
+    "siren": "510352446",
+    "segment": "Mode/Vêtements",
+    "adresse": "40 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Yohan Cohen",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SB LAGON",
+    "raison_sociale": "SB LAGON",
+    "siren": "492608351",
+    "segment": "Mode/Vêtements",
+    "adresse": "19 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Stephane Benhamou",
+    "nb_etablissements": 4
+  },
+  {
+    "nom": "SDQ 31",
+    "raison_sociale": "SDQ 31",
+    "siren": "910006550",
+    "segment": "Mode/Vêtements",
+    "adresse": "26 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Chadli Hambli",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "SO GLAM",
+    "raison_sociale": "BH",
+    "siren": "791534563",
+    "segment": "Mode/Vêtements",
+    "adresse": "16 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Huu Bui",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "STOCK COMPANY",
+    "raison_sociale": "STOCK COMPANY",
+    "siren": "510708274",
+    "segment": "Mode/Vêtements",
+    "adresse": "24 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Hadda Ouikou",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "SYSTER'S",
+    "raison_sociale": "DAC",
+    "siren": "538812199",
+    "segment": "Chaussures",
+    "adresse": "17 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Alex Dai",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TRANS-SHIRT",
+    "raison_sociale": "TRANS-SHIRT",
+    "siren": "411604408",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "David Metout",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "TRANS-SHIRT",
+    "raison_sociale": "TRANS-SHIRT ATELIER TOULOUSE",
+    "siren": "981147358",
+    "segment": "Mode/Vêtements",
+    "adresse": "10 RUE TEMPONIERES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Clara Boumedienne",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "UNIKA",
+    "raison_sociale": "YANG",
+    "siren": "989721857",
+    "segment": "Chaussures",
+    "adresse": "29 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Cédric Yang",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "UNIKA",
+    "raison_sociale": "UNIKA",
+    "siren": "519575856",
+    "segment": "Chaussures",
+    "adresse": "29 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Daniel Zhou",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "URBAN WEAR",
+    "raison_sociale": "URBAN WEAR",
+    "siren": "939563672",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Hichame Ayachi",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "VIA UNO",
+    "raison_sociale": "JAKALI",
+    "siren": "504446410",
+    "segment": "Chaussures",
+    "adresse": "9 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Jadir Bergonsi",
+    "nb_etablissements": 5
+  },
+  {
+    "nom": "Y STYLE",
+    "raison_sociale": "Y STYLE",
+    "siren": "808208169",
+    "segment": "Mode/Vêtements",
+    "adresse": "38 RUE SAINT ROME 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Zheng Wang",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "YLANG",
+    "raison_sociale": "YLANG",
+    "siren": "807490636",
+    "segment": "Mode/Vêtements",
+    "adresse": "17 RUE DES CHANGES 31000 TOULOUSE",
+    "quartier": "Saint-Rome",
+    "gerant": "Sue Wang (zhou)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CESARE NORI",
+    "raison_sociale": "CESARE NORI",
+    "siren": "328090410",
+    "segment": "Mode/Vêtements",
+    "adresse": "23 PLACE VICTOR HUGO 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Tatiana Nori (antonova)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "CYCLARTISANS",
+    "raison_sociale": "CYCLARTISANS",
+    "siren": "944321488",
+    "segment": "Sport",
+    "adresse": "46 RUE DE LA COLOMBETTE 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Loïc Martin",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "FAUR QUINTANA",
+    "raison_sociale": "IJ",
+    "siren": "534100342",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "ET 18 RUE RIVALS 19 PLACE VICTOR HUGO 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Benoit Quintana (quintana)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "L'ADRESSE BLANCHE",
+    "raison_sociale": "EZKONTZA",
+    "siren": "901855585",
+    "segment": "Mode/Vêtements",
+    "adresse": "72 RUE PIERRE-PAUL RIQUET 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Magali Aycaguer",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "LA MOMERIE",
+    "raison_sociale": "TRIMON",
+    "siren": "840216766",
+    "segment": "Mode/Vêtements",
+    "adresse": "12 RUE DE LA COLOMBETTE 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Lou-maite Monjon",
+    "nb_etablissements": 2
+  },
+  {
+    "nom": "MARC FREZAL",
+    "raison_sociale": "",
+    "siren": "449858794",
+    "segment": "Bijouterie/Horlogerie",
+    "adresse": "24 RUE DE LA COLOMBETTE 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Marc Frezal (frezal)",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "MAUELICLE",
+    "raison_sociale": "MAUELICLE",
+    "siren": "422057927",
+    "segment": "Sport",
+    "adresse": "2 IMPASSE DE LA COLOMBETTE 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Eric Fontaine (fontaine)",
+    "nb_etablissements": 3
+  },
+  {
+    "nom": "TENDANCES LINGERIE",
+    "raison_sociale": "LA COLOMBELLE",
+    "siren": "851831982",
+    "segment": "Mode/Vêtements",
+    "adresse": "40 RUE DE LA COLOMBETTE 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Johan Bouysse",
+    "nb_etablissements": 1
+  },
+  {
+    "nom": "VIRAGES",
+    "raison_sociale": "SR GERSON",
+    "siren": "344626130",
+    "segment": "Mode/Vêtements",
+    "adresse": "21 PLACE VICTOR HUGO 31000 TOULOUSE",
+    "quartier": "Victor-Hugo",
+    "gerant": "Simon Gerson",
+    "nb_etablissements": 4
+  }
+]
