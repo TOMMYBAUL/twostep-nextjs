@@ -18,9 +18,9 @@ const navItems = [
         exact: true,
     },
     {
-        href: "/dashboard/products",
+        href: "/dashboard/stock/mon-stock",
         label: "Mon stock",
-        matchAlso: ["/dashboard/invoices", "/dashboard/recap"],
+        matchAlso: ["/dashboard/stock", "/dashboard/products", "/dashboard/invoices", "/dashboard/recap"],
         icon: (
             <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.5 7.28L12 2 3.5 7.28M20.5 7.28V16.72L12 22M20.5 7.28L12 12.56M3.5 7.28V16.72L12 22M3.5 7.28L12 12.56M12 22V12.56" />

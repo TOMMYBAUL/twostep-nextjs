@@ -5,13 +5,13 @@ import Image from "next/image";
 
 const pageTitles: Record<string, string> = {
     "/dashboard": "Accueil",
-    "/dashboard/products": "Produits",
+    "/dashboard/stock/mon-stock": "Produits",
+    "/dashboard/stock/factures": "Factures",
     "/dashboard/promotions": "Promotions",
     "/dashboard/store": "Ma boutique",
     "/dashboard/settings": "Réglages",
     "/dashboard/achievements": "Trophées",
     "/dashboard/tips-history": "Historique tips",
-    "/dashboard/invoices": "Factures",
     "/dashboard/google": "Google",
 };
 

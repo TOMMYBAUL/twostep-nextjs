@@ -36,7 +36,7 @@ export default function NewProductPage() {
                 initial_quantity: values.initial_quantity,
             });
             toast("Produit créé");
-            router.push("/dashboard/products");
+            router.push("/dashboard/stock/mon-stock");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         } finally {
@@ -51,7 +51,7 @@ export default function NewProductPage() {
                 title="Nouveau"
                 titleAccent="produit"
                 action={
-                    <Link href="/dashboard/products" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                    <Link href="/dashboard/stock/mon-stock" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         ← Retour
                     </Link>
                 }

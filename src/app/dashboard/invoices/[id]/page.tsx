@@ -242,7 +242,7 @@ export default function InvoiceDetailPage() {
 
             {!isImported && activeItems.length > 0 && (
                 <div className="mt-6 flex gap-4">
-                    <button onClick={() => router.push("/dashboard/invoices")} className="btn-ts-secondary">
+                    <button onClick={() => router.push("/dashboard/stock/factures")} className="btn-ts-secondary">
                         Retour
                     </button>
                     <button onClick={handleValidateAndPush} disabled={validating} className="btn-ts">

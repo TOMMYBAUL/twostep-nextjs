@@ -68,7 +68,7 @@ export default function DashboardPage() {
                 stepsList.push({
                     label: "Importer votre catalogue",
                     description: "Uploadez un fichier CSV ou une facture fournisseur pour ajouter vos produits.",
-                    href: "/dashboard/invoices",
+                    href: "/dashboard/stock/factures",
                     cta: "Importer",
                     checked: hasProducts,
                 });
@@ -88,7 +88,7 @@ export default function DashboardPage() {
             stepsList.push({
                 label: "Activer le transfert de factures",
                 description: "Transférez vos factures fournisseurs par email — vos produits se mettent à jour automatiquement.",
-                href: "/dashboard/invoices",
+                href: "/dashboard/stock/factures",
                 cta: "Activer",
                 checked: hasReceivedEmail,
             });
@@ -281,7 +281,7 @@ export default function DashboardPage() {
 
                     {/* Quick links */}
                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                        <QuickLink href="/dashboard/products" label="Produits" description="Gérer votre catalogue" />
+                        <QuickLink href="/dashboard/stock/mon-stock" label="Produits" description="Gérer votre catalogue" />
                         <QuickLink href="/dashboard/promotions" label="Promos" description="Créer une promotion" />
                         <QuickLink href="/dashboard/store" label="Ma boutique" description="Modifier votre profil" />
                         {merchant && (
