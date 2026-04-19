@@ -1,7 +1,7 @@
 "use client";
 
-import InvoicesPage from "@/app/dashboard/invoices/page";
+import { FacturesView } from "@/components/stock/factures-view";
 
 export default function FacturesPage() {
-    return <InvoicesPage />;
+    return <FacturesView />;
 }

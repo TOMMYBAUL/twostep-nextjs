@@ -1,7 +1,7 @@
 "use client";
 
-import ProductsPage from "@/app/dashboard/products/page";
+import { MyStockView } from "@/components/stock/my-stock-view";
 
 export default function MonStockPage() {
-    return <ProductsPage />;
+    return <MyStockView />;
 }
