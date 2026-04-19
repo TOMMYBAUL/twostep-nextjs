@@ -225,42 +225,81 @@ export async function POST(request: NextRequest) {
             captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
         }
 
-        // Step 1: Reverse EAN search for products WITHOUT EAN (name → EAN)
-        try {
-            const { searchEanByName } = await import("@/lib/ean/lookup");
-            const { data: noEanProducts } = await admin
-                .from("products")
-                .select("id, name, brand")
-                .eq("merchant_id", merchant.id)
-                .is("ean", null)
-                .limit(50);
+        // ── Enrichment cascade (identical to invoice validation) ──
+        // Collect all newly created products for enrichment
+        const { data: newProducts } = await admin
+            .from("products")
+            .select("id, ean, sku, name, brand, photo_url")
+            .eq("merchant_id", merchant.id)
+            .is("photo_url", null);
 
-            for (const p of noEanProducts ?? []) {
-                try {
-                    const found = await searchEanByName(p.name, p.brand);
-                    if (found?.ean) {
-                        await admin.from("products").update({ ean: found.ean }).eq("id", p.id);
+        const { searchEanByName, lookupEan } = await import("@/lib/ean/lookup");
+        const { searchProductImage } = await import("@/lib/images/serper");
+        const { createImageJob } = await import("@/lib/images/jobs");
+
+        for (const product of newProducts ?? []) {
+            try {
+                if (product.ean) {
+                    // Has EAN → direct lookup (enriches brand/category/photo)
+                    await lookupEan(product.ean, product.id);
+                    continue;
+                }
+
+                let foundEan: string | null = null;
+
+                // Strategy A: SKU → check if another product has this SKU with an EAN
+                if (product.sku) {
+                    const { data: skuMatch } = await admin
+                        .from("products")
+                        .select("ean")
+                        .eq("sku", product.sku)
+                        .not("ean", "is", null)
+                        .neq("id", product.id)
+                        .limit(1)
+                        .single();
+                    if (skuMatch?.ean) foundEan = skuMatch.ean;
+                }
+
+                // Strategy B: reverse search by name via EAN-Search + UPCitemdb + Open Facts
+                if (!foundEan) {
+                    const found = await searchEanByName(product.name, product.brand);
+                    if (found) {
+                        foundEan = found.ean;
+                        const updates: Record<string, unknown> = { ean: found.ean };
+                        if (found.brand) updates.brand = found.brand;
+                        if (found.category) updates.category = found.category;
+                        await admin.from("products").update(updates).eq("id", product.id);
                     }
-                } catch { /* non-blocking — continue to next product */ }
+                }
+
+                if (foundEan) {
+                    // Found EAN → save and run full enrichment
+                    await admin.from("products").update({ ean: foundEan }).eq("id", product.id);
+                    await lookupEan(foundEan, product.id);
+                } else {
+                    // Last resort: Serper photo by name+brand+SKU
+                    const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
+                    if (photoUrl) {
+                        await admin
+                            .from("products")
+                            .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
+                            .eq("id", product.id);
+                        await createImageJob(product.id, merchant.id, photoUrl);
+                    }
+                }
+            } catch (err) {
+                captureError(err, { route: "catalog/import", phase: "enrichment", productId: product.id });
             }
-        } catch (err) {
-            captureError(err, { route: "catalog/import", phase: "reverse-ean-search", merchantId: merchant.id });
         }
 
-        // Step 2: Enrich products WITH EAN (EAN → canonical name + photo)
-        try {
-            const { enrichNewProducts } = await import("@/lib/ean/enrich");
-            await enrichNewProducts(merchant.id);
-        } catch (err) {
-            captureError(err, { route: "catalog/import", phase: "ean-enrich", merchantId: merchant.id });
-        }
-
-        // Step 3: Fallback — Serper photos for products STILL without photo
-        try {
-            const { enrichProductsWithoutEan } = await import("@/lib/ean/enrich");
-            await enrichProductsWithoutEan(merchant.id);
-        } catch (err) {
-            captureError(err, { route: "catalog/import", phase: "enrich-no-ean", merchantId: merchant.id });
+        // AI categorization (same as invoice validation)
+        if (productsCreated > 0 || productsUpdated > 0) {
+            try {
+                const { categorizeMerchantProducts } = await import("@/lib/ai/categorize");
+                await categorizeMerchantProducts(merchant.id);
+            } catch (err) {
+                captureError(err, { route: "catalog/import", phase: "categorize", merchantId: merchant.id });
+            }
         }
 
         return NextResponse.json({
