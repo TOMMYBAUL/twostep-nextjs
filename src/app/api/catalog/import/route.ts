@@ -174,23 +174,21 @@ export async function POST(request: NextRequest) {
                 productsUpdated++;
                 stockReplaced++;
             } else {
-                // CREATE new product
-                const { data: created, error: rpcErr } = await admin.rpc("create_product_with_stock", {
-                    p_merchant_id: merchant.id,
-                    p_name: cleanName,
-                    p_price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
-                    p_ean: firstItem.ean,
-                    p_photo_url: null,
-                    p_pos_item_id: null,
-                    p_category: null,
+                // CREATE new product (direct INSERT — RPC has overload ambiguity)
+                const newId = crypto.randomUUID();
+                const { error: createErr } = await admin.from("products").insert({
+                    id: newId,
+                    merchant_id: merchant.id,
+                    name: cleanName,
+                    price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
+                    ean: firstItem.ean || null,
+                    visible: true,
                 });
 
-                if (rpcErr || !created) {
-                    errors.push(`Create ${cleanName}: ${rpcErr?.message ?? "RPC returned null"}`);
+                if (createErr) {
+                    errors.push(`Create ${cleanName}: ${createErr.message}`);
                     continue;
                 }
-
-                const newId = created as string;
 
                 // Set stock to catalog value (REPLACE, not default 0)
                 await supabase.from("stock").upsert(
