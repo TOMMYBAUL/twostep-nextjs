@@ -50,10 +50,13 @@ export default function SignupPage() {
             const { error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/discover`,
+                    data: { role: "user" },
+                },
             });
             if (signUpError) throw signUpError;
-            router.push("/discover");
+            router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
         } finally {
@@ -101,6 +104,8 @@ export default function SignupPage() {
     };
 
     // ── Merchant: final submit ──
+    // Store merchant fields in user_metadata; the actual merchant row is created
+    // in /auth/callback after email confirmation (session exists only then).
     const handleProfileSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
@@ -111,29 +116,21 @@ export default function SignupPage() {
             const { error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                    data: {
+                        role: "merchant",
+                        merchant_name: storeName,
+                        merchant_address: storeAddress,
+                        merchant_city: storeCity,
+                        merchant_siret: siret,
+                        merchant_phone: phone || null,
+                        merchant_siret_pending: siretPending,
+                    },
+                },
             });
             if (signUpError) throw signUpError;
-
-            const res = await fetch("/api/merchants", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: storeName,
-                    address: storeAddress,
-                    city: storeCity,
-                    lat: 0,
-                    lng: 0,
-                    siret,
-                    phone: phone || null,
-                    status: siretPending ? "pending" : "active",
-                }),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error);
-            }
-            router.push("/dashboard");
+            router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
         } finally {
