@@ -12,6 +12,8 @@ const ACCEPTED_TYPES = new Set([
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/vnd.ms-excel",
     "text/csv",
+    "text/plain",                  // Windows sometimes sends CSV as text/plain
+    "application/octet-stream",    // fallback for unknown types
 ]);
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -241,6 +243,7 @@ export async function POST(request: NextRequest) {
         }, { status: 201 });
     } catch (e) {
         captureError(e, { route: "catalog/import" });
-        return NextResponse.json({ error: "Import failed" }, { status: 500 });
+        console.error("[catalog/import] Error:", e);
+        return NextResponse.json({ error: `Import failed: ${e instanceof Error ? e.message : "unknown"}` }, { status: 500 });
     }
 }
