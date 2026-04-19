@@ -225,7 +225,37 @@ export async function POST(request: NextRequest) {
             captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
         }
 
-        // Enrich products WITHOUT EAN — search photos by product name via Serper
+        // Step 1: Reverse EAN search for products WITHOUT EAN (name → EAN)
+        try {
+            const { searchEanByName } = await import("@/lib/ean/lookup");
+            const { data: noEanProducts } = await admin
+                .from("products")
+                .select("id, name, brand")
+                .eq("merchant_id", merchant.id)
+                .is("ean", null)
+                .limit(50);
+
+            for (const p of noEanProducts ?? []) {
+                try {
+                    const found = await searchEanByName(p.name, p.brand);
+                    if (found?.ean) {
+                        await admin.from("products").update({ ean: found.ean }).eq("id", p.id);
+                    }
+                } catch { /* non-blocking — continue to next product */ }
+            }
+        } catch (err) {
+            captureError(err, { route: "catalog/import", phase: "reverse-ean-search", merchantId: merchant.id });
+        }
+
+        // Step 2: Enrich products WITH EAN (EAN → canonical name + photo)
+        try {
+            const { enrichNewProducts } = await import("@/lib/ean/enrich");
+            await enrichNewProducts(merchant.id);
+        } catch (err) {
+            captureError(err, { route: "catalog/import", phase: "ean-enrich", merchantId: merchant.id });
+        }
+
+        // Step 3: Fallback — Serper photos for products STILL without photo
         try {
             const { enrichProductsWithoutEan } = await import("@/lib/ean/enrich");
             await enrichProductsWithoutEan(merchant.id);
