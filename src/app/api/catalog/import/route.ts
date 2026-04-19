@@ -180,6 +180,8 @@ export async function POST(request: NextRequest) {
                     p_name: cleanName,
                     p_price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
                     p_ean: firstItem.ean,
+                    p_photo_url: null,
+                    p_pos_item_id: null,
                     p_category: null,
                 });
 
