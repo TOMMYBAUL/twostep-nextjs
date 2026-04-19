@@ -23,6 +23,7 @@ export default function ProductsPage() {
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"catalogue" | "incomplete">("catalogue");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const [importing, setImporting] = useState(false);
     const recalRef = useRef<HTMLInputElement>(null);
 
     const handleCatalogImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +31,7 @@ export default function ProductsPage() {
         if (!file) return;
         e.target.value = ""; // reset for re-upload
 
-        toast("Import en cours...");
+        setImporting(true);
         const formData = new FormData();
         formData.append("file", file);
 
@@ -38,11 +39,13 @@ export default function ProductsPage() {
             const res = await fetch("/api/catalog/import", { method: "POST", body: formData });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
-            toast(`Stock recalé : ${data.products_updated} mis à jour, ${data.products_created} créés`);
+            toast(`${data.products_created} produits créés, ${data.products_updated} mis à jour — les photos s'enrichissent en arrière-plan`);
             await refetchProducts();
             refetchIncomplete();
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur d'import", "error");
+        } finally {
+            setImporting(false);
         }
     };
 
@@ -130,9 +133,19 @@ export default function ProductsPage() {
                 <button
                     type="button"
                     onClick={() => recalRef.current?.click()}
-                    className="inline-flex items-center gap-2 rounded-xl border border-secondary bg-primary px-4 py-2.5 text-sm font-medium text-secondary hover:bg-primary_hover"
+                    disabled={importing}
+                    className="inline-flex items-center gap-2 rounded-xl border border-secondary bg-primary px-4 py-2.5 text-sm font-medium text-secondary hover:bg-primary_hover disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    <Upload01 className="size-4" /> Réimporter mon catalogue
+                    {importing ? (
+                        <>
+                            <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                            Import en cours…
+                        </>
+                    ) : (
+                        <>
+                            <Upload01 className="size-4" /> Réimporter mon catalogue
+                        </>
+                    )}
                 </button>
                 <input
                     ref={recalRef}
