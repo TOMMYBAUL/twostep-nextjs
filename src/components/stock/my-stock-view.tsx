@@ -9,7 +9,6 @@ import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductRow } from "@/components/dashboard/product-row";
 import { StockBadge } from "@/components/dashboard/stock-badge";
-import { StockTabs } from "@/components/dashboard/stock-tabs";
 import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
@@ -108,8 +107,6 @@ export function MyStockView() {
                     </Link>
                 }
             />
-
-            <StockTabs />
 
             {/* Stock management tip — only if no POS connected */}
             {merchant && !merchant.pos_type && products.length > 0 && (

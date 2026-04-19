@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/dashboard/page-header";
-import { StockTabs } from "@/components/dashboard/stock-tabs";
 import { EmailInboundBanner } from "@/components/dashboard/email-inbound-banner";
 import { EmailSetupGuide } from "@/components/dashboard/email-setup-guide";
 import { useToast } from "@/components/dashboard/toast";
@@ -183,8 +182,6 @@ export function FacturesView() {
                 title="Mes"
                 titleAccent="entrées"
             />
-
-            <StockTabs />
 
             <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                 <MetricCard label="Total factures" value={total} staggerIndex={0} />
