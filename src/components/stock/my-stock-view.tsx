@@ -114,19 +114,13 @@ export function MyStockView() {
                     <p className="mb-2 text-sm font-semibold text-primary">Gestion simplifiée</p>
                     <p className="text-sm text-tertiary">
                         Vos produits sont marqués <strong className="text-secondary">disponibles</strong> ou <strong className="text-secondary">indisponibles</strong>.
-                        Le soir, allez dans l'onglet <strong className="text-secondary">Ventes</strong> pour mettre à jour en 15 secondes.
+                        La <strong className="text-secondary">Clôture du soir</strong> (à venir) vous permettra de mettre à jour les ruptures en 15 secondes.
                     </p>
                 </div>
             )}
 
             {/* Quick actions */}
             <div className="animate-fade-up stagger-05 mb-4 flex flex-wrap gap-2">
-                <Link
-                    href="/dashboard/stock/mon-stock"
-                    className="inline-flex items-center gap-2 rounded-xl border border-brand bg-brand-secondary px-4 py-2.5 text-sm font-medium text-brand-secondary no-underline hover:bg-brand-primary_alt"
-                >
-                    {hasPOS ? "Voir mes stats" : "Mettre à jour"}
-                </Link>
                 <button
                     type="button"
                     onClick={() => recalRef.current?.click()}
