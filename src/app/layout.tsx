@@ -6,6 +6,7 @@ import { Theme } from "@/providers/theme";
 import "@/styles/globals.css";
 import { cx } from "@/utils/cx";
 import { ZoomReset } from "@/components/zoom-reset";
+import { AuthHashRescue } from "@/components/auth-hash-rescue";
 
 const archivoBlack = Archivo_Black({
     subsets: ["latin"],
@@ -98,6 +99,7 @@ export default function RootLayout({
                 }}
             >
                 <ZoomReset />
+                <AuthHashRescue />
                 <RouteProvider>
                     <Theme>{children}</Theme>
                 </RouteProvider>
