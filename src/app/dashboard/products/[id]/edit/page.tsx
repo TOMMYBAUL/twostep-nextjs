@@ -33,7 +33,7 @@ export default function EditProductPage() {
                 available_sizes: (product as any)?.available_sizes ?? null,
             });
             toast("Produit mis à jour");
-            router.push("/dashboard/products");
+            router.push("/dashboard/stock/mon-stock");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         } finally {
@@ -45,7 +45,7 @@ export default function EditProductPage() {
         try {
             await deleteProduct(id);
             toast("Produit supprimé");
-            router.push("/dashboard/products");
+            router.push("/dashboard/stock/mon-stock");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         }
@@ -66,7 +66,7 @@ export default function EditProductPage() {
                 title="Modifier"
                 titleAccent={product.canonical_name ?? product.name}
                 action={
-                    <Link href="/dashboard/products" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                    <Link href="/dashboard/stock/mon-stock" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         ← Retour
                     </Link>
                 }

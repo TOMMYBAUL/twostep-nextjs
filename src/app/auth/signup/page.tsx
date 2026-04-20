@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+function validatePasswordStrength(pwd: string): string | null {
+    if (pwd.length < 8) return "Mot de passe : 8 caractères minimum";
+    if (!/[a-z]/.test(pwd)) return "Mot de passe : ajoute une minuscule";
+    if (!/[A-Z]/.test(pwd)) return "Mot de passe : ajoute une majuscule";
+    if (!/[0-9]/.test(pwd)) return "Mot de passe : ajoute un chiffre";
+    if (!/[^A-Za-z0-9]/.test(pwd)) return "Mot de passe : ajoute un caractère spécial (!@#$…)";
+    return null;
+}
+
 type Role = "user" | "merchant";
 type MerchantStep = "account" | "siret" | "profile";
 
@@ -42,18 +51,29 @@ export default function SignupPage() {
     const handleUserSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
-        if (password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères"); return; }
+        const weak = validatePasswordStrength(password);
+        if (weak) { setError(weak); return; }
         if (password !== confirmPassword) { setError("Les mots de passe ne correspondent pas"); return; }
         setIsLoading(true);
         try {
             const supabase = createClient();
-            const { error: signUpError } = await supabase.auth.signUp({
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/discover`,
+                    data: { role: "user" },
+                },
             });
             if (signUpError) throw signUpError;
-            router.push("/discover");
+            // Supabase returns user with identities=[] when email already exists
+            // (anti-enumeration). Redirect to login so the user can authenticate
+            // instead of waiting for a confirmation email that never comes.
+            if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
+                router.push(`/auth/login?email=${encodeURIComponent(email)}&existing=1`);
+                return;
+            }
+            router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
         } finally {
@@ -65,7 +85,8 @@ export default function SignupPage() {
     const handleAccountSubmit = (e: FormEvent) => {
         e.preventDefault();
         setError("");
-        if (password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères"); return; }
+        const weak = validatePasswordStrength(password);
+        if (weak) { setError(weak); return; }
         if (password !== confirmPassword) { setError("Les mots de passe ne correspondent pas"); return; }
         setStep("siret");
     };
@@ -101,6 +122,8 @@ export default function SignupPage() {
     };
 
     // ── Merchant: final submit ──
+    // Store merchant fields in user_metadata; the actual merchant row is created
+    // in /auth/callback after email confirmation (session exists only then).
     const handleProfileSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
@@ -108,32 +131,48 @@ export default function SignupPage() {
         setIsLoading(true);
         try {
             const supabase = createClient();
-            const { error: signUpError } = await supabase.auth.signUp({
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                    data: {
+                        role: "merchant",
+                        merchant_name: storeName,
+                        merchant_address: storeAddress,
+                        merchant_city: storeCity,
+                        merchant_siret: siret,
+                        merchant_phone: phone || null,
+                        merchant_siret_pending: siretPending,
+                    },
+                },
             });
             if (signUpError) throw signUpError;
-
-            const res = await fetch("/api/merchants", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
+            // Email already registered — send them to login with an upgrade hint
+            // so the merchant profile can be attached after authentication.
+            if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
+                const params = new URLSearchParams({
+                    email,
+                    existing: "1",
+                    next: "/devenir-marchand",
+                });
+                const prefill = {
                     name: storeName,
                     address: storeAddress,
                     city: storeCity,
-                    lat: 0,
-                    lng: 0,
                     siret,
-                    phone: phone || null,
-                    status: siretPending ? "pending" : "active",
-                }),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error);
+                    phone: phone || "",
+                    siret_pending: siretPending ? "1" : "0",
+                };
+                try {
+                    sessionStorage.setItem("merchant_prefill", JSON.stringify(prefill));
+                } catch {
+                    // sessionStorage unavailable (private mode) — user will re-enter the form
+                }
+                router.push(`/auth/login?${params.toString()}`);
+                return;
             }
-            router.push("/dashboard");
+            router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
         } finally {
@@ -215,7 +254,7 @@ export default function SignupPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
-                                    placeholder="8 caractères minimum"
+                                    placeholder="8 caractères, une majuscule, un chiffre, un spécial"
                                     required
                                 />
                             </div>
@@ -272,7 +311,7 @@ export default function SignupPage() {
                                 </div>
                                 <div>
                                     <label className="mb-1.5 block text-xs font-semibold text-primary">Mot de passe</label>
-                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères minimum" required />
+                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères, une majuscule, un chiffre, un spécial" required />
                                 </div>
                                 <div>
                                     <label className="mb-1.5 block text-xs font-semibold text-primary">Confirmer le mot de passe</label>

@@ -6,7 +6,7 @@ import { Drawer } from "vaul";
 
 const moreItems = [
     {
-        href: "/dashboard/products",
+        href: "/dashboard/stock/mon-stock",
         label: "Stock",
         icon: (
             <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -29,7 +29,7 @@ const moreItems = [
         ),
     },
     {
-        href: "/dashboard/invoices",
+        href: "/dashboard/stock/factures",
         label: "Factures",
         icon: (
             <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductForm } from "@/components/dashboard/product-form";
 import { TabNav } from "@/components/dashboard/tab-nav";
@@ -17,12 +17,63 @@ const tabs = [
 ];
 
 export default function NewProductPage() {
+    return (
+        <Suspense fallback={null}>
+            <NewProductInner />
+        </Suspense>
+    );
+}
+
+function NewProductInner() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const eanParam = searchParams.get("ean") ?? "";
+    const prefill = searchParams.get("prefill") === "1";
+    const ref = searchParams.get("ref");
+
     const { merchant } = useMerchant();
     const { createProduct } = useProducts(merchant?.id);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState("manual");
     const [isLoading, setIsLoading] = useState(false);
+    const [initial, setInitial] = useState<{
+        name: string; description: string; ean: string; category: string; price: string; initialQuantity: string; photoUrl?: string | null;
+    } | null>(() =>
+        eanParam
+            ? { name: "", description: "", ean: eanParam, category: "", price: "", initialQuantity: "0" }
+            : null,
+    );
+    const [enriching, setEnriching] = useState(false);
+
+    useEffect(() => {
+        if (!prefill || !ref || !merchant?.id) return;
+        setEnriching(true);
+        (async () => {
+            try {
+                const res = await fetch(`/api/products/by-ean?ean=${encodeURIComponent(eanParam)}&merchant_id=${merchant.id}`);
+                if (!res.ok) return;
+                const data = await res.json() as {
+                    status: string;
+                    product?: { name?: string; canonical_name?: string; brand?: string; category?: string; photo_url?: string; photo_processed_url?: string };
+                };
+                if (data.status === "global_hit" && data.product) {
+                    setInitial({
+                        ean: eanParam,
+                        name: data.product.canonical_name ?? data.product.name ?? "",
+                        description: "",
+                        category: data.product.category ?? "",
+                        price: "",
+                        initialQuantity: "0",
+                        photoUrl: data.product.photo_processed_url ?? data.product.photo_url ?? null,
+                    });
+                }
+            } catch {
+                // non-critical — user can still fill manually
+            } finally {
+                setEnriching(false);
+            }
+        })();
+    }, [prefill, ref, eanParam, merchant?.id]);
 
     const handleSubmit = async (values: { name: string; description: string; ean: string; category: string; price: number; initial_quantity: number }) => {
         setIsLoading(true);
@@ -36,7 +87,7 @@ export default function NewProductPage() {
                 initial_quantity: values.initial_quantity,
             });
             toast("Produit créé");
-            router.push("/dashboard/products");
+            router.push("/dashboard/stock/mon-stock");
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         } finally {
@@ -51,16 +102,24 @@ export default function NewProductPage() {
                 title="Nouveau"
                 titleAccent="produit"
                 action={
-                    <Link href="/dashboard/products" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
+                    <Link href="/dashboard/stock/mon-stock" className="text-sm text-tertiary hover:text-secondary no-underline focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded">
                         ← Retour
                     </Link>
                 }
             />
 
+            {enriching && (
+                <p className="animate-fade-up stagger-2 mb-3 rounded-xl bg-brand-primary/10 px-4 py-2.5 text-xs font-medium text-brand-secondary">
+                    Enrichissement du produit depuis le référentiel Two-Step…
+                </p>
+            )}
+
             <TabNav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {activeTab === "manual" && (
                 <ProductForm
+                    key={initial?.ean ?? "empty"}
+                    initialValues={initial ?? undefined}
                     onSubmit={handleSubmit}
                     submitLabel="Créer le produit"
                     isLoading={isLoading}

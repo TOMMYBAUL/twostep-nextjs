@@ -1,16 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginInner />
+        </Suspense>
+    );
+}
+
+function LoginInner() {
     const router = useRouter();
-    const [email, setEmail] = useState("");
+    const searchParams = useSearchParams();
+    const emailParam = searchParams.get("email") ?? "";
+    const existing = searchParams.get("existing") === "1";
+    const next = searchParams.get("next");
+
+    const [email, setEmail] = useState(emailParam);
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (emailParam) setEmail(emailParam);
+    }, [emailParam]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -20,12 +37,18 @@ export default function LoginPage() {
             const supabase = createClient();
             const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
             if (authError) throw authError;
-            // Check if user is a merchant
+
+            // Explicit next destination takes precedence (e.g. upgrade flow).
+            if (next && next.startsWith("/")) {
+                window.location.href = next;
+                return;
+            }
+
             const { data: merchant } = await supabase
                 .from("merchants")
                 .select("id")
                 .eq("user_id", authData.user.id)
-                .single();
+                .maybeSingle();
             window.location.href = merchant ? "/dashboard" : "/discover";
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Erreur de connexion";
@@ -38,13 +61,22 @@ export default function LoginPage() {
     return (
         <div className="flex min-h-dvh items-center justify-center bg-secondary px-4">
             <div className="w-full max-w-sm">
-                {/* Logo */}
                 <div className="mb-8 text-center">
                     <img src="/logo-icon.webp?v=2" alt="Two-Step" className="mx-auto mb-3 size-12 rounded-xl" />
                     <h1 className="font-display text-xl font-semibold uppercase text-primary">Connexion</h1>
                     <p className="mt-1 text-sm text-tertiary">Commerçant ou client, un seul compte</p>
                 </div>
 
+                {existing && (
+                    <div className="mb-4 rounded-xl bg-blue-50 px-4 py-3 text-xs font-medium text-blue-700">
+                        <p className="font-semibold">Ce compte existe déjà.</p>
+                        <p className="mt-0.5 font-normal">
+                            {next === "/devenir-marchand"
+                                ? "Connecte-toi, on enregistrera ta boutique juste après."
+                                : "Connecte-toi avec ton mot de passe habituel."}
+                        </p>
+                    </div>
+                )}
                 {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-medium text-red-600">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-3">

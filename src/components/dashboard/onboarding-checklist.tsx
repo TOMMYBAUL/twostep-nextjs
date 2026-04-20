@@ -44,7 +44,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             if (hasPOS) {
                 checklist.push({ label: "Caisse connectée", href: "/dashboard/settings", cta: "Voir", checked: true });
             } else {
-                checklist.push({ label: "Importer votre catalogue", href: "/dashboard/invoices", cta: "Importer", checked: hasProducts });
+                checklist.push({ label: "Importer votre catalogue", href: "/dashboard/stock/factures", cta: "Importer", checked: hasProducts });
             }
 
             // Step 2: Email factures (for all)
@@ -58,7 +58,7 @@ export function OnboardingChecklist({ merchant }: { merchant: Merchant | null })
             } catch {
                 // laisser unchecked en cas d'erreur
             }
-            checklist.push({ label: "Activer le transfert de factures par email", href: "/dashboard/invoices", cta: "Activer", checked: hasReceivedEmail });
+            checklist.push({ label: "Activer le transfert de factures par email", href: "/dashboard/stock/factures", cta: "Activer", checked: hasReceivedEmail });
 
             // Step 3-5: Profile
             checklist.push({ label: "Compléter votre profil boutique", href: "/dashboard/store", cta: "Compléter", checked: hasProfile });
