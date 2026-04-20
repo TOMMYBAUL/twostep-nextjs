@@ -80,24 +80,46 @@ export function MyStockView() {
 
     // Non-POS: flip a single size between available (1) and rupture (0) by
     // rewriting the product's available_sizes array. The total stock is
-    // recomputed and synced so the consumer view stays consistent.
+    // recomputed and synced so the consumer view stays consistent. The user
+    // gets a 5s undo window via the toast action.
+    const applySizes = async (productId: string, sizes: { size: string; quantity: number }[]) => {
+        await fetch(`/api/products/${productId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ available_sizes: sizes }),
+        });
+        const totalQty = sizes.reduce((sum, v) => sum + v.quantity, 0);
+        await updateStock(productId, undefined, totalQty);
+        await refetchProducts();
+    };
+
     const handleToggleVariant = async (productId: string, sizeLabel: string) => {
         const product = products.find((p) => p.id === productId);
         if (!product) return;
-        const current = (product.available_sizes ?? []) as { size: string; quantity: number }[];
-        const next = current.map((v) =>
+        const previous = (product.available_sizes ?? []) as { size: string; quantity: number }[];
+        const next = previous.map((v) =>
             v.size === sizeLabel ? { ...v, quantity: v.quantity > 0 ? 0 : 1 } : v,
         );
+        const nowAvailable = next.find((v) => v.size === sizeLabel)?.quantity ?? 0;
+
         setUpdatingId(productId);
         try {
-            await fetch(`/api/products/${productId}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ available_sizes: next }),
-            });
-            const totalQty = next.reduce((sum, v) => sum + v.quantity, 0);
-            await updateStock(productId, undefined, totalQty);
-            await refetchProducts();
+            await applySizes(productId, next);
+            toast(
+                nowAvailable > 0
+                    ? `${sizeLabel} remis en stock`
+                    : `${sizeLabel} passé en rupture`,
+                {
+                    action: {
+                        label: "Annuler",
+                        onClick: () => {
+                            applySizes(productId, previous).catch(() => {
+                                toast("Impossible d'annuler", "error");
+                            });
+                        },
+                    },
+                },
+            );
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur", "error");
         } finally {
