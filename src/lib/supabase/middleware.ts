@@ -67,11 +67,11 @@ export async function updateSession(request: NextRequest) {
             }
         }
 
-        // Dashboard protection: require merchant profile
+        // Dashboard protection: require merchant profile + active billing
         if (user && pathname.startsWith("/dashboard")) {
             const { data: merchant } = await supabase
                 .from("merchants")
-                .select("id")
+                .select("id, billing_status")
                 .eq("user_id", user.id)
                 .single();
 
@@ -79,6 +79,24 @@ export async function updateSession(request: NextRequest) {
                 const url = request.nextUrl.clone();
                 url.pathname = "/discover";
                 return NextResponse.redirect(url);
+            }
+
+            // Billing gate — don't loop on the billing page itself
+            const isOnBillingPage = pathname.startsWith("/dashboard/billing");
+            const status = merchant.billing_status;
+
+            if (!isOnBillingPage) {
+                if (status === "pending" || status === "canceled" || !status) {
+                    const url = request.nextUrl.clone();
+                    url.pathname = "/auth/billing";
+                    return NextResponse.redirect(url);
+                }
+                if (status === "payment_required") {
+                    const url = request.nextUrl.clone();
+                    url.pathname = "/dashboard/billing";
+                    url.searchParams.set("payment_required", "1");
+                    return NextResponse.redirect(url);
+                }
             }
         }
 

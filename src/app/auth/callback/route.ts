@@ -23,10 +23,16 @@ export async function GET(request: Request) {
             if (user) {
                 const { data: merchant } = await supabase
                     .from("merchants")
-                    .select("id")
+                    .select("id, billing_status")
                     .eq("user_id", user.id)
                     .maybeSingle();
-                if (merchant) dest = "/dashboard";
+                if (merchant) {
+                    const needsBilling =
+                        !merchant.billing_status ||
+                        merchant.billing_status === "pending" ||
+                        merchant.billing_status === "canceled";
+                    dest = needsBilling ? "/auth/billing" : "/dashboard";
+                }
             }
             return NextResponse.redirect(`${origin}${dest}`);
         }
