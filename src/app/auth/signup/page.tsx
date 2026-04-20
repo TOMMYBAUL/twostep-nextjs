@@ -47,7 +47,7 @@ export default function SignupPage() {
         setIsLoading(true);
         try {
             const supabase = createClient();
-            const { error: signUpError } = await supabase.auth.signUp({
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -56,6 +56,13 @@ export default function SignupPage() {
                 },
             });
             if (signUpError) throw signUpError;
+            // Supabase returns user with identities=[] when email already exists
+            // (anti-enumeration). Redirect to login so the user can authenticate
+            // instead of waiting for a confirmation email that never comes.
+            if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
+                router.push(`/auth/login?email=${encodeURIComponent(email)}&existing=1`);
+                return;
+            }
             router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
@@ -113,7 +120,7 @@ export default function SignupPage() {
         setIsLoading(true);
         try {
             const supabase = createClient();
-            const { error: signUpError } = await supabase.auth.signUp({
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -130,6 +137,30 @@ export default function SignupPage() {
                 },
             });
             if (signUpError) throw signUpError;
+            // Email already registered — send them to login with an upgrade hint
+            // so the merchant profile can be attached after authentication.
+            if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
+                const params = new URLSearchParams({
+                    email,
+                    existing: "1",
+                    next: "/devenir-marchand",
+                });
+                const prefill = {
+                    name: storeName,
+                    address: storeAddress,
+                    city: storeCity,
+                    siret,
+                    phone: phone || "",
+                    siret_pending: siretPending ? "1" : "0",
+                };
+                try {
+                    sessionStorage.setItem("merchant_prefill", JSON.stringify(prefill));
+                } catch {
+                    // sessionStorage unavailable (private mode) — user will re-enter the form
+                }
+                router.push(`/auth/login?${params.toString()}`);
+                return;
+            }
             router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");

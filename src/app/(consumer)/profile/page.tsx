@@ -275,7 +275,7 @@ export default function ProfilePage() {
 
                 {user && (
                     <>
-                        {isMerchant && (
+                        {isMerchant ? (
                             <>
                                 <div className="mx-4 border-t-[0.5px] border-secondary" />
                                 <Link
@@ -289,6 +289,26 @@ export default function ProfilePage() {
                                         <Settings01 className="size-[18px] text-brand-secondary" aria-hidden="true" />
                                     </div>
                                     <span className="flex-1 text-[13px] font-medium text-primary">Mon dashboard</span>
+                                    <ChevronRight className="size-4 shrink-0 text-tertiary" aria-hidden="true" />
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <div className="mx-4 border-t-[0.5px] border-secondary" />
+                                <Link
+                                    href="/devenir-marchand"
+                                    className={cx(
+                                        "flex items-center gap-3 px-4 py-3 transition duration-100 active:bg-secondary_hover motion-reduce:transform-none min-h-[44px]",
+                                        FOCUS_RING
+                                    )}
+                                >
+                                    <div className="flex size-9 items-center justify-center rounded-[10px] bg-[#4268FF]/10">
+                                        <Settings01 className="size-[18px] text-[#4268FF]" aria-hidden="true" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[13px] font-medium text-primary">Je suis commerçant</p>
+                                        <p className="text-[11px] text-tertiary">Ajouter ma boutique à Two-Step</p>
+                                    </div>
                                     <ChevronRight className="size-4 shrink-0 text-tertiary" aria-hidden="true" />
                                 </Link>
                             </>
