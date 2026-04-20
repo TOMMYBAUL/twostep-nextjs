@@ -251,52 +251,23 @@ export function FacturesView() {
                     </p>
                 </div>
             ) : (
-                <div className="card-ts overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-secondary border-b">
-                                <th className="text-secondary px-4 py-3 font-medium">Fournisseur</th>
-                                <th className="text-secondary px-4 py-3 font-medium">Date</th>
-                                <th className="text-secondary px-4 py-3 font-medium">Statut</th>
-                                <th className="text-secondary px-4 py-3 font-medium">Lignes</th>
-                                <th className="text-secondary px-4 py-3 font-medium"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {invoices.map((invoice) => {
-                                const status = STATUS_LABELS[invoice.status] ?? STATUS_LABELS.received;
-                                return (
-                                    <tr key={invoice.id} className={`border-secondary border-b transition ${invoice.status === "validated" || invoice.status === "imported" ? "bg-success-secondary/30 hover:bg-success-secondary/50" : "hover:bg-secondary"}`}>
-                                        <td className="px-4 py-3">
-                                            <p className="text-primary font-medium">
-                                                {invoice.supplier_name ?? invoice.sender_email ?? "—"}
-                                            </p>
-                                            <p className="text-tertiary text-[11px]">
-                                                {invoice.source === "email" ? "via email" : "upload manuel"}
-                                            </p>
-                                        </td>
-                                        <td className="text-secondary px-4 py-3">
-                                            {new Date(invoice.received_at).toLocaleDateString("fr-FR")}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className={status.className}>{status.label}</span>
-                                        </td>
-                                        <td className="text-secondary px-4 py-3">
-                                            {invoice.invoice_items?.length ?? 0}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <Link
-                                                href={`/dashboard/invoices/${invoice.id}`}
-                                                className="text-brand-secondary hover:text-brand-secondary_hover text-sm font-medium no-underline"
-                                            >
-                                                {invoice.status === "parsed" ? "Valider →" : invoice.status === "validated" || invoice.status === "imported" ? "✓ Consulter" : "Traiter →"}
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                <div className="space-y-4">
+                    <InvoiceSection
+                        label="À valider"
+                        tone="warn"
+                        invoices={invoices.filter((i) => ["received", "extracting", "parsed"].includes(i.status))}
+                        defaultOpen
+                    />
+                    <InvoiceSection
+                        label="Validées"
+                        tone="success"
+                        invoices={invoices.filter((i) => ["validated", "imported"].includes(i.status))}
+                    />
+                    <InvoiceSection
+                        label="Refusées"
+                        tone="danger"
+                        invoices={invoices.filter((i) => i.status === "failed")}
+                    />
                 </div>
             )}
 
@@ -307,5 +278,87 @@ export function FacturesView() {
                 />
             )}
         </>
+    );
+}
+
+/* ── Invoice section (3 buckets: à valider / validées / refusées) ── */
+
+interface InvoiceSectionInvoice {
+    id: string;
+    status: string;
+    supplier_name: string | null;
+    sender_email: string | null;
+    source: string | null;
+    received_at: string;
+    invoice_items: Array<{ id: string }>;
+}
+
+function InvoiceSection({
+    label,
+    tone,
+    invoices,
+    defaultOpen = false,
+}: {
+    label: string;
+    tone: "warn" | "success" | "danger";
+    invoices: InvoiceSectionInvoice[];
+    defaultOpen?: boolean;
+}) {
+    const [open, setOpen] = useState(defaultOpen || invoices.length > 0 && tone === "warn");
+    if (invoices.length === 0) return null;
+
+    const counterClass = tone === "warn"
+        ? "bg-warning-solid text-white"
+        : tone === "success"
+            ? "bg-success-solid text-white"
+            : "bg-error-solid text-white";
+
+    return (
+        <div className="animate-fade-up overflow-hidden rounded-2xl border border-secondary bg-primary">
+            <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-primary_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+            >
+                <span className="text-sm font-semibold text-primary">{label}</span>
+                <span className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 text-[11px] font-bold ${counterClass}`}>
+                    {invoices.length}
+                </span>
+                <span className="ml-auto text-tertiary" aria-hidden="true">{open ? "▾" : "▸"}</span>
+            </button>
+            {open && (
+                <div className="divide-y divide-secondary border-t border-secondary">
+                    {invoices.map((invoice) => {
+                        const statusLabel = STATUS_LABELS[invoice.status] ?? STATUS_LABELS.received;
+                        const ctaLabel = invoice.status === "parsed"
+                            ? "Valider →"
+                            : invoice.status === "validated" || invoice.status === "imported"
+                                ? "Consulter"
+                                : invoice.status === "failed"
+                                    ? "Corriger →"
+                                    : "Traiter →";
+                        return (
+                            <Link
+                                key={invoice.id}
+                                href={`/dashboard/invoices/${invoice.id}`}
+                                className="flex items-center gap-3 px-4 py-3 no-underline transition hover:bg-secondary_subtle focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                            >
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold text-primary">
+                                        {invoice.supplier_name ?? invoice.sender_email ?? "Fournisseur inconnu"}
+                                    </p>
+                                    <p className="text-[11px] text-tertiary">
+                                        {new Date(invoice.received_at).toLocaleDateString("fr-FR")} · {invoice.invoice_items?.length ?? 0} lignes · {invoice.source === "email" ? "email" : "upload"}
+                                    </p>
+                                </div>
+                                <span className={statusLabel.className}>{statusLabel.label}</span>
+                                <span className="text-xs font-medium text-brand-secondary">{ctaLabel}</span>
+                            </Link>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
     );
 }
