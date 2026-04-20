@@ -14,13 +14,19 @@ import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
 import { useIncompleteProducts } from "@/hooks/use-incomplete-products";
 
+type StockFilter = "all" | "ruptures" | "incomplete" | { kind: "category"; value: string };
+
+function isCategoryFilter(f: StockFilter): f is { kind: "category"; value: string } {
+    return typeof f === "object" && f.kind === "category";
+}
+
 export function MyStockView() {
     const { merchant } = useMerchant();
     const { products, loading, updateStock, refetch: refetchProducts } = useProducts(merchant?.id);
     const { products: incompleteProducts, count: incompleteCount, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
     const { toast } = useToast();
     const [search, setSearch] = useState("");
-    const [activeTab, setActiveTab] = useState<"catalogue" | "incomplete">("catalogue");
+    const [activeFilter, setActiveFilter] = useState<StockFilter>("all");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [importing, setImporting] = useState(false);
     const recalRef = useRef<HTMLInputElement>(null);
@@ -73,13 +79,6 @@ export function MyStockView() {
         }
     };
 
-    const filtered = products.filter((p) =>
-        (p.canonical_name ?? p.name).toLowerCase().includes(search.toLowerCase()) ||
-        p.name.toLowerCase().includes(search.toLowerCase()),
-    );
-
-    const hasPOS = !!merchant?.pos_type;
-    const totalProducts = products.length;
     // stock can be an object {quantity} or array [{quantity}] depending on Supabase join
     const getQty = (p: any): number => {
         const s = p.stock;
@@ -87,6 +86,32 @@ export function MyStockView() {
         if (Array.isArray(s)) return s[0]?.quantity ?? 0;
         return s.quantity ?? 0;
     };
+
+    // Category counts (derived from current product list)
+    const categoryCounts = products.reduce<Record<string, number>>((acc, p) => {
+        const cat = p.category?.trim();
+        if (cat) acc[cat] = (acc[cat] ?? 0) + 1;
+        return acc;
+    }, {});
+    const categories = Object.entries(categoryCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8); // cap to keep the chip bar usable
+
+    const searchMatches = (p: (typeof products)[number]) =>
+        (p.canonical_name ?? p.name).toLowerCase().includes(search.toLowerCase()) ||
+        p.name.toLowerCase().includes(search.toLowerCase());
+
+    const filterMatches = (p: (typeof products)[number]) => {
+        if (activeFilter === "all") return true;
+        if (activeFilter === "ruptures") return getQty(p) === 0;
+        if (isCategoryFilter(activeFilter)) return p.category === activeFilter.value;
+        return true;
+    };
+
+    const filtered = products.filter((p) => searchMatches(p) && filterMatches(p));
+
+    const hasPOS = !!merchant?.pos_type;
+    const totalProducts = products.length;
     const inStock = products.filter((p) => getQty(p) > 0).length;
     const lowStock = products.filter((p) => {
         const q = getQty(p);
@@ -147,30 +172,62 @@ export function MyStockView() {
                 />
             </div>
 
-            {/* Tabs */}
-            <div className="animate-fade-up stagger-1 mb-6 flex gap-1 rounded-xl bg-secondary p-1">
-                <button
-                    type="button"
-                    onClick={() => setActiveTab("catalogue")}
-                    className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "catalogue" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
-                >
-                    Catalogue
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setActiveTab("incomplete")}
-                    className={`flex-1 rounded-lg px-4 py-2 min-h-[44px] text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${activeTab === "incomplete" ? "bg-primary text-primary shadow-sm" : "text-tertiary"}`}
-                >
-                    À compléter
-                    {incompleteCount > 0 && (
-                        <span className="ml-1.5 inline-flex size-5 items-center justify-center rounded-full bg-warning-solid text-[10px] font-bold text-white">
-                            {incompleteCount}
-                        </span>
+            {/* Résumé + filtres chips */}
+            <div className="animate-fade-up stagger-1 mb-4">
+                <p className="mb-3 text-sm font-medium text-tertiary">
+                    <span className="font-semibold text-primary">{totalProducts}</span> {totalProducts <= 1 ? "produit" : "produits"}
+                    {outOfStock > 0 && (
+                        <>
+                            {" · "}
+                            <span className="font-semibold text-error-primary">{outOfStock}</span> en rupture
+                        </>
                     )}
-                </button>
+                    {incompleteCount > 0 && (
+                        <>
+                            {" · "}
+                            <span className="font-semibold text-warning-primary">{incompleteCount}</span> à compléter
+                        </>
+                    )}
+                </p>
+
+                <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+                    <FilterChip
+                        label="Tout"
+                        count={totalProducts}
+                        active={activeFilter === "all"}
+                        onClick={() => setActiveFilter("all")}
+                    />
+                    {outOfStock > 0 && (
+                        <FilterChip
+                            label="Ruptures"
+                            count={outOfStock}
+                            active={activeFilter === "ruptures"}
+                            tone="danger"
+                            onClick={() => setActiveFilter("ruptures")}
+                        />
+                    )}
+                    {incompleteCount > 0 && (
+                        <FilterChip
+                            label="À compléter"
+                            count={incompleteCount}
+                            active={activeFilter === "incomplete"}
+                            tone="warn"
+                            onClick={() => setActiveFilter("incomplete")}
+                        />
+                    )}
+                    {categories.map(([cat, count]) => (
+                        <FilterChip
+                            key={cat}
+                            label={cat}
+                            count={count}
+                            active={isCategoryFilter(activeFilter) && activeFilter.value === cat}
+                            onClick={() => setActiveFilter({ kind: "category", value: cat })}
+                        />
+                    ))}
+                </div>
             </div>
 
-            {activeTab === "catalogue" ? (
+            {activeFilter !== "incomplete" ? (
                 <>
                     {/* Metrics */}
                     <div className={`mb-8 grid grid-cols-2 gap-3 ${hasPOS ? "md:grid-cols-4" : "md:grid-cols-3"} md:gap-4`}>
@@ -648,5 +705,42 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
                 {isSubmitting ? "Publication..." : "Publier le produit"}
             </button>
         </div>
+    );
+}
+
+/* ── Filter chip ── */
+
+function FilterChip({
+    label,
+    count,
+    active,
+    tone,
+    onClick,
+}: {
+    label: string;
+    count: number;
+    active: boolean;
+    tone?: "danger" | "warn";
+    onClick: () => void;
+}) {
+    const base = "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none";
+    const activeCls = tone === "danger"
+        ? "bg-error-primary text-white"
+        : tone === "warn"
+            ? "bg-warning-primary text-white"
+            : "bg-brand-solid text-white";
+    const inactiveCls = tone === "danger"
+        ? "bg-error-secondary text-error-primary hover:bg-error-primary/20"
+        : tone === "warn"
+            ? "bg-warning-secondary text-warning-primary hover:bg-warning-primary/20"
+            : "bg-secondary text-secondary hover:bg-secondary_hover";
+
+    return (
+        <button type="button" onClick={onClick} aria-pressed={active} className={`${base} ${active ? activeCls : inactiveCls}`}>
+            <span>{label}</span>
+            <span className={`rounded-full px-1.5 text-[10px] font-semibold ${active ? "bg-white/20" : "bg-white/60"}`}>
+                {count}
+            </span>
+        </button>
     );
 }
