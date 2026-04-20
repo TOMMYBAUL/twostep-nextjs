@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdapter, type POSProduct } from "@/lib/pos";
 import { decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
+import { markProductsRedispo } from "@/lib/invoice/redispo";
 
 /**
  * Activate an invoice: push the GROUPED products (created by validate)
@@ -71,6 +72,7 @@ export async function activateInvoice(invoiceId: string): Promise<{
             .update({ status: "imported", validated_at: new Date().toISOString() })
             .eq("id", invoiceId);
 
+        await markProductsRedispo(productIds);
         return { pushed: 0, synced: false };
     }
 
@@ -96,6 +98,7 @@ export async function activateInvoice(invoiceId: string): Promise<{
             .update({ status: "imported", validated_at: new Date().toISOString() })
             .eq("id", invoiceId);
 
+        await markProductsRedispo(productIds);
         return { pushed: 0, synced: false };
     }
 
@@ -130,6 +133,8 @@ export async function activateInvoice(invoiceId: string): Promise<{
         .from("invoices")
         .update({ status: "imported", validated_at: new Date().toISOString() })
         .eq("id", invoiceId);
+
+    await markProductsRedispo(productIds);
 
     // NO sync trigger — products are already in Two-Step DB from validate.
     // The next scheduled sync (every 15 min) will reconcile if needed.

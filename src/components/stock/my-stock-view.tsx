@@ -368,6 +368,10 @@ export function MyStockView() {
                                 const qty = getQty(product);
                                 const productSizes = (product.available_sizes ?? []) as { size: string; quantity: number }[];
                                 const hasVariants = productSizes.length > 0;
+                                const lastRedispoAt = (product as { last_redispo_at?: string | null }).last_redispo_at ?? null;
+                                const isRecentlyRestocked = lastRedispoAt
+                                    ? Date.now() - new Date(lastRedispoAt).getTime() < 24 * 3600 * 1000
+                                    : false;
                                 return (
                                     <ProductRow
                                         key={product.id}
@@ -386,6 +390,7 @@ export function MyStockView() {
                                                 hasPOS={hasPOS}
                                                 isUpdating={updatingId === product.id}
                                                 onToggle={(size) => handleToggleVariant(product.id, size)}
+                                                isRecentlyRestocked={isRecentlyRestocked}
                                             />
                                         ) : undefined}
                                         stockControls={hasPOS ? (
@@ -819,14 +824,21 @@ function VariantPanel({
     hasPOS,
     isUpdating,
     onToggle,
+    isRecentlyRestocked,
 }: {
     sizes: { size: string; quantity: number }[];
     hasPOS: boolean;
     isUpdating: boolean;
     onToggle: (size: string) => void;
+    isRecentlyRestocked?: boolean;
 }) {
     return (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+            {isRecentlyRestocked && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-success-secondary px-2.5 py-1 text-[11px] font-semibold text-success-primary">
+                    ✨ Revenue en stock
+                </span>
+            )}
             {sizes.map((v) => {
                 const available = v.quantity > 0;
                 if (hasPOS) {

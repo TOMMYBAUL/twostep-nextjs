@@ -143,19 +143,33 @@ export function useTodayTasks(): UseTodayTasksResult {
                 });
             }
 
-            // Ops: POS connection issues
+            // Ops: POS sync problem — defer to /api/pos/status for the single
+            // source of truth (aligned with the widget on the home).
             if (hasPOS) {
-                const { data: posConn } = await supabase
-                    .from("pos_connections").select("provider, status, last_error")
-                    .eq("merchant_id", merchant!.id).maybeSingle();
-                if (posConn && posConn.status !== "active") {
-                    collected.push({
-                        id: "ops-pos-reconnect",
-                        label: `Reconnecter ${posConn.provider}`,
-                        description: posConn.last_error ?? "Token expiré",
-                        href: "/dashboard/stock/pos",
-                        category: "ops", priority: "high",
-                    });
+                try {
+                    const statusRes = await fetch("/api/pos/status");
+                    if (statusRes.ok) {
+                        const posStatus = await statusRes.json() as {
+                            state?: string; pos_type?: string | null;
+                            problem_reason?: string | null; last_sync_error?: string | null;
+                        };
+                        if (posStatus.state === "problem") {
+                            const reason = posStatus.problem_reason === "token_expired"
+                                ? "Token expiré"
+                                : posStatus.problem_reason === "api_error"
+                                    ? posStatus.last_sync_error ?? "Erreur de sync"
+                                    : "Sync en retard";
+                            collected.push({
+                                id: "ops-pos-reconnect",
+                                label: `Reconnecter ${posStatus.pos_type ?? "la caisse"}`,
+                                description: reason,
+                                href: "/dashboard/stock/pos?mode=reconnect",
+                                category: "ops", priority: "high",
+                            });
+                        }
+                    }
+                } catch {
+                    // keep silent — the widget will still surface the issue
                 }
             }
 
