@@ -4,6 +4,15 @@ import Link from "next/link";
 import { useState, useEffect, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+function validatePasswordStrength(pwd: string): string | null {
+    if (pwd.length < 8) return "Mot de passe : 8 caractères minimum";
+    if (!/[a-z]/.test(pwd)) return "Mot de passe : ajoute une minuscule";
+    if (!/[A-Z]/.test(pwd)) return "Mot de passe : ajoute une majuscule";
+    if (!/[0-9]/.test(pwd)) return "Mot de passe : ajoute un chiffre";
+    if (!/[^A-Za-z0-9]/.test(pwd)) return "Mot de passe : ajoute un caractère spécial (!@#$…)";
+    return null;
+}
+
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
@@ -32,10 +41,8 @@ export default function ResetPasswordPage() {
         e.preventDefault();
         setError("");
 
-        if (password.length < 8) {
-            setError("Le mot de passe doit contenir au moins 8 caractères");
-            return;
-        }
+        const weak = validatePasswordStrength(password);
+        if (weak) { setError(weak); return; }
         if (password !== confirm) {
             setError("Les mots de passe ne correspondent pas");
             return;
@@ -111,7 +118,7 @@ export default function ResetPasswordPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
-                                placeholder="8 caractères minimum"
+                                placeholder="8 caractères, une majuscule, un chiffre, un spécial"
                                 required
                                 minLength={8}
                             />

@@ -5,6 +5,15 @@ import { createClient } from "@/lib/supabase/client";
 import { MarkerPin01, Heart } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
 
+function validatePasswordStrength(pwd: string): string | null {
+    if (pwd.length < 8) return "Mot de passe : 8 caractères minimum";
+    if (!/[a-z]/.test(pwd)) return "Mot de passe : ajoute une minuscule";
+    if (!/[A-Z]/.test(pwd)) return "Mot de passe : ajoute une majuscule";
+    if (!/[0-9]/.test(pwd)) return "Mot de passe : ajoute un chiffre";
+    if (!/[^A-Za-z0-9]/.test(pwd)) return "Mot de passe : ajoute un caractère spécial (!@#$…)";
+    return null;
+}
+
 const STORAGE_KEY = "ts-welcome-dismissed";
 
 const CLOTHING_SIZES = ["2A", "4A", "6A", "8A", "10A", "12A", "14A", "16A", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"] as const;
@@ -40,9 +49,9 @@ export function WelcomeGate() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        if (mode === "signup" && password.length < 8) {
-            setError("Le mot de passe doit contenir au moins 8 caractères");
-            return;
+        if (mode === "signup") {
+            const weak = validatePasswordStrength(password);
+            if (weak) { setError(weak); return; }
         }
         setLoading(true);
         try {
@@ -244,7 +253,7 @@ export function WelcomeGate() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full rounded-xl border-2 border-secondary bg-primary px-4 py-3 text-sm text-primary outline-none transition duration-150 focus:border-brand focus:ring-4 focus:ring-brand-secondary/10"
-                                    placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
+                                    placeholder={mode === "signup" ? "8 caractères, une majuscule, un chiffre, un spécial" : "••••••••"}
                                     required
                                     minLength={mode === "signup" ? 8 : undefined}
                                 />

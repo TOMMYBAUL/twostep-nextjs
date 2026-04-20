@@ -14,10 +14,10 @@ export async function GET() {
         .eq("user_id", user.id)
         .single();
 
-    if (!merchant) return NextResponse.json({ error: "No merchant" }, { status: 404 });
+    if (!merchant) return NextResponse.json({ address: null, has_received: false, last_received_at: null });
 
     const slug = merchant.inbound_email_slug;
-    if (!slug) return NextResponse.json({ error: "No inbound slug" }, { status: 404 });
+    if (!slug) return NextResponse.json({ address: null, has_received: false, last_received_at: null });
 
     const address = `factures-${slug}@${INBOUND_DOMAIN}`;
 

@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+function validatePasswordStrength(pwd: string): string | null {
+    if (pwd.length < 8) return "Mot de passe : 8 caractères minimum";
+    if (!/[a-z]/.test(pwd)) return "Mot de passe : ajoute une minuscule";
+    if (!/[A-Z]/.test(pwd)) return "Mot de passe : ajoute une majuscule";
+    if (!/[0-9]/.test(pwd)) return "Mot de passe : ajoute un chiffre";
+    if (!/[^A-Za-z0-9]/.test(pwd)) return "Mot de passe : ajoute un caractère spécial (!@#$…)";
+    return null;
+}
+
 type Role = "user" | "merchant";
 type MerchantStep = "account" | "siret" | "profile";
 
@@ -42,7 +51,8 @@ export default function SignupPage() {
     const handleUserSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
-        if (password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères"); return; }
+        const weak = validatePasswordStrength(password);
+        if (weak) { setError(weak); return; }
         if (password !== confirmPassword) { setError("Les mots de passe ne correspondent pas"); return; }
         setIsLoading(true);
         try {
@@ -75,7 +85,8 @@ export default function SignupPage() {
     const handleAccountSubmit = (e: FormEvent) => {
         e.preventDefault();
         setError("");
-        if (password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères"); return; }
+        const weak = validatePasswordStrength(password);
+        if (weak) { setError(weak); return; }
         if (password !== confirmPassword) { setError("Les mots de passe ne correspondent pas"); return; }
         setStep("siret");
     };
@@ -243,7 +254,7 @@ export default function SignupPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]"
-                                    placeholder="8 caractères minimum"
+                                    placeholder="8 caractères, une majuscule, un chiffre, un spécial"
                                     required
                                 />
                             </div>
@@ -300,7 +311,7 @@ export default function SignupPage() {
                                 </div>
                                 <div>
                                     <label className="mb-1.5 block text-xs font-semibold text-primary">Mot de passe</label>
-                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères minimum" required />
+                                    <input type="password" name="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-secondary bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-brand focus:shadow-[0_0_0_3px_rgba(66,104,255,0.1)]" placeholder="8 caractères, une majuscule, un chiffre, un spécial" required />
                                 </div>
                                 <div>
                                     <label className="mb-1.5 block text-xs font-semibold text-primary">Confirmer le mot de passe</label>
