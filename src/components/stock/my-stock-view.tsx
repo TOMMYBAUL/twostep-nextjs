@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ImagePlus, Plus, Upload01, XClose } from "@untitledui/icons";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import { MetricCard } from "@/components/dashboard/metric-card";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductRow } from "@/components/dashboard/product-row";
@@ -79,6 +78,33 @@ export function MyStockView() {
         }
     };
 
+    // Non-POS: flip a single size between available (1) and rupture (0) by
+    // rewriting the product's available_sizes array. The total stock is
+    // recomputed and synced so the consumer view stays consistent.
+    const handleToggleVariant = async (productId: string, sizeLabel: string) => {
+        const product = products.find((p) => p.id === productId);
+        if (!product) return;
+        const current = (product.available_sizes ?? []) as { size: string; quantity: number }[];
+        const next = current.map((v) =>
+            v.size === sizeLabel ? { ...v, quantity: v.quantity > 0 ? 0 : 1 } : v,
+        );
+        setUpdatingId(productId);
+        try {
+            await fetch(`/api/products/${productId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ available_sizes: next }),
+            });
+            const totalQty = next.reduce((sum, v) => sum + v.quantity, 0);
+            await updateStock(productId, undefined, totalQty);
+            await refetchProducts();
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur", "error");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
     // stock can be an object {quantity} or array [{quantity}] depending on Supabase join
     const getQty = (p: any): number => {
         const s = p.stock;
@@ -133,15 +159,19 @@ export function MyStockView() {
                 }
             />
 
-            {/* Stock management tip — only if no POS connected */}
+            {/* Clôture du soir — non-POS uniquement */}
             {merchant && !merchant.pos_type && products.length > 0 && (
-                <div className="animate-fade-up stagger-05 mb-4 rounded-2xl border border-secondary bg-secondary p-4">
-                    <p className="mb-2 text-sm font-semibold text-primary">Gestion simplifiée</p>
-                    <p className="text-sm text-tertiary">
-                        Vos produits sont marqués <strong className="text-secondary">disponibles</strong> ou <strong className="text-secondary">indisponibles</strong>.
-                        La <strong className="text-secondary">Clôture du soir</strong> (à venir) vous permettra de mettre à jour les ruptures en 15 secondes.
-                    </p>
-                </div>
+                <Link
+                    href="/dashboard/stock/cloture"
+                    className="animate-fade-up stagger-05 mb-4 flex items-center gap-3 rounded-2xl bg-brand-solid px-4 py-3.5 no-underline transition active:opacity-90"
+                >
+                    <span className="text-2xl" aria-hidden="true">🌙</span>
+                    <div className="flex-1 text-left">
+                        <p className="text-sm font-semibold text-white">Clôture du soir</p>
+                        <p className="text-xs text-white/80">Marque les ruptures de la journée en 15 secondes</p>
+                    </div>
+                    <span className="text-white/80" aria-hidden="true">→</span>
+                </Link>
             )}
 
             {/* Quick actions */}
@@ -176,10 +206,14 @@ export function MyStockView() {
             <div className="animate-fade-up stagger-1 mb-4">
                 <p className="mb-3 text-sm font-medium text-tertiary">
                     <span className="font-semibold text-primary">{totalProducts}</span> {totalProducts <= 1 ? "produit" : "produits"}
-                    {outOfStock > 0 && (
+                    {" · "}
+                    <span className="font-semibold text-success-primary">{inStock}</span> {hasPOS ? "en stock" : "dispo"}
+                    {" · "}
+                    <span className={`font-semibold ${outOfStock > 0 ? "text-error-primary" : "text-primary"}`}>{outOfStock}</span> {hasPOS ? "rupture" : "indispo"}
+                    {hasPOS && lowStock > 0 && (
                         <>
                             {" · "}
-                            <span className="font-semibold text-error-primary">{outOfStock}</span> en rupture
+                            <span className="font-semibold text-warning-primary">{lowStock}</span> stock bas
                         </>
                     )}
                     {incompleteCount > 0 && (
@@ -199,7 +233,7 @@ export function MyStockView() {
                     />
                     {outOfStock > 0 && (
                         <FilterChip
-                            label="Ruptures"
+                            label={hasPOS ? "Ruptures" : "Indispo"}
                             count={outOfStock}
                             active={activeFilter === "ruptures"}
                             tone="danger"
@@ -229,23 +263,6 @@ export function MyStockView() {
 
             {activeFilter !== "incomplete" ? (
                 <>
-                    {/* Metrics */}
-                    <div className={`mb-8 grid grid-cols-2 gap-3 ${hasPOS ? "md:grid-cols-4" : "md:grid-cols-3"} md:gap-4`}>
-                        <MetricCard label="Total produits" value={totalProducts} staggerIndex={0} />
-                        {hasPOS ? (
-                            <>
-                                <MetricCard label="En stock" value={inStock} staggerIndex={1} />
-                                <MetricCard label="Stock bas" value={lowStock} variant="warn" staggerIndex={2} />
-                                <MetricCard label="Ruptures" value={outOfStock} variant="danger" staggerIndex={3} />
-                            </>
-                        ) : (
-                            <>
-                                <MetricCard label="Disponibles" value={inStock} staggerIndex={1} />
-                                <MetricCard label="Indisponibles" value={outOfStock} variant={outOfStock > 0 ? "danger" : undefined} staggerIndex={2} />
-                            </>
-                        )}
-                    </div>
-
                     {/* Search */}
                     <div className="animate-fade-up stagger-5 mb-4 flex items-center justify-between">
                         <input
@@ -281,6 +298,8 @@ export function MyStockView() {
                         <div className="flex flex-col gap-1.5">
                             {filtered.map((product, i) => {
                                 const qty = getQty(product);
+                                const productSizes = (product.available_sizes ?? []) as { size: string; quantity: number }[];
+                                const hasVariants = productSizes.length > 0;
                                 return (
                                     <ProductRow
                                         key={product.id}
@@ -293,6 +312,14 @@ export function MyStockView() {
                                         staggerIndex={i}
                                         sizes={product.available_sizes}
                                         hasPOS={hasPOS}
+                                        expandedContent={hasVariants ? (
+                                            <VariantPanel
+                                                sizes={productSizes}
+                                                hasPOS={hasPOS}
+                                                isUpdating={updatingId === product.id}
+                                                onToggle={(size) => handleToggleVariant(product.id, size)}
+                                            />
+                                        ) : undefined}
                                         stockControls={hasPOS ? (
                                             <div className="flex items-center gap-1">
                                                 <button
@@ -704,6 +731,58 @@ function IncompleteProductForm({ product, merchantId, onCancel, onComplete }: {
             >
                 {isSubmitting ? "Publication..." : "Publier le produit"}
             </button>
+        </div>
+    );
+}
+
+/* ── Variant panel (expanded row content) ── */
+
+function VariantPanel({
+    sizes,
+    hasPOS,
+    isUpdating,
+    onToggle,
+}: {
+    sizes: { size: string; quantity: number }[];
+    hasPOS: boolean;
+    isUpdating: boolean;
+    onToggle: (size: string) => void;
+}) {
+    return (
+        <div className="flex flex-wrap gap-2">
+            {sizes.map((v) => {
+                const available = v.quantity > 0;
+                if (hasPOS) {
+                    return (
+                        <div
+                            key={v.size}
+                            className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium ${
+                                available ? "bg-primary text-primary" : "bg-error-secondary text-error-primary"
+                            }`}
+                        >
+                            <span className="font-semibold">{v.size}</span>
+                            <span className="text-tertiary">{v.quantity}</span>
+                        </div>
+                    );
+                }
+                return (
+                    <button
+                        key={v.size}
+                        type="button"
+                        onClick={() => onToggle(v.size)}
+                        disabled={isUpdating}
+                        aria-pressed={available}
+                        className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none ${
+                            available
+                                ? "bg-success-secondary text-success-primary hover:bg-success-primary/20"
+                                : "bg-error-secondary text-error-primary hover:bg-error-primary/20"
+                        }`}
+                    >
+                        <span className="font-semibold">{v.size}</span>
+                        <span>{available ? "· dispo" : "· rupture"}</span>
+                    </button>
+                );
+            })}
         </div>
     );
 }
