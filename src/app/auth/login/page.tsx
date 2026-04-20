@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginInner />
+        </Suspense>
+    );
+}
+
+function LoginInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const emailParam = searchParams.get("email") ?? "";
