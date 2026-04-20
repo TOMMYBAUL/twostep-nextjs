@@ -7,6 +7,7 @@ import { HeroStat } from "@/components/dashboard/hero-stat";
 import { DiscoveryFunnel } from "@/components/dashboard/discovery-funnel";
 import { TwoStepScore } from "@/components/dashboard/twostep-score";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
+import { PosSyncWidget } from "@/components/dashboard/pos-sync-widget";
 import { CoachTips } from "@/components/dashboard/coach-tips";
 import { AchievementWidget } from "@/components/dashboard/achievement-widget";
 import { IntentSignals } from "@/components/dashboard/intent-signals";
@@ -61,6 +62,8 @@ export default function DashboardPage() {
                 ) : null}
 
                 <TodayTasks />
+
+                <PosSyncWidget />
 
                 {onboardingComplete && (
                     <>
