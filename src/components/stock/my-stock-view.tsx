@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { ImagePlus, Plus, Upload01, XClose } from "@untitledui/icons";
+import { ImagePlus, Plus, QrCode01, Upload01, XClose } from "@untitledui/icons";
+import { BarcodeScanModal, type ScanResult } from "@/components/stock/barcode-scan-modal";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -20,6 +22,7 @@ function isCategoryFilter(f: StockFilter): f is { kind: "category"; value: strin
 }
 
 export function MyStockView() {
+    const router = useRouter();
     const { merchant } = useMerchant();
     const { products, loading, updateStock, refetch: refetchProducts } = useProducts(merchant?.id);
     const { products: incompleteProducts, count: incompleteCount, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
@@ -28,7 +31,41 @@ export function MyStockView() {
     const [activeFilter, setActiveFilter] = useState<StockFilter>("all");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [importing, setImporting] = useState(false);
+    const [scanOpen, setScanOpen] = useState(false);
     const recalRef = useRef<HTMLInputElement>(null);
+
+    const handleScanResult = (result: ScanResult) => {
+        if (result.status === "merchant_hit" && result.product) {
+            setScanOpen(false);
+            const slug = (result.product as { slug?: string; id: string }).slug;
+            const id = (result.product as { id: string }).id;
+            router.push(`/dashboard/products/${slug ?? id}/edit`);
+            return;
+        }
+        if (result.status === "global_hit") {
+            toast("Produit reconnu — l'ajouter à ton stock ?", {
+                action: {
+                    label: "Ajouter",
+                    onClick: () => {
+                        setScanOpen(false);
+                        const ref = (result.product as { id?: string } | undefined)?.id;
+                        router.push(`/dashboard/products/new?ean=${encodeURIComponent(result.ean)}&prefill=1${ref ? `&ref=${ref}` : ""}`);
+                    },
+                },
+            });
+            return;
+        }
+        toast(`EAN ${result.ean} inconnu`, {
+            type: "error",
+            action: {
+                label: "Créer",
+                onClick: () => {
+                    setScanOpen(false);
+                    router.push(`/dashboard/products/new?ean=${encodeURIComponent(result.ean)}`);
+                },
+            },
+        });
+    };
 
     const handleCatalogImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -285,15 +322,24 @@ export function MyStockView() {
 
             {activeFilter !== "incomplete" ? (
                 <>
-                    {/* Search */}
-                    <div className="animate-fade-up stagger-5 mb-4 flex items-center justify-between">
+                    {/* Search + scan */}
+                    <div className="animate-fade-up stagger-5 mb-4 flex items-center gap-2">
                         <input
                             type="text"
-                            className="search-ts"
+                            className="search-ts flex-1"
                             placeholder="Rechercher un produit..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
+                        <button
+                            type="button"
+                            aria-label="Scanner un code-barres"
+                            onClick={() => setScanOpen(true)}
+                            disabled={!merchant?.id}
+                            className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-solid text-white shadow-sm transition active:opacity-90 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            <QrCode01 aria-hidden="true" className="size-5" />
+                        </button>
                     </div>
 
                     {/* Product list */}
@@ -394,6 +440,15 @@ export function MyStockView() {
                     merchantId={merchant?.id}
                     hasPOS={hasPOS}
                     onComplete={() => { refetchIncomplete(); toast("Produit publié"); }}
+                />
+            )}
+
+            {merchant?.id && (
+                <BarcodeScanModal
+                    open={scanOpen}
+                    merchantId={merchant.id}
+                    onClose={() => setScanOpen(false)}
+                    onResult={handleScanResult}
                 />
             )}
         </>
