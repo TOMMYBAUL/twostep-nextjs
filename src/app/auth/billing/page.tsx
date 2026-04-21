@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 interface TierInfo {
@@ -16,6 +16,14 @@ interface TierInfo {
 }
 
 export default function BillingPage() {
+    return (
+        <Suspense fallback={null}>
+            <BillingInner />
+        </Suspense>
+    );
+}
+
+function BillingInner() {
     const searchParams = useSearchParams();
     const canceled = searchParams.get("canceled") === "1";
 
