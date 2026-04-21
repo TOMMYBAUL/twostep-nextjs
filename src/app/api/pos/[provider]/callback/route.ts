@@ -92,10 +92,8 @@ export async function GET(
             }, { onConflict: "merchant_id,provider" });
 
         if (connError) {
-            console.error("[oauth-callback-debug] DB insert error:", JSON.stringify(connError));
             captureError(connError, { route: `pos/${provider}/callback`, merchantId });
-            const d = encodeURIComponent(`DB:${connError.message || JSON.stringify(connError)}`);
-            return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=oauth_failed&detail=${d}`);
+            return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=oauth_failed`);
         }
 
         // Update merchant pos_type
@@ -115,13 +113,7 @@ export async function GET(
 
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?pos=connected`);
     } catch (err) {
-        console.error(
-            "[oauth-callback-debug] exception:",
-            err instanceof Error ? `${err.message} | stack: ${err.stack}` : String(err),
-        );
         captureError(err, { route: `pos/${provider}/callback`, merchantId });
-        const msg = err instanceof Error ? err.message : String(err);
-        const d = encodeURIComponent(`EX:${msg}`);
-        return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=oauth_failed&detail=${d}`);
+        return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=oauth_failed`);
     }
 }
