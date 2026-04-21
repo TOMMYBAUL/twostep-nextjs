@@ -4,9 +4,9 @@
 
 ## Stats
 - Total leads : 19
-- NOUVEAU : 16
+- NOUVEAU : 11
 - CONTACTE : 1
-- BROUILLON : 0
+- BROUILLON : 5
 - Reponses : 0
 - Signes : 0
 
@@ -15,11 +15,11 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | Dear Skin Shop | Carmes | Cosmetique | — | dearskinshop@icloud.com | — | 9/10 | CONTACTE | Relance J+3 si pas de reponse (20/04) |
-| DO MY SHOES | Saint-Rome | Sneakers/Mode | Dominique Grosjean | domyshoes@gmail.com | 531697514 | 9/10 | NOUVEAU | Audit + email personnalise |
-| BIJOUTERIE NOUGUES | Capitole | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | NOUVEAU | Audit + email personnalise |
-| MONPARFUMMASIGNATURE | Capitole | Cosmetique | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 9/10 | NOUVEAU | Audit + email personnalise |
-| CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | NOUVEAU | Audit + email personnalise |
-| MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | NOUVEAU | Audit + email personnalise |
+| DO MY SHOES | Saint-Rome | Sneakers/Mode | Dominique Grosjean | domyshoes@gmail.com | 531697514 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
+| BIJOUTERIE NOUGUES | Capitole | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
+| MONPARFUMMASIGNATURE | Capitole | Cosmetique | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
+| CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
+| MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | NOUVEAU | Audit + email personnalise |
 | POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
