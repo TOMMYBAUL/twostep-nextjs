@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { ALL_ACHIEVEMENT_TYPES, type AchievementType } from "@/lib/achievements";
 
 export async function GET(
@@ -52,7 +53,11 @@ export async function POST(
         return NextResponse.json({ error: "Invalid achievement type" }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    // Admin client: the achievements RLS INSERT policy is scoped to service_role
+    // ("Service can insert achievements" with_check = false for regular users).
+    // We've already verified ownership above, so admin insert is safe.
+    const admin = createAdminClient();
+    const { data, error } = await admin
         .from("achievements")
         .insert({ merchant_id: id, type })
         .select("id, merchant_id, type, unlocked_at")
