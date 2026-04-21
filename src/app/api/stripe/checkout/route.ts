@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ url: session.url, tier });
     } catch (err) {
         console.error("[stripe/checkout] failed", err);
-        return NextResponse.json({ error: "Checkout failed" }, { status: 500 });
+        const detail = err instanceof Error ? err.message : String(err);
+        return NextResponse.json({ error: "Checkout failed", detail }, { status: 500 });
     }
 }
