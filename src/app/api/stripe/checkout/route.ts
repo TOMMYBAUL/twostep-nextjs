@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe/client";
-import { PLANS, resolveTierForNextSignup, TRIAL_DAYS, type PlanTier } from "@/lib/stripe/plans";
+import { PLANS, claimSignupSlot, TRIAL_DAYS } from "@/lib/stripe/plans";
 import { rateLimit } from "@/lib/rate-limit";
 import { getSiteUrl } from "@/lib/url";
 
@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Already subscribed" }, { status: 400 });
         }
 
-        const { tier } = await resolveTierForNextSignup();
-        const planConfig = PLANS[tier as PlanTier];
+        const { tier } = await claimSignupSlot(merchant.id);
+        const planConfig = PLANS[tier];
 
         if (!planConfig.stripePriceId) {
             return NextResponse.json({ error: "Stripe price not configured" }, { status: 500 });
