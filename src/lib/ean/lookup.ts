@@ -3,6 +3,7 @@ import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
 import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
+import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
 
 // ── Name similarity scoring for reverse EAN search ──
 
@@ -495,7 +496,8 @@ export async function fetchEanData(ean: string, skipCache = false): Promise<EanR
             return {
                 name: cached.name ?? "Unknown",
                 brand: cached.brand ?? null,
-                photo_url: cached.photo_url ?? null,
+                // Prefer R2-rehosted photo for durability (falls back to original Serper/EAN-Search URL)
+                photo_url: cached.photo_url_r2 ?? cached.photo_url ?? null,
                 category: cached.category ?? null,
                 source: cached.source ?? "cache",
             };
@@ -547,6 +549,11 @@ async function cacheResult(
         source: result.source,
         fetched_at: new Date().toISOString(),
     });
+
+    // Re-host photo on R2 for durability (fire-and-forget, updates ean_lookups.photo_url_r2)
+    if (result.photo_url) {
+        void uploadPhotoToR2({ ean, sourceUrl: result.photo_url });
+    }
 }
 
 /**
@@ -566,9 +573,14 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         .single();
 
     if (cached) {
-        // Cache hit: bump telemetry (fire-and-forget) then apply enrichment
+        // Cache hit: bump telemetry (fire-and-forget) then apply enrichment.
+        // Prefer R2-rehosted photo over original Serper/EAN-Search URL.
         void logCacheHit(ean);
-        await applyEnrichment(supabase, productId, cached, ean);
+        const enriched = {
+            ...cached,
+            photo_url: cached.photo_url_r2 ?? cached.photo_url,
+        };
+        await applyEnrichment(supabase, productId, enriched, ean);
         return true;
     }
 
