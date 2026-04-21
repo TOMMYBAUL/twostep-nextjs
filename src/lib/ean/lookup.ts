@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
+import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
 
 // ── Name similarity scoring for reverse EAN search ──
 
@@ -565,9 +566,14 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         .single();
 
     if (cached) {
+        // Cache hit: bump telemetry (fire-and-forget) then apply enrichment
+        void logCacheHit(ean);
         await applyEnrichment(supabase, productId, cached, ean);
         return true;
     }
+
+    // Cache miss: log for observability, then cascade through external sources
+    logCacheMiss(ean, "cache");
 
     // Cascade through all sources (skip cache — already checked above)
     const result = await fetchEanData(ean, true);
