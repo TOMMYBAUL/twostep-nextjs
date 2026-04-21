@@ -67,35 +67,42 @@ export async function updateSession(request: NextRequest) {
             }
         }
 
-        // Dashboard protection: require merchant profile + active billing
+        // Dashboard protection: require merchant profile + active billing.
+        // Admins (app_metadata.role === "admin") bypass both the merchant
+        // check and the billing gate — internal ops/dev access, no need to
+        // burn a Pioneer slot or maintain a DB exception.
         if (user && pathname.startsWith("/dashboard")) {
-            const { data: merchant } = await supabase
-                .from("merchants")
-                .select("id, billing_status")
-                .eq("user_id", user.id)
-                .single();
+            const isAdmin = (user as any).app_metadata?.role === "admin";
 
-            if (!merchant) {
-                const url = request.nextUrl.clone();
-                url.pathname = "/discover";
-                return NextResponse.redirect(url);
-            }
+            if (!isAdmin) {
+                const { data: merchant } = await supabase
+                    .from("merchants")
+                    .select("id, billing_status")
+                    .eq("user_id", user.id)
+                    .single();
 
-            // Billing gate — don't loop on the billing page itself
-            const isOnBillingPage = pathname.startsWith("/dashboard/billing");
-            const status = merchant.billing_status;
-
-            if (!isOnBillingPage) {
-                if (status === "pending" || status === "canceled" || !status) {
+                if (!merchant) {
                     const url = request.nextUrl.clone();
-                    url.pathname = "/auth/billing";
+                    url.pathname = "/discover";
                     return NextResponse.redirect(url);
                 }
-                if (status === "payment_required") {
-                    const url = request.nextUrl.clone();
-                    url.pathname = "/dashboard/billing";
-                    url.searchParams.set("payment_required", "1");
-                    return NextResponse.redirect(url);
+
+                // Billing gate — don't loop on the billing page itself
+                const isOnBillingPage = pathname.startsWith("/dashboard/billing");
+                const status = merchant.billing_status;
+
+                if (!isOnBillingPage) {
+                    if (status === "pending" || status === "canceled" || !status) {
+                        const url = request.nextUrl.clone();
+                        url.pathname = "/auth/billing";
+                        return NextResponse.redirect(url);
+                    }
+                    if (status === "payment_required") {
+                        const url = request.nextUrl.clone();
+                        url.pathname = "/dashboard/billing";
+                        url.searchParams.set("payment_required", "1");
+                        return NextResponse.redirect(url);
+                    }
                 }
             }
         }
