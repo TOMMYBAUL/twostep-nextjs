@@ -13,6 +13,7 @@ interface TierInfo {
     pioneerCap: number;
     earlyCap: number;
     trialDays: number;
+    alreadyClaimed: boolean;
 }
 
 export default function BillingPage() {
@@ -126,10 +127,14 @@ function BillingInner() {
                     {info.tier === "pioneer" && info.remainingInTier !== null && (
                         <div className="mb-6 rounded-xl bg-[#4268FF]/10 px-4 py-3">
                             <p className="text-xs font-semibold text-[#4268FF]">
-                                Plus que {info.remainingInTier} place{info.remainingInTier > 1 ? "s" : ""} au tarif Pionnier
+                                {info.alreadyClaimed
+                                    ? `Ta place est réservée (rang ${info.activeCount}/${info.pioneerCap})`
+                                    : `Plus que ${info.remainingInTier} place${info.remainingInTier > 1 ? "s" : ""} au tarif Pionnier`}
                             </p>
                             <p className="mt-1 text-[11px] text-tertiary">
-                                Tu seras le {info.activeCount + 1}ᵉ marchand — tarif verrouillé à vie
+                                {info.alreadyClaimed
+                                    ? `Tu es le ${info.activeCount}ᵉ marchand — tarif verrouillé à vie`
+                                    : `Tu seras le ${info.activeCount + 1}ᵉ marchand — tarif verrouillé à vie`}
                             </p>
                         </div>
                     )}
@@ -137,10 +142,14 @@ function BillingInner() {
                     {info.tier === "early" && info.remainingInTier !== null && (
                         <div className="mb-6 rounded-xl bg-amber-50 px-4 py-3">
                             <p className="text-xs font-semibold text-amber-700">
-                                Plus que {info.remainingInTier} place{info.remainingInTier > 1 ? "s" : ""} au tarif Early Adopter
+                                {info.alreadyClaimed
+                                    ? `Ta place est réservée (rang ${info.activeCount}/${info.earlyCap})`
+                                    : `Plus que ${info.remainingInTier} place${info.remainingInTier > 1 ? "s" : ""} au tarif Early Adopter`}
                             </p>
                             <p className="mt-1 text-[11px] text-tertiary">
-                                Tu seras le {info.activeCount + 1}ᵉ marchand — tarif verrouillé à vie
+                                {info.alreadyClaimed
+                                    ? `Tu es le ${info.activeCount}ᵉ marchand — tarif verrouillé à vie`
+                                    : `Tu seras le ${info.activeCount + 1}ᵉ marchand — tarif verrouillé à vie`}
                             </p>
                         </div>
                     )}
