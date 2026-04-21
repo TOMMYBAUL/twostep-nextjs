@@ -12,6 +12,15 @@ function normalizeName(s: string): string {
     return s.toLowerCase().replace(/[''`\-/().,"]/g, " ").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Match the SQL normalization used by `canonical_name_normalized` in ean_lookups.
+ * SQL backfill: `lower(regexp_replace(name, '[^a-z0-9\s]', '', 'gi'))`.
+ * Keep these two in sync — the pg_trgm index relies on identical normalization.
+ */
+function normalizeForCache(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9\s]/gi, "");
+}
+
 /** Levenshtein distance */
 function levenshtein(a: string, b: string): number {
     const m = a.length, n = b.length;
@@ -295,12 +304,63 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
 }
 
 /**
+ * Reverse search via local cache (ean_lookups + pg_trgm RPC search_ean_lookups_by_name).
+ * Free and instant — consulted BEFORE the cascade of 4 external sources.
+ * Returns the best candidate if score >= REVERSE_SEARCH_THRESHOLD, else null.
+ */
+async function searchEanByNameCache(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    const normalized = normalizeForCache(brand ? `${brand} ${productName}` : productName);
+    if (!normalized) return null;
+
+    const supabase = createAdminClient();
+    const { data: rows, error } = await supabase.rpc("search_ean_lookups_by_name", {
+        p_normalized_query: normalized,
+        p_brand_filter: brand ?? null,
+        p_limit: 5,
+    });
+
+    if (error || !rows || rows.length === 0) {
+        logCacheMiss(productName, "cache_reverse");
+        return null;
+    }
+
+    const candidates: ReverseSearchCandidate[] = (rows as Array<{
+        ean: string; name: string; brand: string | null; category: string | null;
+    }>).map(r => ({
+        ean: r.ean,
+        name: r.name,
+        brand: r.brand,
+        category: r.category,
+        score: 0,
+    }));
+
+    const result = await pickBestCandidate(candidates, productName, brand);
+    if (result) {
+        void logCacheHit(result.ean);
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[cache:reverse] hit "${productName}" → ${result.ean}`);
+        }
+    } else {
+        logCacheMiss(productName, "cache_reverse_below_threshold");
+    }
+    return result;
+}
+
+/**
  * Reverse search via UPCitemdb: find EAN from product name.
+ * Cascade: local cache → EAN-Search → UPCitemdb → Open Beauty Facts → Open Products Facts.
  */
 export async function searchEanByName(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    // 0. Local cache (free, instant) — pg_trgm fuzzy match on previously enriched products
+    const cacheReverseResult = await searchEanByNameCache(productName, brand);
+    if (cacheReverseResult) return cacheReverseResult;
+
     // 1. EAN-Search (best EU coverage, 1.1B products)
     const eanSearchResult = await searchEanByNameEanSearch(productName, brand);
     if (eanSearchResult) return eanSearchResult;
@@ -543,6 +603,9 @@ async function cacheResult(
     await supabase.from("ean_lookups").upsert({
         ean,
         name: result.name,
+        // Populate normalized name so the pg_trgm index can serve future reverse-search queries.
+        // Must match the SQL backfill in migration 080.
+        canonical_name_normalized: result.name ? normalizeForCache(result.name) : null,
         brand: result.brand,
         photo_url: result.photo_url,
         category: result.category,
