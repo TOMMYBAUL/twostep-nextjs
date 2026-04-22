@@ -42,6 +42,7 @@ export default async function CategoryPage({ params }: Props) {
             .from("products")
             .select("merchant_id, merchants(id, slug, name, address, city, photo_url, logo_url)")
             .ilike("category", `%${cat.dbCategory}%`)
+            .eq("review_status", "validated")
             .limit(100);
 
         const seen = new Set<string>();

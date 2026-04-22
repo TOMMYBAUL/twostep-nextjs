@@ -90,7 +90,8 @@ export default function ShopProfileClient() {
             const { data: products } = await supabase
                 .from("products")
                 .select("id")
-                .eq("merchant_id", profile!.merchant_id);
+                .eq("merchant_id", profile!.merchant_id)
+                .eq("review_status", "validated");
             const productIds = (products ?? []).map((p) => p.id);
             if (productIds.length === 0) return [];
             const { data } = await supabase

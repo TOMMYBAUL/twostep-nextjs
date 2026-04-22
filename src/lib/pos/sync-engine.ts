@@ -188,6 +188,9 @@ export async function syncMerchantPOS(
                     .from("products")
                     .update({
                         review_status: "pending_review",
+                        // Defense in depth: hide pending products from the public catalog
+                        // until the merchant validates them via /dashboard/stock/review.
+                        visible: false,
                         enrichment_source: "pos_bootstrap",
                         enrichment_proposed_at: proposedAt,
                         original_name: posProduct.name,
