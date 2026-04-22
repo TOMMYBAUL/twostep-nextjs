@@ -4,7 +4,6 @@ import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
 import { extractSize } from "@/lib/pos/extract-size";
-import { enrichNewProducts } from "@/lib/ean/enrich";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 
@@ -170,9 +169,32 @@ export async function syncMerchantPOS(
         result.products_updated = toUpdate.length;
 
         // ─── Create new products (sequential — uses RPC) ────────────
+        // Track newly created products so we can run enrichment + mark them
+        // as pending_review (queue validation) below.
+        const newlyCreated: Array<{ productId: string; posProduct: POSProduct }> = [];
         for (const posProduct of toCreate) {
             const productId = await createProduct(supabase, merchantId, provider, posProduct, result);
             posItemToProductId.set(posProduct.pos_item_id, productId);
+            newlyCreated.push({ productId, posProduct });
+        }
+
+        // Mark newly created POS products as pending_review.
+        // Save the original POS name + photo so the merchant can compare
+        // against the enriched proposal in /dashboard/stock/review (Task 11).
+        if (newlyCreated.length > 0) {
+            const proposedAt = new Date().toISOString();
+            for (const { productId, posProduct } of newlyCreated) {
+                await supabase
+                    .from("products")
+                    .update({
+                        review_status: "pending_review",
+                        enrichment_source: "pos_bootstrap",
+                        enrichment_proposed_at: proposedAt,
+                        original_name: posProduct.name,
+                        original_image_url: posProduct.photo_url,
+                    })
+                    .eq("id", productId);
+            }
         }
 
         // ─── Batch stock upsert ─────────────────────────────────────
@@ -246,11 +268,23 @@ export async function syncMerchantPOS(
             await upsertPromo(supabase, merchantId, provider, promo, posItemToProductId, posParentToVariants, result);
         }
 
-        // ─── EAN enrichment (best-effort) ────────────────────────────
+        // ─── EAN enrichment via unified resolveAndEnrich orchestrator ─
+        // Runs only on products created by THIS sync. Updates brand/category/
+        // photo and the cached ean_lookups row used by future merchants.
 
         try {
-            const enrichResult = await enrichNewProducts(merchantId);
-            result.products_enriched = enrichResult.enriched;
+            const { resolveAndEnrich } = await import("@/lib/enrichment/resolve-ean");
+            let enrichedCount = 0;
+            for (const { productId, posProduct } of newlyCreated) {
+                const r = await resolveAndEnrich({
+                    productId,
+                    ean: posProduct.ean,
+                    name: posProduct.name,
+                    merchantId,
+                });
+                if (r.source !== "none") enrichedCount++;
+            }
+            result.products_enriched = enrichedCount;
         } catch (err) {
             // Enrichment failure must never break the sync
             captureError(err, { merchantId, context: "ean-enrich-during-sync" });
