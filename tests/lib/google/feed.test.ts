@@ -22,7 +22,7 @@ describe("Google feed generation", () => {
         expect(result.price.value).toBe("129.99");
         expect(result.price.currency).toBe("EUR");
         expect(result.imageLink).toBe("https://r2.dev/products/abc/prod-123.webp");
-        expect(result.availability).toBe("in_stock");
+        expect(result.availability).toBe("in stock");
         expect(result.channel).toBe("local");
         expect(result.contentLanguage).toBe("fr");
         expect(result.targetCountry).toBe("FR");
@@ -42,10 +42,10 @@ describe("Google feed generation", () => {
         expect(result.imageLink).toBe("https://square.com/img/574.jpg");
     });
 
-    it("marks out_of_stock when quantity is 0", () => {
+    it("marks out of stock when quantity is 0", () => {
         const product = { ...baseProduct, stock: [{ quantity: 0 }] };
         const result = transformProductToGoogle(product, "store-001");
-        expect(result.availability).toBe("out_of_stock");
+        expect(result.availability).toBe("out of stock");
     });
 
     it("filters eligible products (has EAN, visible, has price, has photo)", () => {
