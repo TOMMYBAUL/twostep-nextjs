@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .gitnexus
+
+# graphify outputs (regenerable)
+graphify-out/
+.graphify_python
