@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-21*
+*Derniere mise a jour : 2026-04-22*
 
 ## Stats
-- Total leads : 19
-- NOUVEAU : 11
+- Total leads : 29
+- NOUVEAU : 21
 - CONTACTE : 1
 - BROUILLON : 5
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Etienne — 2026-04-22 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | NOUVEAU | Audit + email personnalise |
+| LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | NOUVEAU | Audit + email personnalise |
+| UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | NOUVEAU | Audit + email personnalise |
+| L'ESPION | Saint-Etienne | Mode createurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (site: lespion.fr, IG: @boutiquelespion), tel: 05 61 73 36 69 |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
+| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | NOUVEAU | Verifier si boutique physique active rue Languedoc |
+| TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (site: dorise-joaillier.com, form web) |
+| ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve, chercher via Instagram |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouve (IG: @lilith.croix.baragnon) |
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouve (site: macdouglastoulouse.fr en maintenance 503) |
+
+### Capitole / Saint-Rome / Carmes (sessions precedentes)
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
@@ -34,12 +51,15 @@
 | KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | — | 882609688 | 6/10 | NOUVEAU | Email non trouve (IG: @boutique_au_44_rue_de_metz_), tel: 05 34 40 81 88 |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (site: perlins.fr), tel: 05 61 21 18 81 |
 
-## Retires (chaines / pas independants)
+## Retires (chaines / pas independants / fermes)
 | Boutique | Raison |
 |---|---|
 | SCOTCH AND SODA | Chaine G.A.B. France (31 magasins) |
 | IZAC | Chaine JSR (115 magasins) |
 | SOEUR | Chaine Brion Sisters (28 magasins) |
+| AGATHE ET ZOE | Fermee depuis 30/04/2015 (Saint-Etienne) |
+| NITYA (DUKAN DE NITYA) | Inactive depuis 27/02/2018 (Saint-Etienne) |
+| MJ CONCEPT STORE VERSION CAMELEON | Radiee en septembre 2021 (Saint-Etienne) |
 
 ## Do Not Contact
 (vide)
