@@ -8,7 +8,7 @@ import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
 // ── Name similarity scoring for reverse EAN search ──
 
 /** Normalize: lowercase, remove special chars, collapse whitespace */
-function normalizeName(s: string): string {
+export function normalizeName(s: string): string {
     return s.toLowerCase().replace(/[''`\-/().,"]/g, " ").replace(/\s+/g, " ").trim();
 }
 
@@ -22,7 +22,7 @@ function normalizeForCache(name: string): string {
 }
 
 /** Levenshtein distance */
-function levenshtein(a: string, b: string): number {
+export function levenshtein(a: string, b: string): number {
     const m = a.length, n = b.length;
     const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
     for (let i = 1; i <= m; i++) {
@@ -38,7 +38,7 @@ function levenshtein(a: string, b: string): number {
 }
 
 /** Score how well a candidate name matches the original product name (0..1) */
-function scoreNameMatch(originalName: string, candidateName: string, brand?: string | null): number {
+export function scoreNameMatch(originalName: string, candidateName: string, brand?: string | null): number {
     const normOriginal = normalizeName(brand ? `${brand} ${originalName}` : originalName);
     const normCandidate = normalizeName(candidateName);
 
@@ -74,7 +74,7 @@ type ReverseSearchCandidate = {
  * Only called for medium-confidence matches (score between 0.55 and 0.85).
  * Cost: ~$0.001 per call.
  */
-async function verifyEanMatchWithAI(
+export async function verifyEanMatchWithAI(
     originalName: string,
     candidateName: string,
     brand?: string | null,
@@ -127,7 +127,7 @@ Réponds UNIQUEMENT "oui" ou "non".`,
 }
 
 /** Pick the best candidate above threshold from a list, with AI verification for uncertain matches */
-async function pickBestCandidate(
+export async function pickBestCandidate(
     candidates: ReverseSearchCandidate[],
     originalName: string,
     brand?: string | null,
