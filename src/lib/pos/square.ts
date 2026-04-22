@@ -74,8 +74,15 @@ export const squareAdapter: IPOSAdapter = {
                 grant_type: "refresh_token",
             }),
         });
-        const data = await res.json();
-        if (!res.ok) return null;
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            // Refresh expiry (>30j inactive) is the silent killer of POS integrations.
+            // Surface the reason in logs; sync-engine still sees null and writes
+            // last_sync_error="Token expired" via its own fallback.
+            const detail = data?.errors?.[0]?.detail ?? data?.error_description ?? `HTTP ${res.status}`;
+            console.error("[square] refreshToken failed:", detail);
+            return null;
+        }
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token,
