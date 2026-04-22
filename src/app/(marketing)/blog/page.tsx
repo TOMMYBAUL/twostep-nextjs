@@ -37,6 +37,15 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "attirer-clients-boutique-toulouse",
+        title: "Attirer des clients dans ta boutique : 6 leviers concrets à Toulouse",
+        description:
+            "Google Business, stock visible en ligne, réseaux sociaux locaux, événements... Les 6 actions concrètes pour augmenter ton trafic en boutique indépendante.",
+        publishedAt: "2026-04-22",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
 ];
 
 export default function BlogPage() {
