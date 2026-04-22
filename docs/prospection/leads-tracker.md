@@ -4,9 +4,9 @@
 
 ## Stats
 - Total leads : 29
-- NOUVEAU : 21
+- NOUVEAU : 16
 - CONTACTE : 1
-- BROUILLON : 5
+- BROUILLON : 10
 - Reponses : 0
 - Signes : 0
 
@@ -16,9 +16,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | NOUVEAU | Audit + email personnalise |
-| LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | NOUVEAU | Audit + email personnalise |
-| UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | NOUVEAU | Audit + email personnalise |
+| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
+| LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
+| UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | L'ESPION | Saint-Etienne | Mode createurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (site: lespion.fr, IG: @boutiquelespion), tel: 05 61 73 36 69 |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
 | ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | NOUVEAU | Verifier si boutique physique active rue Languedoc |
@@ -37,10 +37,10 @@
 | MONPARFUMMASIGNATURE | Capitole | Cosmetique | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
-| PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | NOUVEAU | Audit + email personnalise |
+| PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
-| SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | NOUVEAU | Audit + email personnalise |
+| SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | NOUVEAU | Audit + email personnalise |
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | NOUVEAU | Verifier email + audit |
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
