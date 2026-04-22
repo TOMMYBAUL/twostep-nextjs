@@ -2,16 +2,79 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
+import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
+import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
 
 // ── Name similarity scoring for reverse EAN search ──
 
 /** Normalize: lowercase, remove special chars, collapse whitespace */
-function normalizeName(s: string): string {
+export function normalizeName(s: string): string {
     return s.toLowerCase().replace(/[''`\-/().,"]/g, " ").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Build a query string suitable for external EAN search APIs (EAN-Search, UPCitemdb, etc.).
+ * These APIs are strict on punctuation and prefer short discriminating queries.
+ *
+ * Strategy:
+ *   1. Normalize (lowercase, strip apostrophes/slashes/quotes/punctuation)
+ *   2. Drop tokens shorter than 2 chars (noise)
+ *   3. Take the first 6 tokens — usually brand + model + key descriptors
+ *
+ * Brand is prepended only if it isn't already present in the normalized name.
+ */
+export function buildExternalSearchQuery(name: string, brand?: string | null): string {
+    const normalizedName = normalizeName(name);
+    const normalizedBrand = brand ? normalizeName(brand) : null;
+
+    // Keep tokens of >=2 chars OR pure digits (model numbers like "1", "3", "5" matter)
+    const tokens = normalizedName.split(" ").filter(t => t.length >= 2 || /^\d+$/.test(t));
+
+    if (normalizedBrand && !tokens.includes(normalizedBrand)) {
+        tokens.unshift(normalizedBrand);
+    }
+
+    return tokens.slice(0, 6).join(" ");
+}
+
+/**
+ * Words that indicate a product name is a placeholder / too generic to reverse-search
+ * safely. These names produce high-scoring but semantically wrong matches (e.g. "Produit 1"
+ * matching a random Dutch placeholder also called "Produit 1").
+ */
+const GENERIC_NAME_BLACKLIST = new Set([
+    "produit", "article", "item", "test", "chose", "sku", "ref",
+    "default", "placeholder", "unknown", "none",
+]);
+
+/**
+ * Decide if a product name is rich enough to reverse-search on external APIs.
+ * Returns false (too vague) when:
+ *   - After normalization, fewer than 3 significant tokens remain
+ *   - OR any token is in the generic blacklist (produit, article, item, ...)
+ */
+export function isNameRichEnoughForReverseSearch(name: string, brand?: string | null): boolean {
+    const normalized = normalizeName(name);
+    const tokens = normalized.split(" ").filter(t => t.length >= 2 || /^\d+$/.test(t));
+
+    if (tokens.some(t => GENERIC_NAME_BLACKLIST.has(t))) return false;
+
+    // Brand counts as a significant token — a Nike name is less risky than an unnamed one
+    const effectiveTokens = brand ? tokens.length + 1 : tokens.length;
+    return effectiveTokens >= 2;
+}
+
+/**
+ * Match the SQL normalization used by `canonical_name_normalized` in ean_lookups.
+ * SQL backfill: `lower(regexp_replace(name, '[^a-z0-9\s]', '', 'gi'))`.
+ * Keep these two in sync — the pg_trgm index relies on identical normalization.
+ */
+function normalizeForCache(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9\s]/gi, "");
+}
+
 /** Levenshtein distance */
-function levenshtein(a: string, b: string): number {
+export function levenshtein(a: string, b: string): number {
     const m = a.length, n = b.length;
     const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
     for (let i = 1; i <= m; i++) {
@@ -27,7 +90,7 @@ function levenshtein(a: string, b: string): number {
 }
 
 /** Score how well a candidate name matches the original product name (0..1) */
-function scoreNameMatch(originalName: string, candidateName: string, brand?: string | null): number {
+export function scoreNameMatch(originalName: string, candidateName: string, brand?: string | null): number {
     const normOriginal = normalizeName(brand ? `${brand} ${originalName}` : originalName);
     const normCandidate = normalizeName(candidateName);
 
@@ -47,8 +110,14 @@ function scoreNameMatch(originalName: string, candidateName: string, brand?: str
     return levScore * 0.4 + overlapScore * 0.6;
 }
 
-const REVERSE_SEARCH_THRESHOLD = 0.55; // Minimum score to accept a reverse search result
-const AI_VERIFY_THRESHOLD = 0.85; // Above this score, skip AI verification (high confidence)
+// Lowered from 0.55 → 0.40: short candidate names (e.g. "Nike Air Force 1 07")
+// match long POS names (e.g. "Nike Air Force 1 '07 Men's White/White US7") at
+// only ~0.48 because of the length asymmetry. Letting AI verify decide is safer
+// than rejecting outright, since AI verify is now MANDATORY (see pickBestCandidate).
+const REVERSE_SEARCH_THRESHOLD = 0.40;
+// AI_VERIFY_THRESHOLD kept for reference — pickBestCandidate now ignores it and
+// always calls verifyEanMatchWithAI to catch high-score semantic false positives.
+const AI_VERIFY_THRESHOLD = 0.85;
 
 type ReverseSearchCandidate = {
     ean: string;
@@ -63,60 +132,152 @@ type ReverseSearchCandidate = {
  * Only called for medium-confidence matches (score between 0.55 and 0.85).
  * Cost: ~$0.001 per call.
  */
-async function verifyEanMatchWithAI(
+export async function verifyEanMatchWithAI(
     originalName: string,
     candidateName: string,
     brand?: string | null,
 ): Promise<boolean> {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) return true; // No API key → accept (fallback to scoring only)
+    // Same provider strategy as categorize.ts: Groq (free 14k req/day) → Gemini fallback.
+    // Anthropic kept as last resort if both gratuites are down.
+    const groqKey = process.env.GROQ_API_KEY;
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8_000);
-
-        const productDesc = brand ? `${brand} ${originalName}` : originalName;
-
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-                "anthropic-version": "2023-06-01",
-            },
-            body: JSON.stringify({
-                model: "claude-haiku-4-5-20251001",
-                max_tokens: 20,
-                messages: [{
-                    role: "user",
-                    content: `Le produit sur la facture est : "${productDesc}"
-La base de données EAN propose : "${candidateName}"
-Est-ce le MÊME produit (même marque, même modèle, même type) ? Les différences de format (volume, contenance, langue) sont acceptables.
-Réponds UNIQUEMENT "oui" ou "non".`,
-                }],
-            }),
-            signal: controller.signal,
-        });
-
-        clearTimeout(timeout);
-        if (!res.ok) return true; // On error, accept rather than block
-
-        const data = await res.json();
-        const answer = (data.content?.[0]?.text ?? "").toLowerCase().trim();
-        const isMatch = answer.startsWith("oui");
-
-        if (!isMatch && process.env.NODE_ENV === "development") {
-            console.log(`[ean-ai] Rejected: "${productDesc}" ≠ "${candidateName}" — AI said: ${answer}`);
-        }
-
-        return isMatch;
-    } catch {
-        return true; // On error, accept
+    if (!groqKey && !geminiKey && !anthropicKey) {
+        console.warn(`[ean-ai] No AI provider key set — refusing match by default (safe-fail)`);
+        return false;
     }
+
+    const productDesc = brand ? `${brand} ${originalName}` : originalName;
+
+    const prompt = `Tu valides un appariement de produits. Réponds UNIQUEMENT par "oui" ou "non".
+
+Produit du marchand : "${productDesc}"
+Candidat dans la base EAN : "${candidateName}"
+
+Critères STRICTS pour répondre "oui" :
+1. Même type de produit (sneaker = sneaker, tshirt = tshirt, casque = casque)
+2. Si le candidat ajoute une MARQUE absente du nom marchand → "non" (jamais inventer une marque)
+3. Si le candidat ajoute un MODÈLE/RÉFÉRENCE absent du nom marchand → "non" (jamais inventer un modèle)
+4. Variations acceptables : casse, accents, ordre des mots, langue, format/contenance
+
+Exemples :
+- "tshirt noir" vs "Oui Tshirt noir" → non (Oui = marque inventée)
+- "pull rouge" vs "Lacoste Pull Rouge XL" → non (Lacoste + XL inventés)
+- "Casque audio Bose" vs "Bose QC45 ANC Wireless" → non (QC45 = modèle non précisé)
+- "Bose QuietComfort 35 Black" vs "Bose QuietComfort 35 II - Black" → non (II = variante précisée non mentionnée)
+- "Adidas Samba OG" vs "adidas Samba Og" → oui (identique)
+- "Apple iPhone 15 128GB Noir" vs "Iphone 15 128Gb noir - APPLE" → oui (mêmes spécifs, ordre différent)
+- "Nike Air Force 1 '07 Men's White" vs "Nike Air Force 1 07 White" → oui (mêmes spécifs)
+
+En cas de doute → "non".`;
+
+    let answer = "";
+
+    // 1) Groq — free, fast
+    if (groqKey) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8_000);
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${groqKey}`,
+                },
+                body: JSON.stringify({
+                    model: "llama-3.3-70b-versatile",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0,
+                    max_tokens: 10,
+                }),
+                signal: controller.signal,
+            });
+            clearTimeout(timeout);
+            if (res.ok) {
+                const data = await res.json();
+                answer = (data.choices?.[0]?.message?.content ?? "").toLowerCase().trim();
+            } else {
+                console.warn(`[ean-ai] Groq HTTP ${res.status} — trying Gemini`);
+            }
+        } catch (err) {
+            console.warn(`[ean-ai] Groq error — trying Gemini:`, err);
+        }
+    }
+
+    // 2) Gemini fallback
+    if (!answer && geminiKey) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8_000);
+            const res = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0, maxOutputTokens: 10 },
+                    }),
+                    signal: controller.signal,
+                },
+            );
+            clearTimeout(timeout);
+            if (res.ok) {
+                const data = await res.json();
+                answer = (data.candidates?.[0]?.content?.parts?.[0]?.text ?? "").toLowerCase().trim();
+            } else {
+                console.warn(`[ean-ai] Gemini HTTP ${res.status} — trying Anthropic`);
+            }
+        } catch (err) {
+            console.warn(`[ean-ai] Gemini error — trying Anthropic:`, err);
+        }
+    }
+
+    // 3) Anthropic last-resort
+    if (!answer && anthropicKey) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8_000);
+            const res = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-api-key": anthropicKey,
+                    "anthropic-version": "2023-06-01",
+                },
+                body: JSON.stringify({
+                    model: "claude-haiku-4-5-20251001",
+                    max_tokens: 10,
+                    messages: [{ role: "user", content: prompt }],
+                }),
+                signal: controller.signal,
+            });
+            clearTimeout(timeout);
+            if (res.ok) {
+                const data = await res.json();
+                answer = (data.content?.[0]?.text ?? "").toLowerCase().trim();
+            }
+        } catch (err) {
+            console.warn(`[ean-ai] Anthropic error:`, err);
+        }
+    }
+
+    if (!answer) {
+        console.warn(`[ean-ai] All providers failed — refusing match (safe-fail)`);
+        return false;
+    }
+
+    const isMatch = answer.startsWith("oui");
+    if (process.env.NODE_ENV === "development") {
+        const verdict = isMatch ? "Accepted" : "Rejected";
+        console.log(`[ean-ai] ${verdict}: "${productDesc}" vs "${candidateName}" — AI said: ${answer}`);
+    }
+    return isMatch;
 }
 
 /** Pick the best candidate above threshold from a list, with AI verification for uncertain matches */
-async function pickBestCandidate(
+export async function pickBestCandidate(
     candidates: ReverseSearchCandidate[],
     originalName: string,
     brand?: string | null,
@@ -129,16 +290,13 @@ async function pickBestCandidate(
         score: scoreNameMatch(originalName, c.name, brand),
     })).sort((a, b) => b.score - a.score);
 
-    // Try candidates in score order
+    // Try candidates in score order. AI verify ALWAYS — name-similarity scoring is
+    // too easily fooled by short or generic names (e.g. "Casque audio Bose" matches
+    // "Bose QuietComfort 45" at 0.87, "tshirt noir" matches "Oui Tshirt noir"
+    // at 0.89). The semantic check by Claude Haiku is the only reliable guard.
     for (const best of scored) {
-        if (best.score < REVERSE_SEARCH_THRESHOLD) break; // No more candidates worth checking
+        if (best.score < REVERSE_SEARCH_THRESHOLD) break;
 
-        if (best.score >= AI_VERIFY_THRESHOLD) {
-            // High confidence — accept without AI check
-            return { ean: best.ean, brand: best.brand, category: best.category };
-        }
-
-        // Medium confidence — ask AI to verify
         const aiConfirmed = await verifyEanMatchWithAI(originalName, best.name, brand);
         if (aiConfirmed) {
             return { ean: best.ean, brand: best.brand, category: best.category };
@@ -235,7 +393,7 @@ export async function searchEanByNameEanSearch(
 
     await eanSearchRateLimiter.acquire();
 
-    const query = brand ? `${brand} ${productName}` : productName;
+    const query = buildExternalSearchQuery(productName, brand);
     const res = await fetchWithRetry(
         `https://api.ean-search.org/api?token=${token}&op=product-search&name=${encodeURIComponent(query)}&format=json`,
         {},
@@ -266,7 +424,7 @@ export async function searchEanByNameEanSearch(
         const bestScore = candidates.length > 0
             ? Math.max(...candidates.map(c => scoreNameMatch(productName, c.name, brand)))
             : 0;
-        console.log(`[ean-search] "${query}" → ${items.length} results, ${candidates.length} valid, best score: ${bestScore.toFixed(3)}, accepted: ${!!result}`);
+        console.log(`[ean-search] "${query}" → ${items.length} results, best score: ${bestScore.toFixed(3)}, accepted: ${!!result}`);
     }
     return result;
 }
@@ -293,12 +451,72 @@ async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
 }
 
 /**
+ * Reverse search via local cache (ean_lookups + pg_trgm RPC search_ean_lookups_by_name).
+ * Free and instant — consulted BEFORE the cascade of 4 external sources.
+ * Returns the best candidate if score >= REVERSE_SEARCH_THRESHOLD, else null.
+ */
+async function searchEanByNameCache(
+    productName: string,
+    brand?: string | null,
+): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    const normalized = normalizeForCache(brand ? `${brand} ${productName}` : productName);
+    if (!normalized) return null;
+
+    const supabase = createAdminClient();
+    const { data: rows, error } = await supabase.rpc("search_ean_lookups_by_name", {
+        p_normalized_query: normalized,
+        p_brand_filter: brand ?? null,
+        p_limit: 5,
+    });
+
+    if (error || !rows || rows.length === 0) {
+        logCacheMiss(productName, "cache_reverse");
+        return null;
+    }
+
+    const candidates: ReverseSearchCandidate[] = (rows as Array<{
+        ean: string; name: string; brand: string | null; category: string | null;
+    }>).map(r => ({
+        ean: r.ean,
+        name: r.name,
+        brand: r.brand,
+        category: r.category,
+        score: 0,
+    }));
+
+    const result = await pickBestCandidate(candidates, productName, brand);
+    if (result) {
+        void logCacheHit(result.ean);
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[cache:reverse] hit "${productName}" → ${result.ean}`);
+        }
+    } else {
+        logCacheMiss(productName, "cache_reverse_below_threshold");
+    }
+    return result;
+}
+
+/**
  * Reverse search via UPCitemdb: find EAN from product name.
+ * Cascade: local cache → EAN-Search → UPCitemdb → Open Beauty Facts → Open Products Facts.
  */
 export async function searchEanByName(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
+    // Garde-fou anti-faux-positif : noms trop génériques produisent des matches
+    // sémantiquement faux mais à score haut (ex "Produit 1" matche un placeholder NL).
+    if (!isNameRichEnoughForReverseSearch(productName, brand)) {
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[searchEanByName] SKIPPED "${productName}" — name too generic`);
+        }
+        return null;
+    }
+
+    // 0. Local cache (free, instant) — pg_trgm fuzzy match on previously enriched products
+    const cacheReverseResult = await searchEanByNameCache(productName, brand);
+    if (cacheReverseResult) return cacheReverseResult;
+
     // 1. EAN-Search (best EU coverage, 1.1B products)
     const eanSearchResult = await searchEanByNameEanSearch(productName, brand);
     if (eanSearchResult) return eanSearchResult;
@@ -327,7 +545,7 @@ async function searchEanByNameUpc(
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
     if (apiKey === "TODO_SET_YOUR_KEY") return null; // Skip placeholder key
-    const query = brand ? `${brand} ${productName}` : productName;
+    const query = buildExternalSearchQuery(productName, brand);
     const url = apiKey
         ? `https://api.upcitemdb.com/prod/v1/search?s=${encodeURIComponent(query)}&type=product`
         : `https://api.upcitemdb.com/prod/trial/search?s=${encodeURIComponent(query)}&type=product`;
@@ -387,7 +605,7 @@ async function searchEanByNameOpenBeautyFacts(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
-    const query = brand ? `${brand} ${productName}` : productName;
+    const query = buildExternalSearchQuery(productName, brand);
     const res = await fetchWithRetry(
         `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=10`,
         {},
@@ -444,7 +662,7 @@ async function searchEanByNameOpenProductsFacts(
     productName: string,
     brand?: string | null,
 ): Promise<{ ean: string; brand: string | null; category: string | null } | null> {
-    const query = brand ? `${brand} ${productName}` : productName;
+    const query = buildExternalSearchQuery(productName, brand);
     const res = await fetchWithRetry(
         `https://world.openproductsfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&json=1&page_size=10`,
         {},
@@ -494,7 +712,8 @@ export async function fetchEanData(ean: string, skipCache = false): Promise<EanR
             return {
                 name: cached.name ?? "Unknown",
                 brand: cached.brand ?? null,
-                photo_url: cached.photo_url ?? null,
+                // Prefer R2-rehosted photo for durability (falls back to original Serper/EAN-Search URL)
+                photo_url: cached.photo_url_r2 ?? cached.photo_url ?? null,
                 category: cached.category ?? null,
                 source: cached.source ?? "cache",
             };
@@ -540,12 +759,20 @@ async function cacheResult(
     await supabase.from("ean_lookups").upsert({
         ean,
         name: result.name,
+        // Populate normalized name so the pg_trgm index can serve future reverse-search queries.
+        // Must match the SQL backfill in migration 080.
+        canonical_name_normalized: result.name ? normalizeForCache(result.name) : null,
         brand: result.brand,
         photo_url: result.photo_url,
         category: result.category,
         source: result.source,
         fetched_at: new Date().toISOString(),
     });
+
+    // Re-host photo on R2 for durability (fire-and-forget, updates ean_lookups.photo_url_r2)
+    if (result.photo_url) {
+        void uploadPhotoToR2({ ean, sourceUrl: result.photo_url });
+    }
 }
 
 /**
@@ -565,9 +792,19 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         .single();
 
     if (cached) {
-        await applyEnrichment(supabase, productId, cached, ean);
+        // Cache hit: bump telemetry (fire-and-forget) then apply enrichment.
+        // Prefer R2-rehosted photo over original Serper/EAN-Search URL.
+        void logCacheHit(ean);
+        const enriched = {
+            ...cached,
+            photo_url: cached.photo_url_r2 ?? cached.photo_url,
+        };
+        await applyEnrichment(supabase, productId, enriched, ean);
         return true;
     }
+
+    // Cache miss: log for observability, then cascade through external sources
+    logCacheMiss(ean, "cache");
 
     // Cascade through all sources (skip cache — already checked above)
     const result = await fetchEanData(ean, true);

@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getCachedTaxonomy, cacheTaxonomy } from "@/lib/enrichment/cache-taxonomy";
 
 type ProductInput = {
     id: string;
@@ -149,6 +150,8 @@ Règles :
     }
 }
 
+type TagInsert = { product_id: string; tag_type: string; tag_value: string; source: string; confidence: number };
+
 export async function categorizeMerchantProducts(merchantId: string): Promise<{
     categorized: number;
     failed: number;
@@ -164,28 +167,81 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
 
     if (!products || products.length === 0) return { categorized: 0, failed: 0 };
 
-    const enrichedProducts: ProductInput[] = products.map((p) => ({
-        id: p.id,
-        name: p.name,
-        price: p.price,
-        ean: p.ean,
-        canonical_name: p.canonical_name,
-        brand: null,
-    }));
-
     const { data: tree } = await supabase.rpc("get_categories_tree");
     if (!tree || tree.length === 0) return { categorized: 0, failed: 0 };
 
-    let results: CategorizedProduct[] = [];
-    try {
-        results = await categorizeProducts(enrichedProducts, tree);
-    } catch (err) {
-        console.error("[categorize] AI call failed:", err);
-        return { categorized: 0, failed: products.length };
+    // ─── Phase 1: cache lookup for products with EAN ───
+    const cacheHits: Array<{ product: typeof products[number]; cached: NonNullable<Awaited<ReturnType<typeof getCachedTaxonomy>>> }> = [];
+    const needAI: ProductInput[] = [];
+
+    for (const p of products) {
+        if (p.ean) {
+            const cached = await getCachedTaxonomy(p.ean);
+            if (cached && cached.category_id) {
+                cacheHits.push({ product: p, cached });
+                continue;
+            }
+        }
+        needAI.push({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            ean: p.ean,
+            canonical_name: p.canonical_name,
+            brand: null,
+        });
     }
 
     let categorized = 0;
     let failed = 0;
+
+    // ─── Phase 2: apply cached taxonomies (no AI cost) ───
+    for (const hit of cacheHits) {
+        try {
+            const cat = tree.find((c: any) => c.slug === hit.cached.category_id);
+            const subcat = hit.cached.subcategory_id
+                ? tree.find((c: any) => c.slug === hit.cached.subcategory_id)
+                : null;
+
+            if (!cat) { failed++; continue; }
+
+            await supabase
+                .from("products")
+                .update({
+                    category_id: cat.id,
+                    category: cat.slug.toLowerCase(),
+                    subcategory_id: subcat?.id ?? null,
+                    ai_categorized_at: new Date().toISOString(),
+                    ai_confidence: 100, // cache hit = previously validated by AI on another merchant
+                })
+                .eq("id", hit.product.id);
+
+            const tags: TagInsert[] = [];
+            if (hit.cached.gender) tags.push({ product_id: hit.product.id, tag_type: "gender", tag_value: hit.cached.gender, source: "cache", confidence: 100 });
+            if (hit.cached.color) tags.push({ product_id: hit.product.id, tag_type: "color", tag_value: hit.cached.color, source: "cache", confidence: 100 });
+            if (hit.cached.tags) {
+                for (const tag of hit.cached.tags) {
+                    tags.push({ product_id: hit.product.id, tag_type: "custom", tag_value: tag, source: "cache", confidence: 100 });
+                }
+            }
+            if (tags.length > 0) {
+                await supabase.from("product_tags").upsert(tags, { onConflict: "product_id,tag_type,tag_value" });
+            }
+
+            categorized++;
+        } catch { failed++; }
+    }
+
+    // ─── Phase 3: AI for remaining products + cache results ───
+    let results: CategorizedProduct[] = [];
+    if (needAI.length > 0) {
+        try {
+            results = await categorizeProducts(needAI, tree);
+        } catch (err) {
+            console.error("[categorize] AI call failed:", err);
+            failed += needAI.length;
+        }
+    }
 
     for (const result of results) {
         try {
@@ -207,7 +263,7 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
                 })
                 .eq("id", result.id);
 
-            const tags: { product_id: string; tag_type: string; tag_value: string; source: string; confidence: number }[] = [];
+            const tags: TagInsert[] = [];
             if (result.brand) tags.push({ product_id: result.id, tag_type: "brand", tag_value: result.brand, source: "ai", confidence: result.confidence });
             if (result.color) tags.push({ product_id: result.id, tag_type: "color", tag_value: result.color, source: "ai", confidence: result.confidence });
             if (result.gender) tags.push({ product_id: result.id, tag_type: "gender", tag_value: result.gender, source: "ai", confidence: result.confidence });
@@ -227,6 +283,18 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
 
             if (tags.length > 0) {
                 await supabase.from("product_tags").upsert(tags, { onConflict: "product_id,tag_type,tag_value" });
+            }
+
+            // ─── Phase 4: cache the AI result if we have an EAN ───
+            const sourceProduct = needAI.find(p => p.id === result.id);
+            if (sourceProduct?.ean) {
+                void cacheTaxonomy(sourceProduct.ean, {
+                    category_id: cat.slug,
+                    subcategory_id: subcat?.slug ?? null,
+                    gender: result.gender,
+                    color: result.color,
+                    tags: result.tags,
+                });
             }
 
             categorized++;

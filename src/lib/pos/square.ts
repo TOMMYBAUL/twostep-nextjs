@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { signState } from "@/lib/auth/state-token";
-import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
+import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate, PosProductUpdate } from "./types";
 
 function getBaseUrl(): string {
     return process.env.SQUARE_ENVIRONMENT === "sandbox"
@@ -74,8 +74,15 @@ export const squareAdapter: IPOSAdapter = {
                 grant_type: "refresh_token",
             }),
         });
-        const data = await res.json();
-        if (!res.ok) return null;
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            // Refresh expiry (>30j inactive) is the silent killer of POS integrations.
+            // Surface the reason in logs; sync-engine still sees null and writes
+            // last_sync_error="Token expired" via its own fallback.
+            const detail = data?.errors?.[0]?.detail ?? data?.error_description ?? `HTTP ${res.status}`;
+            console.error("[square] refreshToken failed:", detail);
+            return null;
+        }
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token,
@@ -333,6 +340,58 @@ export const squareAdapter: IPOSAdapter = {
         }
 
         return idMappings;
+    },
+
+    /**
+     * Update a single ITEM_VARIATION's SKU (= EAN) in the merchant's Square catalog.
+     * Strategy:
+     *   1. GET /v2/catalog/object/{variation_id} → full object + version
+     *   2. Mutate item_variation_data.sku
+     *   3. POST /v2/catalog/object with full object + version (optimistic locking)
+     *
+     * V1 only updates SKU (EAN). Photo writeback would require uploading an Image
+     * object then linking image_ids on the parent ITEM — kept for V2.
+     */
+    async updatePosProduct(
+        accessToken: string,
+        posItemId: string,
+        update: PosProductUpdate,
+    ): Promise<boolean> {
+        if (process.env.POS_WRITEBACK_ENABLED !== "true") return true;
+        if (update.ean === undefined) return true; // Nothing to push
+
+        try {
+            // 1. GET current variation object
+            const getRes = await squareFetch(`/catalog/object/${encodeURIComponent(posItemId)}`, accessToken);
+            const obj = getRes.object;
+            if (!obj || obj.type !== "ITEM_VARIATION") {
+                console.warn(`[square] updatePosProduct: object ${posItemId} is not an ITEM_VARIATION`);
+                return false;
+            }
+
+            // 2. Mutate sku, preserving every other field
+            const mutated = {
+                ...obj,
+                item_variation_data: {
+                    ...(obj.item_variation_data ?? {}),
+                    sku: update.ean ?? undefined,
+                },
+            };
+
+            // 3. Upsert with the version we just read
+            await squareFetch(`/catalog/object`, accessToken, {
+                method: "POST",
+                body: JSON.stringify({
+                    idempotency_key: crypto.randomUUID(),
+                    object: mutated,
+                }),
+            });
+
+            return true;
+        } catch (err) {
+            console.error(`[square] updatePosProduct failed for ${posItemId}:`, err);
+            return false;
+        }
     },
 
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null {

@@ -41,12 +41,10 @@ export async function POST() {
             return NextResponse.json({ error: "Failed to update merchant" }, { status: 500 });
         }
 
-        // Dissocier les produits du POS sans les rendre invisibles :
-        // le marchand peut passer en mode manuel et continuer à gérer son stock.
-        await supabase
-            .from("products")
-            .update({ pos_item_id: null })
-            .eq("merchant_id", merchant.id);
+        // NE PAS clear pos_item_id : on garde le mapping POS ↔ Two-Step pour qu'une
+        // future reconnexion du même POS retrouve les produits existants au lieu
+        // d'en créer 30 doublons. Le marchand peut continuer à gérer manuellement ;
+        // le pos_item_id est ignoré tant qu'il n'y a pas de pos_connection active.
 
         return NextResponse.json({ ok: true });
     } catch {

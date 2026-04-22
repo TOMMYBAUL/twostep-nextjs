@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
             const { data: products } = await supabase
                 .from("products")
-                .select("id, name, canonical_name, ean, price, photo_processed_url, photo_url, visible, stock(quantity)")
+                .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity)")
                 .eq("merchant_id", conn.merchant_id);
 
             if (!products) continue;

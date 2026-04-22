@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const supabase = createAdminClient();
 
         const [{ data: products }, { data: merchants }] = await Promise.all([
-            supabase.from("products").select("slug, updated_at").eq("visible", true).is("variant_of", null).order("updated_at", { ascending: false }).limit(1000),
+            supabase.from("products").select("slug, updated_at").eq("visible", true).eq("review_status", "validated").is("variant_of", null).order("updated_at", { ascending: false }).limit(1000),
             supabase.from("merchants").select("slug, updated_at").order("updated_at", { ascending: false }).limit(500),
         ]);
 

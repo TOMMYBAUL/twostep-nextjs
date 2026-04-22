@@ -20,6 +20,7 @@ const getProduct = React.cache(async function getProduct(slugOrId: string): Prom
         .select("slug, name, canonical_name, price, photo_url, photo_processed_url, category, description, ean, brand, merchant_id, merchants(name, city, address, slug)")
         .eq("id", resolvedId)
         .eq("visible", true)
+        .eq("review_status", "validated")
         .single();
     return data as unknown as ProductWithMerchant | null;
 });
