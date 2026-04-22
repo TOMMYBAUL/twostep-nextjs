@@ -15,6 +15,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveAndEnrich, type ResolveAndEnrichResult } from "@/lib/enrichment/resolve-ean";
+import { categorizeMerchantProducts } from "@/lib/ai/categorize";
+import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 
 type ProductRow = {
     id: string;
@@ -137,6 +139,31 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         });
     }
 
+    // After per-product enrichment, run the same post-pass as sync-engine + validate facture:
+    //   1. AI categorization (Two-Step taxonomy)
+    //   2. Group variants by EAN
+    let categorized = 0;
+    let groupedVisibleCount = 0;
+    let postPassError: string | null = null;
+
+    if (!dryRun) {
+        try {
+            const catRes = await categorizeMerchantProducts(merchantId);
+            categorized = catRes?.categorized ?? 0;
+        } catch (err) {
+            postPassError = `categorize: ${err instanceof Error ? err.message : String(err)}`;
+            console.error("[test-enrich] categorize failed:", err);
+        }
+
+        try {
+            groupedVisibleCount = await groupVariantsByEAN(admin, merchantId);
+        } catch (err) {
+            const msg = `groupVariants: ${err instanceof Error ? err.message : String(err)}`;
+            postPassError = postPassError ? `${postPassError}; ${msg}` : msg;
+            console.error("[test-enrich] groupVariantsByEAN failed:", err);
+        }
+    }
+
     return NextResponse.json({
         merchant_id: merchantId,
         dry_run: dryRun,
@@ -145,5 +172,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         total_duration_ms: Date.now() - t0,
         avg_duration_ms: Math.round((Date.now() - t0) / products.length),
         per_product: perProduct,
+        post_pass: {
+            categorized,
+            grouped_visible_count: groupedVisibleCount,
+            error: postPassError,
+        },
     });
 }
