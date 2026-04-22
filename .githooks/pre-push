@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Pre-push hook — enforce tests + typecheck pass before pushing.
+#
+# Install (per clone):
+#     npm run prepare    # sets git config core.hooksPath .githooks
+#
+# Bypass in a genuine emergency:
+#     SKIP_PRE_PUSH=1 git push ...
+
+set -e
+
+if [ "${SKIP_PRE_PUSH:-}" = "1" ]; then
+    echo "[pre-push] Skipped (SKIP_PRE_PUSH=1). You own the consequences."
+    exit 0
+fi
+
+echo "[pre-push] Running npm run test:run ..."
+if ! npm run test:run --silent; then
+    echo ""
+    echo "[pre-push] Tests FAILED. Push rejected."
+    echo "[pre-push] Fix the failures, or rerun with SKIP_PRE_PUSH=1 if you must."
+    exit 1
+fi
+
+echo ""
+echo "[pre-push] Running npx tsc --noEmit ..."
+# Clean Next dev types which can contain stale generation bugs
+rm -rf .next/dev/types 2>/dev/null || true
+if ! npx tsc --noEmit; then
+    echo ""
+    echo "[pre-push] TypeScript errors detected. Push rejected."
+    echo "[pre-push] Fix the errors, or rerun with SKIP_PRE_PUSH=1 if you must."
+    exit 1
+fi
+
+echo ""
+echo "[pre-push] All checks passed ✓"

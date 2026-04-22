@@ -15,7 +15,7 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 ## Git / workflow
 - ❌ Ne jamais commiter directement sur main → toujours créer une branche feat/<nom>
 - ❌ Email git : ne pas utiliser thomasbauland1304@gmail.com → utiliser bauland@twostep.fr
-- ❌ Push sans lancer `npm run test:run` → CI rouge = révélé au mail GitHub. TOUJOURS lancer tests + tsc --noEmit avant `git push` sur main (2026-04-22, feed test assertions obsolètes sur `in_stock`/`in stock`)
+- ❌ Push sans lancer `npm run test:run` → CI rouge = révélé au mail GitHub. Hook pre-push installé le 2026-04-22 dans `.githooks/pre-push` (tests + tsc auto). Activation : `npm run prepare` (auto après clone via npm). Bypass urgence : `SKIP_PRE_PUSH=1 git push`
 
 ## Fix bug cross-module
 - ❌ Corriger un code sans mettre à jour les tests qui référencent l'ancienne valeur → grep la constante/valeur dans `tests/` avant commit. Commit `1e45f3d fix(google): align LFP feed format` a corrigé `feed.ts` mais pas `feed.test.ts` → 2 tests failaient depuis (2026-04-22)
