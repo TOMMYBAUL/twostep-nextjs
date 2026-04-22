@@ -491,7 +491,7 @@ export async function groupVariantsByEAN(
 ): Promise<number> {
     const { data: products } = await supabase
         .from("products")
-        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, stock(quantity)")
+        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, review_status, stock(quantity)")
         .eq("merchant_id", merchantId)
         .is("variant_of", null);
 
@@ -499,13 +499,19 @@ export async function groupVariantsByEAN(
 
     let visibleCount = 0;
 
+    // A pending_review product must NEVER be made visible by this post-pass:
+    // the merchant has not yet validated the enrichment, so it stays hidden
+    // until they accept it from /dashboard/stock/review.
+    const isPending = (p: { review_status?: string | null }) => p.review_status === "pending_review";
+
     // Products without EAN (or with EAN shorter than 8 chars — EAN-8 and EAN-13 both valid)
     const noEan = products.filter((p) => !p.ean || p.ean.length < 8);
     for (const p of noEan) {
         const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
         const hasNameAndPrice = !!p.name && p.name.trim().length > 0;
         // Untracked POS products have stock defaulted to 1, so qty > 0 works for all
-        const visible = hasNameAndPrice && qty > 0;
+        const computedVisible = hasNameAndPrice && qty > 0;
+        const visible = isPending(p) ? false : computedVisible;
         if (visible) visibleCount++;
         const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty }] : [];
         await supabase
@@ -534,7 +540,8 @@ export async function groupVariantsByEAN(
             const p = group[0];
             const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
             const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
-            const visible = qty > 0;
+            const computedVisible = qty > 0;
+            const visible = isPending(p) ? false : computedVisible;
             if (visible) visibleCount++;
             await supabase
                 .from("products")
@@ -567,7 +574,8 @@ export async function groupVariantsByEAN(
 
         const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-        const groupVisible = totalStock > 0;
+        const computedGroupVisible = totalStock > 0;
+        const groupVisible = isPending(principal) ? false : computedGroupVisible;
         if (groupVisible) visibleCount++;
 
         // Update principal

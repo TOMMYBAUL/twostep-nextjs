@@ -7,6 +7,14 @@ const NUMERIC_SIZE_REGEX = /(?<!(?:lot\s+de|pack\s+de|boîte\s+de|boite\s+de|set
 // Reject quantity patterns: "Lot de N", "Pack de N", "x N", "× N"
 const QUANTITY_PATTERN = /(?:lot|pack|boîte|boite|set|coffret)\s+de\s+\d+/i;
 
+// Explicit size markers: if these are present, the numeric extraction is safe.
+const EXPLICIT_SIZE_MARKER = /\b(?:taille|size|t\.)\b/i;
+
+// Wearable keywords: brand, type, garment. If none of these match AND there is
+// no explicit size marker, the numeric extraction would risk false positives
+// like "Bose QC45" → "45" tagged as a shoe size. Be conservative: skip.
+const WEARABLE_KEYWORDS = /\b(?:nike|adidas|puma|converse|vans|asics|new balance|reebok|jordan|sneaker|sneakers|basket|baskets|chaussure|chaussures|mocassin|mocassins|tennis|escarpin|escarpins|sandale|sandales|botte|bottes|bottine|bottines|derby|richelieu|pull|sweat|sweatshirt|hoodie|tshirt|t-shirt|polo|chemise|chemisier|blouse|robe|jupe|pantalon|jean|jeans|short|shorts|veste|manteau|blazer|cardigan|gilet|top|d[ée]bardeur|combinaison|salopette|bermuda|legging|jogging|surv[êe]tement|maillot|bikini|costume|smoking|trench|imperm[eé]able|parka|doudoune|anorak|kway|k-way|cir[eé]e)\b/i;
+
 export function extractSize(name: string): string | null {
     if (!name) return null;
 
@@ -23,16 +31,26 @@ export function extractSize(name: string): string | null {
 }
 
 function extractSizeInner(name: string): string | null {
-    // Try numeric size first (more specific — avoids matching "S" in words)
-    const numericMatch = name.match(NUMERIC_SIZE_REGEX);
-    if (numericMatch?.[1]) {
-        return numericMatch[1];
+    const hasExplicitMarker = EXPLICIT_SIZE_MARKER.test(name);
+    const looksWearable = hasExplicitMarker || WEARABLE_KEYWORDS.test(name);
+
+    // Numeric size: safe ONLY when context suggests a wearable (shoe / clothing).
+    // Without context, the regex would tag the "45" of "Bose QC45" as a shoe size.
+    if (looksWearable) {
+        const numericMatch = name.match(NUMERIC_SIZE_REGEX);
+        if (numericMatch?.[1]) {
+            return numericMatch[1];
+        }
     }
 
-    // Try clothing size
-    const clothingMatch = name.match(CLOTHING_REGEX);
-    if (clothingMatch?.[1]) {
-        return clothingMatch[1].toUpperCase();
+    // Clothing letters (XS/S/M/L/XL/XXL/...) are less ambiguous but still risky
+    // on standalone "S" or "M" — restrict to wearable context too, except when
+    // an explicit marker ("taille M", "size XL") is present.
+    if (looksWearable) {
+        const clothingMatch = name.match(CLOTHING_REGEX);
+        if (clothingMatch?.[1]) {
+            return clothingMatch[1].toUpperCase();
+        }
     }
 
     return null;

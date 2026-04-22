@@ -29,6 +29,18 @@ export type POSAdapterOptions = {
     shopDomain?: string;
 };
 
+/**
+ * Subset of fields that can be written back to a POS for an existing product.
+ * Used after a merchant validates an enrichment in the review queue.
+ */
+export type PosProductUpdate = {
+    ean?: string | null;
+    // V2 candidates (not implemented yet on any adapter):
+    // photo_url?: string | null;
+    // brand?: string | null;
+    // category?: string | null;
+};
+
 export interface IPOSAdapter {
     /** Nom du POS (square, lightspeed, shopify, zettle) */
     name: string;
@@ -59,4 +71,17 @@ export interface IPOSAdapter {
 
     /** Pousse les nouveaux produits dans le POS du commerçant. Returns temp→real ID mappings. */
     pushCatalog(accessToken: string, products: POSProduct[], options?: POSAdapterOptions): Promise<Record<string, string>>;
+
+    /**
+     * Met à jour les champs enrichis (EAN, etc.) d'un produit existant dans le POS marchand.
+     * Appelé best-effort après validation marchand dans la review queue.
+     * Méthode optionnelle — adapters qui ne supportent pas (Zettle, Clictill, Fastmag) peuvent omettre.
+     * Retourne true si le push a réussi, false sinon (loggé côté caller).
+     */
+    updatePosProduct?(
+        accessToken: string,
+        posItemId: string,
+        update: PosProductUpdate,
+        options?: POSAdapterOptions,
+    ): Promise<boolean>;
 }

@@ -14,6 +14,7 @@ type ReviewProduct = {
     original_image_url: string | null;
     ean: string | null;
     brand: string | null;
+    pos_item_id: string | null;
     enrichment_source: string | null;
     enrichment_proposed_at: string | null;
     review_status: "pending_review" | "validated" | "rejected";
@@ -26,7 +27,20 @@ const SOURCE_LABELS: Record<string, string> = {
     scan: "Scan code-barres",
 };
 
-export function ReviewTable({ products }: { products: ReviewProduct[] }) {
+const POS_LABELS: Record<string, string> = {
+    square: "Square",
+    shopify: "Shopify",
+    lightspeed: "Lightspeed",
+    zettle: "Zettle",
+    clictill: "Clictill",
+    fastmag: "Fastmag",
+};
+
+// POS adapters that implement updatePosProduct (writeback). Other POS will skip
+// the writeback silently — keep the UI honest and don't show the badge for them.
+const POS_WRITEBACK_SUPPORTED = new Set(["square"]);
+
+export function ReviewTable({ products, posProvider }: { products: ReviewProduct[]; posProvider: string | null }) {
     const [bucket, setBucket] = useState<"pending_review" | "validated" | "rejected">("pending_review");
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [pending, startTransition] = useTransition();
@@ -105,6 +119,13 @@ export function ReviewTable({ products }: { products: ReviewProduct[] }) {
                 ))}
             </div>
 
+            {/* Writeback hint — only when POS supports updatePosProduct */}
+            {posProvider && POS_WRITEBACK_SUPPORTED.has(posProvider) && bucket === "pending_review" && filtered.length > 0 && (
+                <div className="rounded-lg border border-secondary bg-secondary/30 px-4 py-2 text-xs text-tertiary">
+                    Les produits validés avec un EAN trouvé seront aussi écrits dans votre {POS_LABELS[posProvider] ?? posProvider}.
+                </div>
+            )}
+
             {/* Bulk action — only on pending bucket */}
             {bucket === "pending_review" && filtered.length > 0 && (
                 <div className="flex items-center justify-between">
@@ -169,6 +190,11 @@ export function ReviewTable({ products }: { products: ReviewProduct[] }) {
                                     {p.enrichment_source && (
                                         <span className="ml-2 text-quaternary">
                                             · {SOURCE_LABELS[p.enrichment_source] ?? p.enrichment_source}
+                                        </span>
+                                    )}
+                                    {bucket === "pending_review" && p.pos_item_id && p.ean && posProvider && POS_WRITEBACK_SUPPORTED.has(posProvider) && (
+                                        <span className="ml-2 text-brand-secondary">
+                                            · 📤 {POS_LABELS[posProvider] ?? posProvider}
                                         </span>
                                     )}
                                 </p>

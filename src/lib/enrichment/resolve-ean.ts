@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { lookupEan, searchEanByName } from "@/lib/ean/lookup";
+import { lookupEan, searchEanByName, verifyEanMatchWithAI } from "@/lib/ean/lookup";
 import { searchProductImage } from "@/lib/images/serper";
 import { createImageJob } from "@/lib/images/jobs";
 
@@ -100,6 +100,54 @@ export async function resolveAndEnrich(params: {
         if (foundEan) {
             await supabase.from("products").update({ ean: foundEan }).eq("id", productId);
             await lookupEan(foundEan, productId);
+
+            // Post-lookup AI verify: lookupEan fetches the *full* canonical name from
+            // external sources, which can reveal the EAN actually points to a
+            // different product than what AI verified during searchEanByName.
+            // Example: "Nike AF1 White" matched candidate "Nike Air Force 1 07" (AI
+            // accepted), but the EAN's full record says "Nike Air Force 1 Low
+            // Anthracite Red/Black BQ4326-001" — that's a different colour-way.
+            // Catch those false positives by re-verifying on the resolved canonical.
+            if (resolvedFrom === "reverse_search" || resolvedFrom === "sku_match") {
+                const { data: enriched } = await supabase
+                    .from("products")
+                    .select("canonical_name")
+                    .eq("id", productId)
+                    .single();
+                const canonicalName = enriched?.canonical_name;
+                if (canonicalName && name && canonicalName !== name) {
+                    const stillValid = await verifyEanMatchWithAI(name, canonicalName, brand);
+                    if (!stillValid) {
+                        // Revert the enrichment — the resolved EAN is for a different product
+                        await supabase
+                            .from("products")
+                            .update({
+                                ean: null,
+                                canonical_name: null,
+                                brand: null,
+                                category: null,
+                                photo_processed_url: null,
+                            })
+                            .eq("id", productId);
+                        if (process.env.NODE_ENV === "development") {
+                            console.log(`[resolve-ean] Post-lookup AI rejected: "${name}" vs canonical "${canonicalName}" — reverted`);
+                        }
+
+                        // Try Serper photo as fallback (no EAN, just a photo)
+                        const photoUrl = await searchProductImage(name, brand, null, sku ?? null);
+                        if (photoUrl) {
+                            await supabase
+                                .from("products")
+                                .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
+                                .eq("id", productId);
+                            await createImageJob(productId, merchantId, photoUrl);
+                            return { productId, ean: null, source: "serper_photo_only" };
+                        }
+                        return { productId, ean: null, source: "none" };
+                    }
+                }
+            }
+
             return { productId, ean: foundEan, source: resolvedFrom };
         }
 
