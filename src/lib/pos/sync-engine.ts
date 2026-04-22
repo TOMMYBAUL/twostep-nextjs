@@ -136,37 +136,29 @@ export async function syncMerchantPOS(
         }
 
         // ─── Pre-fetch all existing products for this merchant ──────
-        const { data: existingProducts } = await supabase
-            .from("products")
-            .select("id, pos_item_id, ean, photo_url, photo_processed_url")
-            .eq("merchant_id", merchantId);
-
-        type ExistingProduct = NonNullable<typeof existingProducts>[number];
-        const byPosItemId = new Map<string, ExistingProduct>();
-        const byEan = new Map<string, ExistingProduct>();
-        for (const p of existingProducts ?? []) {
-            if (p.pos_item_id) byPosItemId.set(p.pos_item_id, p);
-            if (p.ean) byEan.set(p.ean, p);
-        }
+        // Uses the unified matching helpers from src/lib/enrichment/match-product.ts.
+        const { buildProductIndex, matchProduct } = await import("@/lib/enrichment/match-product");
+        const productIndex = await buildProductIndex(merchantId);
 
         // ─── Classify: update vs create ─────────────────────────────
         const toUpdate: Array<{ existingId: string; existingPhotoUrl: string | null; posProduct: POSProduct }> = [];
         const toCreate: POSProduct[] = [];
 
         for (const posProduct of catalog) {
-            const matchByPosId = byPosItemId.get(posProduct.pos_item_id);
-            if (matchByPosId) {
-                toUpdate.push({ existingId: matchByPosId.id, existingPhotoUrl: matchByPosId.photo_url, posProduct });
-                posItemToProductId.set(posProduct.pos_item_id, matchByPosId.id);
+            // POS sync uses pos_item_id and ean only — fuzzy name match is too risky here.
+            const match = matchProduct(
+                { posItemId: posProduct.pos_item_id, ean: posProduct.ean ?? null },
+                productIndex,
+                { allowFuzzy: false },
+            );
+            if (match) {
+                toUpdate.push({
+                    existingId: match.productId,
+                    existingPhotoUrl: match.product.photo_url ?? null,
+                    posProduct,
+                });
+                posItemToProductId.set(posProduct.pos_item_id, match.productId);
                 continue;
-            }
-            if (posProduct.ean) {
-                const matchByEan = byEan.get(posProduct.ean);
-                if (matchByEan) {
-                    toUpdate.push({ existingId: matchByEan.id, existingPhotoUrl: matchByEan.photo_url, posProduct });
-                    posItemToProductId.set(posProduct.pos_item_id, matchByEan.id);
-                    continue;
-                }
             }
             toCreate.push(posProduct);
         }
@@ -228,7 +220,8 @@ export async function syncMerchantPOS(
             if (!posProduct.photo_url) continue;
             const productId = posItemToProductId.get(posProduct.pos_item_id);
             if (!productId) continue;
-            const existing = byPosItemId.get(posProduct.pos_item_id) ?? (posProduct.ean ? byEan.get(posProduct.ean) : undefined);
+            const existing = productIndex.byPosItemId.get(posProduct.pos_item_id)
+                ?? (posProduct.ean ? productIndex.byEan.get(posProduct.ean) : undefined);
             if (!existing?.photo_processed_url) {
                 await createImageJob(productId, merchantId, posProduct.photo_url);
             }
@@ -236,7 +229,7 @@ export async function syncMerchantPOS(
 
         // ─── Mark removed POS products as invisible ─────────────────
         const currentPosItemIds = new Set(catalog.map((p) => p.pos_item_id));
-        const orphanIds = (existingProducts ?? [])
+        const orphanIds = productIndex.all
             .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
             .map((p) => p.id);
 

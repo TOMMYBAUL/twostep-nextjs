@@ -120,20 +120,9 @@ export async function POST(
     }
 
     // ── Pre-load ALL merchant products once (avoid N+1 queries) ──────────
-    const { data: allMerchantProducts } = await adminSupabase
-        .from("products")
-        .select("id, name, ean, sku")
-        .eq("merchant_id", merchant.id);
-
-    const productsByEan = new Map<string, string>(); // ean → id
-    const productsBySku = new Map<string, string>(); // sku → id
-    const productsByName = new Map<string, string>(); // normalized name → id
-
-    for (const p of allMerchantProducts ?? []) {
-        if (p.ean) productsByEan.set(p.ean, p.id);
-        if (p.sku) productsBySku.set(p.sku, p.id);
-        if (p.name) productsByName.set(normalize(p.name.toLowerCase()), p.id);
-    }
+    // Uses the unified matching helpers from src/lib/enrichment/match-product.ts.
+    const { buildProductIndex, matchProduct } = await import("@/lib/enrichment/match-product");
+    const productIndex = await buildProductIndex(merchant.id, "id, name, ean, sku");
 
     // ── Pre-group items by base product name (strip size) ──
     // "Nike Dunk Low taille 42" + "Nike Dunk Low taille 43" → same group
@@ -164,62 +153,16 @@ export async function POST(
     const item = groupItems[0];
     const allSizes = [...new Set(groupItems.map(g => g._size).filter(Boolean))] as string[];
     const cleanName = item._cleanName;
-        let match: MatchResult | null = null;
-
-        // 1) Exact EAN match — Map lookup (O(1), no DB query)
-        if (item.ean && productsByEan.has(item.ean)) {
-            match = { productId: productsByEan.get(item.ean)!, matchType: "exact_ean" };
-        }
-
-        // 2) Exact SKU match — Map lookup
-        if (!match && item.sku && productsBySku.has(item.sku)) {
-            match = { productId: productsBySku.get(item.sku)!, matchType: "exact_sku" };
-        }
-
-        // 3) Exact name match (case-insensitive) — Map lookup
-        if (!match) {
-            const normalizedItemName = normalize(item.name.toLowerCase());
-            if (productsByName.has(normalizedItemName)) {
-                match = { productId: productsByName.get(normalizedItemName)!, matchType: "exact_name" };
-            }
-        }
-
-        // 4) Fuzzy name match — NEVER auto-validates, always requires human review
-        // Uses the pre-loaded allMerchantProducts (no extra DB query)
-        if (!match && allMerchantProducts && allMerchantProducts.length > 0) {
-            const normalizedItem = normalize(item.name);
-            let bestId: string | null = null;
-            let bestScore = 0;
-
-            for (const product of allMerchantProducts) {
-                const normalizedProduct = normalize(product.name);
-
-                // Check containment (one name contains the other)
-                if (
-                    normalizedItem.includes(normalizedProduct) ||
-                    normalizedProduct.includes(normalizedItem)
-                ) {
-                    const score = Math.min(normalizedItem.length, normalizedProduct.length) /
-                        Math.max(normalizedItem.length, normalizedProduct.length);
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestId = product.id;
-                    }
-                    continue;
-                }
-
-                // Levenshtein similarity
-                const score = similarity(normalizedItem, normalizedProduct);
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestId = product.id;
-                }
-            }
-
-            if (bestId && bestScore >= FUZZY_THRESHOLD) {
-                match = { productId: bestId, matchType: "fuzzy" };
-            }
-        }
+        // 4-strategy cascade extracted into matchProduct: exact_ean → exact_sku → exact_name → fuzzy.
+        // Fuzzy matches still require human review (handled below at L228).
+        const helperMatch = matchProduct(
+            { ean: item.ean, sku: item.sku, name: item.name },
+            productIndex,
+            { fuzzyThreshold: FUZZY_THRESHOLD },
+        );
+        const match: MatchResult | null = helperMatch && helperMatch.matchType !== "pos_item_id"
+            ? { productId: helperMatch.productId, matchType: helperMatch.matchType }
+            : null;
 
         const sellingPrice = sellingPrices[item.id] ?? null;
         const firstEan = groupItems.find(g => g.ean)?.ean ?? null;
