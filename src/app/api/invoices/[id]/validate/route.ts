@@ -1,7 +1,7 @@
 import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { fetchEanData, lookupEan } from "@/lib/ean/lookup";
+import { fetchEanData } from "@/lib/ean/lookup";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
@@ -411,77 +411,11 @@ export async function POST(
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
 
-    // Enrichment cascade:
-    // 1. EAN direct → lookupEan (cascade all sources + Serper photo)
-    // 2. No EAN but SKU → check our ean_lookups if another product with same SKU has an EAN
-    // 3. No EAN → reverse search by name → lookupEan
-    // 4. Nothing found → Serper photo by name+brand+SKU directly
-    const { searchEanByName } = await import("@/lib/ean/lookup");
-    const { searchProductImage } = await import("@/lib/images/serper");
-    const { createImageJob } = await import("@/lib/images/jobs");
-
+    // Enrichment cascade — orchestrated by the unified resolveAndEnrich module.
+    // Cascade: EAN → SKU match → reverse search → Serper photo fallback.
+    const { resolveAndEnrich } = await import("@/lib/enrichment/resolve-ean");
     for (const { ean, sku, productId } of productsToEnrich) {
-        try {
-            if (ean) {
-                // Has EAN → direct lookup (enriches brand/category/photo)
-                await lookupEan(ean, productId);
-                continue;
-            }
-
-            // No EAN — try to find one
-            const { data: prod } = await adminSupabase
-                .from("products")
-                .select("name, brand")
-                .eq("id", productId)
-                .single();
-            if (!prod) continue;
-
-            let foundEan: string | null = null;
-
-            // Strategy A: SKU → check if another product in our DB has this SKU with an EAN
-            if (sku) {
-                const { data: skuMatch } = await adminSupabase
-                    .from("products")
-                    .select("ean")
-                    .eq("sku", sku)
-                    .not("ean", "is", null)
-                    .neq("id", productId)
-                    .limit(1)
-                    .single();
-                if (skuMatch?.ean) foundEan = skuMatch.ean;
-            }
-
-            // Strategy B: reverse search by name via EAN-Search + UPCitemdb
-            if (!foundEan) {
-                const found = await searchEanByName(prod.name, prod.brand);
-                if (found) {
-                    foundEan = found.ean;
-                    // Save brand/category from reverse search immediately
-                    const updates: Record<string, unknown> = { ean: found.ean };
-                    if (found.brand) updates.brand = found.brand;
-                    if (found.category) updates.category = found.category;
-                    await adminSupabase.from("products").update(updates).eq("id", productId);
-                }
-            }
-
-            if (foundEan) {
-                // Found EAN → save it and run full enrichment
-                await adminSupabase.from("products").update({ ean: foundEan }).eq("id", productId);
-                await lookupEan(foundEan, productId);
-            } else {
-                // Last resort: Serper photo by name+brand+SKU
-                const photoUrl = await searchProductImage(prod.name, prod.brand, null, sku);
-                if (photoUrl) {
-                    await adminSupabase
-                        .from("products")
-                        .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                        .eq("id", productId);
-                    await createImageJob(productId, merchant.id, photoUrl);
-                }
-            }
-        } catch (err) {
-            console.error("[validate] enrichment failed for", productId, ":", err);
-        }
+        await resolveAndEnrich({ productId, ean, sku, merchantId: merchant.id });
     }
 
     // AI categorization — synchronous (must complete before response)
