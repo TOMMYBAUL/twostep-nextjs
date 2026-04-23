@@ -4,9 +4,9 @@
 
 ## Stats
 - Total leads : 39
-- NOUVEAU : 23
+- NOUVEAU : 19
 - CONTACTE : 1
-- BROUILLON : 10
+- BROUILLON : 14
 - Reponses : 0
 - Signes : 0
 
@@ -16,9 +16,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | NOUVEAU | Envoyer email personnalise (prenom Nicolas) |
+| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-7350887150386649214) |
 | LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Site en 503 — chercher email via IG @lafilledemargaret ou tel 05 61 21 52 28 |
-| EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | NOUVEAU | Envoyer email personnalise (prenom Francoise) |
+| EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r8877959513437550432) |
 | BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouve, contacter via IG @toulousewithlove |
 | HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouve, 3 etablissements (Carcassonne + Toulouse) |
 | LAORA VITTORIA | Carmes | Mode femme | Annick Confuorto | — | 412012395 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes ou Instagram |
@@ -38,7 +38,7 @@
 | UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | L'ESPION | Saint-Etienne | Mode createurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (site: lespion.fr, IG: @boutiquelespion), tel: 05 61 73 36 69 |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
-| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | NOUVEAU | Verifier si boutique physique active rue Languedoc |
+| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | ECARTE | Boutique rue Languedoc fermee mai 2022 — siege social deplace a Castelginest, pas de boutique Toulouse |
 | TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (site: dorise-joaillier.com, form web) |
 | ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve, chercher via Instagram |
 | LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouve (IG: @lilith.croix.baragnon) |
@@ -58,8 +58,8 @@
 | POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
 | SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | NOUVEAU | Audit + email personnalise |
-| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | NOUVEAU | Verifier email + audit |
+| MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-3478697915070103749) |
+| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r1515891432236323176) |
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
 | L'ANNEXE | Saint-Rome | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
