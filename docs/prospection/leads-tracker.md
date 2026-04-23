@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-22*
+*Derniere mise a jour : 2026-04-23*
 
 ## Stats
-- Total leads : 29
-- NOUVEAU : 16
+- Total leads : 39
+- NOUVEAU : 23
 - CONTACTE : 1
 - BROUILLON : 10
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Carmes — 2026-04-23 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | NOUVEAU | Envoyer email personnalise (prenom Nicolas) |
+| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Site en 503 — chercher email via IG @lafilledemargaret ou tel 05 61 21 52 28 |
+| EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | NOUVEAU | Envoyer email personnalise (prenom Francoise) |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouve, contacter via IG @toulousewithlove |
+| HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouve, 3 etablissements (Carcassonne + Toulouse) |
+| LAORA VITTORIA | Carmes | Mode femme | Annick Confuorto | — | 412012395 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes ou Instagram |
+| LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouve, adresse partagee avec Sortilege (7 rue Boulbonne) |
+| AMBIANCES ET SENTEURS | Carmes | Cosmetique/Beaute | Eric Gras | — | 808837157 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes |
+| CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | 6/10 | NOUVEAU | Email non trouve, chercher via Instagram ou site |
+| ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | bolivier31@outlook.fr | 401784376 | 5/10 | NOUVEAU | Segment limite pour Two-Step — a qualifier avant envoi |
+
+**Boutiques ecartees (session 23/04) :** APOS 33 (liquidee 2019), FUTURWARE LAB (inactive 2023), LAMA (liquidee mars 2026)
 
 ### Saint-Etienne — 2026-04-22 (L'Eclaireur)
 
