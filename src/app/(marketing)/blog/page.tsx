@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "bijouteries-toulouse",
+        title: "Bijouteries à Toulouse : les meilleures adresses indépendantes",
+        description:
+            "Créateurs locaux, bijoux de marque, artisanat toulousain : notre guide des bijouteries indépendantes à Toulouse, quartier par quartier.",
+        publishedAt: "2026-04-24",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "boutique-visible-google",
         title: "Comment rendre votre boutique visible sur Google sans site e-commerce",
         description:
