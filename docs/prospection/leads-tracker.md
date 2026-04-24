@@ -1,16 +1,31 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-23*
+*Derniere mise a jour : 2026-04-24*
 
 ## Stats
-- Total leads : 39
-- NOUVEAU : 19
+- Total leads : 47
+- NOUVEAU : 25
 - CONTACTE : 1
-- BROUILLON : 14
+- BROUILLON : 16
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Cyprien — 2026-04-24 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer — parfums d'exception, site astra-collection.fr |
+| EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer — site ymbeauty.fr, 4 etablissements, verifier independance |
+| HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve — site habesha-cosmetiques.fr, IG @habeshabeautycosmetique, formulaire contact |
+| JAVA COSMETIC | Saint-Cyprien | Cosmetique/Beaute | Fitsum Abebe | — | 850811555 | 6/10 | NOUVEAU | Email non trouve — Google Business java-coiffure-cosmetics.business.site, tel sur Pages Jaunes |
+| ABSAMY | Saint-Cyprien | Cosmetique/Beaute | Absatou Thiam | — | 811869353 | 6/10 | NOUVEAU | Email non trouve — Treatwell treatwell.fr/salon/beaute-capillaires-absamy, tel 05 62 86 16 21 |
+| DIVINE HAIR BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Fred Oumba | — | 990203333 | 6/10 | NOUVEAU | Email non trouve — FB facebook.com/divinehairbeautysalon, Planity planity.com |
+| PARFUMERIE ANN | Saint-Cyprien | Cosmetique/Beaute | Myriam Echevarria | — | 332401199 | 6/10 | NOUVEAU | Email non trouve — boutique 43 rue de la Republique 31300, SIREN COSMETHICS DIFFUSION |
+| DIALLO DIALLO GOUDOUS | Saint-Cyprien | Cosmetique/Beaute | Abdoul Diallo | — | 878266683 | 5/10 | NOUVEAU | Email non trouve — parfumerie + salon coiffure, 24 rue de la Republique 31300 |
+
+**Boutiques ecartees (session 24/04) :** COSMETIC LOVERS (liquidee 23/10/2018), TWIX BIZNESS MALIK (en liquidation)
 
 ### Carmes — 2026-04-23 (L'Eclaireur)
 
