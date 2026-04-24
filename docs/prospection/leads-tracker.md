@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-24*
+*Derniere mise a jour : 2026-04-24 (L'Auditeur)*
 
 ## Stats
 - Total leads : 47
-- NOUVEAU : 25
+- NOUVEAU : 24
 - CONTACTE : 1
-- BROUILLON : 16
+- BROUILLON : 17
 - Reponses : 0
 - Signes : 0
 
@@ -40,7 +40,7 @@
 | LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouve, adresse partagee avec Sortilege (7 rue Boulbonne) |
 | AMBIANCES ET SENTEURS | Carmes | Cosmetique/Beaute | Eric Gras | — | 808837157 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes |
 | CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | 6/10 | NOUVEAU | Email non trouve, chercher via Instagram ou site |
-| ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | bolivier31@outlook.fr | 401784376 | 5/10 | NOUVEAU | Segment limite pour Two-Step — a qualifier avant envoi |
+| ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | bolivier31@outlook.fr | 401784376 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 24/04, id: r-4153745874401631883) — coutellerie/airsoft/optique qualifiables Two-Step |
 
 **Boutiques ecartees (session 23/04) :** APOS 33 (liquidee 2019), FUTURWARE LAB (inactive 2023), LAMA (liquidee mars 2026)
 
