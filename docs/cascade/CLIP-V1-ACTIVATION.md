@@ -146,16 +146,39 @@ Si tu vois ça : ✅ ça marche. Si erreur, voir section troubleshooting ci-dess
 | `Vectorize /upsert 400 Invalid vector dim` | Index créé avec mauvais dimensions | Recréer avec 768 |
 | Embedding réussit mais Vectorize search retourne rien | Index nom != env var | Compare `vercel env ls \| grep VECTORIZE_INDEX` avec dashboard |
 
-## Workflow recommandé — bootstrap Kap pilote
+## Workflow recommandé — bootstrap Kap pilote (Cycle 10 endpoint)
 
-Quand tu auras Kap signé et son catalogue importé :
+Quand tu auras Kap signé et son catalogue importé, **utilise le endpoint bootstrap** créé Cycle 10 :
 
-1. Filtrer les products de Kap qui ont `photo_url` non-null + `clip_embedding_status='pending'`
-2. Boucler sur eux et appeler `/api/admin/clip/embed-product` un par un (séquentiel V1, ~2-3s par produit)
-3. Pour 200 produits = ~5-10 min total
-4. Vérifier en DB que tous sont en `clip_embedding_status='embedded'`
+```bash
+# Snippet console authentifié (DevTools sur www.twostep.fr) :
+async function bootstrapKap() {
+  let total = 0;
+  while (true) {
+    const r = await fetch('/api/admin/clip/bootstrap-merchant', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ merchantId: 'KAP_UUID', limit: 20, retryFailed: true })
+    }).then(r => r.json());
+    console.log(r);
+    total += r.embedded + r.skipped + r.failed;
+    if (r.total_to_process === 0 || r.remaining_estimate === 0) break;
+  }
+  console.log(`Total processed: ${total}`);
+}
+bootstrapKap();
+```
 
-V1.5 : on packagera ça en cron + queue Inngest pour scaler.
+**Comportement** :
+- Filtre products Kap avec photo_url non-null + status `pending` ou `failed`
+- Boucle séquentielle interne, ~3s par produit Replicate
+- `limit=20` par batch pour rester sous 60s Vercel Hobby timeout
+- Retourne compteurs `embedded` / `skipped` / `failed` + `remaining_estimate`
+- Idempotent : re-call sur un produit déjà embedded = skip (déjà filtré)
+
+**Pour 200 produits Kap** : ~10 batches × 60s = 10 min total.
+
+V1.5 : on packagera en cron + queue Inngest pour scaler à plusieurs marchands en parallèle.
 
 ## Coût attendu Kap pilote
 
