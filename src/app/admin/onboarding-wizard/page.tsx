@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import { CsvUpload } from "./csv-upload";
+import { QueueReview } from "./queue-review";
 
 type Step = "csv" | "queue" | "review" | "publish";
 
@@ -61,16 +62,7 @@ export default function OnboardingWizardPage() {
                         onSuccess={(count) => setImportedCount(count)}
                     />
                 )}
-                {step === "queue" && (
-                    <p className="text-tertiary">
-                        Queue review — à implémenter en Task 1.3
-                        {importedCount !== null && (
-                            <span className="ml-2 text-success-primary">
-                                ({importedCount} lignes prêtes)
-                            </span>
-                        )}
-                    </p>
-                )}
+                {step === "queue" && <QueueReview merchantId={merchantId} />}
                 {step === "review" && (
                     <p className="text-tertiary">
                         Enrichissement manuel — à implémenter en Task 1.4
