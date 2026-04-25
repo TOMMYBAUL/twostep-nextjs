@@ -271,13 +271,22 @@ git commit -m "docs(juridique): tracker contacts avocat + RC Pro Phase 0"
 
 ---
 
-### Task 0.5: Pennylane PDP Factur-X souscription (non-code)
+### Task 0.5: Conformité Factur-X via PPF gratuit (révisé 2026-04-25)
 
-Action Thomas : souscrire Pennylane PDP (~20 €/mo) avant deadline 2026-09-01 (réception Factur-X obligatoire). Pas de code maintenant, juste l'abonnement.
+**Révision** : la version initiale recommandait Pennylane PDP ~20 €/mo dès Phase 0. Faux : à 0 marchand payant et ~10 max d'ici sep 2026, le **Portail Public de Facturation (PPF)** gratuit suffit. Pennylane différé à Phase 4 (gate 50 marchands OU bascule SASU).
 
-- [ ] **Step 1: Souscrire Pennylane PDP plan**
-- [ ] **Step 2: Tester réception 1 facture Factur-X de test**
-- [ ] **Step 3: Documenter accès dans `docs/continuity-playbook.md`**
+Two-Step = micro-entreprise (statut actuel, plafond CA 77 700 €/an). Bascule SASU prévue dès dépassement plafond ~60-70k€ CA (cf. Phase 5 P5.0bis).
+
+- [ ] **Step 1**: Créer un compte sur impots.gouv.fr / portail PPF (gratuit) avant 1er sept 2026 — 30 min Thomas
+- [ ] **Step 2**: Tester la réception d'une facture Factur-X (ex : Vercel ou Anthropic envoient au format dès la déadline) — 10 min
+- [ ] **Step 3**: Documenter le compte PPF dans `docs/continuity-playbook.md` (section credentials)
+
+### Task 0.5bis (Phase 4-5, gate à 50 marchands ou pré-bascule SASU)
+
+À ce moment-là — pas avant — souscrire Pennylane PDP (~20 €/mo) pour :
+- Émission de factures structurées à tes marchands (volume ≥50)
+- Réception structurée fournisseurs avec import compta auto
+- Coupler avec bascule SASU + comptable
 
 ---
 
@@ -1509,6 +1518,17 @@ Action Thomas :
 - [ ] **Décider** : embauche 0,5 ETP support 1 500 €/mo OU contrat formel apporteurs commission 20%
 - [ ] Si embauche : annonce, recrutement, onboarding (~1 mois délai)
 - [ ] Si apporteurs : contrats signés, scripts pitch, dashboard tracking commissions
+
+### Gate ~60-70 k€ CA annualisé (P5.0bis nouveau, transition juridique)
+
+Plafond micro-entreprise prestations services = **77 700 €/an**. Si Two-Step approche ce seuil (à ~200 marchands × 27 € moyen × 12 = ~65 k€/an), **bascule SASU obligatoire**.
+
+- [ ] **Anticiper 3-4 mois avant dépassement** — création SASU INPI/greffe + rédaction statuts (~600-1500 € one-shot)
+- [ ] Choisir comptable + souscrire Pennylane PDP (Task 0.5bis activée ici) ~20 €/mo
+- [ ] Gérer transition TVA : sortie franchise + numéro TVA intracom + Stripe Tax UE actif
+- [ ] Refacturer marchands depuis SIREN SASU dès la bascule (continuité contractuelle via avenant CGU)
+- [ ] Mettre à jour mentions légales twostep.fr + Privacy Policy
+- [ ] **Coupler à embauche 0,5 ETP** (Gate 15 marchands ci-dessus) si pas encore fait — la SASU peut salarier
 
 ### Gate 20 marchands
 

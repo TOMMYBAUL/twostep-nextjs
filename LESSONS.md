@@ -43,6 +43,9 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - Recherche approfondie (comparatif, état de l'art, décision critique) → **deep-research** skill
 - `WebSearch` natif → fallback uniquement si rien d'autre n'est dispo
 
+## Builder-bias / décisions
+- ❌ Recommander un outil payant "par défaut" (ex : Pennylane PDP 20 €/mo Phase 0) sans valider l'urgence RÉELLE vs alternative gratuite (PPF État, gratuit, suffit à 0-10 marchands). À 0 marchand payant aujourd'hui, le coût caché de cette reco aurait été 120-160 € sur 6-8 mois inutiles. **Question à se poser systématiquement avant d'ajouter un outil au plan** : "Est-ce que la gratuité officielle (PPF, free tier, etc.) couvre les besoins jusqu'à la prochaine inflexion ?" Pattern documenté 2026-04-25 par Thomas qui a challengé. (2026-04-25)
+
 ## Architecture / dette tech
 - ❌ Brainstorm archi qui ignore les externes nouveaux : ACP OpenAI (lancé 2026-02), AI Act art.50 (2 août 2026), CRA EU (11 sept 2026), Google product ID split (mars 2026), Inngest orchestrator pour pipelines >5 étapes. **Checklist obligatoire début cycle archi** : "qu'est-ce qui a changé dans l'écosystème depuis 30j ?" Brainstorm 04-24 a raté tout ça → V2 consolidée 2026-04-25 = `docs/ARCHITECTURE-TWOSTEP.md` (2026-04-25)
 - ❌ Présenter `ean_lookups` cache cross-marchand comme "moat data juridique" — faux : non protégeable (art. L341-1 CPI), réplicable concurrent en 3-6 mois via Open Food Facts / Open Beauty Facts / UPCitemdb publics. **Vrai moat** = densité géo + relation marchand + statut LFP Trusted (admin) + UX dirty→clean. Requalifier partout en "accélérateur opérationnel" (2026-04-25)
