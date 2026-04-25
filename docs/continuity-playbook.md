@@ -1,14 +1,14 @@
 # Continuity Playbook — Two-Step
 
 > Version : 1.0 — 2026-04-25
-> Destinataires : Thomas Bauland (owner) / frère / 1 tiers de confiance (à désigner)
-> Objectif : permettre au frère + 1 tiers de reprendre la main sans connaissance préalable du code.
+> Destinataires : Thomas Bauland (owner) / 1 tiers de confiance (à désigner)
+> Objectif : permettre au tiers de confiance de reprendre la main sans connaissance préalable du code.
 
 ---
 
 ## 1. Accès credentials chiffrés (Bitwarden Family)
 
-**Action manuelle Thomas (Phase 0)** : créer un compte Bitwarden Family, configurer une clé d'urgence, inviter le frère et le tiers comme membres avec accès aux coffres ci-dessous.
+**Action manuelle Thomas (Phase 0)** : créer un compte Bitwarden Family, configurer une clé d'urgence, inviter le tiers de confiance comme membre avec accès aux coffres ci-dessous.
 
 | Coffre Bitwarden | Service | Accès requis |
 |---|---|---|
@@ -122,7 +122,7 @@ Déclencher si Thomas ne répond plus aux messages pendant 48 h ou annonce une i
 
 ## 5. Gate Phase 5 — Rappel
 
-Avant que Thomas prenne > 5 jours de vacances : **le frère doit avoir réussi 1 onboarding marchand complet seul** (CSV import → produits visibles dans le dashboard → feed LFP généré).
+Avant que Thomas prenne > 5 jours de vacances : **le tiers de confiance (ou un apporteur/junior support déjà formé) doit avoir réussi 1 onboarding marchand complet seul** (CSV import → produits visibles dans le dashboard → feed LFP généré). Si pas encore réussi : repousser les vacances.
 
 Si ce gate n'est pas passé → repousser les vacances. Pas d'exception.
 

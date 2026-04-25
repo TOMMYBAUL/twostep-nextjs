@@ -125,7 +125,7 @@ git commit -m "feat(tracking): CAC + acquisition channel + churn schema (mig 080
 ## Bus factor & continuité opérationnelle
 
 ### Accès credentials chiffrés
-- Bitwarden Family : Thomas + frère + 1 personne tiers (à désigner)
+- Bitwarden Family : Thomas + 1 personne tiers de confiance (à désigner)
 - Coffres : Vercel / Supabase / Stripe / Cloudflare R2 / Hetzner / Anthropic / Resend / Sentry / Pennylane / domaine Infomaniak
 
 ### Runbook redémarrage prod
@@ -160,7 +160,7 @@ git commit -m "feat(continuity): playbook bus factor + runbook redémarrage prod
 
 - [ ] **Step 3: Configurer Bitwarden Family (action manuelle Thomas, hors code)**
 
-Action Thomas (pas Claude) : créer Bitwarden Family, partager 4 coffres (Vercel/Supabase/Stripe/Cloudflare) avec frère + tiers de confiance.
+Action Thomas (pas Claude) : créer Bitwarden Family, partager 4 coffres (Vercel/Supabase/Stripe/Cloudflare) avec 1 tiers de confiance.
 Délai estimé : 1h.
 
 - [ ] **Step 4: Documenter clauses RC Pro incapacité (action Thomas)**
@@ -239,47 +239,32 @@ git commit -m "feat(wizard): squelette wizard admin onboarding (4 steps placehol
 
 ---
 
-### Task 0.4: Juridique — contact avocat + RC Pro (non-code)
+### Task 0.4: Juridique — drafts produits, envoi DIFFÉRÉ (révisé 2026-04-25)
 
-- [ ] **Step 1: Email avocat pack CGU + DSA + photos + ODbL**
+**Révision** : la version initiale poussait pour contacter avocat (5 000 € HT) + assurances (1 500 €/an) **dès Phase 0**, à 0 marchand payant. C'était un faux pas — sur-investissement avant validation économique. Décision Thomas : « les emails aux avocats et aux assurances je les ferai quand je serai sûr que notre SaaS fonctionne ».
 
-Action Thomas (pas Claude) : envoyer email à Captain Contrat OU LegalStart OU Dougs avec :
-- Demande devis : pack CGU B2B marchand (P2B-conforme avec préavis 30j + 2 médiateurs + notice & action) + CGV B2C consumer + Privacy Policy + DPA RGPD + clause licence photos (art. L131-3 CPI) + review pattern ODbL "Produced Work"
-- Budget cible : 3 900 - 7 050 € HT one-shot
-- Délai souhaité : 3-4 sem
-- Contexte : SaaS B2B France < 10 salariés, < 2M€ CA, 1ʳᵉ facturation marchand sem 11 (donc CGU prêtes sem 9-10)
+**État Phase 0** :
+- [x] Drafts emails écrits et conservés comme ressources prêtes à l'emploi : `docs/juridique/drafts-emails-phase0.md` (3 emails : avocat / Stello / Orus)
+- [x] Tracker leads avec section Juridique en attente : `docs/prospection/leads-tracker.md`
 
-- [ ] **Step 2: Email Stello + Orus pour RC Pro + Cyber**
+**Trigger d'activation Task 0.4** (passage à exécution) :
+- **1+ marchand payant signé ET facturé sans incident pendant 30 jours** (validation marché minimum)
+- À ce moment-là : envoyer Email 1 (avocat) en priorité — les CGU sont devenues nécessaires pour le 2e marchand
+- Email 2 + 3 (Stello + Orus) : envoyés en parallèle ou après réception devis avocat
 
-Action Thomas : devis RC Pro + Cyber + clause incapacité temporaire. Budget cible : 1 200-2 500 €/an.
-
-- [ ] **Step 3: Tracker dans `docs/prospection/leads-tracker.md`**
-
-```markdown
-## Juridique
-- [ ] Avocat (Captain Contrat / LegalStart / Dougs) — email envoyé YYYY-MM-DD, devis attendu YYYY-MM-DD
-- [ ] RC Pro Stello — email envoyé YYYY-MM-DD
-- [ ] RC Pro Orus — email envoyé YYYY-MM-DD
-```
-
-- [ ] **Step 4: Commit (du tracker)**
-
-```bash
-git add docs/prospection/leads-tracker.md
-git commit -m "docs(juridique): tracker contacts avocat + RC Pro Phase 0"
+**Note** : tant que micro-entreprise (statut actuel), la responsabilité personnelle de Thomas est exposée — c'est un risque accepté par l'absence de marchand actif (pas de contrat à attaquer, pas de data sensible distribuée). À la bascule SASU (Phase 5 P5.0bis), avocat + RC Pro deviennent obligatoires AVANT signature 1ʳᵉ CGU SASU.
 ```
 
 ---
 
-### Task 0.5: Conformité Factur-X via PPF gratuit (révisé 2026-04-25)
+### Task 0.5: Conformité Factur-X via PPF gratuit ✅ DONE (révisé 2026-04-25)
 
-**Révision** : la version initiale recommandait Pennylane PDP ~20 €/mo dès Phase 0. Faux : à 0 marchand payant et ~10 max d'ici sep 2026, le **Portail Public de Facturation (PPF)** gratuit suffit. Pennylane différé à Phase 4 (gate 50 marchands OU bascule SASU).
+**État** : Thomas a déjà un compte impots.gouv.fr / portail PPF actif. Aucune action requise.
 
-Two-Step = micro-entreprise (statut actuel, plafond CA 77 700 €/an). Bascule SASU prévue dès dépassement plafond ~60-70k€ CA (cf. Phase 5 P5.0bis).
+Two-Step = micro-entreprise (statut actuel, plafond CA 77 700 €/an). Bascule SASU prévue dès dépassement plafond ~60-70k€ CA (cf. Phase 5 P5.0bis). Pennylane PDP différé à Phase 4-5 (gate 50 marchands ou bascule SASU).
 
-- [ ] **Step 1**: Créer un compte sur impots.gouv.fr / portail PPF (gratuit) avant 1er sept 2026 — 30 min Thomas
-- [ ] **Step 2**: Tester la réception d'une facture Factur-X (ex : Vercel ou Anthropic envoient au format dès la déadline) — 10 min
-- [ ] **Step 3**: Documenter le compte PPF dans `docs/continuity-playbook.md` (section credentials)
+- [x] Compte PPF / impots.gouv.fr déjà actif (confirmé Thomas 2026-04-25)
+- [ ] Documenter accès PPF dans `docs/continuity-playbook.md` quand le tiers de confiance sera désigné
 
 ### Task 0.5bis (Phase 4-5, gate à 50 marchands ou pré-bascule SASU)
 
