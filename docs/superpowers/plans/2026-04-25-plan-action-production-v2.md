@@ -304,23 +304,22 @@ Action Thomas : message WhatsApp avec :
 
 ---
 
-### Task 0.7: AI Act art.50 — préparation disclosure (champ déjà tracé, exposer UI Phase 1)
+### Task 0.7: AI Act art.50 — préparation disclosure (révisée 2026-04-25)
 
-**Files:**
-- Verify exists: `product_enrichment_trace` table column `enrichment_method`
-- Modify: pack avocat brief (Task 0.4) — ajouter clause "AI disclosure"
+**Révision** : la version initiale supposait que `enrichment_method` était déjà tracé en DB. Faux — la table `product_enrichment_trace` elle-même n'existe pas encore (dépendance Phase 2 cascade). Le doc `docs/ai-act-prep.md` créé Phase 0 consigne l'état + checklist. La partie DB est déférée à **Task 2.7bis (Phase 2)** : créer la table avec `enrichment_method` dès le départ.
 
-- [ ] **Step 1: Vérifier que `enrichment_method` est tracé en DB**
+**Done en Phase 0** :
+- [x] Doc `docs/ai-act-prep.md` créé (état + 6 étapes restantes avant 2026-08-02)
+- [x] Brief avocat Task 0.4 vérifié — contient bien la clause AI disclosure
+- [x] Note de vérification : confirmer après réception CGU finales que la clause y est bien (pas seulement dans le devis)
 
-Run: `npx supabase db reset --linked && grep -r "enrichment_method" supabase/migrations/`
-Expected: trouvé dans une migration existante (probablement `product_enrichment_trace`)
-If not found: ajouter colonne dans migration 081 (à créer) — `ALTER TABLE product_enrichment_trace ADD COLUMN enrichment_method TEXT;`
+**Déféré Phase 2 (Task 2.7bis)** :
+- Créer table `product_enrichment_trace` avec colonne `enrichment_method TEXT` + CHECK constraint enum (`'claude-vision'`, `'serper-reverse'`, `'manual'`, `'cascade-tier1'`-`'cascade-tier6'`, `'unknown'`) + helper TS `src/lib/enrichment/methods.ts` + tests Vitest
+- Remplir systématiquement `enrichment_method` dans chaque step de la cascade ADR-006
 
-- [ ] **Step 2: Ajouter dans brief avocat (Task 0.4) :**
-
-> Demander clause CGU "AI disclosure" : « Two-Step utilise des modèles d'IA (Claude Vision, Anthropic) pour enrichir et vérifier les données produits. Conformément à l'article 50 du règlement européen sur l'IA (entrée en vigueur 2 août 2026), nous indiquons explicitement quand un contenu (description, image, catégorie) a été généré ou vérifié par IA. Le marchand peut consulter le détail dans son dashboard. »
-
-L'exposition UI du champ se fera Task 1.X.
+**Déféré Phase 1 (Task 1.12)** :
+- UI badge sur fiche produit dashboard marchand quand `enrichment_method = 'claude-vision'`
+- Page `/legal/ai-disclosure` publique (en lien depuis CGU + footer)
 
 ---
 
@@ -1214,6 +1213,19 @@ git commit -m "feat(ai-act): art.50 disclosure UI badge enrichment_method"
 
 **Files cibles** :
 - `src/lib/enrichment/cascade/tier6-ean-search.ts`
+
+### Task 2.7bis: Création table `product_enrichment_trace` + enrichment_method (NOUVEAU — déféré depuis Phase 0)
+
+**À faire dès le début de Phase 2** (avant Task 2.1) :
+
+- Migration `<NEXT>_product_enrichment_trace.sql` :
+  - Table append-only `product_enrichment_trace` (id, product_id, step, enrichment_method, score, raw_response, created_at)
+  - Colonne `enrichment_method TEXT` avec CHECK enum (`'claude-vision'`, `'serper-reverse'`, `'manual'`, `'cascade-tier1'`-`'cascade-tier6'`, `'unknown'`)
+  - Index sur (product_id, created_at)
+- Helper TS `src/lib/enrichment/methods.ts` : const tuple `ENRICHMENT_METHODS` + type `EnrichmentMethod`
+- Test Vitest : valeurs cohérentes
+- Dépendance bloquante pour Task 2.1 (Tier 1) et Task 1.12 (UI badge AI Act)
+- Effort : 0.5j
 
 ### Task 2.7: Fusion multi-signaux + scoring (2j)
 
