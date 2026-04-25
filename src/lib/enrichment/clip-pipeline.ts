@@ -16,6 +16,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { embedImageViaReplicate } from "@/lib/enrichment/clip-replicate";
 import {
     deleteVectorById,
+    getVectorById,
     queryVector,
     upsertVectors,
     type VectorizeQueryMatch,
@@ -152,12 +153,24 @@ export async function tryClipMatchForProduct(productId: string): Promise<{
         return { matched: false, score: 0 };
     }
 
-    // Récupère le vector existant depuis Vectorize (cf. note ci-dessus).
-    // ⚠️ TODO V1.5 : implémenter le get-by-ids dans vectorize-client.ts.
-    // V1 first-jet : on retourne sans match si on ne peut pas requêter.
-    // Le pipeline d'enrichissement re-tentera Tier 4 quand le caller passera
-    // directement le vector (ex post embed initial).
-    return { matched: false, score: 0 };
+    // Cycle 9 : récupère le vector existant via getVectorById, puis query topK.
+    let stored: Awaited<ReturnType<typeof getVectorById>> = null;
+    try {
+        stored = await getVectorById(productId);
+    } catch (err) {
+        // Vectorize indispo, log + skip Tier 4 (autres tiers continuent)
+        if (process.env.NODE_ENV === "development") {
+            console.warn(`[clip-pipeline] getVectorById ${productId} failed:`, err);
+        }
+        return { matched: false, score: 0 };
+    }
+    if (!stored) return { matched: false, score: 0 };
+
+    return findSimilarByVector(stored.values, {
+        excludeId: productId,
+        brand: product.brand ?? null,
+        category: product.category ?? null,
+    });
 }
 
 /**

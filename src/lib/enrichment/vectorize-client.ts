@@ -136,6 +136,40 @@ export async function queryVector(
     );
 }
 
+/**
+ * Récupère un vector existant par ID (Cycle 9 — Tier 4 cascade query).
+ * Renvoie null si l'ID n'existe pas dans l'index.
+ *
+ * Note : la doc Vectorize REST API évolue rapidement. L'endpoint exact peut
+ * changer (`/get-by-ids` ou `/getByIds`). Si erreur 404 sur une ID connue,
+ * vérifier la doc Cloudflare actuelle.
+ */
+export async function getVectorById(id: string): Promise<{
+    id: string;
+    values: number[];
+    metadata?: Record<string, unknown>;
+} | null> {
+    try {
+        const result = await fetchVectorize<Array<{
+            id: string;
+            values: number[];
+            metadata?: Record<string, unknown>;
+        }>>(
+            `/get-by-ids`,
+            {
+                method: "POST",
+                body: JSON.stringify({ ids: [id] }),
+            },
+        );
+        if (!result || result.length === 0) return null;
+        return result[0];
+    } catch (err) {
+        // Si l'ID n'existe pas, certaines APIs renvoient 404 plutôt qu'un array vide.
+        if (err instanceof Error && /404/.test(err.message)) return null;
+        throw err;
+    }
+}
+
 /** Delete un vector par ID (cleanup quand un produit est supprimé). */
 export async function deleteVectorById(id: string): Promise<void> {
     await fetchVectorize(

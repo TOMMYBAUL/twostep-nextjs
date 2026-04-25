@@ -278,7 +278,8 @@ Priorité par impact business (1=critique, 3=plus tard) :
 - **Cycle 4** : multi-source convergence — `collectAllEanSources` parallel + score boost +0.015/tier supplémentaire. EAN obscur Tier 6 + Open Facts Tier 2 = 0.985 publish auto (avant : queue review). 186 tests pass.
 - **Cycle 5** : `assessProductName` 3 niveaux (clear/suspect/invalid) — détection prose "virgule+espace" → suspect (loggué warning, conservé pour queue review). 192 tests pass.
 - **Cycle 6** : tests E2E intégration cascade (`tests/integration/cascade-e2e.test.ts`) avec 7 invariants — score ∈ [0, 0.999], gates cohérents, pas de pollution stock visible sur EAN cassé/URL/desc courte. 199 tests pass.
-- **Cycle 8** (nuit 25-26/04) : premier jet CLIP V1. Stack `andreasjansson/clip-features` Replicate + Cloudflare Vectorize REST API. Migration 090 + 3 modules src/lib/enrichment + endpoint admin embed + 24 tests. **Activation matin Thomas** : ~15 min via `docs/cascade/CLIP-V1-ACTIVATION.md`. **Pas wired dans cascade** encore (Cycle 9). 223 tests pass.
+- **Cycle 8** (nuit 25-26/04) : premier jet CLIP V1. Stack `andreasjansson/clip-features` Replicate + Cloudflare Vectorize REST API. Migration 090 + 3 modules src/lib/enrichment + endpoint admin embed + 24 tests. **Activation matin Thomas** : ~15 min via `docs/cascade/CLIP-V1-ACTIVATION.md`. 223 tests pass.
+- **Cycle 9** (nuit 25-26/04) : Tier 4 CLIP wired dans `cascade-engine.runCascade`. Ajout `getVectorById` Vectorize REST + `tryClipMatchForProduct` complet + Étape 5 cascade (best-effort, try/catch isolé). `CascadeInput.productId` optionnel — si fourni et que le product est embedded, query Vectorize topK + score. 223 tests pass (no regression).
 
 ## Décisions cycles supérieurs (deferred ou hors V1)
 

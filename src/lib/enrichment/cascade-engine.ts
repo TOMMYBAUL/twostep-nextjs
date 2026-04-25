@@ -34,6 +34,8 @@ export interface CascadeInput {
     name?: string | null;
     brand?: string | null;
     sku?: string | null;
+    /** Si fourni, runCascade tente Tier 4 CLIP après les autres tiers (Cycle 9). */
+    productId?: string | null;
 }
 
 // sourceToTier déplacé dans `multi-source.ts` — les fetchFromX retournent déjà
@@ -105,6 +107,25 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
             tiersMatched.push("tier6_eansearch");
             canonicalEan = reverseMatch.ean;
             // canonical_name n'est pas garanti par searchEanByName — laissé null.
+        }
+    }
+
+    // ─── Étape 5 (Cycle 9) : Tier 4 CLIP si productId fourni et déjà embeddé ───
+    // Lazy import pour éviter de charger Replicate/Vectorize si productId absent.
+    if (input.productId) {
+        try {
+            const { tryClipMatchForProduct } = await import("@/lib/enrichment/clip-pipeline");
+            const clipMatch = await tryClipMatchForProduct(input.productId);
+            if (clipMatch.matched) {
+                tiersMatched.push("tier4_clip");
+                // Si on n'a pas de canonical_ean depuis les autres tiers et que le
+                // candidat CLIP en a un en metadata, on pourrait l'utiliser. V2.
+            }
+        } catch (err) {
+            // Tier 4 est best-effort — un fail ne bloque pas le score des autres tiers
+            if (process.env.NODE_ENV === "development") {
+                console.warn(`[cascade-engine] Tier 4 CLIP failed for ${input.productId}:`, err);
+            }
         }
     }
 
