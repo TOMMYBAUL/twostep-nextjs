@@ -43,6 +43,16 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - Recherche approfondie (comparatif, état de l'art, décision critique) → **deep-research** skill
 - `WebSearch` natif → fallback uniquement si rien d'autre n'est dispo
 
+## Builder-bias / décisions
+- ❌ Recommander un outil payant "par défaut" (ex : Pennylane PDP 20 €/mo Phase 0) sans valider l'urgence RÉELLE vs alternative gratuite (PPF État, gratuit, suffit à 0-10 marchands). À 0 marchand payant aujourd'hui, le coût caché de cette reco aurait été 120-160 € sur 6-8 mois inutiles. **Question à se poser systématiquement avant d'ajouter un outil au plan** : "Est-ce que la gratuité officielle (PPF, free tier, etc.) couvre les besoins jusqu'à la prochaine inflexion ?" Pattern documenté 2026-04-25 par Thomas qui a challengé. (2026-04-25)
+- ❌ Pousser pour avocat (5 000-7 000 € HT) + RC Pro (1 500 €/an) **dès Phase 0** à 0 marchand payant. Sur-investissement avant validation marché. Règle Thomas : **« les démarches juridiques se font quand le SaaS fonctionne »** — drafts emails OK comme ressources, envoi différé jusqu'à 1+ marchand payant + 30 jours sans incident. Vrai trigger légal obligatoire = bascule micro→SASU (Phase 5). (2026-04-25)
+- ❌ Présumer une équipe (ex : "Thomas + frère") basée sur d'anciennes fiches mémoire sans vérifier l'état actuel. **Violation R4 du CLAUDE.md global**. Toujours re-poser la question avant d'écrire "Thomas + X" dans un doc de continuité. À la place : "Thomas + tiers de confiance (à désigner)". (2026-04-25)
+
+## Architecture / dette tech
+- ❌ Brainstorm archi qui ignore les externes nouveaux : ACP OpenAI (lancé 2026-02), AI Act art.50 (2 août 2026), CRA EU (11 sept 2026), Google product ID split (mars 2026), Inngest orchestrator pour pipelines >5 étapes. **Checklist obligatoire début cycle archi** : "qu'est-ce qui a changé dans l'écosystème depuis 30j ?" Brainstorm 04-24 a raté tout ça → V2 consolidée 2026-04-25 = `docs/ARCHITECTURE-TWOSTEP.md` (2026-04-25)
+- ❌ Présenter `ean_lookups` cache cross-marchand comme "moat data juridique" — faux : non protégeable (art. L341-1 CPI), réplicable concurrent en 3-6 mois via Open Food Facts / Open Beauty Facts / UPCitemdb publics. **Vrai moat** = densité géo + relation marchand + statut LFP Trusted (admin) + UX dirty→clean. Requalifier partout en "accélérateur opérationnel" (2026-04-25)
+- ❌ Plan SaaS solo qui suppose 50 marchands an 1 sans embauche : NearSt = 1 emp/100 marchands. Bandwidth Thomas réelle = 24-32 marchands max mois 4-12 (5h/marchand/an support consomme bandwidth démarchage). **Gate Phase 5** : embauche 0.5 ETP OU contrat formel apporteurs à 15 marchands (2026-04-25)
+
 ## Boucles de recherche autonome (multi-cycles)
 - ❌ Stopper à 3 cycles sur 5 annoncés "parce que rendement décroissant ressenti" → le cycle 5 a produit les 2 meilleurs insights (UCP + Fédé). Quand un quota numéraire est annoncé (au user OU à soi-même), tenir le quota — l'instinct de rendement décroissant n'est pas fiable, les angles changent (2026-04-23 boucle nuit, voir META-REPORT)
 - ❌ Annoncer "quotas tenus" quand on est à 10-20% du volume promis → marquer explicitement "[ESTIMATION]" sur les chiffres non-sourcés et écrire un META-REPORT honnête en fin de boucle (2026-04-23)

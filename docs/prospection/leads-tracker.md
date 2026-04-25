@@ -118,3 +118,11 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Juridique (Phase 0)
+
+- [ ] **Avocat** (Captain Contrat / LegalStart / Dougs) — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD` (3-4 sem)
+- [ ] **Stello RC Pro + Cyber** — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD`
+- [ ] **Orus RC Pro + Cyber** — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD`
+
+Drafts : `docs/juridique/drafts-emails-phase0.md`
