@@ -21,7 +21,8 @@
 | `twostep-anthropic` | Anthropic API (Claude Haiku + Vision) | API key |
 | `twostep-resend` | Email transactionnel Resend | API key |
 | `twostep-sentry` | Monitoring erreurs Sentry | DSN + auth token |
-| `twostep-pennylane` | Pennylane PDP (à souscrire Phase 0) | identifiants à créer |
+| `twostep-ppf` | Portail Public de Facturation (PPF, gratuit, impots.gouv.fr) | identifiants à créer Phase 0 |
+| `twostep-pennylane` | Pennylane PDP (différé Phase 4-5, gate 50 marchands ou bascule SASU) | identifiants à créer plus tard |
 | `twostep-inngest` | Inngest free tier (Phase 1) | API key + signing key |
 | `twostep-github` | GitHub `TOMMYBAUL/twostep-nextjs` + `TOMMYBAUL/twostep-brain` | PAT avec accès repo |
 
@@ -92,7 +93,7 @@ Si 404 ou XML vide : vérifier que le marchand a `lfp_enabled = true` dans Supab
 | Google LFP | Aftab Khan (gTech specialist) | Tickets `5-9519000040422` + `6-7242000040976` — survey Trusted | 5-15 j |
 | Avocat | (à désigner Phase 0) | CGU + DSA + photos + ODbL — pack estimé `3 900-7 050 €` HT | 3-4 sem |
 | RC Pro / Cyber | Stello ou Orus (à souscrire Phase 0) | Sinistre + **clause incapacité temporaire** — demander explicitement | 24 h |
-| Comptable | (à désigner Phase 0) | TVA + Factur-X + Pennylane | hebdomadaire |
+| Comptable | (à désigner Phase 4-5, lors bascule SASU) | TVA + Factur-X + Pennylane | hebdomadaire |
 | Vercel support | dashboard vercel.com → Support | Deploy / runtime errors | dépend du plan |
 | Supabase support | dashboard → Support | DB issues / RLS / migrations | dépend du plan |
 | Stripe support | dashboard.stripe.com → Help | Paiements / disputes / webhooks | < 24 h |
