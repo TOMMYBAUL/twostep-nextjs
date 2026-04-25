@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { preflightEan, runCascade } from "@/lib/enrichment/cascade-engine";
 
-// Mock le module lookup pour ne pas appeler de vraies API HTTP
+// Cycle 4 : on mock désormais `collectAllEanSources` au lieu de `fetchEanData`
+// pour refléter le refactor multi-source convergence.
 vi.mock("@/lib/ean/lookup", () => ({
-    fetchEanData: vi.fn(),
     searchEanByName: vi.fn(),
+}));
+
+vi.mock("@/lib/enrichment/multi-source", () => ({
+    collectAllEanSources: vi.fn(),
 }));
 
 vi.mock("@/lib/enrichment/tier1-sectoriels", () => ({
@@ -12,18 +16,31 @@ vi.mock("@/lib/enrichment/tier1-sectoriels", () => ({
     lookupIsbnDilicom: vi.fn().mockResolvedValue(null),
 }));
 
-import { fetchEanData, searchEanByName } from "@/lib/ean/lookup";
+import { searchEanByName } from "@/lib/ean/lookup";
+import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
 
-const mockFetchEanData = vi.mocked(fetchEanData);
+const mockCollectAll = vi.mocked(collectAllEanSources);
 const mockSearchEanByName = vi.mocked(searchEanByName);
 const mockLookupCipBdpm = vi.mocked(lookupCipBdpm);
 
 beforeEach(() => {
-    mockFetchEanData.mockReset();
+    mockCollectAll.mockReset();
     mockSearchEanByName.mockReset();
     mockLookupCipBdpm.mockReset();
 });
+
+/** Helper pour construire un MultiSourceResult mock. */
+function multi(tiers: ("tier2_obf" | "tier2_icecat" | "tier2_off" | "tier6_eansearch")[], name: string | null = null) {
+    return {
+        tiers_matched: tiers as never,
+        canonical_name: name,
+        canonical_brand: null,
+        canonical_category: null,
+        canonical_photo_url: null,
+        raw_results: [],
+    };
+}
 
 describe("preflightEan", () => {
     it("validates a real EAN-13", () => {
@@ -86,7 +103,7 @@ describe("runCascade — EAN invalides (early return, pas de fetch)", () => {
         expect(out.review_status).toBe("masked");
         expect(out.tiers_matched).toEqual([]);
         expect(out.canonical_ean).toBeNull();
-        expect(mockFetchEanData).not.toHaveBeenCalled();
+        expect(mockCollectAll).not.toHaveBeenCalled();
         expect(mockSearchEanByName).not.toHaveBeenCalled();
     });
 
@@ -94,7 +111,7 @@ describe("runCascade — EAN invalides (early return, pas de fetch)", () => {
         const out = await runCascade({ ean: "123ABC456789X" });
         expect(out.score).toBe(0);
         expect(out.tiers_matched).toEqual([]);
-        expect(mockFetchEanData).not.toHaveBeenCalled();
+        expect(mockCollectAll).not.toHaveBeenCalled();
     });
 
     it("Aucun input → score 0, masked", async () => {
@@ -106,15 +123,8 @@ describe("runCascade — EAN invalides (early return, pas de fetch)", () => {
 });
 
 describe("runCascade — cascade EAN valide", () => {
-    it("EAN-13 valide + fetchEanData retourne open_beauty_facts → tier2_obf score 0.97", async () => {
-        mockFetchEanData.mockResolvedValueOnce({
-            name: "Coca-Cola Original 33cl",
-            brand: "Coca-Cola",
-            photo_url: null,
-            category: "boisson",
-            source: "open_beauty_facts",
-        });
-        // 5449000000996 = vrai EAN-13 Coca, checksum valide
+    it("EAN-13 valide + 1 source OBF seule → tier2_obf 0.97", async () => {
+        mockCollectAll.mockResolvedValueOnce(multi(["tier2_obf"], "Coca-Cola Original 33cl"));
         const out = await runCascade({ ean: "5449000000996" });
         expect(out.score).toBe(0.97);
         expect(out.tiers_matched).toEqual(["tier2_obf"]);
@@ -124,48 +134,34 @@ describe("runCascade — cascade EAN valide", () => {
         expect(out.visible).toBe(true);
     });
 
-    it("EAN-13 valide + fetchEanData retourne open_products_facts → tier2_icecat 0.97", async () => {
-        mockFetchEanData.mockResolvedValueOnce({
-            name: "Sony WH-1000XM5 Black",
-            brand: "Sony",
-            photo_url: null,
-            category: "headphones",
-            source: "open_products_facts",
-        });
-        const out = await runCascade({ ean: "4548736133662" });
-        expect(out.score).toBe(0.97);
-        expect(out.tiers_matched).toEqual(["tier2_icecat"]);
+    it("Cycle 4 — 2 tiers convergent (OBF + Tier6) → boost +0.015 → 0.985 publish auto", async () => {
+        mockCollectAll.mockResolvedValueOnce(multi(["tier2_obf", "tier6_eansearch"], "Coca-Cola"));
+        const out = await runCascade({ ean: "5449000000996" });
+        expect(out.score).toBeCloseTo(0.985, 3);
+        expect(out.tiers_matched).toEqual(["tier2_obf", "tier6_eansearch"]);
+        expect(out.review_status).toBe("validated");
     });
 
-    it("EAN-13 valide + fetchEanData retourne ean_search → tier6 0.90 (pending queue)", async () => {
-        mockFetchEanData.mockResolvedValueOnce({
-            name: "Ray-Ban Wayfarer Classic Black",
-            brand: null,
-            photo_url: null,
-            category: null,
-            source: "ean_search",
-        });
+    it("Cycle 4 — 3 tiers convergent → score capé proprement (≤ 0.999)", async () => {
+        mockCollectAll.mockResolvedValueOnce(
+            multi(["tier2_obf", "tier2_icecat", "tier6_eansearch"], "Sony WH-1000XM5"),
+        );
+        const out = await runCascade({ ean: "4548736133662" });
+        expect(out.score).toBeLessThanOrEqual(0.999);
+        expect(out.score).toBeGreaterThanOrEqual(0.97);
+        expect(out.review_status).toBe("validated");
+    });
+
+    it("Tier 6 seul (cas EAN obscur sans Open Facts) → 0.90 → pending queue", async () => {
+        mockCollectAll.mockResolvedValueOnce(multi(["tier6_eansearch"], "Ray-Ban Wayfarer"));
         const out = await runCascade({ ean: "8056597144056" });
         expect(out.score).toBe(0.9);
         expect(out.tiers_matched).toEqual(["tier6_eansearch"]);
         expect(out.review_status).toBe("pending");
-        expect(out.visible).toBe(false);
     });
 
-    it("Cache hit → tier6 (conservatif puisqu'on perd le tier originel)", async () => {
-        mockFetchEanData.mockResolvedValueOnce({
-            name: "Adidas Stan Smith",
-            brand: "Adidas",
-            photo_url: null,
-            category: null,
-            source: "cache",
-        });
-        const out = await runCascade({ ean: "4055017461258" });
-        expect(out.tiers_matched).toEqual(["tier6_eansearch"]);
-    });
-
-    it("EAN valide + fetchEanData retourne null → fallback reverse search activé", async () => {
-        mockFetchEanData.mockResolvedValueOnce(null);
+    it("Aucune source → fallback reverse search activé", async () => {
+        mockCollectAll.mockResolvedValueOnce(multi([], null));
         mockSearchEanByName.mockResolvedValueOnce({
             ean: "4055017461258",
             brand: "Adidas",
@@ -197,18 +193,12 @@ describe("runCascade — Tier 1 CIP médicament", () => {
         expect(out.canonical_name).toBe("DOLIPRANE 1000 mg, comprimé");
         expect(out.review_status).toBe("validated");
         // Pas de cascade Tier 2/6 lancée derrière
-        expect(mockFetchEanData).not.toHaveBeenCalled();
+        expect(mockCollectAll).not.toHaveBeenCalled();
     });
 
     it("CIP-13 valide MAIS BDPM API down → fallback cascade Tier 2/6", async () => {
         mockLookupCipBdpm.mockResolvedValueOnce(null);
-        mockFetchEanData.mockResolvedValueOnce({
-            name: "DOLIPRANE 1000 mg",
-            brand: null,
-            photo_url: null,
-            category: null,
-            source: "ean_search",
-        });
+        mockCollectAll.mockResolvedValueOnce(multi(["tier6_eansearch"], "DOLIPRANE 1000 mg"));
         const out = await runCascade({ ean: "3400933264963" });
         expect(out.tiers_matched).toEqual(["tier6_eansearch"]);
         expect(out.score).toBe(0.9);

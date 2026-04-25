@@ -244,7 +244,7 @@ Priorité par impact business (1=critique, 3=plus tard) :
 
 ### E3. Moyennes — V1.5
 
-8. **Multi-source voting** : actuellement la cascade s'arrête au 1er match. Idée : continuer à 1-2 autres tiers pour boost convergence. **Action** : refactor `fetchEanData` pour collecter 2-3 résultats au lieu de short-circuit.
+8. **Multi-source voting** : ✅ **Résolu Cycle 4** : `collectAllEanSources` lance les 4 sources Tier 2+6 en parallèle (Promise.allSettled), retourne tous les tiers matchés. Boost convergence 2 tiers → 0.985 publish auto même si max ind = 0.97. Tests 21/21.
 9. **Open Food Facts** non branché (cas C7.1) — pour vendeurs épicerie/cave. **Action** : 1h dev, ajouter fonction `fetchFromOpenFoodFacts` + reverse.
 10. **Google Product Catalog (Tier 3)** (toute la couche manquante) — auth Google déjà OK via Merchant Center. **Action** : 2-3h.
 
@@ -275,3 +275,4 @@ Priorité par impact business (1=critique, 3=plus tard) :
 - **Cycle 1** : score-cascade + cascade-engine + Tier 1 CIP BDPM. Bug latent fixé (Tier 1 fail → fallback Tier 2/6). 21 tests cascade.
 - **Cycle 2** : wire `runCascade` dans `/api/catalog/import` + insert `visible=false, review_status='pending'` par défaut. 171 tests pass.
 - **Cycle 3** : parser CSV — "description" retiré de NAME_HEADERS, `looksLikeProductName` garde-fou URL/long, élargi EAN/NAME headers. 186 tests pass.
+- **Cycle 4** : multi-source convergence — `collectAllEanSources` parallel + score boost +0.015/tier supplémentaire. EAN obscur Tier 6 + Open Facts Tier 2 = 0.985 publish auto (avant : queue review). 186 tests pass.

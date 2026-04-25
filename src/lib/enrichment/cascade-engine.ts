@@ -20,7 +20,8 @@
  */
 
 import { canonicalizeEan, detectIdentifierType } from "@/lib/identifiers/validators";
-import { fetchEanData, searchEanByName } from "@/lib/ean/lookup";
+import { searchEanByName } from "@/lib/ean/lookup";
+import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
 import {
     buildCascadeOutcome,
@@ -35,29 +36,8 @@ export interface CascadeInput {
     sku?: string | null;
 }
 
-/** Map d'une source `lookupEan` vers le tier correspondant pour le scoring. */
-function sourceToTier(source: string | null | undefined): Tier | null {
-    if (!source) return null;
-    switch (source) {
-        case "open_beauty_facts":
-            return "tier2_obf";
-        case "open_products_facts":
-            // Open Products Facts couvre tech/jouets/vêtements — équivalent Icecat
-            return "tier2_icecat";
-        case "open_food_facts":
-            return "tier2_off";
-        case "ean_search":
-            return "tier6_eansearch";
-        case "upc_database":
-            return "tier6_eansearch"; // UPCitemdb = même tier de fallback
-        case "cache":
-            // Cache hit = on ne sait pas quel tier originel a rempli le cache.
-            // Conservatif : on attribue Tier 6 (le plus bas commun).
-            return "tier6_eansearch";
-        default:
-            return null;
-    }
-}
+// sourceToTier déplacé dans `multi-source.ts` — les fetchFromX retournent déjà
+// le tier correctement mappé via collectAllEanSources.
 
 /**
  * Exécute la cascade pour une entrée produit donnée et retourne un CascadeOutcome.
@@ -100,16 +80,18 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
         // Pour V1 on laisse passer en cascade Tier 2/6.
     }
 
-    // ─── Étape 3 : tout identifiant valide (EAN/UPC/EAN-8/ISBN/CIP fallback) → cascade Tier 2/6 ───
-    // ISBN et CIP retombent ici si Tier 1 sectoriel n'a pas matché (BDPM down ou CIP retiré, Dilicom différé)
+    // ─── Étape 3 : tout identifiant valide → cascade multi-source convergence (Cycle 4) ───
+    // Lance EAN-Search + UPCitemdb + Open Beauty Facts + Open Products Facts en parallèle
+    // et collecte tous les tiers qui matchent. Le boost de convergence permet à un EAN
+    // obscur (Tier 6 seul = 0.90) qui converge avec OBF/OPF (Tier 2 = 0.97) d'atteindre
+    // 0.985 → publish auto.
     if (canonical && identifierType !== "invalid") {
-        const result = await fetchEanData(canonical);
-        if (result) {
-            const tier = sourceToTier(result.source);
-            if (tier) tiersMatched.push(tier);
+        const multiSource = await collectAllEanSources(canonical);
+        if (multiSource.tiers_matched.length > 0) {
+            for (const t of multiSource.tiers_matched) tiersMatched.push(t);
             canonicalEan = canonical;
-            if (result.name && result.name !== "Unknown") {
-                canonicalName = result.name;
+            if (multiSource.canonical_name) {
+                canonicalName = multiSource.canonical_name;
             }
         }
     }
