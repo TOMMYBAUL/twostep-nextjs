@@ -813,7 +813,7 @@ Use background color variables to manage all fill colors for elements in your de
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **twostep-nextjs** (1909 symbols, 4077 relationships, 123 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **twostep-nextjs** (2074 symbols, 4375 relationships, 129 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -918,3 +918,12 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 `docs/REMOTION-QUALITY-CHECKLIST.md`
 
 Ce document impose l'invocation de skills (brand, ui-ux-pro-max, design-system, viral-hook-generator) et de MCP (firecrawl, playwright, context7) AVANT d'écrire une seule ligne de code Remotion. Aucune exception.
+
+## Mémoire persistante — LESSONS.md
+
+Au démarrage de chaque session ET avant toute tâche non triviale :
+
+1. LIS `LESSONS.md` à la racine du projet en entier.
+2. Si la tâche ressemble à une entrée existante, suis la solution documentée.
+3. Après avoir résolu un bug non trivial ou identifié une erreur récurrente, AJOUTE une entrée dans `LESSONS.md` avant de committer (ou utilise le slash command `/lesson`).
+4. Format concis : 2-4 lignes par entrée maximum. Ce fichier doit rester sous 5 KB.

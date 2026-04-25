@@ -1,8 +1,12 @@
+// DRAFT — to copy into src/lib/email/encryption.ts after review
+// Version: v1 versioned format + STRICT_DECRYPT fail-safe
+// Backwards-compatible during transition: legacy unencrypted tokens log warning, not silently accepted
+
 import crypto from "crypto";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
-const TAG_LENGTH = 16;
+const VERSION_PREFIX = "v1:";
 
 function getKey(): Buffer {
     const key = process.env.EMAIL_ENCRYPTION_KEY;
@@ -10,6 +14,10 @@ function getKey(): Buffer {
     return Buffer.from(key, "hex");
 }
 
+/**
+ * Encrypt plaintext to versioned ciphertext.
+ * Format: v1:iv:tag:ciphertext (4 parts, all base64 except prefix)
+ */
 export function encrypt(plaintext: string): string {
     const key = getKey();
     const iv = crypto.randomBytes(IV_LENGTH);
@@ -19,16 +27,39 @@ export function encrypt(plaintext: string): string {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const tag = cipher.getAuthTag();
 
-    // Format: iv:tag:ciphertext (all base64)
-    return `${iv.toString("base64")}:${tag.toString("base64")}:${encrypted.toString("base64")}`;
+    return `${VERSION_PREFIX}${iv.toString("base64")}:${tag.toString("base64")}:${encrypted.toString("base64")}`;
 }
 
+/**
+ * Decrypt versioned ciphertext.
+ * - If ciphertext starts with "v1:" → decrypt normally
+ * - If ciphertext is legacy (no "v1:" prefix):
+ *   - STRICT_DECRYPT=true → throw (production mode after migration)
+ *   - else → log warning + return as-is (transition mode during migration)
+ */
 export function decrypt(ciphertext: string): string {
-    // If not encrypted (no colons), return as-is (backwards compatibility)
-    if (!ciphertext.includes(":")) return ciphertext;
+    if (!ciphertext.startsWith(VERSION_PREFIX)) {
+        if (process.env.STRICT_DECRYPT === "true") {
+            throw new Error(
+                "[encryption] decrypt: legacy unencrypted/unversioned token blocked. " +
+                "Run scripts/migrate-encrypt-tokens.mjs to migrate DB tokens to v1 format."
+            );
+        }
+        // Transition mode: log + return as-is so app keeps working during migration window
+        console.error(
+            "[encryption] WARNING: decrypting legacy unversioned token. " +
+            "Run migration before setting STRICT_DECRYPT=true."
+        );
+        return ciphertext;
+    }
 
     const key = getKey();
-    const [ivB64, tagB64, dataB64] = ciphertext.split(":");
+    const stripped = ciphertext.slice(VERSION_PREFIX.length);
+    const parts = stripped.split(":");
+    if (parts.length !== 3) {
+        throw new Error("[encryption] decrypt: malformed v1 ciphertext (expected 3 parts)");
+    }
+    const [ivB64, tagB64, dataB64] = parts;
     const iv = Buffer.from(ivB64, "base64");
     const tag = Buffer.from(tagB64, "base64");
     const encrypted = Buffer.from(dataB64, "base64");
@@ -40,4 +71,12 @@ export function decrypt(ciphertext: string): string {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
 
     return decrypted.toString("utf8");
+}
+
+/**
+ * Helper to check if a value looks like a v1 ciphertext.
+ * Useful for migration scripts and debugging.
+ */
+export function isVersionedCiphertext(value: string | null | undefined): boolean {
+    return typeof value === "string" && value.startsWith(VERSION_PREFIX);
 }
