@@ -38,7 +38,7 @@
 | A1.10 | CSV avec lignes vides en milieu | parser | ✅ | `skipEmptyLines: true` dans Papa.parse |
 | A1.11 | CSV avec doublons EAN (variantes couleur ou taille) | grouping | 🟠 | `groupVariantsByEAN` existe mais grouping basé sur name+strip-size, pas EAN brut |
 | A1.12 | CSV ligne avec virgule dans description quoted `"sweat noir, capuche"` | parser | ✅ | Papa parse respecte le quoting |
-| A1.13 | CSV avec colonne `Photo URL` parsée comme `name` | mapping | ❌ | **Bug observé** — parser auto a mappé URL en `name` dans 1 ligne sur 20 |
+| A1.13 | CSV avec colonne `Photo URL` parsée comme `name` | mapping + garde-fou | ✅ | Cycle 3 fix : `looksLikeProductName` rejette les URLs http(s) — testé |
 
 ### A2. POS API sync (premier sync = bootstrap)
 
@@ -110,8 +110,8 @@
 | # | Pathologie | Géré ? | Note |
 |---|---|---|---|
 | B2.1 | Nom propre `"Nike Air Force 1 White"` | ✅ | reverse search OK avec brand boost |
-| B2.2 | Nom = description (`"Sneakers iconiques, semelle Air visible"`) | ❌ | reverse search trouve **ce qui ressemble**, AI verify peut être trompé |
-| B2.3 | Nom = URL photo (`"https://cdn.example.com/..."`) | ❌ | **Bug observé** — devrait être détecté + rejeté |
+| B2.2 | Nom = description (`"Sneakers iconiques, semelle Air visible"`) | 🟠 | Cycle 3 : si description >200 chars → rejeté. Mais description courte (<200) qui passe encore → cascade tombe à 0.90 → queue review (pas de pollution stock) |
+| B2.3 | Nom = URL photo (`"https://cdn.example.com/..."`) | ✅ | Cycle 3 fix : `looksLikeProductName` rejette URLs |
 | B2.4 | Nom = code SKU (`"R12345"`, `"ART-42"`) | ✅ | blacklist `article`, `produit`, `item`, `test`, `sku`, `ref` |
 | B2.5 | Nom multilingue (FR+EN dans même catalogue) | 🟡 | reverse search dépend de la langue de la base externe |
 | B2.6 | Nom tronqué `"Sweat à capuche tail..."` | 🟠 | tokens >= 2 chars, peut quand même reverse |
@@ -231,10 +231,10 @@ Priorité par impact business (1=critique, 3=plus tard) :
 
 ### E1. Critique — bloque V1 production
 
-1. **Validation checksum à l'entrée du POS sync + CSV** (cas A1.6, B1.3, B1.6-8) — actuellement `lookupEan` ne valide PAS le checksum, regex format seul. **Action** : utiliser `canonicalizeEan` partout AVANT lookup.
-2. **Bug parser CSV qui prend description en `name`** (cas A1.13, B2.2-3) — bug observé 2026-04-25. **Action** : audit `parseInvoice` pour mapping colonnes explicite OU remplacer auto-detect par mapping marchand-confirmé dans wizard step 2.
-3. **Pas de scoring par tier — résultat indifférencié** (toute la cascade) — `lookupEan` retourne "trouvé/pas trouvé" sans dire quel tier. **Action** : refactor pour tagger chaque résultat avec son tier source et combiner via `score-cascade`.
-4. **Routing ISBN/CIP au Tier 1 sectoriel** (cas B1.10-11, C5, C6) — détection faite par `detectIdentifierType` mais pas branchée à Dilicom/BDPM. **Action** : Tier 1 CIP gratuit (BDPM api-medicaments.fr) à brancher (15 min). ISBN différé (concurrence Place des Libraires + 15€/mo).
+1. **Validation checksum à l'entrée du POS sync + CSV** (cas A1.6, B1.3, B1.6-8) — ✅ **Résolu Cycle 1** : `canonicalizeEan` dans cascade-engine + tests 34/34.
+2. **Bug parser CSV qui prend description en `name`** (cas A1.13, B2.2-3) — ✅ **Partiellement résolu Cycle 3** : "description" retiré de NAME_HEADERS + `looksLikeProductName` rejette URL/long. Reste 🟠 cas rare description courte. Le wizard step 2 (Task 1.4) finira le job pour les cas marginaux.
+3. **Pas de scoring par tier — résultat indifférencié** (toute la cascade) — ✅ **Résolu Cycle 1** : `runCascade` retourne `{score, tiers_matched}` traçable + `cascade-engine.test.ts` 21/21.
+4. **Routing ISBN/CIP au Tier 1 sectoriel** (cas B1.10-11, C5, C6) — ✅ **Résolu Cycle 1** pour CIP via BDPM. ISBN reste différé (Dilicom 15€/mo, vertical livre évité).
 
 ### E2. Hautes — calibrer pour pilote Dear Skin/Kap
 
@@ -267,4 +267,11 @@ Priorité par impact business (1=critique, 3=plus tard) :
 
 ---
 
-**Last updated** : 2026-04-25 cycle 0 (initialisation matrice).
+**Last updated** : 2026-04-25 cycle 3 (parser CSV fix + scoring engine + tier1 sectoriel).
+
+## Annexe — historique cycles
+
+- **Cycle 0** : initialisation matrice (2026-04-25 21:00) — 50+ cas listés, 4 niveaux de gaps (E1-E4).
+- **Cycle 1** : score-cascade + cascade-engine + Tier 1 CIP BDPM. Bug latent fixé (Tier 1 fail → fallback Tier 2/6). 21 tests cascade.
+- **Cycle 2** : wire `runCascade` dans `/api/catalog/import` + insert `visible=false, review_status='pending'` par défaut. 171 tests pass.
+- **Cycle 3** : parser CSV — "description" retiré de NAME_HEADERS, `looksLikeProductName` garde-fou URL/long, élargi EAN/NAME headers. 186 tests pass.
