@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { computeCAC } from "@/lib/merchants/acquisition";
 
 describe("computeCAC", () => {
-  it("returns 0 if no acquisition cost", () => {
+  it("returns 0 for a signed merchant with zero cost", () => {
     expect(computeCAC({ cost_estimate_eur: 0, signed_at: new Date() })).toBe(0);
   });
   it("returns cost_estimate_eur for a single signed merchant", () => {

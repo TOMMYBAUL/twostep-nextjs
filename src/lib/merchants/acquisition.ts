@@ -3,10 +3,7 @@ export interface MerchantAcquisition {
   signed_at: Date | null;
 }
 
-/**
- * Calcule le CAC (Customer Acquisition Cost) d'un marchand.
- * Retourne 0 si pas encore signé (pas de CAC tant que pas converti).
- */
+/** Pas de CAC tant que le marchand n'a pas converti (signed_at). */
 export function computeCAC(m: MerchantAcquisition): number {
   return m.signed_at ? m.cost_estimate_eur : 0;
 }
