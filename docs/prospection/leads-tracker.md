@@ -1,16 +1,29 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-24 (L'Auditeur)*
+*Derniere mise a jour : 2026-04-25 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 47
-- NOUVEAU : 24
+- Total leads : 53
+- NOUVEAU : 25
 - CONTACTE : 1
-- BROUILLON : 17
+- BROUILLON : 22
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Victor-Hugo — 2026-04-25 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| FAUR QUINTANA | Victor-Hugo | Bijouterie/Horlogerie | Benoit Quintana | info@faur-quintana.com | 534100342 | 9/10 | BROUILLON | Valider + envoyer — horloger bijoutier etabli, site faur-quintana.com |
+| CESARE NORI | Victor-Hugo | Mode/Vêtements (cuir) | Tatiana Nori | service.client@cesarenori.fr | 328090410 | 8/10 | BROUILLON | Valider + envoyer — boutique cuir/fourrure depuis 60+ ans, site cesarenori.com |
+| TENDANCES LINGERIE | Victor-Hugo | Mode/Lingerie | Johan Bouysse | contact@tendances-lingerie.com | 851831982 | 8/10 | BROUILLON | Valider + envoyer — lingerie depuis 1987, vente en ligne, site tendances-lingerie.com |
+| LA MOMERIE | Victor-Hugo | Mode/Vêtements enfants | Lou-maite Monjon | contact@la-momerie.com | 840216766 | 7/10 | BROUILLON | Valider + envoyer — concept store eco-responsable enfants, site la-momerie.com |
+| L'ADRESSE BLANCHE | Victor-Hugo | Mode/Mariage | Magali Aycaguer | bonjour@ladresseblanche.fr | 901855585 | 6/10 | BROUILLON | Valider + envoyer — showroom robes mariee sur RDV, site ladresseblanche.fr |
+| VIRAGES | Victor-Hugo | Mode/Vêtements | Simon Gerson | — | 344626130 | 6/10 | NOUVEAU | Email non trouve — 4 etablissements, chercher via Pages Jaunes ou Instagram |
+
+**Boutiques ecartees (session 25/04) :** MAUELICLE (liquidation mars 2023), CYCLARTISANS (artisan — hors cible), MARC FREZAL (artisan horloger reparation — hors cible)
 
 ### Saint-Cyprien — 2026-04-24 (L'Eclaireur)
 
@@ -92,6 +105,7 @@
 | AGATHE ET ZOE | Fermee depuis 30/04/2015 (Saint-Etienne) |
 | NITYA (DUKAN DE NITYA) | Inactive depuis 27/02/2018 (Saint-Etienne) |
 | MJ CONCEPT STORE VERSION CAMELEON | Radiee en septembre 2021 (Saint-Etienne) |
+| MAUELICLE | En liquidation depuis mars 2023 (Victor-Hugo) |
 
 ## Do Not Contact
 (vide)
