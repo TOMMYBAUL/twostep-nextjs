@@ -125,6 +125,47 @@ export function looksLikeProductName(value: string): boolean {
     return true;
 }
 
+/**
+ * Évaluation qualité d'un name (Cycle 5) — distingue 3 niveaux :
+ * - clear   : nom de produit propre, traité normalement
+ * - suspect : ressemble à une description courte (ex "Cuir blanc, talon vert").
+ *             On laisse passer mais on log warning + caller peut flag pour review.
+ * - invalid : à rejeter direct (URL, vide, > 200 chars).
+ *
+ * Heuristique principale "suspect" : présence de virgule + espace ", " indique
+ * une phrase descriptive plus qu'un nom court structuré ("Nike Air Max 90"
+ * n'a pas de virgule, "Cuir blanc, talon vert" oui).
+ *
+ * **Volontairement permissif** : pas de blacklist de mots descriptifs
+ * (trop de faux négatifs sur les noms légitimes type "Coca-Cola, 33cl"),
+ * pas de seuil de longueur agressif. Le wizard step 2 (review queue humaine)
+ * reste le vrai filtre — cette heuristique sert juste à logger les candidats.
+ */
+export type NameQuality = "clear" | "suspect" | "invalid";
+
+export interface NameAssessment {
+    quality: NameQuality;
+    reason?: string;
+}
+
+const SUSPECT_PROSE_RE = /,\s/;
+
+export function assessProductName(value: string): NameAssessment {
+    const trimmed = value.trim();
+    if (!trimmed) return { quality: "invalid", reason: "empty" };
+    if (URL_RE.test(trimmed)) return { quality: "invalid", reason: "url" };
+    if (trimmed.length > NAME_MAX_LEN) {
+        return { quality: "invalid", reason: `too_long (${trimmed.length} > ${NAME_MAX_LEN})` };
+    }
+    if (SUSPECT_PROSE_RE.test(trimmed)) {
+        return {
+            quality: "suspect",
+            reason: "comma-space (probable prose/description, not a short product name)",
+        };
+    }
+    return { quality: "clear" };
+}
+
 export function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvoiceItem[] {
     const items: ParsedInvoiceItem[] = [];
 
@@ -136,16 +177,23 @@ export function extractStructured(rows: string[][], mapping: ColumnMapping): Par
         const rawName = mapping.name !== null ? String(row[mapping.name] ?? "").trim() : "";
         if (!rawName) continue; // skip empty rows
 
-        // Garde-fou anti-faux-positif (Cycle 3) : si le "name" extrait ressemble
-        // à une URL ou est anormalement long, on rejette la ligne plutôt que de
-        // créer un produit avec name="https://cdn.example.com/..." (bug observé 25/04).
-        if (!looksLikeProductName(rawName)) {
+        // Cycle 3 + 5 : évaluation de la qualité du name extrait.
+        // - invalid (URL, trop long, vide) → ligne rejetée d'office.
+        // - suspect (description courte, ", " détecté) → warning loggué, ligne
+        //   conservée pour passer en queue review humaine via wizard step 2.
+        const assessment = assessProductName(rawName);
+        if (assessment.quality === "invalid") {
             if (process.env.NODE_ENV === "development") {
                 console.warn(
-                    `[spreadsheet-parser] row ${i} rejetée — name ne ressemble pas à un nom produit (URL ou trop long): "${rawName.slice(0, 80)}..."`,
+                    `[spreadsheet-parser] row ${i} rejetée — invalid name (${assessment.reason}): "${rawName.slice(0, 80)}..."`,
                 );
             }
             continue;
+        }
+        if (assessment.quality === "suspect" && process.env.NODE_ENV === "development") {
+            console.warn(
+                `[spreadsheet-parser] row ${i} suspect (${assessment.reason}) — kept for queue review: "${rawName.slice(0, 80)}"`,
+            );
         }
 
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;

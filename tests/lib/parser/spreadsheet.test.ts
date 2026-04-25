@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+    assessProductName,
     detectColumns,
     extractStructured,
     looksLikeProductName,
@@ -32,6 +33,36 @@ describe("looksLikeProductName — anti-faux-positif (Cycle 3)", () => {
         expect(looksLikeProductName("")).toBe(false);
         expect(looksLikeProductName("   ")).toBe(false);
         expect(looksLikeProductName("\t\n")).toBe(false);
+    });
+});
+
+describe("assessProductName — qualité 3 niveaux (Cycle 5)", () => {
+    it("clear — nom de produit court structuré", () => {
+        expect(assessProductName("Nike Air Max 90").quality).toBe("clear");
+        expect(assessProductName("Coca-Cola 33cl").quality).toBe("clear");
+        expect(assessProductName("Le Labo Santal 33 EDP 50ml").quality).toBe("clear");
+    });
+
+    it("suspect — virgule+espace détectés (probable prose)", () => {
+        expect(assessProductName("Cuir blanc, talon vert").quality).toBe("suspect");
+        expect(assessProductName("Sneakers iconiques, semelle Air visible").quality).toBe("suspect");
+        expect(assessProductName("Bois de santal, cardamome").quality).toBe("suspect");
+    });
+
+    it("clear — virgule sans espace après → garde clear (peut être un format type 'Coca-Cola,33cl')", () => {
+        expect(assessProductName("Produit,Test").quality).toBe("clear");
+    });
+
+    it("invalid — URL", () => {
+        const result = assessProductName("https://cdn.example.com/photo.jpg");
+        expect(result.quality).toBe("invalid");
+        expect(result.reason).toBe("url");
+    });
+
+    it("invalid — vide ou trop long", () => {
+        expect(assessProductName("").quality).toBe("invalid");
+        expect(assessProductName("   ").quality).toBe("invalid");
+        expect(assessProductName("A".repeat(201)).quality).toBe("invalid");
     });
 });
 
@@ -171,5 +202,23 @@ describe("extractStructured — anti-faux-positif sur lignes (Cycle 3)", () => {
         ];
         const items = extractStructured(rows, mapping);
         expect(items).toHaveLength(0);
+    });
+
+    it("Cycle 5 — ligne suspect (description courte avec virgule) → CONSERVÉE pour queue review", () => {
+        // "Cuir blanc, talon vert" = description, pas un nom propre.
+        // Cycle 5 : on la laisse passer (cascade Tier 6 va probablement échouer →
+        // queue review via wizard step 2). On NE rejette PAS pour ne pas perdre la ligne.
+        const rows = [
+            headerRow,
+            [
+                "SNK-001", "Cuir blanc, talon vert", "Adidas", "Sneakers",
+                "4055017461258", "99.90", "", "", "", "", "",
+            ],
+        ];
+        const items = extractStructured(rows, mapping);
+        expect(items).toHaveLength(1);
+        expect(items[0].name).toBe("Cuir blanc, talon vert");
+        // Le scoring tomber probablement sur Tier 6 EAN-Search → 0.90 → pending.
+        // Le marchand verra ce produit en queue review et pourra corriger le nom.
     });
 });

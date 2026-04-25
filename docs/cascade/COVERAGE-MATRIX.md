@@ -276,3 +276,10 @@ Priorité par impact business (1=critique, 3=plus tard) :
 - **Cycle 2** : wire `runCascade` dans `/api/catalog/import` + insert `visible=false, review_status='pending'` par défaut. 171 tests pass.
 - **Cycle 3** : parser CSV — "description" retiré de NAME_HEADERS, `looksLikeProductName` garde-fou URL/long, élargi EAN/NAME headers. 186 tests pass.
 - **Cycle 4** : multi-source convergence — `collectAllEanSources` parallel + score boost +0.015/tier supplémentaire. EAN obscur Tier 6 + Open Facts Tier 2 = 0.985 publish auto (avant : queue review). 186 tests pass.
+- **Cycle 5** : `assessProductName` 3 niveaux (clear/suspect/invalid) — détection prose "virgule+espace" → suspect (loggué warning, conservé pour queue review). 192 tests pass.
+- **Cycle 6** : tests E2E intégration cascade (`tests/integration/cascade-e2e.test.ts`) avec 7 invariants — score ∈ [0, 0.999], gates cohérents, pas de pollution stock visible sur EAN cassé/URL/desc courte. 199 tests pass.
+
+## Décisions cycles supérieurs (deferred ou hors V1)
+
+- **Cycle 7 — Tier 3 Google Product Catalog** : DIFFÉRÉ jusqu'au statut LFP Trusted (4-6 sem via Aftab). Le catalogue Google universel (45Md+ produits) n'est pas accessible via API publique avant ce statut. Cycle 4 multi-source compense partiellement.
+- **Cycle 8 — Tier 4 CLIP V1** : différé volonté Thomas (faire en dernier, en parallèle du retour de l'ami qui implémente sa version Cloudflare Vectorize + FashionCLIP).
