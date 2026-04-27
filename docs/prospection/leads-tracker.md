@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-25 (L'Auditeur)*
+*Derniere mise a jour : 2026-04-27 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 53
-- NOUVEAU : 25
+- Total leads : 63
+- NOUVEAU : 32
 - CONTACTE : 1
 - BROUILLON : 22
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-04-27 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| L'ISLA NOVA | Capitole | Mode/Concept store | Lea Palacin | contact@lisla-nova.fr | 819913187 | 9/10 | NOUVEAU | Email confirme via site lisla-nova.fr — concept store marques francaises + createurs locaux |
+| BIAS | Capitole | Mode/Concept store | Laura Noailles | — | 980131718 | 8/10 | NOUVEAU | Email non trouve — IG @bias.cst, 62 rue de Metz (aussi 2 rue Paul Vidal), galerie art + mode |
+| N A L'INFINI | Capitole | Bijouterie/Horlogerie | Patricia Lacombe | contact@bijouterienougues.fr | 817911969 | 7/10 | NOUVEAU | Email partage avec Bijouterie Nougues (deja trackee) — valider si meme email, prenom Patricia |
+| ARSENE ET LES PIPELETTES | Capitole | Mode/Vetements enfants | Helene Rieunier | contact@arseneetlespipelettes.com | 809552359 | 7/10 | NOUVEAU | Email reseau/marque — valider si boutique Toulouse (franchise M2V 31), IG @arseneatoulouse |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 7/10 | NOUVEAU | Email non trouve — site manoushka.fr/contact, FB facebook.com/manoushka.toulouse |
+| RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 6/10 | NOUVEAU | Email non trouve — IG @recoverytoulouse, 48B rue de Metz, tel 05 61 40 42 94 |
+| SADIA | Capitole | Mode/Vetements | Sadia Belkelfa | — | 918125394 | 6/10 | NOUVEAU | Email non trouve — site sadia-boutique.com, 39 rue de Bayard |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 6/10 | NOUVEAU | Email non trouve (pampy.com domaine a vendre) — chercher via IG ou Pages Jaunes, tel 05 61 23 37 46 |
+| TILL | Capitole | Chaussures | Yann Bellamy | — | 401862255 | 6/10 | NOUVEAU | Email non trouve — 40 rue de Metz, tel 05 61 33 06 01, TILLAMY siege Beaupreau-en-Mauges |
+| COMEBACK | Capitole | Chaussures | Jerome Delgado | — | 901868729 | 5/10 | NOUVEAU | Email non trouve — 47 rue de la Pomme, siege social Carmaux (81), boutique Toulouse |
+
+**Boutiques ecartees (session 27/04) :** BANANA-POMME (fermee depuis fin 2024 — etablissement clos), BURBERRYS (chaine internationale), SABON (chaine internationale), DIKA / E.MIROGLIO FRANCE (groupe international)
 
 ### Victor-Hugo — 2026-04-25 (L'Eclaireur)
 
