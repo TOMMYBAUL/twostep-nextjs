@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-25 (L'Auditeur)*
+*Derniere mise a jour : 2026-04-27 (L'Auditeur)*
 
 ## Stats
 - Total leads : 53
-- NOUVEAU : 25
+- NOUVEAU : 24 (POBIEDA retire — liquidation judiciaire)
 - CONTACTE : 1
 - BROUILLON : 22
 - Reponses : 0
@@ -31,7 +31,7 @@
 |---|---|---|---|---|---|---|---|---|
 | ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer — parfums d'exception, site astra-collection.fr |
 | EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer — site ymbeauty.fr, 4 etablissements, verifier independance |
-| HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve — site habesha-cosmetiques.fr, IG @habeshabeautycosmetique, formulaire contact |
+| HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve — site habesha-cosmetiques.fr (OK, formulaire uniquement via habesha.mywizi.com/contactez-nous.html), 27 rue de la Republique 31300, IG @habeshabeautycosmetique. Utiliser formulaire ou DM IG. |
 | JAVA COSMETIC | Saint-Cyprien | Cosmetique/Beaute | Fitsum Abebe | — | 850811555 | 6/10 | NOUVEAU | Email non trouve — Google Business java-coiffure-cosmetics.business.site, tel sur Pages Jaunes |
 | ABSAMY | Saint-Cyprien | Cosmetique/Beaute | Absatou Thiam | — | 811869353 | 6/10 | NOUVEAU | Email non trouve — Treatwell treatwell.fr/salon/beaute-capillaires-absamy, tel 05 62 86 16 21 |
 | DIVINE HAIR BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Fred Oumba | — | 990203333 | 6/10 | NOUVEAU | Email non trouve — FB facebook.com/divinehairbeautysalon, Planity planity.com |
@@ -45,7 +45,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-7350887150386649214) |
-| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Site en 503 — chercher email via IG @lafilledemargaret ou tel 05 61 21 52 28 |
+| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Site lafilledemargaret.com en 503 (persistant), 19K abonnes IG @lafilledemargaret, adresse 35 rue Boulbonne. Aucun email trouve en web search. Contacter via IG DM ou tel 05 61 21 52 28. |
 | EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r8877959513437550432) |
 | BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouve, contacter via IG @toulousewithlove |
 | HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouve, 3 etablissements (Carcassonne + Toulouse) |
@@ -64,8 +64,8 @@
 | JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| L'ESPION | Saint-Etienne | Mode createurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (site: lespion.fr, IG: @boutiquelespion), tel: 05 61 73 36 69 |
-| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
+| L'ESPION | Saint-Etienne | Mode createurs | Simone Laskar (ex Soudri) | — | 310602370 | 8/10 | NOUVEAU | Email non trouve — site lespion.fr (503), IG @boutiquelespion, tel 05 61 73 36 69. RAISON SOCIALE: SOCIETE SAMANTA. Gerant change: Simone Soudri → Simone Laskar (verifier). Passer par DM IG ou appel. |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve — site toulouse-montres.com (contact page 404), specialiste montres luxe occasion (Rolex, Breitling, Patek). Adresse: 10 rue Pierre de Fermat. Contacter par tel ou visite directe. |
 | ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | ECARTE | Boutique rue Languedoc fermee mai 2022 — siege social deplace a Castelginest, pas de boutique Toulouse |
 | TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (site: dorise-joaillier.com, form web) |
 | ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve, chercher via Instagram |
@@ -83,7 +83,7 @@
 | CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
+| POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | ECARTE | Liquidation judiciaire prononcee le 11/04/2024 — a retirer |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
 | SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-3478697915070103749) |
@@ -106,6 +106,7 @@
 | NITYA (DUKAN DE NITYA) | Inactive depuis 27/02/2018 (Saint-Etienne) |
 | MJ CONCEPT STORE VERSION CAMELEON | Radiee en septembre 2021 (Saint-Etienne) |
 | MAUELICLE | En liquidation depuis mars 2023 (Victor-Hugo) |
+| POBIEDA | Liquidation judiciaire prononcee le 11/04/2024 (Saint-Rome, 16 rue Saint-Rome) |
 
 ## Do Not Contact
 (vide)
