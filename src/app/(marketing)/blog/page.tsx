@@ -37,6 +37,15 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "bijouterie-independante-toulouse",
+        title: "Bijouterie indépendante à Toulouse : comment rendre tes produits visibles en ligne",
+        description:
+            "95 % du stock des bijouteries toulousaines est invisible en ligne. Voici comment changer ça en moins de 10 minutes, sans site e-commerce.",
+        publishedAt: "2026-04-27",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
 ];
 
 export default function BlogPage() {

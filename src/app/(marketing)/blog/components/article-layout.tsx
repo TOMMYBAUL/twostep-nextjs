@@ -34,6 +34,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-sneakers-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Bijouterie indépendante à Toulouse : comment rendre tes produits visibles en ligne",
+        slug: "bijouterie-independante-toulouse",
+        category: "marchands",
+    },
 ];
 
 export function ArticleLayout({
