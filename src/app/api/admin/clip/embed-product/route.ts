@@ -2,27 +2,21 @@
  * Admin endpoint pour trigger manuellement un embed CLIP sur un product (Cycle 8.5).
  *
  * Usage : POST /api/admin/clip/embed-product { productId: string }
- * Auth : whitelist ADMIN_EMAILS (cf. src/lib/admin/guard.ts).
+ * Auth : Supabase `app_metadata.role === "admin"` via requireAdmin().
  *
  * Pour le bootstrap initial Kap pilote (200 produits), on appellera ce endpoint
  * en boucle séquentielle. À scaler via Inngest plus tard (V1.5).
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { isAdmin } from "@/lib/admin/guard";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { embedAndStoreProduct } from "@/lib/enrichment/clip-pipeline";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-    const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user || !isAdmin(user.email)) {
-        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth.error) return auth.error;
 
     let body: { productId?: string };
     try {

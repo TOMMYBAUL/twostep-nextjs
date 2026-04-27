@@ -8,7 +8,7 @@ const VALID_STATUSES = ["active", "pending", "suspended"] as const;
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const auth = await requireAdmin();
-        if ("error" in auth) return auth.error;
+        if (auth.error) return auth.error;
 
         const { id } = await params;
 

@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function GET(request: NextRequest) {
     try {
         const auth = await requireAdmin();
-        if ("error" in auth) return auth.error;
+        if (auth.error) return auth.error;
 
         const { searchParams } = request.nextUrl;
         const page = Math.max(1, Number(searchParams.get("page")) || 1);
