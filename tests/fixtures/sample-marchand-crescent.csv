@@ -1,0 +1,31 @@
+Référence,Désignation,Marque,Catégorie,Code-barres,Prix TTC,Stock,Taille,Coloris,Photo URL,Description
+SNK-001,Nike Air Max 90,Nike,Sneakers,0884776073143,129,99,3,42,Noir/Blanc,https://cdn.example.com/nike-am90-noir.jpg,"Sneakers iconiques, semelle Air visible"
+SNK-002,Nike Air Max 90,Nike,Sneakers,0884776073143,129.99,5,43,Noir/Blanc,https://cdn.example.com/nike-am90-noir.jpg,"Sneakers iconiques, semelle Air visible"
+SNK-003,Adidas Stan Smith Originals,Adidas,Sneakers,4055017461258,"99,90",4,40,Blanc/Vert,https://cdn.example.com/adidas-stan-smith.jpg,"Cuir blanc, talon vert"
+SNK-004,Adidas Stan Smith Originals,Adidas,Sneakers,4055017461258,99.90,2,41,Blanc/Marine,https://cdn.example.com/adidas-stan-smith-marine.jpg,
+SNK-005,New Balance 574 Classic,New Balance,Sneakers,0739655749041,"110,00",6,EU 41,Gris,https://cdn.example.com/nb574-gris.jpg,"Confort tout-terrain, daim/maille"
+SNK-006,New Balance 990v6,New Balance,Sneakers,196941734228,210,1,42,5,Gris,,Modèle made in USA
+SNK-007,Veja Campo Chromefree Cuir,Veja,Sneakers,3611001063117,"150,00",2,40,Blanc/Pierre,https://cdn.example.com/veja-campo-pierre.jpg,"Cuir tanné chrome-free, semelle caoutchouc sauvage"
+SNK-008,Veja Campo Chromefree Cuir,Veja,Sneakers,3611001063117,150,3,42,Blanc/Marsala,https://cdn.example.com/veja-campo-marsala.jpg,
+JEAN-101,Levi's 501 Original Fit,Levi's,Jeans,5400898741743,"95,00",4,W32 L32,Stone Blue,https://cdn.example.com/levis-501-stone.jpg,"Coupe droite intemporelle, 100% coton"
+JEAN-102,Levi's 511 Slim Fit,Levi's,Jeans,5400898845259,"95,00",2,W30 L32,Black Worn,https://cdn.example.com/levis-511-black.jpg,
+JEAN-103,Carhartt WIP Single Knee,Carhartt,Pantalons,4064958301974,"130,00",3,W32 L32,Hamilton Brown,https://cdn.example.com/carhartt-singleknee.jpg,"Toile canvas Dearborn 12oz"
+SHIRT-201,Carhartt WIP Chase T-shirt,Carhartt,T-shirts,4064958456225,"45,00",8,M,Black/Gold,https://cdn.example.com/carhartt-chase-tee.jpg,"Coton lourd, broderie C"
+SHIRT-202,Stüssy Basic Logo Tee,Stüssy,T-shirts,196971250081,"55,00",4,L,Pigment Black,https://cdn.example.com/stussy-basic.jpg,"Édition saisonnière SS26"
+SHIRT-203,Polo Ralph Lauren Custom Slim,Ralph Lauren,Polos,3616533476126,"129,00",,M,Navy,,Polo coton piqué — taille intermédiaire entre regular et slim
+SHIRT-204,Polo Ralph Lauren Custom Slim,Ralph Lauren,Polos,3616533476126,129,1,L,White,https://cdn.example.com/rl-polo-white.jpg,
+ACC-301,Ray-Ban Wayfarer Classic,Ray-Ban,Lunettes,8056597144056,"165,00",2,Standard,Noir,https://cdn.example.com/rayban-wayfarer.jpg,"Verres polarisés G-15, monture acétate"
+ACC-302,Ray-Ban Aviator Classic,Ray-Ban,Lunettes,805 0597 33846 0,"175,00",1,58mm,Or/Vert,,EAN cassé exprès — espaces dans le code
+ACC-303,Casquette New Era LA Dodgers,New Era,Casquettes,5054198473492,"39,90",5,M/L,Bleu,https://cdn.example.com/newera-la.jpg,
+ACC-304,Ceinture cuir L'Atelier de Camille,L'Atelier,Ceintures,,"79,00",2,90 cm,Cognac,,"Pièce unique, cuir pleine fleur, fabriqué à Toulouse"
+ACC-305,Sac upcyclé toile militaire,,Bagagerie,,"120,00",1,Unique,Kaki,https://drive.google.com/file/d/PRIVATE_LINK,Pièce unique boutique — réalisé à partir d'un sac surplus 1990
+PARF-401,Le Labo Santal 33 EDP 50ml,Le Labo,Parfumerie,3700378400079,"195,00",2,50 ml,,https://cdn.example.com/lelabo-santal33.jpg,"Bois de santal, cardamome"
+COSM-501,Aesop Resurrection Hand Wash 500ml,Aesop,Cosmétiques,9319944001075,"43,00",6,500 ml,,,
+SOIN-502,Tata Harper Hydrating Floral Essence,Tata Harper,Cosmétiques,851177005064,"68,00",3,50 ml,,,EAN UPC-12 (12 chiffres au lieu de 13 — à compléter)
+TECH-601,Apple AirPods Pro 2 USB-C,Apple,Audio,194253461173,"279,00",2,Standard,Blanc,https://cdn.example.com/airpods-pro2.jpg,
+TECH-602,Sony WH-1000XM5,Sony,Audio,4548736133662,"399,00",1,Standard,Noir,,
+VINT-701,Veste Levi's Trucker vintage 70s,Levi's,Vintage,,"180,00",1,M,Denim brut,,Pièce unique chinée — pas d'EAN d'origine
+VINT-702,Sweat Champion 90s reverse weave,Champion,Vintage,,"120,00",1,L,Gris chiné,,Pièce unique
+CUSTOM-801,Sweat customisé Crescent x Atelier,,Customisé boutique,,,1,L,Noir/Or,,"Tirage limité 5 ex, sérigraphié main"
+CUSTOM-802,Tote bag toile Crescent,Crescent,Goodies,123ABC456789X,"15,00",12,Unique,Naturel,https://cdn.example.com/tote-crescent.jpg,EAN cassé exprès — lettres dedans
+DEMO-901,Article test données vides,,,,,,,,,
