@@ -2,6 +2,8 @@
 import { useState } from "react";
 
 import { CsvUpload } from "./csv-upload";
+import { ManualEnrich } from "./manual-enrich";
+import { PublishFeed } from "./publish-feed";
 import { QueueReview } from "./queue-review";
 
 type Step = "csv" | "queue" | "review" | "publish";
@@ -63,14 +65,8 @@ export default function OnboardingWizardPage() {
                     />
                 )}
                 {step === "queue" && <QueueReview merchantId={merchantId} />}
-                {step === "review" && (
-                    <p className="text-tertiary">
-                        Enrichissement manuel — à implémenter en Task 1.4
-                    </p>
-                )}
-                {step === "publish" && (
-                    <p className="text-tertiary">Publier feed — à implémenter en Task 1.5</p>
-                )}
+                {step === "review" && <ManualEnrich merchantId={merchantId} />}
+                {step === "publish" && <PublishFeed merchantId={merchantId} />}
             </section>
         </div>
     );
