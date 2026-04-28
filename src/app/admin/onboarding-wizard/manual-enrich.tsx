@@ -20,6 +20,10 @@ interface FormState {
     price: string; // garde en string pour input (€ avec décimales), convert au submit
     photo_url: string;
     channel: "online" | "in_store" | "multi";
+    category: string;
+    size: string;
+    description: string;
+    sku: string;
 }
 
 const EMPTY_FORM: FormState = {
@@ -29,6 +33,10 @@ const EMPTY_FORM: FormState = {
     price: "",
     photo_url: "",
     channel: "in_store",
+    category: "",
+    size: "",
+    description: "",
+    sku: "",
 };
 
 /** Heuristique pré-remplissage form depuis la raw_row CSV (français + anglais). */
@@ -56,6 +64,10 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
     const brand = get("Marque", "marque", "Brand", "brand", "Fabricant");
     const priceRaw = get("Prix TTC", "Prix", "Price", "price", "PrixVente");
     const photo = get("Photo URL", "Photo", "photo_url", "Image", "image_url", "Image URL");
+    const category = get("Catégorie", "Categorie", "Category", "category", "Type");
+    const size = get("Taille", "taille", "Size", "size", "Pointure", "Dimension");
+    const description = get("Description", "description", "Notes", "Détails", "Details");
+    const sku = get("Référence", "Reference", "SKU", "sku", "Code", "Ref");
 
     // Convert price like "129,99" → "129.99" (NUMERIC en €, pas en cents)
     let price = "";
@@ -74,6 +86,10 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
         brand,
         price,
         photo_url: photo,
+        category,
+        size,
+        description,
+        sku,
     };
 }
 
@@ -150,6 +166,10 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                     price: priceNum,
                     photo_url: form.photo_url.trim() || undefined,
                     channel: form.channel,
+                    category: form.category.trim() || undefined,
+                    size: form.size.trim() || undefined,
+                    description: form.description.trim() || undefined,
+                    sku: form.sku.trim() || undefined,
                 }),
             });
             const json = (await res.json()) as {
@@ -300,6 +320,42 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                             onChange={(v) => setForm({ ...form, photo_url: v })}
                             placeholder="https://…"
                         />
+                        <Field
+                            label="Catégorie"
+                            value={form.category}
+                            onChange={(v) => setForm({ ...form, category: v })}
+                            placeholder="ex Sneakers, T-shirts, Cosmétiques"
+                            maxLength={200}
+                        />
+                        <Field
+                            label="Taille"
+                            value={form.size}
+                            onChange={(v) => setForm({ ...form, size: v })}
+                            placeholder="ex 42, M, EU 41, W30 L32, 50 ml"
+                            maxLength={100}
+                        />
+                        <Field
+                            label="SKU / Référence"
+                            value={form.sku}
+                            onChange={(v) => setForm({ ...form, sku: v })}
+                            placeholder="ex SNK-001"
+                            maxLength={100}
+                        />
+                        <div>
+                            <label className="block text-sm text-secondary mb-1">
+                                Description
+                            </label>
+                            <textarea
+                                value={form.description}
+                                onChange={(e) =>
+                                    setForm({ ...form, description: e.target.value })
+                                }
+                                rows={3}
+                                maxLength={2000}
+                                className="w-full px-3 py-2 border border-secondary rounded text-sm"
+                                placeholder="Optionnelle, ex 'Cuir tanné chrome-free'"
+                            />
+                        </div>
                         <div>
                             <label
                                 htmlFor="enrich-channel"

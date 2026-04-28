@@ -34,6 +34,10 @@ interface EnrichBody {
     price?: unknown;
     photo_url?: unknown;
     channel?: unknown;
+    category?: unknown;
+    size?: unknown;
+    description?: unknown;
+    sku?: unknown;
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -83,6 +87,23 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({ error: "invalid_photo_url" }, { status: 400 });
     }
 
+    const category =
+        typeof body.category === "string" && body.category.trim().length > 0
+            ? body.category.trim().slice(0, 200)
+            : null;
+    const size =
+        typeof body.size === "string" && body.size.trim().length > 0
+            ? body.size.trim().slice(0, 100)
+            : null;
+    const description =
+        typeof body.description === "string" && body.description.trim().length > 0
+            ? body.description.trim().slice(0, 2000)
+            : null;
+    const sku =
+        typeof body.sku === "string" && body.sku.trim().length > 0
+            ? body.sku.trim().slice(0, 100)
+            : null;
+
     // EAN validation : si fourni, doit canonicalize en EAN-13 valide.
     let ean: string | null = null;
     if (typeof body.ean === "string" && body.ean.trim().length > 0) {
@@ -129,10 +150,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             price,
             photo_url: photoUrl,
             channel,
+            category,
+            size,
+            description,
+            sku,
             visible: false,
             review_status: "pending_review",
         })
-        .select("id, name, ean, brand, price, channel, review_status, visible")
+        .select(
+            "id, name, ean, brand, price, channel, category, size, review_status, visible",
+        )
         .single();
 
     if (insertErr || !product) {
