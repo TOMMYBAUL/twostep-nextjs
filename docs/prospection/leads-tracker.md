@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-25 (L'Auditeur)*
+*Derniere mise a jour : 2026-04-28 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 53
-- NOUVEAU : 25
+- Total leads : 63
+- NOUVEAU : 35
 - CONTACTE : 1
 - BROUILLON : 22
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-04-28 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | NOUVEAU | Email confirme — rediger brouillon (Stephanie, 16 rue des Tourneurs) |
+| N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | NOUVEAU | Email probable (site bijouterie-toulouse-nougues.fr actif, contact page existe) — verifier avant envoi |
+| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | — | 540800240 | 8/10 | NOUVEAU | Email non trouve — site negrevergne.fr (formulaire uniquement), tel 09 70 35 12 60, FB maroquinerie.negrevergne |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | — | 809552359 | 7/10 | NOUVEAU | Email marque centrale sav@arseneetlespipelettes.com (n'atteint pas la gerante) — contacter via boutique 25 rue de Metz |
+| RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouve — FB "Magasin Ephemere Toulouse", 53 rue de la Pomme |
+| SERHA (Le Lieu) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouve — FB "Le Lieu Toulouse", tel 05 31 15 02 34, 37 rue de Metz |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 444997753 | 6/10 | NOUVEAU | Email non trouve — repertoires uniquement, 12B rue de la Pomme |
+| SADIA | Capitole | Mode femme | Sadia Belkelfa | — | 918125394 | 5/10 | NOUVEAU | Email non trouve — tres recente, sadiaoff.com (inaccessible), 39 rue de Bayard |
+
+**Boutiques ecartees (session 28/04) :** COMEBACK (siege Carmaux, pas boutique Toulouse), SARL ANDRIK (Last Mile Shop = velo, hors cible), BURBERRYS (chaine internationale), SABON (chaine internationale), DIKA (marque nationale), TIMBERLAND (franchise Guillaume Huguet), UNBOTTLED (chaine eco-cosmetique nationale)
 
 ### Victor-Hugo — 2026-04-25 (L'Eclaireur)
 
