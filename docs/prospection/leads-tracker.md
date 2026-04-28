@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-28 (L'Eclaireur)*
+*Derniere mise a jour : 2026-04-28 (L'Auditeur)*
 
 ## Stats
 - Total leads : 63
-- NOUVEAU : 35
+- NOUVEAU : 33
 - CONTACTE : 1
-- BROUILLON : 22
+- BROUILLON : 24
 - Reponses : 0
 - Signes : 0
 
@@ -16,8 +16,8 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | NOUVEAU | Email confirme — rediger brouillon (Stephanie, 16 rue des Tourneurs) |
-| N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | NOUVEAU | Email probable (site bijouterie-toulouse-nougues.fr actif, contact page existe) — verifier avant envoi |
+| LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r6217091151963335716) |
+| N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r2720507363937656694) — email confirme via bijouterie-toulouse-nougues.fr/contactez-les-bijouteries |
 | NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | — | 540800240 | 8/10 | NOUVEAU | Email non trouve — site negrevergne.fr (formulaire uniquement), tel 09 70 35 12 60, FB maroquinerie.negrevergne |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | — | 809552359 | 7/10 | NOUVEAU | Email marque centrale sav@arseneetlespipelettes.com (n'atteint pas la gerante) — contacter via boutique 25 rue de Metz |
@@ -135,6 +135,17 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap brouillons email — 2026-04-28 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Stephanie Roux (LILI-LEONE) | lilileone@live.fr | Lili Léone visible dans les recherches de stock local Toulouse ? | r6217091151963335716 | ACA — 20 ans de sourcing, marques Sessùn/Newtone, Two-Step rend le stock visible aux clientes du quartier |
+| 2 | Patricia Lacombe (N A L'INFINI) | contact@bijouterie-toulouse-nougues.fr | N à l'Infini visible dans les recherches de stock local Toulouse ? | r2720507363937656694 | ACA — bijoux argent 925 Bronzallure/Endless/Tamahiné, Two-Step rend la boutique visible sur la carte locale |
+
+*Note : recap prevu dans Notion (data_source_id: e6208e6f-2590-42cf-b25d-ac8e262eaf7c) — MCP Notion non disponible dans cet environnement, consigne ici en attendant.*
 
 ## Juridique (Phase 0)
 
