@@ -17,7 +17,7 @@ interface FormState {
     name: string;
     ean: string;
     brand: string;
-    price_cents: string; // garde en string pour input, convert au submit
+    price: string; // garde en string pour input (€ avec décimales), convert au submit
     photo_url: string;
     channel: "online" | "in_store" | "multi";
 }
@@ -26,7 +26,7 @@ const EMPTY_FORM: FormState = {
     name: "",
     ean: "",
     brand: "",
-    price_cents: "",
+    price: "",
     photo_url: "",
     channel: "in_store",
 };
@@ -57,13 +57,13 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
     const priceRaw = get("Prix TTC", "Prix", "Price", "price", "PrixVente");
     const photo = get("Photo URL", "Photo", "photo_url", "Image", "image_url", "Image URL");
 
-    // Convert price like "129,99" or "129.99" → cents
-    let priceCents = "";
+    // Convert price like "129,99" → "129.99" (NUMERIC en €, pas en cents)
+    let price = "";
     if (priceRaw) {
         const normalized = priceRaw.replace(/\s+/g, "").replace(",", ".");
         const num = Number.parseFloat(normalized);
         if (Number.isFinite(num) && num > 0) {
-            priceCents = String(Math.round(num * 100));
+            price = num.toFixed(2);
         }
     }
 
@@ -72,7 +72,7 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
         name,
         ean,
         brand,
-        price_cents: priceCents,
+        price,
         photo_url: photo,
     };
 }
@@ -126,9 +126,9 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
         e.preventDefault();
         if (!selected) return;
 
-        const priceNum = Number.parseInt(form.price_cents, 10);
+        const priceNum = Number.parseFloat(form.price.replace(",", "."));
         if (!Number.isFinite(priceNum) || priceNum <= 0) {
-            setError("Prix en centimes doit être > 0");
+            setError("Prix doit être > 0 (en euros, ex: 129.99)");
             return;
         }
         if (!form.name.trim()) {
@@ -147,7 +147,7 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                     name: form.name.trim(),
                     ean: form.ean.trim() || undefined,
                     brand: form.brand.trim() || undefined,
-                    price_cents: priceNum,
+                    price: priceNum,
                     photo_url: form.photo_url.trim() || undefined,
                     channel: form.channel,
                 }),
@@ -280,14 +280,18 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                             maxLength={200}
                         />
                         <Field
-                            label="Prix (centimes) *"
-                            value={form.price_cents}
+                            label="Prix (€) *"
+                            value={form.price}
                             onChange={(v) =>
-                                setForm({ ...form, price_cents: v.replace(/\D/g, "") })
+                                setForm({
+                                    ...form,
+                                    // accepte chiffres + 1 séparateur (.,)
+                                    price: v.replace(/[^\d.,]/g, ""),
+                                })
                             }
                             type="text"
-                            inputMode="numeric"
-                            placeholder="ex 12999 pour 129.99 €"
+                            inputMode="decimal"
+                            placeholder="ex 129.99"
                             required
                         />
                         <Field

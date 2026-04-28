@@ -11,7 +11,7 @@ interface SampleProduct {
     name: string;
     ean: string | null;
     brand: string | null;
-    price_cents: number;
+    price: number | string | null; // Supabase NUMERIC peut revenir en string
     channel: string;
 }
 
@@ -164,7 +164,9 @@ export function PublishFeed({ merchantId }: PublishFeedProps) {
                                             </td>
                                             <td className="px-3 py-2">{p.brand ?? "—"}</td>
                                             <td className="px-3 py-2">
-                                                {(p.price_cents / 100).toFixed(2)} €
+                                                {p.price !== null
+                                                    ? `${Number(p.price).toFixed(2)} €`
+                                                    : "—"}
                                             </td>
                                             <td className="px-3 py-2 text-xs">
                                                 {p.channel}

@@ -31,7 +31,7 @@ interface EnrichBody {
     name?: unknown;
     ean?: unknown;
     brand?: unknown;
-    price_cents?: unknown;
+    price?: unknown;
     photo_url?: unknown;
     channel?: unknown;
 }
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({ error: "invalid_name" }, { status: 400 });
     }
 
-    const priceCents =
-        typeof body.price_cents === "number" ? body.price_cents : null;
-    if (priceCents === null || !Number.isInteger(priceCents) || priceCents <= 0) {
-        return NextResponse.json({ error: "invalid_price_cents" }, { status: 400 });
+    // products.price est NUMERIC en euros (ex 119.00). Décimales OK.
+    const price = typeof body.price === "number" ? body.price : null;
+    if (price === null || !Number.isFinite(price) || price <= 0 || price > 1_000_000) {
+        return NextResponse.json({ error: "invalid_price" }, { status: 400 });
     }
 
     const channel: Channel =
@@ -126,13 +126,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             name,
             ean,
             brand,
-            price_cents: priceCents,
+            price,
             photo_url: photoUrl,
             channel,
             visible: false,
             review_status: "pending_review",
         })
-        .select("id, name, ean, brand, price_cents, channel, review_status, visible")
+        .select("id, name, ean, brand, price, channel, review_status, visible")
         .single();
 
     if (insertErr || !product) {

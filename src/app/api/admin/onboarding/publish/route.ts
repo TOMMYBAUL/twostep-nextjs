@@ -53,7 +53,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         // Preview : count + sample 5 first
         const { data: sample, error: sampleErr, count } = await admin
             .from("products")
-            .select("id, name, ean, brand, price_cents, channel", { count: "exact" })
+            .select("id, name, ean, brand, price, channel", { count: "exact" })
             .eq("merchant_id", merchantId)
             .eq("review_status", "pending_review")
             .eq("visible", false)
