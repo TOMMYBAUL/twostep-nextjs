@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isAdmin } from "@/lib/admin/guard";
+import { requireAdmin } from "@/lib/auth/require-admin";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-    const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user || !isAdmin(user.email)) {
-        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth.error) return auth.error;
 
     let form: FormData;
     try {

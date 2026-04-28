@@ -2,13 +2,27 @@ import * as XLSX from "xlsx";
 import type { IInvoiceParser, ParsedInvoice, ParsedInvoiceItem } from "./types";
 
 // Column header variants (case-insensitive matching)
+//
+// IMPORTANT — Cycle 3 fix (2026-04-25) : "description" RETIRÉ de NAME_HEADERS.
+// Cause de faux positifs catalog/import : 20 produits ont eu name = description
+// du CSV (ex "Bois de santal, cardamome" au lieu de "Le Labo Santal 33").
+// Les colonnes Description sont longues, contextuelles — pas un nom court de
+// produit. Si un CSV n'a QUE "Description" sans Désignation/Libellé/Article,
+// le fallback est de tomber sur AI parser (Claude Haiku) qui peut séparer.
 const NAME_HEADERS = [
-    "designation", "désignation", "article", "produit", "description",
+    "designation", "désignation", "article", "produit",
     "libelle", "libellé", "product", "item", "nom", "intitule", "intitulé",
+    "title", "titre",
+];
+
+// Description column captured separately (informational, not used as name).
+const DESCRIPTION_HEADERS = [
+    "description", "descriptif", "details", "détails", "specifications",
 ];
 
 const EAN_HEADERS = [
     "ean", "code-barres", "barcode", "gtin", "code ean", "code barre", "ean13",
+    "gencode", "upc", "code-barre",
 ];
 
 const SKU_HEADERS = [
@@ -37,6 +51,7 @@ type ColumnMapping = {
     brand: number | null;
     quantity: number | null;
     unit_price: number | null;
+    description: number | null;
 };
 
 function normalizeHeader(header: string): string {
@@ -56,8 +71,16 @@ function matchesAny(header: string, candidates: string[]): boolean {
     });
 }
 
-function detectColumns(headers: string[]): ColumnMapping {
-    const mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null };
+export function detectColumns(headers: string[]): ColumnMapping {
+    const mapping: ColumnMapping = {
+        name: null,
+        ean: null,
+        sku: null,
+        brand: null,
+        quantity: null,
+        unit_price: null,
+        description: null,
+    };
 
     for (let i = 0; i < headers.length; i++) {
         const h = headers[i];
@@ -76,13 +99,74 @@ function detectColumns(headers: string[]): ColumnMapping {
             mapping.quantity = i;
         } else if (mapping.unit_price === null && matchesAny(h, UNIT_PRICE_HEADERS)) {
             mapping.unit_price = i;
+        } else if (mapping.description === null && matchesAny(h, DESCRIPTION_HEADERS)) {
+            // Captured but not used as name — protects against catalog/import faux positifs.
+            mapping.description = i;
         }
     }
 
     return mapping;
 }
 
-function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvoiceItem[] {
+const URL_RE = /^https?:\/\//i;
+const NAME_MAX_LEN = 200; // au-delà, c'est probablement une description ou un body texte
+
+/**
+ * Garde-fou anti-faux-positif sur le name extrait :
+ * - URL (http://...) → c'est une photo URL mappée par erreur
+ * - String trop longue (>200 chars) → c'est une description, pas un nom court
+ * - Vide → skip
+ */
+export function looksLikeProductName(value: string): boolean {
+    const trimmed = value.trim();
+    if (!trimmed) return false;
+    if (URL_RE.test(trimmed)) return false;
+    if (trimmed.length > NAME_MAX_LEN) return false;
+    return true;
+}
+
+/**
+ * Évaluation qualité d'un name (Cycle 5) — distingue 3 niveaux :
+ * - clear   : nom de produit propre, traité normalement
+ * - suspect : ressemble à une description courte (ex "Cuir blanc, talon vert").
+ *             On laisse passer mais on log warning + caller peut flag pour review.
+ * - invalid : à rejeter direct (URL, vide, > 200 chars).
+ *
+ * Heuristique principale "suspect" : présence de virgule + espace ", " indique
+ * une phrase descriptive plus qu'un nom court structuré ("Nike Air Max 90"
+ * n'a pas de virgule, "Cuir blanc, talon vert" oui).
+ *
+ * **Volontairement permissif** : pas de blacklist de mots descriptifs
+ * (trop de faux négatifs sur les noms légitimes type "Coca-Cola, 33cl"),
+ * pas de seuil de longueur agressif. Le wizard step 2 (review queue humaine)
+ * reste le vrai filtre — cette heuristique sert juste à logger les candidats.
+ */
+export type NameQuality = "clear" | "suspect" | "invalid";
+
+export interface NameAssessment {
+    quality: NameQuality;
+    reason?: string;
+}
+
+const SUSPECT_PROSE_RE = /,\s/;
+
+export function assessProductName(value: string): NameAssessment {
+    const trimmed = value.trim();
+    if (!trimmed) return { quality: "invalid", reason: "empty" };
+    if (URL_RE.test(trimmed)) return { quality: "invalid", reason: "url" };
+    if (trimmed.length > NAME_MAX_LEN) {
+        return { quality: "invalid", reason: `too_long (${trimmed.length} > ${NAME_MAX_LEN})` };
+    }
+    if (SUSPECT_PROSE_RE.test(trimmed)) {
+        return {
+            quality: "suspect",
+            reason: "comma-space (probable prose/description, not a short product name)",
+        };
+    }
+    return { quality: "clear" };
+}
+
+export function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvoiceItem[] {
     const items: ParsedInvoiceItem[] = [];
 
     // Skip header row (index 0), iterate data rows
@@ -90,8 +174,27 @@ function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvo
         const row = rows[i];
         if (!row || row.length === 0) continue;
 
-        const name = mapping.name !== null ? String(row[mapping.name] ?? "").trim() : "";
-        if (!name) continue; // skip empty rows
+        const rawName = mapping.name !== null ? String(row[mapping.name] ?? "").trim() : "";
+        if (!rawName) continue; // skip empty rows
+
+        // Cycle 3 + 5 : évaluation de la qualité du name extrait.
+        // - invalid (URL, trop long, vide) → ligne rejetée d'office.
+        // - suspect (description courte, ", " détecté) → warning loggué, ligne
+        //   conservée pour passer en queue review humaine via wizard step 2.
+        const assessment = assessProductName(rawName);
+        if (assessment.quality === "invalid") {
+            if (process.env.NODE_ENV === "development") {
+                console.warn(
+                    `[spreadsheet-parser] row ${i} rejetée — invalid name (${assessment.reason}): "${rawName.slice(0, 80)}..."`,
+                );
+            }
+            continue;
+        }
+        if (assessment.quality === "suspect" && process.env.NODE_ENV === "development") {
+            console.warn(
+                `[spreadsheet-parser] row ${i} suspect (${assessment.reason}) — kept for queue review: "${rawName.slice(0, 80)}"`,
+            );
+        }
 
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;
         const sku = mapping.sku !== null ? String(row[mapping.sku] ?? "").trim() || null : null;
@@ -100,7 +203,7 @@ function extractStructured(rows: string[][], mapping: ColumnMapping): ParsedInvo
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
         const unit_price = rawPrice != null && rawPrice !== "" ? Number(String(rawPrice).replace(",", ".")) || null : null;
 
-        items.push({ name, ean, sku, brand, quantity, unit_price });
+        items.push({ name: rawName, ean, sku, brand, quantity, unit_price });
     }
 
     return items;
@@ -156,7 +259,7 @@ export const spreadsheetParser: IInvoiceParser = {
         // Scan the first 30 rows to find the header row (real invoices have
         // supplier info, addresses, etc. above the product table)
         let headerRowIndex = -1;
-        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null };
+        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null, description: null };
 
         const scanLimit = Math.min(rows.length, 30);
         for (let r = 0; r < scanLimit; r++) {

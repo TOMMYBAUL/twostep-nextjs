@@ -352,7 +352,7 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = 1): P
 
 // ── EAN-Search.org (PRIMARY — 1.1 billion products, excellent EU coverage) ──
 
-async function fetchFromEanSearch(ean: string): Promise<EanResult | null> {
+export async function fetchFromEanSearch(ean: string): Promise<EanResult | null> {
     const token = process.env.EAN_SEARCH_API_TOKEN;
     if (!token) return null;
 
@@ -431,7 +431,7 @@ export async function searchEanByNameEanSearch(
 
 // ── UPCitemdb (SECONDARY — US-centric, free tier) ──
 
-async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
+export async function fetchFromUpcDatabase(ean: string): Promise<EanResult | null> {
     await upcRateLimiter.acquire();
 
     const apiKey = process.env.UPCITEMDB_API_KEY;
@@ -577,7 +577,7 @@ async function searchEanByNameUpc(
 
 // ── Open Beauty Facts (FREE — cosmetics, skincare) ──
 
-async function fetchFromOpenBeautyFacts(ean: string): Promise<EanResult | null> {
+export async function fetchFromOpenBeautyFacts(ean: string): Promise<EanResult | null> {
     const res = await fetchWithRetry(
         `https://world.openbeautyfacts.org/api/v2/product/${ean}.json`,
         {},
@@ -634,7 +634,7 @@ async function searchEanByNameOpenBeautyFacts(
 
 // ── Open Products Facts (FREE — electronics, toys, clothes) ──
 
-async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null> {
+export async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult | null> {
     const res = await fetchWithRetry(
         `https://world.openproductsfacts.org/api/v2/product/${ean}.json`,
         {},

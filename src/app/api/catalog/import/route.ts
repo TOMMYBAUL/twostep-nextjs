@@ -174,7 +174,9 @@ export async function POST(request: NextRequest) {
                 productsUpdated++;
                 stockReplaced++;
             } else {
-                // CREATE new product (direct INSERT — RPC has overload ambiguity)
+                // CREATE new product — défaut INVISIBLE jusqu'à ce que la cascade ait confirmé
+                // un score ≥ 0.95 (cf. score-cascade.ts gates).
+                // Cf. brain Socle-identification-cascade : "Si pas sûr à 95%+ → PAS visible consumer"
                 const newId = crypto.randomUUID();
                 const { error: createErr } = await admin.from("products").insert({
                     id: newId,
@@ -182,7 +184,8 @@ export async function POST(request: NextRequest) {
                     name: cleanName,
                     price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
                     ean: firstItem.ean || null,
-                    visible: true,
+                    visible: false,
+                    review_status: "pending",
                 });
 
                 if (createErr) {
@@ -199,7 +202,7 @@ export async function POST(request: NextRequest) {
                 if (availableSizes.length > 0) {
                     await supabase.from("products").update({
                         available_sizes: availableSizes,
-                        visible: true,
+                        // visible reste false jusqu'à la cascade — on n'override pas ici
                     }).eq("id", newId);
                 }
 
@@ -225,7 +228,7 @@ export async function POST(request: NextRequest) {
             captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
         }
 
-        // ── Enrichment cascade (identical to invoice validation) ──
+        // ── Enrichment cascade (Phase A4 + Cycle 2 — unified socle 6 tiers) ──
         // Collect all newly created products for enrichment
         const { data: newProducts } = await admin
             .from("products")
@@ -233,60 +236,74 @@ export async function POST(request: NextRequest) {
             .eq("merchant_id", merchant.id)
             .is("photo_url", null);
 
-        const { searchEanByName, lookupEan } = await import("@/lib/ean/lookup");
+        const { lookupEan, searchEanByName } = await import("@/lib/ean/lookup");
         const { searchProductImage } = await import("@/lib/images/serper");
         const { createImageJob } = await import("@/lib/images/jobs");
+        const { runCascade } = await import("@/lib/enrichment/cascade-engine");
 
         for (const product of newProducts ?? []) {
             try {
+                // 1. Enrichissement DB (canonical_name, brand, category, photo) via lookupEan
+                //    qui appelle applyEnrichment en interne.
                 if (product.ean) {
-                    // Has EAN → direct lookup (enriches brand/category/photo)
                     await lookupEan(product.ean, product.id);
-                    continue;
-                }
-
-                let foundEan: string | null = null;
-
-                // Strategy A: SKU → check if another product has this SKU with an EAN
-                if (product.sku) {
-                    const { data: skuMatch } = await admin
-                        .from("products")
-                        .select("ean")
-                        .eq("sku", product.sku)
-                        .not("ean", "is", null)
-                        .neq("id", product.id)
-                        .limit(1)
-                        .single();
-                    if (skuMatch?.ean) foundEan = skuMatch.ean;
-                }
-
-                // Strategy B: reverse search by name via EAN-Search + UPCitemdb + Open Facts
-                if (!foundEan) {
-                    const found = await searchEanByName(product.name, product.brand);
-                    if (found) {
-                        foundEan = found.ean;
-                        const updates: Record<string, unknown> = { ean: found.ean };
-                        if (found.brand) updates.brand = found.brand;
-                        if (found.category) updates.category = found.category;
-                        await admin.from("products").update(updates).eq("id", product.id);
-                    }
-                }
-
-                if (foundEan) {
-                    // Found EAN → save and run full enrichment
-                    await admin.from("products").update({ ean: foundEan }).eq("id", product.id);
-                    await lookupEan(foundEan, product.id);
                 } else {
-                    // Last resort: Serper photo by name+brand+SKU
-                    const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
-                    if (photoUrl) {
-                        await admin
+                    // Pas d'EAN → reverse search par nom + SKU match
+                    let foundEan: string | null = null;
+                    if (product.sku) {
+                        const { data: skuMatch } = await admin
                             .from("products")
-                            .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                            .eq("id", product.id);
-                        await createImageJob(product.id, merchant.id, photoUrl);
+                            .select("ean")
+                            .eq("sku", product.sku)
+                            .not("ean", "is", null)
+                            .neq("id", product.id)
+                            .limit(1)
+                            .single();
+                        if (skuMatch?.ean) foundEan = skuMatch.ean;
+                    }
+                    if (!foundEan) {
+                        const found = await searchEanByName(product.name, product.brand);
+                        if (found) foundEan = found.ean;
+                    }
+                    if (foundEan) {
+                        await admin.from("products").update({ ean: foundEan }).eq("id", product.id);
+                        await lookupEan(foundEan, product.id);
+                    } else {
+                        // Last resort photo Serper
+                        const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
+                        if (photoUrl) {
+                            await admin
+                                .from("products")
+                                .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
+                                .eq("id", product.id);
+                            await createImageJob(product.id, merchant.id, photoUrl);
+                        }
                     }
                 }
+
+                // 2. Cascade scoring — calcule identification_score + tiers_matched
+                //    Re-fetch product after lookupEan pour avoir l'EAN potentiellement résolu
+                const { data: refreshed } = await admin
+                    .from("products")
+                    .select("ean, name, brand, sku")
+                    .eq("id", product.id)
+                    .single();
+                if (!refreshed) continue;
+
+                const outcome = await runCascade({
+                    ean: refreshed.ean,
+                    name: refreshed.name,
+                    brand: refreshed.brand,
+                    sku: refreshed.sku,
+                });
+
+                // 3. Persist score + visibility — gate à 0.95 strict
+                await admin.from("products").update({
+                    identification_score: outcome.score,
+                    identification_tiers: outcome.tiers_matched,
+                    visible: outcome.visible,
+                    review_status: outcome.review_status,
+                }).eq("id", product.id);
             } catch (err) {
                 captureError(err, { route: "catalog/import", phase: "enrichment", productId: product.id });
             }

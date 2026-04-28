@@ -40,7 +40,7 @@ type PerProduct = {
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const auth = await requireAdmin();
-    if ("error" in auth) return auth.error;
+    if (auth.error) return auth.error;
 
     const { id: merchantId } = await params;
     const body = await req.json().catch(() => ({}));
