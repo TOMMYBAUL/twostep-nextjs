@@ -38,6 +38,8 @@ interface EnrichBody {
     size?: unknown;
     description?: unknown;
     sku?: unknown;
+    identification_score?: unknown;
+    identification_tiers?: unknown;
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -104,6 +106,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             ? body.sku.trim().slice(0, 100)
             : null;
 
+    // identification_score : optional, [0,1]. Stocké en NUMERIC(4,3).
+    let identificationScore: number | null = null;
+    if (typeof body.identification_score === "number") {
+        const s = body.identification_score;
+        if (Number.isFinite(s) && s >= 0 && s <= 1) {
+            identificationScore = Math.round(s * 1000) / 1000;
+        }
+    }
+
+    // identification_tiers : optional string[].
+    let identificationTiers: string[] | null = null;
+    if (Array.isArray(body.identification_tiers)) {
+        const tiers = body.identification_tiers
+            .filter((t): t is string => typeof t === "string" && t.length < 50)
+            .slice(0, 10);
+        if (tiers.length > 0) identificationTiers = tiers;
+    }
+
     // EAN validation : si fourni, doit canonicalize en EAN-13 valide.
     let ean: string | null = null;
     if (typeof body.ean === "string" && body.ean.trim().length > 0) {
@@ -154,11 +174,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             size,
             description,
             sku,
+            identification_score: identificationScore,
+            identification_tiers: identificationTiers,
             visible: false,
             review_status: "pending_review",
         })
         .select(
-            "id, name, ean, brand, price, channel, category, size, review_status, visible",
+            "id, name, ean, brand, price, channel, category, size, review_status, visible, identification_score, identification_tiers",
         )
         .single();
 

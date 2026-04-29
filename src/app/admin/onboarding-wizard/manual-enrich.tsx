@@ -13,6 +13,23 @@ interface ManualEnrichProps {
     merchantId: string;
 }
 
+interface CascadeSuggestion {
+    suggestion: {
+        name: string;
+        brand: string | null;
+        ean: string | null;
+        category: string | null;
+        photo_url: string | null;
+        sku: string | null;
+    };
+    cascade: {
+        score: number;
+        tiers_matched: string[];
+        review_status: "validated" | "pending" | "masked";
+        visible_proposed: boolean;
+    };
+}
+
 interface FormState {
     name: string;
     ean: string;
@@ -101,6 +118,9 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [lastSuccess, setLastSuccess] = useState<string | null>(null);
+    const [cascadeResult, setCascadeResult] = useState<CascadeSuggestion | null>(null);
+    const [isCascading, setIsCascading] = useState(false);
+    const [cascadeError, setCascadeError] = useState<string | null>(null);
 
     const load = useCallback(async () => {
         if (!merchantId) {
@@ -136,6 +156,49 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
         setForm(prefillFromRawRow(row.raw_row));
         setError(null);
         setLastSuccess(null);
+        setCascadeResult(null);
+        setCascadeError(null);
+    }
+
+    async function runCascadeSuggest(): Promise<void> {
+        if (!selected) return;
+        setIsCascading(true);
+        setCascadeError(null);
+        setCascadeResult(null);
+        try {
+            const res = await fetch("/api/admin/onboarding/cascade-suggest", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ stagingId: selected.id }),
+            });
+            const json = (await res.json()) as
+                | CascadeSuggestion
+                | { error: string };
+            if (!res.ok || !("suggestion" in json)) {
+                setCascadeError(("error" in json ? json.error : null) ?? `HTTP ${res.status}`);
+                return;
+            }
+            setCascadeResult(json);
+        } catch (err) {
+            setCascadeError(err instanceof Error ? err.message : "unknown_error");
+        } finally {
+            setIsCascading(false);
+        }
+    }
+
+    function applyCascadeToForm(): void {
+        if (!cascadeResult) return;
+        const s = cascadeResult.suggestion;
+        setForm((prev) => ({
+            ...prev,
+            name: s.name || prev.name,
+            ean: s.ean || prev.ean,
+            brand: s.brand || prev.brand,
+            category: s.category || prev.category,
+            photo_url: s.photo_url || prev.photo_url,
+            sku: s.sku || prev.sku,
+            // size, description, price : pas touchés (cascade ne les fournit pas)
+        }));
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -170,6 +233,9 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                     size: form.size.trim() || undefined,
                     description: form.description.trim() || undefined,
                     sku: form.sku.trim() || undefined,
+                    // Score + tiers cascade (si run avant) — propagés au product
+                    identification_score: cascadeResult?.cascade.score,
+                    identification_tiers: cascadeResult?.cascade.tiers_matched,
                 }),
             });
             const json = (await res.json()) as {
@@ -279,6 +345,67 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                                 {JSON.stringify(selected.raw_row, null, 2)}
                             </pre>
                         </details>
+
+                        {/* Section cascade auto */}
+                        <div className="rounded border border-secondary p-3 space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="text-sm font-medium text-secondary">
+                                    🔮 Cascade auto (Tier 1-4)
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => void runCascadeSuggest()}
+                                    disabled={isCascading}
+                                    className="text-xs px-3 py-1 border border-brand rounded hover:bg-brand-secondary disabled:opacity-50"
+                                >
+                                    {isCascading ? "Cascade en cours…" : "Lancer la cascade"}
+                                </button>
+                            </div>
+
+                            {cascadeError && (
+                                <p className="text-error-primary text-xs">⚠️ {cascadeError}</p>
+                            )}
+
+                            {cascadeResult && (
+                                <div className="space-y-2 text-xs">
+                                    <CascadeScoreBadge
+                                        score={cascadeResult.cascade.score}
+                                        reviewStatus={cascadeResult.cascade.review_status}
+                                    />
+                                    {cascadeResult.cascade.tiers_matched.length > 0 ? (
+                                        <div className="flex flex-wrap gap-1">
+                                            {cascadeResult.cascade.tiers_matched.map((t) => (
+                                                <span
+                                                    key={t}
+                                                    className="bg-brand-secondary text-brand-primary px-2 py-0.5 rounded font-mono"
+                                                >
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-tertiary">
+                                            Aucun tier matché — cascade n'a rien trouvé. Remplir manuellement.
+                                        </p>
+                                    )}
+                                    <details>
+                                        <summary className="cursor-pointer text-tertiary">
+                                            Suggestion cascade (cliquer pour détails)
+                                        </summary>
+                                        <pre className="mt-2 bg-secondary p-2 rounded overflow-x-auto">
+                                            {JSON.stringify(cascadeResult.suggestion, null, 2)}
+                                        </pre>
+                                    </details>
+                                    <button
+                                        type="button"
+                                        onClick={applyCascadeToForm}
+                                        className="text-xs px-3 py-1 bg-brand-solid text-white rounded hover:bg-brand-solid_hover"
+                                    >
+                                        Appliquer au form
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         <Field
                             label="Nom *"
@@ -404,6 +531,34 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                     </form>
                 )}
             </div>
+        </div>
+    );
+}
+
+function CascadeScoreBadge({
+    score,
+    reviewStatus,
+}: {
+    score: number;
+    reviewStatus: "validated" | "pending" | "masked";
+}) {
+    const color =
+        reviewStatus === "validated"
+            ? "bg-success-secondary text-success-primary"
+            : reviewStatus === "pending"
+              ? "bg-warning-secondary text-warning-primary"
+              : "bg-error-secondary text-error-primary";
+    const label =
+        reviewStatus === "validated"
+            ? "AUTO-CLEAN ≥0.95"
+            : reviewStatus === "pending"
+              ? "QUEUE 0.70-0.95"
+              : "MASQUÉ <0.70";
+    return (
+        <div className={`inline-flex items-center gap-2 px-2 py-1 rounded ${color}`}>
+            <span className="font-mono font-bold">{score.toFixed(3)}</span>
+            <span>·</span>
+            <span>{label}</span>
         </div>
     );
 }
