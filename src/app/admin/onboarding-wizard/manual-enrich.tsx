@@ -84,7 +84,13 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
     const photo = get("Photo URL", "Photo", "photo_url", "Image", "image_url", "Image URL");
     const category = get("Catégorie", "Categorie", "Category", "category", "Type");
     const size = get("Taille", "taille", "Size", "size", "Pointure", "Dimension");
-    const description = get("Description", "description", "Notes", "Détails", "Details");
+    let description = get("Description", "description", "Notes", "Détails", "Details");
+    // Fix Sprint 1.5 — si le CSV est décalé (prix non-quoté virgule française),
+    // la "Description" peut contenir une URL photo. On filtre pour ne pas
+    // polluer le textarea description avec une URL.
+    if (description && /^https?:\/\//i.test(description.trim())) {
+        description = "";
+    }
     const sku = get("Référence", "Reference", "SKU", "sku", "Code", "Ref");
 
     // Convert price like "129,99" → "129.99" (NUMERIC en €, pas en cents)

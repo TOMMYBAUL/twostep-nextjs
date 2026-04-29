@@ -48,6 +48,42 @@ interface ShoppingItem {
 }
 
 /**
+ * Levenshtein distance pour scoreNameMatch léger (évite import cyclique de
+ * lookup.ts). Identique à src/lib/ean/lookup.ts:levenshtein.
+ */
+function levenshtein(a: string, b: string): number {
+    const m = a.length, n = b.length;
+    const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+        let prev = dp[0];
+        dp[0] = i;
+        for (let j = 1; j <= n; j++) {
+            const tmp = dp[j];
+            dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+            prev = tmp;
+        }
+    }
+    return dp[n];
+}
+
+/** Score [0,1] de match nom ↔ titre top result Serper. Variante simple. */
+function scoreTitleMatch(input: string, candidate: string): number {
+    const a = input.toLowerCase().replace(/[^a-z0-9\s]/gi, " ").replace(/\s+/g, " ").trim();
+    const b = candidate.toLowerCase().replace(/[^a-z0-9\s]/gi, " ").replace(/\s+/g, " ").trim();
+    if (!a || !b) return 0;
+    const maxLen = Math.max(a.length, b.length);
+    const lev = 1 - levenshtein(a, b) / maxLen;
+    const aw = new Set(a.split(" ").filter((w) => w.length > 2));
+    const bw = new Set(b.split(" ").filter((w) => w.length > 2));
+    let overlap = 0;
+    for (const w of aw) if (bw.has(w)) overlap++;
+    const overlapScore = aw.size > 0 ? overlap / aw.size : 0;
+    return lev * 0.4 + overlapScore * 0.6;
+}
+
+const TITLE_MATCH_THRESHOLD = 0.35;
+
+/**
  * Lookup Google Product Catalog via Serper Shopping.
  *
  * @returns Match canonical (name/brand/photo/price) ou null si rien trouvé.
@@ -96,20 +132,35 @@ export async function lookupGoogleShopping(options: {
         const items = json.shopping ?? [];
         if (items.length === 0) return null;
 
-        const top = items[0];
-        if (!top.title) return null;
-
-        return {
-            canonical_name: top.title,
-            // Serper renvoie "source" qui est le shop e.g. "Nike.com" — pas la
-            // brand. La brand sera mieux extraite via collectAllEanSources V2
-            // si EAN trouvé. Pour V1 on laisse null sauf si query par brand.
-            brand: confidence === "weak" && options.brand ? options.brand : null,
-            photo_url: top.imageUrl ?? null,
-            price: parseSerperPrice(top.price ?? null),
-            confidence,
-            source_url: top.link ?? null,
-        };
+        // ─── Fix Sprint 1.5 — validation post-query (anti-faux-positif Serper) ───
+        // Bug observé 2026-04-29 : Serper Shopping query par EAN inconnu de Google
+        // Shopping retourne des best-sellers du jour (figurines, coffrets random)
+        // avec imageUrl = data:image/webp;base64,... (mode widget Serper).
+        // On filtre ces results pour éviter les faux positifs Tier 3 GPC.
+        for (const candidate of items) {
+            if (!candidate.title) continue;
+            // Skip data: URIs (signature mode widget Serper, pas vrais products)
+            const photo = candidate.imageUrl ?? null;
+            if (photo && photo.startsWith("data:")) continue;
+            // Validation cohérence titre ↔ input (sauf si confidence weak où on
+            // accepte plus permissivement car query par brand+name)
+            if (confidence === "strong") {
+                const expected = options.name ?? "";
+                if (expected && scoreTitleMatch(expected, candidate.title) < TITLE_MATCH_THRESHOLD) {
+                    continue; // titre top trop éloigné de input.name → reject
+                }
+            }
+            // Premier candidat qui passe → accept
+            return {
+                canonical_name: candidate.title,
+                brand: confidence === "weak" && options.brand ? options.brand : null,
+                photo_url: photo,
+                price: parseSerperPrice(candidate.price ?? null),
+                confidence,
+                source_url: candidate.link ?? null,
+            };
+        }
+        return null;
     } catch {
         clearTimeout(timeout);
         return null;

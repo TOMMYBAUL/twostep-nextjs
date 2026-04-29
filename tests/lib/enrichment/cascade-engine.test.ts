@@ -160,7 +160,23 @@ describe("runCascade — cascade EAN valide", () => {
         expect(out.review_status).toBe("pending");
     });
 
-    it("Aucune source → fallback reverse search activé", async () => {
+    it("Sprint 1.5 — EAN valide d'entrée + aucune source : PAS de reverse search (anti-faux-positif)", async () => {
+        mockCollectAll.mockResolvedValueOnce(multi([], null));
+        // searchEanByName ne devrait PAS être appelée car input.ean est fourni.
+        // Avant Sprint 1.5 : tier6_eansearch acceptait un EAN remplacé par
+        // reverse search par name → faux positif catastrophique (cf bug
+        // Nike/Weleda 29/04). Maintenant on garde l'EAN d'entrée intact.
+        const out = await runCascade({
+            ean: "4055017461258",
+            name: "Adidas Stan Smith Originals",
+            brand: "Adidas",
+        });
+        expect(out.tiers_matched).toEqual([]);
+        expect(out.canonical_ean).toBeNull();
+        expect(mockSearchEanByName).not.toHaveBeenCalled();
+    });
+
+    it("Sprint 1.5 — Pas d'EAN d'entrée + name → reverse search appelée", async () => {
         mockCollectAll.mockResolvedValueOnce(multi([], null));
         mockSearchEanByName.mockResolvedValueOnce({
             ean: "4055017461258",
@@ -168,7 +184,6 @@ describe("runCascade — cascade EAN valide", () => {
             category: "sneakers",
         });
         const out = await runCascade({
-            ean: "4055017461258",
             name: "Adidas Stan Smith Originals",
             brand: "Adidas",
         });

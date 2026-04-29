@@ -38,7 +38,7 @@ describe("lookupGoogleShopping", () => {
         expect(result).toBeNull();
     });
 
-    it("queries by EAN with strong confidence when EAN provided", async () => {
+    it("queries by EAN with strong confidence when EAN provided + name matches", async () => {
         mockFetchOnce({
             shopping: [
                 {
@@ -51,7 +51,10 @@ describe("lookupGoogleShopping", () => {
             ],
         });
 
-        const result = await lookupGoogleShopping({ ean: "0884776073143" });
+        const result = await lookupGoogleShopping({
+            ean: "0884776073143",
+            name: "Nike Air Max 90",
+        });
         expect(result).not.toBeNull();
         expect(result?.confidence).toBe("strong");
         expect(result?.canonical_name).toBe("Nike Air Max 90");
@@ -64,6 +67,64 @@ describe("lookupGoogleShopping", () => {
         expect(callArgs[0]).toBe("https://google.serper.dev/shopping");
         const body = JSON.parse((callArgs[1] as RequestInit).body as string);
         expect(body.q).toBe("0884776073143");
+    });
+
+    it("rejects items with data: URI imageUrl (Sprint 1.5 fix)", async () => {
+        mockFetchOnce({
+            shopping: [
+                {
+                    title: "Weleda Mon Coffret de Naissance",
+                    imageUrl: "data:image/webp;base64,UklGRig",
+                    price: "29,99 €",
+                },
+                {
+                    title: "Nike Air Max 90 Real",
+                    imageUrl: "https://nike.com/real.jpg",
+                    price: "129,99 €",
+                },
+            ],
+        });
+        const result = await lookupGoogleShopping({
+            ean: "0884776073143",
+            name: "Nike Air Max 90",
+        });
+        // data: URI top filtered out → fallback to 2nd which is real Nike
+        expect(result).not.toBeNull();
+        expect(result?.canonical_name).toBe("Nike Air Max 90 Real");
+        expect(result?.photo_url).toBe("https://nike.com/real.jpg");
+    });
+
+    it("rejects strong-confidence top when title doesn't match input.name (Sprint 1.5 fix)", async () => {
+        mockFetchOnce({
+            shopping: [
+                {
+                    title: "Weleda Mon Coffret de Naissance",
+                    imageUrl: "https://weleda.com/coffret.jpg",
+                    price: "29,99 €",
+                },
+            ],
+        });
+        // Strong confidence (EAN provided) + name fourni mais top title ≠ name
+        const result = await lookupGoogleShopping({
+            ean: "0884776073143",
+            name: "Nike Air Max 90",
+        });
+        // Le top "Weleda Mon Coffret" doesn't match "Nike Air Max 90" → reject
+        expect(result).toBeNull();
+    });
+
+    it("returns all data: URI candidates filtered → null", async () => {
+        mockFetchOnce({
+            shopping: [
+                { title: "X", imageUrl: "data:image/webp;base64,A" },
+                { title: "Y", imageUrl: "data:image/png;base64,B" },
+            ],
+        });
+        const result = await lookupGoogleShopping({
+            ean: "0884776073143",
+            name: "Nike",
+        });
+        expect(result).toBeNull();
     });
 
     it("queries by brand+name with weak confidence when EAN absent", async () => {

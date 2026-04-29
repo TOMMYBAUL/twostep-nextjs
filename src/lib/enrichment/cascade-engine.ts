@@ -99,8 +99,13 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
         }
     }
 
-    // ─── Étape 4 : pas d'EAN OU EAN non résolu → reverse search par nom ───
-    if (!canonicalEan && input.name) {
+    // ─── Étape 4 : pas d'EAN d'entrée du tout → reverse search par nom ───
+    // Fix Sprint 1.5 (2026-04-29) : on ne fait PLUS de reverse search si l'input
+    // avait un EAN valide (même non-trouvé Tier 1-2). Raison : reverse search par
+    // name peut returner un EAN COMPLÈTEMENT DIFFÉRENT (faux positif catastrophe).
+    // Si le marchand a saisi un EAN valide checksum, on le respecte. Le produit
+    // tombera en pending_review marchand-side (conforme règle d'or 95%+).
+    if (!canonicalEan && !input.ean && input.name) {
         const reverseMatch = await searchEanByName(input.name, input.brand ?? null);
         if (reverseMatch) {
             // searchEanByName cascade : cache → ean_search → upcdb → OBF → OPF.
