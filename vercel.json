@@ -2,10 +2,6 @@
   "regions": ["cdg1"],
   "crons": [
     {
-      "path": "/api/images/process",
-      "schedule": "0 */6 * * *"
-    },
-{
       "path": "/api/cron/enrich-ean",
       "schedule": "0 */2 * * *"
     },

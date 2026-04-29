@@ -61,7 +61,10 @@ export async function embedAndStoreProduct(productId: string): Promise<EmbedOutc
         return { status: "failed", error: `Product ${productId} not found` };
     }
 
-    // 2. Choix de la photo (preferer rembg détourée, fallback raw)
+    // 2. Choix de la photo : preferer photo_processed_url (legacy détourée),
+    // fallback photo_url. NB : rembg ABANDONNÉ 2026-04-28 — les nouveaux
+    // products n'auront plus photo_processed_url. Comportement existant
+    // conservé pour les anciens products en DB.
     const photoUrl = product.photo_processed_url ?? product.photo_url;
     if (!photoUrl) {
         await markStatus(supabase, productId, "skipped", null, "no_photo");
