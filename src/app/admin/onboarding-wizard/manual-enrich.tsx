@@ -81,7 +81,13 @@ function prefillFromRawRow(raw: Record<string, unknown>): FormState {
     const ean = get("Code-barres", "code-barres", "EAN", "ean", "GTIN", "gtin", "UPC", "Gencode");
     const brand = get("Marque", "marque", "Brand", "brand", "Fabricant");
     const priceRaw = get("Prix TTC", "Prix", "Price", "price", "PrixVente");
-    const photo = get("Photo URL", "Photo", "photo_url", "Image", "image_url", "Image URL");
+    let photo = get("Photo URL", "Photo", "photo_url", "Image", "image_url", "Image URL");
+    // Fix Sprint 1.5 — symétrique à description : si le CSV est décalé,
+    // "Photo URL" peut contenir un coloris ("Noir/Blanc") ou une taille.
+    // On garde uniquement les vraies URLs http(s).
+    if (photo && !/^https?:\/\//i.test(photo.trim())) {
+        photo = "";
+    }
     const category = get("Catégorie", "Categorie", "Category", "category", "Type");
     const size = get("Taille", "taille", "Size", "size", "Pointure", "Dimension");
     let description = get("Description", "description", "Notes", "Détails", "Details");
