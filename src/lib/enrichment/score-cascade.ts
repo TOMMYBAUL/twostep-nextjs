@@ -18,7 +18,8 @@ export type Tier =
     | "tier1_gtin_validated"
     | "tier2_off"            // Open Food Facts
     | "tier2_obf"            // Open Beauty Facts
-    | "tier2_icecat"         // Open Icecat
+    | "tier2_opf"            // Open Products Facts
+    | "tier2_icecat"         // Open Icecat (non wiré V1, futur Phase 1.5)
     | "tier3_google_pc"      // Google Product Catalog (Merchant Center)
     | "tier4_clip"           // CLIP image embedding (Vectorize)
     | "tier5_bert"           // BERT entity matching (Ditto self-host)
@@ -34,6 +35,7 @@ export const TIER_SCORES: Record<Tier, number> = {
     tier1_gtin_validated: 0.99,
     tier2_off: 0.97,
     tier2_obf: 0.97,
+    tier2_opf: 0.97,
     tier2_icecat: 0.97,
     tier3_google_pc: 0.95,
     tier4_clip: 0.92,

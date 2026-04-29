@@ -45,7 +45,7 @@ function sourceToTier(source: string): Tier | null {
         case "open_beauty_facts":
             return "tier2_obf";
         case "open_products_facts":
-            return "tier2_icecat";
+            return "tier2_opf";
         case "open_food_facts":
             return "tier2_off";
         case "ean_search":
