@@ -23,6 +23,7 @@ import { canonicalizeEan, detectIdentifierType } from "@/lib/identifiers/validat
 import { searchEanByName } from "@/lib/ean/lookup";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
+import { lookupGoogleShopping } from "@/lib/enrichment/tier3-google-shopping";
 import {
     buildCascadeOutcome,
     type CascadeOutcome,
@@ -107,6 +108,43 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
             tiersMatched.push("tier6_eansearch");
             canonicalEan = reverseMatch.ean;
             // canonical_name n'est pas garanti par searchEanByName — laissé null.
+        }
+    }
+
+    // ─── Étape 4.5 (Phase 1.1) : Tier 3 Google Product Catalog via Serper ───
+    // On l'appelle si on n'a PAS déjà un tier strong (1 ou 2) qui matche.
+    // Pas redondant avec les autres tiers car Google Shopping indexe des
+    // produits que OFF/OBF/EAN-Search n'ont pas (mode mainstream notamment).
+    // Seul un match "strong" (query par EAN exact) peut booster tier3 dans la
+    // cascade — un match "weak" (query par brand+name) est trop incertain
+    // pour score 0.95 (risque faux positif). Le caller cascade-suggest peut
+    // appeler lookupGoogleShopping séparément en weak-mode pour pré-remplir UI.
+    const hasStrongTier = tiersMatched.some(
+        (t) =>
+            t === "tier1_cip" ||
+            t === "tier1_isbn" ||
+            t === "tier1_gtin_validated" ||
+            t === "tier2_off" ||
+            t === "tier2_obf" ||
+            t === "tier2_icecat",
+    );
+    if (!hasStrongTier && (canonicalEan || (input.name && input.brand))) {
+        try {
+            const gpcMatch = await lookupGoogleShopping({
+                ean: canonicalEan,
+                name: input.name ?? null,
+                brand: input.brand ?? null,
+            });
+            if (gpcMatch && gpcMatch.confidence === "strong") {
+                tiersMatched.push("tier3_google_pc");
+                if (!canonicalName && gpcMatch.canonical_name) {
+                    canonicalName = gpcMatch.canonical_name;
+                }
+            }
+        } catch (err) {
+            if (process.env.NODE_ENV === "development") {
+                console.warn("[cascade-engine] Tier 3 GPC failed:", err);
+            }
         }
     }
 

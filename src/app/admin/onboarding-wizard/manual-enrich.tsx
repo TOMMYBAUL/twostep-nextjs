@@ -21,6 +21,7 @@ interface CascadeSuggestion {
         category: string | null;
         photo_url: string | null;
         sku: string | null;
+        description: string | null;
     };
     cascade: {
         score: number;
@@ -197,7 +198,8 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
             category: s.category || prev.category,
             photo_url: s.photo_url || prev.photo_url,
             sku: s.sku || prev.sku,
-            // size, description, price : pas touchés (cascade ne les fournit pas)
+            description: s.description || prev.description,
+            // size, price : pas touchés (cascade ne les fournit pas)
         }));
     }
 

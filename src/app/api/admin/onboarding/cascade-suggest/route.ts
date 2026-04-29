@@ -17,8 +17,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { suggestProductMeta } from "@/lib/ai/haiku-product-meta";
 import { runCascade } from "@/lib/enrichment/cascade-engine";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
+import { lookupGoogleShopping } from "@/lib/enrichment/tier3-google-shopping";
 import { searchProductImage } from "@/lib/images/serper";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -116,6 +118,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     let canonicalBrand: string | null = extracted.brand;
     let canonicalCategory: string | null = extracted.category;
     let canonicalPhoto: string | null = null;
+    let canonicalNameSuggestion: string | null = outcome.canonical_name;
     if (outcome.canonical_ean) {
         try {
             const multi = await collectAllEanSources(outcome.canonical_ean);
@@ -124,6 +127,29 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             canonicalPhoto = multi.canonical_photo_url;
         } catch {
             // Non bloquant — on garde les valeurs déjà extraites
+        }
+    }
+
+    // ─── Tier 3 Google Shopping fallback (Phase 1.1) ───
+    // Mode "weak ok" pour pré-remplir UI (name/brand/photo/price) même si la
+    // cascade-engine a refusé de booster le score (faux positif risk).
+    // Très utile quand l'EAN est absent ou que les Tier 1-2 ont rien trouvé.
+    if (!canonicalPhoto || !canonicalNameSuggestion) {
+        try {
+            const gpc = await lookupGoogleShopping({
+                ean: outcome.canonical_ean,
+                name: extracted.name || null,
+                brand: canonicalBrand,
+            });
+            if (gpc) {
+                if (!canonicalPhoto && gpc.photo_url) canonicalPhoto = gpc.photo_url;
+                if (!canonicalNameSuggestion && gpc.canonical_name) {
+                    canonicalNameSuggestion = gpc.canonical_name;
+                }
+                if (!canonicalBrand && gpc.brand) canonicalBrand = gpc.brand;
+            }
+        } catch {
+            // Non bloquant
         }
     }
 
@@ -141,14 +167,35 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
     }
 
+    // ─── Phase 1.2 + 1.3 : catégorie + description via Haiku ───
+    // Appelé en parallèle des autres lookups serait plus rapide mais pour la
+    // simplicité V1 on l'enchaîne. ~0.0004€/call. Si name absent ou Anthropic
+    // KO → fields restent null (les autres remplissages restent valides).
+    let suggestedCategory: string | null = canonicalCategory;
+    let suggestedDescription: string | null = null;
+    if (extracted.name && (!canonicalCategory || !suggestedDescription)) {
+        try {
+            const meta = await suggestProductMeta({
+                name: canonicalNameSuggestion ?? extracted.name,
+                brand: canonicalBrand,
+                ean: outcome.canonical_ean ?? extracted.ean,
+            });
+            if (!suggestedCategory && meta.category) suggestedCategory = meta.category;
+            suggestedDescription = meta.description;
+        } catch {
+            // Non bloquant
+        }
+    }
+
     return NextResponse.json({
         suggestion: {
-            name: outcome.canonical_name ?? extracted.name,
+            name: canonicalNameSuggestion ?? extracted.name,
             brand: canonicalBrand,
             ean: outcome.canonical_ean ?? extracted.ean,
-            category: canonicalCategory,
+            category: suggestedCategory,
             photo_url: canonicalPhoto,
             sku: extracted.sku,
+            description: suggestedDescription,
         },
         cascade: {
             score: outcome.score,
