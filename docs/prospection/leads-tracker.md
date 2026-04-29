@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-28 (L'Auditeur)*
+*Derniere mise a jour : 2026-04-29 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 63
-- NOUVEAU : 33
+- Total leads : 71
+- NOUVEAU : 41
 - CONTACTE : 1
 - BROUILLON : 24
 - Reponses : 0
@@ -73,6 +73,21 @@
 | ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | bolivier31@outlook.fr | 401784376 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 24/04, id: r-4153745874401631883) — coutellerie/airsoft/optique qualifiables Two-Step |
 
 **Boutiques ecartees (session 23/04) :** APOS 33 (liquidee 2019), FUTURWARE LAB (inactive 2023), LAMA (liquidee mars 2026)
+
+### Saint-Etienne — 2026-04-29 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | NOUVEAU | Email confirme via dorise-joaillier.com — revendeur Rolex/Tudor/Oris |
+| L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | NOUVEAU | Email confirme via rieunier-joailliers-horlogers.com/contact |
+| DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | NOUVEAU | Email confirme via Yelp/annuaires — marque mode homme 40+ ans d'histoire |
+| LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | NOUVEAU | Email confirme via lingerie-carrade.fr — boutique Carrade 29 rue du Languedoc |
+| JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve — meme gerant Edouard Dorise que Dorise Joaillier, essayer contact@dorise-joaillier.com |
+| APOSTROPHE RJC | Saint-Etienne | Mode femme | Raymonde Coudert | — | 331258384 | 6/10 | NOUVEAU | Email non trouve — tel 05 61 25 94 95, 23 rue Croix Baragnon |
+| CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve — horlogerie reparation 23 rue Croix Baragnon (pertinence limitee Two-Step) |
+| OLD ENGLAND | Saint-Etienne | Mode | Albert Goldberg | — | 562068296 | 5/10 | NOUVEAU | Email non trouve — verifier si encore actif au 24 rue Croix Baragnon (adresse peut-etre liberee) |
+
+**Boutiques ecartees (session 29/04) :** BAOBAB (B.R.1, fermee juillet 2020), HERVE MARIAGE (RAMSES, liquidation judiciaire juillet 2021), FJT / FRAYSSINET JOAILLIER (groupe HOLDING FRAYSSINET, non independant, 5 ets), ANNE FONTAINE (chaine nationale 5 ets), LA CHEMISERIE TOULOUSAINE-LCT (meme gerant Ari Zlotkin qu'Anne Fontaine, franchise probable)
 
 ### Saint-Etienne — 2026-04-22 (L'Eclaireur)
 
