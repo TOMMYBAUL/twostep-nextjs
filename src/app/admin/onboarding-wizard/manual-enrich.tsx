@@ -397,26 +397,102 @@ export function ManualEnrich({ merchantId }: ManualEnrichProps) {
                                                 </span>
                                             ))}
                                         </div>
+                                    ) : cascadeResult.suggestion.photo_url ||
+                                      cascadeResult.suggestion.category ||
+                                      cascadeResult.suggestion.description ? (
+                                        <p className="text-tertiary">
+                                            Aucun tier d'identification ne matche, mais des données auxiliaires ont été trouvées (photo Serper / catégorie / description Haiku). Vérifie ci-dessous.
+                                        </p>
                                     ) : (
                                         <p className="text-tertiary">
                                             Aucun tier matché — cascade n'a rien trouvé. Remplir manuellement.
                                         </p>
                                     )}
+
+                                    {/* Vignette photo si trouvée par cascade ou Serper */}
+                                    {cascadeResult.suggestion.photo_url && (
+                                        <div className="flex items-start gap-3 p-2 border border-secondary rounded">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={cascadeResult.suggestion.photo_url}
+                                                alt="Photo cascade"
+                                                className="w-20 h-20 object-cover rounded border border-secondary"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-tertiary mb-1">
+                                                    📷 Photo trouvée (Serper Images + Haiku verify)
+                                                </p>
+                                                <a
+                                                    href={cascadeResult.suggestion.photo_url}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-brand-secondary underline break-all"
+                                                >
+                                                    {cascadeResult.suggestion.photo_url}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Suggestions textuelles visibles */}
+                                    {(cascadeResult.suggestion.name ||
+                                        cascadeResult.suggestion.category ||
+                                        cascadeResult.suggestion.description) && (
+                                        <ul className="space-y-1 text-tertiary">
+                                            {cascadeResult.suggestion.name && (
+                                                <li>
+                                                    <strong>Nom :</strong>{" "}
+                                                    {cascadeResult.suggestion.name}
+                                                </li>
+                                            )}
+                                            {cascadeResult.suggestion.category && (
+                                                <li>
+                                                    <strong>Catégorie :</strong>{" "}
+                                                    {cascadeResult.suggestion.category}
+                                                </li>
+                                            )}
+                                            {cascadeResult.suggestion.description && (
+                                                <li>
+                                                    <strong>Description :</strong>{" "}
+                                                    {cascadeResult.suggestion.description}
+                                                </li>
+                                            )}
+                                        </ul>
+                                    )}
+
                                     <details>
                                         <summary className="cursor-pointer text-tertiary">
-                                            Suggestion cascade (cliquer pour détails)
+                                            JSON brut (debug)
                                         </summary>
                                         <pre className="mt-2 bg-secondary p-2 rounded overflow-x-auto">
                                             {JSON.stringify(cascadeResult.suggestion, null, 2)}
                                         </pre>
                                     </details>
-                                    <button
-                                        type="button"
-                                        onClick={applyCascadeToForm}
-                                        className="text-xs px-3 py-1 bg-brand-solid text-white rounded hover:bg-brand-solid_hover"
-                                    >
-                                        Appliquer au form
-                                    </button>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={applyCascadeToForm}
+                                            className="text-xs px-3 py-1 bg-brand-solid text-white rounded hover:bg-brand-solid_hover"
+                                        >
+                                            Appliquer tout au form
+                                        </button>
+                                        {cascadeResult.suggestion.photo_url && (
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setForm((prev) => ({
+                                                        ...prev,
+                                                        photo_url:
+                                                            cascadeResult.suggestion.photo_url ?? "",
+                                                    }))
+                                                }
+                                                className="text-xs px-3 py-1 border border-brand text-brand-primary rounded hover:bg-brand-secondary"
+                                            >
+                                                Photo seule
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>
