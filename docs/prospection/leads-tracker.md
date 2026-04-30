@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-04-29 (L'Eclaireur)*
+*Derniere mise a jour : 2026-04-30 (L'Auditeur)*
 
 ## Stats
 - Total leads : 71
-- NOUVEAU : 41
+- NOUVEAU : 37
 - CONTACTE : 1
-- BROUILLON : 24
+- BROUILLON : 28
 - Reponses : 0
 - Signes : 0
 
@@ -78,10 +78,10 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | NOUVEAU | Email confirme via dorise-joaillier.com — revendeur Rolex/Tudor/Oris |
-| L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | NOUVEAU | Email confirme via rieunier-joailliers-horlogers.com/contact |
-| DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | NOUVEAU | Email confirme via Yelp/annuaires — marque mode homme 40+ ans d'histoire |
-| LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | NOUVEAU | Email confirme via lingerie-carrade.fr — boutique Carrade 29 rue du Languedoc |
+| DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r6047598393326303625) — revendeur Rolex/Tudor/Oris |
+| L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r-8094677239488341172) — joaillerie artisanale, montres collection |
+| DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r5921374891990160300) — marque mode homme depuis 1976 |
+| LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r2243537176544092285) — boutique Carrade 29 rue du Languedoc |
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve — meme gerant Edouard Dorise que Dorise Joaillier, essayer contact@dorise-joaillier.com |
 | APOSTROPHE RJC | Saint-Etienne | Mode femme | Raymonde Coudert | — | 331258384 | 6/10 | NOUVEAU | Email non trouve — tel 05 61 25 94 95, 23 rue Croix Baragnon |
 | CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve — horlogerie reparation 23 rue Croix Baragnon (pertinence limitee Two-Step) |
@@ -150,6 +150,19 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap brouillons email — 2026-04-30 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Edouard Dorise (DORISE JOAILLIER) | contact@dorise-joaillier.com | Dorise Joaillier visible dans les recherches de stock local Toulouse ? | r6047598393326303625 | ACA — revendeur Rolex/Tudor, atelier horloger certifié, Two-Step rend le stock visible aux habitants du quartier |
+| 2 | Laurent Rieunier (L.R.B.J) | rieunier.joailliers.horlogers@gmail.com | Rieunier Joailliers visible dans les recherches de stock local Toulouse ? | r-8094677239488341172 | ACA — joaillerie artisanale, création et montres de collection, Two-Step affiche les pièces disponibles en temps réel |
+| 3 | Jean-luc Gales (DANYBERD) | toulouse@dnbstores.com | Danyberd visible dans les recherches de stock local Toulouse ? | r5921374891990160300 | ACA — marque mode homme depuis 1976, costumes haut de gamme, Two-Step rend le stock visible aux hommes du quartier |
+| 4 | Jean-michel Carrade (LES DESSOUS CHICS) | ph@lingerie-carrade.com | Carrade Lingerie visible dans les recherches de stock local Toulouse ? | r2243537176544092285 | ACA — institution toulousaine lingerie haut de gamme, Two-Step rend le stock visible aux femmes du quartier |
+
+*Note : recap prevu dans Notion (data_source_id: e6208e6f-2590-42cf-b25d-ac8e262eaf7c) — consigne ici en attendant.*
 
 ## Recap brouillons email — 2026-04-28 (L'Auditeur)
 
