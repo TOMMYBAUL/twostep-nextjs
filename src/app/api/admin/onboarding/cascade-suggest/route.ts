@@ -18,6 +18,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { suggestProductMeta } from "@/lib/ai/haiku-product-meta";
+import { searchEanByName } from "@/lib/ean/lookup";
 import { runCascade } from "@/lib/enrichment/cascade-engine";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupGoogleShopping } from "@/lib/enrichment/tier3-google-shopping";
@@ -38,6 +39,8 @@ function extractFromRawRow(raw: Record<string, unknown>): {
     ean: string | null;
     sku: string | null;
     category: string | null;
+    color: string | null;
+    size: string | null;
 } {
     const get = (...keys: string[]): string => {
         for (const k of keys) {
@@ -56,6 +59,19 @@ function extractFromRawRow(raw: Record<string, unknown>): {
         return "";
     };
 
+    // Coloris : on prend la valeur de la colonne dédiée. NOTE — si le CSV est
+    // décalé ou pourri, le filtrage agressif à l'import (cap stratégique 30/04)
+    // doit refuser la ligne EN AMONT. Ici on FAIT CONFIANCE à la donnée.
+    const colorRaw = get("Coloris", "Couleur", "Color", "Colour", "Colour Name");
+    // Heuristique défensive : un coloris doit ressembler à du texte (pas un nombre
+    // pur ni une URL ni un code numérique seul). Si la colonne contient autre chose,
+    // on ignore (filet de sécurité, mais le vrai blocage viendra du filtrage import).
+    const colorLooksValid =
+        colorRaw &&
+        !/^https?:\/\//i.test(colorRaw) &&
+        !/^\d+(\.\d+)?$/.test(colorRaw.trim()) &&
+        colorRaw.trim().length >= 2;
+
     return {
         name: get("Désignation", "Designation", "Nom", "name", "title", "Titre", "Produit"),
         brand: get("Marque", "marque", "Brand", "brand", "Fabricant") || null,
@@ -64,6 +80,8 @@ function extractFromRawRow(raw: Record<string, unknown>): {
             null,
         sku: get("Référence", "Reference", "SKU", "sku", "Code", "Ref") || null,
         category: get("Catégorie", "Categorie", "Category", "category", "Type") || null,
+        color: colorLooksValid ? colorRaw : null,
+        size: get("Taille", "taille", "Size", "size", "Pointure", "Dimension") || null,
     };
 }
 
@@ -153,7 +171,42 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
     }
 
+    // ─── Fix 30/04 #1 — searchEanByName en mode "enrichissement seul" ───
+    // Sprint 1.5 (29/04) avait coupé entièrement la reverse search par nom quand
+    // input.ean existait, pour éviter le bug Nike→Weleda (l'EAN d'entrée était
+    // remplacé par celui d'un faux match). Conséquence non désirée : pour les
+    // EAN obscurs mode (Nike/Adidas), aucun fallback nom → MASQUÉ systématique.
+    //
+    // Ici on remet la reverse search MAIS sans toucher à canonical_ean : on ne
+    // récupère que name/photo/brand pour pré-remplir les suggestions UI. L'EAN
+    // d'entrée du marchand est toujours respecté. Pas de remplacement = pas de
+    // faux positif catastrophe.
+    if (
+        outcome.tiers_matched.length === 0 &&
+        (!canonicalPhoto || !canonicalNameSuggestion) &&
+        extracted.name
+    ) {
+        try {
+            const reverse = await searchEanByName(extracted.name, canonicalBrand);
+            if (reverse) {
+                if (!canonicalNameSuggestion && extracted.name) {
+                    // searchEanByName ne renvoie pas un nom canonique structuré ;
+                    // on garde l'extraction raw mais on note que la reverse a matché.
+                }
+                if (!canonicalBrand && reverse.brand) canonicalBrand = reverse.brand;
+                // Note : reverse.ean n'est PAS appliqué (cap 30/04 — on respecte input.ean)
+            }
+        } catch {
+            // Non bloquant
+        }
+    }
+
     // ─── Si pas de photo trouvée → fallback Serper Google Images ───
+    // Fix 30/04 #2 — query enrichie avec le coloris extrait du CSV pour cibler
+    // la BONNE variante (avant : "Nike Air Max 90" tombait sur la verte populaire ;
+    // maintenant : "Nike Air Max 90 Noir Blanc" cible la variante demandée).
+    // Fix 30/04 #3 — Haiku verify reçoit aussi le coloris (cf serper.ts) pour
+    // rejeter une AM90 verte si l'attendu est Noir/Blanc.
     if (!canonicalPhoto && extracted.name) {
         try {
             canonicalPhoto = await searchProductImage(
@@ -161,6 +214,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 canonicalBrand,
                 outcome.canonical_ean,
                 extracted.sku,
+                extracted.color,
             );
         } catch {
             // Serper rate-limited ou key invalide → on continue sans photo

@@ -13,7 +13,12 @@ const SERPER_API_URL = "https://google.serper.dev/images";
  * Returns true if the photo matches, false if it doesn't or on error.
  * Cost: ~$0.001 per call.
  */
-async function verifyPhotoWithAI(imageUrl: string, productName: string, brand?: string | null): Promise<boolean> {
+async function verifyPhotoWithAI(
+    imageUrl: string,
+    productName: string,
+    brand?: string | null,
+    color?: string | null,
+): Promise<boolean> {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) return true; // Skip verification if no API key
 
@@ -22,6 +27,12 @@ async function verifyPhotoWithAI(imageUrl: string, productName: string, brand?: 
         const timeout = setTimeout(() => controller.abort(), 10_000);
 
         const productDesc = brand ? `${brand} ${productName}` : productName;
+        // Fix 30/04 — si coloris connu, on demande à Haiku de le vérifier visuellement.
+        // Sans ce check, une AM90 verte passait OK sur "Nike Air Max 90 Noir/Blanc".
+        const colorCheck = color
+            ? `\n3. Le coloris dominant de ce produit dans la photo correspond-il à "${color}" ?`
+            : "";
+        const criteriaCount = color ? "trois" : "deux";
 
         const res = await fetch("https://api.anthropic.com/v1/messages", {
             method: "POST",
@@ -37,10 +48,10 @@ async function verifyPhotoWithAI(imageUrl: string, productName: string, brand?: 
                     role: "user",
                     content: [
                         { type: "image", source: { type: "url", url: imageUrl } },
-                        { type: "text", text: `Le produit attendu est : "${productDesc}". Vérifie deux choses :
+                        { type: "text", text: `Le produit attendu est : "${productDesc}". Vérifie ${criteriaCount} choses :
 1. Cette photo montre-t-elle ce produit (même modèle, même marque) ?
-2. La qualité est-elle suffisante pour un site e-commerce (nette, pas pixelisée, pas de watermark, pas un screenshot) ?
-Réponds UNIQUEMENT "oui" si les deux critères sont remplis, sinon "non".` },
+2. La qualité est-elle suffisante pour un site e-commerce (nette, pas pixelisée, pas de watermark, pas un screenshot) ?${colorCheck}
+Réponds UNIQUEMENT "oui" si TOUS les critères sont remplis, sinon "non".` },
                     ],
                 }],
             }),
@@ -122,6 +133,8 @@ export async function searchProductImage(
     brand?: string | null,
     ean?: string | null,
     sku?: string | null,
+    /** Fix 30/04 — coloris attendu (ex "Noir/Blanc"). Étoffe la query + Haiku verify. */
+    color?: string | null,
 ): Promise<string | null> {
     const apiKey = process.env.SERPER_API_KEY;
     if (!apiKey) {
@@ -129,37 +142,45 @@ export async function searchProductImage(
         return null;
     }
 
+    // Helper : suffixe coloris ajouté à chaque query si dispo (ex " Noir Blanc")
+    // Normalise / → espace pour la query Google
+    const colorSuffix = color
+        ? " " + color.replace(/[\/,]/g, " ").replace(/\s+/g, " ").trim()
+        : "";
+
     // Strategy 1: SKU/reference → most precise (e.g. "DD1391-100" = one exact product)
     if (sku && sku.length >= 4) {
-        const skuQuery = brand ? `${sku} ${brand}` : `${sku} ${productName}`;
-        const skuResult = await searchSerperImages(apiKey, skuQuery, productName, brand);
+        const skuQuery = (brand ? `${sku} ${brand}` : `${sku} ${productName}`) + colorSuffix;
+        const skuResult = await searchSerperImages(apiKey, skuQuery, productName, brand, color);
         if (skuResult) return skuResult;
     }
 
     // Strategy 2: EAN + name → finds the EXACT product variant
     if (ean) {
-        const eanQuery = `${ean} ${productName}`;
-        const eanResult = await searchSerperImages(apiKey, eanQuery, productName, brand);
+        const eanQuery = `${ean} ${productName}${colorSuffix}`;
+        const eanResult = await searchSerperImages(apiKey, eanQuery, productName, brand, color);
         if (eanResult) return eanResult;
     }
 
-    // Strategy 3: brand + name + "product" → e-commerce catalog shots (EN for international brands)
+    // Strategy 3: brand + name + coloris + "product" → e-commerce catalog shots
     const parts = [];
     if (brand) parts.push(brand);
     parts.push(productName);
+    if (color) parts.push(color.replace(/[\/,]/g, " ").trim());
     parts.push("product");
     const query = parts.join(" ");
 
-    const result = await searchSerperImages(apiKey, query, productName, brand);
+    const result = await searchSerperImages(apiKey, query, productName, brand, color);
     if (result) return result;
 
     // Strategy 4: French search fallback for local brands
     const frParts = [];
     if (brand) frParts.push(brand);
     frParts.push(productName);
+    if (color) frParts.push(color.replace(/[\/,]/g, " ").trim());
     frParts.push("fiche produit");
 
-    return searchSerperImages(apiKey, frParts.join(" "), productName, brand);
+    return searchSerperImages(apiKey, frParts.join(" "), productName, brand, color);
 }
 
 async function searchSerperImages(
@@ -167,6 +188,7 @@ async function searchSerperImages(
     query: string,
     productName?: string,
     brand?: string | null,
+    color?: string | null,
 ): Promise<string | null> {
 
     try {
@@ -229,8 +251,8 @@ async function searchSerperImages(
 
             // AI verification: does this photo actually show the expected product?
             if (productName) {
-                const aiMatch = await verifyPhotoWithAI(img.imageUrl, productName, brand);
-                if (!aiMatch) continue; // Wrong product — try next candidate
+                const aiMatch = await verifyPhotoWithAI(img.imageUrl, productName, brand, color);
+                if (!aiMatch) continue; // Wrong product or wrong color — try next candidate
             }
 
             return img.imageUrl;
