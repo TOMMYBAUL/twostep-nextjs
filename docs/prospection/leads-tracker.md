@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-01 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-01 (L'Auditeur)*
 
 ## Stats
 - Total leads : 71
@@ -46,8 +46,8 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer — parfums d'exception, site astra-collection.fr |
-| EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer — site ymbeauty.fr, 4 etablissements, verifier independance |
+| ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 01/05, id: r-6465806468368047599) — parfums d'exception, boutique Toulouse 07 place Fer a Cheval |
+| EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 01/05, id: r-231037811434737621) — cosmetiques + perruques + soins capillaires (Shea Moisture, Cantu, Activilong), site ymbeauty.fr, IG @ym_beauty1 |
 | HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve (2e passage 01/05) — habesha-cosmetiques.fr formulaire uniquement, IG @habeshabeautycosmetique, FB facebook.com/61576106651375 — contacter via IG ou formulaire site |
 | JAVA COSMETIC | Saint-Cyprien | Cosmetique/Beaute | Fitsum Abebe | — | 850811555 | 6/10 | NOUVEAU | Email non trouve (2e passage 01/05) — Google Business 404, tel confirme 05 61 42 97 28 — contacter par tel |
 | ABSAMY | Saint-Cyprien | Cosmetique/Beaute | Absatou Thiam | — | 811869353 | 6/10 | NOUVEAU | Email non trouve (2e passage 01/05) — Treatwell actif (adresse 32 rue a verifier vs 18 rue RCS), tel 05 62 86 16 21 — contacter par tel |
@@ -152,6 +152,17 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap brouillons email — 2026-05-01 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Adem Dris (ASTRA COLLECTION) | astraparfum@gmail.com | Astra Collection visible dans les recherches de stock local Toulouse ? | r-6465806468368047599 | ACA — parfums de niche, boutique Toulouse place Fer a Cheval, Two-Step rend le stock visible aux amateurs de fragrances du quartier |
+| 2 | Yosief Mhretab Kibrab (EYM BEAUTY) | ym.beauty@yahoo.com | EYM Beauty visible dans les recherches de stock local Toulouse ? | r-231037811434737621 | ACA — cosmetiques + perruques + soins capillaires (Shea Moisture, Cantu, Activilong), Two-Step rend le stock visible aux habitants Saint-Cyprien |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker.*
 
 ## Recap brouillons email — 2026-04-30 (L'Auditeur)
 
