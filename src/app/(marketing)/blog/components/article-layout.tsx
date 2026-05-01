@@ -34,6 +34,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-sneakers-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Boutique indépendante à Toulouse : comment attirer des clients qui cherchent en ligne",
+        slug: "attirer-clients-boutique-toulouse",
+        category: "marchands",
+    },
 ];
 
 export function ArticleLayout({

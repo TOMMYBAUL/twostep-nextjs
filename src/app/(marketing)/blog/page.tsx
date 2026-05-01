@@ -37,6 +37,15 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "attirer-clients-boutique-toulouse",
+        title: "Boutique indépendante à Toulouse : comment attirer des clients qui cherchent en ligne",
+        description:
+            "76% des recherches locales débouchent sur une visite en magasin sous 24h. Les 3 leviers pour que ta boutique soit trouvée avant que le client choisisse.",
+        publishedAt: "2026-05-01",
+        readingTime: "6 min",
+        category: "marchands" as const,
+    },
 ];
 
 export default function BlogPage() {

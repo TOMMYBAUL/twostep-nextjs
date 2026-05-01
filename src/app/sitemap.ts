@@ -33,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${BASE_URL}/blog/logiciel-de-caisse-commerce`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
         { url: `${BASE_URL}/blog/boutiques-mode-toulouse`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
         { url: `${BASE_URL}/blog/shopping-sneakers-toulouse`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+        { url: `${BASE_URL}/blog/attirer-clients-boutique-toulouse`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     ];
 
     // Toulouse category pages (active)
