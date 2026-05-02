@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-02 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-02 (L'Auditeur)*
 
 ## Stats
 - Total leads : 70
-- NOUVEAU : 36
+- NOUVEAU : 33
 - CONTACTE : 1
-- BROUILLON : 28
+- BROUILLON : 29
 - Reponses : 0
 - Signes : 0
 
@@ -68,7 +68,7 @@
 | EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r8877959513437550432) |
 | BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouve, contacter via IG @toulousewithlove |
 | HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouve, 3 etablissements (Carcassonne + Toulouse) |
-| LAORA VITTORIA | Carmes | Mode femme | Annick Confuorto | — | 412012395 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes ou Instagram |
+| LAORA VITTORIA | Carmes | Mode femme | Annick Confuorto | — | 412012395 | 6/10 | ECARTE | Boutique fermee confirme (IG @vittoria.tlse "boutique fermee") |
 | LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouve, adresse partagee avec Sortilege (7 rue Boulbonne) |
 | AMBIANCES ET SENTEURS | Carmes | Cosmetique/Beaute | Eric Gras | — | 808837157 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes |
 | CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | 6/10 | NOUVEAU | Email non trouve, chercher via Instagram ou site |
@@ -104,7 +104,7 @@
 | TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (site: dorise-joaillier.com, form web) |
 | ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve, chercher via Instagram |
 | LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouve (IG: @lilith.croix.baragnon) |
-| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouve (site: macdouglastoulouse.fr en maintenance 503) |
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | macdouglastoulouse@gmail.com | 308874601 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 02/05, id: r-5885789468666483883) — email trouve via annuaire en ligne (a verifier avant envoi) |
 
 ### Capitole / Saint-Rome / Carmes (sessions precedentes)
 
@@ -117,7 +117,7 @@
 | CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
+| POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | ECARTE | Liquidation judiciaire ouverte avril 2024 — boutique probablement fermee |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
 | SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-3478697915070103749) |
@@ -152,6 +152,18 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap brouillons email — 2026-05-02 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Chantal Huet (MAC DOUGLAS) | macdouglastoulouse@gmail.com | Mac Douglas Toulouse visible dans les recherches de stock local ? | r-5885789468666483883 | ACA — 40 ans Toulouse, cuir/chaussures/maroquinerie, Two-Step rend le stock visible quand on cherche "veste cuir Toulouse" en centre-ville |
+
+**Note session :** Aucun lead NOUVEAU ne disposait d'un email dans le tracker au 02/05. L'Auditeur a effectue des recherches web etendues (~25 queries) pour trouver des emails parmi les 33 leads NOUVEAU restants. Seul macdouglastoulouse@gmail.com a pu etre identifie (via annuaire en ligne — a verifier avant envoi). Leads abortes : L'ESPION (aucun email public, site e-commerce sans mailto), LA FILLE DE MARGARET (site 503), TOULOUSE MONTRES (site RDV uniquement, no email), AMA LUNA / BAGWOOD / HANNAH / LILITH / ESTHER MICHELE (aucune presence email publique). Leads ecartes en bonus : POBIEDA (liquidation 04/2024), LAORA VITTORIA (boutique fermee). Recommandation : L'Eclaireur doit passer une session sur les leads NOUVEAU restants avant que L'Auditeur puisse relancer.
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker.*
 
 ## Recap brouillons email — 2026-05-01 (L'Auditeur)
 
