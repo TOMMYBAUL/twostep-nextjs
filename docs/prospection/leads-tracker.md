@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-01 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-02 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 71
-- NOUVEAU : 37
+- Total leads : 70
+- NOUVEAU : 36
 - CONTACTE : 1
 - BROUILLON : 28
 - Reponses : 0
@@ -38,9 +38,9 @@
 | TENDANCES LINGERIE | Victor-Hugo | Mode/Lingerie | Johan Bouysse | contact@tendances-lingerie.com | 851831982 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r7981916473971017707) |
 | LA MOMERIE | Victor-Hugo | Mode/Vêtements enfants | Lou-maite Monjon | contact@la-momerie.com | 840216766 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r2786232324163532531) |
 | L'ADRESSE BLANCHE | Victor-Hugo | Mode/Mariage | Magali Aycaguer | bonjour@ladresseblanche.fr | 901855585 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r-2368694987897902904) |
-| VIRAGES | Victor-Hugo | Mode/Vêtements | Simon Gerson | — | 344626130 | 6/10 | NOUVEAU | Email non trouve — 4 etablissements, chercher via Pages Jaunes ou Instagram |
+**Boutiques ecartees (session 25/04) :** MAUELICLE (liquidation mars 2023), CYCLARTISANS (artisan — hors cible), MARC FREZAL (artisan horloger reparation — hors cible), VIRAGES (SR GERSON, radiee depuis 2016 — cessation activite 09/01/2013, liquidation complete mai 2016)
 
-**Boutiques ecartees (session 25/04) :** MAUELICLE (liquidation mars 2023), CYCLARTISANS (artisan — hors cible), MARC FREZAL (artisan horloger reparation — hors cible)
+**Note session 02/05 (L'Eclaireur) :** Quartier Victor-Hugo EPUISE — 9 boutiques traitees, toutes en BROUILLON ou ECARTEES. Aucun nouveau prospect disponible. Recommandation : sortir Victor-Hugo de la rotation et le remplacer par un quartier non encore traite (Saint-Rome ou Carmes ont encore des boutiques NOUVEAU sans email).
 
 ### Saint-Cyprien — 2026-04-24 (L'Eclaireur) — MàJ 2026-05-01
 
