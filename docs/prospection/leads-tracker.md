@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-04 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-04 (L'Auditeur)*
 
 ## Stats
 - Total leads : 80
@@ -16,10 +16,10 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| LE QUOTIDIEN STORE | Capitole | Mode/Concept store | Fatima Meric | Lequotidienconceptstore@gmail.com | 831045687 | 8/10 | BROUILLON | Valider + envoyer — lequotidienstore.com — concept store mode/lifestyle 47 rue de la Pomme |
+| LE QUOTIDIEN STORE | Capitole | Mode/Concept store | Fatima Meric | Lequotidienconceptstore@gmail.com | 831045687 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r378002252411908989) — lequotidienstore.com — concept store mode/lifestyle 47 rue de la Pomme |
 | CHAUSSURES MANIK SAS | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve — manik.fr (contact sans email visible), tel 05 61 21 52 08 — independant depuis 28 ans |
-| AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
-| LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
+| AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-5069750576936633717) — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
+| LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-3518029605693686134) — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
 | LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | — | 419643291 | 7/10 | NOUVEAU | Email non trouve — sacs italiens + cuir + accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51 |
 | VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | NOUVEAU | Email non trouve — 19 rue de la Pomme (Yelp March 2026 actif), tel 05 62 30 89 25 |
 | SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
@@ -186,6 +186,18 @@
 | 8 | SOCIETE LAKO (Bernard Kok) | Bernard Kok | — (tel 05 61 21 50 72) | 6/10 | NOUVEAU |
 | 9 | BIAS | Laura Noailles | — (IG @bias.cst) | 6/10 | NOUVEAU |
 | 10 | RACHEL HAIR | Rachel Nto | — (rachellhair.fr inaccessible) | 5/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+
+## Recap brouillons email — 2026-05-04 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Fatima Meric (LE QUOTIDIEN STORE) | Lequotidienconceptstore@gmail.com | Le Quotidien Store visible dans les recherches de stock local Toulouse ? | r378002252411908989 | ACA — concept store petites marques françaises, nouvelles pièces toutes les 2 semaines, Two-Step rend le stock visible aux clients du quartier |
+| 2 | Patricia Delchet (AZED / Echape Douce) | contact@echapedouce.fr | Échapé Douce visible dans les recherches de stock local Toulouse ? | r-5069750576936633717 | ACA — pret-a-porter femme intemporel, matières douces, Two-Step rend le stock visible aux femmes cherchant "robe élégante Toulouse" |
+| 3 | Erick Haziza (LA MAISON DE L'HOMME) | contact@lamdh.fr | La Maison de l'Homme visible dans les recherches de stock local Toulouse ? | r-3518029605693686134 | ACA — institution toulousaine sur-mesure depuis 1983, 4 000 références tissus, Two-Step rend le stock prêt-à-porter visible aux hommes du quartier |
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
 
