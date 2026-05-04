@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-02 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-04 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 70
-- NOUVEAU : 36
+- Total leads : 80
+- NOUVEAU : 43
 - CONTACTE : 1
-- BROUILLON : 28
+- BROUILLON : 31
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-04 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| LE QUOTIDIEN STORE | Capitole | Mode/Concept store | Fatima Meric | Lequotidienconceptstore@gmail.com | 831045687 | 8/10 | BROUILLON | Valider + envoyer — lequotidienstore.com — concept store mode/lifestyle 47 rue de la Pomme |
+| CHAUSSURES MANIK SAS | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve — manik.fr (contact sans email visible), tel 05 61 21 52 08 — independant depuis 28 ans |
+| AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
+| LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
+| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | — | 419643291 | 7/10 | NOUVEAU | Email non trouve — sacs italiens + cuir + accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51 |
+| VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | NOUVEAU | Email non trouve — 19 rue de la Pomme (Yelp March 2026 actif), tel 05 62 30 89 25 |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
+| SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouve — mode homme 36 rue de la Pomme, tel 05 61 21 50 72 |
+| BIAS | Capitole | Deco/Concept store | Laura Noailles | — | 980131718 | 6/10 | NOUVEAU | Email non trouve — 2 rue Paul Vidal (demenage depuis 62 rue Metz), IG @bias.cst, site en construction |
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | — | 945085363 | 5/10 | NOUVEAU | Email non trouve — rachellhair.fr (inaccessible), Planity actif, 12 rue Bayard, vente perruques + cosmetiques |
+
+**Boutiques ecartees (session 04/05) :** BANANA-POMME (fermee dec. 2024), LEWIS (ferme juin 2024), SHILTON (chaine nationale 27 boutiques), L'ISLA NOVA (boutique en L'Isle-en-Dodon, pas Toulouse), DUO BOUTIQUE/COCCI (fermee a Toulouse), TILL/TILLAMY (franchise enfants Maine-et-Loire), TOVLI (etablissement Toulouse inactif), MURPHY & NYE/COMEPAR (voile/sportswear niche)
 
 ### Capitole — 2026-04-28 (L'Eclaireur)
 
@@ -152,6 +169,25 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap leads — 2026-05-04 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Capitole
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | LE QUOTIDIEN STORE | Fatima Meric | Lequotidienconceptstore@gmail.com | 8/10 | BROUILLON |
+| 2 | CHAUSSURES MANIK | Pierre Lacabanne | — (manik.fr / tel 05 61 21 52 08) | 7/10 | NOUVEAU |
+| 3 | AZED (Echape Douce) | Patricia Delchet | contact@echapedouce.fr | 7/10 | BROUILLON |
+| 4 | LA MAISON DE L'HOMME | Erick Haziza | contact@lamdh.fr | 7/10 | BROUILLON |
+| 5 | LES CUIRS DU SUD | Eric Gautrand | — (tel 05 61 21 16 51) | 7/10 | NOUVEAU |
+| 6 | VERSO | Monique Baron | — (tel 05 62 30 89 25) | 6/10 | NOUVEAU |
+| 7 | SIENNE | Simon Benlolo | — | 6/10 | NOUVEAU |
+| 8 | SOCIETE LAKO (Bernard Kok) | Bernard Kok | — (tel 05 61 21 50 72) | 6/10 | NOUVEAU |
+| 9 | BIAS | Laura Noailles | — (IG @bias.cst) | 6/10 | NOUVEAU |
+| 10 | RACHEL HAIR | Rachel Nto | — (rachellhair.fr inaccessible) | 5/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
 
 ## Recap brouillons email — 2026-05-01 (L'Auditeur)
 
