@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "attirer-clients-boutique-toulouse",
+        title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
+        description:
+            "Trafic en baisse, clients qui comparent sur internet... 6 actions concrètes pour attirer plus de clients dans ta boutique indépendante à Toulouse.",
+        publishedAt: "2026-05-04",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "boutique-visible-google",
         title: "Comment rendre votre boutique visible sur Google sans site e-commerce",
         description:
