@@ -1,16 +1,31 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-04 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-05 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 80
-- NOUVEAU : 43
+- Total leads : 90
+- NOUVEAU : 52
 - CONTACTE : 1
 - BROUILLON : 31
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-05 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | — | 893038257 | 8/10 | NOUVEAU | Email non trouve — boutique-lemplacement.fr (formulaire contact), IG @lemplacement_toulouse, FB actif. Concept store ephemere 40 rue Alsace Lorraine, ouvert 2020 |
+| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com ⚠️ | 334991056 | 8/10 | A VALIDER | Email a confirmer — Maison Handy (16 rue des Arts, maisonhandy.com) probablement meme famille. Groupe local independant 4 ets Toulouse, chaussures homme/femme, 4 rue de la Pomme, tel 05 61 29 89 70, FB @handytoulouse |
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
+| ELEMENT STORE (LEMAN) | Capitole | Mode/Skateboard | Emmanuel Levy | — | 794917666 | 7/10 | NOUVEAU | Email non trouve — skateshop/streetwear 45 rue Tourneurs, IG @elementstoretoulouse, tel 05 31 21 70 42. Meme gerant que Concept Store TNF (franchise). LEMAN = entite independante 1 ets |
+| STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
+| SUPER33STORE | Capitole | Mode | Caroline Tobelaim | — | 791020936 | 6/10 | NOUVEAU | Email non trouve — boutique mode 49 rue Alsace Lorraine, pas de site propre identifie. Meme gerante que SUPERDRY (ecartee) mais entite differente |
+| ANY DANSE | Capitole | Sport/Danse | Osamu Suzuki | — | 393744750 | 5/10 | NOUVEAU | Email non trouve — chaussures + vetements danse marque Freed of London, 15 place Capitole, niche specialisee |
+| COLETTE SAINT MLEUX | Capitole | Mode femme | Colette Saint mleux | — | 347463473 | 4/10 | NOUVEAU | Email non trouve — aucune presence digitale identifiee, 14 rue de la Pomme, tres ancienne enseigne (SIREN 347...) |
+
+**Boutiques ecartees (session 05/05) :** ACTURUS FRANCE SAS (EL GANSO, boutique Toulouse fermee 2019), EDEN (franchise Eden Shoes nationale 450+ boutiques), GABOR/SAINT JAMES/NAPAPIJRI/LANCASTER (marques nationales), SUPERDRY (marque nationale), CONCEPT STORE TNF (franchise TNF), CAHORS/CASTRES/ALBI/LABEGE/ROUFFIAC SPORT DISTRIBUTION (meme groupe Benoit Barron, distributeur multi-enseigne), INSTITUT DE BEAUTE YVES ROCHER (franchise nationale), SAGA COSMETIQUES (gerant = societe GLOW UP DEVELOPMENT, pas de prenom), HERO SEVEN (gerant = LIVAM societe, pas de prenom), SIENNE 538275561 (doublon deja traite), BE UP BEAUTY BAR (service beaute hors cible + Groupon 410 ferme probable), SCDT (Guy Guenoun = aussi POMA'DAUR immobilier, pas de boutique physique confirmee)
 
 ### Capitole — 2026-05-04 (L'Eclaireur)
 
@@ -157,6 +172,16 @@
 | NITYA (DUKAN DE NITYA) | Inactive depuis 27/02/2018 (Saint-Etienne) |
 | MJ CONCEPT STORE VERSION CAMELEON | Radiee en septembre 2021 (Saint-Etienne) |
 | MAUELICLE | En liquidation depuis mars 2023 (Victor-Hugo) |
+| ACTURUS FRANCE SAS (EL GANSO) | Boutique Toulouse fermee en 2019 |
+| EDEN (PP NEDE) | Franchise Eden Shoes nationale (450+ boutiques Europe) |
+| GABOR (STEINMETZ DISTRIBUTION) | Franchise marque nationale Gabor |
+| SAINT JAMES (CAPUCINE) | Marque nationale Saint James |
+| NAPAPIJRI (DENILLE ET CIE) | Marque nationale Napapijri |
+| LANCASTER (SD PYRENEES) | Marque nationale Lancaster |
+| CONCEPT STORE THE NORTH FACE (EURL MALE) | Franchise The North Face |
+| INSTITUT DE BEAUTE YVES ROCHER (CAMUS ESTHETIQUE) | Franchise nationale Yves Rocher |
+| BE UP BEAUTY BAR (COSMETICS DEVELOPPEMENT) | Service beaute (hors cible) + fermeture probable (Groupon 410) |
+| SCDT (339737306) | Pas de boutique physique confirmee, gerant aussi dans l'immobilier |
 
 ## Do Not Contact
 (vide)
@@ -169,6 +194,24 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap leads — 2026-05-05 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Capitole
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | L'EMPLACEMENT | Eric Bitoun | — (boutique-lemplacement.fr, IG @lemplacement_toulouse) | 8/10 | NOUVEAU |
+| 2 | HANDY | Lauren Handy | serviceclient@maisonhandy.com ⚠️ a confirmer | 8/10 | A VALIDER |
+| 3 | ALPHABET | Patricia Delchet | — (tel 05 61 22 11 94) | 7/10 | NOUVEAU |
+| 4 | ELEMENT STORE (LEMAN) | Emmanuel Levy | — (IG @elementstoretoulouse) | 7/10 | NOUVEAU |
+| 5 | STOCK AMERICAIN | Andre Lelte | — (tel 08 99 86 54 45) | 6/10 | NOUVEAU |
+| 6 | SUPER33STORE | Caroline Tobelaim | — | 6/10 | NOUVEAU |
+| 7 | ANY DANSE | Osamu Suzuki | — (Freed of London, danse) | 5/10 | NOUVEAU |
+| 8 | COLETTE SAINT MLEUX | Colette Saint mleux | — (pas de presence digitale) | 4/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+*Note session : Capitole presque epuise (session 3 sur ce quartier). 1 email potentiel trouve (HANDY, a confirmer). Les boutiques restantes ont peu ou pas de presence digitale. Recommandation : preparer rotation vers Saint-Rome ou Carmes pour la prochaine session lundi.*
 
 ## Recap leads — 2026-05-04 (L'Eclaireur)
 
