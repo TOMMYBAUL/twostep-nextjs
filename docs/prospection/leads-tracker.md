@@ -4,9 +4,9 @@
 
 ## Stats
 - Total leads : 90
-- NOUVEAU : 52
+- NOUVEAU : 51
 - CONTACTE : 1
-- BROUILLON : 31
+- BROUILLON : 33
 - Reponses : 0
 - Signes : 0
 
@@ -16,8 +16,8 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | — | 893038257 | 8/10 | NOUVEAU | Email non trouve — boutique-lemplacement.fr (formulaire contact), IG @lemplacement_toulouse, FB actif. Concept store ephemere 40 rue Alsace Lorraine, ouvert 2020 |
-| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com ⚠️ | 334991056 | 8/10 | A VALIDER | Email a confirmer — Maison Handy (16 rue des Arts, maisonhandy.com) probablement meme famille. Groupe local independant 4 ets Toulouse, chaussures homme/femme, 4 rue de la Pomme, tel 05 61 29 89 70, FB @handytoulouse |
+| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r-7156942222461192925) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse |
+| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r5793792031598694686) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
 | ELEMENT STORE (LEMAN) | Capitole | Mode/Skateboard | Emmanuel Levy | — | 794917666 | 7/10 | NOUVEAU | Email non trouve — skateshop/streetwear 45 rue Tourneurs, IG @elementstoretoulouse, tel 05 31 21 70 42. Meme gerant que Concept Store TNF (franchise). LEMAN = entite independante 1 ets |
 | STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
@@ -194,6 +194,18 @@
 - API gratuite : https://recherche-entreprises.api.gouv.fr/search?q=NOM&code_postal=31000
 - Les leads sans email doivent etre enrichis (web search + Pages Jaunes + Instagram)
 - Personnaliser CHAQUE email avec le prenom du gerant
+
+## Recap brouillons email — 2026-05-05 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Lauren Handy (HANDY) | serviceclient@maisonhandy.com | Handy visible dans les recherches de stock local Toulouse ? | r5793792031598694686 | ACA — marques Balenciaga/Dior/Golden Goose, proposition unique independante Toulouse, Two-Step rend le stock visible aux clients qui cherchent ces marques en local |
+| 2 | Eric Bitoun (L'EMPLACEMENT) | contact@l-emplacement.com | L'Emplacement visible dans les recherches de stock local Toulouse ? | r-7156942222461192925 | ACA — concept store ouvert 2020, pièces curatées mode/bags/bijoux, Two-Step rend le stock visible aux habitants qui cherchent en centre-ville. Email trouve via recherche web (domaine l-emplacement.com) |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+*Note session : 2 emails confirmes sur 5 prospects recherches. L'email de L'EMPLACEMENT (contact@l-emplacement.com) a ete trouve par web search — domaine different de boutique-lemplacement.fr. HANDY email confirme via maisonhandy.com. RECOVERY/LA FILLE DE MARGARET/NEGREVERGNE : aucun email public trouve.*
 
 ## Recap leads — 2026-05-05 (L'Eclaireur)
 
