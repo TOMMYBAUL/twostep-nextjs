@@ -34,6 +34,16 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-sneakers-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
+        slug: "attirer-clients-boutique-toulouse",
+        category: "marchands",
+    },
+    {
+        title: "Bijoutier à Toulouse : comment rendre ton stock visible et vendre plus en 2026",
+        slug: "bijoutier-toulouse-stock-visible",
+        category: "marchands",
+    },
 ];
 
 export function ArticleLayout({

@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "bijoutier-toulouse-stock-visible",
+        title: "Bijoutier à Toulouse : comment rendre ton stock visible et vendre plus en 2026",
+        description:
+            "95 % du stock des bijouteries indépendantes est invisible en ligne. Découvre comment les bijoutiers toulousains attirent de nouveaux clients sans créer de site e-commerce.",
+        publishedAt: "2026-05-06",
+        readingTime: "6 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
