@@ -1,16 +1,37 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-05 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-06 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 90
-- NOUVEAU : 51
+- Total leads : 100
+- NOUVEAU : 58
 - CONTACTE : 1
-- BROUILLON : 33
+- BROUILLON : 36
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Rome — 2026-05-06 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com | 824966022 | 8/10 | BROUILLON | Valider + envoyer — mode homme streetwear/casual, boutique Toulouse+Tarbes, site ilannfive.com, IG actif, 17 rue des Changes |
+| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
+| PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
+| ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
+| LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome (NB: gerant JSON = Veronique Notte, gerant actuel = Sophie Sollier) |
+| KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouve — vend New Balance + chaussures sport toutes categories, SIREN Paris siege/Toulouse ets, 12 rue Saint Rome |
+| KEED | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouve — vêtements homme, Yelp mai 2026 actif, tel 05 61 23 31 22, 28 rue des Changes |
+| I LOVE SCARPE | Saint-Rome | Chaussures luxe | Alienor Lacroix | — | 811924067 | 5/10 | NOUVEAU | Email non trouve — chaussures + bijoux + maroquinerie luxe, IG @ilovescarpetoulouse, Yelp oct 2025 actif, 3 rue Temponieres |
+| MAISON DE LA SAPP | Saint-Rome | Mode polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouve — pret-a-porter + chaussures + bijoux + deco, m2lsapp.com (contact form), tel +33 7 56 23 78 65, 14 rue des Changes (NB: ex-gerante Latifa Linoubli, president Nassim Zitouni depuis 17/03/2025) |
+| GAME TIME | Saint-Rome | Sport/Streetwear | Laurent Caramelle | — | 432706513 | 5/10 | NOUVEAU | Email non trouve — sportswear independant (Jordan, Nike...), gametime.fr, tel 05 61 23 97 42, 6 rue Temponieres |
+
+**Boutiques ecartees (session 06/05) :** POBIEDA (liquidation judiciaire avril 2024), ASM/Felix Gabison (liquidation juillet 2020, faillite perso 8 ans), COEXIST STORE (ferme 25/02/2021), PAUL MARIUS (chaine nationale), BLEU CERISE (chaine nationale 33 boutiques), CREA CONCEPT (ferme 2010 + liquidation 2023), ENTRE ELLE ET MOI (radiee), OUTDOOR DIFFUSION SUD OUEST (franchise Vans/VF Outdoor), BODY ONE LINGERIE (ferme 2015, franchise), JO/SCOOP (etablissement ferme), COSMYA (gerant = societe FI2C, pas de prenom), LEVI'S STORE (chaine nationale), CALZEDONIA (chaine internationale)
+
+**Bonus session 06/05 :** L'ANNEXE (deja NOUVEAU dans tracker) — EMAIL TROUVE : Busato.nicole1@gmail.com. Statut a mettre a jour ci-dessous.
+
+---
 
 ### Capitole — 2026-05-05 (L'Eclaireur)
 
@@ -156,7 +177,7 @@
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r1515891432236323176) |
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
-| L'ANNEXE | Saint-Rome | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
+| L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
 | PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
 | IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | — | 393981394 | 6/10 | NOUVEAU | Email non trouve (form sur imagine-bijoux.fr), tel: 05 61 22 74 00 |
 | KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | — | 882609688 | 6/10 | NOUVEAU | Email non trouve (IG: @boutique_au_44_rue_de_metz_), tel: 05 34 40 81 88 |
@@ -290,6 +311,28 @@
 | 2 | Patricia Lacombe (N A L'INFINI) | contact@bijouterie-toulouse-nougues.fr | N à l'Infini visible dans les recherches de stock local Toulouse ? | r2720507363937656694 | ACA — bijoux argent 925 Bronzallure/Endless/Tamahiné, Two-Step rend la boutique visible sur la carte locale |
 
 *Note : recap prevu dans Notion (data_source_id: e6208e6f-2590-42cf-b25d-ac8e262eaf7c) — MCP Notion non disponible dans cet environnement, consigne ici en attendant.*
+
+## Recap leads — 2026-05-06 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Saint-Rome
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | ILANN FIVE | Pierre Assali | contact@ilannfive.com ✅ | 8/10 | BROUILLON |
+| 2 | L'OBSERVATOIRE | Jonnhy Dunal | lobservatoire31@sfr.fr ✅ | 8/10 | BROUILLON |
+| 3 | PAUSE | Jonathan Blaise | bonjour@pause-montres.fr ✅ | 7/10 | BROUILLON |
+| 4 | ETOILE DE SONGE | Sophie Pialat | contact@etoiledesonge.fr ✅ | 7/10 | BROUILLON |
+| 5 | LINEA MODA | Sophie Sollier | lineamoda.toulouse@gmail.com ✅ | 6/10 | BROUILLON |
+| 6 | KATOUNI | Alain Salimi pak | — (tel: pas de site email visible) | 6/10 | NOUVEAU |
+| 7 | KEED | Veronique Descouens | — (tel 05 61 23 31 22) | 5/10 | NOUVEAU |
+| 8 | I LOVE SCARPE | Alienor Lacroix | — (IG @ilovescarpetoulouse) | 5/10 | NOUVEAU |
+| 9 | MAISON DE LA SAPP | Nassim Zitouni | — (m2lsapp.com/pages/contact) | 5/10 | NOUVEAU |
+| 10 | GAME TIME | Laurent Caramelle | — (gametime.fr, tel 05 61 23 97 42) | 5/10 | NOUVEAU |
+
+**Bonus :** L'ANNEXE (deja NOUVEAU dans tracker) — email trouve : Busato.nicole1@gmail.com → mise a jour BROUILLON faite.
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Saint-Rome 2026-05-06".*
+*Note session : 6 emails confirmes sur 10 prospects (+ L'ANNEXE bonus). Emails manquants = boutiques sans site propre (KATOUNI, KEED) ou site avec form uniquement (MAISON DE LA SAPP). Recommandation : GAME TIME a un site gametime.fr — verifier page contact directement pour email.*
 
 ## Juridique (Phase 0)
 
