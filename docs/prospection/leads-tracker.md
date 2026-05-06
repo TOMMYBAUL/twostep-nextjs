@@ -16,10 +16,10 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com | 824966022 | 8/10 | BROUILLON | Valider + envoyer — mode homme streetwear/casual, boutique Toulouse+Tarbes, site ilannfive.com, IG actif, 17 rue des Changes |
-| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
-| PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
-| ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
+| ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com | 824966022 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r5331074192849055465) — mode homme streetwear/casual, boutique Toulouse+Tarbes, site ilannfive.com, IG actif, 17 rue des Changes |
+| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r3575538069750901923) — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
+| PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-762058812026090260) — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
+| ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r8345746387470852338) — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
 | LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome (NB: gerant JSON = Veronique Notte, gerant actuel = Sophie Sollier) |
 | KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouve — vend New Balance + chaussures sport toutes categories, SIREN Paris siege/Toulouse ets, 12 rue Saint Rome |
 | KEED | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouve — vêtements homme, Yelp mai 2026 actif, tel 05 61 23 31 22, 28 rue des Changes |
@@ -177,7 +177,7 @@
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r1515891432236323176) |
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
-| L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
+| L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-8493153263310165498) — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
 | PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
 | IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | — | 393981394 | 6/10 | NOUVEAU | Email non trouve (form sur imagine-bijoux.fr), tel: 05 61 22 74 00 |
 | KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | — | 882609688 | 6/10 | NOUVEAU | Email non trouve (IG: @boutique_au_44_rue_de_metz_), tel: 05 34 40 81 88 |
@@ -333,6 +333,23 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Saint-Rome 2026-05-06".*
 *Note session : 6 emails confirmes sur 10 prospects (+ L'ANNEXE bonus). Emails manquants = boutiques sans site propre (KATOUNI, KEED) ou site avec form uniquement (MAISON DE LA SAPP). Recommandation : GAME TIME a un site gametime.fr — verifier page contact directement pour email.*
+
+## Recap brouillons email — 2026-05-06 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : A valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Resume |
+|---|---|---|---|---|---|
+| 1 | Pierre Assali (ILANN FIVE) | contact@ilannfive.com | Ilann Five visible dans les recherches de stock local Toulouse ? | r5331074192849055465 | ACA — streetwear/casual homme, nouvelles pieces chaque semaine, Two-Step rend le stock visible aux clients qui cherchent sneakers ou bomber Toulouse |
+| 2 | Jonnhy Dunal (L'OBSERVATOIRE) | lobservatoire31@sfr.fr | L'Observatoire visible dans les recherches de stock local Toulouse ? | r3575538069750901923 | ACA — seul multimarque homme Stone Island + C.P. Company + Ralph Lauren a Toulouse, Two-Step rend le stock visible aux amateurs qui cherchent ces marques en local |
+| 3 | Jonathan Blaise (PAUSE) | bonjour@pause-montres.fr | Pause Montres visible dans les recherches de stock local Toulouse ? | r-762058812026090260 | ACA — boutique horlogerie passion ouverte 2024, Alpina/Lip/Yema/Orient, Two-Step rend le stock visible aux passionnes qui cherchent une montre specifique a Toulouse |
+| 4 | Sophie Pialat (ETOILE DE SONGE) | contact@etoiledesonge.fr | Etoile de Songe visible dans les recherches de stock local Toulouse ? | r8345746387470852338 | ACA — boutique bebe independante liste de naissance + linge soigne, Two-Step rend le stock visible aux jeunes parents du quartier |
+| 5 | Nicole Busato (L'ANNEXE) | Busato.nicole1@gmail.com | L'Annexe visible dans les recherches de stock local Toulouse ? | r-8493153263310165498 | ACA — concept store mode femme independante rue Saint-Rome selection curee, Two-Step rend le stock visible aux Toulousaines qui cherchent du style en centre-ville |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+*Note session : 5 brouillons crees sur les 6 leads BROUILLON Saint-Rome avec email (LINEA MODA 6/10 ecartee pour rester sous 5). Web search effectue pour chaque lead avant redaction. Methode ACA respectee, tous emails <150 mots, tutoiement, prenom gerant, UTM, footer STOP.*
+
+---
 
 ## Juridique (Phase 0)
 
