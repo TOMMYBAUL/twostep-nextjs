@@ -16,9 +16,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer — marque horlogère indépendante toulousaine, boutique 17 rue des Arts, mwandco.com, maître horloger fondateur |
-| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer — boutique mode femme + accessoires, lesreveries.net, Yelp nov 2025 actif, Garmentory référencé, 2 rue des Arts |
-| SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer — prêt-à-porter féminin, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
+| RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-4355813290059118696) — marque horlogère indépendante toulousaine, collection ASSET assemblage main, 88% fabrication française, 17 rue des Arts |
+| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r5463543312504006474) — chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), lesreveries.net, 2 rue des Arts |
+| SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r4186603753522561088) — prêt-à-porter féminin, 7 ans rue Saint-Rome, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
 | POINDRELLE | Saint-Rome | Bijouterie/Horlogerie | Liliane Poindrelle | — | 324454735 | 7/10 | NOUVEAU | Email non trouve — bijouterie 15 rue des Arts, 2 ets, ancienne enseigne (SIREN 324...), famille Poindrelle sur FB mais pas d'email boutique |
 | LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouve — Yelp April 2026 actif, 22 rue Saint Rome, vetements femme + chaussures + maroquinerie, M & B entite |
 | FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouve — 8 rue des Arts, cree 2015, pas de site ni IG identifie, faible presence digitale |
@@ -39,7 +39,7 @@
 | L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r3575538069750901923) — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
 | PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-762058812026090260) — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
 | ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r8345746387470852338) — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
-| LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome (NB: gerant JSON = Veronique Notte, gerant actuel = Sophie Sollier) |
+| LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-5536448297790948464) — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome |
 | KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouve — vend New Balance + chaussures sport toutes categories, SIREN Paris siege/Toulouse ets, 12 rue Saint Rome |
 | KEED | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouve — vêtements homme, Yelp mai 2026 actif, tel 05 61 23 31 22, 28 rue des Changes |
 | I LOVE SCARPE | Saint-Rome | Chaussures luxe | Alienor Lacroix | — | 811924067 | 5/10 | NOUVEAU | Email non trouve — chaussures + bijoux + maroquinerie luxe, IG @ilovescarpetoulouse, Yelp oct 2025 actif, 3 rue Temponieres |
@@ -389,6 +389,22 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
 *Note session : 5 brouillons crees sur les 6 leads BROUILLON Saint-Rome avec email (LINEA MODA 6/10 ecartee pour rester sous 5). Web search effectue pour chaque lead avant redaction. Methode ACA respectee, tous emails <150 mots, tutoiement, prenom gerant, UTM, footer STOP.*
+
+---
+
+## Recap brouillons email — 2026-05-07 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Romain Mussato (MW&Co / RL.COM) | contact@mwandco.com | MW&Co visible dans les recherches de stock local Toulouse ? | r-4355813290059118696 | ACA — marque horlogère indépendante toulousaine, collection ASSET assemblage main, 88% fabrication française, Two-Step rend le stock visible aux amateurs de montres en local |
+| 2 | Chrystalla Theodoridou (LES REVERIES) | hello@lesreveries.net | Les Rêveries visible dans les recherches de stock local Toulouse ? | r5463543312504006474 | ACA — sélection pointue chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), Two-Step rend le stock visible aux clientes qui cherchent ces marques à Toulouse |
+| 3 | Michael Drilhole (SWAP) | boutiqueswap@gmail.com | SWAP visible dans les recherches de stock local Toulouse ? | r4186603753522561088 | ACA — 7 ans rue Saint-Rome, boutique mode femme établie avec présence online, Two-Step rend le stock visible aux habitantes du quartier |
+| 4 | Sophie Sollier (LINEA MODA) | lineamoda.toulouse@gmail.com | Linea Moda visible dans les recherches de stock local Toulouse ? | r-5536448297790948464 | ACA — maroquinerie/bagagerie rue Saint-Rome, positionnement rare en centre-ville, Two-Step rend le stock visible aux clients qui cherchent un sac à Toulouse |
+
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+*Note session : 4 brouillons créés (3 nouveaux de la session 07/05 + LINEA MODA skippée le 06/05). Web search effectué pour chaque lead. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP.*
 
 ---
 
