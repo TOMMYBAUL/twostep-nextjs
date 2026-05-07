@@ -3,14 +3,33 @@
 *Derniere mise a jour : 2026-05-06 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 100
-- NOUVEAU : 58
+- Total leads : 110
+- NOUVEAU : 65
 - CONTACTE : 1
-- BROUILLON : 36
+- BROUILLON : 39
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Rome — 2026-05-07 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer — marque horlogère indépendante toulousaine, boutique 17 rue des Arts, mwandco.com, maître horloger fondateur |
+| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer — boutique mode femme + accessoires, lesreveries.net, Yelp nov 2025 actif, Garmentory référencé, 2 rue des Arts |
+| SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer — prêt-à-porter féminin, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
+| POINDRELLE | Saint-Rome | Bijouterie/Horlogerie | Liliane Poindrelle | — | 324454735 | 7/10 | NOUVEAU | Email non trouve — bijouterie 15 rue des Arts, 2 ets, ancienne enseigne (SIREN 324...), famille Poindrelle sur FB mais pas d'email boutique |
+| LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouve — Yelp April 2026 actif, 22 rue Saint Rome, vetements femme + chaussures + maroquinerie, M & B entite |
+| FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouve — 8 rue des Arts, cree 2015, pas de site ni IG identifie, faible presence digitale |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouve — mode femme 39 rue des Changes, tel +33 7 66 67 50 37, Mappy actif 2024 |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouve — tres recente (cree jan 2025), IG @URBANWEAR31, 12 rue Saint Rome, pret-a-porter + sport + chaussures |
+| GLAM SHOES BK | Saint-Rome | Mode/Vêtements | Chadli Hambli | — | 808299044 | 5/10 | NOUVEAU | Email non trouve — 29 rue des Changes (adresse partagee avec UNIKA), GLAM & CO entite, 1 ets |
+| SAS YOOK | Saint-Rome | Mode/Vêtements | Yohan Cohen | — | 510352446 | 4/10 | NOUVEAU | Email non trouve — 40 rue Saint Rome, PagesJaunes reference "tissus" (a verifier en boutique), cree 2009 |
+
+**Boutiques ecartees (session 07/05) :** MIRA MIRA (franchise Miramira espagnole), MADAME MARCHAND/CELU & CIE (liquidation judiciaire dec. 2018), SANTA FE/PALMA (ST ROME DISTRIBUTION liquidation avril 2024, Marc Fridman), TRANS-SHIRT (sérigraphie/imprimeur = artisan hors cible), BARONS PAPILLOM (adresse 14 rue Temponieres remplacee par SIZE? chaine), SDQ 31 (siege Montreuil + activite mixte mode+restauration), ROGER GERSON (adresse 26 rue Saint Rome = Adidas maintenant, ferme)
+
+---
 
 ### Saint-Rome — 2026-05-06 (L'Eclaireur)
 
@@ -333,6 +352,28 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Saint-Rome 2026-05-06".*
 *Note session : 6 emails confirmes sur 10 prospects (+ L'ANNEXE bonus). Emails manquants = boutiques sans site propre (KATOUNI, KEED) ou site avec form uniquement (MAISON DE LA SAPP). Recommandation : GAME TIME a un site gametime.fr — verifier page contact directement pour email.*
+
+## Recap leads — 2026-05-07 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Saint-Rome
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | RL.COM (MW&Co) | Romain Mussato | contact@mwandco.com ✅ | 9/10 | BROUILLON |
+| 2 | LES REVERIES | Chrystalla Theodoridou | hello@lesreveries.net ✅ | 8/10 | BROUILLON |
+| 3 | SWAP (MD Concept) | Michael Drilhole | boutiqueswap@gmail.com ✅ | 8/10 | BROUILLON |
+| 4 | POINDRELLE | Liliane Poindrelle | — (15 rue des Arts, bijouterie ancienne) | 7/10 | NOUVEAU |
+| 5 | LA SUITE... | Anouar-adil Boudraa | — (Yelp april 2026 actif) | 6/10 | NOUVEAU |
+| 6 | FC2 BOUTIQUE | Francois Couillard | — (pas de site ni IG) | 6/10 | NOUVEAU |
+| 7 | BELLA MODE | Yinqiu Jiang | — (tel +33 7 66 67 50 37) | 5/10 | NOUVEAU |
+| 8 | URBAN WEAR | Hichame Ayachi | — (IG @URBANWEAR31, tres recente) | 5/10 | NOUVEAU |
+| 9 | GLAM SHOES BK | Chadli Hambli | — (29 rue des Changes) | 5/10 | NOUVEAU |
+| 10 | SAS YOOK | Yohan Cohen | — (a verifier activite) | 4/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Saint-Rome 2026-05-07".*
+*Note session : 3 emails confirmes sur 10 prospects (RL.COM/MW&Co, LES REVERIES, SWAP). Nombreux ecartements : 7 boutiques ecartees (franchise, liquidation, fermeture, artisan). Saint-Rome presque epuise apres 2 sessions — majorite des boutiques restantes sans presence digitale ou hors cible. Recommandation : preparer rotation vers Carmes (HANNAH, LA FILLE DE MARGARET, LAORA VITTORIA encore NOUVEAU sans email) pour la session de jeudi.*
+
+---
 
 ## Recap brouillons email — 2026-05-06 (L'Auditeur)
 
