@@ -1,16 +1,33 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-06 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-08 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 110
-- NOUVEAU : 65
+- Total leads : 118
+- NOUVEAU : 72
 - CONTACTE : 1
-- BROUILLON : 39
+- BROUILLON : 40
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Carmes — 2026-05-08 (L'Eclaireur)
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| MATHIS ET SASHA | Carmes | Mode/Vêtements | Clementine Chiodo | clementinedouts@gmail.com | 920475134 | 8/10 | BROUILLON | Valider + envoyer — mode 100% France, 49 rue des Filatiers, boutique aussi connue sous "Clementine" et "Clementine et Mathieu", phone 06 89 08 31 62 |
+| SORTILEGE | Carmes | Mode femme | Marie Guilhem | — | 448745604 | 8/10 | NOUVEAU | Email non trouve — multimarque femme independante depuis 2007 (Maison Hotel, Stella Forest, Estheme Cachemire), site sortilegeboutique.com (form uniquement), 7 rue Boulbonne |
+| MADAME GEORGES | Carmes | Mode femme | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouve — 2 ets (35 + 18 rue Boulbonne), tel 06 28 83 73 98, peu de presence digitale |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouve — chaussures 35 rue Boulbonne, 4 ets locaux (sous 5 = independant), tel 05 34 44 90 71 |
+| STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouve — mode 46 rue des Filatiers, 2 ets, aucune presence digitale, president Dimitri Lavabre |
+| PLUMETIS | Carmes | Mode/Vêtements | Audrey Derouard | — | 840763288 | 5/10 | NOUVEAU | Email non trouve — robes mariee sur RDV uniquement, 35 rue Dalbade, site plumetis-toulouse.fr (form), tel 05 61 53 49 22 — pertinence Two-Step limitee (sur RDV) |
+| SARL LES CIGALES | Carmes | Mode/Vêtements | Olivia Samson | — | 441927951 | 4/10 | NOUVEAU | Email non trouve — depot-vente 42 rue Boulbonne, IG @cigales_store, tel 09 81 11 33 99 — hors cible Two-Step (pas de stock marques propres) |
+| MICHELE CAZAUX | Carmes | Mode/Vêtements | Michele Louge | — | 321727455 | 3/10 | NOUVEAU | Email non trouve — tres ancienne enseigne (SIREN 321...), 39 rue de la Dalbade, aucune presence digitale identifiee |
+
+**Boutiques ecartees (session 08/05) :** M.J.H. (Jean-jacques Chetritt — liquidation judiciaire cloturee 17/01/2020), MAITYLA/MAITYKA (Mailys Baillet — liquidee 19/01/2023, cessation paiements avril 2022), VICOMTE A (Gregory Troch — chaine nationale 148 boutiques France, 4 rue Boulbonne), LESLIE MONTE-CARLO (Mireille Pietri — chaine nationale 27 boutiques France, 35 rue Boulbonne), POINTURE/AG TOULOUSE (Audrey Garcia — boutique remplacee par ARCHE franchise a 23 rue Boulbonne)
+
+---
 
 ### Saint-Rome — 2026-05-07 (L'Eclaireur)
 
@@ -405,6 +422,26 @@
 
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
 *Note session : 4 brouillons créés (3 nouveaux de la session 07/05 + LINEA MODA skippée le 06/05). Web search effectué pour chaque lead. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP.*
+
+---
+
+## Recap leads — 2026-05-08 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Carmes
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | MATHIS ET SASHA | Clementine Chiodo | clementinedouts@gmail.com ✅ | 8/10 | BROUILLON |
+| 2 | SORTILEGE | Marie Guilhem | — (sortilegeboutique.com, form uniquement) | 8/10 | NOUVEAU |
+| 3 | MADAME GEORGES | Lionel Prevost | — (tel 06 28 83 73 98) | 7/10 | NOUVEAU |
+| 4 | PARALLELE | Alain Sanz | — (tel 05 34 44 90 71) | 7/10 | NOUVEAU |
+| 5 | STEDIF | Stephanie Forgeront | — (aucune presence digitale) | 6/10 | NOUVEAU |
+| 6 | PLUMETIS | Audrey Derouard | — (plumetis-toulouse.fr, form) | 5/10 | NOUVEAU |
+| 7 | SARL LES CIGALES | Olivia Samson | — (IG @cigales_store) | 4/10 | NOUVEAU |
+| 8 | MICHELE CAZAUX | Michele Louge | — (aucune presence digitale) | 3/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Carmes 2026-05-08".*
+*Note session : 1 email confirme sur 8 prospects non-ecartes (MATHIS ET SASHA / Boutique Clementine). 5 boutiques ecartees : 2 liquidees (M.J.H., MAITYLA), 2 chaines nationales (VICOMTE A 148 bts, LESLIE MONTE-CARLO 27 bts), 1 fermee (POINTURE remplacee par ARCHE franchise). Carmes epuise cote "pas encore dans le tracker" — les 8 NOUVEAU session precedente (HANNAH, LA FILLE DE MARGARET, LAORA VITTORIA, LB7, AMBIANCES ET SENTEURS, CONCEPT TOULOUSE, BOSCHERIE, DEAR SKIN SHOP) restent sans email. Recommandation : tenter 2e passage sur SORTILEGE (contact via IG ou visite terrain) et MADAME GEORGES (tel 06 28 83 73 98). Envisager rotation vers Saint-Etienne pour la prochaine session jeudi.*
 
 ---
 
