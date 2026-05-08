@@ -16,7 +16,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| MATHIS ET SASHA | Carmes | Mode/Vêtements | Clementine Chiodo | clementinedouts@gmail.com | 920475134 | 8/10 | BROUILLON | Valider + envoyer — mode 100% France, 49 rue des Filatiers, boutique aussi connue sous "Clementine" et "Clementine et Mathieu", phone 06 89 08 31 62 |
+| MATHIS ET SASHA | Carmes | Mode/Vêtements | Clementine Chiodo | clementinedouts@gmail.com | 920475134 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 08/05, id: r8263940955352408641) — mode 100% France, 49 rue des Filatiers, boutique aussi connue sous "Clementine" et "Clementine et Mathieu", IG @laboutiqueclementine, phone 06 89 08 31 62 |
 | SORTILEGE | Carmes | Mode femme | Marie Guilhem | — | 448745604 | 8/10 | NOUVEAU | Email non trouve — multimarque femme independante depuis 2007 (Maison Hotel, Stella Forest, Estheme Cachemire), site sortilegeboutique.com (form uniquement), 7 rue Boulbonne |
 | MADAME GEORGES | Carmes | Mode femme | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouve — 2 ets (35 + 18 rue Boulbonne), tel 06 28 83 73 98, peu de presence digitale |
 | PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouve — chaussures 35 rue Boulbonne, 4 ets locaux (sous 5 = independant), tel 05 34 44 90 71 |
@@ -422,6 +422,19 @@
 
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
 *Note session : 4 brouillons créés (3 nouveaux de la session 07/05 + LINEA MODA skippée le 06/05). Web search effectué pour chaque lead. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP.*
+
+---
+
+## Recap brouillons email — 2026-05-08 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Clementine Chiodo (MATHIS ET SASHA / Boutique Clementine) | clementinedouts@gmail.com | Boutique Clementine visible dans les recherches de stock local Toulouse ? | r8263940955352408641 | ACA — mode 100% France rue des Filatiers, IG @laboutiqueclementine, Two-Step rend le stock visible aux habitants qui cherchent du made in France à Toulouse |
+
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c*
+*Note session : 1 brouillon créé (seul lead avec email en attente de draft). Méthode ACA respectée, email <150 mots, tutoiement, prénom gérant, UTM, footer STOP.*
 
 ---
 
