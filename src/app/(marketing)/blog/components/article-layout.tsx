@@ -34,6 +34,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-sneakers-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique (et savoir s'il est en stock)",
+        slug: "shopping-bijoux-toulouse",
+        category: "consommateurs",
+    },
 ];
 
 export function ArticleLayout({
