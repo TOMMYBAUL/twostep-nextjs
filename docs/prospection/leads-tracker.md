@@ -107,7 +107,7 @@
 |---|---|---|---|---|---|---|---|---|
 | LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r6217091151963335716) |
 | N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r2720507363937656694) — email confirme via bijouterie-toulouse-nougues.fr/contactez-les-bijouteries |
-| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Email trouve 11/05 — ste-negrevergne@hotmail.fr (source : annuaire cylex + confirmation multiple sources). Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi), 27 rue de Metz, tel 05 61 21 02 96. Brouillon à créer. |
+| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 11/05, id: r-899126783899389600) — Negrevergne depuis 1954, sacs marques (Samsonite, Kipling, Rimowa, Fourès, Capomaggi), 27 rue de Metz, tel 05 61 21 02 96. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | — | 809552359 | 7/10 | NOUVEAU | Email marque centrale sav@arseneetlespipelettes.com (n'atteint pas la gerante) — contacter via boutique 25 rue de Metz |
 | RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
@@ -216,7 +216,7 @@
 | L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-8493153263310165498) — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
 | PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
 | IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | — | 393981394 | 6/10 | NOUVEAU | Email non trouve (form sur imagine-bijoux.fr), tel: 05 61 22 74 00 |
-| KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | boutiqueau44@gmail.com | 882609688 | 6/10 | BROUILLON | Email trouve 11/05 — boutiqueau44@gmail.com (source : page contact boutiqueau44.com). Collections créateurs indépendants, eco-responsable, IG @boutique_au_44_rue_de_metz_, 44 rue de Metz. Brouillon à créer. |
+| KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | boutiqueau44@gmail.com | 882609688 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 11/05, id: r-6202611826233633933) — collections créateurs indépendants français/européens, éco-responsable, expérience luxe, IG @boutique_au_44_rue_de_metz_, boutiqueau44.com, 44 rue de Metz. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (site: perlins.fr), tel: 05 61 21 18 81 |
 
 ## Retires (chaines / pas independants / fermes)
@@ -477,6 +477,20 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prevu : "Leads Capitole 2026-05-11".*
 *Note session : 2ème passage Capitole — 2 emails trouves sur 10 (NEGREVERGNE via cylex/annuaires, KATHY.B/Au44 via page contact boutiqueau44.com). Confirmation : Capitole ÉPUISÉ. Les 8 NOUVEAU restants ont soit : aucune presence digitale (AMA LUNA, VERSO), site sans email (MANIK, CUIRS DU SUD, IMAGINE), ou IG uniquement (RECOVERY, ELEMENT STORE). BAGWOOD semble avoir mue en "Alfred Wood" mode homme (meme adresse, nouveau concept). Recommandation Thomas : visite terrain pour RECOVERY (recente, 48B rue Metz) et ELEMENT STORE (45 rue Tourneurs = skateshop tres visible). Pour les suivantes : pivoter DEFINITIF vers nouveaux quartiers (Carmes 2eme passage ou explorer Compans-Caffarelli / Croix-Daurade).*
+
+---
+
+## Recap brouillons email — 2026-05-11 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Geraldine Casanovas (NEGREVERGNE) | ste-negrevergne@hotmail.fr | Negrevergne visible dans les recherches de stock local Toulouse ? | r-899126783899389600 | ACA — institution maroquinerie depuis 1954, marques Samsonite/Kipling/Rimowa/Fourès, Two-Step rend le stock visible aux clients qui cherchent un sac à Toulouse |
+| 2 | Catherine Ballias (KATHY.B / AU 44) | boutiqueau44@gmail.com | Au 44 visible dans les recherches de stock local Toulouse ? | r-6202611826233633933 | ACA — sélection créateurs français/européens éco-responsable, expérience luxe, Two-Step rend les pièces visibles sur la carte locale au moment où la cliente cherche |
+
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-11".*
+*Note session : 2 brouillons créés sur les 2 leads BROUILLON avec email issus de la session L'Eclaireur 11/05 (NEGREVERGNE + KATHY.B). Web search effectué pour chaque lead. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérante, UTM, footer STOP.*
 
 ---
 
