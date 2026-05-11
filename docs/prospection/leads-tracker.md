@@ -4,9 +4,9 @@
 
 ## Stats
 - Total leads : 118
-- NOUVEAU : 72
+- NOUVEAU : 70
 - CONTACTE : 1
-- BROUILLON : 40
+- BROUILLON : 42
 - Reponses : 0
 - Signes : 0
 
@@ -107,7 +107,7 @@
 |---|---|---|---|---|---|---|---|---|
 | LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r6217091151963335716) |
 | N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r2720507363937656694) — email confirme via bijouterie-toulouse-nougues.fr/contactez-les-bijouteries |
-| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | — | 540800240 | 8/10 | NOUVEAU | Email non trouve — site negrevergne.fr (formulaire uniquement), tel 09 70 35 12 60, FB maroquinerie.negrevergne |
+| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Email trouve 11/05 — ste-negrevergne@hotmail.fr (source : annuaire cylex + confirmation multiple sources). Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi), 27 rue de Metz, tel 05 61 21 02 96. Brouillon à créer. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | — | 809552359 | 7/10 | NOUVEAU | Email marque centrale sav@arseneetlespipelettes.com (n'atteint pas la gerante) — contacter via boutique 25 rue de Metz |
 | RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
@@ -216,7 +216,7 @@
 | L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-8493153263310165498) — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
 | PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
 | IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | — | 393981394 | 6/10 | NOUVEAU | Email non trouve (form sur imagine-bijoux.fr), tel: 05 61 22 74 00 |
-| KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | — | 882609688 | 6/10 | NOUVEAU | Email non trouve (IG: @boutique_au_44_rue_de_metz_), tel: 05 34 40 81 88 |
+| KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | boutiqueau44@gmail.com | 882609688 | 6/10 | BROUILLON | Email trouve 11/05 — boutiqueau44@gmail.com (source : page contact boutiqueau44.com). Collections créateurs indépendants, eco-responsable, IG @boutique_au_44_rue_de_metz_, 44 rue de Metz. Brouillon à créer. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (site: perlins.fr), tel: 05 61 21 18 81 |
 
 ## Retires (chaines / pas independants / fermes)
@@ -455,6 +455,28 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Carmes 2026-05-08".*
 *Note session : 1 email confirme sur 8 prospects non-ecartes (MATHIS ET SASHA / Boutique Clementine). 5 boutiques ecartees : 2 liquidees (M.J.H., MAITYLA), 2 chaines nationales (VICOMTE A 148 bts, LESLIE MONTE-CARLO 27 bts), 1 fermee (POINTURE remplacee par ARCHE franchise). Carmes epuise cote "pas encore dans le tracker" — les 8 NOUVEAU session precedente (HANNAH, LA FILLE DE MARGARET, LAORA VITTORIA, LB7, AMBIANCES ET SENTEURS, CONCEPT TOULOUSE, BOSCHERIE, DEAR SKIN SHOP) restent sans email. Recommandation : tenter 2e passage sur SORTILEGE (contact via IG ou visite terrain) et MADAME GEORGES (tel 06 28 83 73 98). Envisager rotation vers Saint-Etienne pour la prochaine session jeudi.*
+
+---
+
+## Recap leads — 2026-05-11 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Capitole (2ème passage)
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | NEGREVERGNE | Geraldine Casanovas | ste-negrevergne@hotmail.fr ✅ | 8/10 | BROUILLON |
+| 2 | AMA LUNA | Judith Soustiel | — (aucun site ni IG Toulouse identifie) | 7/10 | NOUVEAU |
+| 3 | BAGWOOD (Alfred Wood) | Therese Wood | — (enseigne en mode homme, aucun contact digital) | 7/10 | NOUVEAU |
+| 4 | RECOVERY PROJECT | Pierre Bauguil | — (IG @recoverytoulouse, tel 05 61 40 42 94) | 7/10 | NOUVEAU |
+| 5 | CHAUSSURES MANIK | Pierre Lacabanne | — (manik.fr sans email, tel 05 61 21 52 08) | 7/10 | NOUVEAU |
+| 6 | LES CUIRS DU SUD | Eric Gautrand | — (cuirsdusud.com inaccessible, tel 05 61 21 16 51) | 7/10 | NOUVEAU |
+| 7 | ELEMENT STORE (LEMAN) | Emmanuel Levy | — (tel 05 31 21 70 42, pas de site/email) | 7/10 | NOUVEAU |
+| 8 | IMAGINE BIJOUX | Nathalie Ghenassia | — (imagine-bijoux.fr form uniquement, tel 05 61 22 74 00) | 6/10 | NOUVEAU |
+| 9 | KATHY.B (AU 44) | Catherine Ballias | boutiqueau44@gmail.com ✅ | 6/10 | BROUILLON |
+| 10 | VERSO | Monique Baron | — (Yelp March 2026 : adresse 19 rue Pomme, pas de contact) | 6/10 | NOUVEAU |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prevu : "Leads Capitole 2026-05-11".*
+*Note session : 2ème passage Capitole — 2 emails trouves sur 10 (NEGREVERGNE via cylex/annuaires, KATHY.B/Au44 via page contact boutiqueau44.com). Confirmation : Capitole ÉPUISÉ. Les 8 NOUVEAU restants ont soit : aucune presence digitale (AMA LUNA, VERSO), site sans email (MANIK, CUIRS DU SUD, IMAGINE), ou IG uniquement (RECOVERY, ELEMENT STORE). BAGWOOD semble avoir mue en "Alfred Wood" mode homme (meme adresse, nouveau concept). Recommandation Thomas : visite terrain pour RECOVERY (recente, 48B rue Metz) et ELEMENT STORE (45 rue Tourneurs = skateshop tres visible). Pour les suivantes : pivoter DEFINITIF vers nouveaux quartiers (Carmes 2eme passage ou explorer Compans-Caffarelli / Croix-Daurade).*
 
 ---
 
