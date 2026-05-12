@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-08 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-12 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 118
@@ -11,6 +11,25 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Etienne — 2026-05-12 (L'Eclaireur) — 2ème passage
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (2e passage 12/05) — lespion.fr actif, boutique createurs designer femme, IG @boutiquelespion, tel 05 61 73 36 69 — site sans email public, formulaire uniquement |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (2e passage 12/05) — toulouse-montres.com actif (montres luxe occasion : Rolex, Breitling, Cartier), formulaire contact uniquement, editeur Jérome Chesnot (mentions légales) — RDV uniquement |
+| TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — 41 rue Croix Baragnon (meme adresse que Dorise Joaillier), famille Dorise, Dorise Joaillier utilise formulaire uniquement (pas d'email public), tel 05 61 52 38 03 |
+| ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — entite BOTE, 35 rue Croix Baragnon, presence digitale tres faible, pas de site ni IG identifie — contacter visite terrain |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — entite MADDY 31, 15 rue Croix Baragnon, IG @lilith.croix.baragnon, tel 05 61 73 22 05, pas d'email public visible |
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — macdouglastoulouse.fr (actif, Chantal Huet = responsable publication), IG @macdouglastlse actif, tel 05 61 53 93 18, pas d'email public |
+| JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — meme gerant Edouard Dorise que Dorise Joaillier, contact via formulaire dorise-joaillier.com, tel 05 61 52 38 03 — essayer contact@dorise-joaillier.com (prudence : email du gerant pas de JAILLET) |
+| CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve (2e passage 12/05) — reparation horlogerie 23 rue Croix Baragnon, meme gerant Edouard Dorise, pertinence Two-Step tres limitee (SAV uniquement) |
+
+**Boutiques ecartes (session 12/05) :** APOSTROPHE RJC (R.J.C, Raymonde Coudert — etablissement Toulouse FERME depuis 30/06/2013, siege transfere Paris), OLD ENGLAND (Albert Goldberg — etablissement secondaire FERME, pas actif en boutique)
+
+**Note session 12/05 (L'Eclaireur) :** 2ème passage exhaustif sur tous les prospects NOUVEAU Saint-Etienne. Aucun email public trouve. 0 email confirme sur 10 prospects traites (8 NOUVEAU + 2 ecartes). Saint-Etienne EPUISE — toutes les boutiques ont ete traitees au moins 2 fois. Boutiques restantes sans email = pas de presence digitale (ESTHER MICHELE/BOTE), site avec formulaire uniquement (L'ESPION, TOULOUSE MONTRES, DORISE/JAILLET/TIABEL), ou telephone uniquement (LILITH). Recommandation Thomas : visite terrain pour L'ESPION (21B rue Croix Baragnon, boutique tres visible) et TOULOUSE MONTRES (10 rue Pierre de Fermat, specialiste montres luxe occasion = cible parfaite Two-Step). Pivoter vers un nouveau quartier non encore traite (Compans-Caffarelli, Croix-Daurade ou Wilson).
+
+---
 
 ### Carmes — 2026-05-08 (L'Eclaireur)
 
@@ -477,6 +496,28 @@
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prevu : "Leads Capitole 2026-05-11".*
 *Note session : 2ème passage Capitole — 2 emails trouves sur 10 (NEGREVERGNE via cylex/annuaires, KATHY.B/Au44 via page contact boutiqueau44.com). Confirmation : Capitole ÉPUISÉ. Les 8 NOUVEAU restants ont soit : aucune presence digitale (AMA LUNA, VERSO), site sans email (MANIK, CUIRS DU SUD, IMAGINE), ou IG uniquement (RECOVERY, ELEMENT STORE). BAGWOOD semble avoir mue en "Alfred Wood" mode homme (meme adresse, nouveau concept). Recommandation Thomas : visite terrain pour RECOVERY (recente, 48B rue Metz) et ELEMENT STORE (45 rue Tourneurs = skateshop tres visible). Pour les suivantes : pivoter DEFINITIF vers nouveaux quartiers (Carmes 2eme passage ou explorer Compans-Caffarelli / Croix-Daurade).*
+
+---
+
+## Recap leads — 2026-05-12 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Saint-Etienne (2ème passage)
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | L'ESPION | Simone Soudri | — (lespion.fr, formulaire, tel 05 61 73 36 69) | 8/10 | NOUVEAU |
+| 2 | TOULOUSE MONTRES | Jean-Marc Morillon | — (toulouse-montres.com, formulaire RDV) | 8/10 | NOUVEAU |
+| 3 | TIABEL | Armand Dorise | — (41 rue Croix Baragnon, famille Dorise, formulaire) | 7/10 | NOUVEAU |
+| 4 | ESTHER MICHELE (BOTE) | Isabelle Bouygue | — (aucune presence digitale, visite terrain) | 7/10 | NOUVEAU |
+| 5 | LILITH | Gilles Andre | — (IG @lilith.croix.baragnon, tel 05 61 73 22 05) | 7/10 | NOUVEAU |
+| 6 | MAC DOUGLAS | Chantal Huet | — (macdouglastoulouse.fr, IG @macdouglastlse, tel 05 61 53 93 18) | 7/10 | NOUVEAU |
+| 7 | JAILLET | Edouard Dorise | — (meme gerant Dorise, formulaire dorise-joaillier.com) | 7/10 | NOUVEAU |
+| 8 | CHRISTOMET | Edouard Dorise | — (reparation horlogerie, pertinence limitee) | 5/10 | NOUVEAU |
+| — | APOSTROPHE RJC | Raymonde Coudert | — | — | ECARTE |
+| — | OLD ENGLAND | Albert Goldberg | — | — | ECARTE |
+
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prevu : "Leads Saint-Etienne 2026-05-12".*
+*Note session : 0 email trouve sur 10 prospects traites. 2 ecartes confirmes (APOSTROPHE RJC ferme 2013, OLD ENGLAND ferme). Saint-Etienne EPUISE apres 3 sessions (22/04, 29/04, 12/05). Toutes boutiques du quartier traitees. Boutiques restantes NOUVEAU = contact uniquement via formulaire web ou telephone, sans email public. Recommandation : visite terrain Thomas pour L'ESPION (boutique createurs tres qualifiee Two-Step) et TOULOUSE MONTRES (montres luxe occasion = cible parfaite stock visible). Pivot definitif vers nouveau quartier non encore traite : Wilson, Compans-Caffarelli, ou Croix-Daurade.*
 
 ---
 
