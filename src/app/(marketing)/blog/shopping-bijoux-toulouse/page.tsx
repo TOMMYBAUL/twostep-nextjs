@@ -89,7 +89,7 @@ export default function ShoppingBijouxToulousePage() {
                     que la couleur correspond exactement à ce que tu avais en tête.
                     Tu veux peut-être le faire graver sur place, être conseillé sur
                     l&apos;entretien, ou trouver quelque chose que tu ne vois pas en
-                    deux clics. Pour tout ça, la boutique reste irremplaçable — et
+                    deux clics. Pour tout ça, la boutique reste irremplçable — et
                     Toulouse a de quoi satisfaire les amateurs de bijoux les plus
                     exigeants.
                 </p>
