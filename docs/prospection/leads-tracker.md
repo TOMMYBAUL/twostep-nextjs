@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-14 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-15 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 118
@@ -150,7 +150,7 @@
 
 **Note session 02/05 (L'Eclaireur) :** Quartier Victor-Hugo EPUISE — 9 boutiques traitees, toutes en BROUILLON ou ECARTEES. Aucun nouveau prospect disponible. Recommandation : sortir Victor-Hugo de la rotation et le remplacer par un quartier non encore traite (Saint-Rome ou Carmes ont encore des boutiques NOUVEAU sans email).
 
-### Saint-Cyprien — 2026-04-24 (L'Eclaireur) — MàJ 2026-05-01
+### Saint-Cyprien — 2026-04-24 (L'Eclaireur) — MàJ 2026-05-15 (3ème passage)
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
@@ -166,6 +166,8 @@
 **Boutiques ecartees (session 24/04) :** COSMETIC LOVERS (liquidee 23/10/2018), TWIX BIZNESS MALIK (en liquidation)
 
 **Note session 01/05 (L'Eclaireur) :** 2e passage exhaustif sur les 6 NOUVEAU Saint-Cyprien. Aucun email public trouve. Ces boutiques (majorite cosmetique afro rue Republique 31300) ne publient pas d'email — communication via tel/WhatsApp/Instagram uniquement. Recommandation : visite terrain Thomas ou contact Instagram direct pour HABESHA et DIVINE HAIR BEAUTY.
+
+**Note session 15/05 (L'Eclaireur) — 3ème passage :** Saint-Cyprien ÉPUISÉ DÉFINITIF. Tous les 10 prospects du JSON déjà dans le tracker. 3ème recherche web exhaustive sur les 6 NOUVEAU sans email. Résultats : HABESHA (site formulaire uniquement, IG @habeshabeautycosmetique, FB actif — aucun email public), JAVA COSMETIC (Facebook @JavaCoiffure, tel 05 61 42 97 28 — aucun email), ABSAMY (Treatwell actif, FB @Magasin absamy, tel 05 62 86 16 21 — aucun email), DIVINE HAIR BEAUTY (Planity actif staff Viviane+Rosalyk, aucun email), PARFUMERIE ANN (Myriam Echevarria gère 4 sociétés basée Tournefeuille, aucun site boutique), DIALLO DIALLO GOUDOUS (registres uniquement, 0 présence digitale). Conclusion : Saint-Cyprien = 0 email sur 3 passages. Ces boutiques communiquent exclusivement par téléphone et WhatsApp. Recommandation DÉFINITIVE : sortir Saint-Cyprien de la rotation vendredi. Proposer à Thomas : Wilson, Compans-Caffarelli, ou Arnaud-Bernard pour remplacer vendredi.
 
 ### Carmes — 2026-04-23 (L'Eclaireur)
 
@@ -532,6 +534,24 @@
 
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-14".*
 *Note session : 2 brouillons créés — seuls leads BROUILLON avec "Brouillon à créer" dans le tracker. Web search effectué pour NEGREVERGNE (negrevergne.fr : Samsonite/Rimowa/Tumi/Fourès/Bric's, institution depuis 1954) et KATHY.B/AU 44 (boutiqueau44.com : créateurs FR/EU éco-responsable, matières nobles). Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP.*
+
+---
+
+## Recap leads — 2026-05-15 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Saint-Cyprien (3ème passage)
+
+| # | Boutique | Gerant | Email | Score | Statut | Présence digitale |
+|---|---|---|---|---|---|---|
+| 1 | HABESHA | Meron Gelashe | — | 7/10 | NOUVEAU | Site formulaire + IG @habeshabeautycosmetique + FB — 0 email public |
+| 2 | DIVINE HAIR BEAUTY | Fred Oumba | — | 6/10 | NOUVEAU | Planity actif (Viviane & Rosalyk) — 0 email public |
+| 3 | ABSAMY | Absatou Thiam | — | 6/10 | NOUVEAU | Treatwell actif + FB @Magasin absamy, tel 05 62 86 16 21 — 0 email public |
+| 4 | JAVA COSMETIC | Fitsum Abebe | — | 6/10 | NOUVEAU | Facebook @JavaCoiffure, tel 05 61 42 97 28 — 0 email public |
+| 5 | PARFUMERIE ANN | Myriam Echevarria | — | 6/10 | NOUVEAU | Gérante basée Tournefeuille, 4 sociétés — 0 site boutique ni email |
+| 6 | DIALLO DIALLO GOUDOUS | Abdoul Diallo | — | 5/10 | NOUVEAU | Registres légaux uniquement — 0 présence digitale |
+
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Cyprien 2026-05-15".*
+*Note session : Saint-Cyprien ÉPUISÉ DÉFINITIF — 3ème passage, 0 email trouvé (0/3 sessions, 0/10 prospects avec email). Toutes les boutiques actives communicent exclusivement par téléphone et WhatsApp. Recommandation : retirer Saint-Cyprien de la rotation vendredi et le remplacer par Wilson, Compans-Caffarelli, ou Arnaud-Bernard (quartiers du centre non encore traités avec des commerces indépendants mode/bijoux/chaussures).*
 
 ---
 
