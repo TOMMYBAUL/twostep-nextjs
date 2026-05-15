@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-15 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-15 (L'Auditeur)*
 
 ## Stats
 - Total leads : 118
-- NOUVEAU : 70
+- NOUVEAU : 67
 - CONTACTE : 1
-- BROUILLON : 44
+- BROUILLON : 47
 - Reponses : 0
 - Signes : 0
 
@@ -36,7 +36,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | MATHIS ET SASHA | Carmes | Mode/Vêtements | Clementine Chiodo | clementinedouts@gmail.com | 920475134 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 08/05, id: r8263940955352408641) — mode 100% France, 49 rue des Filatiers, boutique aussi connue sous "Clementine" et "Clementine et Mathieu", IG @laboutiqueclementine, phone 06 89 08 31 62 |
-| SORTILEGE | Carmes | Mode femme | Marie Guilhem | — | 448745604 | 8/10 | NOUVEAU | Email non trouve — multimarque femme independante depuis 2007 (Maison Hotel, Stella Forest, Estheme Cachemire), site sortilegeboutique.com (form uniquement), 7 rue Boulbonne |
+| SORTILEGE | Carmes | Mode femme | Marie Guilhem | info@sortilegeboutique.com | 448745604 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r8213220630848683024) — multimarque femme depuis 2007 (Stella Forest, Esthème Cachemire, Maison Hôtel), 7 rue Boulbonne, IG @boutiquesortilege — email trouvé via mentions légales sortilegeboutique.com |
 | MADAME GEORGES | Carmes | Mode femme | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouve — 2 ets (35 + 18 rue Boulbonne), tel 06 28 83 73 98, peu de presence digitale |
 | PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouve — chaussures 35 rue Boulbonne, 4 ets locaux (sous 5 = independant), tel 05 34 44 90 71 |
 | STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouve — mode 46 rue des Filatiers, 2 ets, aucune presence digitale, president Dimitri Lavabre |
@@ -115,7 +115,7 @@
 | VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | NOUVEAU | Email non trouve — 19 rue de la Pomme (Yelp March 2026 actif), tel 05 62 30 89 25 |
 | SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
 | SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouve — mode homme 36 rue de la Pomme, tel 05 61 21 50 72 |
-| BIAS | Capitole | Deco/Concept store | Laura Noailles | — | 980131718 | 6/10 | NOUVEAU | Email non trouve — 2 rue Paul Vidal (demenage depuis 62 rue Metz), IG @bias.cst, site en construction |
+| BIAS | Capitole | Deco/Concept store | Laura Noailles | laura.noailles@bias-conceptstore.fr | 980131718 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r2648943524808888459) — concept store déco/art/design, 2 rue Paul Vidal, ouvert mai 2024, IG @bias.cst — email trouvé via article Maison Actuelle jan 2026 |
 | RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | — | 945085363 | 5/10 | NOUVEAU | Email non trouve — rachellhair.fr (inaccessible), Planity actif, 12 rue Bayard, vente perruques + cosmetiques |
 
 **Boutiques ecartees (session 04/05) :** BANANA-POMME (fermee dec. 2024), LEWIS (ferme juin 2024), SHILTON (chaine nationale 27 boutiques), L'ISLA NOVA (boutique en L'Isle-en-Dodon, pas Toulouse), DUO BOUTIQUE/COCCI (fermee a Toulouse), TILL/TILLAMY (franchise enfants Maine-et-Loire), TOVLI (etablissement Toulouse inactif), MURPHY & NYE/COMEPAR (voile/sportswear niche)
@@ -236,7 +236,7 @@
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
 | L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-8493153263310165498) — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
 | PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
-| IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | — | 393981394 | 6/10 | NOUVEAU | Email non trouve (form sur imagine-bijoux.fr), tel: 05 61 22 74 00 |
+| IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r1836505965642175467) — bijouterie fantaisie 25+ ans, Réminiscence/Taratata, 40 rue de la Pomme, IG @imaginebijoux — email trouvé via mentions légales imagine-bijoux.fr |
 | KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | boutiqueau44@gmail.com | 882609688 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r804800153826926811) — collections créateurs indépendants français/européens, éco-responsable, IG @boutique_au_44_rue_de_metz_, 44 rue de Metz. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (site: perlins.fr), tel: 05 61 21 18 81 |
 
@@ -552,6 +552,21 @@
 
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Cyprien 2026-05-15".*
 *Note session : Saint-Cyprien ÉPUISÉ DÉFINITIF — 3ème passage, 0 email trouvé (0/3 sessions, 0/10 prospects avec email). Toutes les boutiques actives communicent exclusivement par téléphone et WhatsApp. Recommandation : retirer Saint-Cyprien de la rotation vendredi et le remplacer par Wilson, Compans-Caffarelli, ou Arnaud-Bernard (quartiers du centre non encore traités avec des commerces indépendants mode/bijoux/chaussures).*
+
+---
+
+## Recap brouillons email — 2026-05-15 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Marie Guilhem (SORTILEGE) | info@sortilegeboutique.com | Sortilège visible dans les recherches de stock local Toulouse ? | r8213220630848683024 | ACA — multimarque femme 18 ans rue Boulbonne (Stella Forest, Esthème Cachemire), Two-Step rend le stock visible aux clientes qui cherchent ces marques localement |
+| 2 | Nathalie Ghenassia (IMAGINE BIJOUX) | contact@imagine-bijoux.fr | Imagine Bijoux visible dans les recherches de stock local Toulouse ? | r1836505965642175467 | ACA — bijouterie fantaisie 25+ ans rue de la Pomme (Réminiscence, Taratata), Two-Step rend le stock visible aux femmes cherchant des bijoux en centre-ville |
+| 3 | Laura Noailles (BIAS) | laura.noailles@bias-conceptstore.fr | BIAS visible dans les recherches de stock local Toulouse ? | r2648943524808888459 | ACA — concept store déco/art/design expérientiel 2 rue Paul Vidal, ouvert mai 2024, Two-Step rend les produits visibles aux habitants qui cherchent déco/lifestyle en centre-ville |
+
+*Note session 15/05 (L'Auditeur) : Aucun lead NOUVEAU avec email dans le tracker à date — tous les leads avec email existants sont déjà en BROUILLON. Recherche active d'emails pour les meilleurs NOUVEAU (score ≥ 6/10) effectuée via web search + fetch mentions légales. 3 emails trouvés sur ~20 leads tentés : SORTILEGE via mentions légales sortilegeboutique.com, IMAGINE BIJOUX via imagine-bijoux.fr/content/2-mentions-legales, BIAS via article Maison Actuelle jan 2026. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP. Statuts SORTILEGE/IMAGINE BIJOUX/BIAS mis à jour BROUILLON dans le tracker.*
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-15".*
 
 ---
 
