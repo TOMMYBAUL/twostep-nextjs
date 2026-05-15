@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Boutique sport à Toulouse : trouver ton équipement en stock (sans se déplacer pour rien)",
+        slug: "boutique-sport-toulouse",
+        category: "consommateurs",
+    },
 ];
 
 export function ArticleLayout({
