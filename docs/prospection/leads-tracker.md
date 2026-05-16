@@ -1,16 +1,42 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-15 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-16 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 118
-- NOUVEAU : 67
+- Total leads : 128
+- NOUVEAU : 68
 - CONTACTE : 1
-- BROUILLON : 47
+- BROUILLON : 54
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-16 (L'Eclaireur) — Nouvelles boutiques
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation, mais Victor-Hugo est EPUISE depuis le 02/05 (9/9 boutiques traitees). Pivot vers Capitole : decouverte de 11 boutiques jamais entrees dans le tracker parmi les 75 du JSON (SAOYA, IMAGINE bijoux, BIJOUTERIE NOUGUES, BIJOUTERIE DU CAPITOLE/SUD OUEST WATCH, MODI-IN, KATHY.B/Au44, AMA LUNA, PERLIN'S, MONPARFUMMASIGNATURE, PAYOTE, ALFRED WOOD/BAGWOOD). 7 emails confirmes sur 10 leads traites.
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| BIJOUTERIE DU CAPITOLE (SUD OUEST WATCH SA) | Capitole | Bijouterie/Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 9/10 | BROUILLON | Email confirme via bijouterie-du-capitole.fr footer — montres suisses et de createurs depuis 1980, 12-13 place du Capitole, tel 05 61 21 12 72. Entite familiale (Gaston + Marie Gayet). Tres forte pertinence Two-Step (catalogue montres = stock identifiable). Rediger email a Gaston. |
+| BIJOUTERIE NOUGUES | Capitole | Bijouterie/Joaillerie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Email confirme via bijouterienougues.fr — joaillerie artisanale familiale depuis 1974, Sandra Nougues arriere-petite-fille du fondateur depuis 2012, 32 rue de la Pomme, e-shop present, tel 05 61 23 18 80. Entite differente de N A L'INFINI (817911969 deja BROUILLON). Rediger email a Sandra. |
+| MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Email confirme via corporama.com — multimarque mode+chaussures femme+homme, 36 rue Alsace Lorraine, boutique ouverte + succursale Ibiza depuis 2021, tel 05 61 12 22 12 / 06 14 21 21 42. Meme famille que Caroline Tobelaim (SUPER33STORE, deja NOUVEAU). Rediger email a Celine. |
+| IMAGINE bijoux | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 8/10 | BROUILLON | Email confirme via mentions legales imagine-bijoux.fr (email=contact@imagine-bijoux.fr, gestionnaire Nathalie ATIA=Ghenassia mariee) — 25+ ans rue de la Pomme, marques Cluse/Mila Louise/By Imagine, e-commerce actif, tel 05 61 22 74 00. Rediger email a Nathalie. |
+| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr | 823051180 | 7/10 | BROUILLON | Email confirme via lepetittou.com et telephone.city — bijouterie fantaisie depuis 1991, ateliers artisanaux Provence, 17 rue Alsace Lorraine, tel 05 61 12 46 51. Rediger email a Arnaud. |
+| PAYOTE | Capitole | Chaussures/Espadrilles | Olivier Gelly | sav@payote.fr | 912767100 | 7/10 | BROUILLON | Email SAV confirme via payote.fr/pages/contact — espadrilles marque propre creee 2016 par Olivier Gelly, boutique 58 rue Tourneurs + e-commerce payote.fr, tel 05 34 66 84 38. NB: email SAV generique, pas contact direct gerant. Rediger email via sav@payote.fr en mentionnant Olivier. |
+| MONPARFUMMASIGNATURE | Capitole | Parfumerie/Atelier | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 6/10 | BROUILLON | Email confirme via Yelp/Firmania (contact@monparfummasignature.fr) — atelier parfum personnalise (2h de workshop), 42 rue de la Pomme 1er etage, tel 07 67 25 51 24, FB @MonparfumMasignature, site monparfummasignature.fr. NB: concept atelier sur RDV, pas stock standard — pertinence Two-Step limitee mais produits vendus. Score conservateur. |
+| KATHY.B (Au44) | Capitole | Mode/Concept store createurs | Catherine Ballias | — | 882609688 | 8/10 | NOUVEAU | Email non trouve — boutique de mode createurs connue sous le nom commercial "Au44", 44 rue de Metz, site boutiqueau44.fr + boutiqueau44.com (contact form uniquement), IG @boutique_au_44_rue_de_metz_, tel 05 34 40 81 88. Concept store pret-a-porter luxe+eco-responsable. Forte pertinence Two-Step. Contacter via formulaire site ou visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouve — mode femme 66 rue de la Pomme, IG @amalunacreation, FB @almalunaboutique, cree 2019, cogeuree Judith Soustiel (depuis jan 2025) + Serge Sznyter (fondateur). Pas de site propre identifie. Contacter via IG ou visite terrain. |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve — bijouterie depuis 1983, 49 rue de la Pomme, site perlins.fr actif (aucun email public, tel uniquement 05 61 21 18 81), FB @BijouteriePerlins. Ancienne enseigne familiale, presence digitale limitee. Contacter par tel ou visite terrain. |
+
+**Boutiques ecartees (session 16/05) :**
+- ALFRED WOOD (BAGWOOD 408176311, Therese Wood) — enseigne commerciale "Alfred Wood" (mode homme 75 rue Alsace Lorraine), aucune presence digitale, pas de site, pas d'email identifiable — a traiter uniquement en terrain
+- LAORA VITTORIA (412012395, Annick Confuorto) — IG vittoria.tlse indique "BOUTIQUE FERMEE" — ecarce definitivement (deja NOUVEAU dans tracker Carmes 23/04 — mettre a jour statut)
+- LA FILLE DE MARGARET (520610593, Sarah Pelegry) — IG Sarah @lafilledemargaret indique "Founder of shop LaFilledeMargaret 2010-2024", site lafilledemargaret.com toujours en 503 — fermeture confirmee 2024 (deja NOUVEAU dans tracker Carmes 23/04 — mettre a jour statut)
+
+**Note sur la rotation samedi :** Recommandation definitive — sortir Victor-Hugo de la rotation samedi (EPUISE depuis 02/05, 9/9 boutiques traitees). Proposer a Thomas : rotation samedi = Capitole (encore ~19 NOUVEAU en attente d'email) ou Wilson/Compans-Caffarelli pour nouveaux quartiers non encore traites.
+
+---
 
 ### Saint-Etienne — 2026-05-12 (L'Eclaireur) — 2ème passage
 
