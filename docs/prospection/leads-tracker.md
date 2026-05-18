@@ -1,16 +1,37 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-16 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-18 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 128
-- NOUVEAU : 68
+- NOUVEAU : 63
 - CONTACTE : 1
-- BROUILLON : 54
+- BROUILLON : 57
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-18 (L'Eclaireur) — 2ème passage NOUVEAU sans email
+
+**Note de session :** Lundi = Capitole dans la rotation. Tous les 75 prospects Capitole du JSON etaient deja dans le tracker — session convertie en 2eme passage sur les 22 NOUVEAU sans email. 3 emails confirmes sur 10 prospects traites. 2 nouvelles ecartees. Decouverte : LEMAN/Element Store rebrande en N°45 (site n45.fr). NOTE : Outil Notion MCP indisponible — resultat enregistre dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| N°45 (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme via mentions legales n45.fr — enseigne renommee N°45 (ex-Element Store), streetwear homme/femme/enfant, site n45.fr, IG @numero45toulouse, 45 rue des Tourneurs. Rediger email a Emmanuel. |
+| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Email confirme via annuaires (magasin.tel + cylex) — maroquinerie italienne depuis 1988, sacs/cuirs/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. NB: email AOL reference dans plusieurs sources. Rediger email a Eric. |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Email confirme via page boutique arseneetlespipelettes.com/fr/magasins/toulouse-11 — vetements enfants 25 rue de Metz, tel 05 67 16 72 09. Email boutique Toulouse specifique (different de sav@). Rediger email a Helene. |
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — HQ Biarritz (SARL 2 ets), aucune presence digitale boutique Toulouse identifiee. Tel 05 61 22 11 94. Contacter par tel ou visite terrain. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — site manik.fr actif (formulaire uniquement, pas d'email public visible), FB @maniktoulouse. Tel 05 61 21 52 08. |
+| RECOVERY PROJECT | Capitole | Sport/Running/Velo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — concept store running+velo cree fev 2025, 48B rue de Metz, IG @recoverytoulouse, TikTok @recovery.toulouse. Pas de site ni email public. Tel 05 61 40 42 94. Contacter via IG ou visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — 66 rue de la Pomme, IG @amalunacreation, FB @almalunaboutique, pas de site propre. Contacter via IG ou visite terrain. |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — pampy.com domaine parque (en vente), aucune presence digitale propre identifiee. Tel 05 61 23 37 46. Contacter par tel. |
+
+**Boutiques ecartees (session 18/05) :**
+- VERSO (453313181, Monique Baron) — dissolution confirmee, liquidateur = Monique Baron, boutique 19 rue de la Pomme fermee — ECARTE DEFINITIF
+- SUPER33STORE (791020936, Caroline Tobelaim) — confirme franchise SUPERDRY (49 rue Alsace Lorraine = adresse SUPERDRY officielle sur Yelp + tous les annuaires) — hors cible Two-Step (chaine nationale) — ECARTE DEFINITIF
+
+---
 
 ### Capitole — 2026-05-16 (L'Eclaireur) — Nouvelles boutiques
 
@@ -121,9 +142,9 @@
 | L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r-7156942222461192925) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse |
 | HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r5793792031598694686) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
-| ELEMENT STORE (LEMAN) | Capitole | Mode/Skateboard | Emmanuel Levy | — | 794917666 | 7/10 | NOUVEAU | Email non trouve — skateshop/streetwear 45 rue Tourneurs, IG @elementstoretoulouse, tel 05 31 21 70 42. Meme gerant que Concept Store TNF (franchise). LEMAN = entite independante 1 ets |
+| N°45 / ELEMENT STORE (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme 18/05 via mentions legales n45.fr — enseigne renommee N°45, site n45.fr, IG @numero45toulouse, 45 rue Tourneurs, tel 05 31 21 70 42. Rediger email a Emmanuel. |
 | STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
-| SUPER33STORE | Capitole | Mode | Caroline Tobelaim | — | 791020936 | 6/10 | NOUVEAU | Email non trouve — boutique mode 49 rue Alsace Lorraine, pas de site propre identifie. Meme gerante que SUPERDRY (ecartee) mais entite differente |
+| SUPER33STORE | Capitole | Mode | Caroline Tobelaim | — | 791020936 | 6/10 | ECARTE | Confirme franchise SUPERDRY (18/05) — 49 rue Alsace Lorraine = adresse officielle SUPERDRY sur tous les annuaires (Yelp, au-magasin.fr, tiendeo.fr). Hors cible Two-Step. |
 | ANY DANSE | Capitole | Sport/Danse | Osamu Suzuki | — | 393744750 | 5/10 | NOUVEAU | Email non trouve — chaussures + vetements danse marque Freed of London, 15 place Capitole, niche specialisee |
 | COLETTE SAINT MLEUX | Capitole | Mode femme | Colette Saint mleux | — | 347463473 | 4/10 | NOUVEAU | Email non trouve — aucune presence digitale identifiee, 14 rue de la Pomme, tres ancienne enseigne (SIREN 347...) |
 
@@ -137,8 +158,8 @@
 | CHAUSSURES MANIK SAS | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve — manik.fr (contact sans email visible), tel 05 61 21 52 08 — independant depuis 28 ans |
 | AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-5069750576936633717) — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
 | LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-3518029605693686134) — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
-| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | — | 419643291 | 7/10 | NOUVEAU | Email non trouve — sacs italiens + cuir + accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51 |
-| VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | NOUVEAU | Email non trouve — 19 rue de la Pomme (Yelp March 2026 actif), tel 05 62 30 89 25 |
+| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Email confirme 18/05 (magasin.tel + cylex) — maroquinerie italienne depuis 1988, sacs/cuirs/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. Email AOL ancien mais reference plusieurs sources. Rediger email a Eric. |
+| VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | ECARTE | Dissolution confirmee 18/05 — Monique Baron nommee liquidatrice, boutique 19 rue de la Pomme fermee. ECARTE DEFINITIF. |
 | SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
 | SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouve — mode homme 36 rue de la Pomme, tel 05 61 21 50 72 |
 | BIAS | Capitole | Deco/Concept store | Laura Noailles | laura.noailles@bias-conceptstore.fr | 980131718 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r2648943524808888459) — concept store déco/art/design, 2 rue Paul Vidal, ouvert mai 2024, IG @bias.cst — email trouvé via article Maison Actuelle jan 2026 |
@@ -154,7 +175,7 @@
 | N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r2720507363937656694) — email confirme via bijouterie-toulouse-nougues.fr/contactez-les-bijouteries |
 | NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r960593700860017581) — Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi, Rimowa, Tumi), 27 rue de Metz, tel 05 61 21 02 96. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
-| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | — | 809552359 | 7/10 | NOUVEAU | Email marque centrale sav@arseneetlespipelettes.com (n'atteint pas la gerante) — contacter via boutique 25 rue de Metz |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Email confirme 18/05 via page boutique arseneetlespipelettes.com/fr/magasins/toulouse-11 — email specifique Toulouse (different du SAV), tel 05 67 16 72 09, 25 rue de Metz. Rediger email a Helene. |
 | RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
 | MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouve — FB "Magasin Ephemere Toulouse", 53 rue de la Pomme |
 | SERHA (Le Lieu) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouve — FB "Le Lieu Toulouse", tel 05 31 15 02 34, 37 rue de Metz |
