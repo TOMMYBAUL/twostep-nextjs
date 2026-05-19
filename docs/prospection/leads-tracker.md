@@ -617,6 +617,22 @@
 
 ---
 
+## Recap brouillons email — 2026-05-19 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Sandra Nougues (BIJOUTERIE NOUGUES) | contact@bijouterienougues.fr | Bijouterie Nougues visible dans les recherches de stock local Toulouse ? | r-6199251153540690460 | ACA — institution joaillière familiale 4 générations depuis 1974, création artisanale 32 rue de la Pomme, Two-Step rend le stock visible aux habitants qui cherchent de la joaillerie en centre-ville |
+| 2 | Nathalie Ghenassia (IMAGINE BIJOUX) | contact@imagine-bijoux.fr | Imagine Bijoux visible dans les recherches de stock local Toulouse ? | r-2479069258168175413 | ACA — 25 ans rue de la Pomme, marques Cluse/Mila Louise, e-shop actif, Two-Step rend le stock physique visible aux habitants cherchant ces marques localement |
+| 3 | Arnaud Turbe (SAOYA) | saoyatoulouse@orange.fr | Saoya visible dans les recherches de stock local Toulouse ? | r-8853079466353228388 | ACA — bijouterie fantaisie créations artisanales Provence depuis 1991, collections renouvelées, rue Alsace-Lorraine, Two-Step rend le stock visible aux habitants du quartier |
+| 4 | Olivier Gelly (PAYOTE) | sav@payote.fr | Payote visible dans les recherches de stock local Toulouse ? | r769139324253320088 | ACA — marque espadrilles made in France créée 2016, boutique Toulouse 58 rue des Tourneurs + e-commerce, Two-Step rend le stock visible aux habitants cherchant des chaussures d'été en centre-ville |
+
+*Note session 19/05 (L'Auditeur) : 4 leads traités — tous issus de la session L'Eclaireur 16/05 avec email confirmé et action "Rediger email" en attente. Web search effectué pour chaque lead avant rédaction. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. NB : IMAGINE BIJOUX avait déjà un brouillon 15/05 (r1836505965642175467) — nouveau brouillon créé avec formulation actualisée suite à confirmation 16/05. SAOYA : nouveau draft pour saoyatoulouse@orange.fr (différent de l'ancien info@saoya.fr draft 23/04).*
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-19".*
+
+---
+
 ## Juridique (Phase 0)
 
 - [ ] **Avocat** (Captain Contrat / LegalStart / Dougs) — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD` (3-4 sem)
