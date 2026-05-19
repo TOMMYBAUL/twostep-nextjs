@@ -1,16 +1,39 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-18 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-19 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 128
-- NOUVEAU : 63
+- NOUVEAU : 61
 - CONTACTE : 1
-- BROUILLON : 57
+- BROUILLON : 59
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-19 (L'Eclaireur) — 3ème passage
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole épuisé depuis le 18/05 (75/75 prospects traités). Session = 3ème passage sur les 5 NOUVEAU à 7/10 (Alphabet, Manik, Recovery, Ama Luna, Pampy) + 2ème passage sur 5 NOUVEAU à 6/10 jamais repassés (Perlin's, Stock Américain, Sienne, Societe Lako, Manoushka). **2 emails confirmés sur 10 prospects traités.** NOTE : Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| PERFECT (GERSIM) | Capitole | Mode homme | Eric Kouby | gersim@free.fr | 323683680 | 7/10 | BROUILLON | Email confirme 19/05 via magasinvetement.fr — GERSIM SARL fondee 1982, 3 ets Toulouse (70 rue de la Pomme enseigne PERFECT + 5 rue de la Pomme + 34 rue Saint-Rome) = independant valide. Rediger email a Eric. |
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Email confirme 19/05 via rachelnto.wavy.pro — perruques + cosmetiques afro, 12 rue Bayard, IG @rachellhair, FB @Rachelhair4, tel 06 06 82 14 44. Rediger email a Rachel. |
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve (3e passage 19/05) — HQ Biarritz (2 ets Toulouse+Biarritz), aucune presence digitale specifique Toulouse, tel 05 61 22 11 94. DEFINITIF : contacter par tel ou visite terrain. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve (3e passage 19/05) — manik.fr confirme formulaire uniquement (pas d'email public visible). Tel 05 61 21 52 08. DEFINITIF : contacter par tel. |
+| RECOVERY PROJECT | Capitole | Sport/Running/Velo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve (3e passage 19/05) — IG @recoverytoulouse uniquement, concept store running+velo 48B rue de Metz, tel 05 61 40 42 94. DEFINITIF : contacter via IG ou visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouve (3e passage 19/05) — IG @amalunacreation uniquement, pas de site propre, 66 rue de la Pomme. DEFINITIF : contacter via IG. |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve (3e passage 19/05) — pampy.com domaine parque confirme, pas de presence digitale avec email public, tel 05 61 23 37 46. DEFINITIF : contacter par tel. |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (2e passage 19/05) — perlins.fr confirme tél uniquement (05 61 21 18 81), aucun email public. Contacter par tel. |
+| STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve (2e passage 19/05) — pas de site web, tél 05 61 62 74 24 uniquement. Contacter par tel ou visite terrain. |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve (2e passage 19/05) — IG @sienne.boutique identifie, pas d'email public, 44 rue des Tourneurs. Contacter via IG. |
+
+**Boutiques non traitees ce jour (2e passage a faire) :** MANOUSHKA (814281812, Dominique Sellem, 53 rue de la Pomme, FB @manoushka.toulouse — aucun email public), SOCIETE LAKO/BERNARD KOK (310896709, Bernard Kok, 36 rue de la Pomme — tel uniquement 05 61 21 50 72).
+
+**Recommandation DEFINITIVE :** Capitole epuise. Sortir de la rotation lundi. Proposer a Thomas : Wilson ou Compans-Caffarelli pour remplacer le lundi.
+
+---
 
 ### Capitole — 2026-05-18 (L'Eclaireur) — 2ème passage NOUVEAU sans email
 
@@ -160,10 +183,10 @@
 | LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-3518029605693686134) — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
 | LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Email confirme 18/05 (magasin.tel + cylex) — maroquinerie italienne depuis 1988, sacs/cuirs/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. Email AOL ancien mais reference plusieurs sources. Rediger email a Eric. |
 | VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | ECARTE | Dissolution confirmee 18/05 — Monique Baron nommee liquidatrice, boutique 19 rue de la Pomme fermee. ECARTE DEFINITIF. |
-| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve (2e passage 19/05) — IG @sienne.boutique (identifie), 44 rue des Tourneurs, Yelp July 2025 actif, pas d'email public. Contacter via IG. |
 | SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouve — mode homme 36 rue de la Pomme, tel 05 61 21 50 72 |
 | BIAS | Capitole | Deco/Concept store | Laura Noailles | laura.noailles@bias-conceptstore.fr | 980131718 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r2648943524808888459) — concept store déco/art/design, 2 rue Paul Vidal, ouvert mai 2024, IG @bias.cst — email trouvé via article Maison Actuelle jan 2026 |
-| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | — | 945085363 | 5/10 | NOUVEAU | Email non trouve — rachellhair.fr (inaccessible), Planity actif, 12 rue Bayard, vente perruques + cosmetiques |
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Email confirme 19/05 via rachelnto.wavy.pro — perruques + cosmetiques afro, 12 rue Bayard, IG @rachellhair, FB @Rachelhair4, tel 06 06 82 14 44. |
 
 **Boutiques ecartees (session 04/05) :** BANANA-POMME (fermee dec. 2024), LEWIS (ferme juin 2024), SHILTON (chaine nationale 27 boutiques), L'ISLA NOVA (boutique en L'Isle-en-Dodon, pas Toulouse), DUO BOUTIQUE/COCCI (fermee a Toulouse), TILL/TILLAMY (franchise enfants Maine-et-Loire), TOVLI (etablissement Toulouse inactif), MURPHY & NYE/COMEPAR (voile/sportswear niche)
 
@@ -282,7 +305,7 @@
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
 | L'ANNEXE | Saint-Rome | Mode femme/Concept store | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-8493153263310165498) — boutique-lannexe.com, IG @lannexe31, 38 rue Saint Rome, email trouve 06/05 |
-| PERFECT | Capitole | Mode | — | — | — | 7/10 | NOUVEAU | Chercher SIREN + email |
+| PERFECT (GERSIM) | Capitole | Mode homme | Eric Kouby | gersim@free.fr | 323683680 | 7/10 | BROUILLON | Email confirme 19/05 via magasinvetement.fr — GERSIM SARL 1982, 3 ets Toulouse (70 rue de la Pomme + 5 rue de la Pomme + 34 rue Saint-Rome) = independant valide. Rediger email a Eric. |
 | IMAGINE BIJOUX | Capitole | Bijouterie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r1836505965642175467) — bijouterie fantaisie 25+ ans, Réminiscence/Taratata, 40 rue de la Pomme, IG @imaginebijoux — email trouvé via mentions légales imagine-bijoux.fr |
 | KATHY.B (AU 44) | Capitole | Mode | Catherine Ballias | boutiqueau44@gmail.com | 882609688 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r804800153826926811) — collections créateurs indépendants français/européens, éco-responsable, IG @boutique_au_44_rue_de_metz_, 44 rue de Metz. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve (site: perlins.fr), tel: 05 61 21 18 81 |
