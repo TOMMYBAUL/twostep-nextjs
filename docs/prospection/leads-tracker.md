@@ -1,16 +1,41 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-18 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-20 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 128
-- NOUVEAU : 63
+- Total leads : 138
+- NOUVEAU : 73
 - CONTACTE : 1
 - BROUILLON : 57
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Rome — 2026-05-20 (L'Eclaireur) — Session exhaustive nouvelles boutiques
+
+**Note de session :** Mercredi = Saint-Rome dans la rotation. 19 boutiques du JSON non encore tracees identifiees. Apres verification : 4 ecartees (VIA UNO franchise, MAKEUP SHOW ferme 2016, TROPIQUE SUD liquidation 2022, SO GLAM/BH liquidation 2016). 10 boutiques ajoutees en NOUVEAU — 0 email trouve sur toutes. Profil dominant : boutiques mode/chaussures/accessoires sur rue des Changes et rue Saint-Rome avec gerants d'origine asiatique, sans site web ni email public. Meme pattern que sessions precedentes. NOTE : Outil Notion MCP indisponible — resultat enregistre dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouve — 31 rue Saint Rome, cree 2020, IG @dressingrosektoulouse, FB "Dressing Rose Toulouse" actif — contacter via IG ou visite terrain |
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | — | 522655141 | 6/10 | NOUVEAU | Email non trouve — 14 rue Saint Rome, aussi connue "Passions Filles", Yelp actif mars 2026, PagesJaunes, tel 05 61 29 04 49 — contacter par tel |
+| NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouve — 19 rue Saint Rome, chaussures+pret-a-porter+accessoires femme, Yelp actif jan 2025, FB facebook.com/people/New-Casting/100068857325009, tel 05 61 29 04 49 — contacter via FB ou tel |
+| UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouve — 29 rue des Changes (ou 19 rue Saint Rome selon Yelp), nouvelle entite depuis juil 2025 (reprise de l'ancienne UNIKA Daniel Zhou deja trackee), tel 09 54 70 34 65, PagesJaunes actif — contacter par tel |
+| YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, mode+accessoires+chaussures+maroquinerie, registres commerciaux uniquement, aucune presence digitale identifiee — visite terrain |
+| Y STYLE | Saint-Rome | Mode/Vetements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouve — 38 rue Saint Rome, cree 2014, Kompass+Annuaire actif — visite terrain |
+| SYSTER'S | Saint-Rome | Mode/Vetements | Alex Dai | — | 538812199 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, PagesJaunes Toulouse, autre entite SYSTER'S (483479465, Daniel Zhou) liee — visite terrain |
+| STOCK COMPANY | Saint-Rome | Mode/Vetements | Zhra Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouve — 24 rue Saint Rome, Kompass actif, changement gerant (Hadda → Zhra Ouikou), tel 05 34 33 88 49 — contacter par tel |
+| MY LOOK (CLZ) | Saint-Rome | Mode/Vetements | Liyan Chen | — | 802191163 | 4/10 | NOUVEAU | Email non trouve — 12 rue des Changes, mode vetements + Relais Colis/Chronopost (activite mixte), aucun site ni email — visite terrain |
+| SARL YAOYI | Saint-Rome | Mode (a confirmer) | Xiaoyi Pigal (wang) | — | 798798112 | 4/10 | NOUVEAU | Email non trouve — 38 rue Saint Rome (meme adresse que Y STYLE), activite a confirmer en boutique, gov registry uniquement — visite terrain |
+
+**Boutiques ecartees (session 20/05) :**
+- VIA UNO (504446410, Jadir Bergonsi) — franchise bresilienne, 5 boutiques France (Bordeaux, Beziers, Toulouse, Pau, Paris) → chaine nationale, hors cible Two-Step — ECARTE DEFINITIF
+- MAKEUP SHOW / SAINT ROME ACCESSOIRES (814911608, Adlen Guedacha) — etablissement Toulouse FERME depuis decembre 2016, siege transfere — ECARTE DEFINITIF
+- SARL TROPIQUE SUD (392540167, Lucien Chetrit) — liquidation judiciaire juillet 2022 cloturee janvier 2023 — ECARTE DEFINITIF
+- SO GLAM / BH (791534563, Huu Bui Phuc + Chadli Hambli) — liquidation judiciaire, cessation paiements fevrier 2016 — ECARTE DEFINITIF
+
+---
 
 ### Capitole — 2026-05-18 (L'Eclaireur) — 2ème passage NOUVEAU sans email
 
@@ -630,6 +655,34 @@
 
 *Note session 19/05 (L'Auditeur) : 4 leads traités — tous issus de la session L'Eclaireur 16/05 avec email confirmé et action "Rediger email" en attente. Web search effectué pour chaque lead avant rédaction. Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. NB : IMAGINE BIJOUX avait déjà un brouillon 15/05 (r1836505965642175467) — nouveau brouillon créé avec formulation actualisée suite à confirmation 16/05. SAOYA : nouveau draft pour saoyatoulouse@orange.fr (différent de l'ancien info@saoya.fr draft 23/04).*
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-19".*
+
+---
+
+## Recap leads — 2026-05-20 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Saint-Rome
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | DRESSING ROSE AND KIDS | Ameur Gasdallah | — (IG @dressingrosektoulouse, FB actif) | 7/10 | NOUVEAU |
+| 2 | PASSION FILLE (LES QUATRE FILLES) | Kangle Wang | — (Yelp mars 2026, tel 05 61 29 04 49) | 6/10 | NOUVEAU |
+| 3 | NEW CASTING | Qian Gan | — (Yelp jan 2025, FB actif, tel 05 61 29 04 49) | 6/10 | NOUVEAU |
+| 4 | UNIKA (YANG SARL) | Cedric Yang | — (PagesJaunes, tel 09 54 70 34 65) | 6/10 | NOUVEAU |
+| 5 | YLANG | Sue Wang | — (registres uniquement, 0 presence digitale) | 5/10 | NOUVEAU |
+| 6 | Y STYLE | Zheng Wang | — (Kompass+Annuaire, 0 email) | 5/10 | NOUVEAU |
+| 7 | SYSTER'S | Alex Dai | — (PagesJaunes Toulouse, 0 email) | 5/10 | NOUVEAU |
+| 8 | STOCK COMPANY | Zhra Ouikou | — (Kompass actif, tel 05 34 33 88 49) | 5/10 | NOUVEAU |
+| 9 | MY LOOK (CLZ) | Liyan Chen | — (mode + Relais Colis, 0 email) | 4/10 | NOUVEAU |
+| 10 | SARL YAOYI | Xiaoyi Pigal (wang) | — (gov registry, activite a confirmer) | 4/10 | NOUVEAU |
+
+**Boutiques ecartees (session 20/05) :**
+- VIA UNO (504446410) — franchise bresilienne >5 ets France → hors cible — ECARTE DEFINITIF
+- MAKEUP SHOW / SAINT ROME ACCESSOIRES (814911608) — etablissement FERME decembre 2016 — ECARTE DEFINITIF
+- SARL TROPIQUE SUD (392540167) — liquidation judiciaire juil 2022 – janv 2023 — ECARTE DEFINITIF
+- SO GLAM / BH (791534563) — liquidation judiciaire, cessation paiements fev 2016 — ECARTE DEFINITIF
+
+*Note session 20/05 (L'Eclaireur) : Session exhaustive Saint-Rome. 19 boutiques non tracees identifiees dans le JSON. 4 ecartees (franchise + fermetures + liquidations). 10 ajoutees en NOUVEAU — 0 email public trouve sur les 10. Profil dominant : boutiques mode/chaussures/accessoires rue des Changes et rue Saint-Rome, gerants d'origine asiatique, sans site web ni email public — meme pattern que rue des Changes Carmes/Saint-Etienne. 2eme recurrence a noter : meme adresse (38 rue Saint Rome) pour Y STYLE et SARL YAOYI. Saint-Rome EPUISE — toutes les boutiques du JSON ont desormais ete vues. Recommandation Thomas : visite terrain prioritaire DRESSING ROSE AND KIDS (mode enfants, tres visible 31 rue Saint Rome) et NEW CASTING (chaussures/accessoires, IG FB actifs, tres qualifie Two-Step). Pour lundi prochain : proposer un nouveau quartier non encore traite (Compans-Caffarelli, Wilson, Arnaud-Bernard).*
+*Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prevu : "Leads Saint-Rome 2026-05-20".*
 
 ---
 
