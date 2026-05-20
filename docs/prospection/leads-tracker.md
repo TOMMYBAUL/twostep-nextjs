@@ -686,6 +686,19 @@
 
 ---
 
+## Recap brouillons email — 2026-05-20 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| — | (aucun) | — | — | — | 0 brouillon créé |
+
+*Note session 20/05 (L'Auditeur) : Aucun lead NOUVEAU avec email dans le tracker (73 NOUVEAU, tous sans email). Recherche active effectuée via 30+ web searches et fetches sur les meilleurs NOUVEAU (score ≥ 7/10) : L'ESPION (lespion.fr — formulaire uniquement), TOULOUSE MONTRES (toulouse-montres.com — formulaire RDV), CHAUSSURES MANIK (manik.fr — téléphone uniquement), RECOVERY PROJECT (IG/TikTok uniquement, pas de site), AMA LUNA (IG uniquement), DRESSING ROSE AND KIDS (IG/FB uniquement), MADAME GEORGES (aucune présence digitale), PARALLELE (pas de site Toulouse identifié), LOVE/BOSCHERIE (IG uniquement, pas de site), HANNAH (pas d'email public). 0 email trouvé sur 10 leads tentés. Résultat cohérent avec les notes L'Eclaireur : ces boutiques ne publient pas d'email public. Tous les leads BROUILLON avec email ont déjà un draft Gmail existant. Recommandation Thomas : visite terrain prioritaire pour L'ESPION (21 bis rue Croix-Baragnon, boutique créateurs très qualifiée) et RECOVERY PROJECT (48B rue de Metz, café-running/vélo, concept unique). Contact Instagram pour DRESSING ROSE AND KIDS (@dressingrosektoulouse, mode enfants).*
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-20".*
+
+---
+
 ## Juridique (Phase 0)
 
 - [ ] **Avocat** (Captain Contrat / LegalStart / Dougs) — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD` (3-4 sem)
