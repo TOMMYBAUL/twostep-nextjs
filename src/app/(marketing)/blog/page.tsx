@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-cosmetiques-toulouse",
+        title: "Shopping cosmétiques à Toulouse : trouver tes produits beauté en boutique",
+        description:
+            "Tu cherches une crème, un fond de teint ou un sérum précis ? Comment localiser ta référence dans les boutiques indépendantes toulousaines et vérifier le stock avant de te déplacer.",
+        publishedAt: "2026-05-20",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
