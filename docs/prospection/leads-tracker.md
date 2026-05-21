@@ -1,16 +1,38 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-20 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-21 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 138
-- NOUVEAU : 73
+- Total leads : 137
+- NOUVEAU : 69
 - CONTACTE : 1
-- BROUILLON : 57
+- BROUILLON : 60
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Carmes — 2026-05-21 (L'Eclaireur) — 2ème passage exhaustif
+
+**Note de session :** Jeudi = Carmes dans la rotation. 2ème passage sur les 11 boutiques NOUVEAU sans email du quartier. 3 emails trouvés sur 10 prospects traités. 1 boutique écartée (CONCEPT TOULOUSE fermée 21/03/2025). Découverte : AMBIANCES ET SENTEURS opère désormais sous l'enseigne Honoré Payan (parfumerie artisanale Grasse) au même 39 rue des Filatiers — email trouvé via CGV du site. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| AMBIANCES ET SENTEURS (Honoré Payan) | Carmes | Parfumerie | Eric Gras | honore.payan@gmail.com | 808837157 | 7/10 | BROUILLON | Email trouvé 21/05 via CGV honore-payan.com — enseigne renommée Honoré Payan, parfumerie artisanale de Grasse, 39 rue des Filatiers, actif. Rédiger email à Eric. |
+| PLUMETIS | Carmes | Mode/Mariage | Audrey Derouard | contact@plumetis-toulouse.fr | 840763288 | 5/10 | BROUILLON | Email trouvé 21/05 via mentions légales plumetis-toulouse.fr — robes de mariée, 35 rue Dalbade / showroom 9 rue Saint-Antoine du T. NB : sur RDV uniquement, pertinence Two-Step limitée. Rédiger email à Audrey. |
+| SARL LES CIGALES | Carmes | Mode/Vêtements | Olivia Samson | sarllescigales@aol.com | 441927951 | 4/10 | BROUILLON | Email trouvé 21/05 via magasinvetement.fr. 2ème email possible : ste.equilibre@wanadoo.fr. NB : dépôt-vente = hors cible Two-Step probable (pas de stock marques propres). À valider avant envoi. |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — site fromtoulousewithlove.com hors ligne, IG @love.toulouse.store et @toulousewithlove actifs — contacter via Instagram ou visite terrain |
+| HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — FB @Hanna.Boutique + IG @__hanna.boutique actifs, aucun email public — contacter via IG/FB ou visite terrain |
+| MADAME GEORGES | Carmes | Mode/Vêtements | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — IG @madamegeorgestoulouse actif, site bohemians-room.com hors ligne — contacter via IG ou tel 06 28 83 73 98 |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — site parallele-eshop.com hors ligne, aucun email public — contacter par tel 05 34 44 90 71 ou visite terrain |
+| LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — société créée 23/01/2026 (très récente), aucune présence digitale identifiée — visite terrain uniquement |
+| STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — Kompass actif, aucun site ni IG identifié — visite terrain |
+| CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | — | ECARTE | Cessation d'activité le 21/03/2025 confirmée via annuaire-entreprises.data.gouv.fr — ECARTE DEFINITIF |
+
+**Boutiques écartées (session 21/05) :**
+- CONCEPT TOULOUSE (949677249, Mattia Bono) — cessation d'activité 21/03/2025 — ECARTE DEFINITIF
+
+---
 
 ### Saint-Rome — 2026-05-20 (L'Eclaireur) — Session exhaustive nouvelles boutiques
 
@@ -112,8 +134,8 @@
 | MADAME GEORGES | Carmes | Mode femme | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouve — 2 ets (35 + 18 rue Boulbonne), tel 06 28 83 73 98, peu de presence digitale |
 | PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouve — chaussures 35 rue Boulbonne, 4 ets locaux (sous 5 = independant), tel 05 34 44 90 71 |
 | STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouve — mode 46 rue des Filatiers, 2 ets, aucune presence digitale, president Dimitri Lavabre |
-| PLUMETIS | Carmes | Mode/Vêtements | Audrey Derouard | — | 840763288 | 5/10 | NOUVEAU | Email non trouve — robes mariee sur RDV uniquement, 35 rue Dalbade, site plumetis-toulouse.fr (form), tel 05 61 53 49 22 — pertinence Two-Step limitee (sur RDV) |
-| SARL LES CIGALES | Carmes | Mode/Vêtements | Olivia Samson | — | 441927951 | 4/10 | NOUVEAU | Email non trouve — depot-vente 42 rue Boulbonne, IG @cigales_store, tel 09 81 11 33 99 — hors cible Two-Step (pas de stock marques propres) |
+| PLUMETIS | Carmes | Mode/Vêtements | Audrey Derouard | contact@plumetis-toulouse.fr | 840763288 | 5/10 | BROUILLON | Email trouvé 21/05 via mentions légales plumetis-toulouse.fr — robes mariee sur RDV uniquement, 35 rue Dalbade, tel 05 61 53 49 22 — pertinence Two-Step limitee (sur RDV). Rédiger email à Audrey. |
+| SARL LES CIGALES | Carmes | Mode/Vêtements | Olivia Samson | sarllescigales@aol.com | 441927951 | 4/10 | BROUILLON | Email trouvé 21/05 via magasinvetement.fr — depot-vente 42 rue Boulbonne, 2ème email possible : ste.equilibre@wanadoo.fr. NB : hors cible Two-Step (depot-vente pas stock marques propres) — À valider avant envoi. |
 | MICHELE CAZAUX | Carmes | Mode/Vêtements | Michele Louge | — | 321727455 | 3/10 | NOUVEAU | Email non trouve — tres ancienne enseigne (SIREN 321...), 39 rue de la Dalbade, aucune presence digitale identifiee |
 
 **Boutiques ecartees (session 08/05) :** M.J.H. (Jean-jacques Chetritt — liquidation judiciaire cloturee 17/01/2020), MAITYLA/MAITYKA (Mailys Baillet — liquidee 19/01/2023, cessation paiements avril 2022), VICOMTE A (Gregory Troch — chaine nationale 148 boutiques France, 4 rue Boulbonne), LESLIE MONTE-CARLO (Mireille Pietri — chaine nationale 27 boutiques France, 35 rue Boulbonne), POINTURE/AG TOULOUSE (Audrey Garcia — boutique remplacee par ARCHE franchise a 23 rue Boulbonne)
@@ -252,8 +274,8 @@
 | HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouve, 3 etablissements (Carcassonne + Toulouse) |
 | LAORA VITTORIA | Carmes | Mode femme | Annick Confuorto | — | 412012395 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes ou Instagram |
 | LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouve, adresse partagee avec Sortilege (7 rue Boulbonne) |
-| AMBIANCES ET SENTEURS | Carmes | Cosmetique/Beaute | Eric Gras | — | 808837157 | 6/10 | NOUVEAU | Email non trouve, chercher via Pages Jaunes |
-| CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | 6/10 | NOUVEAU | Email non trouve, chercher via Instagram ou site |
+| AMBIANCES ET SENTEURS (Honoré Payan) | Carmes | Parfumerie | Eric Gras | honore.payan@gmail.com | 808837157 | 7/10 | BROUILLON | Email trouvé 21/05 via CGV honore-payan.com — boutique renommée Honoré Payan (parfumerie artisanale Grasse), 39 rue des Filatiers, actif. Rédiger email à Eric. |
+| CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | — | ECARTE | Cessation d'activité 21/03/2025 confirmée via annuaire-entreprises.data.gouv.fr — ECARTE DEFINITIF |
 | ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | bolivier31@outlook.fr | 401784376 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 24/04, id: r-4153745874401631883) — coutellerie/airsoft/optique qualifiables Two-Step |
 
 **Boutiques ecartees (session 23/04) :** APOS 33 (liquidee 2019), FUTURWARE LAB (inactive 2023), LAMA (liquidee mars 2026)
@@ -542,8 +564,8 @@
 | 3 | MADAME GEORGES | Lionel Prevost | — (tel 06 28 83 73 98) | 7/10 | NOUVEAU |
 | 4 | PARALLELE | Alain Sanz | — (tel 05 34 44 90 71) | 7/10 | NOUVEAU |
 | 5 | STEDIF | Stephanie Forgeront | — (aucune presence digitale) | 6/10 | NOUVEAU |
-| 6 | PLUMETIS | Audrey Derouard | — (plumetis-toulouse.fr, form) | 5/10 | NOUVEAU |
-| 7 | SARL LES CIGALES | Olivia Samson | — (IG @cigales_store) | 4/10 | NOUVEAU |
+| 6 | PLUMETIS | Audrey Derouard | contact@plumetis-toulouse.fr ✅ (trouvé 21/05) | 5/10 | BROUILLON |
+| 7 | SARL LES CIGALES | Olivia Samson | sarllescigales@aol.com ✅ (trouvé 21/05) | 4/10 | BROUILLON |
 | 8 | MICHELE CAZAUX | Michele Louge | — (aucune presence digitale) | 3/10 | NOUVEAU |
 
 *Note : MCP Notion non disponible — recap consigne dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre Notion prevu : "Leads Carmes 2026-05-08".*
@@ -696,6 +718,27 @@
 
 *Note session 20/05 (L'Auditeur) : Aucun lead NOUVEAU avec email dans le tracker (73 NOUVEAU, tous sans email). Recherche active effectuée via 30+ web searches et fetches sur les meilleurs NOUVEAU (score ≥ 7/10) : L'ESPION (lespion.fr — formulaire uniquement), TOULOUSE MONTRES (toulouse-montres.com — formulaire RDV), CHAUSSURES MANIK (manik.fr — téléphone uniquement), RECOVERY PROJECT (IG/TikTok uniquement, pas de site), AMA LUNA (IG uniquement), DRESSING ROSE AND KIDS (IG/FB uniquement), MADAME GEORGES (aucune présence digitale), PARALLELE (pas de site Toulouse identifié), LOVE/BOSCHERIE (IG uniquement, pas de site), HANNAH (pas d'email public). 0 email trouvé sur 10 leads tentés. Résultat cohérent avec les notes L'Eclaireur : ces boutiques ne publient pas d'email public. Tous les leads BROUILLON avec email ont déjà un draft Gmail existant. Recommandation Thomas : visite terrain prioritaire pour L'ESPION (21 bis rue Croix-Baragnon, boutique créateurs très qualifiée) et RECOVERY PROJECT (48B rue de Metz, café-running/vélo, concept unique). Contact Instagram pour DRESSING ROSE AND KIDS (@dressingrosektoulouse, mode enfants).*
 *Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-20".*
+
+---
+
+## Recap leads — 2026-05-21 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Carmes (2ème passage)
+
+| # | Boutique | Gerant | Email | Score | Statut |
+|---|---|---|---|---|---|
+| 1 | AMBIANCES ET SENTEURS (Honoré Payan) | Eric Gras | honore.payan@gmail.com ✅ | 7/10 | BROUILLON |
+| 2 | PLUMETIS | Audrey Derouard | contact@plumetis-toulouse.fr ✅ | 5/10 | BROUILLON |
+| 3 | SARL LES CIGALES | Olivia Samson | sarllescigales@aol.com ✅ | 4/10 | BROUILLON |
+| 4 | BOSCHERIE PERE ET FILLE (LOVE) | Julien Boscherie | — (IG @love.toulouse.store, site hors ligne) | 7/10 | NOUVEAU |
+| 5 | HANNAH | Abdelkader Boukenine | — (IG @__hanna.boutique, FB actif) | 7/10 | NOUVEAU |
+| 6 | MADAME GEORGES | Lionel Prevost | — (IG @madamegeorgestoulouse, tel 06 28 83 73 98) | 7/10 | NOUVEAU |
+| 7 | PARALLELE | Alain Sanz | — (site parallele-eshop.com hors ligne, tel 05 34 44 90 71) | 7/10 | NOUVEAU |
+| 8 | LB7 | Laura Mathieu | — (société créée 23/01/2026, 0 présence digitale) | 6/10 | NOUVEAU |
+| 9 | STEDIF | Stephanie Forgeront | — (aucun site ni IG, Kompass uniquement) | 6/10 | NOUVEAU |
+| — | CONCEPT TOULOUSE | Mattia Bono | — | — | ECARTE |
+
+*Note session 21/05 (L'Eclaireur) : 2ème passage Carmes — 3 emails trouvés sur 9 prospects actifs (10ème = CONCEPT TOULOUSE écartée). AMBIANCES ET SENTEURS opère sous l'enseigne Honoré Payan (parfumerie artisanale Grasse, site honore-payan.com) — rebrand confirmé, boutique active 39 rue des Filatiers. PLUMETIS email confirmé via mentions légales (plumetis-toulouse.fr). SARL LES CIGALES email via annuaires — NB dépôt-vente, hors cible Two-Step probable, à valider. Les 6 NOUVEAU restants sans email ont soit : aucune présence digitale (STEDIF, LB7), site hors ligne (BOSCHERIE, PARALLELE), ou IG sans email public (HANNAH, MADAME GEORGES). Carmes quasi-épuisé : recommandation visite terrain pour BOSCHERIE/LOVE (49 rue des Filatiers, concept store mode) et PARALLELE (35 rue Boulbonne, chaussures avec e-shop). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-05-21".*
 
 ---
 
