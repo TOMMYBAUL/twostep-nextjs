@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-21 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-22 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,32 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage vendredi — 2026-05-22 (L'Eclaireur) — Saint-Cyprien épuisé, 5 entrées JSON vérifiées + 5 NOUVEAU 2ème passage
+
+**Note de session :** Vendredi = Saint-Cyprien dans la rotation. Saint-Cyprien ÉPUISÉ DÉFINITIF depuis le 15/05 (3 passages, 0 email, 10/10 prospects dans tracker). Session convertie en double mission : (1) vérification de 5 entrées JSON Saint-Rome/Saint-Etienne jamais explicitement tracées, et (2) 2ème/3ème passage ciblé sur 5 meilleurs NOUVEAU sans email. Résultats : 5 entrées JSON toutes ÉCARTÉES DÉFINITIVES — 0 email trouvé sur 5 NOUVEAU. Note gérant : L'ESPION a changé de gérant (Simone Soudri → Simone Laskar, confirmé). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+**Partie 1 — Entrées JSON non tracées (toutes ÉCARTÉES) :**
+
+| Boutique | Quartier | Segment | Gérant | SIREN | Statut | Motif |
+|---|---|---|---|---|---|---|
+| HS & TG | Saint-Rome | Chaussures | Thibault Gobbi | 829202886 | ECARTE | Liquidation judiciaire 18/07/2019 → radiation 22/04/2021 — ECARTE DÉFINITIF |
+| SB LAGON | Saint-Rome | Mode/Vêtements | Stephane Benhamou | 492608351 | ECARTE | Cessation paiements 07/12/2017, liquidation judiciaire → radiation 26/06/2018 — ECARTE DÉFINITIF |
+| TRANS-SHIRT ATELIER | Saint-Rome | Sérigraphie | Clara Boumedienne | 981147358 | ECARTE | Artisan sérigraphie/imprimeur créé 2023, hors cible Two-Step — ECARTE DÉFINITIF |
+| UNIKA (Daniel Zhou) | Saint-Rome | Chaussures | Daniel Zhou | 519575856 | ECARTE | Fonds de commerce cédés à YANG SARL (Cedric Yang, 989721857) en août 2025 — entité inactive — ECARTE DÉFINITIF |
+| TOULOUSE MONTRES (ancienne entité) | Saint-Etienne | Horlogerie | Jean-Marc Morillon | 790612089 | ECARTE | Ancienne entité, dernier acte juillet 2017, remplacée par SIREN 905343240 déjà NOUVEAU dans tracker — ECARTE DÉFINITIF |
+
+**Partie 2 — NOUVEAU 2ème/3ème passage (0 email trouvé) :**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar (ex-Soudri) | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (3ème passage 22/05) — lespion.fr sans email public, formulaire uniquement. NOTE : gérant changé → Simone Laskar (entité SAMANTA). Visite terrain 21 bis rue Croix-Baragnon |
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 22/05) — site macdouglastoulouse.fr retourne 503 (temporairement hors ligne), aucun email public. Retenter fetch dans quelques jours ou visite terrain 24 rue Croix Baragnon |
+| GAME TIME | Saint-Rome | Sport/Streetwear | Laurent Caramelle | — | 432706513 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 22/05) — gametime.fr racheté par org. étrangère (GTBB, Arreau/Blagnac), aucun email boutique Toulouse identifiable. Tel 05 61 23 97 42. Visite terrain |
+| RECOVERY PROJECT | Capitole | Sport/Running/Vélo | Pierre Bauguil (+ Guillermin) | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 22/05) — IG @recoverytoulouse uniquement, pas de site. Co-gérants : Lucas Guillermin, Gabriel Guillermin, Pierre Bauguil. Visite terrain 48B rue de Metz |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 22/05) — aucun site identifié, tél uniquement 05 34 44 90 71 / 05 34 44 90 73. Visite terrain 35 rue Boulbonne |
+
+---
 
 ### Carmes — 2026-05-21 (L'Eclaireur) — 2ème passage exhaustif
 
@@ -110,7 +136,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| L'ESPION | Saint-Etienne | Mode créateurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (2e passage 12/05) — lespion.fr actif, boutique createurs designer femme, IG @boutiquelespion, tel 05 61 73 36 69 — site sans email public, formulaire uniquement |
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar (ex-Soudri) | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (3e passage 22/05) — lespion.fr formulaire uniquement, pas d'email public. NOTE : gérant changé Simone Soudri → Simone Laskar (entité SAMANTA, confirmé 22/05). Visite terrain 21 bis rue Croix-Baragnon |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (2e passage 12/05) — toulouse-montres.com actif (montres luxe occasion : Rolex, Breitling, Cartier), formulaire contact uniquement, editeur Jérome Chesnot (mentions légales) — RDV uniquement |
 | TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — 41 rue Croix Baragnon (meme adresse que Dorise Joaillier), famille Dorise, Dorise Joaillier utilise formulaire uniquement (pas d'email public), tel 05 61 52 38 03 |
 | ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — entite BOTE, 35 rue Croix Baragnon, presence digitale tres faible, pas de site ni IG identifie — contacter visite terrain |
@@ -302,7 +328,7 @@
 | JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| L'ESPION | Saint-Etienne | Mode createurs | Simone Soudri | — | 310602370 | 8/10 | NOUVEAU | Email non trouve (site: lespion.fr, IG: @boutiquelespion), tel: 05 61 73 36 69 |
+| L'ESPION | Saint-Etienne | Mode createurs | Simone Laskar (ex-Soudri) | — | 310602370 | 8/10 | NOUVEAU | Email non trouve — voir section Saint-Etienne 12/05 pour mise à jour gérant |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
 | ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | ECARTE | Boutique rue Languedoc fermee mai 2022 — siege social deplace a Castelginest, pas de boutique Toulouse |
 | TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (site: dorise-joaillier.com, form web) |
@@ -739,6 +765,27 @@
 | — | CONCEPT TOULOUSE | Mattia Bono | — | — | ECARTE |
 
 *Note session 21/05 (L'Eclaireur) : 2ème passage Carmes — 3 emails trouvés sur 9 prospects actifs (10ème = CONCEPT TOULOUSE écartée). AMBIANCES ET SENTEURS opère sous l'enseigne Honoré Payan (parfumerie artisanale Grasse, site honore-payan.com) — rebrand confirmé, boutique active 39 rue des Filatiers. PLUMETIS email confirmé via mentions légales (plumetis-toulouse.fr). SARL LES CIGALES email via annuaires — NB dépôt-vente, hors cible Two-Step probable, à valider. Les 6 NOUVEAU restants sans email ont soit : aucune présence digitale (STEDIF, LB7), site hors ligne (BOSCHERIE, PARALLELE), ou IG sans email public (HANNAH, MADAME GEORGES). Carmes quasi-épuisé : recommandation visite terrain pour BOSCHERIE/LOVE (49 rue des Filatiers, concept store mode) et PARALLELE (35 rue Boulbonne, chaussures avec e-shop). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-05-21".*
+
+---
+
+## Recap leads — 2026-05-22 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Rattrapage vendredi (Saint-Cyprien épuisé)
+
+| # | Boutique | Gérant | SIREN | Email | Score | Statut |
+|---|---|---|---|---|---|---|
+| 1 | HS & TG | Thibault Gobbi | 829202886 | — | — | ECARTE (liquidation 2019-2021) |
+| 2 | SB LAGON | Stephane Benhamou | 492608351 | — | — | ECARTE (liquidation 2016-2018) |
+| 3 | TRANS-SHIRT ATELIER | Clara Boumedienne | 981147358 | — | — | ECARTE (sérigraphie artisan hors cible) |
+| 4 | UNIKA (Daniel Zhou) | Daniel Zhou | 519575856 | — | — | ECARTE (fonds cédés à YANG SARL août 2025) |
+| 5 | TOULOUSE MONTRES (ancienne) | Jean-Marc Morillon | 790612089 | — | — | ECARTE (entité remplacée par 905343240) |
+| 6 | L'ESPION | Simone Laskar | 310602370 | — | 8/10 | NOUVEAU — gérant changé (Soudri→Laskar), email non trouvé |
+| 7 | MAC DOUGLAS | Chantal Huet | 308874601 | — | 7/10 | NOUVEAU — site 503 temporaire, email non trouvé |
+| 8 | GAME TIME | Laurent Caramelle | 432706513 | — | 5/10 | NOUVEAU — gametime.fr racheté par tiers, email non trouvé |
+| 9 | RECOVERY PROJECT | Pierre Bauguil | 940957483 | — | 7/10 | NOUVEAU — IG uniquement, email non trouvé |
+| 10 | PARALLELE | Alain Sanz | 440867224 | — | 7/10 | NOUVEAU — téléphone uniquement, email non trouvé |
+
+*Note session 22/05 (L'Eclaireur) : Saint-Cyprien ÉPUISÉ DÉFINITIF (3 passages, 0 email, 10/10 dans tracker) — pivot vers rattrapage. Partie 1 : 5 entrées JSON Saint-Rome/Saint-Etienne jamais tracées vérifiées → toutes ÉCARTÉES DÉFINITIVES (3 liquidations, 1 artisan hors cible, 1 ancienne entité remplacée). Partie 2 : 2ème/3ème passage sur 5 NOUVEAU score ≥ 7/10 → 0 email trouvé. Ces boutiques ont soit aucun site (RECOVERY, PARALLELE, GAME TIME), soit site en panne (MAC DOUGLAS 503), soit site sans email public (L'ESPION). Recommandation prioritaire : visite terrain pour L'ESPION (gérant Simone Laskar, boutique créateurs haut de gamme) et RECOVERY PROJECT (concept unique café-running/vélo, jeune équipe). DÉCISION ROTATION : sortir vendredi Saint-Cyprien définitivement — proposer Compans-Caffarelli ou Wilson pour remplacer (non couverts dans le JSON actuel — nécessite extension base de données). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage vendredi 2026-05-22".*
 
 ---
 
