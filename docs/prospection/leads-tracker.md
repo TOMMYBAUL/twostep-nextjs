@@ -768,6 +768,21 @@
 
 ---
 
+## Recap brouillons email — 2026-05-22 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Eric Gras (HONORÉ PAYAN) | honore.payan@gmail.com | Honoré Payan visible dans les recherches de stock local Toulouse ? | r-3814472361946553850 | ACA — maison Gras depuis 1854 à Grasse, parfums/bougies artisanaux 39 rue des Filatiers, Two-Step rend le stock visible aux habitants cherchant un parfum artisanal en centre-ville |
+| 2 | Audrey Derouard (PLUMETIS) | contact@plumetis-toulouse.fr | Plumetis visible dans les recherches de stock local Toulouse ? | r-911664686909408843 | ACA — 200 m² showroom bridal Toulouse, créateurs Milla Nova/Rembo Styling/Elsa Gary, Two-Step rend le catalogue visible aux futures mariées cherchant ces marques localement. NB: pertinence Two-Step limitée (sur RDV) — À valider Thomas |
+| 3 | Olivia Samson (LES CIGALES) | sarllescigales@aol.com | Les Cigales visible dans les recherches de stock local Toulouse ? | r920392434515350687 | ACA — boutique luxe d'occasion (Chanel, Dior, Balenciaga) rue Boulbonne, Two-Step rend le stock visible avant déplacement. NB: dépôt-vente = hors cible probable — À valider Thomas |
+
+*Note session 22/05 (L'Auditeur) : 3 brouillons créés sur les 3 leads BROUILLON avec email trouvés le 21/05 par L'Eclaireur (session Carmes 2ème passage). Aucun autre lead avec email sans draft existant dans le tracker. Web search effectué pour chaque lead (Honoré Payan : maison Grasse 1854, parfumerie artisanale, 4.5★ Yelp — Plumetis : 200m² showroom robes de mariée, sans RDV possible — Les Cigales : dépôt-vente luxe, Chanel/Dior/Balenciaga). Méthode ACA respectée, emails <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. ATTENTION : leads 2 et 3 à valider par Thomas avant envoi (pertinence Two-Step limitée).*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-22".*
+
+---
+
 ## Recap leads — 2026-05-22 (L'Eclaireur)
 
 **Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Rattrapage vendredi (Saint-Cyprien épuisé)
