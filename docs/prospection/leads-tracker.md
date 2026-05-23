@@ -1,16 +1,45 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-22 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-23 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 137
-- NOUVEAU : 69
+- Total leads : 134
+- NOUVEAU : 66
 - CONTACTE : 1
 - BROUILLON : 60
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage samedi — 2026-05-23 (L'Eclaireur) — Victor-Hugo épuisé, 3 nouvelles écartes + 10 NOUVEAU 2ème passage
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF depuis le 02/05 (9/9 boutiques traitées). Session convertie en double mission : (1) vérification de 3 entrées JSON jamais explicitement écartées (POINDRELLE, I LOVE SCARPE, ANY DANSE), et (2) 2ème passage ciblé sur 10 meilleurs NOUVEAU multi-quartiers sans email. Résultats : 3 ÉCARTÉES DÉFINITIVES — 0 email trouvé sur 10 NOUVEAU. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+**Partie 1 — Nouvelles écartes confirmées :**
+
+| Boutique | Quartier | Segment | Gérant | SIREN | Statut | Motif |
+|---|---|---|---|---|---|---|
+| POINDRELLE (AGATHA) | Saint-Rome | Bijouterie franchise | Liliane Poindrelle | 324454735 | ECARTE | Franchise AGATHA nationale (75 boutiques France, 2 points de vente Toulouse : 51 rue Rempart Saint-Etienne + Galeries Lafayette) — ECARTE DÉFINITIF |
+| I LOVE SCARPE (SCARPE) | Saint-Rome | Chaussures/Bijoux | Alienor Lacroix | 811924067 | ECARTE | Liquidation judiciaire clôturée faute d'actif (confirmée annuaire-entreprises.data.gouv.fr) — ECARTE DÉFINITIF |
+| ANY DANSE (ATTITUDE DIFFUSION) | Capitole | Sport/Danse | Osamu Suzuki | 393744750 | ECARTE | Franchise ATTITUDE DIFFUSION nationale (7 boutiques : Paris, Rennes, Caen, Lille, Lyon, Toulouse, Marseille) — ECARTE DÉFINITIF |
+
+**Partie 2 — 2ème passage NOUVEAU (0 email trouvé) :**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — IG @dressingrosektoulouse + FB actifs, 31 rue Saint Rome. Co-gérant : Walid Gasdallah. Visite terrain |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — Yelp juillet 2025 actif, 44 rue des Tourneurs, aucun site ni email public identifié. Visite terrain |
+| STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — ouvert depuis 1977, 20 rue Bayard, Cylex actif, tel 05 61 62 74 24. Aucun site ni email. Visite terrain |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — entité DOSAYAMA, 53 rue de la Pomme, FB "Magasin Ephémère Toulouse" actif. Aucun email public. Visite terrain |
+| LE LIEU (SERHA) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — 2 ets (37 rue Metz + 14 rue Pomme), IG @lelieu_toulouse actif, tel 05 31 15 02 34. Aucun email public. Visite terrain |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 444997753 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — 12B rue de la Pomme, annuaires Laposte + Cylex, aucun site ni email public. Visite terrain |
+| SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — 36 rue de la Pomme, Petit Futé + Cylex actifs, tel 05 61 21 50 72. Aucun email public. Visite terrain |
+| LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — Yelp avril 2026 actif, IG @la_suite_boutique_toulouse (87 followers, Made in France), 22 rue Saint Rome. Aucun email public. Visite terrain ou contact IG |
+| KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — revendeur New Balance (toutesvosmarques.com), 12 rue Saint Rome. Aucun site ni email public. Visite terrain |
+| FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 23/05) — créée 2015, 8 rue des Arts. Aucune présence digitale (site, IG) identifiée. Visite terrain |
+
+---
 
 ### Rattrapage vendredi — 2026-05-22 (L'Eclaireur) — Saint-Cyprien épuisé, 5 entrées JSON vérifiées + 5 NOUVEAU 2ème passage
 
@@ -175,7 +204,7 @@
 | RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-4355813290059118696) — marque horlogère indépendante toulousaine, collection ASSET assemblage main, 88% fabrication française, 17 rue des Arts |
 | LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r5463543312504006474) — chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), lesreveries.net, 2 rue des Arts |
 | SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r4186603753522561088) — prêt-à-porter féminin, 7 ans rue Saint-Rome, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
-| POINDRELLE | Saint-Rome | Bijouterie/Horlogerie | Liliane Poindrelle | — | 324454735 | 7/10 | NOUVEAU | Email non trouve — bijouterie 15 rue des Arts, 2 ets, ancienne enseigne (SIREN 324...), famille Poindrelle sur FB mais pas d'email boutique |
+| POINDRELLE (AGATHA) | Saint-Rome | Bijouterie franchise | Liliane Poindrelle | — | 324454735 | 7/10 | ECARTE | Franchise AGATHA nationale (75 boutiques France) — ECARTE DÉFINITIF (confirmé 23/05) |
 | LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouve — Yelp April 2026 actif, 22 rue Saint Rome, vetements femme + chaussures + maroquinerie, M & B entite |
 | FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouve — 8 rue des Arts, cree 2015, pas de site ni IG identifie, faible presence digitale |
 | BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouve — mode femme 39 rue des Changes, tel +33 7 66 67 50 37, Mappy actif 2024 |
@@ -198,7 +227,7 @@
 | LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-5536448297790948464) — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome |
 | KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouve — vend New Balance + chaussures sport toutes categories, SIREN Paris siege/Toulouse ets, 12 rue Saint Rome |
 | KEED | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouve — vêtements homme, Yelp mai 2026 actif, tel 05 61 23 31 22, 28 rue des Changes |
-| I LOVE SCARPE | Saint-Rome | Chaussures luxe | Alienor Lacroix | — | 811924067 | 5/10 | NOUVEAU | Email non trouve — chaussures + bijoux + maroquinerie luxe, IG @ilovescarpetoulouse, Yelp oct 2025 actif, 3 rue Temponieres |
+| I LOVE SCARPE (SCARPE) | Saint-Rome | Chaussures/Bijoux | Alienor Lacroix | — | 811924067 | 5/10 | ECARTE | Liquidation judiciaire clôturée faute d'actif — ECARTE DÉFINITIF (confirmé 23/05) |
 | MAISON DE LA SAPP | Saint-Rome | Mode polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouve — pret-a-porter + chaussures + bijoux + deco, m2lsapp.com (contact form), tel +33 7 56 23 78 65, 14 rue des Changes (NB: ex-gerante Latifa Linoubli, president Nassim Zitouni depuis 17/03/2025) |
 | GAME TIME | Saint-Rome | Sport/Streetwear | Laurent Caramelle | — | 432706513 | 5/10 | NOUVEAU | Email non trouve — sportswear independant (Jordan, Nike...), gametime.fr, tel 05 61 23 97 42, 6 rue Temponieres |
 
@@ -218,7 +247,7 @@
 | N°45 / ELEMENT STORE (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme 18/05 via mentions legales n45.fr — enseigne renommee N°45, site n45.fr, IG @numero45toulouse, 45 rue Tourneurs, tel 05 31 21 70 42. Rediger email a Emmanuel. |
 | STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
 | SUPER33STORE | Capitole | Mode | Caroline Tobelaim | — | 791020936 | 6/10 | ECARTE | Confirme franchise SUPERDRY (18/05) — 49 rue Alsace Lorraine = adresse officielle SUPERDRY sur tous les annuaires (Yelp, au-magasin.fr, tiendeo.fr). Hors cible Two-Step. |
-| ANY DANSE | Capitole | Sport/Danse | Osamu Suzuki | — | 393744750 | 5/10 | NOUVEAU | Email non trouve — chaussures + vetements danse marque Freed of London, 15 place Capitole, niche specialisee |
+| ANY DANSE (ATTITUDE DIFFUSION) | Capitole | Sport/Danse franchise | Osamu Suzuki | — | 393744750 | 5/10 | ECARTE | Franchise ATTITUDE DIFFUSION nationale (7 boutiques France) — ECARTE DÉFINITIF (confirmé 23/05) |
 | COLETTE SAINT MLEUX | Capitole | Mode femme | Colette Saint mleux | — | 347463473 | 4/10 | NOUVEAU | Email non trouve — aucune presence digitale identifiee, 14 rue de la Pomme, tres ancienne enseigne (SIREN 347...) |
 
 **Boutiques ecartees (session 05/05) :** ACTURUS FRANCE SAS (EL GANSO, boutique Toulouse fermee 2019), EDEN (franchise Eden Shoes nationale 450+ boutiques), GABOR/SAINT JAMES/NAPAPIJRI/LANCASTER (marques nationales), SUPERDRY (marque nationale), CONCEPT STORE TNF (franchise TNF), CAHORS/CASTRES/ALBI/LABEGE/ROUFFIAC SPORT DISTRIBUTION (meme groupe Benoit Barron, distributeur multi-enseigne), INSTITUT DE BEAUTE YVES ROCHER (franchise nationale), SAGA COSMETIQUES (gerant = societe GLOW UP DEVELOPMENT, pas de prenom), HERO SEVEN (gerant = LIVAM societe, pas de prenom), SIENNE 538275561 (doublon deja traite), BE UP BEAUTY BAR (service beaute hors cible + Groupon 410 ferme probable), SCDT (Guy Guenoun = aussi POMA'DAUR immobilier, pas de boutique physique confirmee)
@@ -363,6 +392,9 @@
 ## Retires (chaines / pas independants / fermes)
 | Boutique | Raison |
 |---|---|
+| POINDRELLE (AGATHA) | Franchise AGATHA nationale — 75 boutiques France (session 23/05) |
+| I LOVE SCARPE (SCARPE) | Liquidation judiciaire cloturee faute d'actif (session 23/05) |
+| ANY DANSE (ATTITUDE DIFFUSION) | Chaine ATTITUDE DIFFUSION 7 boutiques France (session 23/05) |
 | SCOTCH AND SODA | Chaine G.A.B. France (31 magasins) |
 | IZAC | Chaine JSR (115 magasins) |
 | SOEUR | Chaine Brion Sisters (28 magasins) |
@@ -801,6 +833,32 @@
 | 10 | PARALLELE | Alain Sanz | 440867224 | — | 7/10 | NOUVEAU — téléphone uniquement, email non trouvé |
 
 *Note session 22/05 (L'Eclaireur) : Saint-Cyprien ÉPUISÉ DÉFINITIF (3 passages, 0 email, 10/10 dans tracker) — pivot vers rattrapage. Partie 1 : 5 entrées JSON Saint-Rome/Saint-Etienne jamais tracées vérifiées → toutes ÉCARTÉES DÉFINITIVES (3 liquidations, 1 artisan hors cible, 1 ancienne entité remplacée). Partie 2 : 2ème/3ème passage sur 5 NOUVEAU score ≥ 7/10 → 0 email trouvé. Ces boutiques ont soit aucun site (RECOVERY, PARALLELE, GAME TIME), soit site en panne (MAC DOUGLAS 503), soit site sans email public (L'ESPION). Recommandation prioritaire : visite terrain pour L'ESPION (gérant Simone Laskar, boutique créateurs haut de gamme) et RECOVERY PROJECT (concept unique café-running/vélo, jeune équipe). DÉCISION ROTATION : sortir vendredi Saint-Cyprien définitivement — proposer Compans-Caffarelli ou Wilson pour remplacer (non couverts dans le JSON actuel — nécessite extension base de données). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage vendredi 2026-05-22".*
+
+---
+
+## Recap leads — 2026-05-23 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Rattrapage samedi (Victor-Hugo épuisé)
+
+| # | Boutique | Quartier | Gérant | Email | Score | Statut |
+|---|---|---|---|---|---|---|
+| 1 | DRESSING ROSE AND KIDS | Saint-Rome | Ameur Gasdallah | — (IG @dressingrosektoulouse actif) | 7/10 | NOUVEAU |
+| 2 | SIENNE | Capitole | Simon Benlolo | — (Yelp juil. 2025 actif) | 6/10 | NOUVEAU |
+| 3 | STOCK AMERICAIN | Capitole | Andre Lelte | — (tel 05 61 62 74 24) | 6/10 | NOUVEAU |
+| 4 | MANOUSHKA | Capitole | Dominique Sellem | — (FB "Magasin Ephémère Toulouse") | 6/10 | NOUVEAU |
+| 5 | LE LIEU (SERHA) | Capitole | Nathalie Serfati | — (IG @lelieu_toulouse, tel 05 31 15 02 34) | 6/10 | NOUVEAU |
+| 6 | MOSQUITOS | Capitole | Laurent Bensimon | — (tel uniquement, aucun site) | 6/10 | NOUVEAU |
+| 7 | SOCIETE LAKO (BERNARD KOK) | Capitole | Bernard Kok | — (tel 05 61 21 50 72) | 6/10 | NOUVEAU |
+| 8 | LA SUITE... | Saint-Rome | Anouar-adil Boudraa | — (IG @la_suite_boutique_toulouse) | 6/10 | NOUVEAU |
+| 9 | KATOUNI | Saint-Rome | Alain Salimi pak | — (revendeur New Balance, aucun site propre) | 6/10 | NOUVEAU |
+| 10 | FC2 BOUTIQUE | Saint-Rome | Francois Couillard | — (aucune présence digitale) | 6/10 | NOUVEAU |
+
+**Boutiques écartées (session 23/05) :**
+- POINDRELLE (324454735, Liliane Poindrelle) — Franchise AGATHA nationale (75 boutiques France) — ECARTE DÉFINITIF
+- I LOVE SCARPE / SCARPE (811924067, Alienor Lacroix) — Liquidation judiciaire clôturée faute d'actif — ECARTE DÉFINITIF
+- ANY DANSE (393744750, Osamu Suzuki) — Franchise ATTITUDE DIFFUSION nationale (7 boutiques France) — ECARTE DÉFINITIF
+
+*Note session 23/05 (L'Eclaireur) : Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées depuis le 25/04). Pivot rattrapage samedi. 3 nouvelles ÉCARTÉES définitives découvertes : POINDRELLE=AGATHA franchise, I LOVE SCARPE=liquidée, ANY DANSE=chaîne nationale Attitude Diffusion 7 boutiques. 0 email trouvé sur les 10 NOUVEAU du 2ème passage. Ces boutiques ont : aucune présence digitale (FC2, MOSQUITOS, STOCK AMERICAIN, SIENNE), site/IG sans email public (LE LIEU, MANOUSHKA, LA SUITE..., DRESSING ROSE), ou modèle sans site propre (KATOUNI, BERNARD KOK). DÉCISION ROTATION samedi : sortir Victor-Hugo définitivement — proposer Capitole (encore ~15 NOUVEAU sans email) ou Compans-Caffarelli/Wilson (non couverts dans le JSON actuel). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage samedi 2026-05-23".*
 
 ---
 
