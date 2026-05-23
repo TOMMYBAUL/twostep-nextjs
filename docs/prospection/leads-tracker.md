@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-23 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-23 (L'Auditeur)*
 
 ## Stats
 - Total leads : 134
@@ -859,6 +859,19 @@
 - ANY DANSE (393744750, Osamu Suzuki) — Franchise ATTITUDE DIFFUSION nationale (7 boutiques France) — ECARTE DÉFINITIF
 
 *Note session 23/05 (L'Eclaireur) : Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées depuis le 25/04). Pivot rattrapage samedi. 3 nouvelles ÉCARTÉES définitives découvertes : POINDRELLE=AGATHA franchise, I LOVE SCARPE=liquidée, ANY DANSE=chaîne nationale Attitude Diffusion 7 boutiques. 0 email trouvé sur les 10 NOUVEAU du 2ème passage. Ces boutiques ont : aucune présence digitale (FC2, MOSQUITOS, STOCK AMERICAIN, SIENNE), site/IG sans email public (LE LIEU, MANOUSHKA, LA SUITE..., DRESSING ROSE), ou modèle sans site propre (KATOUNI, BERNARD KOK). DÉCISION ROTATION samedi : sortir Victor-Hugo définitivement — proposer Capitole (encore ~15 NOUVEAU sans email) ou Compans-Caffarelli/Wilson (non couverts dans le JSON actuel). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage samedi 2026-05-23".*
+
+---
+
+## Recap brouillons email — 2026-05-23 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| — | (aucun) | — | — | — | 0 brouillon créé |
+
+*Note session 23/05 (L'Auditeur) : Aucun lead NOUVEAU avec email sans draft dans le tracker. Recherche active effectuée via web search + fetch sur 7 leads NOUVEAU score ≥ 7/10 : MAC DOUGLAS (macdouglastoulouse.fr toujours en 503, 3ème semaine), CHAUSSURES MANIK (manik.fr — formulaire uniquement, pas d'email public), MADAME GEORGES (aucun email identifiable), HANNAH (aucun email public), LOVE/BOSCHERIE (fromtoulousewithlove.com domaine expiré vendu sur GoDaddy, IG uniquement), RECOVERY PROJECT (IG/TikTok uniquement), TOULOUSE MONTRES (RDV uniquement, formulaire, contact-montres.html en 404). 0 email trouvé sur 7 tentatives. Conclusion cohérente avec les sessions précédentes : ces boutiques ne publient délibérément pas d'email public. Tous les leads BROUILLON existants ont un draft Gmail (dernier batch : 3 drafts 22/05 pour Eric Gras/Honoré Payan, Audrey Derouard/Plumetis, Olivia Samson/Les Cigales). Recommandation Thomas : visite terrain prioritaire pour L'ESPION (Simone Laskar, 21 bis rue Croix-Baragnon), RECOVERY PROJECT (Pierre Bauguil, 48B rue Metz), CHAUSSURES MANIK (Pierre Lacabanne, 33 rue Alsace-Lorraine). MAC DOUGLAS à relancer quand site revient en ligne.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-23".*
 
 ---
 
