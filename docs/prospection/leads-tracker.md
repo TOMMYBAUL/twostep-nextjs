@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-23 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-25 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 134
@@ -11,6 +11,25 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Capitole — 2026-05-25 (L'Eclaireur) — 3ème passage exhaustif, 0 email trouvé
+
+**Note de session :** Lundi = Capitole dans la rotation. 3ème passage sur les 10 meilleurs NOUVEAU Capitole sans email (scores 6-7/10). 25+ recherches web + fetches effectués. Résultat : 0 email trouvé sur 10 prospects. Pattern identique aux sessions précédentes — ces boutiques ne publient délibérément pas d'email public : contact form uniquement (MANIK, PERLIN'S), IG/FB sans email (AMA LUNA, LE LIEU, MANOUSHKA), ou aucune présence digitale (SIENNE, MOSQUITOS). Nouveauté : le lien contact de manik.fr/contact retourne 404 (formulaire cassé). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — HQ Biarritz (17 av Edouard VII), 2 ets (39 rue Metz + 32 rue Astorg Toulouse), aucun email public. NB : alphabets-toulouse.com est une mercerie distincte. Tel 05 61 22 11 94. Visite terrain |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — pampy.com toujours en vente ("domain for sale"), IG @_pampix, tel 05 61 23 37 46. Aucune présence digitale active. Visite terrain |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — manik.fr actif (contact form, page /contact en 404), IG @maniktoulouse, FB @maniktoulouse, tel 05 61 21 52 08. Aucun email public. Visite terrain 33 rue Alsace-Lorraine |
+| RECOVERY PROJECT | Capitole | Sport/Running/Vélo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — société a refusé usage de ses données (mention registre), IG @recoverytoulouse uniquement, tel 05 61 40 42 94. Visite terrain 48B rue de Metz |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — IG @amalunacreation, FB @almalunaboutique, aucun site ni email public. Visite terrain 66 rue de la Pomme |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — perlins.fr actif (aucun email visible, tel uniquement 05 61 21 18 81), FB @BijouteriePerlins, bijouterie depuis 1983. Visite terrain 49 rue de la Pomme |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — Yelp July 2025 actif, aucun site ni email identifié. Tel via annuaires uniquement. Visite terrain 44 rue des Tourneurs |
+| LE LIEU (SERHA) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — IG @lelieu_toulouse actif, 2 ets (37 rue Metz + 14 rue Pomme), tel 05 31 15 02 34. Aucun email public. Visite terrain |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 444997753 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — annuaire Laposte uniquement, 12B rue de la Pomme, aucun site ni email. Visite terrain |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 25/05) — FB "Magasin Ephémère Toulouse" actif, 53 rue de la Pomme, aucun email public. Visite terrain |
+
+---
 
 ### Rattrapage samedi — 2026-05-23 (L'Eclaireur) — Victor-Hugo épuisé, 3 nouvelles écartes + 10 NOUVEAU 2ème passage
 
