@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-25 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-26 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 134
-- NOUVEAU : 66
+- NOUVEAU : 65
 - CONTACTE : 1
-- BROUILLON : 60
+- BROUILLON : 61
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-05-26 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF — tous les 75 prospects du JSON sont dans le tracker (confirmé session 18/05). Session convertie en rattrapage multi-quartiers sur les 10 meilleurs NOUVEAU sans email (scores 5-7/10). 20+ recherches web + fetches effectués. 1 email trouvé : RACHEL HAIR via service de réservation rachelnto.wavy.pro. MAC DOUGLAS (macdouglastoulouse.fr) toujours en 503 (5ème semaine consécutive). BOHEMIAN'S ROOM (bohemians-room.com) ECONNREFUSED. SADIA (sadiaoff.com) ECONNREFUSED. PAMPY (pampy.com) toujours parqué "domain for sale". NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmétique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Email trouvé 26/05 via rachelnto.wavy.pro — vente perruques + cosmétiques, 12 rue de Bayard, Planity actif. Rédiger email à Rachel. |
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — macdouglastoulouse.fr toujours en 503 (5ème semaine), mac-douglas.net donne tél uniquement 05 61 53 93 18. Visite terrain 24 rue Croix Baragnon |
+| RECOVERY PROJECT | Capitole | Sport/Running/Vélo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — IG @recoverytoulouse + TikTok @recovery.toulouse uniquement, pas de site web identifié. Visite terrain 48B rue de Metz |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — IG @dressingrosektoulouse, FB actif, aucun email public. Visite terrain 31 rue Saint-Rome |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — fromtoulousewithlove.com domaine expiré (GoDaddy), IG @love.toulouse.store actif. Visite terrain 49 rue des Filatiers |
+| HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — 3 ets (Carcassonne + Toulouse), Kompass tél 04 68 75 12 85 Carcassonne, FB/IG actifs, aucun email public. Visite terrain 31 rue Boulbonne |
+| MADAME GEORGES (BOHEMIAN'S ROOM) | Carmes | Mode/Vêtements | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — bohemians-room.com ECONNREFUSED (serveur down), IG @madamegeorgestoulouse actif, tél 05 61 76 52 40. Retenter site dans quelques jours ou visite terrain 35 rue Boulbonne |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — parallele-eshop.com hors ligne, téléphone uniquement 05 34 44 90 71. Visite terrain 35 rue Boulbonne |
+| SADIA | Capitole | Mode femme | Sadia Belkelfa | — | 918125394 | 5/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — sadiaoff.com ECONNREFUSED, boutique récente mode femme, aucun email public. Retenter ou visite 39 rue de Bayard |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — pampy.com toujours parqué "domain for sale", IG @_pampix, tél 05 61 23 37 46, aucun email. Visite terrain 11 rue de la Pomme |
+
+---
 
 ### Capitole — 2026-05-25 (L'Eclaireur) — 3ème passage exhaustif, 0 email trouvé
 
@@ -284,7 +303,7 @@
 | SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
 | SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouve — mode homme 36 rue de la Pomme, tel 05 61 21 50 72 |
 | BIAS | Capitole | Deco/Concept store | Laura Noailles | laura.noailles@bias-conceptstore.fr | 980131718 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r2648943524808888459) — concept store déco/art/design, 2 rue Paul Vidal, ouvert mai 2024, IG @bias.cst — email trouvé via article Maison Actuelle jan 2026 |
-| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | — | 945085363 | 5/10 | NOUVEAU | Email non trouve — rachellhair.fr (inaccessible), Planity actif, 12 rue Bayard, vente perruques + cosmetiques |
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmetique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Email trouvé 26/05 via rachelnto.wavy.pro — vente perruques + cosmétiques, 12 rue Bayard, Planity actif. Rédiger email à Rachel. |
 
 **Boutiques ecartees (session 04/05) :** BANANA-POMME (fermee dec. 2024), LEWIS (ferme juin 2024), SHILTON (chaine nationale 27 boutiques), L'ISLA NOVA (boutique en L'Isle-en-Dodon, pas Toulouse), DUO BOUTIQUE/COCCI (fermee a Toulouse), TILL/TILLAMY (franchise enfants Maine-et-Loire), TOVLI (etablissement Toulouse inactif), MURPHY & NYE/COMEPAR (voile/sportswear niche)
 
@@ -891,6 +910,28 @@
 
 *Note session 23/05 (L'Auditeur) : Aucun lead NOUVEAU avec email sans draft dans le tracker. Recherche active effectuée via web search + fetch sur 7 leads NOUVEAU score ≥ 7/10 : MAC DOUGLAS (macdouglastoulouse.fr toujours en 503, 3ème semaine), CHAUSSURES MANIK (manik.fr — formulaire uniquement, pas d'email public), MADAME GEORGES (aucun email identifiable), HANNAH (aucun email public), LOVE/BOSCHERIE (fromtoulousewithlove.com domaine expiré vendu sur GoDaddy, IG uniquement), RECOVERY PROJECT (IG/TikTok uniquement), TOULOUSE MONTRES (RDV uniquement, formulaire, contact-montres.html en 404). 0 email trouvé sur 7 tentatives. Conclusion cohérente avec les sessions précédentes : ces boutiques ne publient délibérément pas d'email public. Tous les leads BROUILLON existants ont un draft Gmail (dernier batch : 3 drafts 22/05 pour Eric Gras/Honoré Payan, Audrey Derouard/Plumetis, Olivia Samson/Les Cigales). Recommandation Thomas : visite terrain prioritaire pour L'ESPION (Simone Laskar, 21 bis rue Croix-Baragnon), RECOVERY PROJECT (Pierre Bauguil, 48B rue Metz), CHAUSSURES MANIK (Pierre Lacabanne, 33 rue Alsace-Lorraine). MAC DOUGLAS à relancer quand site revient en ligne.*
 *Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-23".*
+
+---
+
+## Recap leads — 2026-05-26 (L'Eclaireur)
+
+**Agent** : L'Eclaireur | **Statut** : A valider | **Quartier** : Rattrapage lundi (Capitole épuisé)
+
+| # | Boutique | Quartier | Gérant | Email | Score | Statut |
+|---|---|---|---|---|---|---|
+| 1 | RACHEL HAIR INTERNATIONAL | Capitole | Rachel Nto | csrachelhair@gmail.com ✅ | 5/10 | BROUILLON |
+| 2 | MAC DOUGLAS | Saint-Etienne | Chantal Huet | — (site 503 depuis 5 sem., tél 05 61 53 93 18) | 7/10 | NOUVEAU |
+| 3 | RECOVERY PROJECT | Capitole | Pierre Bauguil | — (IG @recoverytoulouse uniquement) | 7/10 | NOUVEAU |
+| 4 | DRESSING ROSE AND KIDS | Saint-Rome | Ameur Gasdallah | — (IG @dressingrosektoulouse, FB actif) | 7/10 | NOUVEAU |
+| 5 | BOSCHERIE / LOVE | Carmes | Julien Boscherie | — (domain expiré, IG @love.toulouse.store) | 7/10 | NOUVEAU |
+| 6 | HANNAH | Carmes | Abdelkader Boukenine | — (FB/IG actifs, tél 04 68 75 12 85) | 7/10 | NOUVEAU |
+| 7 | MADAME GEORGES | Carmes | Lionel Prevost | — (bohemians-room.com down, tél 05 61 76 52 40) | 7/10 | NOUVEAU |
+| 8 | PARALLELE | Carmes | Alain Sanz | — (parallele-eshop.com hors ligne, tél 05 34 44 90 71) | 7/10 | NOUVEAU |
+| 9 | SADIA | Capitole | Sadia Belkelfa | — (sadiaoff.com ECONNREFUSED) | 5/10 | NOUVEAU |
+| 10 | PAMPY | Capitole | Juliette Marciano | — (pampy.com parqué, tél 05 61 23 37 46) | 7/10 | NOUVEAU |
+
+*Note session 26/05 (L'Eclaireur) : Capitole ÉPUISÉ DÉFINITIF (75/75 JSON dans tracker depuis le 18/05). Rattrapage multi-quartiers : 1 email trouvé sur 10 prospects (RACHEL HAIR via rachelnto.wavy.pro, email csrachelhair@gmail.com). Découverte clé : MADAME GEORGES / BOHEMIAN'S ROOM a un site bohemians-room.com actuellement ECONNREFUSED (serveur down) + tél 05 61 76 52 40 confirmé. MAC DOUGLAS site toujours en 503 (5ème semaine). PAMPY.com toujours parqué. SADIA.off.com ECONNREFUSED. Ces boutiques restantes n'ont pas d'email public identifiable — recommandation Thomas : visite terrain prioritaire pour RECOVERY PROJECT (48B rue Metz, café-running/vélo, très qualifié Two-Step), MADAME GEORGES (35 rue Boulbonne, quand site revient OU visite), DRESSING ROSE AND KIDS (31 rue Saint-Rome, mode enfants qualifiée Two-Step). Pour lundi prochain : explorer un nouveau quartier (Compans-Caffarelli, Wilson, Arnaud-Bernard) via extension de la base JSON.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage lundi 2026-05-26".*
 
 ---
 
