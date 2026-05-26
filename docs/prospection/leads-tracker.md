@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-26 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-26 (L'Auditeur)*
 
 ## Stats
 - Total leads : 134
@@ -932,6 +932,18 @@
 
 *Note session 26/05 (L'Eclaireur) : Capitole ÉPUISÉ DÉFINITIF (75/75 JSON dans tracker depuis le 18/05). Rattrapage multi-quartiers : 1 email trouvé sur 10 prospects (RACHEL HAIR via rachelnto.wavy.pro, email csrachelhair@gmail.com). Découverte clé : MADAME GEORGES / BOHEMIAN'S ROOM a un site bohemians-room.com actuellement ECONNREFUSED (serveur down) + tél 05 61 76 52 40 confirmé. MAC DOUGLAS site toujours en 503 (5ème semaine). PAMPY.com toujours parqué. SADIA.off.com ECONNREFUSED. Ces boutiques restantes n'ont pas d'email public identifiable — recommandation Thomas : visite terrain prioritaire pour RECOVERY PROJECT (48B rue Metz, café-running/vélo, très qualifié Two-Step), MADAME GEORGES (35 rue Boulbonne, quand site revient OU visite), DRESSING ROSE AND KIDS (31 rue Saint-Rome, mode enfants qualifiée Two-Step). Pour lundi prochain : explorer un nouveau quartier (Compans-Caffarelli, Wilson, Arnaud-Bernard) via extension de la base JSON.*
 *Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads rattrapage lundi 2026-05-26".*
+
+---
+
+## Recap brouillons email — 2026-05-26 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Rachel Nto (RACHEL HAIR INTERNATIONAL) | csrachelhair@gmail.com | Rachel Hair visible dans les recherches de stock local Toulouse ? | r5441880375573663980 | ACA — prothèses capillaires cheveux naturels + soins esthétiques + accessoires, 12 rue de Bayard, Two-Step rend le stock visible aux habitantes cherchant perruques ou cosmétiques capillaires localement |
+
+*Note session 26/05 (L'Auditeur) : 1 brouillon créé — seul lead BROUILLON avec email sans draft dans le tracker à date (email trouvé le 26/05 par L'Eclaireur via rachelnto.wavy.pro). Tous les autres leads BROUILLON avaient déjà un draft Gmail (confirmé par recaps Auditeur 22/05 et 23/05). Web search effectué : Rachel Hair = prothèses capillaires cheveux naturels + soins esthétiques + accessoires, lun-sam 10h-19h, tél 06 06 82 14 44, site rachelhair.fr, Planity actif. Méthode ACA respectée, email <150 mots, tutoiement, prénom Rachel, UTM, footer STOP, genre masculin Thomas. Score 5/10 (niche capillaire + mix service/produit). NOTE : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-26".*
 
 ---
 
