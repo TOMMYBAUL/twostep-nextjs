@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-26 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-27 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 134
-- NOUVEAU : 65
+- NOUVEAU : 63
 - CONTACTE : 1
-- BROUILLON : 61
+- BROUILLON : 62
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Rome — 2026-05-27 (L'Eclaireur) — Saint-Rome épuisé, 2ème passage, 1 email trouvé
+
+**Note de session :** Mercredi = Saint-Rome dans la rotation. Saint-Rome ÉPUISÉ DÉFINITIF — tous les 61 prospects du JSON sont dans le tracker. Session convertie en 2ème passage sur les 10 meilleurs NOUVEAU Saint-Rome sans email (1 seul passage le 20/05). 1 email trouvé (PASSION FILLE via toulouseboutiques.com). 1 ECARTE confirmé (GLAM SHOES BK — GLAM & CO radiée 2018, établissement Toulouse actif seulement juin-oct 2015). 8 autres sans email — profil identique au 20/05 (boutiques rue des Changes / rue Saint-Rome sans présence digitale). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 | BROUILLON | Email trouvé 27/05 via toulouseboutiques.com — chaussures femme, 14 rue Saint Rome, tel 06 29 45 83 16. NB : email "yanyun411" ≠ gérant officiel Kangle Wang — possiblement un(e) associé(e) ou gérant de fait. Rédiger email à Kangle. |
+| NEW CASTING | Saint-Rome | Chaussures/Mode | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — annuaires uniquement (Yelp jan 2025, FB), tel 05 61 29 04 49. Visite terrain 19 rue Saint-Rome. |
+| UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cédric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — PagesJaunes, tel 09 54 70 34 65, aucun site ni email public. Visite terrain 29 rue des Changes. |
+| KEED | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — entité ELLE AND SHE, aucun site ni email public, tel 05 61 23 31 22. Visite terrain 28 rue des Changes. |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — annuaires uniquement, tel +33 7 66 67 50 37, aucun site ni email public. Visite terrain 39 rue des Changes. |
+| YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — registres commerciaux uniquement, aucune présence digitale identifiée. Visite terrain 17 rue des Changes. |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — créé jan 2025, IG @URBANWEAR31 actif, aucun email public. Visite terrain 12 rue Saint-Rome. |
+| Y STYLE | Saint-Rome | Mode/Vêtements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — Kompass uniquement, aucun site ni email public. Visite terrain 38 rue Saint-Rome. |
+| SYSTER'S | Saint-Rome | Mode/Vêtements | Alex Dai | — | 538812199 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 27/05) — entité liée 483479465 (Daniel Zhou, PagesJaunes), aucun email public. Visite terrain 17 rue des Changes. |
+| GLAM SHOES BK | Saint-Rome | Mode/Vêtements | Chadli Hambli | — | 808299044 | — | ECARTE | GLAM & CO radiée 2018 — ets Toulouse actif seulement 4 mois (22/06/2015–01/10/2015), liquidation judiciaire prononcée 06/07/2016, clôture 13/07/2018 — ECARTE DÉFINITIF |
+
+---
 
 ### Rattrapage lundi — 2026-05-26 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
 
@@ -134,7 +153,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouve — 31 rue Saint Rome, cree 2020, IG @dressingrosektoulouse, FB "Dressing Rose Toulouse" actif — contacter via IG ou visite terrain |
-| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | — | 522655141 | 6/10 | NOUVEAU | Email non trouve — 14 rue Saint Rome, aussi connue "Passions Filles", Yelp actif mars 2026, PagesJaunes, tel 05 61 29 04 49 — contacter par tel |
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 | BROUILLON | Email trouvé 27/05 via toulouseboutiques.com — chaussures femme 14 rue Saint Rome, tel 06 29 45 83 16. NB : email "yanyun411" possiblement associé(e) ou gérant de fait ≠ Kangle Wang officiel. Rédiger email à Kangle. |
 | NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouve — 19 rue Saint Rome, chaussures+pret-a-porter+accessoires femme, Yelp actif jan 2025, FB facebook.com/people/New-Casting/100068857325009, tel 05 61 29 04 49 — contacter via FB ou tel |
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouve — 29 rue des Changes (ou 19 rue Saint Rome selon Yelp), nouvelle entite depuis juil 2025 (reprise de l'ancienne UNIKA Daniel Zhou deja trackee), tel 09 54 70 34 65, PagesJaunes actif — contacter par tel |
 | YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, mode+accessoires+chaussures+maroquinerie, registres commerciaux uniquement, aucune presence digitale identifiee — visite terrain |
@@ -247,7 +266,7 @@
 | FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouve — 8 rue des Arts, cree 2015, pas de site ni IG identifie, faible presence digitale |
 | BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouve — mode femme 39 rue des Changes, tel +33 7 66 67 50 37, Mappy actif 2024 |
 | URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouve — tres recente (cree jan 2025), IG @URBANWEAR31, 12 rue Saint Rome, pret-a-porter + sport + chaussures |
-| GLAM SHOES BK | Saint-Rome | Mode/Vêtements | Chadli Hambli | — | 808299044 | 5/10 | NOUVEAU | Email non trouve — 29 rue des Changes (adresse partagee avec UNIKA), GLAM & CO entite, 1 ets |
+| GLAM SHOES BK | Saint-Rome | Mode/Vêtements | Chadli Hambli | — | 808299044 | — | ECARTE | GLAM & CO radiée 2018 — ets Toulouse actif 4 mois seulement (22/06/2015–01/10/2015), liquidation judiciaire 06/07/2016, clôture 13/07/2018 — ECARTE DÉFINITIF (27/05) |
 | SAS YOOK | Saint-Rome | Mode/Vêtements | Yohan Cohen | — | 510352446 | 4/10 | NOUVEAU | Email non trouve — 40 rue Saint Rome, PagesJaunes reference "tissus" (a verifier en boutique), cree 2009 |
 
 **Boutiques ecartees (session 07/05) :** MIRA MIRA (franchise Miramira espagnole), MADAME MARCHAND/CELU & CIE (liquidation judiciaire dec. 2018), SANTA FE/PALMA (ST ROME DISTRIBUTION liquidation avril 2024, Marc Fridman), TRANS-SHIRT (sérigraphie/imprimeur = artisan hors cible), BARONS PAPILLOM (adresse 14 rue Temponieres remplacee par SIZE? chaine), SDQ 31 (siege Montreuil + activite mixte mode+restauration), ROGER GERSON (adresse 26 rue Saint Rome = Adidas maintenant, ferme)
