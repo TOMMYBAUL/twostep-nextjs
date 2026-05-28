@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-28 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-28 (L'Auditeur)*
 
 ## Stats
 - Total leads : 134
@@ -18,7 +18,7 @@
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 | BROUILLON | Email trouvé 28/05 via toulouseboutiques.com — chaussures 14 rue Saint-Rome, aussi connue "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. Rédiger email à Kangle. |
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r-5682334074512043112) — chaussures 14 rue Saint-Rome, aussi connue "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. |
 | NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouvé (28/05) — FB facebook.com/people/New-Casting/100068857325009, 19 rue Saint-Rome, chaussures+prêt-à-porter+accessoires femme, tel 05 61 29 04 49. Visite terrain. |
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (28/05) — 29 rue des Changes, nouvelle entité depuis juil 2025 (reprise UNIKA Daniel Zhou), tel 09 54 70 34 65, PagesJaunes actif. Aucun email public. Visite terrain. |
 | MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (28/05) — m2lsapp.com toujours en 503, IG @maisondelasape (225 followers), FB @maisondelasapebf, tel +33 7 56 23 78 65. 14 rue des Changes. Retenter site ou visite terrain. |
@@ -31,13 +31,32 @@
 
 ---
 
+## Recap brouillons email — 2026-05-28 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Sandra Nougues (BIJOUTERIE NOUGUES) | contact@bijouterienougues.fr | Ta bijouterie familiale sur Two-Step — stock visible dans le quartier | r-2055856763242413617 | ACA — 4 générations depuis 1920, 2 boutiques rue de la Pomme, joaillerie artisanale, Two-Step rend le stock visible aux habitants qui cherchent bijoux/or en centre-ville. NB : mise à jour du draft 19/05 (r-6199251153540690460) |
+| 2 | Nathalie Ghenassia (IMAGINE BIJOUX) | contact@imagine-bijoux.fr | Imagine Bijoux sur Two-Step — ton catalogue vu par les Toulousains | r155757055921508640 | ACA — 25 ans rue de la Pomme, bijoux fantaisie multimarque + e-shop, Two-Step rend le stock physique visible aux habitants cherchant ces marques localement. NB : mise à jour du draft 19/05 (r-2479069258168175413) |
+| 3 | Eric Gras (AMBIANCES ET SENTEURS / Honoré Payan) | honore.payan@gmail.com | Honoré Payan Toulouse sur Two-Step — tes parfums trouvés en boutique | r6576000527102003039 | ACA — parfumerie artisanale Grasse depuis 1854, famille Gras propriétaire, ~400 revendeurs France, boutique Carmes, Two-Step rend les parfums visibles aux habitants du quartier. PREMIER DRAFT |
+| 4 | Arnaud Turbe (SAOYA) | saoyatoulouse@orange.fr | SAOYA sur Two-Step — tes bijoux découverts par les Toulousains | r3420220746965689916 | ACA — bijoux fantaisie depuis 1991, ateliers artisanaux Provence, collections florales renouvelées, 30+ ans rue Alsace-Lorraine. NB : mise à jour du draft 19/05 (r-8853079466353228388) |
+| 5 | Olivier Gelly (PAYOTE) | sav@payote.fr | Payote Toulouse sur Two-Step — tes espadrilles visibles dans le quartier | r7209326759298729066 | ACA — espadrilles vegan made in France créées 2016 depuis Perpignan, boutique 58 rue Tourneurs, parcours inspirant €1.3M CA. NB : mise à jour du draft 19/05 (r769139324253320088) |
+| 6 | Rachel Nto (RACHEL HAIR INTERNATIONAL) | csrachelhair@gmail.com | Rachel Hair sur Two-Step — ton stock visible dans le quartier | r7675499261749507342 | ACA — perruques + cosmétiques capillaires 12 rue de Bayard, créneau très spécialisé, Two-Step rend le stock visible aux clientes qui cherchent localement. PREMIER DRAFT |
+| 7 | Kangle Wang (PASSION FILLE / LES QUATRE FILLES) | yanyun411@gmail.com | Passion Fille sur Two-Step — tes chaussures visibles dans le quartier | r-5682334074512043112 | ACA — boutique chaussures 14 rue Saint-Rome, clientèle active, Two-Step rend le stock chaussures visible aux habitants du quartier. PREMIER DRAFT |
+
+*Note session 28/05 (L'Auditeur) : 7 brouillons créés — 3 premiers drafts genuins (AMBIANCES ET SENTEURS email trouvé 21/05, RACHEL HAIR email trouvé 26/05, PASSION FILLE email trouvé 28/05) + 4 nouvelles versions des drafts 19/05 (formulation actualisée). Audit complet du tracker avant sélection : les leads BROUILLON sans draft identifiés étaient AMBIANCES ET SENTEURS, RACHEL HAIR, PASSION FILLE + PLUMETIS (pertinence limitée — RDV uniquement, non drafté) + SARL LES CIGALES (hors cible probable — dépôt-vente, non drafté). Pour les 4 doublons : Thomas peut garder la dernière version (28/05) et supprimer les anciens drafts Gmail. Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas.*
+*Note : MCP Notion non disponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-28".*
+
+---
+
 ### Rattrapage lundi — 2026-05-26 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
 
 **Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF — tous les 75 prospects du JSON sont dans le tracker (confirmé session 18/05). Session convertie en rattrapage multi-quartiers sur les 10 meilleurs NOUVEAU sans email (scores 5-7/10). 20+ recherches web + fetches effectués. 1 email trouvé : RACHEL HAIR via service de réservation rachelnto.wavy.pro. MAC DOUGLAS (macdouglastoulouse.fr) toujours en 503 (5ème semaine consécutive). BOHEMIAN'S ROOM (bohemians-room.com) ECONNREFUSED. SADIA (sadiaoff.com) ECONNREFUSED. PAMPY (pampy.com) toujours parqué "domain for sale". NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| RACHEL HAIR INTERNATIONAL | Capitole | Cosmétique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Email trouvé 26/05 via rachelnto.wavy.pro — vente perruques + cosmétiques, 12 rue de Bayard, Planity actif. Rédiger email à Rachel. |
+| RACHEL HAIR INTERNATIONAL | Capitole | Cosmétique/Capillaire | Rachel Nto | csrachelhair@gmail.com | 945085363 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r7675499261749507342) — vente perruques + cosmétiques, 12 rue de Bayard, Planity actif. |
 | MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — macdouglastoulouse.fr toujours en 503 (5ème semaine), mac-douglas.net donne tél uniquement 05 61 53 93 18. Visite terrain 24 rue Croix Baragnon |
 | RECOVERY PROJECT | Capitole | Sport/Running/Vélo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — IG @recoverytoulouse + TikTok @recovery.toulouse uniquement, pas de site web identifié. Visite terrain 48B rue de Metz |
 | DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (rattrapage 26/05) — IG @dressingrosektoulouse, FB actif, aucun email public. Visite terrain 31 rue Saint-Rome |
@@ -130,7 +149,7 @@
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| AMBIANCES ET SENTEURS (Honoré Payan) | Carmes | Parfumerie | Eric Gras | honore.payan@gmail.com | 808837157 | 7/10 | BROUILLON | Email trouvé 21/05 via CGV honore-payan.com — enseigne renommée Honoré Payan, parfumerie artisanale de Grasse, 39 rue des Filatiers, actif. Rédiger email à Eric. |
+| AMBIANCES ET SENTEURS (Honoré Payan) | Carmes | Parfumerie | Eric Gras | honore.payan@gmail.com | 808837157 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r6576000527102003039) — enseigne renommée Honoré Payan, parfumerie artisanale de Grasse depuis 1854, 39 rue des Filatiers, actif. |
 | PLUMETIS | Carmes | Mode/Mariage | Audrey Derouard | contact@plumetis-toulouse.fr | 840763288 | 5/10 | BROUILLON | Email trouvé 21/05 via mentions légales plumetis-toulouse.fr — robes de mariée, 35 rue Dalbade / showroom 9 rue Saint-Antoine du T. NB : sur RDV uniquement, pertinence Two-Step limitée. Rédiger email à Audrey. |
 | SARL LES CIGALES | Carmes | Mode/Vêtements | Olivia Samson | sarllescigales@aol.com | 441927951 | 4/10 | BROUILLON | Email trouvé 21/05 via magasinvetement.fr. 2ème email possible : ste.equilibre@wanadoo.fr. NB : dépôt-vente = hors cible Two-Step probable (pas de stock marques propres). À valider avant envoi. |
 | BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (2e passage 21/05) — site fromtoulousewithlove.com hors ligne, IG @love.toulouse.store et @toulousewithlove actifs — contacter via Instagram ou visite terrain |
@@ -153,7 +172,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouve — 31 rue Saint Rome, cree 2020, IG @dressingrosektoulouse, FB "Dressing Rose Toulouse" actif — contacter via IG ou visite terrain |
-| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com ✅ (trouvé 28/05) | 522655141 | 6/10 | BROUILLON | Email trouvé 28/05 via toulouseboutiques.com — 14 rue Saint-Rome, "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. Rédiger email à Kangle. |
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com ✅ (trouvé 28/05) | 522655141 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r-5682334074512043112) — 14 rue Saint-Rome, "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. |
 | NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouve — 19 rue Saint Rome, chaussures+pret-a-porter+accessoires femme, Yelp actif jan 2025, FB facebook.com/people/New-Casting/100068857325009, tel 05 61 29 04 49 — contacter via FB ou tel |
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouve — 29 rue des Changes (ou 19 rue Saint Rome selon Yelp), nouvelle entite depuis juil 2025 (reprise de l'ancienne UNIKA Daniel Zhou deja trackee), tel 09 54 70 34 65, PagesJaunes actif — contacter par tel |
 | YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, mode+accessoires+chaussures+maroquinerie, registres commerciaux uniquement, aucune presence digitale identifiee — visite terrain |
@@ -199,11 +218,11 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | BIJOUTERIE DU CAPITOLE (SUD OUEST WATCH SA) | Capitole | Bijouterie/Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r-5663467344825294589) — bijouterie-du-capitole.fr, famille Gayet 4 générations depuis 1840, 12-13 place du Capitole, tel 05 61 21 12 72. Très forte pertinence Two-Step (montres/joaillerie = stock identifiable). |
-| BIJOUTERIE NOUGUES | Capitole | Bijouterie/Joaillerie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Email confirme via bijouterienougues.fr — joaillerie artisanale familiale depuis 1974, Sandra Nougues arriere-petite-fille du fondateur depuis 2012, 32 rue de la Pomme, e-shop present, tel 05 61 23 18 80. Entite differente de N A L'INFINI (817911969 deja BROUILLON). Rediger email a Sandra. |
+| BIJOUTERIE NOUGUES | Capitole | Bijouterie/Joaillerie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r-2055856763242413617 — version actualisée du draft 19/05 r-6199251153540690460) — joaillerie artisanale familiale depuis 1920, Sandra Nougues 4e génération, 32 rue de la Pomme + 2e boutique 19 rue de la Pomme. |
 | MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r-1143967848022958961) — multimarque mode+chaussures femme (No Name, Kulte, Grace&Mila), 36 rue Alsace Lorraine, tel 05 61 12 22 12. |
-| IMAGINE bijoux | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 8/10 | BROUILLON | Email confirme via mentions legales imagine-bijoux.fr (email=contact@imagine-bijoux.fr, gestionnaire Nathalie ATIA=Ghenassia mariee) — 25+ ans rue de la Pomme, marques Cluse/Mila Louise/By Imagine, e-commerce actif, tel 05 61 22 74 00. Rediger email a Nathalie. |
-| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr | 823051180 | 7/10 | BROUILLON | Email confirme via lepetittou.com et telephone.city — bijouterie fantaisie depuis 1991, ateliers artisanaux Provence, 17 rue Alsace Lorraine, tel 05 61 12 46 51. Rediger email a Arnaud. |
-| PAYOTE | Capitole | Chaussures/Espadrilles | Olivier Gelly | sav@payote.fr | 912767100 | 7/10 | BROUILLON | Email SAV confirme via payote.fr/pages/contact — espadrilles marque propre creee 2016 par Olivier Gelly, boutique 58 rue Tourneurs + e-commerce payote.fr, tel 05 34 66 84 38. NB: email SAV generique, pas contact direct gerant. Rediger email via sav@payote.fr en mentionnant Olivier. |
+| IMAGINE bijoux | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r155757055921508640 — version actualisée du draft 19/05 r-2479069258168175413) — 25+ ans rue de la Pomme, marques Cluse/Mila Louise/By Imagine, e-commerce actif. |
+| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r3420220746965689916 — version actualisée du draft 19/05 r-8853079466353228388) — bijouterie fantaisie depuis 1991, ateliers artisanaux Provence, collections florales, 17 rue Alsace Lorraine. |
+| PAYOTE | Capitole | Chaussures/Espadrilles | Olivier Gelly | sav@payote.fr | 912767100 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r7209326759298729066 — version actualisée du draft 19/05 r769139324253320088) — espadrilles vegan made in France créées 2016, boutique 58 rue Tourneurs, €1.3M CA. NB: email SAV générique, mentionner Olivier dans email. |
 | MONPARFUMMASIGNATURE | Capitole | Parfumerie/Atelier | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 6/10 | BROUILLON | Email confirme via Yelp/Firmania (contact@monparfummasignature.fr) — atelier parfum personnalise (2h de workshop), 42 rue de la Pomme 1er etage, tel 07 67 25 51 24, FB @MonparfumMasignature, site monparfummasignature.fr. NB: concept atelier sur RDV, pas stock standard — pertinence Two-Step limitee mais produits vendus. Score conservateur. |
 | KATHY.B (Au44) | Capitole | Mode/Concept store createurs | Catherine Ballias | — | 882609688 | 8/10 | NOUVEAU | Email non trouve — boutique de mode createurs connue sous le nom commercial "Au44", 44 rue de Metz, site boutiqueau44.fr + boutiqueau44.com (contact form uniquement), IG @boutique_au_44_rue_de_metz_, tel 05 34 40 81 88. Concept store pret-a-porter luxe+eco-responsable. Forte pertinence Two-Step. Contacter via formulaire site ou visite terrain. |
 | AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouve — mode femme 66 rue de la Pomme, IG @amalunacreation, FB @almalunaboutique, cree 2019, cogeuree Judith Soustiel (depuis jan 2025) + Serge Sznyter (fondateur). Pas de site propre identifie. Contacter via IG ou visite terrain. |
