@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-27 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-28 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 134
-- NOUVEAU : 65
+- NOUVEAU : 64
 - CONTACTE : 1
-- BROUILLON : 61
+- BROUILLON : 62
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage jeudi — 2026-05-28 (L'Eclaireur) — Carmes épuisé, 1 email trouvé
+
+**Note de session :** Jeudi = Carmes dans la rotation. Carmes ÉPUISÉ DÉFINITIF — les 26 prospects du JSON sont tous couverts : APOS 33 (liquidée 2019), FUTURWARE LAB (inactive 2023) et LAMA (liquidée mars 2026) écartées depuis le 23/04, confirmé 28/05. Session convertie en rattrapage sur 10 meilleurs NOUVEAU sans email (1-2 passes seulement), principalement Saint-Rome. 20+ recherches web + fetches effectués. 1 email trouvé : PASSION FILLE (LES QUATRE FILLES) via toulouseboutiques.com — yanyun411@gmail.com. MAISON DE LA SAPP (m2lsapp.com) toujours en 503, IG @maisondelasape (225 followers). Pattern Saint-Rome confirmé : boutiques mode/chaussures sans email public — 9 prospects sur 10 sans présence digitale avec email. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 | BROUILLON | Email trouvé 28/05 via toulouseboutiques.com — chaussures 14 rue Saint-Rome, aussi connue "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. Rédiger email à Kangle. |
+| NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouvé (28/05) — FB facebook.com/people/New-Casting/100068857325009, 19 rue Saint-Rome, chaussures+prêt-à-porter+accessoires femme, tel 05 61 29 04 49. Visite terrain. |
+| UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (28/05) — 29 rue des Changes, nouvelle entité depuis juil 2025 (reprise UNIKA Daniel Zhou), tel 09 54 70 34 65, PagesJaunes actif. Aucun email public. Visite terrain. |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (28/05) — m2lsapp.com toujours en 503, IG @maisondelasape (225 followers), FB @maisondelasapebf, tel +33 7 56 23 78 65. 14 rue des Changes. Retenter site ou visite terrain. |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (28/05) — boutique très récente (jan 2025), 12 rue Saint-Rome, aucun site ni email identifié. Tel via PagesJaunes. Visite terrain. |
+| KEED (ELLE AND SHE) | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (28/05) — 28 rue des Changes, vêtements homme (Kaporal, G-Star), tel 05 61 23 31 22, aucun site ni email public. Visite terrain. |
+| STOCK COMPANY | Saint-Rome | Mode/Vêtements | Zhra Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouvé (28/05) — 24 rue Saint-Rome, Kompass actif, gérante Zhra Ouikou (ex-Hadda Ouikou), tel 05 34 33 88 49. Aucun email public. Visite terrain. |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (28/05) — 39 rue des Changes, IG @bellamodeboutiques (822 followers), lun-sam 11h-18h. Aucun email public. Contact via IG ou visite terrain. |
+| LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouvé (28/05) — société très récente (créée 23/01/2026), 7 rue Boulbonne, aucune présence digitale identifiée (site, IG, FB). Visite terrain uniquement. |
+| STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (28/05) — 46 rue des Filatiers, Kompass actif, pas de site ni IG ni email public. Présidente : Dimitri Lavabre. Visite terrain. |
+
+---
 
 ### Rattrapage lundi — 2026-05-26 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
 
@@ -134,7 +153,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouve — 31 rue Saint Rome, cree 2020, IG @dressingrosektoulouse, FB "Dressing Rose Toulouse" actif — contacter via IG ou visite terrain |
-| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | — | 522655141 | 6/10 | NOUVEAU | Email non trouve — 14 rue Saint Rome, aussi connue "Passions Filles", Yelp actif mars 2026, PagesJaunes, tel 05 61 29 04 49 — contacter par tel |
+| PASSION FILLE (LES QUATRE FILLES) | Saint-Rome | Chaussures | Kangle Wang | yanyun411@gmail.com ✅ (trouvé 28/05) | 522655141 | 6/10 | BROUILLON | Email trouvé 28/05 via toulouseboutiques.com — 14 rue Saint-Rome, "Passions Filles", Yelp mars 2026 actif, tel 06 95 01 61 89. Rédiger email à Kangle. |
 | NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouve — 19 rue Saint Rome, chaussures+pret-a-porter+accessoires femme, Yelp actif jan 2025, FB facebook.com/people/New-Casting/100068857325009, tel 05 61 29 04 49 — contacter via FB ou tel |
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouve — 29 rue des Changes (ou 19 rue Saint Rome selon Yelp), nouvelle entite depuis juil 2025 (reprise de l'ancienne UNIKA Daniel Zhou deja trackee), tel 09 54 70 34 65, PagesJaunes actif — contacter par tel |
 | YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, mode+accessoires+chaussures+maroquinerie, registres commerciaux uniquement, aucune presence digitale identifiee — visite terrain |
