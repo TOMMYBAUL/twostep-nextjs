@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-28 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-29 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 134
-- NOUVEAU : 64
+- Total leads : 135
+- NOUVEAU : 63
 - CONTACTE : 1
 - BROUILLON : 62
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage jeudi — 2026-05-29 (L'Eclaireur) — Carmes épuisé, 1 email potentiel + 1 écarté
+
+**Note de session :** Jeudi = Carmes dans la rotation. Carmes ÉPUISÉ DÉFINITIF (26/26 prospects couverts — confirmé). Session convertie en rattrapage sur 10 NOUVEAU sans email (mix Saint-Etienne, Carmes, Saint-Rome, Capitole). 25+ recherches web + fetches effectués. 1 email potentiel trouvé : MAC DOUGLAS (macdouglastoulouse@gmail.com) via index Facebook/Google — à confirmer par Thomas (site macdouglastoulouse.fr toujours en 503). 1 nouvelle écartée : SYSTER'S DAC (538812199, Alex Dai) — société radiée depuis janvier 2018, boutique fermée 2014. Pattern confirmé : Saint-Etienne = 0 email sur 6 prospects (formulaires uniquement ou aucune présence), Carmes restants idem. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | macdouglastoulouse@gmail.com ⚠️ | 308874601 | 7/10 | NOUVEAU | Email potentiel trouvé (29/05) via page Facebook indexée — macdouglastoulouse@gmail.com — À CONFIRMER (site toujours 503). Visite terrain ou appel 05 61 53 93 18 pour valider. |
+| SYSTER'S (DAC) | Saint-Rome | Mode/Vêtements | Alex Dai | — | 538812199 | 5/10 | ECARTE | Société radiée janvier 2018, boutique fermée 2014 — ECARTE DÉFINITIF (confirmé 29/05 via pappers.fr). NB : différente entité de SYSTER'S 483479465 (Daniel Zhou). |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (29/05) — site toulouse-montres.com actif mais page contact 404, mentions légales sans email. 10 rue Pierre de Fermat. Visite terrain uniquement. |
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (29/05) — lespion.fr formulaire uniquement, IG @boutiquelespion, tel 05 61 73 36 69. 21 bis rue Croix-Baragnon. Visite terrain. |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouvé (29/05) — IG @lilith.croix.baragnon, tel 05 61 73 22 05, 15 rue Croix Baragnon. Aucun email public. Visite terrain. |
+| ESTHER MICHELE | Saint-Etienne | Cosmétique/Beauté | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouvé (29/05) — entité BOTE, 35 rue Croix Baragnon, Kompass actif (403 fetch). Aucune présence digitale avec email. Visite terrain. |
+| TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouvé (29/05) — même adresse que Dorise Joaillier (41 rue Croix Baragnon), contact form uniquement sur dorise-joaillier.com. Tel 05 61 52 38 03. Visite terrain. |
+| BOSCHERIE PERE ET FILLE | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (29/05) — fromtoulousewithlove.com ECONNREFUSED, IG @love.toulouse.store + @toulousewithlove actifs, site LinkedIn Eve Boscherie confirmé. 49 rue des Filatiers. Contact via IG ou visite terrain. |
+| YLANG | Saint-Rome | Mode/Accessoires | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouvé (29/05) — 17 rue des Changes, registres commerciaux uniquement, aucune présence digitale avec email. Visite terrain. |
+| SOCIETE LAKO | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (29/05) — 36 rue de la Pomme, Petit Futé + Cylex actifs, tel 05 61 21 50 72. Mode homme urban/chic. Aucun site ni email public. Visite terrain. |
+
+---
 
 ### Rattrapage jeudi — 2026-05-28 (L'Eclaireur) — Carmes épuisé, 1 email trouvé
 
@@ -177,7 +196,7 @@
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouve — 29 rue des Changes (ou 19 rue Saint Rome selon Yelp), nouvelle entite depuis juil 2025 (reprise de l'ancienne UNIKA Daniel Zhou deja trackee), tel 09 54 70 34 65, PagesJaunes actif — contacter par tel |
 | YLANG | Saint-Rome | Mode/Accessoires/Chaussures | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, mode+accessoires+chaussures+maroquinerie, registres commerciaux uniquement, aucune presence digitale identifiee — visite terrain |
 | Y STYLE | Saint-Rome | Mode/Vetements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouve — 38 rue Saint Rome, cree 2014, Kompass+Annuaire actif — visite terrain |
-| SYSTER'S | Saint-Rome | Mode/Vetements | Alex Dai | — | 538812199 | 5/10 | NOUVEAU | Email non trouve — 17 rue des Changes, PagesJaunes Toulouse, autre entite SYSTER'S (483479465, Daniel Zhou) liee — visite terrain |
+| SYSTER'S (DAC) | Saint-Rome | Mode/Vetements | Alex Dai | — | 538812199 | 5/10 | ECARTE | Société radiée janvier 2018, boutique fermée 2014 — ECARTE DÉFINITIF (confirmé 29/05 via pappers.fr). Différente entité de SYSTER'S 483479465 (Daniel Zhou). |
 | STOCK COMPANY | Saint-Rome | Mode/Vetements | Zhra Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouve — 24 rue Saint Rome, Kompass actif, changement gerant (Hadda → Zhra Ouikou), tel 05 34 33 88 49 — contacter par tel |
 | MY LOOK (CLZ) | Saint-Rome | Mode/Vetements | Liyan Chen | — | 802191163 | 4/10 | NOUVEAU | Email non trouve — 12 rue des Changes, mode vetements + Relais Colis/Chronopost (activite mixte), aucun site ni email — visite terrain |
 | SARL YAOYI | Saint-Rome | Mode (a confirmer) | Xiaoyi Pigal (wang) | — | 798798112 | 4/10 | NOUVEAU | Email non trouve — 38 rue Saint Rome (meme adresse que Y STYLE), activite a confirmer en boutique, gov registry uniquement — visite terrain |
