@@ -32,6 +32,23 @@
 
 ---
 
+## Recap brouillons email — 2026-05-30 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Benoit Quintana (FAUR-QUINTANA) | info@faur-quintana.com | Faur-Quintana sur Two-Step — tes montres Hublot trouvées par les Toulousains | r3863007260793644048 | ACA — bijouterie/horlogerie Victor-Hugo, Hublot/Bell&Ross/Chaumet/Ginette NY/Pomellato, 3 générations Quintana. NOUVEAU DRAFT (remplace r-7434289841272573925 du 25/04) |
+| 2 | Nicolas Julius (DR SWAG) | drswagshopofficiel@gmail.com | DR SWAG sur Two-Step — tes Jordan et New Era visibles dans le quartier | r-516346294741341555 | ACA — streetwear US depuis 2014 rue Perchepinte, Jordan/Nike/New Era/Unkut + e-commerce dr-swag.com. NOUVEAU DRAFT (remplace r-7350887150386649214 du 23/04) |
+| 3 | Tatiana Nori (CESARE NORI) | service.client@cesarenori.fr | Cesare Nori sur Two-Step — tes vestes cuir visibles en centre-ville | r1258681727780518507 | ACA — maison fondée 1955, 200m² place Victor-Hugo, 400+ modèles cuir/suède + atelier réparation unique en ville. NOUVEAU DRAFT (remplace r-8597951197159963834 du 25/04) |
+| 4 | Johan Bouysse (TENDANCES LINGERIE) | contact@tendances-lingerie.com | Tendances Lingerie sur Two-Step — ton stock Lise Charmel visible dans le quartier | r3381468071056947676 | ACA — boutique lingerie depuis 1987, e-shop 2019, Lise Charmel/Simone Pérèle/PrimaDonna/Empreinte. NOUVEAU DRAFT (remplace r7981916473971017707 du 25/04) |
+| 5 | Edouard Dorise (DORISE JOAILLIER) | contact@dorise-joaillier.com | Dorise Joaillier sur Two-Step — tes Rolex et Tudor visibles par les Toulousains | r-16562527905295797 | ACA — revendeur officiel Rolex/Tudor/Oris, atelier horloger certifié rue du Languedoc. NOUVEAU DRAFT (remplace r6047598393326303625 du 30/04) |
+
+*Note session 30/05 (L'Auditeur) : 0 lead NOUVEAU avec email dans le tracker (61 NOUVEAU, tous sans email). Recherche active effectuée sur 15+ leads NOUVEAU (Recovery Project, LOVE/Boscherie, Bohemian's Room, Toulouse Montres, Hannah, Dressing Rose and Kids, Lilith, Maison de la Sapp, Pampy, Alphabet…) → 0 email trouvé. Pattern confirmé sessions 20/05 et 23/05 : leads restants ne publient pas d'email public. Décision : 5 drafts actualisés pour les leads BROUILLON 9/10-8/10 dont les drafts dataient d'avril (23/04-30/04, format générique "visible dans les recherches" jamais mis à jour). Sujets modernisés, contenus personnalisés avec infos actuelles. Thomas peut garder les nouveaux drafts (30/05) et supprimer les anciens. Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-05-30".*
+
+---
+
 ### Rattrapage jeudi — 2026-05-29 (L'Eclaireur) — Carmes épuisé, 1 email potentiel + 1 écarté
 
 **Note de session :** Jeudi = Carmes dans la rotation. Carmes ÉPUISÉ DÉFINITIF (26/26 prospects couverts — confirmé). Session convertie en rattrapage sur 10 NOUVEAU sans email (mix Saint-Etienne, Carmes, Saint-Rome, Capitole). 25+ recherches web + fetches effectués. 1 email potentiel trouvé : MAC DOUGLAS (macdouglastoulouse@gmail.com) via index Facebook/Google — à confirmer par Thomas (site macdouglastoulouse.fr toujours en 503). 1 nouvelle écartée : SYSTER'S DAC (538812199, Alex Dai) — société radiée depuis janvier 2018, boutique fermée 2014. Pattern confirmé : Saint-Etienne = 0 email sur 6 prospects (formulaires uniquement ou aucune présence), Carmes restants idem. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
@@ -418,9 +435,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| FAUR QUINTANA | Victor-Hugo | Bijouterie/Horlogerie | Benoit Quintana | info@faur-quintana.com | 534100342 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r-7434289841272573925) |
-| CESARE NORI | Victor-Hugo | Mode/Vêtements (cuir) | Tatiana Nori | service.client@cesarenori.fr | 328090410 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r-8597951197159963834) |
-| TENDANCES LINGERIE | Victor-Hugo | Mode/Lingerie | Johan Bouysse | contact@tendances-lingerie.com | 851831982 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r7981916473971017707) |
+| FAUR QUINTANA | Victor-Hugo | Bijouterie/Horlogerie | Benoit Quintana | info@faur-quintana.com | 534100342 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r3863007260793644048 — remplace r-7434289841272573925 du 25/04) — bijouterie/horlogerie Victor-Hugo, Hublot/Bell&Ross/Chaumet/Ginette NY/Pomellato, 3 générations Quintana. |
+| CESARE NORI | Victor-Hugo | Mode/Vêtements (cuir) | Tatiana Nori | service.client@cesarenori.fr | 328090410 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r1258681727780518507 — remplace r-8597951197159963834 du 25/04) — maison fondée 1955, 200m² place Victor-Hugo, 400+ modèles cuir/suède + atelier réparation unique en ville. |
+| TENDANCES LINGERIE | Victor-Hugo | Mode/Lingerie | Johan Bouysse | contact@tendances-lingerie.com | 851831982 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r3381468071056947676 — remplace r7981916473971017707 du 25/04) — boutique lingerie depuis 1987, e-shop 2019, Lise Charmel/Simone Pérèle/PrimaDonna/Empreinte. |
 | LA MOMERIE | Victor-Hugo | Mode/Vêtements enfants | Lou-maite Monjon | contact@la-momerie.com | 840216766 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r2786232324163532531) |
 | L'ADRESSE BLANCHE | Victor-Hugo | Mode/Mariage | Magali Aycaguer | bonjour@ladresseblanche.fr | 901855585 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r-2368694987897902904) |
 **Boutiques ecartees (session 25/04) :** MAUELICLE (liquidation mars 2023), CYCLARTISANS (artisan — hors cible), MARC FREZAL (artisan horloger reparation — hors cible), VIRAGES (SR GERSON, radiee depuis 2016 — cessation activite 09/01/2013, liquidation complete mai 2016)
@@ -450,7 +467,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-7350887150386649214) |
+| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com | 801794504 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r-516346294741341555 — remplace r-7350887150386649214 du 23/04) — streetwear US depuis 2014 rue Perchepinte, Jordan/Nike/New Era/Unkut + e-commerce dr-swag.com. |
 | LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Site en 503 — chercher email via IG @lafilledemargaret ou tel 05 61 21 52 28 |
 | EQUI-SUD | Carmes | Sport (equitation) | Francoise Imart | contact@equisud-toulouse.com | 390134567 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r8877959513437550432) |
 | BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouve, contacter via IG @toulousewithlove |
@@ -467,7 +484,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r6047598393326303625) — revendeur Rolex/Tudor/Oris |
+| DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r-16562527905295797 — remplace r6047598393326303625 du 30/04) — revendeur officiel Rolex/Tudor/Oris, atelier horloger certifié rue du Languedoc. |
 | L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r-8094677239488341172) — joaillerie artisanale, montres collection |
 | DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r5921374891990160300) — marque mode homme depuis 1976 |
 | LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r2243537176544092285) — boutique Carrade 29 rue du Languedoc |
