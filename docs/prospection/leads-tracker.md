@@ -1,16 +1,36 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-29 (L'Auditeur)*
+*Derniere mise a jour : 2026-05-30 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
-- NOUVEAU : 62
+- NOUVEAU : 61
 - CONTACTE : 1
 - BROUILLON : 63
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage samedi — 2026-05-30 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé + 1 écarté
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées — confirmé JSON). Session convertie en rattrapage sur 10 NOUVEAU sans email (mix Saint-Rome, Carmes), en priorisant les prospects peu explorés (1 seul passage) et les sites temporairement inaccessibles. 25+ recherches web + fetches effectués. Résultat : 0 email confirmé sur 10 prospects. Patterns confirmés : boutiques mode/chaussures Saint-Rome sans présence digitale (GLAM SHOES BK, Y STYLE, MY LOOK, SARL YAOYI), sites toujours inaccessibles après 3 semaines (bohemians-room.com ECONNREFUSED, m2lsapp.com 503). Découverte : AROBASE JEANS (@arobasejeans, 46 rue des Filatiers = même adresse que STEDIF) — boutique indépendante à vérifier si dans JSON. SAS YOOK confirmé boutique tissus → ECARTE DÉFINITIF. MICHELE CAZAUX = "L'Echangeoir" dépôt-vente → recommandation écartement hors cible (à valider Thomas). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| MADAME GEORGES (BOHEMIAN'S ROOM) | Carmes | Mode/Vêtements | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 30/05) — bohemians-room.com ECONNREFUSED (4ème semaine), IG @madamegeorgestoulouse (tel 06 86 23 64 24), tel PJ 05 34 42 13 21, 45 rue Boulbonne (confirmé Le Petit Tou). Horaires : mar-ven 10h-14h/15h-19h, sam 10h-13h/14h-19h. Visite terrain. |
+| LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 30/05) — Yelp unclaimed (tel 08 99 23 60 85), IG @la_suite_boutique_toulouse, Made in France vêtements femme, 22 rue Saint-Rome. Aucun email public. Visite terrain. |
+| LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 30/05) — aucune présence digitale confirmée (site, IG, FB). Très nouvelle entité (créée 23/01/2026), 7 rue Boulbonne. Visite terrain uniquement. |
+| STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 30/05) — confirmé aucun site, aucun email, aucun réseau social. Dimitri Lavabre président. Découverte bonus : AROBASE JEANS (@arobasejeans) même adresse 46 rue des Filatiers. Visite terrain uniquement. |
+| GLAM SHOES BK | Saint-Rome | Mode/Chaussures | Chadli Hambli | — | 808299044 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 30/05) — GLAM & CO, 29 rue des Changes, aucun site ni email identifié. Visite terrain. |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 30/05) — m2lsapp.com toujours 503 (3ème semaine consécutive), IG @maisondelasape, tel +33 7 56 23 78 65, 14 rue des Changes. Retenter site ou visite terrain. |
+| Y STYLE | Saint-Rome | Mode/Vêtements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 30/05) — aucun site, aucun email identifié. 38 rue Saint-Rome, créée 2014. Visite terrain. |
+| MY LOOK (CLZ) | Saint-Rome | Mode/Vêtements | Liyan Chen | — | 802191163 | 4/10 | NOUVEAU | Email non trouvé (2ème passage 30/05) — aucun site ni email public. Tel 05 61 94 19 91, 12 rue des Changes, activité mixte mode+Relais Colis. Visite terrain. |
+| SARL YAOYI | Saint-Rome | Mode (à confirmer) | Xiaoyi Pigal (wang) | — | 798798112 | 4/10 | NOUVEAU | Email non trouvé (2ème passage 30/05) — aucune présence digitale identifiée. 38 rue Saint-Rome (même adresse que L'ANNEXE/Nicole Busato). Score faible. À écarter ou visite terrain pour confirmer activité. |
+| MICHELE CAZAUX | Carmes | Mode/Vêtements | Michele Louge | — | 321727455 | 3/10 | NOUVEAU | Email non trouvé (2ème passage 30/05) — potentiellement "L'Echangeoir" dépôt-vente vêtements luxe secondhand, 39 rue Dalbade, tel 05 61 25 73 29. HORS CIBLE probable (dépôt-vente = pas de stock marques propres). Recommandation : ECARTER — à valider Thomas. |
+| SAS YOOK | Saint-Rome | Tissus | Yohan Cohen | — | 510352446 | — | ECARTE | Boutique tissus/textiles (40 rue Saint-Rome, "Yook Toulouse Tissus" — PagesJaunes) — HORS CIBLE Two-Step (pas de prêt-à-porter marques) — ECARTE DÉFINITIF (confirmé 30/05). |
+
+---
 
 ### Rattrapage jeudi — 2026-05-29 (L'Eclaireur) — Carmes épuisé, 1 email potentiel + 1 écarté
 
