@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-30 (L'Eclaireur)*
+*Derniere mise a jour : 2026-05-31 (Le Stratège — Rapport S22)*
 
 ## Stats
 - Total leads : 135
@@ -9,6 +9,18 @@
 - BROUILLON : 63
 - Reponses : 0
 - Signes : 0
+
+## Rapport Semaine 22 — 2026-05-31 (Le Stratège)
+
+Rapport complet consigné dans `docs/prospection/rapport-semaine-22.md`
+Note : Notion MCP indisponible (5ème semaine consécutive) — cible e6208e6f-2590-42cf-b25d-ac8e262eaf7c, titre prévu "Rapport semaine 22".
+
+**Résumé exécutif :**
+- Semaine 22 : 2 emails trouvés (MAC DOUGLAS, PASSION FILLE), 13 brouillons créés/actualisés, 0 email envoyé
+- Pipeline bloqué à l'étape ENVOI : 63 brouillons prêts, 1 seul envoyé depuis le lancement
+- Action critique S23 : Thomas envoie 5 emails (DR SWAG, DORISE, BIJOUTERIE DU CAPITOLE, FAUR-QUINTANA, RL.COM)
+- Tous les quartiers centraux épuisés côté email public → visite terrain requise pour les 61 NOUVEAU restants
+- Mini-cours : Signal-Based Selling (tracking d'ouverture Mailtrack + relance dans les 4h post-ouverture)
 
 ## Leads actifs
 
