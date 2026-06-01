@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-05-30 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-01 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
@@ -11,6 +11,25 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-01 (L'Eclaireur) — Capitole épuisé, 0 email trouvé
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF (75/75 prospects traités — confirmé depuis le 18/05). Session convertie en rattrapage sur 10 prospects NOUVEAU mix Saint-Etienne/Saint-Rome/Carmes/Capitole priorisés par score et nombre de passes (≤2 passages), en ciblant des angles non encore explorés. 25+ recherches web + fetches effectués. Résultat : 0 email confirmé sur 10 prospects. Patterns confirmés : boutiques sans présence digitale (STOCK AMERICAIN 1977, SOCIETE LAKO/BERNARD KOK), sites toujours inaccessibles (m2lsapp.com — 4ème semaine consécutive en 503), boutiques très récentes sans email (URBAN WEAR jan 2025, UNIKA YANG SARL jul 2025). Confirmations d'activité : URBAN WEAR actif (reel Instagram "Là où le style prend vie" mai 2026), KEED actif (Yelp mis à jour mai 2026, tel 09 60 50 38 72), BOSCHERIE PERE ET FILLE/LOVE listé sur Toulouse Tourisme, BELLA MODE IG @bellamodeboutiques 822 followers actif. Découverte dorise-joaillier.com mentions légales : email id@dorise-joaillier.com (Isabelle Dorise — directrice entité principale, différent de contact@ dans tracker). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — aucun site propre, aucun email public. Adresse confirmée 28 rue Croix Baragnon (différent de Dorise Joaillier au 41). Mise à jour objet social juin 2025 (intègre métaux précieux). Partage gérant avec Dorise Joaillier (contact@dorise-joaillier.com déjà en brouillon). Visite terrain. |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 01/06) — boutique confirmée active (Toulouse Tourisme liste LOVE TOULOUSE), marqueetcommunication.fr confirme 49 rue des Filatiers, pas de présence digitale avec email. Visite terrain uniquement. |
+| STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 01/06) — boutique active depuis 1977, tel 05 61 62 74 24, aucun site web ni email public. Très ancienne enseigne sans présence digitale. Visite terrain uniquement. |
+| SOCIETE LAKO | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 01/06) — pagesmode.fr inactive pour ce listing, tel 05 61 21 50 72, aucun email public identifié. 36 rue de la Pomme. Visite terrain uniquement. |
+| NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — Yelp non revendiqué, FB facebook.com/people/New-Casting/100068857325009, tel 05 61 29 04 49. 19 rue Saint-Rome. Aucun email public. Visite terrain. |
+| UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — entité créée jul 2025 (reprise UNIKA Daniel Zhou), 29 rue des Changes, tel 09 54 70 34 65. Aucun email public. Visite terrain. |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (4ème passage 01/06) — m2lsapp.com toujours en 503 (4ème semaine consécutive), IG @maisondelasape, tel +33 7 56 23 78 65. 14 rue des Changes. Retenter site ou visite terrain. |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — IG @bellamodeboutiques (822 followers, compte actif), tel 09 86 47 64 45. 39 rue des Changes. Aucun email public. Visite terrain ou contact IG. |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — IG actif (reel "Là où le style prend vie" mai 2026), boutique très récente (jan 2025), 12 rue Saint-Rome. Aucun email public. Visite terrain ou contact IG. |
+| KEED (ELLE AND SHE) | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — Yelp mis à jour mai 2026 (actif), tel 09 60 50 38 72 / 05 61 23 31 22, marques Kaporal/G-Star/Japrag. 28 rue des Changes. Aucun email ni site public. Visite terrain. |
+
+---
 
 ### Rattrapage samedi — 2026-05-30 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé + 1 écarté
 
