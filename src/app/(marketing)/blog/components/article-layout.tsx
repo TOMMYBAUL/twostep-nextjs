@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Shopping cosmétiques à Toulouse : trouver tes produits beauté de marque en boutique",
+        slug: "shopping-cosmetique-toulouse",
+        category: "consommateurs",
+    },
 ];
 
 export function ArticleLayout({
