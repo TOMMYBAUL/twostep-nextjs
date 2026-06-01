@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-01 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-01 (L'Auditeur)*
 
 ## Stats
 - Total leads : 135
@@ -28,6 +28,23 @@
 | BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — IG @bellamodeboutiques (822 followers, compte actif), tel 09 86 47 64 45. 39 rue des Changes. Aucun email public. Visite terrain ou contact IG. |
 | URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — IG actif (reel "Là où le style prend vie" mai 2026), boutique très récente (jan 2025), 12 rue Saint-Rome. Aucun email public. Visite terrain ou contact IG. |
 | KEED (ELLE AND SHE) | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 01/06) — Yelp mis à jour mai 2026 (actif), tel 09 60 50 38 72 / 05 61 23 31 22, marques Kaporal/G-Star/Japrag. 28 rue des Changes. Aucun email ni site public. Visite terrain. |
+
+---
+
+## Recap brouillons email — 2026-06-01 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Stephanie Roux (LILI-LEONE) | lilileone@live.fr | Lili Léone sur Two-Step — tes Newtone et Des Petits Hauts trouvés par les Toulousains | r1179746631294846623 | ACA — 20+ ans mode femme 16 rue des Tourneurs, Newtone/Des Petits Hauts/HOD Paris, e-shop 2020. NOUVEAU DRAFT (remplace r6217091151963335716 du 28/04) |
+| 2 | Patricia Lacombe (N' À L'INFINI) | contact@bijouterie-toulouse-nougues.fr | N' à l'Infini sur Two-Step — tes bijoux Bronzallure et Endless visibles en centre-ville | r-6193854175602566493 | ACA — bijoux argent 925 (Bronzallure, Endless, Tamahiné, WeWood), 19 rue de la Pomme, ouverte 2016. NOUVEAU DRAFT (remplace r2720507363937656694 du 28/04) |
+| 3 | Jean-luc Gales (DANYBERD) | toulouse@dnbstores.com | Danyberd sur Two-Step — ton stock mode homme visible en centre-ville | r8657585168108318003 | ACA — mode homme haut de gamme depuis 1976, 19 rue Croix Baragnon, positionnement rare indépendant Toulouse. NOUVEAU DRAFT (remplace r5921374891990160300 du 30/04) |
+| 4 | Laurent Rieunier (MAISON RIEUNIER) | rieunier.joailliers.horlogers@gmail.com | Maison Rieunier sur Two-Step — tes montres de collection visibles par les Toulousains | r-8972080101590099334 | ACA — bijoux anciens signés, montres de collection expertisées, création sur-mesure, 22 rue Croix Baragnon. NOUVEAU DRAFT (remplace r-8094677239488341172 du 30/04) |
+| 5 | Lou-maite Monjon (LA MOMERIE) | contact@la-momerie.com | La Mômerie sur Two-Step — ton stock éco-responsable visible dans le quartier | r3681325744103857623 | ACA — boutique éco-responsable bébés/enfants 0-8 ans, vêtements/jouets/puériculture, site la-momerie.com. NOUVEAU DRAFT (remplace r2786232324163532531 du 25/04) |
+
+*Note session 01/06 (L'Auditeur) : 0 lead NOUVEAU avec email dans le tracker (61 NOUVEAU, tous sans email — confirmé Eclaireur 01/06 + Auditeur 30/05). Pattern identique au 30/05 : leads restants sans présence digitale avec email. Décision : 5 drafts rafraîchis pour les leads BROUILLON 8/10-7/10 dont les drafts dataient d'avril (25/04-30/04) et n'avaient pas été mis à jour lors de la session 30/05. Sujets personnalisés avec marques et spécificités de chaque boutique. Thomas peut garder les nouveaux drafts (01/06) et supprimer les anciens. Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-01".*
 
 ---
 
@@ -437,8 +454,8 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r6217091151963335716) |
-| N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 28/04, id: r2720507363937656694) — email confirme via bijouterie-toulouse-nougues.fr/contactez-les-bijouteries |
+| LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r1179746631294846623 — remplace r6217091151963335716 du 28/04) — 20+ ans mode femme 16 rue des Tourneurs, Newtone/Des Petits Hauts/HOD Paris. |
+| N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r-6193854175602566493 — remplace r2720507363937656694 du 28/04) — bijoux argent 925 Bronzallure/Endless/Tamahiné/WeWood, 19 rue de la Pomme. Email confirmé via bijouterie-toulouse-nougues.fr. |
 | NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r960593700860017581) — Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi, Rimowa, Tumi), 27 rue de Metz, tel 05 61 21 02 96. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Email confirme 18/05 via page boutique arseneetlespipelettes.com/fr/magasins/toulouse-11 — email specifique Toulouse (different du SAV), tel 05 67 16 72 09, 25 rue de Metz. Rediger email a Helene. |
@@ -457,7 +474,7 @@
 | FAUR QUINTANA | Victor-Hugo | Bijouterie/Horlogerie | Benoit Quintana | info@faur-quintana.com | 534100342 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r3863007260793644048 — remplace r-7434289841272573925 du 25/04) — bijouterie/horlogerie Victor-Hugo, Hublot/Bell&Ross/Chaumet/Ginette NY/Pomellato, 3 générations Quintana. |
 | CESARE NORI | Victor-Hugo | Mode/Vêtements (cuir) | Tatiana Nori | service.client@cesarenori.fr | 328090410 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r1258681727780518507 — remplace r-8597951197159963834 du 25/04) — maison fondée 1955, 200m² place Victor-Hugo, 400+ modèles cuir/suède + atelier réparation unique en ville. |
 | TENDANCES LINGERIE | Victor-Hugo | Mode/Lingerie | Johan Bouysse | contact@tendances-lingerie.com | 851831982 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r3381468071056947676 — remplace r7981916473971017707 du 25/04) — boutique lingerie depuis 1987, e-shop 2019, Lise Charmel/Simone Pérèle/PrimaDonna/Empreinte. |
-| LA MOMERIE | Victor-Hugo | Mode/Vêtements enfants | Lou-maite Monjon | contact@la-momerie.com | 840216766 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r2786232324163532531) |
+| LA MOMERIE | Victor-Hugo | Mode/Vêtements enfants | Lou-maite Monjon | contact@la-momerie.com | 840216766 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r3681325744103857623 — remplace r2786232324163532531 du 25/04) — boutique éco-responsable bébés/enfants 0-8 ans, vêtements/jouets/puériculture, la-momerie.com. |
 | L'ADRESSE BLANCHE | Victor-Hugo | Mode/Mariage | Magali Aycaguer | bonjour@ladresseblanche.fr | 901855585 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 25/04, id: r-2368694987897902904) |
 **Boutiques ecartees (session 25/04) :** MAUELICLE (liquidation mars 2023), CYCLARTISANS (artisan — hors cible), MARC FREZAL (artisan horloger reparation — hors cible), VIRAGES (SR GERSON, radiee depuis 2016 — cessation activite 09/01/2013, liquidation complete mai 2016)
 
@@ -504,8 +521,8 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r-16562527905295797 — remplace r6047598393326303625 du 30/04) — revendeur officiel Rolex/Tudor/Oris, atelier horloger certifié rue du Languedoc. |
-| L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r-8094677239488341172) — joaillerie artisanale, montres collection |
-| DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r5921374891990160300) — marque mode homme depuis 1976 |
+| L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r-8972080101590099334 — remplace r-8094677239488341172 du 30/04) — bijoux anciens signés, montres de collection expertisées, création sur-mesure, 22 rue Croix Baragnon. |
+| DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r8657585168108318003 — remplace r5921374891990160300 du 30/04) — mode homme haut de gamme depuis 1976, 19 rue Croix Baragnon. |
 | LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r2243537176544092285) — boutique Carrade 29 rue du Languedoc |
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve — meme gerant Edouard Dorise que Dorise Joaillier, essayer contact@dorise-joaillier.com |
 | APOSTROPHE RJC | Saint-Etienne | Mode femme | Raymonde Coudert | — | 331258384 | 6/10 | NOUVEAU | Email non trouve — tel 05 61 25 94 95, 23 rue Croix Baragnon |
