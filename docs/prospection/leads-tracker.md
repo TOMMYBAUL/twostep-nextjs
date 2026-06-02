@@ -19,7 +19,7 @@
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — site contact 404 confirmé, mentions légales PROSOLUCE/Encausse-les-Thermes sans email, RDV téléphone uniquement. 10 rue Pierre de Fermat. Visite terrain. |
-| LILITH | Saint-Etienne | Mode femme | Gilles Andre | lilith.toulouse@lilithparis.fr ✅ | 831401260 | 7/10 | BROUILLON | Email trouvé 02/06 via magasinvetement.fr — format brand (lilithparis.fr email boutique Toulouse spécifique). 15 rue Croix Baragnon, IG @lilith.croix.baragnon, tel 05 61 73 22 05. Rédiger email à Gilles. |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | lilith.toulouse@lilithparis.fr ✅ | 831401260 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 02/06, id: r546442280072729563) — Lilith Paris fondée 1987, mode femme éco-responsable fabriquée en petites séries, 15 rue Croix Baragnon. |
 | TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 02/06) — 41 rue Croix Baragnon (même adresse Dorise Joaillier), tel 05 61 52 38 03. Famille Dorise — formulaire uniquement. Visite terrain. |
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — 28 rue Croix Baragnon, famille Dorise, aucun email propre identifié. Visite terrain. |
 | DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 02/06) — IG @dressingrosektoulouse, 31 rue Saint-Rome. Aucun email public. Visite terrain ou contact IG. |
@@ -28,6 +28,23 @@
 | KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — revendeur New Balance (toutesvosmarques.com), 12 rue Saint-Rome, aucun site propre ni email public. Visite terrain. |
 | UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — reprise fonds UNIKA août 2025, 29 rue des Changes, tel 09 54 70 34 65. Aucun email public. Visite terrain. |
 | FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — 8 rue des Arts, créée 2015, aucune présence digitale (site, IG, email). Visite terrain uniquement. |
+
+---
+
+## Recap brouillons email — 2026-06-02 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Gilles Andre (LILITH) | lilith.toulouse@lilithparis.fr | Lilith Paris Toulouse sur Two-Step — tes collections éco-responsables visibles dans le quartier | r546442280072729563 | ACA — PREMIER DRAFT. Lilith Paris fondée 1987, mode femme éco-responsable fabriquée en petites séries, 15 rue Croix Baragnon Saint-Etienne. Email trouvé 02/06 via magasinvetement.fr. |
+| 2 | Romain Mussato (RL.COM / MW&CO) | contact@mwandco.com | MW&Co Toulouse sur Two-Step — tes montres ASSET visibles par les Toulousains | r-5141827241739999085 | ACA — NOUVEAU DRAFT (remplace r-4355813290059118696 du 07/05). Marque horlogère indépendante toulousaine, assemblage main, 88% fabrication française, collection ASSET, 17 rue des Arts. |
+| 3 | Pierre Assali (ILANN FIVE) | contact@ilannfive.com | Ilann Five sur Two-Step — ton stock mode homme visible dans le quartier | r8558292245963171046 | ACA — NOUVEAU DRAFT (remplace r5331074192849055465 du 06/05). Mode homme streetwear/casual, boutique Toulouse + Tarbes, site ilannfive.com, 17 rue des Changes. |
+| 4 | Michael Drilhole (SWAP) | boutiqueswap@gmail.com | SWAP sur Two-Step — ton prêt-à-porter féminin visible en centre-ville | r5747036152417593238 | ACA — NOUVEAU DRAFT (remplace r4186603753522561088 du 07/05). 7 ans rue Saint-Rome, prêt-à-porter féminin, swaponline.fr, IG @swaponline, 31 rue Saint-Rome. |
+| 5 | Clementine Chiodo (MATHIS ET SASHA) | clementinedouts@gmail.com | Mathis et Sasha sur Two-Step — ta mode 100% France visible dans le quartier | r2867211400241800448 | ACA — NOUVEAU DRAFT (remplace r8263940955352408641 du 08/05). Mode 100% Made in France, sélectionnée à la main, 49 rue des Filatiers Carmes, IG @laboutiqueclementine. |
+
+*Note session 02/06 (L'Auditeur) : 1 PREMIER DRAFT genuín (LILITH — seul lead avec email nouvellement trouvé par l'Eclaireur 02/06) + 4 rafraîchissements de drafts anciens (06/05-08/05) pour les leads BROUILLON 9/10-8/10 jamais mis à jour depuis mai. Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (02/06) et supprimer les anciens.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-02".*
 
 ---
 
