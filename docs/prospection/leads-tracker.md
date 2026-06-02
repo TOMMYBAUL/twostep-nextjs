@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-01 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-02 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
-- NOUVEAU : 61
+- NOUVEAU : 60
 - CONTACTE : 1
-- BROUILLON : 63
+- BROUILLON : 64
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-02 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF (75/75 prospects traités). Session convertie en rattrapage sur 10 prospects NOUVEAU mix Saint-Etienne/Saint-Rome/Carmes/Capitole, priorisés par score et nombre de passes (≤3 passages). 20+ recherches web + fetches effectués. 1 email confirmé : LILITH / MADDY 31 (lilith.toulouse@lilithparis.fr) via magasinvetement.fr — email spécifique boutique Toulouse format brand. Patterns confirmés : TOULOUSE MONTRES (contact page 404, mentions légales PROSOLUCE sans email — RDV téléphone uniquement), PARALLELE (parallele-eshop.com ECONNREFUSED persistant), JAILLET/TIABEL (famille Dorise — formulaire dorise-joaillier.com uniquement), DRESSING ROSE AND KIDS (IG @dressingrosektoulouse uniquement), KATOUNI/FC2 BOUTIQUE/UNIKA (aucune présence digitale avec email). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — site contact 404 confirmé, mentions légales PROSOLUCE/Encausse-les-Thermes sans email, RDV téléphone uniquement. 10 rue Pierre de Fermat. Visite terrain. |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | lilith.toulouse@lilithparis.fr ✅ | 831401260 | 7/10 | BROUILLON | Email trouvé 02/06 via magasinvetement.fr — format brand (lilithparis.fr email boutique Toulouse spécifique). 15 rue Croix Baragnon, IG @lilith.croix.baragnon, tel 05 61 73 22 05. Rédiger email à Gilles. |
+| TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 02/06) — 41 rue Croix Baragnon (même adresse Dorise Joaillier), tel 05 61 52 38 03. Famille Dorise — formulaire uniquement. Visite terrain. |
+| JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — 28 rue Croix Baragnon, famille Dorise, aucun email propre identifié. Visite terrain. |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 02/06) — IG @dressingrosektoulouse, 31 rue Saint-Rome. Aucun email public. Visite terrain ou contact IG. |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 02/06) — parallele-eshop.com ECONNREFUSED persistant (5ème semaine). Tel 05 34 44 90 73. Visite terrain uniquement. |
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 02/06) — 39 rue de Metz / 32 rue d'Astorg, aucune présence digitale avec email. Tel 05 61 22 11 94. Visite terrain. |
+| KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — revendeur New Balance (toutesvosmarques.com), 12 rue Saint-Rome, aucun site propre ni email public. Visite terrain. |
+| UNIKA (YANG SARL) | Saint-Rome | Chaussures/Mode | Cedric Yang | — | 989721857 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — reprise fonds UNIKA août 2025, 29 rue des Changes, tel 09 54 70 34 65. Aucun email public. Visite terrain. |
+| FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 02/06) — 8 rue des Arts, créée 2015, aucune présence digitale (site, IG, email). Visite terrain uniquement. |
+
+---
 
 ### Rattrapage lundi — 2026-06-01 (L'Eclaireur) — Capitole épuisé, 0 email trouvé
 
@@ -350,7 +369,7 @@
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (2e passage 12/05) — toulouse-montres.com actif (montres luxe occasion : Rolex, Breitling, Cartier), formulaire contact uniquement, editeur Jérome Chesnot (mentions légales) — RDV uniquement |
 | TIABEL | Saint-Etienne | Bijouterie/Horlogerie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — 41 rue Croix Baragnon (meme adresse que Dorise Joaillier), famille Dorise, Dorise Joaillier utilise formulaire uniquement (pas d'email public), tel 05 61 52 38 03 |
 | ESTHER MICHELE | Saint-Etienne | Cosmetique/Beaute | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — entite BOTE, 35 rue Croix Baragnon, presence digitale tres faible, pas de site ni IG identifie — contacter visite terrain |
-| LILITH | Saint-Etienne | Mode femme | Gilles Andre | — | 831401260 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — entite MADDY 31, 15 rue Croix Baragnon, IG @lilith.croix.baragnon, tel 05 61 73 22 05, pas d'email public visible |
+| LILITH | Saint-Etienne | Mode femme | Gilles Andre | lilith.toulouse@lilithparis.fr ✅ | 831401260 | 7/10 | BROUILLON | Email trouvé 02/06 via magasinvetement.fr (format brand lilithparis.fr). Rédiger email à Gilles. 15 rue Croix Baragnon, MADDY 31, IG @lilith.croix.baragnon, tel 05 61 73 22 05. |
 | MAC DOUGLAS | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — macdouglastoulouse.fr (actif, Chantal Huet = responsable publication), IG @macdouglastlse actif, tel 05 61 53 93 18, pas d'email public |
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve (2e passage 12/05) — meme gerant Edouard Dorise que Dorise Joaillier, contact via formulaire dorise-joaillier.com, tel 05 61 52 38 03 — essayer contact@dorise-joaillier.com (prudence : email du gerant pas de JAILLET) |
 | CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve (2e passage 12/05) — reparation horlogerie 23 rue Croix Baragnon, meme gerant Edouard Dorise, pertinence Two-Step tres limitee (SAV uniquement) |
