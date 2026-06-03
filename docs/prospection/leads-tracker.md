@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-03 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-03 (L'Auditeur)*
 
 ## Stats
 - Total leads : 135
@@ -28,6 +28,23 @@
 | STOCK COMPANY | Saint-Rome | Mode/Vêtements | Zhra Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — FB @stockcompany2015 (Six June, Unkut, Kwell, Enfant Sauvage), 24 rue Saint-Rome, tel 05 34 33 88 49. Aucun email public. Visite terrain. |
 | Y STYLE | Saint-Rome | Mode/Vêtements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — 38 rue Saint-Rome, annuaires seuls. Aucune présence digitale avec email. Visite terrain. |
 | MY LOOK (CLZ) | Saint-Rome | Mode/Vêtements | Liyan Chen | — | 802191163 | 4/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — 12 rue des Changes, Relais Pickup actif, aucun email. Activité mixte mode+Relais Colis. Visite terrain. |
+
+---
+
+## Recap brouillons email — 2026-06-03 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Lauren Handy (MAISON HANDY) | serviceclient@maisonhandy.com | Maison Handy sur Two-Step — ton stock Golden Goose visible dans le quartier | r-2203007384413066288 | ACA — 250m² luxe multi-marques (Golden Goose, Dior, Balenciaga, Valentino), face aux Augustins, 14-16 rue des Arts. NOUVEAU DRAFT (remplace r5793792031598694686 du 05/05) |
+| 2 | Eric Bitoun (L'EMPLACEMENT) | contact@l-emplacement.com | L'Emplacement sur Two-Step — ta sélection visible par les Toulousains | r6612987409667754593 | ACA — concept store curated ready-to-wear/bags/bijoux/accessoires depuis 2020, 40 rue Alsace Lorraine, IG @lemplacement_toulouse. NOUVEAU DRAFT (remplace r-7156942222461192925 du 05/05) |
+| 3 | Jonnhy Dunal (L'OBSERVATOIRE) | lobservatoire31@sfr.fr | L'Observatoire sur Two-Step — ton stock Stone Island visible dans le quartier | r-4847593149885388305 | ACA — mode homme premium (Stone Island, C.P. Company, Ralph Lauren, Hogan, Crockett & Jones), lobservatoire.net, 4 rue des Arts. NOUVEAU DRAFT (remplace r3575538069750901923 du 06/05) |
+| 4 | Chrystalla Theodoridou (LES REVERIES) | hello@lesreveries.net | Les Rêveries sur Two-Step — ton stock Malone Souliers visible dans le quartier | r6797578086129860265 | ACA — chaussures/accessoires luxe exclusifs (Malone Souliers, Charlotte Chesnais, Coliac), seul revendeur Toulouse, 2 rue des Arts. NOUVEAU DRAFT (remplace r5463543312504006474 du 07/05) |
+| 5 | Geraldine Casanovas (NEGREVERGNE) | ste-negrevergne@hotmail.fr | Negrevergne sur Two-Step — tes Rimowa et Tumi visibles par les Toulousains | r-6332639390371146843 | ACA — maroquinerie historique depuis 1954 (70 ans), Rimowa/Tumi/Campomaggi/Kipling, 27 rue de Metz. NOUVEAU DRAFT (remplace r960593700860017581 du 14/05) |
+
+*Note session 03/06 (L'Auditeur) : 0 lead NOUVEAU avec email dans le tracker (59 NOUVEAU, tous sans email — confirmé Eclaireur 03/06). Pattern identique aux sessions précédentes. Décision : 5 drafts rafraîchis pour les leads BROUILLON 8/10 dont les drafts dataient de mai (05/05-14/05) et n'avaient pas été mis à jour. Web searches effectuées pour chacun : Maison Handy (250m² luxe multi-marques, 6 900 abonnés IG), L'Observatoire (Stone Island/C.P. Company/Ralph Lauren confirmé, lobservatoire.net actif), Les Rêveries (seul revendeur Malone Souliers Toulouse confirmé), Negrevergne (depuis 1954 confirmé, ~50 marques dont Rimowa/Tumi). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (03/06) et supprimer les anciens.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-03".*
 
 ---
 
@@ -438,7 +455,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-4355813290059118696) — marque horlogère indépendante toulousaine, collection ASSET assemblage main, 88% fabrication française, 17 rue des Arts |
-| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r5463543312504006474) — chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), lesreveries.net, 2 rue des Arts |
+| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 03/06, id: r6797578086129860265 — remplace r5463543312504006474 du 07/05) — chaussures/accessoires luxe exclusifs (Malone Souliers, Charlotte Chesnais, Coliac), seul revendeur Toulouse, lesreveries.net, 2 rue des Arts |
 | SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r4186603753522561088) — prêt-à-porter féminin, 7 ans rue Saint-Rome, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
 | POINDRELLE (AGATHA) | Saint-Rome | Bijouterie franchise | Liliane Poindrelle | — | 324454735 | 7/10 | ECARTE | Franchise AGATHA nationale (75 boutiques France) — ECARTE DÉFINITIF (confirmé 23/05) |
 | LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouve — Yelp April 2026 actif, 22 rue Saint Rome, vetements femme + chaussures + maroquinerie, M & B entite |
@@ -457,7 +474,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com | 824966022 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r5331074192849055465) — mode homme streetwear/casual, boutique Toulouse+Tarbes, site ilannfive.com, IG actif, 17 rue des Changes |
-| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r3575538069750901923) — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
+| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 03/06, id: r-4847593149885388305 — remplace r3575538069750901923 du 06/05) — pret-a-porter homme premium (Stone Island, C.P. Company, Ralph Lauren, Hogan, Crockett & Jones), lobservatoire.net, 4 rue des Arts |
 | PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-762058812026090260) — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
 | ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r8345746387470852338) — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
 | LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-5536448297790948464) — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome |
@@ -477,8 +494,8 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r-7156942222461192925) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse |
-| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r5793792031598694686) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
+| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 03/06, id: r6612987409667754593 — remplace r-7156942222461192925 du 05/05) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse |
+| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 03/06, id: r-2203007384413066288 — remplace r5793792031598694686 du 05/05) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
 | N°45 / ELEMENT STORE (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme 18/05 via mentions legales n45.fr — enseigne renommee N°45, site n45.fr, IG @numero45toulouse, 45 rue Tourneurs, tel 05 31 21 70 42. Rediger email a Emmanuel. |
 | STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
@@ -511,7 +528,7 @@
 |---|---|---|---|---|---|---|---|---|
 | LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r1179746631294846623 — remplace r6217091151963335716 du 28/04) — 20+ ans mode femme 16 rue des Tourneurs, Newtone/Des Petits Hauts/HOD Paris. |
 | N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r-6193854175602566493 — remplace r2720507363937656694 du 28/04) — bijoux argent 925 Bronzallure/Endless/Tamahiné/WeWood, 19 rue de la Pomme. Email confirmé via bijouterie-toulouse-nougues.fr. |
-| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r960593700860017581) — Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi, Rimowa, Tumi), 27 rue de Metz, tel 05 61 21 02 96. |
+| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 03/06, id: r-6332639390371146843 — remplace r960593700860017581 du 14/05) — Negrevergne depuis 1954, sacs marques (Rimowa, Tumi, Campomaggi, Kipling, Fourès), 27 rue de Metz, tel 05 61 21 02 96. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Email confirme 18/05 via page boutique arseneetlespipelettes.com/fr/magasins/toulouse-11 — email specifique Toulouse (different du SAV), tel 05 67 16 72 09, 25 rue de Metz. Rediger email a Helene. |
 | RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
