@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-02 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-03 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
-- NOUVEAU : 60
+- NOUVEAU : 59
 - CONTACTE : 1
 - BROUILLON : 64
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Saint-Rome — 2026-06-03 (L'Eclaireur) — Mercredi, rattrapage, 0 email trouvé + 1 écartée
+
+**Note de session :** Mercredi = Saint-Rome dans la rotation. Saint-Rome ÉPUISÉ pour nouveaux prospects (tous les 62 entrées JSON couvertes). Session convertie en rattrapage ciblé sur 10 NOUVEAU avec ≤2 passages (priorisés par score). 25+ recherches web + fetches effectués. Résultat : 0 email confirmé sur 10 prospects. 1 nouvelle écartée : GAME TIME (Instagram @gametime_toulouse indique "FERMETURE DÉFINITIVE" — boutique NBA/Jordan/sport fermée). Patterns confirmés : boutiques Saint-Rome sans présence digitale avec email (NEW CASTING = Facebook seul, YLANG = annuaires seuls, GLAM SHOES BK = GLAM&CO entité Aubervilliers distincte de la boutique Toulouse, URBAN WEAR = Instagram actif mais sans email, BELLA MODE = Instagram @bellamodeboutiques sans email, KEED = Yelp mai 2026 actif tél uniquement, STOCK COMPANY = Facebook @stockcompany2015 sans email visible, Y STYLE = annuaires seuls, MY LOOK = Relais Pickup sans email). Conclusion : Saint-Rome = 0 email sur 3 sessions de rattrapage (23/05, 30/05, 03/06). Ces boutiques communiquent exclusivement par téléphone, Instagram et Facebook. NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| NEW CASTING | Saint-Rome | Chaussures/Mode/Accessoires | Qian Gan | — | 793787037 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — FB facebook.com/people/New-Casting/100068857325009, 19 rue Saint-Rome, tel 05 61 29 04 49. Aucun email public. Visite terrain. |
+| YLANG | Saint-Rome | Mode/Accessoires | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouvé (2ème passage 03/06) — 17 rue des Changes, aucune présence digitale avec email (annuaires seuls). Visite terrain. |
+| GLAM SHOES BK | Saint-Rome | Chaussures | Chadli Hambli | — | 808299044 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — GLAM & CO entité Aubervilliers distincte de la boutique Toulouse, aucun email boutique Toulouse identifiable. Visite terrain. |
+| GAME TIME | Saint-Rome | Sport/Streetwear | Laurent Caramelle | — | 432706513 | — | ECARTE | Instagram @gametime_toulouse : "FERMETURE DÉFINITIVE" confirmée — boutique NBA/Jordan/streetwear 6 rue Temponières — ECARTE DÉFINITIF (confirmé 03/06). |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — IG @urbanwear31 actif, 12 rue Saint-Rome. Aucun email public. Visite terrain. |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — IG @bellamodeboutiques (822 followers actif), tel 09 86 47 64 45, 39 rue des Changes. Aucun email public. Visite terrain. |
+| KEED (ELLE AND SHE) | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — Yelp mis à jour mai 2026 (actif), Kaporal/G-Star/Japrag, tel 05 61 23 31 22 / 09 60 50 38 72, 28 rue des Changes. Aucun email ni site public. Visite terrain. |
+| STOCK COMPANY | Saint-Rome | Mode/Vêtements | Zhra Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — FB @stockcompany2015 (Six June, Unkut, Kwell, Enfant Sauvage), 24 rue Saint-Rome, tel 05 34 33 88 49. Aucun email public. Visite terrain. |
+| Y STYLE | Saint-Rome | Mode/Vêtements | Zheng Wang | — | 808208169 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — 38 rue Saint-Rome, annuaires seuls. Aucune présence digitale avec email. Visite terrain. |
+| MY LOOK (CLZ) | Saint-Rome | Mode/Vêtements | Liyan Chen | — | 802191163 | 4/10 | NOUVEAU | Email non trouvé (3ème passage 03/06) — 12 rue des Changes, Relais Pickup actif, aucun email. Activité mixte mode+Relais Colis. Visite terrain. |
+
+---
 
 ### Rattrapage lundi — 2026-06-02 (L'Eclaireur) — Capitole épuisé, 1 email trouvé
 
