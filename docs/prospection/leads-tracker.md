@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-03 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-04 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
-- NOUVEAU : 59
+- NOUVEAU : 58
 - CONTACTE : 1
-- BROUILLON : 64
+- BROUILLON : 65
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage mercredi — 2026-06-04 (L'Eclaireur) — Saint-Rome épuisé, 1 email trouvé
+
+**Note de session :** Mercredi = Saint-Rome dans la rotation. Saint-Rome ÉPUISÉ DÉFINITIF (tous les 61 prospects JSON couverts, confirmé 03/06). Session convertie en rattrapage sur 10 meilleurs NOUVEAU multi-quartiers (scores 5-8/10), priorisés par score et angle non encore exploré. 25+ recherches web + fetches effectués. **1 email confirmé : KATHY.B (Au44) — contact@boutiqueau44.com** via page boutiqueau44.com/nous-contacter (email affiché "Envoyez-nous un e-mail"). Patterns confirmés : bohemians-room.com ECONNREFUSED 5ème semaine consécutive (MADAME GEORGES), parallele-eshop.com ECONNREFUSED 6ème semaine consécutive (PARALLELE), m2lsapp.com 503 5ème semaine consécutive (MAISON DE LA SAPP), sadiaoff.com ECONNREFUSED 4ème semaine (SADIA). Boutiques sans email public : ESTHER MICHELE/BOTE (35 rue Croix Baragnon — aucun email malgré Kompass + leshowroom), RECOVERY PROJECT (Instagram @recoverytoulouse uniquement — pas de site/email, 6ème passage), DRESSING ROSE AND KIDS (Instagram @dressingrosektoulouse uniquement), HANNAH (FB/IG actifs sans email), SOCIETE LAKO/BERNARD KOK (annuaires uniquement, 4ème passage). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| KATHY.B (Au44) | Capitole | Mode/Concept store créateurs | Catherine Ballias | contact@boutiqueau44.com ✅ | 882609688 | 8/10 | BROUILLON | Email confirmé 04/06 via boutiqueau44.com/nous-contacter. Rédiger email à Catherine — concept store prêt-à-porter luxe+éco-responsable, 44 rue de Metz, IG @boutique_au_44_rue_de_metz_, boutiqueau44.fr + boutiqueau44.com actifs. |
+| ESTHER MICHELE (BOTE) | Saint-Etienne | Cosmétique/Beauté | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 04/06) — BOTE entité, 35 rue Croix Baragnon, aucun site propre ni email public. Kompass 403. Présence digitale nulle. Visite terrain uniquement. |
+| BOHEMIAN'S ROOM (MADAME GEORGES) | Carmes | Mode/Vêtements | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 04/06) — bohemians-room.com ECONNREFUSED 5ème semaine consécutive, IG @madamegeorgestoulouse actif, 18 rue Boulbonne / 45 rue Boulbonne. Visite terrain. |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 04/06) — parallele-eshop.com ECONNREFUSED 6ème semaine consécutive (FRALTIS SARL), tel 05 34 44 90 73, 23 rue Croix Baragnon / 35 rue Boulbonne. Visite terrain uniquement. |
+| RECOVERY PROJECT | Capitole | Sport/Running/Vélo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 04/06) — IG @recoverytoulouse uniquement, pas de site web, café-running+vélo, 48B rue de Metz. Visite terrain. |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 04/06) — IG @dressingrosektoulouse, co-gérant Walid Gasdallah, 31 rue Saint-Rome. Aucun email public. Visite terrain ou contact IG. |
+| HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 04/06) — FB @Hanna.Boutique + IG @__hanna.boutique actifs, siège Carcassonne, aucun email public. Visite terrain 31 rue Boulbonne. |
+| SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 04/06) — annuaires Cylex/Petitfute actifs, 36 rue de la Pomme, tel 05 61 21 50 72. Aucun site ni email public. Visite terrain. |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (6ème passage 04/06) — m2lsapp.com 503 5ème semaine consécutive, IG @maisondelasape, tel +33 7 56 23 78 65. 14 rue des Changes. Visite terrain. |
+| SADIA | Capitole | Mode femme | Sadia Belkelfa | — | 918125394 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 04/06) — sadiaoff.com ECONNREFUSED 4ème semaine, IG @sadiafashionboutique actif, 39 rue de Bayard. Visite terrain ou contact IG. |
+
+---
 
 ### Saint-Rome — 2026-06-03 (L'Eclaireur) — Mercredi, rattrapage, 0 email trouvé + 1 écartée
 
@@ -384,7 +403,7 @@
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r3420220746965689916 — version actualisée du draft 19/05 r-8853079466353228388) — bijouterie fantaisie depuis 1991, ateliers artisanaux Provence, collections florales, 17 rue Alsace Lorraine. |
 | PAYOTE | Capitole | Chaussures/Espadrilles | Olivier Gelly | sav@payote.fr | 912767100 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r7209326759298729066 — version actualisée du draft 19/05 r769139324253320088) — espadrilles vegan made in France créées 2016, boutique 58 rue Tourneurs, €1.3M CA. NB: email SAV générique, mentionner Olivier dans email. |
 | MONPARFUMMASIGNATURE | Capitole | Parfumerie/Atelier | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 6/10 | BROUILLON | Email confirme via Yelp/Firmania (contact@monparfummasignature.fr) — atelier parfum personnalise (2h de workshop), 42 rue de la Pomme 1er etage, tel 07 67 25 51 24, FB @MonparfumMasignature, site monparfummasignature.fr. NB: concept atelier sur RDV, pas stock standard — pertinence Two-Step limitee mais produits vendus. Score conservateur. |
-| KATHY.B (Au44) | Capitole | Mode/Concept store createurs | Catherine Ballias | — | 882609688 | 8/10 | NOUVEAU | Email non trouve — boutique de mode createurs connue sous le nom commercial "Au44", 44 rue de Metz, site boutiqueau44.fr + boutiqueau44.com (contact form uniquement), IG @boutique_au_44_rue_de_metz_, tel 05 34 40 81 88. Concept store pret-a-porter luxe+eco-responsable. Forte pertinence Two-Step. Contacter via formulaire site ou visite terrain. |
+| KATHY.B (Au44) | Capitole | Mode/Concept store créateurs | Catherine Ballias | contact@boutiqueau44.com ✅ | 882609688 | 8/10 | BROUILLON | Email confirmé 04/06 via boutiqueau44.com/nous-contacter — concept store prêt-à-porter luxe+éco-responsable, 44 rue de Metz, boutiqueau44.fr + boutiqueau44.com, IG @boutique_au_44_rue_de_metz_, tel 05 34 40 81 88. Rédiger email à Catherine. |
 | AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouve — mode femme 66 rue de la Pomme, IG @amalunacreation, FB @almalunaboutique, cree 2019, cogeuree Judith Soustiel (depuis jan 2025) + Serge Sznyter (fondateur). Pas de site propre identifie. Contacter via IG ou visite terrain. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouve — bijouterie depuis 1983, 49 rue de la Pomme, site perlins.fr actif (aucun email public, tel uniquement 05 61 21 18 81), FB @BijouteriePerlins. Ancienne enseigne familiale, presence digitale limitee. Contacter par tel ou visite terrain. |
 
