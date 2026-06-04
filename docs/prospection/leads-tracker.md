@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-04 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-04 (L'Auditeur)*
 
 ## Stats
 - Total leads : 135
@@ -18,7 +18,7 @@
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| KATHY.B (Au44) | Capitole | Mode/Concept store créateurs | Catherine Ballias | contact@boutiqueau44.com ✅ | 882609688 | 8/10 | BROUILLON | Email confirmé 04/06 via boutiqueau44.com/nous-contacter. Rédiger email à Catherine — concept store prêt-à-porter luxe+éco-responsable, 44 rue de Metz, IG @boutique_au_44_rue_de_metz_, boutiqueau44.fr + boutiqueau44.com actifs. |
+| KATHY.B (Au44) | Capitole | Mode/Concept store créateurs | Catherine Ballias | contact@boutiqueau44.com ✅ | 882609688 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 04/06, id: r5714942130914190087) — concept store prêt-à-porter luxe+éco-responsable, créateurs indépendants français/européens, 44 rue de Metz, IG @boutique_au_44_rue_de_metz_, boutiqueau44.fr + boutiqueau44.com actifs. |
 | ESTHER MICHELE (BOTE) | Saint-Etienne | Cosmétique/Beauté | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 04/06) — BOTE entité, 35 rue Croix Baragnon, aucun site propre ni email public. Kompass 403. Présence digitale nulle. Visite terrain uniquement. |
 | BOHEMIAN'S ROOM (MADAME GEORGES) | Carmes | Mode/Vêtements | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 04/06) — bohemians-room.com ECONNREFUSED 5ème semaine consécutive, IG @madamegeorgestoulouse actif, 18 rue Boulbonne / 45 rue Boulbonne. Visite terrain. |
 | PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 04/06) — parallele-eshop.com ECONNREFUSED 6ème semaine consécutive (FRALTIS SARL), tel 05 34 44 90 73, 23 rue Croix Baragnon / 35 rue Boulbonne. Visite terrain uniquement. |
@@ -28,6 +28,23 @@
 | SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 04/06) — annuaires Cylex/Petitfute actifs, 36 rue de la Pomme, tel 05 61 21 50 72. Aucun site ni email public. Visite terrain. |
 | MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (6ème passage 04/06) — m2lsapp.com 503 5ème semaine consécutive, IG @maisondelasape, tel +33 7 56 23 78 65. 14 rue des Changes. Visite terrain. |
 | SADIA | Capitole | Mode femme | Sadia Belkelfa | — | 918125394 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 04/06) — sadiaoff.com ECONNREFUSED 4ème semaine, IG @sadiafashionboutique actif, 39 rue de Bayard. Visite terrain ou contact IG. |
+
+---
+
+## Recap brouillons email — 2026-06-04 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Catherine Ballias (KATHY.B / AU44) | contact@boutiqueau44.com | Au44 sur Two-Step — tes créateurs éco-responsables trouvés par les Toulousains | r5714942130914190087 | ACA — PREMIER DRAFT. Concept store prêt-à-porter luxe+éco-responsable, créateurs indépendants français/européens sélectionnés pour leurs matières, 44 rue de Metz. Email confirmé 04/06 via boutiqueau44.com/nous-contacter. |
+| 2 | Gaston Gayet (BIJOUTERIE DU CAPITOLE) | sud-ouest-watch@orange.fr | Bijouterie du Capitole sur Two-Step — tes montres et bijoux trouvés par les Toulousains | r4815114927030305044 | ACA — NOUVEAU DRAFT (remplace r-5663467344825294589 du 18/05). 4 générations Gayet depuis 1840 place du Capitole, joaillerie + horlogerie montres créateurs, maison indépendante emblématique Toulouse. |
+| 3 | Céline Tobalaim (MODI-IN) | contact@modi-in.com | Modi-In sur Two-Step — tes No Name et Birkenstock trouvés par les Toulousains | r2057966948754295823 | ACA — NOUVEAU DRAFT (remplace r-1143967848022958961 du 18/05). Multimarque mode+chaussures depuis 1996, No Name/Grace & Mila/Birkenstock/New Balance, 36 rue Alsace-Lorraine. |
+| 4 | Eric Gautrand (LES CUIRS DU SUD) | lescuirsdusud@aol.com | Les Cuirs du Sud sur Two-Step — tes sacs et vestes cuir visibles en centre-ville | r2558443201414780747 | ACA — NOUVEAU DRAFT (remplace r7139103142962009497 du 18/05). Maroquinerie depuis 1988, vestes cuir/sacs italiens/petite maroquinerie, sélection rare 45 rue des Tourneurs. |
+| 5 | Hélène Rieunier (ARSENE ET LES PIPELETTES) | boutiquetoulouse@arseneetlespipelettes.com | Arsène et les Pipelettes Toulouse sur Two-Step — ton stock enfants visible dans le quartier | r-862257220651005302 | ACA — NOUVEAU DRAFT (remplace r4717592657623848573 du 18/05). Mode enfants créateurs bébé-12 ans, 25 rue de Metz. |
+
+*Note session 04/06 (L'Auditeur) : 1 PREMIER DRAFT genuín (KATHY.B — seul lead avec email nouvellement confirmé par l'Eclaireur 04/06 sur contact@boutiqueau44.com) + 4 rafraîchissements de drafts du 18/05 (les plus anciens non encore actualisés : BIJOUTERIE DU CAPITOLE 9/10, MODI-IN 8/10, LES CUIRS DU SUD 7/10, ARSENE ET LES PIPELETTES 7/10). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (04/06) et supprimer les anciens du 18/05.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-04".*
 
 ---
 
@@ -376,8 +393,8 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | N°45 (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r-5362112068006129903) — enseigne renommee N°45 (ex-Element Store), streetwear homme/femme/enfant, site n45.fr, IG @numero45toulouse, 45 rue des Tourneurs. |
-| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r7139103142962009497) — maroquinerie italienne depuis 1988, sacs/cuirs/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. NB: email AOL ancien. |
-| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r4717592657623848573) — vetements enfants 25 rue de Metz, tel 05 67 16 72 09. Email boutique Toulouse specifique (different de sav@). |
+| LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 04/06, id: r2558443201414780747 — remplace r7139103142962009497 du 18/05) — maroquinerie italienne depuis 1988, sacs/vestes cuir/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. NB: email AOL ancien. |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 04/06, id: r-862257220651005302 — remplace r4717592657623848573 du 18/05) — vêtements enfants créateurs bébé-12ans, 25 rue de Metz, tel 05 67 16 72 09. Email boutique Toulouse spécifique (différent de sav@). |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — HQ Biarritz (SARL 2 ets), aucune presence digitale boutique Toulouse identifiee. Tel 05 61 22 11 94. Contacter par tel ou visite terrain. |
 | CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — site manik.fr actif (formulaire uniquement, pas d'email public visible), FB @maniktoulouse. Tel 05 61 21 52 08. |
 | RECOVERY PROJECT | Capitole | Sport/Running/Velo | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve (2e passage 18/05) — concept store running+velo cree fev 2025, 48B rue de Metz, IG @recoverytoulouse, TikTok @recovery.toulouse. Pas de site ni email public. Tel 05 61 40 42 94. Contacter via IG ou visite terrain. |
@@ -396,9 +413,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| BIJOUTERIE DU CAPITOLE (SUD OUEST WATCH SA) | Capitole | Bijouterie/Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r-5663467344825294589) — bijouterie-du-capitole.fr, famille Gayet 4 générations depuis 1840, 12-13 place du Capitole, tel 05 61 21 12 72. Très forte pertinence Two-Step (montres/joaillerie = stock identifiable). |
+| BIJOUTERIE DU CAPITOLE (SUD OUEST WATCH SA) | Capitole | Bijouterie/Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 04/06, id: r4815114927030305044 — remplace r-5663467344825294589 du 18/05) — bijouterie-du-capitole.fr, famille Gayet 4 générations depuis 1840, 12-13 place du Capitole, tel 05 61 21 12 72. Très forte pertinence Two-Step (montres/joaillerie = stock identifiable). |
 | BIJOUTERIE NOUGUES | Capitole | Bijouterie/Joaillerie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r-2055856763242413617 — version actualisée du draft 19/05 r-6199251153540690460) — joaillerie artisanale familiale depuis 1920, Sandra Nougues 4e génération, 32 rue de la Pomme + 2e boutique 19 rue de la Pomme. |
-| MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 18/05, id: r-1143967848022958961) — multimarque mode+chaussures femme (No Name, Kulte, Grace&Mila), 36 rue Alsace Lorraine, tel 05 61 12 22 12. |
+| MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 04/06, id: r2057966948754295823 — remplace r-1143967848022958961 du 18/05) — multimarque mode+chaussures femme (No Name, Grace & Mila, Birkenstock, New Balance), 36 rue Alsace Lorraine, tel 05 61 12 22 12. |
 | IMAGINE bijoux | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | contact@imagine-bijoux.fr | 393981394 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r155757055921508640 — version actualisée du draft 19/05 r-2479069258168175413) — 25+ ans rue de la Pomme, marques Cluse/Mila Louise/By Imagine, e-commerce actif. |
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r3420220746965689916 — version actualisée du draft 19/05 r-8853079466353228388) — bijouterie fantaisie depuis 1991, ateliers artisanaux Provence, collections florales, 17 rue Alsace Lorraine. |
 | PAYOTE | Capitole | Chaussures/Espadrilles | Olivier Gelly | sav@payote.fr | 912767100 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 28/05, id: r7209326759298729066 — version actualisée du draft 19/05 r769139324253320088) — espadrilles vegan made in France créées 2016, boutique 58 rue Tourneurs, €1.3M CA. NB: email SAV générique, mentionner Olivier dans email. |
