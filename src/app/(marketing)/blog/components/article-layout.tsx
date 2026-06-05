@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Shopping cosmétiques à Toulouse : les meilleures boutiques beauté indépendantes",
+        slug: "shopping-cosmetique-toulouse",
+        category: "consommateurs",
+    },
 ];
 
 export function ArticleLayout({
