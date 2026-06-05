@@ -18,8 +18,8 @@
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| N45 (ELEMENT STORE / LEMAN) | Capitole | Mode/Skateboard/Streetwear | Emmanuel Levy | contact@n45.fr ✅ | 794917666 | 7/10 | BROUILLON | Email confirmé 05/06 via mentions légales n45.fr — boutique multimarques créée 2024, 45 rue des Tourneurs, Puma/New Balance/lifestyle, tél 05 31 21 70 42, lun 14h-19h mar-sam 10h30-19h. Rédiger email à Emmanuel. |
-| BIAS | Capitole | Concept store / Déco / Bijoux / Artisanat | Laura Noailles | laura.noailles@bias-conceptstore.fr ✅ | 980131718 | 6/10 | BROUILLON | Email confirmé 05/06 via article Maison Actuelle (jan 2026) — concept store expérientiel ouvert 2025, décoration/bijoux/artisanat marques européennes, 2 rue Paul Vidal, IG @bias.cst. Rédiger email à Laura. |
+| N45 (ELEMENT STORE / LEMAN) | Capitole | Mode/Skateboard/Streetwear | Emmanuel Levy | contact@n45.fr ✅ | 794917666 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 05/06, id: r-6724548901794296180 — remplace r-5362112068006129903 du 18/05) — boutique streetwear/lifestyle multimarques créée 2024, Puma/New Balance, 45 rue des Tourneurs, tél 05 31 21 70 42. |
+| BIAS | Capitole | Concept store / Déco / Bijoux / Artisanat | Laura Noailles | laura.noailles@bias-conceptstore.fr ✅ | 980131718 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 05/06, id: r-4339778301069117856 — remplace r2648943524808888459 du 15/05) — concept store expérientiel déco/bijoux/artisanat marques européennes, ouvert 2025, 2 rue Paul Vidal, IG @bias.cst. |
 | LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Email non trouvé (4ème tentative 05/06) — lafilledemargaret.com ECONNREFUSED persistant (4 tentatives), IG @lafilledemargaret actif, tél 05 61 21 52 28, 35 rue Boulbonne. Visite terrain. |
 | L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 05/06) — lespion.fr actif mais formulaire uniquement (contact/ = 404, shop/ = pas d'email), IG @boutiquelespion. 21 bis rue Croix Baragnon. Visite terrain. |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 05/06) — toulouse-montres.com/contact-montres.html 404 persistant. 10 rue Pierre de Fermat. Visite terrain. |
@@ -36,6 +36,23 @@
 | APOSTROPHE RJC | Saint-Etienne | 331258384 | Fermée définitivement le 30/06/2013 (pappers.fr) — ÉCARTÉE DÉFINITIF |
 | TNF TOULOUSE (THE NORTH FACE TLS) | Capitole | 814222881 | Inactive depuis le 10/12/2025 (annuaire-entreprises.data.gouv.fr) — ÉCARTÉE DÉFINITIF |
 | SUPER33STORE | Capitole | 791450430 | Boutique Superdry = chaine nationale (franchise) hors cible Two-Step — ÉCARTÉE DÉFINITIF |
+
+---
+
+## Recap brouillons email — 2026-06-05 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Emmanuel Levy (N°45 / ELEMENT STORE) | contact@n45.fr | N°45 sur Two-Step — ton stock Puma et New Balance visible par les Toulousains | r-6724548901794296180 | ACA — NOUVEAU DRAFT (remplace r-5362112068006129903 du 18/05). Boutique streetwear/lifestyle multimarques créée 2024, Puma/New Balance, 45 rue des Tourneurs. Email re-confirmé 05/06 via mentions légales n45.fr. |
+| 2 | Laura Noailles (BIAS) | laura.noailles@bias-conceptstore.fr | BIAS sur Two-Step — tes bijoux et créateurs européens trouvés par les Toulousains | r-4339778301069117856 | ACA — NOUVEAU DRAFT (remplace r2648943524808888459 du 15/05). Concept store expérientiel déco/bijoux/artisanat marques européennes, ouvert 2025, 2 rue Paul Vidal. Email re-confirmé 05/06 via article Maison Actuelle. |
+| 3 | Fatima Meric (LE QUOTIDIEN STORE) | Lequotidienconceptstore@gmail.com | Le Quotidien Store sur Two-Step — ton concept store visible dans le quartier | r-2350105344367614754 | ACA — NOUVEAU DRAFT (remplace r378002252411908989 du 04/05). Concept store mode/lifestyle, 47 rue de la Pomme, lequotidienstore.com. Draft original vieux de 32 jours. |
+| 4 | Patricia Delchet (AZED / ÉCHAPE DOUCE) | contact@echapedouce.fr | Échape Douce sur Two-Step — ton stock mode femme visible en centre-ville | r-1054604084745608756 | ACA — NOUVEAU DRAFT (remplace r-5069750576936633717 du 04/05). Prêt-à-porter femme Échape Douce, 54 rue de Metz. Draft original vieux de 32 jours. |
+| 5 | Erick Haziza (LA MAISON DE L'HOMME) | contact@lamdh.fr | La Maison de l'Homme sur Two-Step — tes collections visibles par les Toulousains | r-7257048469082856988 | ACA — NOUVEAU DRAFT (remplace r-3518029605693686134 du 04/05). Sur-mesure + prêt-à-porter homme depuis 1983, 46 rue de Metz, lamaisondelhomme.fr. Draft original vieux de 32 jours. |
+
+*Note session 05/06 (L'Auditeur) : 2 NOUVEAUX DRAFTS genuins (N°45 et BIAS — emails re-confirmés par l'Eclaireur 05/06) + 3 rafraîchissements des drafts les plus anciens du tracker (LE QUOTIDIEN STORE, AZED, LA MAISON DE L'HOMME — drafts du 04/05 jamais actualisés depuis 32 jours). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (05/06) et supprimer les anciens.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-05".*
 
 ---
 
@@ -555,10 +572,10 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| LE QUOTIDIEN STORE | Capitole | Mode/Concept store | Fatima Meric | Lequotidienconceptstore@gmail.com | 831045687 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r378002252411908989) — lequotidienstore.com — concept store mode/lifestyle 47 rue de la Pomme |
+| LE QUOTIDIEN STORE | Capitole | Mode/Concept store | Fatima Meric | Lequotidienconceptstore@gmail.com | 831045687 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 05/06, id: r-2350105344367614754 — remplace r378002252411908989 du 04/05) — lequotidienstore.com — concept store mode/lifestyle 47 rue de la Pomme |
 | CHAUSSURES MANIK SAS | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouve — manik.fr (contact sans email visible), tel 05 61 21 52 08 — independant depuis 28 ans |
-| AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-5069750576936633717) — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
-| LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 04/05, id: r-3518029605693686134) — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
+| AZED (Echape Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr | 751884123 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 05/06, id: r-1054604084745608756 — remplace r-5069750576936633717 du 04/05) — boutique pret-a-porter femme 54 rue de Metz, enseigne commerciale Echape Douce |
+| LA MAISON DE L'HOMME | Capitole | Mode homme/Tailleur | Erick Haziza | contact@lamdh.fr | 890507932 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 05/06, id: r-7257048469082856988 — remplace r-3518029605693686134 du 04/05) — lamaisondelhomme.fr — sur-mesure + pret-a-porter homme, fonde 1983, 46 rue de Metz |
 | LES CUIRS DU SUD | Capitole | Maroquinerie/Cuir | Eric Gautrand | lescuirsdusud@aol.com | 419643291 | 7/10 | BROUILLON | Email confirme 18/05 (magasin.tel + cylex) — maroquinerie italienne depuis 1988, sacs/cuirs/accessoires, 45 rue des Tourneurs, Yelp April 2026 actif, tel 05 61 21 16 51. Email AOL ancien mais reference plusieurs sources. Rediger email a Eric. |
 | VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | ECARTE | Dissolution confirmee 18/05 — Monique Baron nommee liquidatrice, boutique 19 rue de la Pomme fermee. ECARTE DEFINITIF. |
 | SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouve — 44 rue des Tourneurs (Yelp July 2025 actif), pas de site web identifie |
