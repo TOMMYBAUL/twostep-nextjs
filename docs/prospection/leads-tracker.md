@@ -1,16 +1,43 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-04 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-05 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 135
-- NOUVEAU : 58
+- NOUVEAU : 53
 - CONTACTE : 1
-- BROUILLON : 65
+- BROUILLON : 67
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage vendredi — 2026-06-05 (L'Eclaireur) — Saint-Cyprien épuisé, 2 emails trouvés + 3 écartées
+
+**Note de session :** Vendredi = Saint-Cyprien dans la rotation. Saint-Cyprien ÉPUISÉ DÉFINITIF (10/10 prospects traités, 0 email sur 3 passages — confirmé 15/05). Session convertie en rattrapage sur 13 prospects NOUVEAU multi-quartiers priorisés par score et nombre de passages (≤3 passes), ciblant boutiques avec site web actif ou présence digitale. 40+ recherches web + fetches effectués. **2 emails confirmés : N45/ELEMENT STORE (LEMAN) — contact@n45.fr** via mentions légales n45.fr, et **BIAS — laura.noailles@bias-conceptstore.fr** via article Maison Actuelle janvier 2026. Nouvelles écartées : APOSTROPHE RJC (331258384) fermée définitivement le 30/06/2013 (pappers.fr), TNF TOULOUSE/THE NORTH FACE TLS (814222881) inactive depuis 10/12/2025 (annuaire-entreprises.data.gouv.fr), SUPER33STORE (791450430) = boutique Superdry (chaine nationale — hors cible Two-Step). Patterns confirmés : LA FILLE DE MARGARET (lafilledemargaret.com ECONNREFUSED 4ème tentative), L'ESPION (lespion.fr formulaire uniquement — 4ème passage), TOULOUSE MONTRES (contact.html 404 persistant), MANIK (manik.fr actif mais aucun email accessible — formulaire uniquement), BAGWOOD/ALFRED WOOD (styleco.fr = annuaire only), LAORA VITTORIA/BOUTIQUE VITTORIA (tel 05 61 22 07 48 uniquement), AMA LUNA (IG @amalunacreation sans email), PAMPY (pampy.com "domain for sale"). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| N45 (ELEMENT STORE / LEMAN) | Capitole | Mode/Skateboard/Streetwear | Emmanuel Levy | contact@n45.fr ✅ | 794917666 | 7/10 | BROUILLON | Email confirmé 05/06 via mentions légales n45.fr — boutique multimarques créée 2024, 45 rue des Tourneurs, Puma/New Balance/lifestyle, tél 05 31 21 70 42, lun 14h-19h mar-sam 10h30-19h. Rédiger email à Emmanuel. |
+| BIAS | Capitole | Concept store / Déco / Bijoux / Artisanat | Laura Noailles | laura.noailles@bias-conceptstore.fr ✅ | 980131718 | 6/10 | BROUILLON | Email confirmé 05/06 via article Maison Actuelle (jan 2026) — concept store expérientiel ouvert 2025, décoration/bijoux/artisanat marques européennes, 2 rue Paul Vidal, IG @bias.cst. Rédiger email à Laura. |
+| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Email non trouvé (4ème tentative 05/06) — lafilledemargaret.com ECONNREFUSED persistant (4 tentatives), IG @lafilledemargaret actif, tél 05 61 21 52 28, 35 rue Boulbonne. Visite terrain. |
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 05/06) — lespion.fr actif mais formulaire uniquement (contact/ = 404, shop/ = pas d'email), IG @boutiquelespion. 21 bis rue Croix Baragnon. Visite terrain. |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 05/06) — toulouse-montres.com/contact-montres.html 404 persistant. 10 rue Pierre de Fermat. Visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 05/06) — IG @amalunacreation actif, FB @almalunaboutique, aucun site propre ni email public. 66 rue de la Pomme. Visite terrain. |
+| BAGWOOD (ALFRED WOOD) | Capitole | Mode homme | Jeffrey Wood / Therese Bagneris | — | 408176311 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 05/06) — enseigne Alfred Wood, tél 05 61 12 14 46, 75 rue Alsace Lorraine, aucun site propre ni email public. Visite terrain. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 05/06) — manik.fr actif (contact form uniquement, aucun email direct), IG @maniktoulouse, FB actif, tél 05 61 21 52 08. 33 rue Alsace Lorraine. Visite terrain. |
+| LAORA VITTORIA (BOUTIQUE VITTORIA) | Carmes | Chaussures | Annick Confuorto | — | 412012395 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 05/06) — boutique chaussures cuir italien, 3 bis rue du Rempart Villeneuve, tél 05 61 22 07 48. Aucun site ni email public. Visite terrain. |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouvé (confirmé 05/06) — pampy.com toujours "domain for sale" (offres <1000$ non considérées), 11 rue de la Pomme, tél disponible annuaires. Visite terrain. |
+
+**Nouvelles écartées (session 05/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| APOSTROPHE RJC | Saint-Etienne | 331258384 | Fermée définitivement le 30/06/2013 (pappers.fr) — ÉCARTÉE DÉFINITIF |
+| TNF TOULOUSE (THE NORTH FACE TLS) | Capitole | 814222881 | Inactive depuis le 10/12/2025 (annuaire-entreprises.data.gouv.fr) — ÉCARTÉE DÉFINITIF |
+| SUPER33STORE | Capitole | 791450430 | Boutique Superdry = chaine nationale (franchise) hors cible Two-Step — ÉCARTÉE DÉFINITIF |
+
+---
 
 ### Rattrapage mercredi — 2026-06-04 (L'Eclaireur) — Saint-Rome épuisé, 1 email trouvé
 
