@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-06 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-06 (L'Auditeur)*
 
 ## Stats
 - Total leads : 133
@@ -34,6 +34,23 @@
 |---|---|---|---|
 | LA FILLE DE MARGARET | Carmes | 520610593 | Boutique fermée définitivement 2024 — IG Sarah @lafilledemargaret "Founder of shop LaFilledeMargaret 2010-2024" + site lafilledemargaret.com ECONNREFUSED 5 passages — ÉCARTÉE DÉFINITIF |
 | RECOVERY PROJECT | Capitole | 940957483 | Refus données prospection (mention registre annuaire-entreprises) + café-vélo/running sans email public malgré 6 passages — ÉCARTÉE DÉFINITIF |
+
+---
+
+## Recap brouillons email — 2026-06-06 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Dominique Grosjean (DO MY SHOES) | domyshoes@gmail.com | Do My Shoes sur Two-Step — tes Hunter et United Nude trouvés par les Toulousains | r-7134702905034424754 | ACA — NOUVEAU DRAFT (remplace r7117125904514287020 du 27/05). Distributeur exclusif HUNTER Toulouse, United Nude/A.S.98/Gioseppo, 7 rue des Arts. |
+| 2 | Catherine Piquemal-baron (JOAILLERIE PIQUEMAL-BARON) | contact@joailleriepiquemalbaron.com | Piquemal Baron sur Two-Step — tes Rolex et Patek Philippe trouvées par les Toulousains | r-8550048216136531868 | ACA — NOUVEAU DRAFT (remplace r7914281277051507713 du 27/05). Référence montres luxe occasion depuis 1981, Rolex/Patek/AP/Vacheron Constantin, 27 rue Croix Baragnon. |
+| 3 | Gregory Baron (LE MAITRE MESURE) | contact@maitremesure.com | Maître Mesure sur Two-Step — tes chinos et accessoires visibles par les Toulousains | r3137079404591520304 | ACA — NOUVEAU DRAFT (remplace r6624600609502814744 du 27/05). Costume sur-mesure, chinos, chemises sur 3000+ références Loro Piana/Dormeuil, 10 rue Croix Baragnon. |
+| 4 | Didier Foissard (UPPER) | upper.toulouse@gmail.com | UPPER sur Two-Step — tes chaussures cuir et croco trouvées par les Toulousains | r-3620084110385205861 | ACA — NOUVEAU DRAFT (remplace r-8749343935800880193 du 27/05). Chaussures luxe homme 400€+, cuir croco dès 5500€, 22 rue Croix Baragnon. |
+| 5 | Elodie Fontoura (CHEZ ZEL) | contact@chez-zel.com | Chez Zel sur Two-Step — ton concept store visible par les Toulousains du quartier | r-6882666124095222985 | ACA — NOUVEAU DRAFT (remplace r6616768836685817143 du 27/05). 6 ans en 2026, mode/bijoux/déco/cosmétiques curatés, 25 rue de la Pomme. |
+
+*Note session 06/06 (L'Auditeur) : 0 lead NOUVEAU avec email (51 NOUVEAU, tous sans email — confirmé Eclaireur 06/06). Décision : 5 rafraîchissements des drafts les plus anciens non actualisés (27/05 — 10 jours). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (06/06) et supprimer les anciens du 27/05.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-06".*
 
 ---
 
@@ -695,9 +712,9 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 27/05, id: r7914281277051507713) — 40+ ans savoir-faire, montres luxe occasion (Rolex etc.), joaillerie artisanale, 27 rue Croix Baragnon |
-| LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 27/05, id: r6624600609502814744) — 20 ans costume sur-mesure, democratisation tailor Toulouse, 10 rue Croix Baragnon |
-| UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 27/05, id: r-8749343935800880193) — chaussures luxe homme (400€+), cuir croco, 22 rue Croix Baragnon |
+| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 06/06, id: r-8550048216136531868 — remplace r7914281277051507713 du 27/05) — référence montres luxe occasion depuis 1981, Rolex/Patek Philippe/Audemars Piguet/Vacheron Constantin, joaillerie artisanale, 27 rue Croix Baragnon. |
+| LE MAITRE MESURE | Saint-Etienne | Mode/Sur mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 06/06, id: r3137079404591520304 — remplace r6624600609502814744 du 27/05) — costume sur-mesure + chinos + chemises, 3000+ références Loro Piana/Dormeuil/Holland & Sherry, 10 rue Croix Baragnon. |
+| UPPER | Saint-Etienne | Chaussures | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 06/06, id: r-3620084110385205861 — remplace r-8749343935800880193 du 27/05) — chaussures luxe homme (400€+), cuir croco dès 5500€, référence Saint-Etienne, 22 rue Croix Baragnon. |
 | L'ESPION | Saint-Etienne | Mode createurs | Simone Laskar (ex-Soudri) | — | 310602370 | 8/10 | NOUVEAU | Email non trouve — voir section Saint-Etienne 12/05 pour mise à jour gérant |
 | TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouve (site: toulouse-montres.com, RDV uniquement) |
 | ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | 7/10 | ECARTE | Boutique rue Languedoc fermee mai 2022 — siege social deplace a Castelginest, pas de boutique Toulouse |
@@ -711,10 +728,10 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | Dear Skin Shop | Carmes | Cosmetique | — | dearskinshop@icloud.com | — | 9/10 | CONTACTE | Relance J+3 si pas de reponse (20/04) |
-| DO MY SHOES | Saint-Rome | Sneakers/Mode | Dominique Grosjean | domyshoes@gmail.com | 531697514 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 27/05, id: r7117125904514287020) — chaussures createurs (Hunter, United Nude, Pons Quintana, A.S.98), 7 rue des Arts, marques exclusives Toulouse |
+| DO MY SHOES | Saint-Rome | Sneakers/Mode | Dominique Grosjean | domyshoes@gmail.com | 531697514 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 06/06, id: r-7134702905034424754 — remplace r7117125904514287020 du 27/05) — chaussures createurs (Hunter exclusif Toulouse, United Nude, A.S.98, Gioseppo), 7 rue des Arts. |
 | BIJOUTERIE NOUGUES | Capitole | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr | 730800612 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | MONPARFUMMASIGNATURE | Capitole | Cosmetique | Sylvie Roubach | contact@monparfummasignature.fr | 831969860 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
-| CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 27/05, id: r6616768836685817143) — concept store mode+deco+createurs, aussi presente a Biarritz, 25 rue de la Pomme |
+| CHEZ ZEL | Capitole | Maison/Deco | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 06/06, id: r-6882666124095222985 — remplace r6616768836685817143 du 27/05) — concept store mode/bijoux/déco/cosmétiques curatés, 6 ans en 2026, aussi présent à Biarritz, 25 rue de la Pomme. |
 | MODI-IN | Capitole | Mode/Chaussures | Celine Tobalaim | contact@modi-in.com | 404952335 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 21/04) |
 | PAYOTE | Capitole | Chaussures | Olivier Gelly | sav@payote.fr | 912767100 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
 | POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
