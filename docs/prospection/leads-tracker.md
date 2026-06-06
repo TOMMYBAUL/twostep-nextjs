@@ -1,16 +1,41 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-05 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-06 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 135
-- NOUVEAU : 53
+- Total leads : 133
+- NOUVEAU : 51
 - CONTACTE : 1
 - BROUILLON : 67
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage samedi — 2026-06-06 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé + 2 écartées définitives
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées — confirmé depuis 02/05). Session convertie en rattrapage sur 10 prospects NOUVEAU multi-quartiers priorisés par score et nombre de passages (≤6 passes), ciblant boutiques avec score ≥7/10 et angles non encore explorés. 35+ recherches web + fetches effectués. **0 email confirmé.** 2 nouvelles écartées définitives : LA FILLE DE MARGARET (IG Sarah @lafilledemargaret "Founder of shop LaFilledeMargaret 2010-2024" + site ECONNREFUSED 5ème passage → fermée 2024) et RECOVERY PROJECT (refus données prospection mention registre + 6 passages sans email). Patterns confirmés : AMA LUNA (IG @amalunacreation + FB actifs, 0 email 3ème passage), BAGWOOD/ALFRED WOOD (Yelp mis à jour juin 2026 actif, tel 05 61 12 14 46, aucun site/email), CHAUSSURES MANIK (manik.fr formulaire cassé, IG @maniktoulouse, 3ème passage), ESTHER MICHELE/BOTE (Kompass 403 persistant, 4ème passage), JAILLET (formulaire Dorise Joaillier uniquement, 4ème passage), ALPHABET (siège Biarritz, tel 05 61 22 11 94, 5ème passage), BOSCHERIE/LOVE (boutique active confirmée Toulouse Tourisme + marqueetcommunication.fr, IG @love.toulouse.store, 5ème passage — note : love-boutique.fr est une boutique d'accessoires à domicile, fausse piste), HANNAH (siège Carcassonne, FB @Hanna.Boutique, IG @__hanna.boutique, 6ème passage), PAMPY (pampy.com "domain for sale" confirmé, IG @_pampix, tel 05 61 23 37 46). NOTE : Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 06/06) — IG @amalunacreation actif, FB @almalunaboutique, aucun site propre ni email public sur 3 tentatives. 66 rue de la Pomme. Visite terrain. |
+| BAGWOOD (ALFRED WOOD) | Capitole | Mode homme | Therese Wood / Jeffrey Wood | — | 408176311 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 06/06) — Yelp mis à jour juin 2026 (actif), tel 05 61 12 14 46, 75 rue Alsace Lorraine. Aucun site ni email public. Visite terrain. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 06/06) — manik.fr actif mais formulaire cassé (/contact → 404), IG @maniktoulouse, tel 05 61 21 52 08. 33 rue Alsace Lorraine. Visite terrain. |
+| ESTHER MICHELE (BOTE) | Saint-Etienne | Cosmétique/Beauté | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 06/06) — Kompass 403 persistant, aucune présence digitale avec email. 35 rue Croix Baragnon. Visite terrain uniquement. |
+| JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 06/06) — dorise-joaillier.com formulaire uniquement, famille Dorise. 28 rue Croix Baragnon. Visite terrain. |
+| ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 06/06) — siège Biarritz, 2 ets Toulouse (39 rue Metz + 32 rue Astorg), tel 05 61 22 11 94. Aucune présence digitale avec email sur 5 passages. Visite terrain. |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 06/06) — boutique confirmée active (Toulouse Tourisme + marqueetcommunication.fr), IG @love.toulouse.store + @toulousewithlove. Note : love-boutique.fr = boutique d'accessoires à domicile (fausse piste). Aucun email public. 49 rue des Filatiers. Visite terrain. |
+| HANNAH | Carmes | Mode femme | Abdelkader Boukenine | — | 799219837 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 06/06) — siège Carcassonne (15 bd André Malraux), FB @Hanna.Boutique, IG @__hanna.boutique actifs, aucun email public sur 6 passages. 31 rue Boulbonne Toulouse. Visite terrain. |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouvé (confirmé 06/06) — pampy.com toujours "domain for sale", IG @_pampix, tel 05 61 23 37 46. 11 rue de la Pomme. Visite terrain. |
+
+**Nouvelles écartées (session 06/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| LA FILLE DE MARGARET | Carmes | 520610593 | Boutique fermée définitivement 2024 — IG Sarah @lafilledemargaret "Founder of shop LaFilledeMargaret 2010-2024" + site lafilledemargaret.com ECONNREFUSED 5 passages — ÉCARTÉE DÉFINITIF |
+| RECOVERY PROJECT | Capitole | 940957483 | Refus données prospection (mention registre annuaire-entreprises) + café-vélo/running sans email public malgré 6 passages — ÉCARTÉE DÉFINITIF |
+
+---
 
 ### Rattrapage vendredi — 2026-06-05 (L'Eclaireur) — Saint-Cyprien épuisé, 2 emails trouvés + 3 écartées
 
