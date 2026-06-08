@@ -1,16 +1,40 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-06 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-08 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 133
-- NOUVEAU : 51
+- Total leads : 141
+- NOUVEAU : 55
 - CONTACTE : 1
-- BROUILLON : 67
+- BROUILLON : 69
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-08 (L'Eclaireur) — Capitole épuisé, 2 emails trouvés + 2 écartées définitives
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF (75/75 prospects traités). Session convertie en rattrapage sur 10 prospects frais Saint-Etienne et Carmes non encore explicitement couverts. 30+ recherches web + fetches effectués. **2 emails confirmés : MJ CONCEPT STORE (UNION STYLE) — contact@mjconceptstore.com** via footer du site mjconceptstore.com, et **LES DESSOUS CHICS (CARRADE ET FILS SA) — contact@lingerie-carrade.com** via page stores lingerie-carrade.fr (boutique Toulouse "Les Dessous Câlins" 29 rue du Languedoc, réseau Lingerie Carrade, siège Cahors). Nouvelles écartées : ROBERTO GIANNELLI (788804342, Carole Reynaud) — établissement Toulouse fermé le 17/05/2022, société transférée à Castelginest ; MAITYLA / MAITYKA (879994192, Mailys Baillet) — liquidation judiciaire depuis 01/04/2022, inactive depuis 19/01/2023. Patterns confirmés : HERVE MARIAGE/RAMSES (ramsesmariage.com 503, hervemariage.com ECONNREFUSED — 1er passage), BAOBAB/B.R.1 (boutique indépendante, aucun email public — 1er passage), SORTILEGE (sortilegeboutique.com ECONNREFUSED — 1er passage), AGATHE ET ZOE (aucun site ni email public — 1er passage), CHRISTOMET (famille Dorise, contact@dorise-joaillier.com déjà en tracker — 1er passage), NITYA/DUKAN DE NITYA (nityaboutique.company.site sans email — 1er passage). NOTE : Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| MJ CONCEPT STORE (VERSION CAMELEON) | Saint-Etienne | Mode femme / Concept store | Marie-laure Servidio | contact@mjconceptstore.com ✅ | 814518205 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail à créer) — concept store mode femme 46 rue du Languedoc, site mjconceptstore.com actif, IG présence confirmée. |
+| LES DESSOUS CHICS (CARRADE ET FILS SA) | Saint-Etienne | Lingerie / Mode | Jean-michel Carrade | contact@lingerie-carrade.com ✅ | 310239041 | 7/10 | BROUILLON | Valider + envoyer — lingerie de marque "Les Dessous Câlins", réseau familial Carrade (Cahors), 29 rue du Languedoc, site lingerie-carrade.fr actif. |
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — chaussures cuir artisanales italiennes depuis 2008, 29 rue Croix Baragnon, tél 05 34 31 67 44. Aucun site ni email public. Visite terrain. |
+| HERVE MARIAGE (RAMSES) | Saint-Etienne | Mode Mariage | Aline Rouja | — | 523860542 | 5/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — robes de mariée, costumes, ramsesmariage.com 503, hervemariage.com ECONNREFUSED, tél 05 62 26 39 48, 20 rue du Languedoc. Retenter site ou visite terrain. |
+| BAOBAB (B.R.1) | Saint-Etienne | Mode femme | Christophe Chopin | — | 811166578 | 6/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — mode femme textiles indiens artisanaux fondée 2004, 15 rue Croix Baragnon. Aucun site propre ni email public. Visite terrain. |
+| CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — même gérant Edouard Dorise que Dorise Joaillier (contact@dorise-joaillier.com déjà en brouillon). 23 rue Croix Baragnon. Adresser via contact@dorise-joaillier.com ou visite terrain. |
+| NITYA (DUKAN DE NITYA) | Saint-Etienne | Mode | Janak Datwani | — | 394862114 | 6/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — mode haut de gamme, nityaboutique.company.site sans email, 10 rue Croix Baragnon. Aucun email public. Visite terrain. |
+| SORTILEGE | Carmes | Mode femme | Marie Guilhem | — | 448745604 | 6/10 | NOUVEAU | Email non trouvé (1er passage 08/06) — multimarques féminines (Stella Forest, Esthème Cachemire) depuis 2007, sortilegeboutique.com ECONNREFUSED, 7 rue Boulbonne, tél 05 61 53 38 10. Retenter site. |
+
+**Nouvelles écartées (session 08/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| ROBERTO GIANNELLI | Saint-Etienne | 788804342 | Établissement Toulouse (20 rue du Languedoc) fermé définitivement le 17/05/2022 — siège transféré à Castelginest — ÉCARTÉE DÉFINITIF |
+| MAITYLA (MAITYKA) | Carmes | 879994192 | Liquidation judiciaire depuis 01/04/2022, société inactive depuis 19/01/2023 — ÉCARTÉE DÉFINITIF |
+
+---
 
 ### Rattrapage samedi — 2026-06-06 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé + 2 écartées définitives
 
