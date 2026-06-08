@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-06 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-08 (L'Auditeur)*
 
 ## Stats
 - Total leads : 133
@@ -11,6 +11,23 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-06-08 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Isabelle Dejean (MEPHISTO DEJEAN) | scom@mephisto-chaussures-dejean.com | Mephisto Dejean sur Two-Step — tes Mephisto et Allrounder trouvées par les Toulousains | r-8340673651248833649 | ACA — NOUVEAU DRAFT (remplace r-3478697915070103749 du 23/04). Spécialiste chaussures confort depuis 1995, Mephisto/Mobils/Allrounder, 30 rue de Metz Capitole. Draft vieux de 46 jours. |
+| 2 | Jean-michel Carrade (LES DESSOUS CHICS) | ph@lingerie-carrade.com | Les Dessous Chics sur Two-Step — ton stock lingerie visible en centre-ville | r-9079582499333599186 | ACA — NOUVEAU DRAFT (remplace r2243537176544092285 du 30/04). Lingerie haut de gamme 29 rue du Languedoc, conseil expert, marques premium grandes tailles. Draft vieux de 39 jours. |
+| 3 | Adem Dris (ASTRA COLLECTION) | astraparfum@gmail.com | Astra Collection sur Two-Step — tes parfums de niche trouvés par les Toulousains | r-9007452366942458291 | ACA — NOUVEAU DRAFT (remplace r-6465806468368047599 du 01/05). Parfums d'exception 07 place Fer à Cheval Saint-Cyprien. Draft vieux de 38 jours. |
+| 4 | Eric Bitoun (L'EMPLACEMENT) | contact@l-emplacement.com | L'Emplacement sur Two-Step — ton concept store visible par les Toulousains | r-8761859087562546160 | ACA — NOUVEAU DRAFT (remplace r-7156942222461192925 du 05/05). Concept store mode/bags/bijoux 40 rue Alsace-Lorraine ouvert 2020. Draft vieux de 34 jours. |
+| 5 | Jonnhy Dunal (L'OBSERVATOIRE) | lobservatoire31@sfr.fr | L'Observatoire sur Two-Step — ton Stone Island et Ralph Lauren trouvés par les Toulousains | r-5311414173464764430 | ACA — NOUVEAU DRAFT (remplace r3575538069750901923 du 06/05). Multimarque homme premium Ralph Lauren/Stone Island/Hogan/Fay, 4 rue des Arts. Draft vieux de 33 jours. |
+
+*Note session 08/06 (L'Auditeur) : 0 lead NOUVEAU avec email (51 NOUVEAU, tous sans email — confirmé Eclaireur 06/06). Décision : 5 rafraîchissements des drafts les plus anciens non actualisés (23/04 à 06/05 — 33 à 46 jours). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (08/06) et supprimer les anciens.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-08".*
+
+---
 
 ### Rattrapage samedi — 2026-06-06 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé + 2 écartées définitives
 
@@ -579,7 +596,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com | 824966022 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r5331074192849055465) — mode homme streetwear/casual, boutique Toulouse+Tarbes, site ilannfive.com, IG actif, 17 rue des Changes |
-| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r3575538069750901923) — pret-a-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts |
+| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr | 491278156 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-5311414173464764430 — remplace r3575538069750901923 du 06/05) — prêt-à-porter homme (Ralph Lauren, Stone Island, Hogan, Fay), lobservatoire.net + shop.lobservatoire.net, 4 rue des Arts. |
 | PAUSE | Saint-Rome | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r-762058812026090260) — boutique montres passion, ouverte mai 2024, pause-montres.fr, deux fondateurs Jonathan+Theo, 23 rue de la Trinite |
 | ETOILE DE SONGE | Saint-Rome | Mode bebe/Lifestyle | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 06/05, id: r8345746387470852338) — boutique bebe independante (textiles, deco, accessoires), etoiledesonge.fr, Yelp feb 2026 actif, 9 place de la Trinite |
 | LINEA MODA | Saint-Rome | Maroquinerie/Bagagerie | Sophie Sollier | lineamoda.toulouse@gmail.com | 884782228 | 6/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-5536448297790948464) — maroquinerie/bagagerie/accessoires mode, Yelp april 2026 actif, 31 rue Saint Rome |
@@ -599,7 +616,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r-7156942222461192925) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse |
+| L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-8761859087562546160 — remplace r-7156942222461192925 du 05/05) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse. |
 | HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r5793792031598694686) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
 | N°45 / ELEMENT STORE (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme 18/05 via mentions legales n45.fr — enseigne renommee N°45, site n45.fr, IG @numero45toulouse, 45 rue Tourneurs, tel 05 31 21 70 42. Rediger email a Emmanuel. |
@@ -661,7 +678,7 @@
 
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
-| ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 01/05, id: r-6465806468368047599) — parfums d'exception, boutique Toulouse 07 place Fer a Cheval |
+| ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-9007452366942458291 — remplace r-6465806468368047599 du 01/05) — parfums d'exception, boutique Toulouse 07 place Fer à Cheval Saint-Cyprien. |
 | EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 01/05, id: r-231037811434737621) — cosmetiques + perruques + soins capillaires (Shea Moisture, Cantu, Activilong), site ymbeauty.fr, IG @ym_beauty1 |
 | HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve (2e passage 01/05) — habesha-cosmetiques.fr formulaire uniquement, IG @habeshabeautycosmetique, FB facebook.com/61576106651375 — contacter via IG ou formulaire site |
 | JAVA COSMETIC | Saint-Cyprien | Cosmetique/Beaute | Fitsum Abebe | — | 850811555 | 6/10 | NOUVEAU | Email non trouve (2e passage 01/05) — Google Business 404, tel confirme 05 61 42 97 28 — contacter par tel |
@@ -700,7 +717,7 @@
 | DORISE JOAILLIER TOULOUSE | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | contact@dorise-joaillier.com | 300485133 | 9/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 30/05, id: r-16562527905295797 — remplace r6047598393326303625 du 30/04) — revendeur officiel Rolex/Tudor/Oris, atelier horloger certifié rue du Languedoc. |
 | L.R.B.J (RIEUNIER) | Saint-Etienne | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r-8972080101590099334 — remplace r-8094677239488341172 du 30/04) — bijoux anciens signés, montres de collection expertisées, création sur-mesure, 22 rue Croix Baragnon. |
 | DANYBERD | Saint-Etienne | Mode Homme | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r8657585168108318003 — remplace r5921374891990160300 du 30/04) — mode homme haut de gamme depuis 1976, 19 rue Croix Baragnon. |
-| LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 30/04, id: r2243537176544092285) — boutique Carrade 29 rue du Languedoc |
+| LES DESSOUS CHICS (CARRADE) | Saint-Etienne | Lingerie | Jean-michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-9079582499333599186 — remplace r2243537176544092285 du 30/04) — lingerie haut de gamme, 29 rue du Languedoc, conseil expert marques premium grandes tailles. |
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve — meme gerant Edouard Dorise que Dorise Joaillier, essayer contact@dorise-joaillier.com |
 | APOSTROPHE RJC | Saint-Etienne | Mode femme | Raymonde Coudert | — | 331258384 | 6/10 | NOUVEAU | Email non trouve — tel 05 61 25 94 95, 23 rue Croix Baragnon |
 | CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve — horlogerie reparation 23 rue Croix Baragnon (pertinence limitee Two-Step) |
@@ -737,7 +754,7 @@
 | POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | 8/10 | NOUVEAU | Chercher email, audit |
 | THE NORTH FACE TLS | Capitole | Sport/Mode | Guillaume Huguet | — | 814222881 | 8/10 | NOUVEAU | Chercher email (franchise locale) |
 | SUD OUEST WATCH | Capitole | Horlogerie | Gaston Gayet | sud-ouest-watch@orange.fr | 319722302 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 22/04) |
-| MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r-3478697915070103749) |
+| MEPHISTO DEJEAN | Capitole | Chaussures | Isabelle Dejean | scom@mephisto-chaussures-dejean.com | 690801311 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-8340673651248833649 — remplace r-3478697915070103749 du 23/04) — chaussures confort Mephisto/Mobils/Allrounder depuis 1995, 30 rue de Metz Capitole. |
 | SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | info@saoya.fr | 823051180 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 23/04, id: r1515891432236323176) |
 | AMA LUNA | Capitole | Mode | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Chercher email, audit |
 | BAGWOOD | Capitole | Accessoires | Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Chercher email, audit |
