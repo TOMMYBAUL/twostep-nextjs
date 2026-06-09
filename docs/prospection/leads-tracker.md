@@ -1,16 +1,48 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-08 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-09 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 133
-- NOUVEAU : 51
+- Total leads : 143
+- NOUVEAU : 57
 - CONTACTE : 1
-- BROUILLON : 67
+- BROUILLON : 71
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-09 (L'Eclaireur) — Capitole epuise, 4 emails trouves + 8 ecartees definitives
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole EPUISE DEFINITIF (75/75 prospects traites). Session convertie en rattrapage sur prospects NOUVEAU Carmes et Saint-Etienne (premiere passe). 40+ recherches web + fetches effectues. **4 emails confirmes : DR SWAG (drswagshopofficiel@gmail.com), EQUI-SUD (contact@equisud-toulouse.com), PLUMETIS (contact@plumetis-toulouse.fr), ARMURERIE BARRAUD (bolivier31@outlook.fr)**. 8 nouvelles ecartees definitives. NOTE : Outil Notion MCP indisponible — resultat enregistre dans le tracker uniquement (cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c, titre "Leads Rattrapage 2026-06-09", agent "Eclaireur", statut "A valider").
+
+| Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| DR SWAG | Carmes | Mode/Streetwear | Nicolas Julius | drswagshopofficiel@gmail.com ✅ | 801794504 | 7/10 | BROUILLON | Valider + envoyer (email trouve 09/06 via dr-swag.com/nous-contacter) |
+| EQUI-SUD | Carmes | Sport (Equitation) | Francoise Imart | contact@equisud-toulouse.com ✅ | 390134567 | 7/10 | BROUILLON | Valider + envoyer (email trouve 09/06 via equipement-equestre-toulouse.fr/mentions-legales) |
+| PLUMETIS | Carmes | Mode (Robes mariee) | Audrey Derouard | contact@plumetis-toulouse.fr ✅ | 840763288 | 5/10 | BROUILLON | Valider + envoyer (email trouve 09/06 via plumetis-toulouse.fr/mentions-legales — NOTE : boutique robes de mariee sur RDV, fit Two-Step discutable) |
+| ARMURERIE BARRAUD | Carmes | Sport (Armurerie) | Olivier Barraud | bolivier31@outlook.fr ✅ | 401784376 | 6/10 | BROUILLON | Valider + envoyer (email trouve 09/06 via pisteurs.fr listing armureries) |
+| AMBIANCES ET SENTEURS | Carmes | Cosmetique/Beaute | Eric Gras | — | 808837157 | 6/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — confirme actif 39 rue des Filatiers, aucune presence digitale avec email. Visite terrain. |
+| LAMA (BELZA KIDS) | Carmes | Mode enfants | Marine Lafitte | — | 421370651 | 6/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — actif (Braderie 2025), boutiquebelza.com ECONNREFUSED, IG @boutique.belza, tel 05 61 53 60 94. Visite terrain. |
+| SORTILEGE | Carmes | Mode femme | Marie Guilhem | — | 448745604 | 6/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — sortilegeboutique.com ECONNREFUSED, tel 05 61 53 38 10, 7 rue Boulbonne. Visite terrain. |
+| LESLIE MONTE-CARLO | Carmes | Mode femme | Mireille Pietri | — | 801007428 | 5/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — actif 35 rue Boulbonne, aucune presence digitale avec email. Visite terrain. |
+| MAC DOUGLAS (ART EXPANSION) | Saint-Etienne | Mode/Maroquinerie | Chantal Huet | — | 308874601 | 6/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — macdouglastoulouse.fr 503, actif 24 rue Croix Baragnon, tel 05 61 53 93 18. Visite terrain. |
+| CONCEPT TOULOUSE | Carmes | Cosmetique/Beaute | Mattia Bono | — | 949677249 | 5/10 | NOUVEAU | Email non trouve (1ere passe 09/06) — 9 rue Boulbonne, aucune presence digitale identifiable. Visite terrain. |
+
+**Nouvelles ecartees (session 09/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| AGATHE ET ZOE | Saint-Etienne | 501691844 | Boutique fermee 30/04/2015, radiee 30/11/2020 (pappers.fr) — ECARTEE DEFINITIF |
+| ROBERTO GIANNELLI | Saint-Etienne | 788804342 | Toulouse fermee 17/05/2022, deplacee a Castelginest — ECARTEE DEFINITIF |
+| HERVE MARIAGE (RAMSES) | Saint-Etienne | 523860542 | Liquidation judiciaire cloturee 27/06/2022 — ECARTEE DEFINITIF |
+| NITYA (DUKAN DE NITYA) | Saint-Etienne | 394862114 | Inactive depuis 27/02/2018 — ECARTEE DEFINITIF |
+| APOS 33 | Carmes | 422970020 | Liquidee 21/03/2019 (procedure insuffisance actif) — ECARTEE DEFINITIF |
+| FUTURWARE LAB | Carmes | 410238703 | Inactive depuis 17/01/2023 — ECARTEE DEFINITIF |
+| MAITYLA (MAITYKA) | Carmes | 879994192 | Inactive depuis 19/01/2023 — ECARTEE DEFINITIF |
+| BAOBAB (B.R.1) | Saint-Etienne | 811166578 | Toulouse fermee 21/07/2020, deplacee a La Rochelle — ECARTEE DEFINITIF |
+
+---
 
 ## Recap brouillons email — 2026-06-08 (L'Auditeur)
 
