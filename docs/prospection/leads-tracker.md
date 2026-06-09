@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-08 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-09 (L'Auditeur)*
 
 ## Stats
 - Total leads : 133
@@ -11,6 +11,23 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-06-09 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Yosief Mhretab Kibrab (EYM BEAUTY) | ym.beauty@yahoo.com | EYM Beauty sur Two-Step — ton stock perruques et Shea Moisture visible par les Toulousains | r-880062269777807850 | ACA — NOUVEAU DRAFT (remplace r-231037811434737621 du 01/05). Cosmétiques/perruques/soins capillaires, Shea Moisture/Cantu/Activilong, 45 rue de la République Saint-Cyprien, ymbeauty.fr. Draft vieux de 39 jours. |
+| 2 | Lauren Handy (MAISON HANDY) | serviceclient@maisonhandy.com | Maison Handy sur Two-Step — tes Golden Goose et Balenciaga trouvés par les Toulousains | r8081559707485223081 | ACA — NOUVEAU DRAFT (remplace r5793792031598694686 du 05/05). Chaussures luxe 14-16 rue des Arts 250m², Balenciaga/Dior/Golden Goose/Moncler/Valentino. Draft vieux de 35 jours. |
+| 3 | Chrystalla Theodoridou (LES REVERIES) | hello@lesreveries.net | Les Rêveries sur Two-Step — tes Malone Souliers trouvées par les Toulousains | r3812528678374450769 | ACA — NOUVEAU DRAFT (remplace r5463543312504006474 du 07/05). Chaussures/accessoires luxe Malone Souliers/Charlotte Chesnais/Ball Pagès, 2 rue des Arts. Draft vieux de 33 jours. |
+| 4 | Geraldine Casanovas (NEGREVERGNE) | ste-negrevergne@hotmail.fr | Négrevergne sur Two-Step — tes Rimowa et Tumi trouvés par les Toulousains | r7418406555355194483 | ACA — NOUVEAU DRAFT (remplace r960593700860017581 du 14/05). Maroquinerie depuis 1954, Rimowa/Tumi/Kipling/Campomaggi, 27 rue de Metz. Draft vieux de 26 jours. |
+| 5 | Marie Guilhem (SORTILEGE) | info@sortilegeboutique.com | Sortilège sur Two-Step — ton stock Stella Forest visible par les Toulousaines | r5502487748487083273 | ACA — NOUVEAU DRAFT (remplace r8213220630848683024 du 15/05). Multimarque femme depuis 2007 Stella Forest/Esthème Cachemire/Maison Hôtel, 7 rue Boulbonne Carmes. Draft vieux de 25 jours. |
+
+*Note session 09/06 (L'Auditeur) : 0 lead NOUVEAU avec email (51 NOUVEAU, tous sans email — confirmé Eclaireur 06/06). Décision : 5 rafraîchissements des drafts les plus anciens non actualisés (01/05 à 15/05 — 25 à 39 jours). Sélection par score 8/10 et ancienneté maximale (ces leads avaient été ignorés lors des sessions précédentes au profit des 9-10/10). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (09/06) et supprimer les anciens.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-09".*
+
+---
 
 ## Recap brouillons email — 2026-06-08 (L'Auditeur)
 
@@ -560,7 +577,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | MATHIS ET SASHA | Carmes | Mode/Vêtements | Clementine Chiodo | clementinedouts@gmail.com | 920475134 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 08/05, id: r8263940955352408641) — mode 100% France, 49 rue des Filatiers, boutique aussi connue sous "Clementine" et "Clementine et Mathieu", IG @laboutiqueclementine, phone 06 89 08 31 62 |
-| SORTILEGE | Carmes | Mode femme | Marie Guilhem | info@sortilegeboutique.com | 448745604 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 15/05, id: r8213220630848683024) — multimarque femme depuis 2007 (Stella Forest, Esthème Cachemire, Maison Hôtel), 7 rue Boulbonne, IG @boutiquesortilege — email trouvé via mentions légales sortilegeboutique.com |
+| SORTILEGE | Carmes | Mode femme | Marie Guilhem | info@sortilegeboutique.com | 448745604 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 09/06, id: r5502487748487083273 — remplace r8213220630848683024 du 15/05) — multimarque femme depuis 2007 (Stella Forest, Esthème Cachemire, Maison Hôtel), 7 rue Boulbonne Carmes, IG @boutiquesortilege. |
 | MADAME GEORGES | Carmes | Mode femme | Lionel Prevost | — | 830672937 | 7/10 | NOUVEAU | Email non trouve — 2 ets (35 + 18 rue Boulbonne), tel 06 28 83 73 98, peu de presence digitale |
 | PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouve — chaussures 35 rue Boulbonne, 4 ets locaux (sous 5 = independant), tel 05 34 44 90 71 |
 | STEDIF | Carmes | Mode/Vêtements | Stephanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouve — mode 46 rue des Filatiers, 2 ets, aucune presence digitale, president Dimitri Lavabre |
@@ -577,7 +594,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | RL.COM (MW&Co) | Saint-Rome | Horlogerie/Montres créateur | Romain Mussato | contact@mwandco.com | 879698066 | 9/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r-4355813290059118696) — marque horlogère indépendante toulousaine, collection ASSET assemblage main, 88% fabrication française, 17 rue des Arts |
-| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r5463543312504006474) — chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), lesreveries.net, 2 rue des Arts |
+| LES REVERIES | Saint-Rome | Mode/Accessoires femme | Chrystalla Theodoridou | hello@lesreveries.net | 818210007 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 09/06, id: r3812528678374450769 — remplace r5463543312504006474 du 07/05) — chaussures/accessoires luxe (Malone Souliers, Charlotte Chesnais, Ball Pagès), helloreveries.com, 2 rue des Arts. |
 | SWAP (MD Concept) | Saint-Rome | Mode femme prêt-à-porter | Michael Drilhole | boutiqueswap@gmail.com | 819061649 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 07/05, id: r4186603753522561088) — prêt-à-porter féminin, 7 ans rue Saint-Rome, swaponline.fr, IG @swaponline, 31 rue Saint Rome |
 | POINDRELLE (AGATHA) | Saint-Rome | Bijouterie franchise | Liliane Poindrelle | — | 324454735 | 7/10 | ECARTE | Franchise AGATHA nationale (75 boutiques France) — ECARTE DÉFINITIF (confirmé 23/05) |
 | LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouve — Yelp April 2026 actif, 22 rue Saint Rome, vetements femme + chaussures + maroquinerie, M & B entite |
@@ -617,7 +634,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | L'EMPLACEMENT | Capitole | Mode/Concept store | Eric Bitoun | contact@l-emplacement.com | 893038257 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-8761859087562546160 — remplace r-7156942222461192925 du 05/05) — concept store ready-to-wear/bags/bijoux/accessoires, 40 rue Alsace Lorraine, ouvert 2020, IG @lemplacement_toulouse. |
-| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 05/05, id: r5793792031598694686) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local independant 4 ets Toulouse |
+| HANDY | Capitole | Chaussures | Lauren Handy | serviceclient@maisonhandy.com | 334991056 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 09/06, id: r8081559707485223081 — remplace r5793792031598694686 du 05/05) — Maison Handy 14-16 rue des Arts, 250m², marques Balenciaga/Dior/Golden Goose/Moncler/Valentino, groupe local indépendant 4 ets Toulouse. |
 | ALPHABET | Capitole | Mode femme | Patricia Delchet | — | 392739900 | 7/10 | NOUVEAU | Email non trouve — boutique mode femme 39 rue Metz / 32 rue Astorg, tel 05 61 22 11 94. Meme gerante qu'AZED (deja traite) |
 | N°45 / ELEMENT STORE (LEMAN) | Capitole | Streetwear/Mode | Emmanuel Levy | contact@n45.fr | 794917666 | 7/10 | BROUILLON | Email confirme 18/05 via mentions legales n45.fr — enseigne renommee N°45, site n45.fr, IG @numero45toulouse, 45 rue Tourneurs, tel 05 31 21 70 42. Rediger email a Emmanuel. |
 | STOCK AMERICAIN | Capitole | Mode vintage/Surplus | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouve — surplus americain/vintage 20 rue Bayard, actif depuis 1977, Yelp actif nov 2025, tel 08 99 86 54 45 |
@@ -650,7 +667,7 @@
 |---|---|---|---|---|---|---|---|---|
 | LILI-LEONE | Capitole | Mode femme | Stephanie Roux | lilileone@live.fr | 529145161 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r1179746631294846623 — remplace r6217091151963335716 du 28/04) — 20+ ans mode femme 16 rue des Tourneurs, Newtone/Des Petits Hauts/HOD Paris. |
 | N A L'INFINI | Capitole | Bijouterie | Patricia Lacombe | contact@bijouterie-toulouse-nougues.fr | 817911969 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 01/06, id: r-6193854175602566493 — remplace r2720507363937656694 du 28/04) — bijoux argent 925 Bronzallure/Endless/Tamahiné/WeWood, 19 rue de la Pomme. Email confirmé via bijouterie-toulouse-nougues.fr. |
-| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (brouillon Gmail créé 14/05, id: r960593700860017581) — Negrevergne depuis 1954, sacs marques (Fourès, Kipling, Campomaggi, Rimowa, Tumi), 27 rue de Metz, tel 05 61 21 02 96. |
+| NEGREVERGNE | Capitole | Maroquinerie | Geraldine Casanovas | ste-negrevergne@hotmail.fr | 540800240 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 09/06, id: r7418406555355194483 — remplace r960593700860017581 du 14/05) — maroquinerie depuis 1954, Rimowa/Tumi/Kipling/Campomaggi/Fourès, 27 rue de Metz, tel 05 61 21 02 96. |
 | PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouve — pampy.com domaine parque, IG @_pampix, tel 05 61 23 37 46 |
 | ARSENE ET LES PIPELETTES | Capitole | Mode enfants | Helene Rieunier | boutiquetoulouse@arseneetlespipelettes.com | 809552359 | 7/10 | BROUILLON | Email confirme 18/05 via page boutique arseneetlespipelettes.com/fr/magasins/toulouse-11 — email specifique Toulouse (different du SAV), tel 05 67 16 72 09, 25 rue de Metz. Rediger email a Helene. |
 | RECOVERY | Capitole | Mode/Concept store | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouve — creation fev. 2025, IG @recoverytoulouse, tel 05 61 40 42 94 |
@@ -679,7 +696,7 @@
 | Boutique | Quartier | Segment | Gerant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | ASTRA COLLECTION | Saint-Cyprien | Mode/Parfumerie | Adem Dris | astraparfum@gmail.com | 982090763 | 8/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 08/06, id: r-9007452366942458291 — remplace r-6465806468368047599 du 01/05) — parfums d'exception, boutique Toulouse 07 place Fer à Cheval Saint-Cyprien. |
-| EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail cree 01/05, id: r-231037811434737621) — cosmetiques + perruques + soins capillaires (Shea Moisture, Cantu, Activilong), site ymbeauty.fr, IG @ym_beauty1 |
+| EYM BEAUTY | Saint-Cyprien | Cosmetique/Beaute | Yosief Mhretab Kibrab | ym.beauty@yahoo.com | 897417416 | 7/10 | BROUILLON | Valider + envoyer (nouveau brouillon Gmail 09/06, id: r-880062269777807850 — remplace r-231037811434737621 du 01/05) — cosmétiques + perruques + soins capillaires (Shea Moisture, Cantu, Activilong), site ymbeauty.fr, IG @ym_beauty1, 45 rue de la République. |
 | HABESHA | Saint-Cyprien | Cosmetique/Beaute | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouve (2e passage 01/05) — habesha-cosmetiques.fr formulaire uniquement, IG @habeshabeautycosmetique, FB facebook.com/61576106651375 — contacter via IG ou formulaire site |
 | JAVA COSMETIC | Saint-Cyprien | Cosmetique/Beaute | Fitsum Abebe | — | 850811555 | 6/10 | NOUVEAU | Email non trouve (2e passage 01/05) — Google Business 404, tel confirme 05 61 42 97 28 — contacter par tel |
 | ABSAMY | Saint-Cyprien | Cosmetique/Beaute | Absatou Thiam | — | 811869353 | 6/10 | NOUVEAU | Email non trouve (2e passage 01/05) — Treatwell actif (adresse 32 rue a verifier vs 18 rue RCS), tel 05 62 86 16 21 — contacter par tel |
