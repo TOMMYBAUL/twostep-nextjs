@@ -39,6 +39,23 @@
 
 ---
 
+## Recap brouillons email — 2026-06-10 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Sandra Nougues (BIJOUTERIE NOUGUES) | contact@bijouterienougues.fr | Bijouterie Nougues sur Two-Step — tes bijoux de famille trouvés par les Toulousains | r3423250572157635851 | ACA — NOUVEAU DRAFT (remplace r-2055856763242413617 du 28/05). Joaillerie familiale 4 générations depuis 1920, 2 boutiques rue de la Pomme, artisanat joaillier indépendant. Draft vieux de 13 jours. |
+| 2 | Nathalie Ghenassia (IMAGINE BIJOUX) | contact@imagine-bijoux.fr | Imagine Bijoux sur Two-Step — tes marques bijoux trouvées par les Toulousains | r-1086078491585527311 | ACA — NOUVEAU DRAFT (remplace r155757055921508640 du 28/05). 25 ans rue de la Pomme, bijoux fantaisie multimarque + e-shop, clientèle fidèle établie. Draft vieux de 13 jours. |
+| 3 | Eric Gras (AMBIANCES ET SENTEURS / HONORE PAYAN) | honore.payan@gmail.com | Honoré Payan Toulouse sur Two-Step — tes parfums d'exception trouvés par les Toulousains | r-5309211921052533179 | ACA — NOUVEAU DRAFT (remplace r6576000527102003039 du 28/05). Parfumerie artisanale Grasse depuis 1854, famille Gras propriétaire, ~400 revendeurs France, 39 rue des Filatiers Carmes. Draft vieux de 13 jours. |
+| 4 | Arnaud Turbe (SAOYA) | saoyatoulouse@orange.fr | Saoya sur Two-Step — tes bijoux artisanaux de Provence trouvés par les Toulousains | r3087600925734751458 | ACA — NOUVEAU DRAFT (remplace r3420220746965689916 du 28/05). Bijoux fantaisie artisanaux depuis 1991, ateliers Provence, collections florales, 30+ ans rue Alsace-Lorraine Capitole. Draft vieux de 13 jours. |
+| 5 | Olivier Gelly (PAYOTE) | sav@payote.fr | Payote sur Two-Step — tes espadrilles vegan trouvées par les Toulousains | r1809884252751841399 | ACA — NOUVEAU DRAFT (remplace r7209326759298729066 du 28/05). Espadrilles vegan made in France créées 2016, CA 1,3M€, 58 rue des Tourneurs Capitole. Draft vieux de 13 jours. |
+
+*Note session 10/06 (L'Auditeur) : 0 lead NOUVEAU avec email (50 NOUVEAU, tous sans email — confirmé Eclaireur 10/06). Décision : 5 rafraîchissements des drafts les plus anciens non actualisés (28/05 — 13 jours). Ces 5 leads avaient été drafés initialement le 19/05 puis actualisés le 28/05, mais jamais touchés depuis. Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. Thomas peut garder les nouveaux drafts (10/06) et supprimer les anciens du 28/05.*
+*Note : Outil Notion MCP — tentative d'écriture prévue. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-10".*
+
+---
+
 ## Recap brouillons email — 2026-06-09 (L'Auditeur)
 
 **Agent** : L'Auditeur | **Statut** : À valider
