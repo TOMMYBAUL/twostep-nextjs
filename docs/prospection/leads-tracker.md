@@ -1,16 +1,43 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-09 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-10 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 133
-- NOUVEAU : 51
+- NOUVEAU : 50
 - CONTACTE : 1
 - BROUILLON : 67
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage mercredi — 2026-06-10 (L'Eclaireur) — Saint-Rome épuisé, 0 email trouvé + 1 écartée
+
+**Note de session :** Mercredi = Saint-Rome dans la rotation. Saint-Rome ÉPUISÉ DÉFINITIF (confirmé depuis le 03/06). Session convertie en rattrapage sur 12 prospects NOUVEAU multi-quartiers priorisés par score et nombre de passages (≤4 passes). 30+ recherches web + fetches effectués. **0 email confirmé.** 1 nouvelle écartée : OLD ENGLAND (562068296, Albert Goldberg) — boutique Toulouse fermée définitivement, Albert Goldberg désormais à Nice (Albert Arts, 7 Promenade des Anglais 06000 Nice). Patterns confirmés : TOULOUSE MONTRES (contact.html 404 persistant, page principale sans email — 4ème passage), L'ESPION (lespion.fr formulaire uniquement — 4ème passage), CHAUSSURES MANIK (manik.fr form+tél uniquement — 3ème passage), AMA LUNA (IG @amalunacreation uniquement — 3ème passage), DRESSING ROSE AND KIDS (IG uniquement, 2ème adresse 23 rue Rémusat découverte — 4ème passage), SIENNE (IG @sienne.boutique confirmé actif, Yelp juil. 2025, aucun email — 3ème passage), LE LIEU/SERHA (tél uniquement — 3ème passage), MOSQUITOS (annuaires uniquement — 3ème passage), MANOUSHKA (manoushka.fr ECONNREFUSED — 3ème passage), MAISON DE LA SAPP (m2lsapp.com toujours 503 — 7ème passage), SARL PERLIN'S (perlins.fr sans email — 3ème passage), HABESHA Saint-Cyprien (habesha-cosmetiques.fr formulaire uniquement — 3ème passage). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 10/06) — toulouse-montres.com actif, contact.html 404 persistant, page principale sans email. 10 rue Pierre de Fermat. Visite terrain. |
+| L'ESPION | Saint-Etienne | Mode créateurs | Simone Laskar | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (4ème passage 10/06) — lespion.fr formulaire uniquement, annuaires aucun email. 21 bis rue Croix Baragnon. Visite terrain. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — manik.fr contact tél uniquement (05 61 21 52 08), mentions légales 404. 33 rue Alsace-Lorraine. Visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — IG @amalunacreation uniquement, aucun site propre. 66 rue de la Pomme. Visite terrain. |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 10/06) — IG @dressingrosektoulouse uniquement. Découverte : 2ème local au 23 rue de Rémusat. 31 rue Saint-Rome. Visite terrain. |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — IG @sienne.boutique confirmé actif, Yelp mis à jour juillet 2025, aucun email public. 44 rue des Tourneurs. Visite terrain. |
+| LE LIEU (SERHA) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — tél 05 31 15 02 34 uniquement. 37 rue de Metz / 14 rue de la Pomme. Visite terrain. |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 444997753 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — annuaires uniquement, aucun site ni email. 12B rue de la Pomme. Visite terrain. |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — manoushka.fr ECONNREFUSED, FB @manoushka.toulouse uniquement. 53 rue de la Pomme. Visite terrain. |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — perlins.fr actif mais aucun email (tél 05 61 21 18 81). 49 rue de la Pomme. Visite terrain. |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (7ème passage 10/06) — m2lsapp.com toujours 503 (7ème semaine consécutive). IG @maisondelasape, tél +33 7 56 23 78 65. 14 rue des Changes. Visite terrain. |
+| HABESHA | Saint-Cyprien | Cosmétique/Beauté | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 10/06) — habesha-cosmetiques.fr formulaire Wizi uniquement, IG @habeshabeautycosmetique actif. 27 rue de la République 31300. Visite terrain. |
+
+**Nouvelle écartée (session 10/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| OLD ENGLAND | Saint-Etienne | 562068296 | Boutique Toulouse fermée définitivement — Albert Goldberg a déplacé son activité à Nice (Albert Arts, 7 Promenade des Anglais 06000 Nice) — ÉCARTÉE DÉFINITIF |
+
+---
 
 ## Recap brouillons email — 2026-06-09 (L'Auditeur)
 
@@ -738,7 +765,7 @@
 | JAILLET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouve — meme gerant Edouard Dorise que Dorise Joaillier, essayer contact@dorise-joaillier.com |
 | APOSTROPHE RJC | Saint-Etienne | Mode femme | Raymonde Coudert | — | 331258384 | 6/10 | NOUVEAU | Email non trouve — tel 05 61 25 94 95, 23 rue Croix Baragnon |
 | CHRISTOMET | Saint-Etienne | Bijouterie/Horlogerie | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouve — horlogerie reparation 23 rue Croix Baragnon (pertinence limitee Two-Step) |
-| OLD ENGLAND | Saint-Etienne | Mode | Albert Goldberg | — | 562068296 | 5/10 | NOUVEAU | Email non trouve — verifier si encore actif au 24 rue Croix Baragnon (adresse peut-etre liberee) |
+| OLD ENGLAND | Saint-Etienne | Mode | Albert Goldberg | — | 562068296 | 5/10 | ECARTE | Boutique Toulouse fermée définitivement — Albert Goldberg désormais à Nice (Albert Arts, 7 Promenade des Anglais 06000) — ECARTE DEFINITIF (confirmé 10/06) |
 
 **Boutiques ecartees (session 29/04) :** BAOBAB (B.R.1, fermee juillet 2020), HERVE MARIAGE (RAMSES, liquidation judiciaire juillet 2021), FJT / FRAYSSINET JOAILLIER (groupe HOLDING FRAYSSINET, non independant, 5 ets), ANNE FONTAINE (chaine nationale 5 ets), LA CHEMISERIE TOULOUSAINE-LCT (meme gerant Ari Zlotkin qu'Anne Fontaine, franchise probable)
 
