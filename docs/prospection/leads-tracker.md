@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-10 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-11 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 133
@@ -11,6 +11,25 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage jeudi — 2026-06-11 (L'Eclaireur) — Carmes épuisé, 0 email trouvé + 1 SIREN invalide
+
+**Note de session :** Jeudi = Carmes dans la rotation. Carmes ÉPUISÉ DÉFINITIF (26/26 prospects traités : 6 emails en BROUILLON, 9 ÉCARTÉS définitifs, 11 NOUVEAU sans email après 2-6 passages). Session convertie en rattrapage sur 10 prospects NOUVEAU multi-quartiers priorisés par score et nombre de passages (≤5 passes). 35+ recherches web + fetches effectués. **0 email confirmé.** 1 SIREN invalide confirmé : SIENNE (428969711) = société 3 S D (Paris), établissement Toulouse 44 rue des Tourneurs FERMÉ le 05/12/2011, société RADIÉE le 30/09/2025 (jugement liquidation greffe de Paris) — ce SIREN est erroné pour la boutique actuelle. Cependant IG @sienne.boutique actif + Yelp "Updated July 2025" confirment une boutique SIENNE toujours active à Toulouse — Simon Benlolo opère probablement sous un autre SIREN non identifié. À vérifier terrain. Patterns confirmés : LAORA VITTORIA (tel 05 61 22 07 48 uniquement, aucun site ni IG — 3ème passage), LB7 (créée 23/01/2026, aucune présence digitale — 4ème passage), CHAUSSURES MANIK (manik.fr actif, mentions légales 404, tel uniquement — 4ème passage), AMA LUNA (IG @amalunacreation + FB @almalunaboutique sans email — 4ème passage), BAGWOOD/ALFRED WOOD (Yelp juin 2026 actif, tel 05 61 12 14 46 uniquement — 4ème passage), MANOUSHKA (manoushka.fr ECONNREFUSED persistant — 4ème passage), HABESHA (habesha-cosmetiques.fr formulaire Wizi uniquement — 4ème passage), DRESSING ROSE AND KIDS (IG @dressingrosektoulouse uniquement — 5ème passage), TOULOUSE MONTRES (toulouse-montres.com actif sur RDV, aucun email sur aucune page — 5ème passage). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| LAORA VITTORIA | Carmes | Chaussures | Annick Confuorto | — | 412012395 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 11/06) — tel 05 61 22 07 48 uniquement, aucun site ni IG/FB identifié. 3 bis rue du Rempart Villeneuve / 19 rue Ozenne. Visite terrain. |
+| LB7 | Carmes | Mode femme | Laura Mathieu | — | 100285386 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — société créée 23/01/2026 (5 mois), aucune présence digitale identifiée (site, IG, FB). 7 rue Boulbonne. Visite terrain uniquement. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — manik.fr actif mais tel uniquement (05 61 21 52 08), mentions légales 404 persistant. 33 rue Alsace-Lorraine. Visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — IG @amalunacreation + FB @almalunaboutique actifs, aucun site ni email public. 66 rue de la Pomme. Visite terrain. |
+| BAGWOOD (ALFRED WOOD) | Capitole | Mode homme | Therese Wood / Jeffrey Wood | — | 408176311 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — Yelp juin 2026 actif, tel 05 61 12 14 46 uniquement. 75 rue Alsace-Lorraine. Aucun site ni email public. Visite terrain. |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — manoushka.fr ECONNREFUSED persistant, FB @manoushka.toulouse uniquement. 53 rue de la Pomme. Visite terrain. |
+| HABESHA | Saint-Cyprien | Cosmétique/Beauté | Meron Gelashe | — | 980687842 | 7/10 | NOUVEAU | Email non trouvé (4ème passage 11/06) — habesha-cosmetiques.fr formulaire Wizi uniquement, IG @habeshabeautycosmetique actif. 27 rue de la République 31300. Visite terrain. |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 11/06) — IG @dressingrosektoulouse uniquement. 31 rue Saint-Rome. Visite terrain ou contact IG. |
+| TOULOUSE MONTRES | Saint-Etienne | Bijouterie/Horlogerie | Jean-Marc Morillon | — | 905343240 | 8/10 | NOUVEAU | Email non trouvé (5ème passage 11/06) — toulouse-montres.com actif (RDV uniquement), aucun email sur aucune page (accueil, à propos, toulouse-montres.html). 10 rue Pierre de Fermat. Visite terrain. |
+| SIENNE | Capitole | Mode femme | Simon Benlolo | — | 428969711 | 6/10 | NOUVEAU | SIREN invalide confirmé 11/06 (société 3 S D liquidée, boutique Toulouse fermée 2011). IG @sienne.boutique + Yelp Jul 2025 confirment boutique active — Simon Benlolo opère sous autre SIREN non identifié. Trouver bon SIREN / visite terrain 44 rue des Tourneurs. |
+
+---
 
 ### Rattrapage mercredi — 2026-06-10 (L'Eclaireur) — Saint-Rome épuisé, 0 email trouvé + 1 écartée
 
