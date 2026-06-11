@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-11 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-11 (L'Auditeur)*
 
 ## Stats
 - Total leads : 133
@@ -11,6 +11,123 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-06-11 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider (Gmail non créés — token expiré, voir ci-dessous)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Rachel Nto (RACHEL HAIR INTERNATIONAL) | csrachelhair@gmail.com | Rachel Hair sur Two-Step — tes perruques et prothèses trouvées par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r7675499261749507342 du 28/05). Spécialiste perruques + prothèses capillaires, alopécie, 12 rue de Bayard. Angle : créneau ultra-précis, peu de concurrents locaux, clientèle qui cherche exactement ce que Rachel propose. |
+| 2 | Kangle Wang (PASSION FILLE) | yanyun411@gmail.com | Passion Fille sur Two-Step — tes chaussures femme trouvées par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r-5682334074512043112 du 28/05). Boutique chaussures femme 14 rue Saint-Rome, Yelp mars 2026 actif, fidélité clientèle établie. |
+| 3 | Chantal Huet (MAC DOUGLAS) | macdouglastoulouse@gmail.com | MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir visibles par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r3633226270736162015 du 29/05). Maroquinerie française depuis 1976, sacs + chaussures cuir, 24 rue Croix Baragnon. |
+| 4 | Benoit Quintana (FAUR-QUINTANA) | info@faur-quintana.com | Faur-Quintana sur Two-Step — tes Hublot et Bell & Ross trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r3863007260793644048 du 30/05). Bijouterie/horlogerie 3 générations, Hublot/Bell&Ross/Chaumet/Ginette NY, 19 place Victor Hugo. |
+| 5 | Nicolas Julius (DR SWAG) | drswagshopofficiel@gmail.com | DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r-516346294741341555 du 30/05). Streetwear depuis 2014, Jordan/Nike/New Era/Unkut, 13 rue Perchepinte Carmes. |
+
+*Note session 11/06 (L'Auditeur) : 0 lead NOUVEAU avec email (50 NOUVEAU, tous sans email — confirmé Eclaireur 11/06). Décision : 5 rafraîchissements des drafts les plus anciens non actualisés (28-30/05 — 12 à 14 jours). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. PROBLÈME TECHNIQUE : MCP Gmail token expiré — création des drafts échouée. Thomas doit re-autoriser le MCP Gmail (Settings → Integrations → Gmail) puis relancer L'Auditeur, OU copier-coller les 5 emails ci-dessous directement dans Gmail.*
+*Note : Outil Notion MCP indisponible — recap consigné dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-11".*
+
+### TEXTES DES 5 EMAILS (prêts à copier-coller)
+
+**1. Rachel Nto — csrachelhair@gmail.com**
+Objet : Rachel Hair sur Two-Step — tes perruques et prothèses trouvées par les Toulousaines
+
+> Bonjour Rachel,
+>
+> J'ai découvert Rachel Hair en cherchant des spécialistes perruques et prothèses capillaires à Toulouse — créneau ultra-précis, peu de concurrents, clientèle qui cherche exactement ce que tu proposes.
+>
+> Chapeau pour le positionnement : aider des personnes atteintes d'alopécie à retrouver confiance via une prothèse sur-mesure, c'est du soin autant que du commerce.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "perruque Toulouse" depuis son téléphone, Two-Step lui montre ton stock en temps réel — sans livraison, sans commission. Elle vient, elle achète chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**2. Kangle Wang — yanyun411@gmail.com**
+Objet : Passion Fille sur Two-Step — tes chaussures femme trouvées par les Toulousaines
+
+> Bonjour Kangle,
+>
+> J'ai repéré Passions Filles rue Saint-Rome — boutique chaussures femme active, une belle fidélité clientèle, et un Yelp mis à jour en mars 2026 : preuve que les clients sont là.
+>
+> Ce qui est dommage, c'est que les Toulousaines qui cherchent des chaussures sur leur téléphone ne voient pas ton stock — elles tombent sur des boutiques en ligne à la place.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "chaussures femme Toulouse centre" depuis chez elle, Two-Step lui montre ce que tu as disponible en boutique. Elle vient te voir. Pas de commission, pas de livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**3. Chantal Huet — macdouglastoulouse@gmail.com**
+Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir visibles par les Toulousains
+
+> Bonjour Chantal,
+>
+> MAC DOUGLAS Toulouse, c'est une référence maroquinerie cuir en centre-ville depuis 1976 — rare pour une adresse indépendante qui a su tenir sur Croix Baragnon.
+>
+> Les amateurs de cuir français sont exactement le type de clients qui cherchent en ligne avant d'aller en boutique. Le problème : ils ne savent pas que tu as le modèle qu'ils cherchent.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "sac cuir Toulouse" depuis son téléphone, Two-Step lui montre ton stock disponible en temps réel — sans commission, sans livraison. Il vient, il achète chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**4. Benoit Quintana — info@faur-quintana.com**
+Objet : Faur-Quintana sur Two-Step — tes Hublot et Bell & Ross trouvés par les Toulousains
+
+> Bonjour Benoit,
+>
+> Faur-Quintana place Victor Hugo — 3 générations Quintana, revendeur Hublot, Bell & Ross, Chaumet et Ginette NY. C'est la bijouterie-horlogerie indépendante de référence à Toulouse.
+>
+> Les clients qui cherchent une montre de prestige ou un bijou d'exception font leurs recherches en ligne d'abord. Ils méritent de trouver ta boutique avant de commander sur un site.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Hublot Toulouse" ou "Ginette NY Toulouse" depuis son téléphone, Two-Step lui montre que tu l'as en stock. Sans commission, sans livraison. Il vient chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**5. Nicolas Julius — drswagshopofficiel@gmail.com**
+Objet : DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousains
+
+> Bonjour Nicolas,
+>
+> DR SWAG depuis 2014 rue Perchepinte — le temple streetwear de Toulouse avec l'une des meilleures sélections Jordan, New Era et Unkut en centre-ville. 12 ans de boutique, c'est du solide.
+>
+> Le problème : les sneakerheads qui cherchent une Jordan ou une New Era spécifique à Toulouse passent souvent par des sites en ligne faute de savoir que tu l'as en boutique.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Jordan Toulouse" depuis son tel, Two-Step lui montre ton stock en temps réel. Il passe rue Perchepinte le jour même. Pas de commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
 
 ### Rattrapage jeudi — 2026-06-11 (L'Eclaireur) — Carmes épuisé, 0 email trouvé + 1 SIREN invalide
 
