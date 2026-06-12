@@ -68,17 +68,24 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
 
         // Quantité : si la colonne existe on l'utilise (0 compris = rupture) ;
         // si elle est absente, on retombe sur 1 ("présence" — mode dégradé).
+        // Plafond 9999 : au-delà c'est une erreur d'export (colonne décalée,
+        // code-barres dans la colonne quantité...), pas un stock de boutique.
         let quantity = 1;
         if (mapping.quantity !== null) {
             const q = Number(String(row[mapping.quantity] ?? "").replace(",", "."));
-            quantity = Number.isFinite(q) ? Math.max(0, Math.trunc(q)) : 0;
+            quantity = Number.isFinite(q) ? Math.min(Math.max(0, Math.trunc(q)), 9999) : 0;
         }
 
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
-        const unit_price =
+        const parsedPrice =
             rawPrice != null && rawPrice !== ""
-                ? Number(String(rawPrice).replace(",", ".")) || null
-                : null;
+                ? Number(String(rawPrice).replace(",", "."))
+                : NaN;
+        // Prix exploitable = strictement positif et plausible ; sinon null
+        // (un prix négatif ou aberrant ne doit jamais atteindre la fiche).
+        const unit_price = Number.isFinite(parsedPrice) && parsedPrice > 0 && parsedPrice < 100_000
+            ? parsedPrice
+            : null;
 
         const displayName = name || (ean ? `EAN ${ean}` : `REF ${sku}`);
         items.push({ name: displayName, ean, sku, brand, quantity, unit_price });

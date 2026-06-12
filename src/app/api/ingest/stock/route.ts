@@ -89,8 +89,25 @@ export async function POST(request: NextRequest) {
         // les articles vendus absents du fichier (garde-fou anti-partiel intégré).
         const result = await ingestStockSnapshot(merchantId, parsed.items, admin, { reconcile: true });
 
+        // Aucune ligne exploitable (ni GTIN valide ni SKU) → échec explicite,
+        // avec le détail des rejets pour que l'intégrateur corrige son export.
+        const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
+        if (exploitable === 0) {
+            await admin
+                .from("ingest_credentials")
+                .update({ last_used_at: new Date().toISOString(), last_rows: result.total_items, last_status: "error" })
+                .eq("merchant_id", merchantId);
+            return NextResponse.json(
+                {
+                    error: "No exploitable lines: every row needs a valid GTIN barcode or a SKU (name alone is not an identity)",
+                    triage: result.triage,
+                },
+                { status: 422 },
+            );
+        }
+
         const status =
-            result.reconcile_skipped || result.errors.length > 0
+            result.reconcile_skipped || result.errors.length > 0 || result.triage.rejected_lines > 0
                 ? result.stock_replaced > 0
                     ? "partial"
                     : "error"

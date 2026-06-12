@@ -28,6 +28,19 @@ describe("parseStockFile — contrat NearSt {code-barres, quantité, prix}", () 
         const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
         expect(items).toHaveLength(1);
     });
+
+    it("plafonne les quantités aberrantes (colonne décalée) à 9999", () => {
+        const csv = "code-barres;quantité;prix\n3017620422003;3017620422003;5\n";
+        const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
+        expect(items[0].quantity).toBe(9999);
+    });
+
+    it("neutralise les prix négatifs ou aberrants (null, jamais affichés)", () => {
+        const csv = "code-barres;quantité;prix\n3017620422003;2;-4.50\n4006381333931;1;250000\n";
+        const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
+        expect(items[0].unit_price).toBeNull();
+        expect(items[1].unit_price).toBeNull();
+    });
 });
 
 describe("validEanOrNull — GTIN vs SKU interne", () => {

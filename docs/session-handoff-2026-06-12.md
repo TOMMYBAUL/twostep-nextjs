@@ -84,6 +84,34 @@ open-redirect `app/auth/login/page.tsx`.
 6. Bouton « générer étiquette » Code128 (`renderCode128Svg`) pour créateurs.
 7. Composant scan-session caméra (au-dessus du scanner existant + `lib/scan/session.ts`).
 
+## 5ter. Workflow d'ingestion fichier FINAL (session 2026-06-12 nuit)
+
+Décision Thomas (alignée NearSt) : **identité = GTIN checksum valide OU SKU ;
+le nom seul n'est JAMAIS une identité d'ingestion.**
+
+- `lib/ingest/triage.ts` (NOUVEAU, pur, testé) : tri GTIN (fort, enrichissable) /
+  SKU (faible, masqué jusqu'à complétion ; EAN au checksum faux = SKU) / rejeté
+  (compté + échantillonné, jamais silencieux). SKU 3-32 chars (PLU courts ok).
+- `ingestStockSnapshot` : triage intégré, matching EAN→SKU→nom, option `dryRun`
+  (simulation complète pour wizard : créations/màj/passages à 0, zéro écriture),
+  rapport `triage` dans le résultat.
+- **Angles morts corrigés** : (1) UPDATE forçait `visible:true` → ressuscitait les
+  produits masqués/soft-deleted — supprimé ; (2) EAN deviné (par nom ou SKU partagé)
+  pouvait auto-publier → plafonné à la file 1-tap `pending` ; (3) fichier 100% rejeté
+  + petit catalogue (<10) → réconciliation aurait vidé la boutique — bloquée ;
+  (4) produits `validated` re-scorés/dépubliables par un push — figés ;
+  (5) recherche nom/photo sur placeholders "EAN x"/"REF x" → bruit — skippée ;
+  (6) caps parse : quantité ≤ 9999, prix >0 et <100k sinon null.
+- `api/catalog/import` RÉÉCRIT : cœur partagé (parseStockFile+ingestStockSnapshot,
+  fini la duplication), `mode=preview` (wizard) / `apply`, dedup hash sur apply
+  seulement, 422 + rapport si 0 ligne exploitable. ⚠️ Changements de comportement :
+  réconciliation désormais ACTIVE sur ce canal (gardée), et plus de fallback IA
+  sur les en-têtes exotiques (déterministe ; l'UI wizard devra afficher l'échec).
+- `api/ingest/stock` : 422 + rapport triage si 0 exploitable, status `partial` si
+  rejets, rapport triage dans chaque réponse.
+- UI restante (chantier B) : écran preview→confirm dans my-stock-view (l'API est
+  prête), vue "produits à compléter" (les SKU-only attendent en masked/pending).
+
 ## 6. BLOQUÉ sur Thomas
 
 - **#12** : GS1 (entreprise devient diffusable sous 24h après 2026-06-12, puis adhésion
