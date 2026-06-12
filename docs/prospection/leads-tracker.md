@@ -1,16 +1,42 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-11 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-12 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 133
-- NOUVEAU : 50
+- NOUVEAU : 49
 - CONTACTE : 1
 - BROUILLON : 67
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage vendredi — 2026-06-12 (L'Eclaireur) — Saint-Cyprien épuisé, 0 email trouvé + 2 écartées
+
+**Note de session :** Vendredi = Saint-Cyprien dans la rotation. Saint-Cyprien ÉPUISÉ DÉFINITIF (confirmé 15/05). Session convertie en rattrapage sur 10 prospects NOUVEAU multi-quartiers priorisés par score et nombre de passages (≤6 passes), ciblant boutiques avec présence digitale. 25+ recherches web + fetches effectués. **0 email confirmé.** 2 nouvelles écartées : POBIEDA (831015748, liquidation judiciaire prononcée 11/04/2024 — societe.com confirmé) et COMEBACK (901868729, siège Carmaux 81400, boutique Toulouse 47 rue de la Pomme désormais occupée par JB MARTIN — fermeture confirmée). Patterns confirmés : PARALLELE (parallele-eshop.com toujours inaccessible — 7ème semaine consécutive, 6ème passage), LOVE/BOSCHERIE (boutique confirmée Toulouse Tourisme + marqueetcommunication.fr, IG @love.toulouse.store/@toulousewithlove, aucun email — 6ème passage), MOSQUITOS (aucun site ni email, tel uniquement — 4ème passage), LE LIEU/SERHA (IG @lelieu_toulouse + FB confirmés, le-lieu.fr = centre bien-être Tordères fausse piste, aucun email public — 4ème passage), VERSO (Yelp mis à jour mars 2026, tel 05 62 30 89 25, aucun site ni email — 2ème passage), STEDIF (aucune présence digitale — 2ème passage), SOCIETE LAKO/BERNARD KOK (Jean Chatel/Nino Loreti/Seidensticker/Barutti, tel 05 61 21 50 72 uniquement — 3ème passage), YLANG (annuaires uniquement — 3ème passage). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| VERSO | Capitole | Mode homme | Monique Baron | — | 453313181 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 12/06) — Yelp mis à jour mars 2026 (actif), tel 05 62 30 89 25, aucun site ni email public. 19 rue de la Pomme. Visite terrain. |
+| POBIEDA | Saint-Rome | Mode | Svitlana Labau | — | 831015748 | — | ECARTE | Liquidation judiciaire prononcée 11/04/2024 (societe.com) — ÉCARTÉE DÉFINITIF |
+| STEDIF | Carmes | Mode | Stéphanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 12/06) — aucune présence digitale (ni site, ni RS, ni email). 46 rue des Filatiers. Visite terrain uniquement. |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 12/06) — parallele-eshop.com toujours inaccessible (7ème semaine), tel 05 34 44 90 73. 35 rue Boulbonne. Visite terrain uniquement. |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 334955838 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 12/06) — aucun site propre ni email public. 12B rue de la Pomme. Visite terrain. |
+| LE LIEU (SERHA) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 12/06) — IG @lelieu_toulouse + FB actifs, le-lieu.fr = fausse piste (bien-être Tordères), tel 05 31 15 02 34. 37 rue de Metz / 14 rue de la Pomme. Visite terrain. |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 12/06) — boutique confirmée active (Toulouse Tourisme + marqueetcommunication.fr), IG @love.toulouse.store + @toulousewithlove, aucun email public. 49 rue des Filatiers. Visite terrain. |
+| SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 12/06) — Jean Chatel/Nino Loreti/Seidensticker/Barutti, tel 05 61 21 50 72 uniquement. 36 rue de la Pomme. Visite terrain. |
+| COMEBACK | Capitole | Chaussures | Jerome Delgado | — | 901868729 | — | ECARTE | 47 rue de la Pomme désormais JB MARTIN, COMEBACK siège Carmaux (81400) — boutique Toulouse fermée/déplacée — ÉCARTÉE DÉFINITIF |
+| YLANG | Saint-Rome | Mode/Accessoires | Sue Wang | — | 807490636 | 5/10 | NOUVEAU | Email non trouvé (3ème passage 12/06) — annuaires uniquement, aucun site ni email public. 17 rue des Changes. Visite terrain. |
+
+**Nouvelles écartées (session 12/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| POBIEDA | Saint-Rome | 831015748 | Liquidation judiciaire prononcée 11/04/2024 (societe.com) — ÉCARTÉE DÉFINITIF |
+| COMEBACK | Capitole | 901868729 | Boutique Toulouse 47 rue de la Pomme désormais JB MARTIN, siège à Carmaux (81400) — fermeture Toulouse confirmée — ÉCARTÉE DÉFINITIF |
+
+---
 
 ## Recap brouillons email — 2026-06-11 (L'Auditeur)
 
