@@ -13,9 +13,11 @@
  */
 
 export type Tier =
+    | "tier1_gs1"            // GS1 Verified / CodeOnline — source AUTORITATIVE (déposée par la marque)
     | "tier1_isbn"
     | "tier1_cip"
     | "tier1_gtin_validated"
+    | "tier_kicksdb"         // KicksDB (StockX/GOAT) — référentiel sneakers fiable
     | "tier2_off"            // Open Food Facts
     | "tier2_obf"            // Open Beauty Facts
     | "tier2_opf"            // Open Products Facts
@@ -30,9 +32,11 @@ export type Tier =
  * Quand un tier matche, on retient ce score-là.
  */
 export const TIER_SCORES: Record<Tier, number> = {
+    tier1_gs1: 0.99, // autoritatif (déposé par le propriétaire de marque) — certitude max
     tier1_isbn: 0.99,
     tier1_cip: 0.99,
     tier1_gtin_validated: 0.99,
+    tier_kicksdb: 0.97, // sneakers : agrège StockX/GOAT, très fiable sur l'identité modèle
     tier2_off: 0.97,
     tier2_obf: 0.97,
     tier2_opf: 0.97,

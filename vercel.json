@@ -20,6 +20,14 @@
     {
       "path": "/api/cron/closing-reminders",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/pos-resync",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/quality-check",
+      "schedule": "0 5 * * *"
     }
   ]
 }

@@ -73,7 +73,13 @@ export const shopifyAdapter: IPOSAdapter = {
             const data = await res.json();
 
             for (const product of data.products ?? []) {
+                // Position (1-based) de l'option "Taille" structurée, si présente.
+                const sizeOptionIdx = (product.options ?? []).findIndex(
+                    (o: { name?: string }) => /taille|size|pointure/i.test(o.name ?? ""),
+                );
                 for (const variant of product.variants ?? []) {
+                    const sizeVal =
+                        sizeOptionIdx >= 0 ? variant[`option${sizeOptionIdx + 1}`] : null;
                     products.push({
                         // Use variant.id as pos_item_id — this is what webhooks send
                         pos_item_id: String(variant.id),
@@ -86,6 +92,11 @@ export const shopifyAdapter: IPOSAdapter = {
                         price: variant.price ? parseFloat(variant.price) : null,
                         category: product.product_type?.toLowerCase() || null,
                         photo_url: product.image?.src ?? null,
+                        // Taille structurée (préférée à la regex sur le nom au sync).
+                        size:
+                            typeof sizeVal === "string" && sizeVal && sizeVal !== "Default Title"
+                                ? sizeVal
+                                : null,
                     });
                 }
             }

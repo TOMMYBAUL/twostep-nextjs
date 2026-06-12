@@ -7,6 +7,11 @@ export type POSProduct = {
     price: number | null;
     category: string | null;
     photo_url: string | null;
+    /**
+     * Taille STRUCTURÉE fournie par le POS (variante : Shopify option "Size",
+     * Lightspeed/Zettle option). Préférée à l'extraction regex du nom quand présente.
+     */
+    size?: string | null;
 };
 
 export type POSStockUpdate = {

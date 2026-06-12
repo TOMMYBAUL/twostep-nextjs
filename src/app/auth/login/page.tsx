@@ -39,7 +39,7 @@ function LoginInner() {
             if (authError) throw authError;
 
             // Explicit next destination takes precedence (e.g. upgrade flow).
-            if (next && next.startsWith("/")) {
+            if (next && next.startsWith("/") && !next.startsWith("//")) {
                 window.location.href = next;
                 return;
             }

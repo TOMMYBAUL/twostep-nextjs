@@ -23,6 +23,8 @@ import { canonicalizeEan, detectIdentifierType } from "@/lib/identifiers/validat
 import { searchEanByName } from "@/lib/ean/lookup";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
+import { lookupGs1 } from "@/lib/enrichment/gs1";
+import { lookupKicksDb } from "@/lib/enrichment/kicksdb";
 import { lookupGoogleShopping } from "@/lib/enrichment/tier3-google-shopping";
 import {
     buildCascadeOutcome,
@@ -83,6 +85,18 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
         // Pour V1 on laisse passer en cascade Tier 2/6.
     }
 
+    // ─── Étape 2.5 : Tier 1 GS1 (AUTORITATIF) ───
+    // Si GS1 confirme le GTIN (donnée déposée par la marque), c'est la certitude
+    // maximale (0,99 → auto-publish). No-op gracieux tant que la clé GS1 est absente.
+    if (canonical && identifierType !== "invalid") {
+        const gs1 = await lookupGs1(canonical);
+        if (gs1) {
+            tiersMatched.push("tier1_gs1");
+            canonicalEan = canonical;
+            if (gs1.name && !canonicalName) canonicalName = gs1.name;
+        }
+    }
+
     // ─── Étape 3 : tout identifiant valide → cascade multi-source convergence (Cycle 4) ───
     // Lance EAN-Search + UPCitemdb + Open Beauty Facts + Open Products Facts en parallèle
     // et collecte tous les tiers qui matchent. Le boost de convergence permet à un EAN
@@ -124,8 +138,29 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
     // cascade — un match "weak" (query par brand+name) est trop incertain
     // pour score 0.95 (risque faux positif). Le caller cascade-suggest peut
     // appeler lookupGoogleShopping séparément en weak-mode pour pré-remplir UI.
+    // ─── Étape 4.4 : Tier sneakers KicksDB (sectoriel) ───
+    // Appelé seulement si aucun tier fort n'a déjà matché (économie de quota), et
+    // s'il y a un identifiant exploitable (EAN/SKU/nom). Comble le trou mode/sneakers.
+    const hasStrongSoFar = tiersMatched.some(
+        (t) => t === "tier1_gs1" || t === "tier1_cip" || t === "tier2_off" || t === "tier2_obf",
+    );
+    if (!hasStrongSoFar && (canonicalEan || input.sku || input.name)) {
+        const kicks = await lookupKicksDb({
+            ean: canonicalEan ?? input.ean ?? null,
+            sku: input.sku ?? null,
+            name: input.name ?? null,
+        });
+        if (kicks) {
+            tiersMatched.push("tier_kicksdb");
+            if (kicks.gtin && !canonicalEan) canonicalEan = kicks.gtin;
+            if (kicks.name && !canonicalName) canonicalName = kicks.name;
+        }
+    }
+
     const hasStrongTier = tiersMatched.some(
         (t) =>
+            t === "tier1_gs1" ||
+            t === "tier_kicksdb" ||
             t === "tier1_cip" ||
             t === "tier1_isbn" ||
             t === "tier1_gtin_validated" ||

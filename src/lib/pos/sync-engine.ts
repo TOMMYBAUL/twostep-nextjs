@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { encrypt, decrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
-import { extractSize } from "@/lib/pos/extract-size";
+import { resolveProductSize } from "@/lib/pos/extract-size";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 
@@ -367,7 +367,7 @@ async function createProduct(
 
     if (createError) throw new Error(`create_product_with_stock failed: ${createError.message}`);
 
-    const size = extractSize(posProduct.name);
+    const size = resolveProductSize(posProduct);
     if (size) {
         await supabase.from("products").update({ size }).eq("id", created as string);
     }
@@ -383,7 +383,7 @@ async function updateProduct(
     provider: string,
     posProduct: POSProduct,
 ): Promise<void> {
-    const newSize = extractSize(posProduct.name);
+    const newSize = resolveProductSize(posProduct);
 
     // Si la photo POS a changé, forcer le retraitement (reset photo_processed_url)
     const photoChanged = posProduct.photo_url !== null && posProduct.photo_url !== existingPhotoUrl;
