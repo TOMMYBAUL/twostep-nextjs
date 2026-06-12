@@ -9,7 +9,7 @@
         "test": "vitest",
         "test:run": "vitest run",
         "seed": "node scripts/seed-toulouse.mjs",
-        "prepare": "git config core.hooksPath .githooks"
+        "prepare": "node -e \"try { require('node:child_process').execSync('git config core.hooksPath .githooks', { stdio: 'ignore' }) } catch {}\""
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.81.0",
