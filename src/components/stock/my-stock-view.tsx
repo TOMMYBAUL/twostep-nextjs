@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { ImagePlus, Plus, QrCode01, Upload01, XClose } from "@untitledui/icons";
 import { BarcodeScanModal, type ScanResult } from "@/components/stock/barcode-scan-modal";
+import { ImportWizard, type ImportPreviewDto } from "@/components/stock/import-wizard";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -32,6 +33,9 @@ export function MyStockView() {
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [importing, setImporting] = useState(false);
     const [scanOpen, setScanOpen] = useState(false);
+    const [wizardFile, setWizardFile] = useState<File | null>(null);
+    const [wizardPreview, setWizardPreview] = useState<ImportPreviewDto | null>(null);
+    const [applying, setApplying] = useState(false);
     const recalRef = useRef<HTMLInputElement>(null);
 
     const handleScanResult = (result: ScanResult) => {
@@ -67,6 +71,8 @@ export function MyStockView() {
         });
     };
 
+    // Étape 1 du wizard : simulation serveur (mode=preview, AUCUNE écriture) —
+    // le marchand voit ce qui va se passer (rejets compris) avant de confirmer.
     const handleCatalogImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -75,18 +81,45 @@ export function MyStockView() {
         setImporting(true);
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("mode", "preview");
 
         try {
             const res = await fetch("/api/catalog/import", { method: "POST", body: formData });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
-            toast(`${data.products_created} produits créés, ${data.products_updated} mis à jour — les photos s'enrichissent en arrière-plan`);
+            setWizardFile(file);
+            setWizardPreview(data);
+        } catch (err) {
+            toast(err instanceof Error ? err.message : "Erreur d'import", "error");
+        } finally {
+            setImporting(false);
+        }
+    };
+
+    // Étape 2 : le marchand a confirmé → application réelle.
+    const handleConfirmImport = async () => {
+        if (!wizardFile) return;
+        setApplying(true);
+        const formData = new FormData();
+        formData.append("file", wizardFile);
+
+        try {
+            const res = await fetch("/api/catalog/import", { method: "POST", body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            const completable = data.triage?.sku_lines ?? 0;
+            toast(
+                `${data.products_created} produits créés, ${data.products_updated} mis à jour` +
+                (completable > 0 ? ` — ${completable} fiches à compléter` : " — les photos s'enrichissent en arrière-plan"),
+            );
+            setWizardFile(null);
+            setWizardPreview(null);
             await refetchProducts();
             refetchIncomplete();
         } catch (err) {
             toast(err instanceof Error ? err.message : "Erreur d'import", "error");
         } finally {
-            setImporting(false);
+            setApplying(false);
         }
     };
 
@@ -456,6 +489,19 @@ export function MyStockView() {
                     onResult={handleScanResult}
                 />
             )}
+
+            <ImportWizard
+                open={wizardPreview !== null}
+                fileName={wizardFile?.name ?? ""}
+                preview={wizardPreview}
+                applying={applying}
+                onConfirm={handleConfirmImport}
+                onClose={() => {
+                    if (applying) return;
+                    setWizardFile(null);
+                    setWizardPreview(null);
+                }}
+            />
         </>
     );
 }
@@ -463,7 +509,10 @@ export function MyStockView() {
 /* ── Incomplete products tab ── */
 
 function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
-    products: { id: string; name: string; category: string | null; price: number | null; photo_url: string | null }[];
+    products: {
+        id: string; name: string; category: string | null; price: number | null; photo_url: string | null;
+        ean?: string | null; sku?: string | null; review_status?: string | null;
+    }[];
     merchantId: string | undefined;
     hasPOS: boolean;
     onComplete: () => void;
@@ -542,6 +591,17 @@ function IncompleteProductsTab({ products, merchantId, hasPOS, onComplete }: {
                                 {product.category ?? "Sans catégorie"}
                                 {!product.photo_url && " · Pas de photo"}
                             </p>
+                            {/* Pourquoi ce produit attend : la transparence évite le
+                                « l'import n'a pas marché » quand c'est juste un code interne. */}
+                            {product.review_status === "pending" ? (
+                                <p className="text-[11px] font-medium text-warning-primary">
+                                    Identité trouvée — confirmez que c'est le bon produit
+                                </p>
+                            ) : product.sku && !product.ean ? (
+                                <p className="text-[11px] font-medium text-warning-primary">
+                                    Code interne {product.sku} — ajoutez photo et nom pour publier
+                                </p>
+                            ) : null}
                         </div>
                         <div className="flex shrink-0 gap-2">
                             {!hasPOS && (
