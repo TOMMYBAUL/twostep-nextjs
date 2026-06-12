@@ -104,6 +104,27 @@ open-redirect `app/auth/login/page.tsx`.
 - **#10 caméra multi-codes** : le vrai MatrixScan (zxing-wasm, plusieurs codes/image,
   iOS) demande la dépendance `zxing-wasm` + test navigateur. Cœur (session) fait.
 
+## 7bis. Inventaire clés API (audit Vercel prod, 2026-06-12 soir)
+
+**Présentes en prod** : SERPER (tier3 Google 0,95 + images), EAN_SEARCH (tier6 0,90),
+REPLICATE (CLIP 0,92), CLOUDFLARE_API_TOKEN+VECTORIZE, GROQ, RESEND +
+CF_EMAIL_WEBHOOK_SECRET (email entrant `factures-{slug}@` ACTIF), Upstash,
+Stripe (3 price IDs Pioneer/Early/Standard), CRON_SECRET ✅ (le doc demandait de vérifier).
+
+**Absentes de prod mais utilisées par le code** (présentes en `.env.local` seulement) :
+- `ANTHROPIC_API_KEY` → fallback parser factures + haiku-product-meta MORTS en prod.
+- `GEMINI_API_KEY` → fallback parser Gemini MORT en prod.
+- `UPCITEMDB_API_KEY` → tier lookup EAN inactif en prod.
+- `INSEE_API_TOKEN` → **verifySIRET est fail-open sans token : en prod, N'IMPORTE QUEL
+  SIRET à 14 chiffres passe sans vérification INSEE** (lib/siret.ts:17-20).
+- `STRICT_DECRYPT` absent (attendu — rollout en 5 phases, cf. LESSONS).
+- `KICKSDB_API_KEY` / `GS1_CODEONLINE_API_KEY` : nulle part (blocage #12).
+
+**Décision recommandée** : KicksDB FREE tout de suite (gratuit) ; GS1 différé jusqu'à
+mesure du gap réel via la télémétrie cascade (% produits <0,95 que GS1 débloquerait) —
+leçon builder-bias. Les abonnements existants (Serper/EAN-search/Replicate) sont
+complémentaires, pas concurrents : OFF/Icecat 0,97 et Google PC 0,95 auto-publient déjà.
+
 ## 8. État git / déploiement
 
 - Branche : `feat/pipeline-v1-handoff-2026-06-12` (chantier V1 commité dessus,
