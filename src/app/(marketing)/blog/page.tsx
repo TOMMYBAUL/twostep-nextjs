@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "boutique-cosmetique-toulouse",
+        title: "Boutique cosmétique indépendante à Toulouse : pourquoi ton stock est invisible (et comment changer ça)",
+        description:
+            "Tu vends des cosmétiques de marque à Toulouse mais tes clients commandent en ligne sans le savoir ? 95 % du stock local est invisible. Voici comment y remédier.",
+        publishedAt: "2026-06-12",
+        readingTime: "6 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
