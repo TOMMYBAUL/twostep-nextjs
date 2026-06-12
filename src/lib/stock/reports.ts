@@ -13,6 +13,14 @@ import type { StockState } from "@/lib/stock/confidence";
 export const REPORTS_TO_PROBABLE = 1;
 export const REPORTS_TO_OUT = 3;
 
+/** Fenêtre (heures) sur laquelle un signalement est considéré "récent". */
+export const REPORTS_WINDOW_H = 48;
+
+/** Borne basse ISO de la fenêtre de signalements récents (pour les requêtes DB). */
+export function reportsWindowStartIso(now: Date = new Date()): string {
+    return new Date(now.getTime() - REPORTS_WINDOW_H * 3_600_000).toISOString();
+}
+
 export function downgradeForReports(state: StockState, recentReports: number): StockState {
     if (state === "out") return "out";
     if (recentReports >= REPORTS_TO_OUT) return "out";

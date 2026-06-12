@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
+import { productConfidence } from "@/lib/stock/product-confidence";
+import { reportsWindowStartIso } from "@/lib/stock/reports";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -21,7 +23,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
         const { data, error } = await supabase
             .from("products")
-            .select("*, stock(quantity), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours, location)")
+            .select("*, stock(quantity, updated_at), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours, location)")
             .eq("id", productId)
             .eq("visible", true)
             .single();
@@ -74,6 +76,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         // Normalize available_sizes: DB stores ["S","M"] but frontend expects [{size,quantity}]
         const s = (data as any).stock;
         const totalStock = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
+        const stockUpdatedAt = !s ? null : Array.isArray(s) ? (s[0]?.updated_at ?? null) : (s.updated_at ?? null);
         const rawSizes = (data as any).available_sizes;
         if (Array.isArray(rawSizes) && rawSizes.length > 0) {
             (data as any).available_sizes = rawSizes.map((entry: unknown) => {
@@ -84,6 +87,30 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
                 return entry; // already {size, quantity}
             });
         }
+
+        // État de confiance affiché au consommateur (jamais de compteur brut) :
+        // fraîcheur + force de source, dégradé par les signalements récents.
+        const [{ data: ingest }, { count: reportCount }] = await Promise.all([
+            supabase
+                .from("ingest_credentials")
+                .select("merchant_id")
+                .eq("merchant_id", (data as any).merchant_id)
+                .maybeSingle(),
+            supabase
+                .from("stock_reports")
+                .select("id", { count: "exact", head: true })
+                .eq("product_id", productId)
+                .eq("reason", "not_in_store")
+                .gte("created_at", reportsWindowStartIso()),
+        ]);
+
+        (data as any).confidence = productConfidence({
+            quantity: totalStock,
+            lastEventAt: stockUpdatedAt,
+            posItemId: (data as any).pos_item_id ?? null,
+            merchantHasIngest: !!ingest,
+            recentNotInStoreReports: reportCount ?? 0,
+        });
 
         return NextResponse.json({ product: data }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { productConfidence } from "@/lib/stock/product-confidence";
+import { reportsWindowStartIso } from "@/lib/stock/reports";
 
 export async function GET(request: NextRequest) {
     const merchantIds = request.nextUrl.searchParams.get("merchant_ids");
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
     // Only fetch products from the specified merchants
     let query = supabase
         .from("products")
-        .select("id, name, price, photo_url, photo_processed_url, category, size, available_sizes, merchant_id, created_at, merchants!inner(name, photo_url)")
+        .select("id, name, price, photo_url, photo_processed_url, category, size, available_sizes, merchant_id, pos_item_id, created_at, merchants!inner(name, photo_url)")
         .in("merchant_id", ids)
         .is("variant_of", null)
         .eq("visible", true)
@@ -49,13 +52,22 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ products: [] });
     }
 
-    const [{ data: stockData }, { data: promoData }] = await Promise.all([
-        supabase.from("stock").select("product_id, quantity").in("product_id", productIds),
+    // ingest_credentials et stock_reports sont en RLS owner-only → client admin.
+    const admin = createAdminClient();
+    const [{ data: stockData }, { data: promoData }, { data: ingestData }, { data: reportData }] = await Promise.all([
+        supabase.from("stock").select("product_id, quantity, updated_at").in("product_id", productIds),
         supabase.from("promotions").select("product_id, sale_price").in("product_id", productIds).lte("starts_at", new Date().toISOString()).gte("ends_at", new Date().toISOString()),
+        admin.from("ingest_credentials").select("merchant_id").in("merchant_id", ids),
+        admin.from("stock_reports").select("product_id").in("product_id", productIds).eq("reason", "not_in_store").gte("created_at", reportsWindowStartIso()),
     ]);
 
-    const stockMap = new Map((stockData ?? []).map((s: any) => [s.product_id, s.quantity]));
+    const stockMap = new Map((stockData ?? []).map((s: any) => [s.product_id, s]));
     const promoMap = new Map((promoData ?? []).map((p: any) => [p.product_id, p.sale_price]));
+    const ingestMerchants = new Set((ingestData ?? []).map((i: any) => i.merchant_id));
+    const reportCounts = new Map<string, number>();
+    for (const r of reportData ?? []) {
+        reportCounts.set(r.product_id, (reportCounts.get(r.product_id) ?? 0) + 1);
+    }
 
     // Helper: check if a product has a given size with stock > 0 in available_sizes
     const hasSizeInStock = (availableSizes: any, targetSize: string): boolean => {
@@ -68,18 +80,25 @@ export async function GET(request: NextRequest) {
     const userSizes = [clothingSize, shoeSize].filter(Boolean) as string[];
 
     const mapped = (products ?? [])
-        .filter((p: any) => (stockMap.get(p.id) ?? 0) > 0)
+        .filter((p: any) => (stockMap.get(p.id)?.quantity ?? 0) > 0)
         .map((p: any) => ({
             product_id: p.id,
             product_name: p.name,
             product_price: p.price,
             product_photo: p.photo_processed_url ?? p.photo_url,
-            stock_quantity: stockMap.get(p.id) ?? 0,
+            stock_quantity: stockMap.get(p.id)?.quantity ?? 0,
             merchant_id: p.merchant_id,
             merchant_name: p.merchants?.name ?? "",
             merchant_photo: p.merchants?.photo_url ?? null,
             sale_price: promoMap.get(p.id) ?? null,
             category: p.category,
+            confidence: productConfidence({
+                quantity: stockMap.get(p.id)?.quantity ?? 0,
+                lastEventAt: stockMap.get(p.id)?.updated_at ?? null,
+                posItemId: p.pos_item_id ?? null,
+                merchantHasIngest: ingestMerchants.has(p.merchant_id),
+                recentNotInStoreReports: reportCounts.get(p.id) ?? 0,
+            }),
             _availableSizes: p.available_sizes,
             distance_km: 0,
         }));

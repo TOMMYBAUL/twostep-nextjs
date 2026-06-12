@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { nearbyQuery, parseQuery } from "@/lib/validation";
+import { shouldShowOnMap } from "@/lib/onboarding/cold-start";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "nearby", 30);
@@ -28,7 +29,13 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Failed to fetch nearby merchants" }, { status: 500 });
         }
 
-        return NextResponse.json({ merchants: data ?? [], count: data?.length ?? 0 }, {
+        // Anti cold-start : une boutique à <3 produits visibles n'apparaît pas sur
+        // la carte (vitrine quasi vide = première impression catastrophique).
+        const merchants = (data ?? []).filter((m: { product_count: number | string }) =>
+            shouldShowOnMap(Number(m.product_count)),
+        );
+
+        return NextResponse.json({ merchants, count: merchants.length }, {
             headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
         });
     } catch {
