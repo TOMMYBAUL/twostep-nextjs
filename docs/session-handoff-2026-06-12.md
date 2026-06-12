@@ -57,6 +57,9 @@ open-redirect `app/auth/login/page.tsx`.
 - `093_ingest_credentials.sql` — jetons de push.
 - `094_quality_alerts.sql` — alertes monitoring.
 - `095_stock_reports.sql` — signalements consommateur.
+- `096_review_status_values.sql` — **APPLIQUÉE 2026-06-13** : élargit le CHECK de
+  review_status à pending/masked (bug latent 081 vs 089, découvert par le e2e —
+  toute création produit du pipeline violait la contrainte en prod avant ça).
 
 ## 4. Crons ajoutés (`vercel.json`) — actifs après déploiement
 - `/api/cron/pos-resync` toutes les 6 h (fix retours).
@@ -155,8 +158,17 @@ complémentaires, pas concurrents : OFF/Icecat 0,97 et Google PC 0,95 auto-publi
 
 ## 8. État git / déploiement
 
-- Branche : `feat/pipeline-v1-handoff-2026-06-12` (chantier V1 commité dessus,
-  dont couche données `927e624`). **Rien de déployé.** Ne pas repartir sur `main`.
+- Branche : `feat/pipeline-v1-handoff-2026-06-12`, **poussée sur GitHub** (repo
+  public TOMMYBAUL/twostep-nextjs — envisager le passage en privé, #12).
+- **Preview Vercel DÉPLOYÉ et e2e ingestion 16/16 VERT (2026-06-13)** :
+  https://twostep-nextjs-git-feat-21849b-thomasbauland1304-1982s-projects.vercel.app
+  (env Supabase scopées branche, ajoutées via API REST — le CLI stdin/positionnel
+  corrompt les valeurs, piège documenté). e2e : `scripts/e2e-ingest-preview.mjs`
+  (marchand jetable, push CSV mixte, vérif triage/REPLACE/401, nettoyage).
+- UI chantier B fait (`6de5919`) : wizard import preview→confirm, badge confiance,
+  bouton signaler, raisons à-compléter. **Validation visuelle Thomas en attente.**
+- Prod (twostep.fr) = toujours l'ancien code. Prochain pas : merge main après
+  validation visuelle. Ne pas repartir sur `main` pour développer.
 - Prod DB = migrations 092-095 appliquées ; prod APP = ancien code (les nouvelles
   routes/libs ne sont pas déployées). Additif, pas de casse. L'e2e du push d'ingestion
   exige un déploiement du nouveau code (ou un `npm run dev` local).
