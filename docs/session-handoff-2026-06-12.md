@@ -7,11 +7,12 @@
 
 ## 0. Reprendre en 30 secondes
 
-- **Tout le code du chantier V1 est dans le working tree, NON commité, NON déployé.**
+- **Tout le chantier V1 est commité sur `feat/pipeline-v1-handoff-2026-06-12`, NON déployé.**
 - **Migrations 092→095 : APPLIQUÉES en prod** (vérifié live).
-- **Tests : 314 verts** (37 fichiers) hors tests DB-live (qui exigent le réseau, bloqué dans le sandbox). **0 erreur de typecheck.**
+- **Tests : 325 verts** (38 fichiers) hors tests DB-live (qui exigent le réseau, bloqué dans le sandbox). **0 erreur de typecheck.**
 - Commande de vérif état : `cd twostep-nextjs && npx vitest run --exclude "**/db/**" && npx tsc --noEmit`
-- **PROCHAIN PAS = câblage UI**, en commençant par le **(A) couche données** (sans risque visuel) : voir §5.
+- **(A) couche données : FAIT** (commit `927e624`, session 2026-06-12 soir) — voir §5.
+- **PROCHAIN PAS = (B) câblage UI visuel** (badge confiance, bouton signaler, alertes qualité, étiquettes, scan-session) : voir §5, validation visuelle par Thomas.
 
 ---
 
@@ -63,14 +64,18 @@ open-redirect `app/auth/login/page.tsx`.
 
 ## 5. PROCHAIN PAS — câblage UI
 
-**(A) À faire moi-même (couche données, testable, zéro risque visuel) :**
-1. Filtre cold-start : appliquer `shouldShowOnMap` (de `lib/onboarding/cold-start.ts`)
-   aux requêtes carte/feed consommateur (RPC `get_merchants_nearby` / filtres API)
-   → ne pas afficher une boutique à <3 produits visibles.
-2. Injecter l'état de confiance : appeler `computeStockConfidence` +
-   `downgradeForReports` (compter les `stock_reports` récents) dans les données
-   renvoyées par les API produit/boutique (`api/products/[id]`, `api/shops/...`,
-   `by-ean`) → le front n'a qu'à afficher le champ `confidence`.
+**(A) Couche données — FAIT (commit `927e624`) :**
+1. ✅ Filtre cold-start : `shouldShowOnMap` appliqué dans `api/nearby` (filtre sur
+   `product_count` du RPC) et `api/feed` (réutilise `get_merchants_nearby` comme
+   source de vérité, fail-open si le RPC annexe échoue, curseur calculé sur les
+   données brutes). Choix : filtre côté API, PAS de migration RPC → zéro impact
+   prod avant déploiement.
+2. ✅ Confiance injectée : nouveau `lib/stock/product-confidence.ts` (pur, 11 tests)
+   = `resolveSourceStrength` (pos_item_id→realtime, jeton ingest→snapshot, sinon
+   manual) + `computeStockConfidence` + `downgradeForReports` (fenêtre 48 h,
+   `REPORTS_WINDOW_H` dans `reports.ts`). Champ `confidence {state,label,
+   freshnessLabel}` ajouté aux réponses de `api/products/[id]`, `by-merchants`
+   (vitrine boutique, batch + client admin pour RLS) et `by-ean` (scan marchand).
 
 **(B) À construire mais VALIDATION VISUELLE par Thomas (pas de navigateur côté IA) :**
 3. Badge confiance sur fiches produit/boutique.
@@ -101,7 +106,8 @@ open-redirect `app/auth/login/page.tsx`.
 
 ## 8. État git / déploiement
 
-- Branche : `feat/twostep-phase1`. **Rien de commité ni déployé** pour ce chantier.
+- Branche : `feat/pipeline-v1-handoff-2026-06-12` (chantier V1 commité dessus,
+  dont couche données `927e624`). **Rien de déployé.** Ne pas repartir sur `main`.
 - Prod DB = migrations 092-095 appliquées ; prod APP = ancien code (les nouvelles
   routes/libs ne sont pas déployées). Additif, pas de casse. L'e2e du push d'ingestion
   exige un déploiement du nouveau code (ou un `npm run dev` local).
