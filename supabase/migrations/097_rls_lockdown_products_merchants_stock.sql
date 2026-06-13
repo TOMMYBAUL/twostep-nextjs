@@ -11,8 +11,13 @@
 -- propriétaire garde tout) + column-grant anon sur merchants (liste blanche
 -- d'affichage, le noyau facturation/PII/CRM révoqué).
 
+-- NB : policies products/stock recréées en forme finale par 098 (SECURITY DEFINER).
+-- Toutes les instructions ici sont idempotentes (DROP IF EXISTS avant CREATE) pour
+-- être rejouables sans erreur "policy already exists".
+
 -- ── products ────────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS products_select_all ON products;
+DROP POLICY IF EXISTS products_select_public ON products;
 CREATE POLICY products_select_public ON products FOR SELECT
     USING (
         (visible = true AND archived_at IS NULL)
@@ -21,6 +26,7 @@ CREATE POLICY products_select_public ON products FOR SELECT
 
 -- ── stock (rattaché au produit) ───────────────────────────────────────────────
 DROP POLICY IF EXISTS stock_select_all ON stock;
+DROP POLICY IF EXISTS stock_select_public ON stock;
 CREATE POLICY stock_select_public ON stock FOR SELECT
     USING (
         EXISTS (
@@ -35,6 +41,7 @@ CREATE POLICY stock_select_public ON stock FOR SELECT
 
 -- ── merchants : lignes (actifs + les siennes) ────────────────────────────────
 DROP POLICY IF EXISTS merchants_select_all ON merchants;
+DROP POLICY IF EXISTS merchants_select_public ON merchants;
 CREATE POLICY merchants_select_public ON merchants FOR SELECT
     USING (status = 'active' OR user_id = auth.uid());
 
