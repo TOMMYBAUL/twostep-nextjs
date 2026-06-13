@@ -115,6 +115,44 @@ le nom seul n'est JAMAIS une identité d'ingestion.**
 - UI restante (chantier B) : écran preview→confirm dans my-stock-view (l'API est
   prête), vue "produits à compléter" (les SKU-only attendent en masked/pending).
 
+## 5quater. Audit exigeant + durcissement (session 2026-06-13)
+
+4 audits à charge (sécurité/archi/fuites/ops). Findings vérifiés EN LIVE (pas sur
+la foi du code) puis corrigés. Migrations 097-101 appliquées en prod par l'IA
+(Thomas n'applique plus à la main — il pull seulement).
+
+**VAGUE 1 — Sécurité (faite, vérifiée live) :**
+- RLS `products`/`stock`/`merchants` étaient `USING(true)` depuis 001. merchants
+  fuyait user_id/siret/stripe/inbound_email_slug via clé anon ; products/stock
+  = bombe à retardement (catalogue privé fuit au 1er marchand avec pending/masked).
+  Fix 097 (policies + column-grant anon) + 098 (fonction SECURITY DEFINER
+  `auth_owns_merchant`, car le REVEKE cassait les sous-selects de policy).
+- 099 : drop des overloads RPC géo obsolètes → PGRST203 résolu (/api/feed,
+  /api/products/discover, /api/feed/promos étaient cassés en prod).
+
+**VAGUE 2 — Scalabilité ingestion (faite, e2e local 8/8 vert) :**
+- Enrichissement était SYNCHRONE dans la requête HTTP (10-30 s/produit) → timeout
+  garanti dès ~100 produits. Découplé : migration 100 (file enrichment_jobs +
+  claim FOR UPDATE SKIP LOCKED), `lib/enrichment/enrich-product.ts` (extrait),
+  worker `cron/enrich-products` (*/5, maxDuration 300, batch 10, 3 tentatives),
+  snapshot enfile au lieu d'enrichir. Réponse HTTP rapide quel que soit le volume.
+- Migration 101 : verrou anti-concurrence (ingesting_since) + idempotence
+  (last_file_hash → push identique = no-op). vercel.json : + cron images/process.
+- **Bug de gate trouvé+fixé** : `groupVariantsByEAN` publiait les produits
+  'pending'/'masked' (stock>0) car isPending ne testait que 'pending_review' →
+  court-circuit du "zéro faux positif". Masqué par l'ancien enrichissement inline,
+  révélé par le découplage. Fix : visible seulement si review_status='validated'.
+
+**RESTE — VAGUE 3 (ops/résilience, à faire) :** backup DB (aucun aujourd'hui),
+quality_alerts + watchdog ingestion (last_used_at) que personne ne lit,
+onRequestError Sentry manquant, erreurs avalées (resync-stock statut vert sur
+échec, google-feed token expiré silencieux), STRICT_DECRYPT à activer.
+
+**État déploiement** : migrations 097-101 actives sur la DB prod (partagée).
+Prod APP = ancien code (branche non mergée) → a encore le bug gate, mais base
+quasi vide donc pas d'exposition. e2e validé en LOCAL (le preview manque
+CRON_SECRET pour tester le worker). À merger sur main après validation Thomas.
+
 ## 6. BLOQUÉ sur Thomas
 
 - **#12** : GS1 (entreprise devient diffusable sous 24h après 2026-06-12, puis adhésion
