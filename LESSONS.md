@@ -17,6 +17,11 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Script npm `prepare` (`git config core.hooksPath`) casse `npm install` sur Vercel (pas de .git en build CLI) → wrappé dans node try/catch. (2026-06-13)
 - ❌ Le pre-push (tests DB-live) échoue en TLS sans `$env:NODE_OPTIONS='--use-system-ca'` → le poser avant tout `git push` depuis Claude Code. (2026-06-13)
 
+## Sécurité RLS (audit 2026-06-13)
+- ❌ Tester une protection sur une base sans données = faux négatif. La RLS `products`/`stock`/`merchants` était `USING(true)` (001 jamais resserrée) ; le test anon renvoyait `[]` UNIQUEMENT car 0 produit `visible=false` n'existait. Toujours croiser test live + lecture du code + raisonnement sur l'état futur (1er marchand avec pending/masked = fuite). Fix 097.
+- ❌ Column-grant (`REVOKE/GRANT SELECT(cols)`) sur une table référencée par le sous-select d'une policy RLS d'une AUTRE table → `permission denied` en cascade (révoquer merchants.user_id a cassé la lecture anon de products). Solution : encapsuler le cross-table dans une fonction `SECURITY DEFINER` (`auth_owns_merchant`). Fix 098. **Toujours re-tester les surfaces publiques en anon après un REVOKE.**
+- ❌ Deux overloads d'une RPC (avec/sans param `DEFAULT`) = `PGRST203` ambigu → route morte. Garder UNE signature par nom. Fix 099 (feed/discover/promos étaient cassés en prod).
+
 ## Schéma DB
 - ❌ Migration qui documente de nouvelles valeurs d'enum/CHECK sans ALTÉRER la contrainte (081 vs 089 : `review_status` 'pending'/'masked' refusés en prod pendant des semaines, toute création produit du pipeline cassée). Détecté uniquement par le e2e d'ingestion. Règle : toute nouvelle valeur d'état → grep le CHECK existant dans les migrations AVANT. Fix : 096. (2026-06-13)
 
