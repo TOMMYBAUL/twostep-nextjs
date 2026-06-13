@@ -28,6 +28,14 @@
     {
       "path": "/api/cron/quality-check",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/enrich-products",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/images/process",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

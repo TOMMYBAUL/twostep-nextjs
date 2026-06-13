@@ -3,13 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
-import { lookupEan, searchEanByName } from "@/lib/ean/lookup";
-import { searchProductImage } from "@/lib/images/serper";
-import { createImageJob } from "@/lib/images/jobs";
-import { runCascade } from "@/lib/enrichment/cascade-engine";
-import { SCORE_THRESHOLDS } from "@/lib/enrichment/score-cascade";
 import { selectProductsToZero } from "@/lib/ingest/reconcile";
-import { triageStockItems, isPlaceholderName, type TriageReport } from "@/lib/ingest/triage";
+import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
 import { captureError } from "@/lib/error";
 
 export type SnapshotResult = {
@@ -56,8 +51,9 @@ export type SnapshotOptions = {
  *
  * Étapes : triage d'identité (GTIN/SKU, nom seul rejeté) → groupage par taille →
  * match (EAN > SKU > nom) → replace stock → réconciliation gardée → création
- * invisible (gate cascade ≥ 0.95) → enrichissement (identité devinée = jamais
- * auto-publiée) → score → catégorisation. En dryRun : simulation sans écriture.
+ * invisible → ENQUEUE enrichment_jobs (l'enrichissement/score/visibilité est
+ * asynchrone, drainé par /api/cron/enrich-products). En dryRun : simulation sans
+ * écriture. La réponse HTTP reste rapide même pour de gros catalogues.
  *
  * @param admin  Client service_role (bypass RLS — appelé serveur uniquement).
  */
@@ -106,6 +102,7 @@ export async function ingestStockSnapshot(
     let productsCreated = 0;
     let productsUpdated = 0;
     let stockReplaced = 0;
+    const createdProductIds: string[] = [];
 
     for (const [, groupItems] of groups) {
         const firstItem = groupItems[0];
@@ -194,6 +191,7 @@ export async function ingestStockSnapshot(
                     product_id: newId,
                     event_type: "new_product",
                 });
+                createdProductIds.push(newId);
             }
 
             if (firstItem.ean) byEan.set(firstItem.ean, newId);
@@ -273,120 +271,26 @@ export async function ingestStockSnapshot(
         };
     }
 
-    // Regroupement des variantes par EAN (même logique que le sync POS)
+    // Regroupement des variantes par EAN (rapide, synchrone)
     try {
         await groupVariantsByEAN(admin, merchantId);
     } catch (err) {
         captureError(err, { lib: "ingest/snapshot", phase: "group-variants", merchantId });
     }
 
-    // Enrichissement des nouveaux produits (cascade 6 tiers + score + visibilité)
-    const { data: newProducts } = await admin
-        .from("products")
-        .select("id, ean, sku, name, brand, photo_url, review_status")
-        .eq("merchant_id", merchantId)
-        .is("photo_url", null);
-
-    for (const product of newProducts ?? []) {
-        try {
-            // Un produit VALIDÉ (par le marchand ou un score ≥ 0,95 antérieur) a
-            // une identité tranchée : on ne la re-devine ni ne la re-score JAMAIS
-            // — un push de stock ne doit pas pouvoir dépublier un produit validé.
-            const isValidated = product.review_status === "validated";
-
-            // Un EAN non déclaré dans le fichier mais RETROUVÉ (par SKU partagé ou
-            // recherche par nom) est une identité DEVINÉE : elle n'auto-publie
-            // jamais, elle alimente la file de validation 1-tap du marchand.
-            let eanGuessed = false;
-
-            if (product.ean) {
-                await lookupEan(product.ean, product.id);
-            } else if (!isValidated) {
-                let foundEan: string | null = null;
-                if (product.sku) {
-                    const { data: skuMatch } = await admin
-                        .from("products")
-                        .select("ean")
-                        .eq("sku", product.sku)
-                        .not("ean", "is", null)
-                        .neq("id", product.id)
-                        .limit(1)
-                        .single();
-                    if (skuMatch?.ean) foundEan = skuMatch.ean;
-                }
-                // Pas de recherche par nom sur un placeholder ("REF X" / "EAN X") :
-                // ça ne peut produire que du bruit, donc de fausses identités.
-                if (!foundEan && !isPlaceholderName(product.name)) {
-                    const found = await searchEanByName(product.name, product.brand);
-                    if (found) foundEan = found.ean;
-                }
-                if (foundEan) {
-                    eanGuessed = true;
-                    await admin.from("products").update({ ean: foundEan }).eq("id", product.id);
-                    await lookupEan(foundEan, product.id);
-                } else if (!isPlaceholderName(product.name)) {
-                    const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
-                    if (photoUrl) {
-                        await admin
-                            .from("products")
-                            .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                            .eq("id", product.id);
-                        await createImageJob(product.id, merchantId, photoUrl);
-                    }
-                }
-            } else if (!isPlaceholderName(product.name)) {
-                // Validé sans EAN : on complète au mieux la photo, rien d'autre.
-                const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
-                if (photoUrl) {
-                    await admin
-                        .from("products")
-                        .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                        .eq("id", product.id);
-                    await createImageJob(product.id, merchantId, photoUrl);
-                }
-            }
-
-            // Identité tranchée → pas de re-scoring, pas de changement de visibilité.
-            if (isValidated) continue;
-
-            const { data: refreshed } = await admin
-                .from("products")
-                .select("ean, name, brand, sku")
-                .eq("id", product.id)
-                .single();
-            if (!refreshed) continue;
-
-            const outcome = await runCascade({
-                ean: refreshed.ean,
-                name: refreshed.name,
-                brand: refreshed.brand,
-                sku: refreshed.sku,
-            });
-
-            // Identité devinée → plafonnée à la file 1-tap, jamais visible seule.
-            const visible = eanGuessed ? false : outcome.visible;
-            const reviewStatus = eanGuessed
-                ? (outcome.score >= SCORE_THRESHOLDS.review_queue ? "pending" : "masked")
-                : outcome.review_status;
-
-            await admin.from("products").update({
-                identification_score: outcome.score,
-                identification_tiers: outcome.tiers_matched,
-                visible,
-                review_status: reviewStatus,
-            }).eq("id", product.id);
-        } catch (err) {
-            captureError(err, { lib: "ingest/snapshot", phase: "enrichment", productId: product.id });
-        }
-    }
-
-    // Catégorisation IA
-    if (productsCreated > 0 || productsUpdated > 0) {
-        try {
-            const { categorizeMerchantProducts } = await import("@/lib/ai/categorize");
-            await categorizeMerchantProducts(merchantId);
-        } catch (err) {
-            captureError(err, { lib: "ingest/snapshot", phase: "categorize", merchantId });
+    // Enrichissement DÉCOUPLÉ : on enfile les nouveaux produits dans la file
+    // enrichment_jobs, drainée par /api/cron/enrich-products. L'enrichissement
+    // (lookups EAN, cascade, image, catégorisation) coûte 10-30 s/produit en série
+    // — le faire ici ferait timeout la requête HTTP dès ~100 produits. Les
+    // produits restent invisibles (visible=false/pending) jusqu'au passage du worker.
+    if (createdProductIds.length > 0) {
+        const { error: enqueueErr } = await admin
+            .from("enrichment_jobs")
+            .insert(createdProductIds.map((pid) => ({ product_id: pid, merchant_id: merchantId })));
+        if (enqueueErr) {
+            // Ne bloque pas l'ingestion : le stock est déjà à jour. On loggue.
+            errors.push(`Enqueue enrichment: ${enqueueErr.message}`);
+            captureError(enqueueErr, { lib: "ingest/snapshot", phase: "enqueue-enrichment", merchantId });
         }
     }
 

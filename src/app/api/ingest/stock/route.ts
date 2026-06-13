@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSpreadsheetFile } from "@/lib/parser";
@@ -76,53 +77,92 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const parsed = parseStockFile(buffer);
-        if (parsed.items.length === 0) {
-            await admin
-                .from("ingest_credentials")
-                .update({ last_used_at: new Date().toISOString(), last_rows: 0, last_status: "error" })
-                .eq("merchant_id", merchantId);
-            return NextResponse.json({ error: "No products detected in file" }, { status: 400 });
-        }
-
-        // reconcile: true → un push token est un snapshot complet, on décrémente
-        // les articles vendus absents du fichier (garde-fou anti-partiel intégré).
-        const result = await ingestStockSnapshot(merchantId, parsed.items, admin, { reconcile: true });
-
-        // Aucune ligne exploitable (ni GTIN valide ni SKU) → échec explicite,
-        // avec le détail des rejets pour que l'intégrateur corrige son export.
-        const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
-        if (exploitable === 0) {
-            await admin
-                .from("ingest_credentials")
-                .update({ last_used_at: new Date().toISOString(), last_rows: result.total_items, last_status: "error" })
-                .eq("merchant_id", merchantId);
-            return NextResponse.json(
-                {
-                    error: "No exploitable lines: every row needs a valid GTIN barcode or a SKU (name alone is not an identity)",
-                    triage: result.triage,
-                },
-                { status: 422 },
-            );
-        }
-
-        const status =
-            result.reconcile_skipped || result.errors.length > 0 || result.triage.rejected_lines > 0
-                ? result.stock_replaced > 0
-                    ? "partial"
-                    : "error"
-                : "ok";
-
-        await admin
+        // Idempotence : fichier identique au dernier push (export inchangé, boutique
+        // fermée) → no-op immédiat, on évite de retraiter tout le catalogue.
+        const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
+        const { data: cred } = await admin
             .from("ingest_credentials")
-            .update({
-                last_used_at: new Date().toISOString(),
-                last_rows: result.total_items,
-                last_status: status,
-            })
-            .eq("merchant_id", merchantId);
+            .select("last_file_hash")
+            .eq("merchant_id", merchantId)
+            .maybeSingle();
+        if (cred?.last_file_hash === fileHash) {
+            await admin
+                .from("ingest_credentials")
+                .update({ last_used_at: new Date().toISOString(), last_status: "ok" })
+                .eq("merchant_id", merchantId);
+            return NextResponse.json({ ok: true, status: "unchanged" }, { status: 200 });
+        }
 
-        return NextResponse.json({ ok: true, status, ...result }, { status: 200 });
+        // Verrou anti-concurrence : un seul push à la fois par marchand (cron 15 min
+        // qui chevauche, retry réseau). UPDATE conditionnel atomique ; 0 ligne = lock pris.
+        const staleBefore = new Date(Date.now() - 10 * 60_000).toISOString();
+        const { data: lockRows } = await admin
+            .from("ingest_credentials")
+            .update({ ingesting_since: new Date().toISOString() })
+            .eq("merchant_id", merchantId)
+            .or(`ingesting_since.is.null,ingesting_since.lt.${staleBefore}`)
+            .select("merchant_id");
+        if (!lockRows || lockRows.length === 0) {
+            return NextResponse.json({ error: "Ingestion already in progress for this merchant" }, { status: 429 });
+        }
+
+        try {
+            const parsed = parseStockFile(buffer);
+            if (parsed.items.length === 0) {
+                await admin
+                    .from("ingest_credentials")
+                    .update({ last_used_at: new Date().toISOString(), last_rows: 0, last_status: "error" })
+                    .eq("merchant_id", merchantId);
+                return NextResponse.json({ error: "No products detected in file" }, { status: 400 });
+            }
+
+            // reconcile: true → un push token est un snapshot complet, on décrémente
+            // les articles vendus absents du fichier (garde-fou anti-partiel intégré).
+            const result = await ingestStockSnapshot(merchantId, parsed.items, admin, { reconcile: true });
+
+            // Aucune ligne exploitable (ni GTIN valide ni SKU) → échec explicite.
+            const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
+            if (exploitable === 0) {
+                await admin
+                    .from("ingest_credentials")
+                    .update({ last_used_at: new Date().toISOString(), last_rows: result.total_items, last_status: "error" })
+                    .eq("merchant_id", merchantId);
+                return NextResponse.json(
+                    {
+                        error: "No exploitable lines: every row needs a valid GTIN barcode or a SKU (name alone is not an identity)",
+                        triage: result.triage,
+                    },
+                    { status: 422 },
+                );
+            }
+
+            const status =
+                result.reconcile_skipped || result.errors.length > 0 || result.triage.rejected_lines > 0
+                    ? result.stock_replaced > 0
+                        ? "partial"
+                        : "error"
+                    : "ok";
+
+            // last_file_hash stocké uniquement si le push a abouti (un fichier en
+            // erreur doit pouvoir être re-poussé après correction).
+            await admin
+                .from("ingest_credentials")
+                .update({
+                    last_used_at: new Date().toISOString(),
+                    last_rows: result.total_items,
+                    last_status: status,
+                    last_file_hash: fileHash,
+                })
+                .eq("merchant_id", merchantId);
+
+            return NextResponse.json({ ok: true, status, ...result }, { status: 200 });
+        } finally {
+            // Libération du verrou, quoi qu'il arrive (succès, early-return, exception).
+            await admin
+                .from("ingest_credentials")
+                .update({ ingesting_since: null })
+                .eq("merchant_id", merchantId);
+        }
     } catch (e) {
         captureError(e, { route: "ingest/stock" });
         return NextResponse.json(
