@@ -502,7 +502,13 @@ export async function groupVariantsByEAN(
     // A pending_review product must NEVER be made visible by this post-pass:
     // the merchant has not yet validated the enrichment, so it stays hidden
     // until they accept it from /dashboard/stock/review.
-    const isPending = (p: { review_status?: string | null }) => p.review_status === "pending_review";
+    // GATE : seul un produit explicitement `validated` (score ≥ 0,95 ou validé
+    // 1-tap) peut devenir visible. Tout statut du pipeline cascade ('pending',
+    // 'masked', 'pending_review') reste invisible — sinon ce post-pass court-circuite
+    // le gate "zéro faux positif" (un produit non scoré avec stock deviendrait public).
+    // review_status NULL = legacy/DEFAULT 'validated' → autorisé.
+    const isPending = (p: { review_status?: string | null }) =>
+        p.review_status != null && p.review_status !== "validated";
 
     // Products without EAN (or with EAN shorter than 8 chars — EAN-8 and EAN-13 both valid)
     const noEan = products.filter((p) => !p.ean || p.ean.length < 8);

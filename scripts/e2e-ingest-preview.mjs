@@ -86,9 +86,11 @@ try {
     check("2 jobs d'enrichissement enfilés (pending)", jobs1.length === 2 && jobs1.every((j) => j.status === "pending"), `${jobs1.length} jobs`);
 
     // ── 3. État avant worker : produits créés mais PAS encore scorés (invisibles) ──
-    const before = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=id,ean,visible,identification_score,stock(quantity)`), { headers: sbHeaders })).json();
+    const before = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=id,ean,visible,review_status,identification_score,stock(quantity)`), { headers: sbHeaders })).json();
     const nutellaBefore = before.find((p) => p.ean === "3017620422003");
-    check("produit EAN créé, stock 5, invisible avant enrichissement", stockQty(nutellaBefore?.stock) === 5 && nutellaBefore?.visible === false);
+    check("produit EAN créé, stock 5, invisible avant enrichissement",
+        stockQty(nutellaBefore?.stock) === 5 && nutellaBefore?.visible === false,
+        `found=${!!nutellaBefore} stock=${stockQty(nutellaBefore?.stock)} visible=${nutellaBefore?.visible} status=${nutellaBefore?.review_status} score=${nutellaBefore?.identification_score}`);
 
     // ── 4. Worker d'enrichissement (cron) ──
     if (!CRON) {
