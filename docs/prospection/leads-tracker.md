@@ -1,16 +1,46 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-12 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-13 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 133
-- NOUVEAU : 49
+- Total leads : 140
+- NOUVEAU : 50
 - CONTACTE : 1
-- BROUILLON : 67
+- BROUILLON : 69
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage samedi — 2026-06-13 (L'Eclaireur) — Victor-Hugo épuisé, 2 emails trouvés + 7 écartées définitives
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées — confirmé depuis 02/05). Session convertie en rattrapage : cible prioritaire = 10 prospects Saint-Etienne NON encore traités (0 passages) + NOUVEAU multi-quartiers (≤4 passes). 35+ recherches web + fetches effectués. **2 emails confirmés : FJT/FRAYSSINET JOAILLIER (contact@frayssinet-joaillier.fr ✅) via mentions légales frayssinet-joaillier.fr, et ROBERTO GIANNELLI (info@robertogiannellifrance.com ✅) via page contact robertogiannellifrance.com.** 7 nouvelles écartées définitives Saint-Etienne : BAOBAB (B.R.1, 811166578 — boutique Toulouse fermée juillet 2020), HERVE MARIAGE (RAMSES, 523860542 — liquidation judiciaire 2021), MJ CONCEPT STORE / VERSION CAMELEON (UNION STYLE, 814518205 — radiée 18/09/2021), NITYA (DUKAN DE NITYA, 394862114 — inactive fév 2018), VERSO (453313181 — liquidation judiciaire en cours, Monique Baron Wambeck = liquidateur, MAJ RCS mars 2026), ANNE FONTAINE / LA CHEMISERIE PARISIENNE (394771075 — boutique de marque nationale, hors cible), LA CHEMISERIE TOULOUSAINE--LCT (403309891 — même gérant Ari Zlotkin, même adresse Anne Fontaine, hors cible). Saint-Etienne presque épuisé : CHRISTOMET (Dorise family, même email que brouillon existant contact@dorise-joaillier.com — non redrafté). Patterns confirmés : AMA LUNA (IG @amalunacreation + FB actifs 5ème passage — aucun email), MANOUSHKA (manoushka.fr ECONNREFUSED 5ème passage persistant), SIENNE (5 SB FAMILY — SIREN valide 538275561, IG @sienne.boutique + Yelp juil 2025 actifs, aucun email), SARL PERLIN'S (perlins.fr actif sans email — 4ème passage), SOCIETE LAKO (tel uniquement — 4ème passage), DRESSING ROSE AND KIDS (IG uniquement — 6ème passage). NOTE : Outil Notion MCP indisponible — résultat enregistré dans le tracker uniquement.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| FJT (FRAYSSINET JOAILLIER TOULOUSE) | Saint-Etienne | Bijouterie/Horlogerie | HOLDING FRAYSSINET | contact@frayssinet-joaillier.fr ✅ | 501696819 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail à créer) — joaillier-horloger indépendant 3 boutiques Toulouse (Languedoc + Capitole + Arts), revendeur Rolex/Longines/Jaeger-LeCoultre/TAG Heuer, fondé 1905 famille Frayssinet. 5 ets (Toulouse + Montpellier), email mentions légales confirmé 13/06. Tel boutique Toulouse : 05 61 53 99 04. |
+| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com ✅ | 788804342 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail à créer) — chaussures modulables à brides interchangeables marque propre, boutique 20 rue du Languedoc (siège Castelginest 31780 depuis 2022), e-shop actif 2026. Score réduit (marque propre, pas multi-marques). Email confirmé 13/06 via page contact robertogiannellifrance.com. |
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (1er passage 13/06) — boutique multi-marques chaussures/sacs cuir (Fratelli Rossetti, Buttero, Homers, Pare Gabia, Lario...), 29 rue Croix Baragnon, active, tel 05 34 31 67 44, aucun site propre ni IG ni email public. Cible idéale Two-Step. Visite terrain. |
+| SIENNE (5 SB FAMILY) | Capitole | Mode femme | Stéphanie Berdah | — | 538275561 | 6/10 | NOUVEAU | Email non trouvé (1er passage 13/06) — SIREN valide (538275561 = 5 SB FAMILY, Stéphanie Berdah — différent du 428969711 invalide), IG @sienne.boutique actif + Yelp "Updated July 2025", boutique confirmée active 44 rue des Tourneurs. Aucun email public. Visite terrain ou contact IG. |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 13/06) — perlins.fr actif (présentation + catalogue, pas d'email visible), tel 05 61 21 18 81. 49 rue de la Pomme. Visite terrain. |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 13/06) — IG @amalunacreation + FB @almalunaboutique actifs, aucun site propre ni email public. 66 rue de la Pomme. Visite terrain. |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (5ème passage 13/06) — manoushka.fr ECONNREFUSED persistant (5ème semaine), FB @manoushka.toulouse uniquement. 53 rue de la Pomme. Visite terrain. |
+| SOCIETE LAKO | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 13/06) — annuaires uniquement (Jean Chatel/Nino Loreti/Seidensticker/Barutti), tel 05 61 21 50 72. 36 rue de la Pomme. Visite terrain. |
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 13/06) — IG @dressingrosektoulouse uniquement. 31 rue Saint-Rome. Visite terrain ou contact IG. |
+
+**Nouvelles écartées (session 13/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| BAOBAB | Saint-Etienne | 811166578 | Boutique Toulouse (B.R.1) fermée juillet 2020 — ÉCARTÉE DÉFINITIF |
+| HERVE MARIAGE | Saint-Etienne | 523860542 | RAMSES — liquidation judiciaire prononcée 2021, cessation paiements juil 2021 — ÉCARTÉE DÉFINITIF |
+| MJ CONCEPT STORE / VERSION CAMELEON | Saint-Etienne | 814518205 | UNION STYLE — société radiée 18/09/2021 — ÉCARTÉE DÉFINITIF |
+| NITYA | Saint-Etienne | 394862114 | DUKAN DE NITYA — inactive depuis février 2018 — ÉCARTÉE DÉFINITIF |
+| VERSO | Capitole | 453313181 | Liquidation judiciaire en cours, Monique Baron Wambeck = liquidateur, MAJ RCS mars 2026 — ÉCARTÉE DÉFINITIF |
+| ANNE FONTAINE (LA CHEMISERIE PARISIENNE) | Saint-Etienne | 394771075 | Boutique de marque nationale (Anne Fontaine = chaine internationale) — hors cible Two-Step |
+| LA CHEMISERIE TOULOUSAINE--LCT | Saint-Etienne | 403309891 | Même gérant (Ari Zlotkin) et même adresse qu'Anne Fontaine — entité liée, hors cible |
+
+---
 
 ### Rattrapage vendredi — 2026-06-12 (L'Eclaireur) — Saint-Cyprien épuisé, 0 email trouvé + 2 écartées
 
