@@ -35,11 +35,13 @@ export async function GET(request: Request) {
         const admin = createAdminClient();
         const now = new Date();
 
-        const { data: products } = await admin
+        const { data: products, error: productsErr } = await admin
             .from("products")
             .select("id, merchant_id, category, price, stock(quantity, updated_at)")
             .is("archived_at", null)
             .limit(50000);
+        // Ne pas masquer un échec de requête en "0 produit, ok:true".
+        if (productsErr) throw productsErr;
 
         const rows = (products ?? []) as unknown as ProductRow[];
 
@@ -108,12 +110,48 @@ export async function GET(request: Request) {
             await admin.from("quality_alerts").insert(toInsert);
         }
 
+        // ── Watchdog ingestion : flux de push arrêté (last_used_at > 48 h) ──────
+        // Un marchand dont la caisse poussait puis a cessé → stock figé/mort
+        // affiché sans que personne ne le sache. On alerte (dashboard + Sentry).
+        const SILENCE_H = 48;
+        const silentBefore = new Date(now.getTime() - SILENCE_H * 3_600_000).toISOString();
+        const { data: silentCreds } = await admin
+            .from("ingest_credentials")
+            .select("merchant_id, last_used_at")
+            .not("last_used_at", "is", null)
+            .lt("last_used_at", silentBefore);
+
+        let ingestSilentNew = 0;
+        if (silentCreds && silentCreds.length > 0) {
+            const { data: openIngest } = await admin
+                .from("quality_alerts")
+                .select("merchant_id")
+                .eq("type", "ingest_silent")
+                .eq("status", "open");
+            const alreadyAlerted = new Set((openIngest ?? []).map((a: { merchant_id: string }) => a.merchant_id));
+
+            const ingestAlerts = silentCreds
+                .filter((c: { merchant_id: string }) => !alreadyAlerted.has(c.merchant_id))
+                .map((c: { merchant_id: string; last_used_at: string }) => ({
+                    merchant_id: c.merchant_id,
+                    product_id: null,
+                    type: "ingest_silent",
+                    detail: { last_used_at: c.last_used_at, silence_hours: SILENCE_H },
+                }));
+            if (ingestAlerts.length > 0) {
+                await admin.from("quality_alerts").insert(ingestAlerts);
+                ingestSilentNew = ingestAlerts.length;
+                captureError(new Error(`Ingestion silencieuse : ${ingestAlerts.length} marchand(s) sans push depuis ${SILENCE_H} h`), { route: "cron/quality-check", phase: "ingest-watchdog" });
+            }
+        }
+
         return NextResponse.json({
             ok: true,
             products_checked: rows.length,
             stock_stale: staleCount,
             price_aberrant: aberrantCount,
             new_alerts: toInsert.length,
+            ingest_silent_new: ingestSilentNew,
         });
     } catch (e) {
         captureError(e, { route: "cron/quality-check" });

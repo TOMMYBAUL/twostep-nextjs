@@ -27,14 +27,28 @@ export async function POST(req: NextRequest) {
         try {
             const auth = await getGoogleAccessToken(conn.merchant_id);
             if (!auth) {
+                // Token Google expiré/révoqué = feed mort SILENCIEUX pour le marchand.
+                // On le rend visible (statut + Sentry) au lieu d'incrémenter un compteur.
                 errors++;
+                await supabase
+                    .from("google_merchant_connections")
+                    .update({ last_feed_status: "error", last_feed_error: "Google token expired or revoked — reconnect required" })
+                    .eq("merchant_id", conn.merchant_id);
+                captureError(new Error("Google token unavailable"), { cron: "google-feed", merchantId: conn.merchant_id });
                 continue;
             }
 
+            // GATE : ne pousser à Google QUE les produits réellement publiables
+            // (validés, visibles, non archivés, non variantes). Sinon on expose des
+            // produits non identifiés sur Google Shopping (faux positif public).
             const { data: products } = await supabase
                 .from("products")
                 .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity)")
-                .eq("merchant_id", conn.merchant_id);
+                .eq("merchant_id", conn.merchant_id)
+                .eq("visible", true)
+                .eq("review_status", "validated")
+                .is("archived_at", null)
+                .is("variant_of", null);
 
             if (!products) continue;
 
@@ -63,13 +77,15 @@ export async function POST(req: NextRequest) {
                 }
             }
 
+            // Statut honnête : "partial" si des produits éligibles ont échoué au push.
+            const feedStatus = pushed === eligible.length ? "success" : "partial";
             await supabase
                 .from("google_merchant_connections")
                 .update({
                     products_pushed: pushed,
                     last_feed_at: new Date().toISOString(),
-                    last_feed_status: "success",
-                    last_feed_error: null,
+                    last_feed_status: feedStatus,
+                    last_feed_error: feedStatus === "partial" ? `${eligible.length - pushed}/${eligible.length} produits non poussés` : null,
                 })
                 .eq("merchant_id", conn.merchant_id);
 

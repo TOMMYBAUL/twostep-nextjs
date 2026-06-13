@@ -12,6 +12,13 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 ## Sécurité
 - ❌ `decrypt()` fail-open silencieux (`if (!ciphertext.includes(":")) return ciphertext;`) acceptait n'importe quel token non-chiffré sans erreur. Risque : fuite Vercel env = fuite TOUS tokens POS marchands. Fix : versioning format `v1:iv:tag:ciphertext` + flag `STRICT_DECRYPT=true` qui throw au lieu de fail-open. Migration tokens DB obligatoire AVANT activation strict via `scripts/migrate-encrypt-tokens.mjs`. Rollout 5 phases : déploy fix transitoire → migrate DB → audit Sentry → set STRICT → redeploy. Branche `fix/encryption-fail-open` (2026-04-25)
 
+## Ops / résilience (V3, 2026-06-13)
+- ❌ `instrumentation.ts` sans `export const onRequestError = Sentry.captureRequestError` → les crashs non catchés des Server Components / route handlers ne remontent JAMAIS à Sentry. Ajouté.
+- ❌ `resync-stock` écrivait `last_sync_status:"ok"` même quand des upserts stock échouaient (`if(!error) updated++` avalait l'erreur) → dérive de stock derrière un voyant vert. Fix : captureError par échec + statut "partial" si writeErrors>0.
+- ❌ `google-feed` : token Google expiré → `errors++; continue` silencieux (feed mort sans signal) ; et poussait TOUS les produits du marchand (pas de filtre visible/validated) = produits non identifiés sur Google Shopping. Fix : statut "error"+Sentry sur token absent, gate `visible+validated+!archived+!variant` sur le SELECT, statut "partial" si pushed<eligible.
+- ⚠️ `STRICT_DECRYPT=true` PAS activable tel quel : 1 token legacy (non `v1:`) dans `pos_connections` → throw au décryptage = POS down. Migrer via `scripts/migrate-encrypt-tokens.mjs` AVANT activation. (0 token POS dans merchant_pos_credentials, 0 Google.)
+- Backup DB : `.github/workflows/db-backup.yml` (pg_dump quotidien → artefact 30j). Nécessite le secret GitHub `SUPABASE_DB_URL` (connection directe port 5432, pas le pooler).
+
 ## Next.js / Vercel
 - ❌ `vercel env add` par stdin PowerShell enregistre des valeurs VIDES (et l'argument positionnel est refusé par CLI ≥54.13) → utiliser `--value` ou l'API REST (`POST /v10/projects/{id}/env?upsert=true`, token dans `%APPDATA%\xdg.data\com.vercel.cli\auth.json`). Vérifier avec `vercel env pull` + longueur des valeurs. (2026-06-13)
 - ❌ Script npm `prepare` (`git config core.hooksPath`) casse `npm install` sur Vercel (pas de .git en build CLI) → wrappé dans node try/catch. (2026-06-13)

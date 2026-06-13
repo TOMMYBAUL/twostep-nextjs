@@ -143,10 +143,24 @@ la foi du code) puis corrigés. Migrations 097-101 appliquées en prod par l'IA
   court-circuit du "zéro faux positif". Masqué par l'ancien enrichissement inline,
   révélé par le découplage. Fix : visible seulement si review_status='validated'.
 
-**RESTE — VAGUE 3 (ops/résilience, à faire) :** backup DB (aucun aujourd'hui),
-quality_alerts + watchdog ingestion (last_used_at) que personne ne lit,
-onRequestError Sentry manquant, erreurs avalées (resync-stock statut vert sur
-échec, google-feed token expiré silencieux), STRICT_DECRYPT à activer.
+**VAGUE 3 — Ops/résilience (faite, 345 tests + tsc verts) :**
+- `instrumentation.ts` : `onRequestError` Sentry (crashs de routes remontent enfin).
+- `resync-stock` : statut "partial" + captureError si échec d'écriture stock
+  (ne masque plus la dérive derrière un "ok").
+- `google-feed` : token expiré → statut "error" + Sentry (plus silencieux) ;
+  GATE ajouté (visible+validated+!archived+!variant → ne pousse plus de produits
+  non identifiés sur Google Shopping) ; statut "partial" si pushed<eligible.
+- `quality-check` : watchdog ingestion (last_used_at > 48 h → alerte ingest_silent
+  + Sentry) ; check d'erreur sur le SELECT (ne masque plus un échec en "0 produit ok").
+  Migration 102 (type ingest_silent + index dédup marchand).
+- Backup : `.github/workflows/db-backup.yml` (pg_dump quotidien → artefact 30 j).
+  **ACTION THOMAS** : ajouter le secret GitHub `SUPABASE_DB_URL` (Settings → Secrets
+  → Actions ; connection directe Supabase port 5432, pas le pooler) pour l'activer.
+- `STRICT_DECRYPT` NON activé : 1 token legacy dans pos_connections le casserait
+  (migrer via scripts/migrate-encrypt-tokens.mjs avant). Reste à faire.
+
+**Migrations appliquées en prod cette session : 097→102.** quality_alerts UI
+(affichage des alertes côté dashboard marchand) reste un chantier B visuel.
 
 **État déploiement** : migrations 097-101 actives sur la DB prod (partagée).
 Prod APP = ancien code (branche non mergée) → a encore le bug gate, mais base

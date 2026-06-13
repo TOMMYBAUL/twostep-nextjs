@@ -76,20 +76,39 @@ export async function resyncMerchantStock(
 
     const mapped = mapStockUpdatesToProducts(rows, stockUpdates);
     let updated = 0;
+    let writeErrors = 0;
     for (const m of mapped) {
         const { error } = await admin.from("stock").upsert(
             { product_id: m.productId, quantity: m.quantity, updated_at: new Date().toISOString() },
             { onConflict: "product_id" },
         );
-        if (!error) updated++;
+        if (error) {
+            // Un échec d'écriture stock = dérive silencieuse (l'enjeu n°1 du produit).
+            // On ne le masque plus derrière un statut "ok".
+            writeErrors++;
+            captureError(error, { lib: "resync-stock", merchantId, productId: m.productId });
+        } else {
+            updated++;
+        }
     }
 
+    // Statut honnête : "ok" seulement si TOUTES les écritures ont réussi.
+    const allOk = writeErrors === 0;
     await admin
         .from("pos_connections")
-        .update({ last_sync_at: new Date().toISOString(), last_sync_status: "ok" })
+        .update({
+            last_sync_at: new Date().toISOString(),
+            last_sync_status: allOk ? "ok" : "partial",
+        })
         .eq("merchant_id", merchantId);
 
-    return { merchant_id: merchantId, ok: true, updated, fetched: stockUpdates.length };
+    return {
+        merchant_id: merchantId,
+        ok: allOk,
+        updated,
+        fetched: stockUpdates.length,
+        ...(writeErrors > 0 && { reason: `${writeErrors} stock write(s) failed` }),
+    };
 }
 
 /** Re-sync stock de TOUS les marchands ayant une connexion POS. */
