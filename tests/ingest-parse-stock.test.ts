@@ -41,6 +41,27 @@ describe("parseStockFile — contrat NearSt {code-barres, quantité, prix}", () 
         expect(items[0].unit_price).toBeNull();
         expect(items[1].unit_price).toBeNull();
     });
+
+    it("lit une colonne TAILLE dédiée (fiable, ≠ extraction du nom)", () => {
+        const csv = "code-barres;nom;taille;quantité;prix\n3017620422003;Sneaker Air;42;3;90\n4006381333931;Sneaker Air;43;2;90\n";
+        const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
+        expect(items).toHaveLength(2);
+        expect(items[0].size).toBe("42");
+        expect(items[1].size).toBe("43");
+    });
+
+    it("colonne pointure reconnue + valeur aberrante (trop longue) ignorée", () => {
+        const csv = "ean;désignation;pointure;qté;prix\n3017620422003;Botte;Default Title;1;120\n4006381333931;Botte;41;1;120\n";
+        const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
+        expect(items[0].size).toBeNull(); // "Default Title" rejeté
+        expect(items[1].size).toBe("41");
+    });
+
+    it("sans colonne taille, size reste null (la déduction se fait au snapshot)", () => {
+        const csv = "code-barres;nom;quantité;prix\n3017620422003;T-shirt;5;20\n";
+        const { items } = parseStockFile(Buffer.from(csv, "utf-8"));
+        expect(items[0].size ?? null).toBeNull();
+    });
 });
 
 describe("validEanOrNull — GTIN vs SKU interne", () => {

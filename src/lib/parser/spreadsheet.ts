@@ -44,6 +44,13 @@ const BRAND_HEADERS = [
     "griffe", "enseigne", "label",
 ];
 
+// Colonne taille/pointure dédiée. Captée explicitement = taille FIABLE (vs
+// extraction regex du nom, qui est une déduction faillible). Crucial pour mode/
+// sneakers où l'export caisse a souvent `nom | taille | quantité | prix`.
+const SIZE_HEADERS = [
+    "taille", "tailles", "size", "sizes", "pointure", "pointures",
+];
+
 type ColumnMapping = {
     name: number | null;
     ean: number | null;
@@ -52,6 +59,7 @@ type ColumnMapping = {
     quantity: number | null;
     unit_price: number | null;
     description: number | null;
+    size: number | null;
 };
 
 function normalizeHeader(header: string): string {
@@ -80,14 +88,19 @@ export function detectColumns(headers: string[]): ColumnMapping {
         quantity: null,
         unit_price: null,
         description: null,
+        size: null,
     };
 
     for (let i = 0; i < headers.length; i++) {
         const h = headers[i];
         if (!h) continue;
 
+        // Taille testée en premier : "taille"/"pointure" sont sans ambiguïté et ne
+        // doivent pas être happés par une autre colonne.
+        if (mapping.size === null && matchesAny(h, SIZE_HEADERS)) {
+            mapping.size = i;
         // Check SKU before name — "Réf. article" contains both "ref" (SKU) and "article" (name)
-        if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
+        } else if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
             mapping.sku = i;
         } else if (mapping.name === null && matchesAny(h, NAME_HEADERS)) {
             mapping.name = i;
@@ -259,7 +272,7 @@ export const spreadsheetParser: IInvoiceParser = {
         // Scan the first 30 rows to find the header row (real invoices have
         // supplier info, addresses, etc. above the product table)
         let headerRowIndex = -1;
-        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null, description: null };
+        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null, description: null, size: null };
 
         const scanLimit = Math.min(rows.length, 30);
         for (let r = 0; r < scanLimit; r++) {

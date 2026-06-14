@@ -1,6 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCachedTaxonomy, cacheTaxonomy } from "@/lib/enrichment/cache-taxonomy";
 
+// En dessous de ce seuil, la catégorie IA est jugée trop incertaine pour être
+// appliquée (le prompt calibre : 95+ explicite, 70-94 deviné, <70 incertain).
+const CATEGORY_CONFIDENCE_MIN = 70;
+
 type ProductInput = {
     id: string;
     name: string;
@@ -155,20 +159,24 @@ type TagInsert = { product_id: string; tag_type: string; tag_value: string; sour
 export async function categorizeMerchantProducts(merchantId: string): Promise<{
     categorized: number;
     failed: number;
+    low_confidence: number;
 }> {
     const supabase = createAdminClient();
 
+    // Sélection sur ai_categorized_at null (pas category_id) : un produit déjà
+    // tenté — succès OU rejet sous seuil de confiance — n'est pas re-catégorisé
+    // en boucle (le rejet sous seuil laisse category_id null mais marque la tentative).
     const { data: products } = await supabase
         .from("products")
         .select("id, name, price, ean, canonical_name")
         .eq("merchant_id", merchantId)
-        .is("category_id", null)
+        .is("ai_categorized_at", null)
         .limit(200);
 
-    if (!products || products.length === 0) return { categorized: 0, failed: 0 };
+    if (!products || products.length === 0) return { categorized: 0, failed: 0, low_confidence: 0 };
 
     const { data: tree } = await supabase.rpc("get_categories_tree");
-    if (!tree || tree.length === 0) return { categorized: 0, failed: 0 };
+    if (!tree || tree.length === 0) return { categorized: 0, failed: 0, low_confidence: 0 };
 
     // ─── Phase 1: cache lookup for products with EAN ───
     const cacheHits: Array<{ product: typeof products[number]; cached: NonNullable<Awaited<ReturnType<typeof getCachedTaxonomy>>> }> = [];
@@ -194,6 +202,7 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
 
     let categorized = 0;
     let failed = 0;
+    let lowConfidence = 0;
 
     // ─── Phase 2: apply cached taxonomies (no AI cost) ───
     for (const hit of cacheHits) {
@@ -251,6 +260,20 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
                 : null;
 
             if (!cat) { failed++; continue; }
+
+            // Seuil de confiance : une catégorie devinée trop incertaine (<70) n'est
+            // PAS appliquée — mieux vaut "pas de catégorie" qu'une fausse catégorie
+            // qui décrédibilise. On marque quand même la tentative (ai_categorized_at)
+            // pour ne pas re-boucler sur l'IA indéfiniment. Le produit reste visible
+            // (le gate visibilité dépend de l'identité, pas de la catégorie).
+            if (result.confidence < CATEGORY_CONFIDENCE_MIN) {
+                await supabase
+                    .from("products")
+                    .update({ ai_categorized_at: new Date().toISOString(), ai_confidence: result.confidence })
+                    .eq("id", result.id);
+                lowConfidence++;
+                continue;
+            }
 
             await supabase
                 .from("products")
@@ -319,5 +342,5 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
         }
     }
 
-    return { categorized, failed };
+    return { categorized, failed, low_confidence: lowConfidence };
 }

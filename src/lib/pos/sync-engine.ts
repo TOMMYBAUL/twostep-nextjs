@@ -519,11 +519,12 @@ export async function groupVariantsByEAN(
         const computedVisible = hasNameAndPrice && qty > 0;
         const visible = isPending(p) ? false : computedVisible;
         if (visible) visibleCount++;
-        const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty }] : [];
-        await supabase
-            .from("products")
-            .update({ visible, available_sizes: availableSizes })
-            .eq("id", p.id);
+        const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty, source: "pos" as const }] : [];
+        // Non-destructif : ne pas écraser un available_sizes déjà rempli (ex. par
+        // l'ingestion fichier qui groupe les tailles en mémoire) avec un tableau vide.
+        const upd: Record<string, unknown> = { visible };
+        if (availableSizes.length > 0) upd.available_sizes = availableSizes;
+        await supabase.from("products").update(upd).eq("id", p.id);
     }
 
     // Group products with EAN by prefix
@@ -545,14 +546,13 @@ export async function groupVariantsByEAN(
             // Solo product with EAN — visible only if stock > 0
             const p = group[0];
             const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
-            const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
+            const availableSizes = p.size ? [{ size: p.size, quantity: qty, source: "pos" as const }] : [];
             const computedVisible = qty > 0;
             const visible = isPending(p) ? false : computedVisible;
             if (visible) visibleCount++;
-            await supabase
-                .from("products")
-                .update({ visible, variant_of: null, available_sizes: availableSizes })
-                .eq("id", p.id);
+            const upd: Record<string, unknown> = { visible, variant_of: null };
+            if (availableSizes.length > 0) upd.available_sizes = availableSizes;
+            await supabase.from("products").update(upd).eq("id", p.id);
             continue;
         }
 
@@ -564,12 +564,14 @@ export async function groupVariantsByEAN(
             return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         })[0];
 
-        // Compute available_sizes from all members
+        // Compute available_sizes from all members. source:"pos" = taille issue
+        // d'une variante de caisse structurée (fiable), pour le traçage d'origine.
         const availableSizes = group
             .filter((p) => p.size)
             .map((p) => ({
                 size: p.size!,
                 quantity: (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0,
+                source: "pos" as const,
             }))
             .sort((a, b) => {
                 const na = parseFloat(a.size);
@@ -584,11 +586,11 @@ export async function groupVariantsByEAN(
         const groupVisible = isPending(principal) ? false : computedGroupVisible;
         if (groupVisible) visibleCount++;
 
-        // Update principal
-        await supabase
-            .from("products")
-            .update({ visible: groupVisible, variant_of: null, available_sizes: availableSizes })
-            .eq("id", principal.id);
+        // Update principal (available_sizes seulement s'il y a des tailles : ne pas
+        // écraser un available_sizes posé par l'ingestion fichier avec du vide).
+        const updPrincipal: Record<string, unknown> = { visible: groupVisible, variant_of: null };
+        if (availableSizes.length > 0) updPrincipal.available_sizes = availableSizes;
+        await supabase.from("products").update(updPrincipal).eq("id", principal.id);
 
         // Update stock of principal to reflect total
         await supabase
@@ -642,6 +644,7 @@ export async function recalculateGroupSizes(
         .map((m) => ({
             size: m.size!,
             quantity: (m as any).stock?.[0]?.quantity ?? (m as any).stock?.quantity ?? 0,
+            source: "pos" as const,
         }))
         .sort((a, b) => {
             const na = parseFloat(a.size);
@@ -652,10 +655,14 @@ export async function recalculateGroupSizes(
 
     const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-    await supabase
-        .from("products")
-        .update({ available_sizes: availableSizes })
-        .eq("id", principalId);
+    // Non-destructif : ne pas écraser available_sizes avec du vide (préserve les
+    // tailles posées par l'ingestion fichier sur des produits sans products.size).
+    if (availableSizes.length > 0) {
+        await supabase
+            .from("products")
+            .update({ available_sizes: availableSizes })
+            .eq("id", principalId);
+    }
 
     await supabase
         .from("stock")

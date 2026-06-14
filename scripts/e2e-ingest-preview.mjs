@@ -61,10 +61,12 @@ try {
     check("création jeton d'ingestion", credRes.ok);
 
     const csv = [
-        "code-barres;référence;nom;quantité;prix",
-        "3017620422003;;Nutella 750g;5;3.50",
-        ";TS-E2E-001;Bougie artisanale;2;14.90",
-        ";;Produit sans aucun code;9;9.99",
+        "code-barres;référence;nom;taille;quantité;prix",
+        "3017620422003;;Nutella 750g;;5;3.50",
+        ";TS-E2E-001;Bougie artisanale;;2;14.90",
+        ";;Produit sans aucun code;;9;9.99",
+        ";DD1391-100;Nike Dunk Low;42;3;120",       // multi-tailles via COLONNE taille
+        ";DD1391-100;Nike Dunk Low;43;2;120",
     ].join("\n");
     const push = async (body) => {
         const r = await fetch(`${previewUrl}/api/ingest/stock?filename=stock.csv`, {
@@ -77,13 +79,23 @@ try {
     const p1 = await push(csv);
     console.log("push 1:", JSON.stringify(p1.json));
     check("push accepté (200)", p1.code === 200);
-    check("triage 1 GTIN / 1 SKU / 1 rejet",
-        p1.json.triage?.gtin_lines === 1 && p1.json.triage?.sku_lines === 1 && p1.json.triage?.rejected_lines === 1);
-    check("2 produits créés", p1.json.products_created === 2);
+    check("triage 1 GTIN / 3 SKU / 1 rejet",
+        p1.json.triage?.gtin_lines === 1 && p1.json.triage?.sku_lines === 3 && p1.json.triage?.rejected_lines === 1,
+        JSON.stringify(p1.json.triage));
+    check("3 produits créés (nutella, bougie, nike groupé)", p1.json.products_created === 3, `créés=${p1.json.products_created}`);
+
+    // ── 1bis. TAILLE : colonne dédiée → available_sizes avec source tracée ──
+    const nike = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=name,sku,available_sizes&sku=eq.DD1391-100`), { headers: sbHeaders })).json();
+    const sizes = nike[0]?.available_sizes ?? [];
+    const sizeVals = sizes.map((s) => s.size).sort();
+    check("Nike groupé : 2 tailles depuis la colonne", sizeVals.length === 2 && sizeVals[0] === "42" && sizeVals[1] === "43", JSON.stringify(sizeVals));
+    check("tailles tracées source=file_column (fiable)", sizes.every((s) => s.source === "file_column"), JSON.stringify(sizes.map((s) => s.source)));
+    check("quantité par taille correcte (42→3, 43→2)",
+        sizes.find((s) => s.size === "42")?.quantity === 3 && sizes.find((s) => s.size === "43")?.quantity === 2, JSON.stringify(sizes));
 
     // ── 2. Découplage : jobs d'enrichissement enfilés (pas d'enrichissement inline) ──
     const jobs1 = await (await fetch(rest(`/enrichment_jobs?merchant_id=eq.${merchantId}&select=id,product_id,status`), { headers: sbHeaders })).json();
-    check("2 jobs d'enrichissement enfilés (pending)", jobs1.length === 2 && jobs1.every((j) => j.status === "pending"), `${jobs1.length} jobs`);
+    check("3 jobs d'enrichissement enfilés (pending)", jobs1.length === 3 && jobs1.every((j) => j.status === "pending"), `${jobs1.length} jobs`);
 
     // ── 3. État avant worker : produits créés mais PAS encore scorés (invisibles) ──
     const before = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=id,ean,visible,review_status,identification_score,stock(quantity)`), { headers: sbHeaders })).json();
@@ -100,7 +112,7 @@ try {
         const wj = await w.json();
         console.log("worker:", w.status, JSON.stringify(wj));
         check("worker répond 200", w.status === 200, `HTTP ${w.status}`);
-        check("worker a traité les 2 jobs", wj.processed >= 2 || wj.done >= 2, JSON.stringify(wj));
+        check("worker a traité les 3 jobs", wj.processed >= 3 || wj.done >= 3, JSON.stringify(wj));
 
         const jobs2 = await (await fetch(rest(`/enrichment_jobs?merchant_id=eq.${merchantId}&select=status`), { headers: sbHeaders })).json();
         check("jobs terminés (plus aucun pending)", jobs2.every((j) => j.status !== "pending"), JSON.stringify(jobs2.map((j) => j.status)));

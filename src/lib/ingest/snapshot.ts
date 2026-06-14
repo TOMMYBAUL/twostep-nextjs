@@ -86,13 +86,22 @@ export async function ingestStockSnapshot(
         if (p.name) byName.set(p.name.toLowerCase().trim(), p.id);
     }
 
-    // Groupage par nom de base (taille retirée) pour fusionner les variantes
-    type CatalogItem = ParsedInvoiceItem & { _size: string | null; _cleanName: string };
+    // Groupage par nom de base (taille retirée) pour fusionner les variantes.
+    // Taille : on PRÉFÈRE la colonne dédiée du fichier (fiable) à l'extraction
+    // regex du nom (déduction faillible). _sizeSource trace l'origine pour
+    // l'afficher honnêtement / la faire valider au besoin.
+    type SizeSource = "file_column" | "name_regex" | null;
+    type CatalogItem = ParsedInvoiceItem & { _size: string | null; _sizeSource: SizeSource; _cleanName: string };
     const groups = new Map<string, CatalogItem[]>();
     for (const item of accepted) {
-        const size = extractSize(item.name);
-        const cleanName = size ? stripSize(item.name) : item.name;
-        const normalized: CatalogItem = { ...item, _size: size, _cleanName: cleanName };
+        const colSize = item.size?.trim() || null;
+        const nameSize = colSize ? null : extractSize(item.name);
+        const size = colSize ?? nameSize;
+        const sizeSource: SizeSource = colSize ? "file_column" : (nameSize ? "name_regex" : null);
+        // On ne retire la taille du nom que si elle a été DÉDUITE du nom ; si elle
+        // vient d'une colonne, le nom est déjà le nom de base.
+        const cleanName = nameSize ? stripSize(item.name) : item.name;
+        const normalized: CatalogItem = { ...item, _size: size, _sizeSource: sizeSource, _cleanName: cleanName };
         const key = cleanName.toLowerCase().trim();
         const group = groups.get(key) ?? [];
         group.push(normalized);
@@ -135,7 +144,7 @@ export async function ingestStockSnapshot(
 
         const availableSizes = validItems
             .filter((g) => g._size)
-            .map((g) => ({ size: g._size!, quantity: g.quantity }));
+            .map((g) => ({ size: g._size!, quantity: g.quantity, source: g._sizeSource ?? "name_regex" }));
         const totalStock = validItems.reduce((sum, g) => sum + g.quantity, 0);
 
         if (productId) {

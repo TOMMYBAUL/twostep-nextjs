@@ -62,6 +62,10 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;
         const sku = mapping.sku !== null ? String(row[mapping.sku] ?? "").trim() || null : null;
         const brand = mapping.brand !== null ? String(row[mapping.brand] ?? "").trim() || null : null;
+        // Taille depuis une colonne dédiée (fiable). Limitée à 16 chars (une taille
+        // "XXL" / "42.5" / "T.U." est courte ; au-delà c'est une autre donnée).
+        const sizeRaw = mapping.size !== null ? String(row[mapping.size] ?? "").trim() : "";
+        const size = sizeRaw && sizeRaw.length <= 16 && sizeRaw.toLowerCase() !== "default title" ? sizeRaw : null;
 
         // Identité requise : EAN, SKU ou nom. Sinon ligne vide -> skip.
         if (!name && !ean && !sku) continue;
@@ -88,7 +92,7 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
             : null;
 
         const displayName = name || (ean ? `EAN ${ean}` : `REF ${sku}`);
-        items.push({ name: displayName, ean, sku, brand, quantity, unit_price });
+        items.push({ name: displayName, ean, sku, brand, quantity, unit_price, size });
     }
 
     return { items };
