@@ -46,7 +46,10 @@ export async function pushInventoryToGoogle(
                         body: JSON.stringify({
                             storeCode: connection.store_code,
                             productId: product.id,
-                            availability: quantity > 0 ? "in_stock" : "out_of_stock",
+                            // Format Google : "in stock" / "out of stock" AVEC ESPACE.
+                            // "in_stock" (underscore) = rejet silencieux du feed
+                            // (cf. feed.ts + support.google.com/merchants/answer/6324448).
+                            availability: quantity > 0 ? "in stock" : "out of stock",
                             quantity: quantity.toString(),
                         }),
                     },
