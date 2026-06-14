@@ -167,6 +167,38 @@ Prod APP = ancien code (branche non mergée) → a encore le bug gate, mais base
 quasi vide donc pas d'exposition. e2e validé en LOCAL (le preview manque
 CRON_SECRET pour tester le worker). À merger sur main après validation Thomas.
 
+## 5quinquies. Audit canal Google LFP (2026-06-14) — CŒUR DU PRODUIT
+
+Positionnement décidé (cf. PROJECT-BRIEF §"Positionnement & séquence produit") :
+Two-Step = "feed Google LFP as a service" d'abord. Donc le canal LFP EST le produit.
+Audit complet (code + Supabase live + Vercel) :
+
+- OAuth Google Merchant : 🟡 OK mais scope `content` seul (pas `business.manage`).
+- Génération feed (Voie A Content API + Voie B XML) : 🟡 champs OK, mais **2 store_code
+  divergents** (Voie A `twostep-{id8}` vs Voie B `slug`).
+- Push stock temps réel : 🔴 était CASSÉ — `inventory.ts` envoyait `availability:
+  "in_stock"` (underscore) = rejet silencieux Google. **CORRIGÉ → "in stock"**.
+- last_feed_status='partial' violait la CHECK 037 → **CORRIGÉ migration 103**.
+- Association store_code ↔ Google Business Profile : 🔴 **TOTALEMENT ABSENTE**
+  (pas de scope, pas de colonne, pas d'API). LFP l'exige. Gros chantier à venir.
+- Observabilité : 🔴 pas de lecture `productStatuses` → on ignore si Google
+  accepte/rejette. À construire.
+- Vercel : env Google présents, cron google-feed 1×/jour (à passer 15 min plus tard).
+- Supabase : 0 connexion Google active.
+
+**FAIT ce jour** : les 2 fixes triviaux/critiques (availability + CHECK partial).
+**RESTE (différé jusqu'à avancée Google)** : association GBP (scope+colonne+flux),
+store_code unifié+réconcilié, lecture productStatuses, cron 15 min.
+
+**GOULOT RÉEL = candidature LFP côté Google EN LIMBO** : tickets 5-9519000040422 /
+6-7242000040976, Merchant Center 5755722759. Le support renvoie vers l'équipe
+onboarding LIA "sous 1-2 jours" depuis le 17/04 — ~2 mois sans contact spécialiste.
+Questions de Thomas (recrutement parallèle, formulaire formel, vérif FR) sans réponse.
+**À clarifier (incertitude) : a-t-on besoin du programme "LFP Data Provider"
+(validation bloquée) OU le modèle "Local Inventory par marchand" (chaque marchand
+sur son propre Merchant Center via OAuth content qu'on a déjà) suffit-il pour
+démarrer sans attendre Google ?** Cette distinction peut débloquer tout le produit.
+
 ## 6. BLOQUÉ sur Thomas
 
 - **#12** : GS1 (entreprise devient diffusable sous 24h après 2026-06-12, puis adhésion
