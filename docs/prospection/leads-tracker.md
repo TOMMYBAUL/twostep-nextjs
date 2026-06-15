@@ -1,16 +1,37 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-13 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-15 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 140
-- NOUVEAU : 50
+- NOUVEAU : 48
 - CONTACTE : 1
 - BROUILLON : 69
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-15 (L'Eclaireur) — Capitole épuisé confirmé, 0 email trouvé + 2 nouvelles écartées
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF (75/75 prospects traités depuis le 18/05 — confirmé au 15/06). Session convertie en vérification des prospects Capitole non lus dans le tracker. 40+ recherches web + fetches effectués sur 10 prospects Capitole (N A L'INFINI, EDEN, LEWIS, LILI-LEONE, MODI-IN, L'ISLA NOVA, ARSENE ET LES PIPELETTES, TOVLI, SUD OUEST WATCH SA, TILL). **0 email nouveau confirmé** : tous les emails déjà découverts sont dans le tracker (contact@bijouterie-toulouse-nougues.fr pour N A L'INFINI [01/06], lilileone@live.fr pour LILI-LEONE [01/06], contact@modi-in.com pour MODI-IN [04/06], sud-ouest-watch@orange.fr pour SUD OUEST WATCH SA [04/06], lescuirsdusud@aol.com pour LES CUIRS DU SUD [04/06], boutiquetoulouse@arseneetlespipelettes.com pour ARSENE ET LES PIPELETTES [04/06]). **2 nouvelles écartées définitives :** LEWIS (947856100, Thierry Chan, 21 rue Alsace-Lorraine — établissement Toulouse fermé le 7 juin 2024, confirmé via rubypayeur.com), L'ISLA NOVA (819913187, Léa Palacin noblet, 36 rue des Tourneurs — site lisla-nova.fr correspond à une boutique à L'Isle-en-Dodon 31230, boutique Toulouse non retrouvée). Autres patterns : EDEN (edenshoes.fr ECONNREFUSED, Yelp Dec 2025 actif — pas d'email), TILL (tel 05 61 33 06 01 uniquement), TOVLI (siège Paris 199 rue Saint-Denis, aucun email Toulouse identifiable), MONPARFUMMASIGNATURE (831969860 — atelier parfum personnalisé = SERVICE hors cible Two-Step). NOTE : Outil Notion MCP indisponible. Prochaine session lundi = multi-quartiers rattrapage NOUVEAU ≤5 passages score ≥7/10.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| LEWIS | Capitole | Maroquinerie | Thierry Chan | — | 947856100 | — | ECARTE | Établissement Toulouse 21 rue Alsace-Lorraine fermé le 07/06/2024 (rubypayeur.com) — ÉCARTÉE DÉFINITIF |
+| L'ISLA NOVA | Capitole | Mode femme | Léa Palacin noblet | — | 819913187 | — | ECARTE | Site lisla-nova.fr = boutique à L'Isle-en-Dodon (31230), non Toulouse — boutique Toulouse 36 rue des Tourneurs non retrouvée — ÉCARTÉE DÉFINITIF |
+| EDEN (PP NEDE) | Capitole | Chaussures | Jean-Jacques Ghebali | — | 810994947 | 6/10 | NOUVEAU | Email non trouvé (1er passage 15/06) — edenshoes.fr ECONNREFUSED, Yelp Updated Dec 2025 (actif), tel 09 75 95 09 25. 42 rue de la Pomme. Visite terrain. |
+| TILL (TILLAMY) | Capitole | Chaussures | Yann Bellamy | — | 401862255 | 6/10 | NOUVEAU | Email non trouvé (1er passage 15/06) — aucun site web identifié, tel 05 61 33 06 01 uniquement. 40 rue de Metz. Visite terrain. |
+| TOVLI | Capitole | Mode femme | Robert Fellous | — | 751393331 | 5/10 | NOUVEAU | Email non trouvé (1er passage 15/06) — siège Paris (199 rue Saint-Denis 75002), aucun site ni email pour la boutique Toulouse. 17 rue de la Pomme. Visite terrain. |
+
+**Nouvelles écartées (session 15/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| LEWIS | Capitole | 947856100 | Établissement Toulouse fermé le 07/06/2024 — ÉCARTÉE DÉFINITIF |
+| L'ISLA NOVA | Capitole | 819913187 | Site lisla-nova.fr = L'Isle-en-Dodon (31230), boutique Toulouse 36 rue des Tourneurs non retrouvée — ÉCARTÉE DÉFINITIF |
+
+---
 
 ### Rattrapage samedi — 2026-06-13 (L'Eclaireur) — Victor-Hugo épuisé, 2 emails trouvés + 7 écartées définitives
 
