@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-15 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-15 (L'Eclaireur + L'Auditeur)*
 
 ## Stats
 - Total leads : 140
@@ -11,6 +11,124 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-06-15 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider (Gmail non créés — token expiré, voir ci-dessous)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Christophe Corbet (FJT FRAYSSINET JOAILLIER TOULOUSE) | contact@frayssinet-joaillier.fr | Frayssinet Joaillier sur Two-Step — tes Rolex et TAG Heuer trouvées par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — PREMIER DRAFT. Joaillerie-horlogerie de référence à Toulouse depuis 1984, 3 boutiques (Languedoc + Capitole + Arts), revendeur Rolex/Longines/Jaeger-LeCoultre/TAG Heuer/Cartier/Chanel. Directeur : Christophe Corbet (source : RocketReach, à confirmer). |
+| 2 | Carole Reynaud (ROBERTO GIANNELLI) | info@robertogiannellifrance.com | Roberto Giannelli sur Two-Step — tes chaussures modulables trouvées par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — PREMIER DRAFT. Chaussures modulables à brides interchangeables, fabrication italienne, VDI + boutique 20 rue du Languedoc, e-shop actif. Score 5/10 (marque propre). |
+| 3 | Rachel Nto (RACHEL HAIR INTERNATIONAL) | csrachelhair@gmail.com | Rachel Hair sur Two-Step — tes perruques et prothèses trouvées par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r7675499261749507342 du 28/05 — 18 jours, refresh échoué 11/06). Spécialiste perruques + prothèses capillaires, alopécie, 12 rue de Bayard. |
+| 4 | Kangle Wang (PASSION FILLE) | yanyun411@gmail.com | Passion Fille sur Two-Step — tes chaussures femme trouvées par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r-5682334074512043112 du 28/05 — 18 jours, refresh échoué 11/06). Chaussures femme 14 rue Saint-Rome, Yelp mars 2026 actif. |
+| 5 | Chantal Huet (MAC DOUGLAS) | macdouglastoulouse@gmail.com | MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — NOUVEAU DRAFT (remplace r3633226270736162015 du 29/05 — 17 jours, refresh échoué 11/06). Maroquinerie française depuis 1976, sacs + chaussures cuir, 24 rue Croix Baragnon. |
+
+*Note session 15/06 (L'Auditeur) : 0 lead NOUVEAU avec email (48 NOUVEAU, tous sans email). 2 premiers drafts genuins (FJT FRAYSSINET JOAILLIER et ROBERTO GIANNELLI — emails trouvés par l'Eclaireur 13/06, sans brouillon Gmail créé depuis) + 3 rafraîchissements des drafts échoués du 11/06 (Rachel Hair du 28/05, Passion Fille du 28/05, MAC DOUGLAS du 29/05 — tous vieux de 17-18 jours). Méthode ACA respectée, <150 mots, tutoiement, prénom gérant, UTM, footer STOP, genre masculin Thomas. PROBLÈME TECHNIQUE RÉCURRENT : MCP Gmail token expiré (idem session 11/06). Thomas doit re-autoriser le MCP Gmail (Settings → Integrations → Gmail) puis relancer L'Auditeur, OU copier-coller les 5 emails ci-dessous directement dans Gmail.*
+*Note : Outil Notion MCP indisponible (idem sessions précédentes) — recap consigné dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-15".*
+*Nota bene FJT : Christophe Corbet identifié comme "Directeur" via RocketReach. Gérant officiel = HOLDING FRAYSSINET (contrôlé par Gilles Frayssinet, fondateur). À confirmer terrain si besoin.*
+
+### TEXTES DES 5 EMAILS (prêts à copier-coller)
+
+**1. Christophe Corbet (FJT FRAYSSINET JOAILLIER) — contact@frayssinet-joaillier.fr**
+Objet : Frayssinet Joaillier sur Two-Step — tes Rolex et TAG Heuer trouvées par les Toulousains
+
+> Bonjour Christophe,
+>
+> Frayssinet Joaillier, c'est 3 boutiques à Toulouse, revendeur officiel Rolex, Longines, Jaeger-LeCoultre et TAG Heuer depuis 1984 — une référence joaillerie-horlogerie que peu de villes en France peuvent revendiquer.
+>
+> Les clients qui cherchent une Rolex ou une montre de prestige à Toulouse font leurs recherches en ligne avant de se déplacer. Ils trouvent des sites e-commerce avant de trouver ta boutique.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Rolex Toulouse" ou "TAG Heuer Toulouse" depuis son téléphone, Two-Step lui montre que tu l'as en stock. Sans commission, sans livraison. Il vient chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**2. Carole Reynaud (ROBERTO GIANNELLI) — info@robertogiannellifrance.com**
+Objet : Roberto Giannelli sur Two-Step — tes chaussures modulables trouvées par les Toulousaines
+
+> Bonjour Carole,
+>
+> Roberto Giannelli, c'est un concept rare à Toulouse : des chaussures italiennes à brides interchangeables que chaque cliente adapte à sa tenue. Pas de concurrent direct en centre-ville.
+>
+> Le problème : les femmes qui cherchent "chaussures personnalisables Toulouse" en ligne ne voient pas encore ta boutique rue du Languedoc.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche ce type de produit en centre-ville depuis son téléphone, Two-Step lui montre ton stock disponible. Elle vient te voir. Pas de commission, pas de livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**3. Rachel Nto (RACHEL HAIR) — csrachelhair@gmail.com**
+Objet : Rachel Hair sur Two-Step — tes perruques et prothèses trouvées par les Toulousaines
+
+> Bonjour Rachel,
+>
+> Rachel Hair à Toulouse, c'est une spécialité rare : prothèses capillaires sur-mesure et perruques pour femmes atteintes d'alopécie. Un créneau précis, une clientèle qui cherche activement.
+>
+> Cette clientèle fait ses recherches avec des requêtes très précises : "perruque Toulouse", "prothèse capillaire centre-ville". Le problème : elle ne sait pas que tu as exactement ce qu'elle cherche en boutique rue de Bayard.
+>
+> Je suis Thomas, je développe Two-Step : ton stock visible en temps réel sur les téléphones des Toulousaines qui cherchent. Elle vient directement chez toi. Sans commission, sans livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**4. Kangle Wang (PASSION FILLE) — yanyun411@gmail.com**
+Objet : Passion Fille sur Two-Step — tes chaussures femme trouvées par les Toulousaines
+
+> Bonjour Kangle,
+>
+> Passion Fille rue Saint-Rome — boutique chaussures femme active au cœur du centre, une clientèle fidèle et un Yelp à jour en mars 2026. La preuve que les clients sont là.
+>
+> Le problème : les femmes qui cherchent des chaussures depuis leur téléphone tombent sur des boutiques en ligne. Elles ne voient pas ce que tu as disponible en magasin — même si elles sont à 500m.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "chaussures femme Toulouse centre", Two-Step lui montre ton stock en temps réel. Elle passe rue Saint-Rome le jour même. Pas de commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**5. Chantal Huet (MAC DOUGLAS) — macdouglastoulouse@gmail.com**
+Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Toulousains
+
+> Bonjour Chantal,
+>
+> MAC DOUGLAS Toulouse, c'est une maison maroquinerie cuir française qui tient depuis 1976 sur Croix Baragnon — et c'est rare pour une adresse indépendante en centre-ville.
+>
+> Les amateurs de cuir et de maroquinerie de qualité cherchent en ligne avant de se déplacer. Ils méritent de trouver ta boutique avant de commander sur un site.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "sac cuir MAC DOUGLAS Toulouse" depuis son téléphone, Two-Step lui montre ton stock disponible. Il vient, il achète chez toi. Sans commission, sans livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
 
 ### Rattrapage lundi — 2026-06-15 (L'Eclaireur) — Capitole épuisé confirmé, 0 email trouvé + 2 nouvelles écartées
 
