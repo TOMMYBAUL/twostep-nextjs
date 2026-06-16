@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-15 (L'Eclaireur + L'Auditeur)*
+*Derniere mise a jour : 2026-06-16 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 140
-- NOUVEAU : 48
+- Total leads : 137
+- NOUVEAU : 45
 - CONTACTE : 1
 - BROUILLON : 69
 - Reponses : 0
@@ -148,6 +148,33 @@ Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Tou
 |---|---|---|---|
 | LEWIS | Capitole | 947856100 | Établissement Toulouse fermé le 07/06/2024 — ÉCARTÉE DÉFINITIF |
 | L'ISLA NOVA | Capitole | 819913187 | Site lisla-nova.fr = L'Isle-en-Dodon (31230), boutique Toulouse 36 rue des Tourneurs non retrouvée — ÉCARTÉE DÉFINITIF |
+
+---
+
+### Rattrapage lundi — 2026-06-16 (L'Eclaireur) — multi-quartiers, 0 email trouvé + 3 nouvelles écartées
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF (confirmé sessions précédentes). Session convertie en rattrapage multi-quartiers : cible = prospects NOUVEAU avec ≤5 passages et score ≥7/10. 30+ recherches web + fetches effectués sur 10 prospects sélectionnés. **0 email nouveau confirmé.** 3 nouvelles écartées définitives : LILITH/MADDY 31 (831401260 — siège Biarritz, chaîne nationale, hors cible Two-Step), HANNAH (799219837 — boutique Toulouse 31-33 rue Boulbonne fermée depuis octobre 2017, siège Carcassonne), ALPHABET (392739900 — boutique Toulouse fermée, FERMÉ sur annuaires, siège Biarritz). Patterns confirmés : AGATHE ET ZOE (tel 05 34 31 67 44, aucun site propre ni email — 2ème passage), LA FILLE DE MARGARET (lafilledemargaret.com ECONNREFUSED depuis IP cloud, Sarah Pelegry fondatrice, tel 05 61 21 52 28 — 2ème passage), ESTHER MICHELE/BOTE (Isabelle Bouygue, 35 rue Croix Baragnon, aucune présence digitale publique — 2ème passage), TIABEL (Armand Dorise, famille Dorise, même adresse que Dorise Joaillier 41 rue CB, formulaire uniquement — 2ème passage), JAILLET (Edouard Dorise, famille Dorise, 28 rue Croix Baragnon, aucun email indépendant — 2ème passage), PAMPY (Juliette Marciano, pampy.com domaine parqué, IG @_pampix 141 abonnés, tel 05 61 23 37 46 — 2ème passage), RECOVERY (Pierre Bauguil, recoverytls.com actif running/trail/vélo/ON, formulaire uniquement, IG @recoverytoulouse — 2ème passage), L'ESPION (Simone Laskar, lespion.fr actif mode créateurs luxe, tel 05 61 73 36 69, IG @boutiquelespion — 5ème passage), TOULOUSE MONTRES (Jean-Marc Morillon, toulouse-montres.com RDV uniquement, contact.html 404 persistant — 6ème passage ⚠️ SEUIL ATTEINT), CHAUSSURES MANIK (Pierre Lacabanne, manik.fr actif e-shop Trustpilot, mentions légales 404, tel 05 61 21 52 08 — 5ème passage). NOTE : Outil Notion MCP indisponible (idem toutes sessions précédentes) — recap consigné dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads multi-quartiers 2026-06-16".
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — chaussures multi-marques italiennes (Fratelli Rossetti, Buttero, Homers...), 29 rue Croix Baragnon, tel 05 34 31 67 44, aucun site propre ni email. Visite terrain PRIORITAIRE. |
+| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | — | 8/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — lafilledemargaret.com ECONNREFUSED (IP cloud), tel 05 61 21 52 28, Sarah Pelegry fondatrice. Visite terrain ou fetch depuis IP française. |
+| ESTHER MICHELE (BOTE) | Saint-Etienne | Cosmetique | Isabelle Bouygue | — | — | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — 35 rue Croix Baragnon, aucune présence digitale publique identifiable. Visite terrain. |
+| TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | — | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — famille Dorise, même adresse que Dorise Joaillier (41 rue Croix Baragnon), formulaire + WhatsApp uniquement. Visite terrain (idem Dorise). |
+| JAILLET | Saint-Etienne | Horlogerie | Edouard Dorise | — | — | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — famille Dorise, 28 rue Croix Baragnon, aucun email indépendant. Visite terrain. |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | — | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — pampy.com domaine parqué, IG @_pampix (141 abonnés, 29 posts), tel 05 61 23 37 46. Visite terrain ou DM Instagram. |
+| RECOVERY | Capitole | Sport | Pierre Bauguil | — | — | 7/10 | NOUVEAU | Email non trouvé (2ème passage 16/06) — recoverytls.com actif (running/trail/vélo/ON Running), formulaire uniquement, IG @recoverytoulouse. Visite terrain. |
+| L'ESPION | Saint-Etienne | Mode | Simone Laskar | — | — | 8/10 | NOUVEAU | Email non trouvé (5ème passage 16/06) — lespion.fr actif (mode créateurs luxe), tel 05 61 73 36 69, IG @boutiquelespion. Visite terrain — seuil digital atteint. |
+| TOULOUSE MONTRES | Saint-Etienne | Horlogerie | Jean-Marc Morillon | — | — | 8/10 | NOUVEAU | Email non trouvé (6ème passage 16/06 ⚠️) — toulouse-montres.com actif (RDV uniquement), contact.html 404 persistant 6 sessions. Visite terrain UNIQUEMENT — arrêt recherche email. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | — | 7/10 | NOUVEAU | Email non trouvé (5ème passage 16/06) — manik.fr actif (e-shop + Trustpilot), mentions légales 404, tel 05 61 21 52 08. Visite terrain — seuil digital atteint. |
+
+**Nouvelles écartées (session 16/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| LILITH (MADDY 31) | Capitole | 831401260 | Siège Biarritz, multiple boutiques = chaîne nationale, hors cible Two-Step — ÉCARTÉE DÉFINITIF |
+| HANNAH | Saint-Etienne | 799219837 | Boutique Toulouse 31-33 rue Boulbonne fermée depuis octobre 2017, siège Carcassonne — ÉCARTÉE DÉFINITIF |
+| ALPHABET | Capitole | 392739900 | Boutique Toulouse fermée (FERMÉ sur Hoodspot/annuaires), siège Biarritz — ÉCARTÉE DÉFINITIF |
 
 ---
 
