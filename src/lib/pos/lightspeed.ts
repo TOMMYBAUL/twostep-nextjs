@@ -29,10 +29,16 @@ export const lightspeedAdapter: IPOSAdapter = {
             }),
         });
         const data = await res.json();
+        // Sans ce garde, une erreur OAuth (res non-ok) stockait un token vide +
+        // un expires_at "Invalid Date" comme une connexion valide, indiagnosticable.
+        if (!res.ok || !data.access_token) {
+            throw new Error(data.error_description || data.error || "Lightspeed OAuth exchange failed");
+        }
+        const expiresIn = typeof data.expires_in === "number" ? data.expires_in : 3600;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token ?? null,
-            expires_at: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 
@@ -48,11 +54,12 @@ export const lightspeedAdapter: IPOSAdapter = {
             }),
         });
         const data = await res.json();
-        if (!res.ok) return null;
+        if (!res.ok || !data.access_token) return null;
+        const expiresIn = typeof data.expires_in === "number" ? data.expires_in : 3600;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token ?? refreshToken,
-            expires_at: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 

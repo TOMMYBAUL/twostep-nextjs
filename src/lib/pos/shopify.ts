@@ -30,6 +30,11 @@ export const shopifyAdapter: IPOSAdapter = {
     async exchangeCode(code: string, params?: Record<string, string>) {
         const shop = params?.shop;
         if (!shop) throw new Error("Shopify exchangeCode requires shop param");
+        // Valider le domaine AVANT de POSTer le client_secret vers ce host
+        // (sinon SSRF / fuite du secret vers un host arbitraire passé en redirect).
+        if (!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/i.test(shop)) {
+            throw new Error("Invalid Shopify shop domain");
+        }
 
         const res = await fetch(`https://${shop}/admin/oauth/access_token`, {
             method: "POST",

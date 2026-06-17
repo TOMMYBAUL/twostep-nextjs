@@ -19,6 +19,12 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ⚠️ `STRICT_DECRYPT=true` PAS activable tel quel : 1 token legacy (non `v1:`) dans `pos_connections` → throw au décryptage = POS down. Migrer via `scripts/migrate-encrypt-tokens.mjs` AVANT activation. (0 token POS dans merchant_pos_credentials, 0 Google.)
 - Backup DB : `.github/workflows/db-backup.yml` (pg_dump quotidien → artefact 30j). Nécessite le secret GitHub `SUPABASE_DB_URL` (connection directe port 5432, pas le pooler).
 
+## OAuth caisses (POS) — revue Collecte ① (2026-06-17)
+- ❌ `state` OAuth signé HMAC mais SANS expiration ni anti-rejeu → un state capturé est rejouable indéfiniment. Fix : timestamp signé + rejet >10 min (state-token.ts) + tests.
+- ❌ Lightspeed `exchangeCode` ne vérifiait pas `res.ok` → `expires_in` undefined → `new Date(NaN).toISOString()` crash / token vide stocké comme valide. Fix : garde res.ok + access_token + défaut expires_in.
+- ❌ Shopify `exchangeCode` POSTait le `client_secret` vers `https://${shop}/...` sans valider `shop` → SSRF/fuite secret. Fix : regex `^[a-z0-9][a-z0-9-]*\.myshopify\.com$`.
+- ⚠️ RESTE À TRAITER (documenté, non corrigé) : scope Lightspeed `employee:all` trop large (vérifier doc R/X-Series avant de restreindre, risque de casser le sync) ; STRICT_DECRYPT à activer en prod APRÈS migration du token legacy ; **2 chemins de refresh divergents** (le sync catalogue `syncMerchantPOS` déchiffre lui-même et ne profite NI du refresh proactif NI de la signalisation "Token expired" de `getActivePosAccessToken` — un token expiré fait échouer le sync silencieusement) ; pas de notif proactive "reconnecte ta caisse" ; HMAC Shopify du callback non vérifié.
+
 ## Next.js / Vercel
 - ❌ `vercel env add` par stdin PowerShell enregistre des valeurs VIDES (et l'argument positionnel est refusé par CLI ≥54.13) → utiliser `--value` ou l'API REST (`POST /v10/projects/{id}/env?upsert=true`, token dans `%APPDATA%\xdg.data\com.vercel.cli\auth.json`). Vérifier avec `vercel env pull` + longueur des valeurs. (2026-06-13)
 - ❌ Script npm `prepare` (`git config core.hooksPath`) casse `npm install` sur Vercel (pas de .git en build CLI) → wrappé dans node try/catch. (2026-06-13)
