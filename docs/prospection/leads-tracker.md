@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-16 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-17 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -291,6 +291,34 @@ Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Tou
 | LILITH (MADDY 31) | Capitole | 831401260 | Siège Biarritz, multiple boutiques = chaîne nationale, hors cible Two-Step — ÉCARTÉE DÉFINITIF |
 | HANNAH | Saint-Etienne | 799219837 | Boutique Toulouse 31-33 rue Boulbonne fermée depuis octobre 2017, siège Carcassonne — ÉCARTÉE DÉFINITIF |
 | ALPHABET | Capitole | 392739900 | Boutique Toulouse fermée (FERMÉ sur Hoodspot/annuaires), siège Biarritz — ÉCARTÉE DÉFINITIF |
+
+---
+
+### Rattrapage mardi — 2026-06-17 (L'Eclaireur) — Saint-Etienne épuisé, rattrapage multi-quartiers, 0 email trouvé
+
+**Note de session :** Mardi = Saint-Etienne dans la rotation. Saint-Etienne ÉPUISÉ DÉFINITIF (confirmé sessions précédentes). **Situation critique : 208/208 prospects épuisés — tous les quartiers sont épuisés.** Session convertie en rattrapage multi-quartiers : 15+ recherches web effectuées sur 10 prospects Carmes/Capitole (VICOMTE A, MAITYLA, BANANA-POMME, POINTURE, LES CIGALES, PLUMETIS, KATHY.B, BIAS, MATHIS ET SASHA, SADIA). **0 email nouveau confirmé.** 4 re-confirmations écartées : VICOMTE A (chaîne 148 boutiques, hors cible), MAITYLA (liquidée 19/01/2023), BANANA-POMME (fermée décembre 2024), POINTURE (remplacée par franchise ARCHE). 5 emails déjà dans le tracker (BROUILLON) : LES CIGALES (sarllescigales@aol.com), PLUMETIS (contact@plumetis-toulouse.fr), KATHY.B (contact@boutiqueau44.com), BIAS (laura.noailles@bias-conceptstore.fr), MATHIS ET SASHA (clementinedouts@gmail.com). 5 prospects Saint-Etienne encore NOUVEAU (AGATHE ET ZOE, TIABEL, ESTHER MICHELE, JAILLET, L'ESPION) : aucun email trouvable en ligne — **visite terrain URGENTE requise**. NOTE : Outil Notion MCP indisponible (idem toutes sessions précédentes) — recap consigné dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-06-17".
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (2 passages) — chaussures multi-marques italiennes, 29 rue Croix Baragnon, tel 05 34 31 67 44, aucun site propre ni email. **Visite terrain PRIORITAIRE.** |
+| TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouvé (2 passages) — famille Dorise, 41 rue Croix Baragnon, formulaire + WhatsApp uniquement. **Visite terrain (idem Dorise).** |
+| ESTHER MICHELE | Saint-Etienne | Cosmetique | Isabelle Bouygue | — | 818920985 | 7/10 | NOUVEAU | Email non trouvé (4 passages) — 35 rue Croix Baragnon, aucune présence digitale publique. **Visite terrain.** |
+| JAILLET | Saint-Etienne | Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (4 passages) — famille Dorise, 28 rue Croix Baragnon, aucun email indépendant. **Visite terrain.** |
+| L'ESPION | Saint-Etienne | Mode | Simone Laskar | — | 310602370 | 8/10 | NOUVEAU | Email non trouvé (5 passages — seuil atteint) — lespion.fr actif, tel 05 61 73 36 69, IG @boutiquelespion. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| VICOMTE A | Capitole | Mode homme | Gregory Troch | — | — | — | ECARTE | Chaîne 148 boutiques nationales, hors cible Two-Step (>5 établissements) — re-confirmé 17/06 |
+| MAITYLA | Carmes | Mode femme | Mailys Baillet | — | — | — | ECARTE | Liquidée le 19/01/2023 — re-confirmé 17/06 |
+| BANANA-POMME | Capitole | Mode enfant | Eric Bitoun | — | — | — | ECARTE | Fermée décembre 2024, 28 rue de la Pomme — re-confirmé 17/06 |
+| POINTURE | Carmes | Chaussures | Audrey Garcia | — | — | — | ECARTE | Remplacée par franchise ARCHE (hors cible) — re-confirmé 17/06 |
+| SADIA | Capitole | Mode femme | Sadia Belkelfa | — | — | 5/10 | NOUVEAU | Email non trouvé (3 passages) — 39 rue de Bayard, aucun site ni email identifiable. Visite terrain. |
+
+**Écartées re-confirmées (session 17/06) :**
+
+| Boutique | Quartier | Motif |
+|---|---|---|
+| VICOMTE A | Capitole | Chaîne nationale 148 boutiques — ÉCARTÉE DÉFINITIF |
+| MAITYLA | Carmes | Liquidée 19/01/2023 — ÉCARTÉE DÉFINITIF |
+| BANANA-POMME | Capitole | Fermée décembre 2024 — ÉCARTÉE DÉFINITIF |
+| POINTURE | Carmes | Remplacée par ARCHE franchise — ÉCARTÉE DÉFINITIF |
 
 ---
 
