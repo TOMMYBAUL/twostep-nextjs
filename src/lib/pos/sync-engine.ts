@@ -1,6 +1,6 @@
 import { getAdapter, type POSProduct, type POSPromo, type POSAdapterOptions } from "@/lib/pos";
 import { createClient } from "@/lib/supabase/server";
-import { encrypt, decrypt } from "@/lib/email/encryption";
+import { ensureFreshAccessToken } from "@/lib/pos/access-token";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
 import { resolveProductSize } from "@/lib/pos/extract-size";
@@ -68,33 +68,11 @@ export async function syncMerchantPOS(
             throw new Error(`No POS connection found for ${provider}`);
         }
 
-        let accessToken = decrypt(conn.access_token);
-
-        const expiresAt = conn.expires_at ? new Date(conn.expires_at).getTime() : Infinity;
-        const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
-
-        if (expiresAt < fiveMinFromNow && conn.refresh_token) {
-            const refreshResult = await adapter.refreshToken(decrypt(conn.refresh_token));
-
-            if (!refreshResult) {
-                await supabase
-                    .from("pos_connections")
-                    .update({ last_sync_status: "error", last_sync_error: "Token expired" })
-                    .eq("id", conn.id);
-
-                throw new Error("Token expired and refresh failed");
-            }
-
-            await supabase
-                .from("pos_connections")
-                .update({
-                    access_token: encrypt(refreshResult.access_token),
-                    refresh_token: encrypt(refreshResult.refresh_token),
-                    expires_at: refreshResult.expires_at,
-                })
-                .eq("id", conn.id);
-
-            accessToken = refreshResult.access_token;
+        // Refresh proactif via la SOURCE UNIQUE partagée (cf. access-token.ts) —
+        // plus de logique de refresh dupliquée entre sync-engine et getActivePosAccessToken.
+        const accessToken = await ensureFreshAccessToken(supabase, conn, adapter);
+        if (accessToken === null) {
+            throw new Error("Token expired and refresh failed");
         }
 
         // ─── Fetch POS data ──────────────────────────────────────────
