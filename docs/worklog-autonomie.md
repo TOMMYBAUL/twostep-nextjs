@@ -5,6 +5,35 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Sous-étape 0ter — Cause headless CONFIRMÉE + Sage installé
+
+**Fait**
+- Installé le plugin sécurité **Sage** (`sage@sage` v0.10.0, Gen Digital) — vérifié
+  légitime (ADR, garde-fou agent). Actif au prochain redémarrage de Claude Code.
+- Posé `git config --global url."git@github.com:".insteadOf "https://github.com/"`
+  → tous les clones GitHub HTTPS passent en SSH (débloque `claude plugin install` et
+  tout clone à travers Norton).
+
+**Trouvé (diagnostic certain)**
+- `NODE_TLS_REJECT_UNAUTHORIZED=0 claude -p "say OK"` → **répond OK instantanément**.
+  Donc le blocage headless = **100 % Norton** (interception TLS du CLI vers l'API
+  Anthropic). Norton IPS `nllbIDSAgent` toujours Running, `SSLKEYLOGFILE` toujours
+  injecté. Pas de CA Norton trouvable dans les magasins (interception re-signée).
+
+**Décidé** (Thomas) : voie **propre** — exclure node/claude de Norton (pas de TLS-off).
+
+**Préparé, prêt à lancer dès Norton réglé**
+- `scripts/autonomy-run.ps1` (wrapper headless, mode propre, log dans logs/).
+- `scripts/register-autonomy-task.ps1` (tâche Windows TwoStepAutonomy, jours ouvrés
+  10h07/14h07/18h07). La tâche persiste aux reboots → règle aussi le « durable cron ».
+
+**Reste (Thomas)** : faire la manip Norton (exclure node.exe + claude.exe de
+l'inspection HTTPS / Intrusion Prevention, OU désactiver l'inspection des connexions
+chiffrées), puis redémarrer le terminal. Ensuite je re-teste `claude -p` et je lance
+`register-autonomy-task.ps1` → vraie autonomie headless opérationnelle.
+
+---
+
 ## 2026-06-18 · Sous-étape 0bis — Mécanisme d'autonomie : ce qui marche / ne marche pas
 
 **Testé en réel (pas de promesse en l'air)**
