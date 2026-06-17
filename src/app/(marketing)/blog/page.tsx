@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-maroquinerie-toulouse",
+        title: "Shopping maroquinerie à Toulouse : trouver le bon sac en boutique (sans se déplacer pour rien)",
+        description:
+            "Capitole, Carmes, Saint-Rome : les boutiques maroquinerie de Toulouse et comment vérifier leur stock avant de te déplacer. Guide complet 2026.",
+        publishedAt: "2026-05-27",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
