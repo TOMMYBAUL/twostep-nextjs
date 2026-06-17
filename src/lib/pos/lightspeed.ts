@@ -70,8 +70,12 @@ export const lightspeedAdapter: IPOSAdapter = {
         const accountRes = await fetch(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) {
+            throw new Error(`Lightspeed Account API error: ${accountRes.status}`);
+        }
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) throw new Error("Lightspeed Account response missing accountID");
 
         const products: POSProduct[] = [];
         let offset = 0;
@@ -81,6 +85,11 @@ export const lightspeedAdapter: IPOSAdapter = {
                 `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100&load_relations=["Category"]`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
+            // Anti "catalogue fantôme" : lever sur erreur plutôt que de renvoyer un
+            // catalogue tronqué/vide (qui ferait masquer toute la vitrine en aval).
+            if (!res.ok) {
+                throw new Error(`Lightspeed Item API error: ${res.status}`);
+            }
             const data = await res.json();
             const items = Array.isArray(data.Item) ? data.Item : data.Item ? [data.Item] : [];
 

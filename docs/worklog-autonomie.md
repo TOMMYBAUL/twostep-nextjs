@@ -5,6 +5,40 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Collecte ② — getCatalog : passe 1 (anti « catalogue fantôme »)
+
+**Trouvé (bug critique data-integrity)**
+- `getCatalog` de **Shopify** (shopify.ts) et **Lightspeed** (lightspeed.ts) ne
+  vérifiaient pas `res.ok`. Sur 429 (rate-limit Shopify 2 req/s) / 5xx / 401, ils
+  renvoyaient `[]` **silencieusement**. En aval, sync-engine masque tout produit
+  absent du catalogue → **une erreur réseau transitoire effaçait TOUTE la vitrine
+  du marchand**. C'est le mode d'échec « catalogue fantôme » qui a tué les
+  concurrents (MVMS, Milo). Square et Zettle, eux, levaient déjà correctement.
+
+**Fait (double sécurité)**
+1. Shopify + Lightspeed `getCatalog` lèvent désormais sur réponse non-OK (sync
+   marquée "error" + watchdog `pos_disconnected`, au lieu d'un faux catalogue vide).
+2. Extrait `computeOrphanProductIds()` (sync-engine, exporté, pur) avec **garde
+   anti-vide** : si le catalogue courant est vide, on ne masque RIEN (ceinture+bretelles
+   même si un futur adapter régressait).
+3. Tests : `tests/pos-catalog-robustness.test.ts` (8 tests : lève sur 429/500/503,
+   parse OK, garde anti-vide).
+
+**Testé** : 361/361 (+8), tsc OK, gate vert. Commit + push.
+
+**Reste / prochaine passe Collecte ②**
+- 🟠 Aucune gestion 429 / back-off (Retry-After) dans les `fetch` adapters (Shopify
+  surtout). Robustesse à ajouter (helper `fetchWithRetry` partagé) — PROCHAINE PASSE.
+- 🟡 EAN non validé (digits) côté Shopify (`variant.barcode`) et Lightspeed (`item.upc`)
+  alors que Square/Zettle valident — incohérence (le triage aval rattrape, mais à
+  uniformiser).
+- 🟡 Lightspeed refait un fetch `Account.json` dans 4 méthodes (getCatalog/getStock/
+  fetchPromos/pushCatalog) — 4 points d'échec, à factoriser.
+- 🟡 getStock Shopify/Lightspeed : même classe que #critique (pas de res.ok partout) —
+  à durcir (mais moins catastrophique : qty=0 mitigé par untracked→1).
+
+---
+
 ## 2026-06-18 · Sous-étape 0quater — AUTONOMIE HEADLESS OPÉRATIONNELLE ✅
 
 **Les deux ❌ sont levés.**

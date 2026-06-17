@@ -103,6 +103,13 @@ export const shopifyAdapter: IPOSAdapter = {
             const res: Response = await fetch(url, {
                 headers: { "X-Shopify-Access-Token": accessToken },
             });
+            // Anti "catalogue fantôme" : sur 429/5xx/401, NE PAS retourner un
+            // catalogue partiel/vide silencieux — sinon sync-engine masquerait
+            // toute la vitrine du marchand. On lève → la sync est marquée "error".
+            if (!res.ok) {
+                const body = await res.text().catch(() => "");
+                throw new Error(`Shopify products API error ${res.status}: ${body.slice(0, 200)}`);
+            }
             const data = await res.json();
 
             for (const product of data.products ?? []) {

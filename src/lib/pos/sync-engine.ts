@@ -19,6 +19,27 @@ export type SyncResult = {
     visible_count: number;
 };
 
+/**
+ * Calcule les produits "orphelins" à masquer = ceux liés à un pos_item_id qui
+ * n'est plus dans le catalogue POS courant.
+ *
+ * GARDE ANTI "CATALOGUE FANTÔME" : si le catalogue courant est VIDE, on ne masque
+ * RIEN. Un getCatalog vide est quasi toujours une erreur transitoire (rate-limit,
+ * 5xx, token) plutôt qu'un marchand ayant tout supprimé. Sans ce garde, un hoquet
+ * POS effacerait toute la vitrine du marchand — le mode d'échec qui a tué les
+ * concurrents (catalogue fantôme). Ceinture+bretelles : les adapters lèvent déjà
+ * sur réponse non-OK, ceci protège même d'un futur adapter qui régresserait.
+ */
+export function computeOrphanProductIds(
+    allProducts: Array<{ id: string; pos_item_id: string | null }>,
+    currentPosItemIds: Set<string>,
+): string[] {
+    if (currentPosItemIds.size === 0) return [];
+    return allProducts
+        .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
+        .map((p) => p.id);
+}
+
 // ─── Main sync function ─────────────────────────────────────────────
 
 export async function syncMerchantPOS(
@@ -235,9 +256,7 @@ export async function syncMerchantPOS(
 
         // ─── Mark removed POS products as invisible ─────────────────
         const currentPosItemIds = new Set(catalog.map((p) => p.pos_item_id));
-        const orphanIds = productIndex.all
-            .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
-            .map((p) => p.id);
+        const orphanIds = computeOrphanProductIds(productIndex.all, currentPosItemIds);
 
         if (orphanIds.length > 0) {
             await supabase
