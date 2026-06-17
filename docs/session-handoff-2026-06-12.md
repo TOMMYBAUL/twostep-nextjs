@@ -1,11 +1,78 @@
-# Two-Step — Point de reprise session (2026-06-12)
+# Two-Step — Point de reprise session (maj 2026-06-17)
 
 > **But de ce doc** : reprendre EXACTEMENT ici à la prochaine session. État complet,
 > ce qui est fait/testé/appliqué, ce qui est bloqué, et le prochain pas précis.
 
 ---
 
-## 0. Reprendre en 30 secondes
+## 0ter. REPRISE 2026-06-17 — LIRE EN PREMIER (le plus récent)
+
+**Branche** : `feat/pipeline-v1-handoff-2026-06-12` (tout commité + poussé sur
+GitHub). **NE PAS travailler sur main** (les fichiers du chantier n'existent que
+sur cette branche). Vérifier : `git branch --show-current`.
+
+**État santé** : 360 tests verts + `npx tsc --noEmit` OK + e2e ingestion local
+VERT. Migrations **092→105 appliquées en prod** (DB partagée). Rien de mergé sur
+main (~30 commits d'avance). Vérif : `cd twostep-nextjs && set NODE_OPTIONS=--use-system-ca && npx vitest run && npx tsc --noEmit`.
+
+**Positionnement directeur** (gravé dans `docs/PROJECT-BRIEF.md` §"Positionnement
+& séquence produit") : Two-Step = **"feed Google LFP as a service" d'abord**
+(valeur indépendante de l'audience), app de découverte = habillage ensuite. Le
+**cœur = la qualité de la data stock** (propre/traçable/enrichissable) — c'est ce
+qu'on durcit actuellement.
+
+**EN COURS : revue qualité structurée du workflow data**, étape par étape, méthode
+"on finit chaque sous-partie À FOND avant d'avancer" (exigence Thomas). Les 5 étapes
+et leur découpage :
+- **Collecte** : ① OAuth ② sync catalogue ③ webhooks ④ push fichier/drag-drop/parsing ⑤ factures/scan
+- **Triage** : ① identité GTIN/SKU ② gate score ③ matching/dédup ④ variantes
+- **Enrichissement** : ① cascade tiers ② file jobs/worker ③ taille ④ catégorie ⑤ photo ⑥ anti-emballement
+- **Stockage** : ① source/source_ts ② résolution conflit ③ réconciliation ④ atomicité
+- **Exploitation** : ① confidence ② cold-start ③ RLS ④ canaux sortie (app, LFP)
+
+**OÙ ON EN EST PRÉCISÉMENT** : **Collecte ① OAuth = TERMINÉ** (commits 7c60d6d,
+22c5eae, 8fd1448) : state anti-rejeu, Lightspeed/Shopify exchangeCode durcis, HMAC
+Shopify callback, refresh dédupliqué (`ensureFreshAccessToken`), scope Lightspeed
+`employee:inventory_read`, watchdog reconnexion (`pos_disconnected`). 
+**PROCHAIN PAS = Collecte ② sync catalogue initial** (`getCatalog` des 4 caisses :
+pagination, erreurs, mapping champs, robustesse).
+
+**Cœur data déjà durci cette série** : RLS lockdown (097/098), overloads RPC
+(099), file enrichment_jobs + worker découplé (100), idempotence/lock ingestion
+(101), watchdog (102), **stock.source + source_ts + confidence honnête (104)**,
+fixes Google LFP availability+partial (103), colonne taille fichier + seuil
+catégorie + anti-écrasement available_sizes.
+
+**DÉCISIONS / ACTIONS EN ATTENTE DE THOMAS** :
+1. **GS1** : mail envoyé à service.delivery@gs1fr.org (statut éditeur + tarif +
+   accès API). NE PAS payer le parcours vendeur (268€) ; attendre l'offre "offreur
+   de solution". GS1 = autorité d'identité (0,99), utile mais PAS game-changer prouvé.
+2. **KicksDB** : clé FREE gratuite à créer → débloque l'identité sneakers par SKU
+   (tier inactif aujourd'hui). Le câblage code existe.
+3. **STRICT_DECRYPT** : bloqué par 1 token legacy = connexion Square du compte
+   "Two-Step Test". Supprimer ce test + set `STRICT_DECRYPT=true` env Vercel prod.
+4. **Lightspeed** : vérifier que l'app OAuth (console Lightspeed) autorise le scope
+   `employee:inventory_read`.
+5. **Clés prod manquantes** (Vercel) : INSEE_API_TOKEN (SIRET factice sans !),
+   ANTHROPIC_API_KEY, GEMINI_API_KEY, UPCITEMDB_API_KEY.
+6. **Google LFP** : candidature en LIMBO depuis avril (tickets 5-9519000040422 /
+   6-7242000040976, Merchant Center 5755722759) — relancer ; clarifier modèle A
+   (data provider, validation bloquée) vs B (LFP par marchand, peut-être sans attente).
+7. **UI** : valider visuellement (wizard import, badge confiance, signaler) sur la
+   preview avant merge.
+8. **Déploiement** : décider le merge `feat/...` → main (tout est mûr et testé).
+9. **Hermes Agent** (Nous Research, agent autonome) : Thomas voulait l'installer
+   pour superviser — NON cadré. Risque sécurité (curl|bash, accès secrets, typosquat
+   domaines). Clarifier le besoin (monitoring → Sentry+UptimeRobot suffisent) avant.
+
+**Pièges environnement** (cf. LESSONS) : toujours `NODE_OPTIONS=--use-system-ca`
+avant git push (pre-push TLS) ; messages git commit via heredoc (pas de guillemets
+PowerShell) ; redémarrer le dev server après un fix de lib (hot-reload non fiable) ;
+les migrations sont appliquées EN DIRECT par l'IA (Thomas ne les rejoue pas).
+
+---
+
+## 0. Reprendre en 30 secondes (historique 2026-06-12)
 
 - **Tout le chantier V1 est commité sur `feat/pipeline-v1-handoff-2026-06-12`, NON déployé.**
 - **Migrations 092→095 : APPLIQUÉES en prod** (vérifié live).
