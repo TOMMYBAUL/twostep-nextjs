@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     // ingest_credentials et stock_reports sont en RLS owner-only → client admin.
     const admin = createAdminClient();
     const [{ data: stockData }, { data: promoData }, { data: ingestData }, { data: reportData }] = await Promise.all([
-        supabase.from("stock").select("product_id, quantity, updated_at").in("product_id", productIds),
+        supabase.from("stock").select("product_id, quantity, updated_at, source").in("product_id", productIds),
         supabase.from("promotions").select("product_id, sale_price").in("product_id", productIds).lte("starts_at", new Date().toISOString()).gte("ends_at", new Date().toISOString()),
         admin.from("ingest_credentials").select("merchant_id").in("merchant_id", ids),
         admin.from("stock_reports").select("product_id").in("product_id", productIds).eq("reason", "not_in_store").gte("created_at", reportsWindowStartIso()),
@@ -95,6 +95,7 @@ export async function GET(request: NextRequest) {
             confidence: productConfidence({
                 quantity: stockMap.get(p.id)?.quantity ?? 0,
                 lastEventAt: stockMap.get(p.id)?.updated_at ?? null,
+                storedSource: stockMap.get(p.id)?.source ?? null,
                 posItemId: p.pos_item_id ?? null,
                 merchantHasIngest: ingestMerchants.has(p.merchant_id),
                 recentNotInStoreReports: reportCounts.get(p.id) ?? 0,

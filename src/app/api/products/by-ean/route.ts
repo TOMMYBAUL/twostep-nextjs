@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     const { data: merchantHit } = await supabase
         .from("products")
-        .select("id, slug, name, canonical_name, brand, category, photo_url, photo_processed_url, price, ean, pos_item_id, stock(quantity, updated_at)")
+        .select("id, slug, name, canonical_name, brand, category, photo_url, photo_processed_url, price, ean, pos_item_id, stock(quantity, updated_at, source)")
         .eq("ean", ean)
         .eq("merchant_id", merchant.id)
         .is("archived_at", null)
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
         const confidence = productConfidence({
             quantity: stockRow?.quantity ?? 0,
             lastEventAt: stockRow?.updated_at ?? null,
+            storedSource: stockRow?.source ?? null,
             posItemId: (merchantHit as any).pos_item_id ?? null,
             merchantHasIngest: !!ingest,
             recentNotInStoreReports: reportCount ?? 0,

@@ -78,8 +78,9 @@ export async function resyncMerchantStock(
     let updated = 0;
     let writeErrors = 0;
     for (const m of mapped) {
+        const nowIso = new Date().toISOString();
         const { error } = await admin.from("stock").upsert(
-            { product_id: m.productId, quantity: m.quantity, updated_at: new Date().toISOString() },
+            { product_id: m.productId, quantity: m.quantity, updated_at: nowIso, source: "pos_sync", source_ts: nowIso },
             { onConflict: "product_id" },
         );
         if (error) {

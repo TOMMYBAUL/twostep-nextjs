@@ -23,7 +23,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
         const { data, error } = await supabase
             .from("products")
-            .select("*, stock(quantity, updated_at), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours, location)")
+            .select("*, stock(quantity, updated_at, source), promotions(*), merchants(name, address, city, photo_url, phone, opening_hours, location)")
             .eq("id", productId)
             .eq("visible", true)
             .single();
@@ -77,6 +77,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         const s = (data as any).stock;
         const totalStock = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
         const stockUpdatedAt = !s ? null : Array.isArray(s) ? (s[0]?.updated_at ?? null) : (s.updated_at ?? null);
+        const stockSource = !s ? null : Array.isArray(s) ? (s[0]?.source ?? null) : (s.source ?? null);
         const rawSizes = (data as any).available_sizes;
         if (Array.isArray(rawSizes) && rawSizes.length > 0) {
             (data as any).available_sizes = rawSizes.map((entry: unknown) => {
@@ -107,6 +108,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         (data as any).confidence = productConfidence({
             quantity: totalStock,
             lastEventAt: stockUpdatedAt,
+            storedSource: stockSource,
             posItemId: (data as any).pos_item_id ?? null,
             merchantHasIngest: !!ingest,
             recentNotInStoreReports: reportCount ?? 0,

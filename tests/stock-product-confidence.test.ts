@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { productConfidence, resolveSourceStrength } from "@/lib/stock/product-confidence";
+import { productConfidence, resolveSourceStrength, sourceStrengthFromStored } from "@/lib/stock/product-confidence";
 import { REPORTS_WINDOW_H, reportsWindowStartIso } from "@/lib/stock/reports";
 
 const now = new Date("2026-06-12T12:00:00Z");
@@ -20,6 +20,54 @@ describe("resolveSourceStrength", () => {
 
     it("ni caisse ni ingestion → manual", () => {
         expect(resolveSourceStrength({ posItemId: null, merchantHasIngest: false })).toBe("manual");
+    });
+});
+
+describe("sourceStrengthFromStored — source RÉELLE tracée (migration 104)", () => {
+    it("webhook (vente caisse temps réel) → realtime", () => {
+        expect(sourceStrengthFromStored("webhook")).toBe("realtime");
+    });
+    it("pos_sync et file_push → snapshot", () => {
+        expect(sourceStrengthFromStored("pos_sync")).toBe("snapshot");
+        expect(sourceStrengthFromStored("file_push")).toBe("snapshot");
+    });
+    it("scan / invoice / cloture / manual / inconnu → manual (prudent)", () => {
+        expect(sourceStrengthFromStored("scan")).toBe("manual");
+        expect(sourceStrengthFromStored("invoice")).toBe("manual");
+        expect(sourceStrengthFromStored("cloture")).toBe("manual");
+        expect(sourceStrengthFromStored("manual")).toBe("manual");
+        expect(sourceStrengthFromStored(null)).toBe("manual");
+        expect(sourceStrengthFromStored("xyz")).toBe("manual");
+    });
+});
+
+describe("productConfidence — storedSource prime sur la déduction", () => {
+    const now = new Date("2026-06-17T12:00:00Z");
+    const minutesAgo = (m: number) => new Date(now.getTime() - m * 60_000);
+
+    it("source réelle 'manual' plafonne à probable MÊME si le produit a un pos_item_id", () => {
+        // Sans storedSource, posItemId→realtime aurait donné 'available' (mensonge).
+        const r = productConfidence({
+            quantity: 8, lastEventAt: minutesAgo(5), storedSource: "manual",
+            posItemId: "shopify:123", merchantHasIngest: false, recentNotInStoreReports: 0, now,
+        });
+        expect(r.state).toBe("probable");
+    });
+
+    it("source réelle 'webhook' → disponible (fraîche, quantité saine)", () => {
+        const r = productConfidence({
+            quantity: 8, lastEventAt: minutesAgo(5), storedSource: "webhook",
+            posItemId: null, merchantHasIngest: false, recentNotInStoreReports: 0, now,
+        });
+        expect(r.state).toBe("available");
+    });
+
+    it("fallback legacy si storedSource absent (rétrocompat)", () => {
+        const r = productConfidence({
+            quantity: 8, lastEventAt: minutesAgo(5), posItemId: "shopify:1",
+            merchantHasIngest: false, recentNotInStoreReports: 0, now,
+        });
+        expect(r.state).toBe("available"); // posItemId → realtime (déduit)
     });
 });
 

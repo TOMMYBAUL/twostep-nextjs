@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
             if (!product) continue;
 
             // Atomic delta stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta");
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook");
             const newQty = Math.max(0, previousQty + update.quantity);
 
             // Recalculate available_sizes on the group principal

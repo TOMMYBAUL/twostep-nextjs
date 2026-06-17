@@ -53,7 +53,7 @@ export async function PATCH(request: NextRequest) {
 
         if (delta !== undefined) {
             // Atomic delta update — no TOCTOU race condition
-            const previousQty = await updateStockAtomic(admin, product_id, delta, "delta");
+            const previousQty = await updateStockAtomic(admin, product_id, delta, "delta", "manual");
             const newQty = Math.max(0, previousQty + delta);
 
             // Restock event: produit remis en stock (0 → N)
@@ -70,7 +70,7 @@ export async function PATCH(request: NextRequest) {
 
         if (quantity !== undefined) {
             // Absolute update
-            const previousQty = await updateStockAtomic(admin, product_id, quantity as number, "absolute");
+            const previousQty = await updateStockAtomic(admin, product_id, quantity as number, "absolute", "manual");
             const newQty = Math.max(0, quantity as number);
 
             // Restock event: produit remis en stock (0 → N)

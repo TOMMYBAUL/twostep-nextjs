@@ -230,11 +230,14 @@ export async function syncMerchantPOS(
             .filter((id): id is string => !!id);
 
         if (untrackedNewProducts.length > 0) {
+            const nowIso = new Date().toISOString();
             await supabase.from("stock").upsert(
                 untrackedNewProducts.map((id) => ({
                     product_id: id,
                     quantity: 1,
-                    updated_at: new Date().toISOString(),
+                    updated_at: nowIso,
+                    source: "pos_sync",
+                    source_ts: nowIso,
                 })),
                 { onConflict: "product_id" },
             );

@@ -45,7 +45,7 @@ export async function POST(request: Request) {
             if (!product) continue;
 
             // Atomic stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute");
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook");
 
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);

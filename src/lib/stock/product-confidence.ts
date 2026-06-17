@@ -3,10 +3,29 @@ import type { SourceStrength, StockConfidence } from "@/lib/stock/confidence";
 import { downgradeForReports } from "@/lib/stock/reports";
 
 /**
- * Force de la source de stock pour un produit donné :
- * - produit lié à une caisse connectée (pos_item_id) → webhook/sync temps réel ;
- * - marchand équipé d'un jeton d'ingestion (push fichier) → snapshot ;
- * - sinon → saisie manuelle (jamais "Disponible", au mieux "Probable").
+ * Force de la source à partir de la valeur RÉELLE `stock.source` (tracée à chaque
+ * écriture — migration 104). C'est la voie HONNÊTE : on ne devine plus la source,
+ * on lit celle de la dernière mise à jour de stock.
+ *  - webhook (vente caisse temps réel) → realtime
+ *  - pos_sync (resync périodique) / file_push (export fichier) → snapshot
+ *  - scan / invoice / cloture / manual (déclarations ponctuelles) → manual
+ */
+export function sourceStrengthFromStored(source: string | null | undefined): SourceStrength {
+    switch (source) {
+        case "webhook":
+            return "realtime";
+        case "pos_sync":
+        case "file_push":
+            return "snapshot";
+        default:
+            return "manual"; // scan, invoice, cloture, manual, ou inconnu → prudent
+    }
+}
+
+/**
+ * Fallback LEGACY (rétrocompat) : déduit la force de source de la structure du
+ * produit quand `stock.source` n'est pas disponible. À éviter — peut mentir
+ * (un produit POS ajusté à la main resterait "realtime"). Préférer `stock.source`.
  */
 export function resolveSourceStrength(input: { posItemId: string | null; merchantHasIngest: boolean }): SourceStrength {
     if (input.posItemId) return "realtime";
@@ -28,12 +47,18 @@ export type ProductConfidence = StockConfidence & {
 export function productConfidence(input: {
     quantity: number;
     lastEventAt: Date | string | null;
+    /** Valeur réelle `stock.source` (migration 104) — voie honnête, prioritaire. */
+    storedSource?: string | null;
+    /** Fallback legacy si storedSource absent. */
     posItemId: string | null;
     merchantHasIngest: boolean;
     recentNotInStoreReports: number;
     now?: Date;
 }): ProductConfidence {
-    const source = resolveSourceStrength(input);
+    // Priorité à la source RÉELLE tracée ; fallback déduit seulement si absente.
+    const source = input.storedSource != null
+        ? sourceStrengthFromStored(input.storedSource)
+        : resolveSourceStrength(input);
     const base = computeStockConfidence({
         quantity: input.quantity,
         lastEventAt: input.lastEventAt,

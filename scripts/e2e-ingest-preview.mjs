@@ -98,8 +98,11 @@ try {
     check("3 jobs d'enrichissement enfilés (pending)", jobs1.length === 3 && jobs1.every((j) => j.status === "pending"), `${jobs1.length} jobs`);
 
     // ── 3. État avant worker : produits créés mais PAS encore scorés (invisibles) ──
-    const before = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=id,ean,visible,review_status,identification_score,stock(quantity)`), { headers: sbHeaders })).json();
+    const before = await (await fetch(rest(`/products?merchant_id=eq.${merchantId}&select=id,ean,visible,review_status,identification_score,stock(quantity,source,source_ts)`), { headers: sbHeaders })).json();
     const nutellaBefore = before.find((p) => p.ean === "3017620422003");
+    // CŒUR data propre : la source de l'écriture stock est tracée (file_push pour un push fichier).
+    const srcRow = Array.isArray(nutellaBefore?.stock) ? nutellaBefore.stock[0] : nutellaBefore?.stock;
+    check("stock.source tracé = 'file_push' (data propre)", srcRow?.source === "file_push", `source=${srcRow?.source}`);
     check("produit EAN créé, stock 5, invisible avant enrichissement",
         stockQty(nutellaBefore?.stock) === 5 && nutellaBefore?.visible === false,
         `found=${!!nutellaBefore} stock=${stockQty(nutellaBefore?.stock)} visible=${nutellaBefore?.visible} status=${nutellaBefore?.review_status} score=${nutellaBefore?.identification_score}`);

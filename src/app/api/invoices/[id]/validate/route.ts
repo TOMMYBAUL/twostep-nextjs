@@ -224,6 +224,8 @@ export async function POST(
             await adminSupabase.from("stock").upsert({
                 product_id: match.productId,
                 quantity: (currentStock?.quantity ?? 0) + matchTotalQty,
+                source: "invoice",
+                source_ts: new Date().toISOString(),
             });
 
             for (const gi of groupItems) {
@@ -326,7 +328,7 @@ export async function POST(
 
                 // Stock = total quantity from all sizes in this group
                 const totalQty = groupItems.reduce((sum, gi) => sum + gi.quantity, 0);
-                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: totalQty });
+                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: totalQty, source: "invoice", source_ts: new Date().toISOString() });
 
                 // Update each invoice item
                 for (const gi of groupItems) {

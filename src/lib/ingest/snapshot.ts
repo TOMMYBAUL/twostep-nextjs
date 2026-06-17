@@ -162,8 +162,9 @@ export async function ingestStockSnapshot(
                     if (updateErr) { errors.push(`Update ${cleanName}: ${updateErr.message}`); continue; }
                 }
 
+                const nowIso = new Date().toISOString();
                 const { error: stockErr } = await admin.from("stock").upsert(
-                    { product_id: productId, quantity: totalStock, updated_at: new Date().toISOString() },
+                    { product_id: productId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso },
                     { onConflict: "product_id" },
                 );
                 if (stockErr) { errors.push(`Stock ${cleanName}: ${stockErr.message}`); continue; }
@@ -188,8 +189,9 @@ export async function ingestStockSnapshot(
                 });
                 if (createErr) { errors.push(`Create ${cleanName}: ${createErr.message}`); continue; }
 
+                const nowIsoNew = new Date().toISOString();
                 await admin.from("stock").upsert(
-                    { product_id: newId, quantity: totalStock, updated_at: new Date().toISOString() },
+                    { product_id: newId, quantity: totalStock, updated_at: nowIsoNew, source: "file_push", source_ts: nowIsoNew },
                     { onConflict: "product_id" },
                 );
                 if (availableSizes.length > 0) {
