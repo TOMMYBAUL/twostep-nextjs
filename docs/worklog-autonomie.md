@@ -5,6 +5,38 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Sous-étape 0quater — AUTONOMIE HEADLESS OPÉRATIONNELLE ✅
+
+**Les deux ❌ sont levés.**
+- Thomas a réglé Norton (inspection des connexions chiffrées). Re-test : `claude -p "say OK"`
+  → **OK / exit 0 sans contournement TLS**. Headless débloqué.
+- Chaîne complète validée bout-en-bout : Tâche Windows → PowerShell → `claude` → OK/exit 0
+  (smoke en 11 s).
+- Tâche **`TwoStepAutonomy`** enregistrée (State=Ready), jours ouvrés 10h07/14h07/18h07,
+  `-StartWhenAvailable`, timeout 2 h, `MultipleInstances=IgnoreNew`. Persiste aux reboots
+  → **règle aussi le « durable cross-session »**. Lance `scripts/autonomy-run.ps1`.
+
+**Récap mécanismes d'autonomie — état final**
+| Mécanisme | État |
+|---|---|
+| Headless `claude -p` (Claude fermé) | ✅ |
+| Tâche Windows persistante (cross-session, reboots) | ✅ |
+| Autonomie session ouverte (cron + /loop) | ✅ |
+| Plugin sécurité Sage (garde-fou agent) | ✅ (actif au redémarrage Claude Code) |
+| git HTTPS→SSH (contourne Norton si réactivé) | ✅ |
+
+**Pour retirer/pauser l'autonomie headless** :
+`Unregister-ScheduledTask -TaskName TwoStepAutonomy -Confirm:$false`
+ou `Disable-ScheduledTask -TaskName TwoStepAutonomy`.
+
+**⚠️ Garde-fou collision** : si une session Claude travaille en même temps qu'un run
+planifié, possible conflit de push (non-fast-forward, se règle par pull/retry). Pour la
+1re passe Collecte ②, la faire supervisée AVANT que le planificateur tourne à froid.
+
+**PROCHAIN = travail produit réel : Collecte ② (sync catalogue initial).**
+
+---
+
 ## 2026-06-18 · Sous-étape 0ter — Cause headless CONFIRMÉE + Sage installé
 
 **Fait**

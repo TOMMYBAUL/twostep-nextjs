@@ -15,5 +15,5 @@ $triggers = @(
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
     -MultipleInstances IgnoreNew
 Register-ScheduledTask -TaskName 'TwoStepAutonomy' -Action $action -Trigger $triggers `
-    -Settings $settings -Description 'Two-Step : run autonomie headless (Collecte ② et suite)' -Force
+    -Settings $settings -Description 'Two-Step: run autonomie headless (Collecte 2 et suite)' -Force
 Write-Output "Tâche TwoStepAutonomy enregistrée (jours ouvrés 10h07 / 14h07 / 18h07)."
