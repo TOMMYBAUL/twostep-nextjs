@@ -145,6 +145,38 @@ export async function GET(request: Request) {
             }
         }
 
+        // ── Watchdog OAuth : connexion POS dont le token est mort ──────────────
+        // last_sync_status='error' = refresh échoué (token révoqué/expiré). Le
+        // marchand doit reconnecter sa caisse, sinon son stock ne se sync plus.
+        const { data: deadConns } = await admin
+            .from("pos_connections")
+            .select("merchant_id, provider, last_sync_error")
+            .eq("last_sync_status", "error");
+
+        let posDisconnectedNew = 0;
+        if (deadConns && deadConns.length > 0) {
+            const { data: openPos } = await admin
+                .from("quality_alerts")
+                .select("merchant_id")
+                .eq("type", "pos_disconnected")
+                .eq("status", "open");
+            const alreadyAlerted = new Set((openPos ?? []).map((a: { merchant_id: string }) => a.merchant_id));
+
+            const posAlerts = deadConns
+                .filter((c: { merchant_id: string }) => !alreadyAlerted.has(c.merchant_id))
+                .map((c: { merchant_id: string; provider: string; last_sync_error: string | null }) => ({
+                    merchant_id: c.merchant_id,
+                    product_id: null,
+                    type: "pos_disconnected",
+                    detail: { provider: c.provider, error: c.last_sync_error },
+                }));
+            if (posAlerts.length > 0) {
+                await admin.from("quality_alerts").insert(posAlerts);
+                posDisconnectedNew = posAlerts.length;
+                captureError(new Error(`Caisse déconnectée : ${posAlerts.length} marchand(s) à reconnecter`), { route: "cron/quality-check", phase: "pos-watchdog" });
+            }
+        }
+
         return NextResponse.json({
             ok: true,
             products_checked: rows.length,
@@ -152,6 +184,7 @@ export async function GET(request: Request) {
             price_aberrant: aberrantCount,
             new_alerts: toInsert.length,
             ingest_silent_new: ingestSilentNew,
+            pos_disconnected_new: posDisconnectedNew,
         });
     } catch (e) {
         captureError(e, { route: "cron/quality-check" });

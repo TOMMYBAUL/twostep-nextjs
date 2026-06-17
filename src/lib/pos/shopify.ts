@@ -13,6 +13,34 @@ function requireShop(options?: POSAdapterOptions): string {
     return shop;
 }
 
+/**
+ * Vérifie le HMAC que Shopify ajoute aux paramètres du callback OAuth (param
+ * `hmac`). Garantit que la redirection vient réellement de Shopify et n'a pas été
+ * forgée. Shopify l'exige pour la validation d'app. Algorithme : HMAC-SHA256 sur
+ * les params triés (hors hmac/signature), comparé en temps constant.
+ */
+export function verifyShopifyOAuthHmac(params: URLSearchParams): boolean {
+    const secret = process.env.SHOPIFY_CLIENT_SECRET;
+    if (!secret) return false;
+    const hmac = params.get("hmac");
+    if (!hmac) return false;
+
+    const pairs: string[] = [];
+    for (const [k, v] of params) {
+        if (k === "hmac" || k === "signature") continue;
+        pairs.push(`${k}=${v}`);
+    }
+    pairs.sort();
+    const expected = crypto.createHmac("sha256", secret).update(pairs.join("&")).digest("hex");
+
+    if (hmac.length !== expected.length) return false;
+    try {
+        return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expected));
+    } catch {
+        return false;
+    }
+}
+
 export const shopifyAdapter: IPOSAdapter = {
     name: "shopify",
 

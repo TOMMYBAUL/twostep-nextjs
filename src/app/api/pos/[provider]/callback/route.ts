@@ -3,6 +3,7 @@ import { after, NextRequest, NextResponse } from "next/server";
 import { verifyState } from "@/lib/auth/state-token";
 import { createClient } from "@/lib/supabase/server";
 import { getAdapter, POS_PROVIDERS, type POSProvider } from "@/lib/pos/index";
+import { verifyShopifyOAuthHmac } from "@/lib/pos/shopify";
 import { encrypt } from "@/lib/email/encryption";
 import { syncMerchantPOS } from "@/lib/pos/sync-engine";
 import { captureError } from "@/lib/error";
@@ -44,6 +45,12 @@ export async function GET(
     // Verify state provider matches URL provider
     if (stateProvider !== provider) {
         return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=provider_mismatch`);
+    }
+
+    // Shopify : vérifier le HMAC du callback (preuve que la redirection vient bien
+    // de Shopify, en plus de notre state anti-CSRF). Exigé pour la validation d'app.
+    if (provider === "shopify" && !verifyShopifyOAuthHmac(request.nextUrl.searchParams)) {
+        return NextResponse.redirect(`${baseUrl}/dashboard/settings?error=invalid_hmac`);
     }
 
     const supabase = await createClient();

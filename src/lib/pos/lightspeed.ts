@@ -11,7 +11,10 @@ export const lightspeedAdapter: IPOSAdapter = {
         const params = new URLSearchParams({
             response_type: "code",
             client_id: process.env.LIGHTSPEED_CLIENT_ID!,
-            scope: "employee:all",
+            // Moindre privilège : lecture catalogue (Item) + stock (ItemShop) seulement.
+            // employee:all donnait accès TOTAL au compte (ventes, clients, finances).
+            // (Si writeback stock activé un jour → passer à employee:inventory.)
+            scope: "employee:inventory_read",
             state: signState(`lightspeed:${merchantId}`),
         });
         return `https://cloud.lightspeedapp.com/oauth/authorize.php?${params}`;
