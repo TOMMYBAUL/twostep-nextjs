@@ -5,6 +5,32 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Sous-étape 0bis — Mécanisme d'autonomie : ce qui marche / ne marche pas
+
+**Testé en réel (pas de promesse en l'air)**
+- ❌ **Headless `claude -p` (Claude fermé)** : se fige, aucune sortie ni en nesting ni
+  en tâche Windows autonome (timeout 120-150 s, log bloqué sur START). → la vraie
+  autonomie « pendant que Claude est fermé » **n'est PAS opérationnelle aujourd'hui**.
+- ❌ **Cron durable cross-session** : `CronCreate durable:true` retombe en *session-only*
+  sur cette build → meurt à la fermeture de la session.
+- ✅ **Autonomie en session ouverte** : fonctionne (cron `595970d2` fire les jours
+  ouvrés 9-18h quand la session est au repos ; et /loop sur demande).
+
+**Hypothèse principale du blocage headless** (incertaine, à confirmer) : Norton 360
+(`aswidsagent`, Intrusion Prevention) intercepte le TLS du CLI `claude.exe` vers l'API
+Anthropic — même cause racine que git/node. L'app desktop marche car elle gère TLS
+autrement (Electron, CA embarquée). Si vrai : régler Norton débloque headless ET MCP.
+
+**Plan** : Thomas exclut node/git/claude de l'inspection TLS Norton → on re-teste
+`claude -p` → si vert, on planifie la vraie autonomie headless. En attendant : session
+ouverte + cron session + /loop.
+
+**État réaliste de l'autonomie** : « avance pendant mes journées de travail » = OUI tant
+qu'une session Claude Code reste ouverte. « avance Claude fermé » = bloqué sur le bug
+`claude -p`, à débloquer via Norton puis re-test.
+
+---
+
 ## 2026-06-18 · Sous-étape 0 — Mise en place de l'autonomie (infrastructure)
 
 **Fait**
