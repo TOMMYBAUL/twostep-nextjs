@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-17 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-18 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -335,6 +335,27 @@ Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Tou
 | MAITYLA | Carmes | Liquidée 19/01/2023 — ÉCARTÉE DÉFINITIF |
 | BANANA-POMME | Capitole | Fermée décembre 2024 — ÉCARTÉE DÉFINITIF |
 | POINTURE | Carmes | Remplacée par ARCHE franchise — ÉCARTÉE DÉFINITIF |
+
+---
+
+### Rattrapage jeudi — 2026-06-18 (L'Eclaireur) — Carmes épuisé, 0 email trouvé
+
+**Note de session :** Jeudi = Carmes dans la rotation. Carmes ÉPUISÉ DÉFINITIF (26/26 prospects traités — confirmé 11/06). Session convertie en nouveau passage sur les 6 boutiques NOUVEAU restantes. 30+ recherches web effectuées. **0 email confirmé.** BOHEMIANS ROOM atteint le seuil de 6 passages → **terrain uniquement désormais**. Confirmation supplémentaire : M.J.H./MÉTÉORYT (10 rue des Filatiers) fermée définitivement le 15/06/2026 (IG @meteoryt__ + annuaires confirmés). Outil Notion MCP indisponible (idem toutes sessions précédentes) — recap consigné dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-06-18".
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| LAORA VITTORIA | Carmes | Chaussures | Annick Confuorto | — | — | 7/10 | NOUVEAU | Email non trouvé (4ème passage 18/06) — chaussures cuir italiennes, tel 05 61 22 07 48, aucun site ni email public. 19 rue Ozenne / 3 bis rue Rempart Villeneuve. **Visite terrain.** |
+| STEDIF | Carmes | Mode/Lingerie | Stéphanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (3ème passage 18/06) — lingerie/danse, créée 2018, aucune présence digitale. 46 rue des Filatiers. **Visite terrain.** |
+| LB7 | Carmes | Mode | Laura Mathieu | — | — | 6/10 | NOUVEAU | Email non trouvé (5ème passage 18/06) — créée 23/01/2026 (5 mois), zéro présence digitale. 7 rue Boulbonne. **Visite terrain.** |
+| BOHEMIANS ROOM | Carmes | Mode | Lionel Prevost | — | — | 7/10 | NOUVEAU | Email non trouvé (6ème passage 18/06 ⚠️ SEUIL ATTEINT) — bohemians-room.com ECONNREFUSED depuis 8+ semaines, LinkedIn Lionel Prevost trouvé, aucun email. 18-45 rue Boulbonne. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| PARALLELE | Carmes | Chaussures | Alain Sanz | — | 440867224 | 7/10 | NOUVEAU | Email non trouvé (6ème passage — seuil atteint depuis 12/06) — parallele-eshop.com toujours inaccessible, tel 05 34 44 90 73. 35 rue Boulbonne. Visite terrain uniquement. |
+| BOSCHERIE PERE ET FILLE (LOVE) | Carmes | Mode/Concept store | Julien Boscherie | — | 989923834 | 7/10 | NOUVEAU | Email non trouvé (6ème passage — seuil atteint depuis 12/06) — IG @love.toulouse.store/@toulousewithlove, aucun email public. 49 rue des Filatiers. Visite terrain uniquement. |
+
+**Confirmation fermeture (session 18/06) :**
+
+| Boutique | Quartier | Motif |
+|---|---|---|
+| M.J.H. (MÉTÉORYT) | Carmes | Boutique fermée définitivement le 15/06/2026 — ÉCARTÉE DÉFINITIF (déjà dans tracker) |
 
 ---
 
