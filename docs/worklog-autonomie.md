@@ -5,6 +5,39 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Collecte ② — passe 5 (bornes de pagination) + CLÔTURE [RUN AUTONOME]
+
+**Trouvé (angle mort unattended)** : aucune borne de pagination. Si une API renvoie le
+même curseur/page_info en boucle (anomalie), `getCatalog` bouclait à l'infini → un run
+cloud unattended **hang + brûle le quota** (coût caché). Réel pour l'autonomie.
+
+**Fait** : `catalogPageLimit()` (défaut 2000, réglable `POS_MAX_CATALOG_PAGES`) + compteur
+de pages qui lève au dépassement, sur Shopify/Square getCatalog, Square fetchPromos,
+Lightspeed getCatalog. (Zettle = fetch unique, pas de pagination.) +1 test.
+
+**Testé** : 377/377, tsc OK, gate vert. Commit + push.
+
+### 🏁 COLLECTE ② — CLÔTURÉE (du solide, on ne révise plus)
+5 passes, gate vert à chaque fois, zéro garde-fou franchi. Couvert :
+- ✅ **Robustesse réseau** : retry 429/5xx + Retry-After (4 POS, catalog & stock).
+- ✅ **Gestion d'erreurs** : getCatalog/getStock lèvent sur non-OK (anti catalogue-fantôme
+  + anti stock-partiel-silencieux), double sécurité `computeOrphanProductIds` (garde anti-vide).
+- ✅ **Pagination** : bornée (anti boucle infinie).
+- ✅ **Mapping** : EAN canonicalisé+validé (checksum GTIN, UPC-12→EAN-13) — 4 POS.
+
+**Décision autonome (honnêteté)** : je NE démarre PAS Collecte ③ seul — c'est une
+nouvelle sous-étape qui requiert la validation de Thomas (AUTONOMY.md §5). Et je NE fais
+PAS le refacto `Account.json` de Lightspeed en unattended : faible valeur (DRY pur) +
+sémantiques d'erreur divergentes (throw vs lenient) + zéro couverture de test sur
+pushCatalog/fetchPromos → risque de régression mal relue > bénéfice. À faire en supervisé.
+
+**EN ATTENTE DE THOMAS** :
+1. Valider Collecte ② comme terminée.
+2. Feu vert pour Collecte ③ (chemin stock : mapping quantités, fraîcheur, webhooks).
+3. (optionnel) refacto Account.json Lightspeed, en supervisé.
+
+---
+
 ## 2026-06-18 · Collecte ② — passe 4 (EAN canonicalisé sur les 4 adaptateurs) [RUN AUTONOME]
 
 **Trouvé (angle mort mapping)** : les 4 adaptateurs **n'utilisaient pas** `canonicalizeEan`

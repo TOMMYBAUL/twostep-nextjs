@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 import { canonicalizeEan } from "@/lib/identifiers/validators";
-import { fetchWithRetry } from "./fetch-retry";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function shopApi(shopDomain: string, path: string): string {
@@ -96,8 +96,13 @@ export const shopifyAdapter: IPOSAdapter = {
         const shop = requireShop(options);
         const products: POSProduct[] = [];
         let pageInfo: string | null = null;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) {
+                throw new Error(`Shopify pagination > ${maxPages} pages — anomalie API (boucle ?)`);
+            }
             const url: string = pageInfo
                 ? shopApi(shop, `/products.json?page_info=${pageInfo}&limit=250`)
                 : shopApi(shop, "/products.json?limit=250");

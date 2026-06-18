@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { canonicalizeEan } from "@/lib/identifiers/validators";
-import { fetchWithRetry } from "./fetch-retry";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 const LS_API = "https://api.lightspeedapp.com/API/V3";
@@ -81,8 +81,11 @@ export const lightspeedAdapter: IPOSAdapter = {
 
         const products: POSProduct[] = [];
         let offset = 0;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         while (true) {
+            if (++pages > maxPages) throw new Error(`Lightspeed pagination > ${maxPages} pages — anomalie API`);
             const res = await fetchWithRetry(
                 `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100&load_relations=["Category"]`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }

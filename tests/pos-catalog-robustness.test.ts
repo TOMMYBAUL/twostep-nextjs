@@ -75,6 +75,30 @@ describe("Shopify getCatalog — anti catalogue fantôme", () => {
         expect(out[0].ean).toBe("5901234123457");
     });
 
+    it("LÈVE si la pagination boucle (anti boucle infinie / quota brûlé)", async () => {
+        process.env.POS_MAX_CATALOG_PAGES = "3";
+        // fetch renvoie toujours une page "next" constante → boucle potentielle.
+        vi.stubGlobal(
+            "fetch",
+            vi.fn(async () => ({
+                ok: true,
+                status: 200,
+                headers: {
+                    get: (k: string) =>
+                        k.toLowerCase() === "link"
+                            ? '<https://x.myshopify.com/admin?page_info=CONST&limit=250>; rel="next"'
+                            : null,
+                },
+                json: async () => ({ products: [] }),
+                text: async () => "",
+            } as unknown as Response)),
+        );
+        await expect(
+            shopifyAdapter.getCatalog("tok", { shopDomain: "x.myshopify.com" }),
+        ).rejects.toThrow(/pagination/);
+        delete process.env.POS_MAX_CATALOG_PAGES;
+    });
+
     it("rejette un barcode non-GTIN (checksum invalide) → ean null", async () => {
         mockFetchOnce([
             {

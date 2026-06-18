@@ -2,7 +2,7 @@ import crypto from "crypto";
 
 import { signState } from "@/lib/auth/state-token";
 import { canonicalizeEan } from "@/lib/identifiers/validators";
-import { fetchWithRetry } from "./fetch-retry";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate, PosProductUpdate } from "./types";
 
 function getBaseUrl(): string {
@@ -97,8 +97,11 @@ export const squareAdapter: IPOSAdapter = {
         const imageIdsToFetch = new Set<string>();
         const categoryIdsToFetch = new Set<string>();
         let cursor: string | undefined;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) throw new Error(`Square pagination > ${maxPages} pages — anomalie API (boucle ?)`);
             const params = new URLSearchParams({ types: "ITEM" });
             if (cursor) params.set("cursor", cursor);
 
@@ -244,8 +247,11 @@ export const squareAdapter: IPOSAdapter = {
     async fetchPromos(accessToken: string): Promise<POSPromo[]> {
         const promos: POSPromo[] = [];
         let cursor: string | undefined;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) throw new Error(`Square pagination (promos) > ${maxPages} pages — anomalie API`);
             const params = new URLSearchParams({ types: "DISCOUNT" });
             if (cursor) params.set("cursor", cursor);
 

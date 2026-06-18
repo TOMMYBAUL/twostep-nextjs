@@ -36,6 +36,16 @@ function envInt(name: string, fallback: number): number {
     return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
+/**
+ * Plafond de pages pour la pagination catalogue (anti boucle infinie : si une API
+ * renvoie indéfiniment le même curseur/page_info — anomalie —, un run cloud unattended
+ * bouclerait sans fin et brûlerait le quota). 2000 pages × ~100-250 items = très au-delà
+ * de tout catalogue SMB réel. Dépassement = on lève (signal d'anomalie). Réglable.
+ */
+export function catalogPageLimit(): number {
+    return envInt("POS_MAX_CATALOG_PAGES", 2000);
+}
+
 export function backoffDelay(
     attempt: number,
     baseDelayMs: number,
