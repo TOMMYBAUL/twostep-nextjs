@@ -44,8 +44,11 @@ export async function POST(request: Request) {
 
             if (!product) continue;
 
-            // Atomic stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook");
+            // Atomic stock update — eliminates TOCTOU race condition.
+            // On transmet l'horodatage RÉEL de l'événement (calculated_at Square) comme
+            // source_ts → active la garde anti-régression de la 104 : un webhook périmé
+            // (livré dans le désordre / retry tardif) n'écrase plus une vérité plus fraîche.
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);

@@ -40,8 +40,10 @@ export async function POST(request: Request) {
 
             if (!product) continue;
 
-            // Atomic stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook");
+            // Atomic stock update — eliminates TOCTOU race condition.
+            // source_ts = horodatage RÉEL de l'événement (timestamp Zettle) → active la
+            // garde anti-régression de la 104 sur ce flux absolu (anti-dérive out-of-order).
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             await recalculateGroupSizesAdmin(product.id);
 

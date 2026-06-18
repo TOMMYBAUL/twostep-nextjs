@@ -5,6 +5,45 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ③ — passe 1 (webhooks : fraîcheur source_ts + anti-dérive) [RUN AUTONOME]
+
+**Trouvé (angle mort / bug de dérive réel)** : la migration 104 a ajouté à
+`update_stock_atomic` une **garde anti-régression** sur le mode ABSOLU — refuse
+d'écraser une vérité plus fraîche par une plus ancienne (`IF p_source_ts < v_prev_ts
+RETURN`). **Mais cette garde était INERTE** : les 4 routes webhook appelaient
+`updateStockAtomic(...,"webhook")` SANS passer `sourceTs` → `source_ts` retombait sur
+`now()` (heure de réception serveur), jamais l'heure réelle de l'événement. Or les 4
+`parseWebhookEvent` calculent déjà le vrai timestamp (`calculated_at` Square,
+`timestamp` Zettle, `timeStamp` Lightspeed, order Shopify) dans `updated_at` — il était
+simplement jeté. Conséquence concrète : sur Square/Zettle (absolu), deux webhooks livrés
+**dans le désordre** (Square ne garantit pas l'ordre ; retries tardifs) → le périmé
+arrivant en dernier avait un `now()` plus récent → **il gagnait → régression du stock**.
+Idem cohérence webhook↔resync : les deux écrivaient `now()`, donc « dernier arrivé gagne »
+sans ordre réel.
+
+**Fait** : les 4 routes webhook passent désormais `update.updated_at` comme 6ᵉ arg
+(`sourceTs`) à `updateStockAtomic`. Absolu (Square/Zettle) → garde 104 enfin active
+(anti-dérive out-of-order). Delta (Shopify/Lightspeed) → `source_ts` = heure de vente
+au lieu de l'heure de réception → confidence « vu il y a X » honnête. Aucune migration
+(la garde existait déjà en prod, juste alimentée correctement). +1 fichier de test
+`tests/pos-webhook-parse.test.ts` (8) : verrouille que les 4 adapters reportent quantité
+ET vrai timestamp dans `updated_at` (couche `parseWebhookEvent` jusqu'ici **non testée**).
+
+**Testé** : 385/385 (+8), tsc OK, gate vert. Commit + push.
+
+**Reste / prochaines passes Collecte ③**
+- 🟡 **Limite résiduelle (delta + retry tardif)** : pour le mode delta, un webhook livré
+  très en retard fixe `source_ts` en arrière (régresse la fraîcheur affichée). Le fix
+  propre = `GREATEST(v_prev_ts, p_source_ts)` côté RPC delta → **migration prod** (garde-fou
+  §4, supervisé). Pas en unattended. Faible enjeu (retry delta = rare).
+- 🟡 **Idempotence asymétrique** : Shopify/Lightspeed ont la table `webhook_events`
+  (critique en delta : double-application = double décrément) ; Square/Zettle non (absolu
+  = naturellement idempotent). Défendable, mais à confirmer comme choix explicite.
+- 🟡 Sémantique `feed_events` Lightspeed (toujours "sale" ; le bloc notify restock est mort
+  car Lightspeed n'émet que des deltas négatifs) — cosmétique.
+
+---
+
 ## 2026-06-19 · Bascule autonomie soutenue — validation PAR LOTS + Collecte ③ autorisée
 
 **Décidé (Thomas)** : autonomie locale ~13 runs/jour (tâche Windows toutes les 75 min,
