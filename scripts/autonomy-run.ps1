@@ -21,13 +21,25 @@ $log = "logs\autonomy-$ts.log"
 $notifyCfg = Join-Path $repo 'scripts\notify.local.ps1'
 if (Test-Path $notifyCfg) { . $notifyCfg }
 
-function Send-WhatsApp([string]$text) {
-    if (-not $env:CALLMEBOT_PHONE -or -not $env:CALLMEBOT_APIKEY) { return }
+function Send-Notify([string]$text) {
+    # Norton intercepte aussi le TLS .NET/schannel → on neutralise la vérif cert POUR CE
+    # PROCESS (même raisonnement qu'Option A : l'intercepteur est l'antivirus local).
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+    try { [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 } catch {}
     $t = $text
     if ($t.Length -gt 700) { $t = $t.Substring(0, 700) + ' …' }
-    $enc = [uri]::EscapeDataString($t)
-    $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
-    try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
+
+    # CallMeBot (WhatsApp) — CALLMEBOT_PHONE = TON numéro perso (celui qui reçoit).
+    if ($env:CALLMEBOT_PHONE -and $env:CALLMEBOT_APIKEY) {
+        $enc = [uri]::EscapeDataString($t)
+        $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
+        try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
+    }
+    # Telegram (token @BotFather + chat_id)
+    if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
+        $tgUrl = "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage"
+        try { Invoke-RestMethod -Uri $tgUrl -Method Post -Body @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $t } -TimeoutSec 25 | Out-Null } catch {}
+    }
 }
 
 $prompt = @'
@@ -56,4 +68,4 @@ if ($after -and $before -and ($after -ne $before)) {
     $tail = if (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
     $msg = "⚠️ Two-Step — run autonome : AUCUN commit (exit=$exit). $tail"
 }
-Send-WhatsApp $msg
+Send-Notify $msg
