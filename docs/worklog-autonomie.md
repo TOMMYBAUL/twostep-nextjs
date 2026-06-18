@@ -5,6 +5,23 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Bascule autonomie soutenue — validation PAR LOTS + Collecte ③ autorisée
+
+**Décidé (Thomas)** : autonomie locale ~13 runs/jour (tâche Windows toutes les 75 min,
+7j/7). Routines/Remote Control abandonnés (ne marchaient pas chez lui).
+
+**Changement de méthode** : pour que les runs produisent, passage de « validation à
+chaque sous-étape » → **validation par lots**. L'agent est pré-autorisé à enchaîner le
+backlog du plan de revue : **Collecte ③ → ④ → ⑤ → Triage → Enrichissement → Stockage →
+Exploitation**, une à la fois, commit par petit pas. Thomas relit ≥1×/jour.
+Garde-fous durs (migration/merge/email/dépense) + gate tests vert obligatoire = inchangés.
+MAJ : `AUTONOMY.md §5`, prompt de `scripts/autonomy-run.ps1`.
+
+**PROCHAIN TRAVAIL = Collecte ③** (chemin stock : mapping quantités, fraîcheur,
+cohérence webhooks/getStock, dérive). Collecte ② est close (5 passes, voir plus bas).
+
+---
+
 ## 2026-06-18 · Collecte ② — passe 5 (bornes de pagination) + CLÔTURE [RUN AUTONOME]
 
 **Trouvé (angle mort unattended)** : aucune borne de pagination. Si une API renvoie le

@@ -47,14 +47,22 @@ Rappel : une migration non idempotente (097) a cassé la DB prod partagée ~2 mi
 5. Si une branche test est impossible → **STOP**, on prévient Thomas.
 6. Numérotation séquentielle dans `supabase/migrations/`, fichier committé.
 
-## 5. Seuil de validation (méthode Thomas : « du solide qu'on ne révise plus »)
+## 5. Seuil de validation — VALIDATION PAR LOTS (maj 2026-06-19, autonomie soutenue)
 
-- Le travail est découpé en **sous-étapes** (cf. revue 5 étapes : Collecte / Triage /
-  Enrichissement / Stockage / Exploitation).
-- À la fin de **chaque sous-étape** : Claude écrit dans `docs/worklog-autonomie.md` un
-  résumé clair (ce qui a été fait / trouvé / décidé / testé / ce qui reste), commit, push.
-- Thomas relit avant que Claude franchisse un garde-fou (merge/migration/email).
-- Le **travail réversible de la sous-étape suivante peut continuer** pendant l'attente.
+Pour que les ~13 runs/jour produisent vraiment (sinon ils tournent à vide), Claude est
+**pré-autorisé à enchaîner les sous-étapes du plan de revue SANS s'arrêter à chacune**.
+
+**Backlog pré-autorisé (ordre)** : Collecte ③ (stock) → Collecte ④ → Collecte ⑤ →
+Triage → Enrichissement → Stockage → Exploitation. Claude avance dans cet ordre,
+**une sous-étape à la fois**, **un commit après chaque petit pas**.
+
+- À la fin de chaque sous-étape : écrire le résumé dans `docs/worklog-autonomie.md`,
+  commit/push, **puis ENCHAÎNER la suivante** (plus besoin d'attendre Thomas).
+- Thomas **relit en lot** (≥ 1×/jour : worklog + `git log`), pas à chaque sous-étape.
+- La sécurité ne repose donc PAS sur la relecture de chaque run, mais sur :
+  **branche-only + gate de tests vert OBLIGATOIRE (push rouge bloqué) + garde-fous durs**.
+- Les **garde-fous durs (§2) restent intacts** : aucun merge/migration/email/dépense
+  sans humain. Au moindre garde-fou ou blocage réel → STOP + question dans le worklog.
 
 ## 6. Politique emails externes (recommandation Claude, à confirmer par Thomas)
 
