@@ -42,6 +42,28 @@ ET vrai timestamp dans `updated_at` (couche `parseWebhookEvent` jusqu'ici **non 
 - 🟡 Sémantique `feed_events` Lightspeed (toujours "sale" ; le bloc notify restock est mort
   car Lightspeed n'émet que des deltas négatifs) — cosmétique.
 
+**🔴 TROUVÉ (bug multi-tenant réel, NON corrigé — design en attente Thomas)** : les 4
+routes webhook matchent le produit par `products.pos_item_id` **sans scoping marchand**
+(`.eq("pos_item_id", …).single()`). Or l'index est composite `(merchant_id, pos_item_id)`
+(migration 020) → `pos_item_id` **n'est PAS unique globalement**. Square (catalog_object_id),
+Shopify (variant_id), Zettle (UUID) ont des IDs globalement uniques → OK. **Lightspeed**,
+lui, a des `itemID` = entiers séquentiels **par compte** → deux marchands Lightspeed
+partagent `itemID="5"` → `.single()` matche 2 lignes → erreur PostgREST → `product=null` →
+`continue` → **vente silencieusement perdue pour les deux** (le resync 6 h limite la casse
+en stock, mais le décrément est perdu en attendant). Pourquoi je NE corrige PAS en unattended :
+le fix correct = scoper par marchand, ce qui exige que le webhook sache à quel **compte
+Lightspeed** il appartient (association webhook→merchant aujourd'hui absente) → **décision
+de design + probablement migration/index**, hors « petit pas réversible testable ». À cadrer
+avec Thomas : comment relier un webhook Lightspeed à son marchand (account ID dans le
+payload ? URL de webhook par-marchand avec token ?). Exposition actuelle faible (peu de
+marchands Lightspeed), mais c'est de la **perte de données silencieuse** = enjeu n°1 produit.
+
+**Décision autonome (honnêteté)** : je m'arrête ici sur Collecte ③. Les items restants sont
+soit migration-gated (delta `GREATEST` source_ts, §4 supervisé), soit design-gated (scoping
+multi-tenant ci-dessus), soit cosmétiques/refactor (déjà jugé « risque > valeur » en
+unattended, cf. Collecte ② passe 5). Empiler un changement non testé dans un chemin chaud
+(webhook) sans relecture servirait moins le projet que ce point d'arrêt propre + vérifié.
+
 ---
 
 ## 2026-06-19 · Bascule autonomie soutenue — validation PAR LOTS + Collecte ③ autorisée
