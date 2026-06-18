@@ -90,6 +90,30 @@ describe("Lightspeed getCatalog — anti catalogue fantôme", () => {
     });
 });
 
+describe("Shopify getStock — durci (lève au lieu d'un stock partiel silencieux)", () => {
+    it("LÈVE si l'appel variants échoue", async () => {
+        mockFetchOnce([{ ok: false, status: 500 }]);
+        await expect(
+            shopifyAdapter.getStock("tok", ["1", "2"], { shopDomain: "x.myshopify.com" }),
+        ).rejects.toThrow(/Shopify variants API error/);
+    });
+});
+
+describe("Lightspeed getStock — durci", () => {
+    it("LÈVE si l'appel Account échoue", async () => {
+        mockFetchOnce([{ ok: false, status: 503 }]);
+        await expect(lightspeedAdapter.getStock("tok", ["1"])).rejects.toThrow(/Lightspeed Account API error/);
+    });
+
+    it("LÈVE si ItemShop échoue après un Account OK", async () => {
+        mockFetchOnce([
+            { ok: true, status: 200, json: () => ({ Account: { accountID: "42" } }) },
+            { ok: false, status: 500 },
+        ]);
+        await expect(lightspeedAdapter.getStock("tok", ["1"])).rejects.toThrow(/Lightspeed ItemShop API error/);
+    });
+});
+
 describe("computeOrphanProductIds — garde anti-vide", () => {
     const all = [
         { id: "p1", pos_item_id: "a" },

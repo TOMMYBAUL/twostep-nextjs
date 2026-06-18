@@ -221,10 +221,12 @@ export const shopifyAdapter: IPOSAdapter = {
 
         for (let i = 0; i < itemIds.length; i += 50) {
             const batch = itemIds.slice(i, i + 50);
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 shopApi(shop, `/variants.json?ids=${batch.join(",")}&fields=id,inventory_item_id`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
+            // Lever sur erreur : un stock partiel silencieux fausse les quantités.
+            if (!res.ok) throw new Error(`Shopify variants API error: ${res.status}`);
             const data = await res.json();
             for (const v of data.variants ?? []) {
                 variantToInventory.set(String(v.id), String(v.inventory_item_id));
@@ -240,10 +242,11 @@ export const shopifyAdapter: IPOSAdapter = {
 
         for (let i = 0; i < inventoryIds.length; i += 50) {
             const batch = inventoryIds.slice(i, i + 50);
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 shopApi(shop, `/inventory_levels.json?inventory_item_ids=${batch.join(",")}`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
+            if (!res.ok) throw new Error(`Shopify inventory_levels API error: ${res.status}`);
             const data = await res.json();
 
             for (const level of data.inventory_levels ?? []) {

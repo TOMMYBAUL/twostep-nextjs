@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
+import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 const LS_API = "https://api.lightspeedapp.com/API/V3";
@@ -67,7 +68,7 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     async getCatalog(accessToken: string) {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         if (!accountRes.ok) {
@@ -81,7 +82,7 @@ export const lightspeedAdapter: IPOSAdapter = {
         let offset = 0;
 
         while (true) {
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100&load_relations=["Category"]`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
@@ -117,13 +118,17 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     async fetchPromos(accessToken: string): Promise<POSPromo[]> {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        // Promos = non critique : on reste lenient (retour [] sur échec) pour ne
+        // jamais faire échouer la sync à cause d'un hoquet sur les promos.
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) return [];
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) return [];
 
-        const res = await fetch(
+        const res = await fetchWithRetry(
             `${LS_API}/Account/${accountID}/Item.json?load_relations=["SpecialPrices"]&limit=100`,
             { headers: { Authorization: `Bearer ${accessToken}` } }
         );
@@ -185,11 +190,13 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     async getStock(accessToken: string, itemIds: string[]) {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) throw new Error(`Lightspeed Account API error: ${accountRes.status}`);
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) throw new Error("Lightspeed Account response missing accountID");
 
         // Batch via ItemShop endpoint — avoids N+1 (1 request per item → paginated batches)
         // ItemShop.json supports filtering by itemID via the itemID[] param
@@ -199,10 +206,13 @@ export const lightspeedAdapter: IPOSAdapter = {
         for (let i = 0; i < itemIds.length; i += PAGE_SIZE) {
             const batch = itemIds.slice(i, i + PAGE_SIZE);
             const itemIdParam = batch.map((id) => `itemID[]=${id}`).join("&");
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 `${LS_API}/Account/${accountID}/ItemShop.json?${itemIdParam}&limit=${PAGE_SIZE}`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
+            // Lever sur erreur : un stock partiel silencieux fausse les quantités
+            // affichées (dérive). resync-stock/sync-engine attrapent et marquent error.
+            if (!res.ok) throw new Error(`Lightspeed ItemShop API error: ${res.status}`);
             const data = await res.json();
             const shops = Array.isArray(data.ItemShop) ? data.ItemShop : data.ItemShop ? [data.ItemShop] : [];
             for (const shop of shops) {

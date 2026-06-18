@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
 export const zettleAdapter: IPOSAdapter = {
@@ -64,7 +65,7 @@ export const zettleAdapter: IPOSAdapter = {
     },
 
     async getCatalog(accessToken: string): Promise<POSProduct[]> {
-        const res = await fetch("https://products.izettle.com/organizations/self/products/v2", {
+        const res = await fetchWithRetry("https://products.izettle.com/organizations/self/products/v2", {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -122,7 +123,7 @@ export const zettleAdapter: IPOSAdapter = {
     async getStock(accessToken: string, itemIds: string[]): Promise<POSStockUpdate[]> {
         if (itemIds.length === 0) return [];
 
-        const res = await fetch("https://inventory.izettle.com/organizations/self/inventory/v3", {
+        const res = await fetchWithRetry("https://inventory.izettle.com/organizations/self/inventory/v3", {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 

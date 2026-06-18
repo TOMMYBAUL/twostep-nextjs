@@ -44,3 +44,4 @@ next-env.d.ts
 # graphify outputs (regenerable)
 graphify-out/
 .graphify_python
+logs/

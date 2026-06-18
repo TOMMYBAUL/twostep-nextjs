@@ -5,6 +5,35 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Collecte ② — passe 3 (retry + durcissement sur les 4 adaptateurs) [RUN AUTONOME]
+
+**Fait** (run autonome, réversible)
+- Câblé `fetchWithRetry` sur tout le reste : **Lightspeed** (getCatalog Account+Item,
+  getStock Account+ItemShop, fetchPromos), **Zettle** (getCatalog, getStock),
+  **Shopify** (getStock variants + inventory_levels). Robustesse 429/5xx/réseau
+  désormais sur **les 4 adaptateurs**, getCatalog ET getStock.
+- **Durci `getStock`** (lève sur non-OK au lieu d'un stock partiel silencieux) :
+  Lightspeed (Account + ItemShop), Shopify (variants + inventory_levels). Sûr car
+  resync-stock (try/catch → "getStock_failed") et sync-engine (try/catch → "error")
+  attrapent. Lightspeed `getStock` valide aussi `accountID` désormais.
+- fetchPromos Lightspeed : reste **lenient** (retour [] sur échec) — promos non
+  critiques ne doivent jamais faire échouer la sync.
+- Tests : +3 (Shopify/Lightspeed getStock lèvent) dans pos-catalog-robustness.
+
+**Testé** : 375/375, tsc OK, gate vert (~6 s). Commit + push.
+
+**Reste Collecte ② (mineur, mapping/refacto — prochaine passe)**
+- 🟡 Uniformiser la validation EAN (digits) Shopify (`variant.barcode`) + Lightspeed
+  (`item.upc`) via un helper partagé (Square/Zettle valident déjà). Mapping-quality.
+- 🟡 Factoriser le fetch `Account.json` répété dans Lightspeed (getCatalog/getStock/
+  fetchPromos/pushCatalog) — refacto, pas un bug.
+- ✅ Pagination / gestion d'erreurs / robustesse réseau = SOLIDES sur les 4 POS.
+
+**Note** : je m'arrête ici (point propre, pas de garde-fou franchi) plutôt que d'empiler
+des diffs non relus. Reprise possible sur les 2 items 🟡 mineurs.
+
+---
+
 ## 2026-06-18 · Collecte ② — passe 2 (back-off 429/5xx) + refus Hermès/Norton
 
 **Refusé (sécurité)** : Thomas (en partant) a demandé de « contourner Norton pour
