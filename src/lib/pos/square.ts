@@ -1,6 +1,7 @@
 import crypto from "crypto";
 
 import { signState } from "@/lib/auth/state-token";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
 import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate, PosProductUpdate } from "./types";
 
@@ -123,9 +124,9 @@ export const squareAdapter: IPOSAdapter = {
                             ? `${item.name} — ${v.name}`
                             : item.name;
 
-                    // SKU is only a valid EAN/UPC if it's 12-13 digits
-                    const sku: string | null = v.sku || null;
-                    const ean = sku && /^\d{12,13}$/.test(sku) ? sku : null;
+                    // EAN = identité : canonicalisation + checksum GTIN (UPC-12 → EAN-13).
+                    // Un SKU non-GTIN (interne) → null. Source unique : canonicalizeEan.
+                    const ean = canonicalizeEan(v.sku);
 
                     products.push({
                         pos_item_id: variation.id,

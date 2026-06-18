@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
 import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
@@ -98,7 +99,7 @@ export const lightspeedAdapter: IPOSAdapter = {
                 products.push({
                     pos_item_id: item.itemID,
                     name: item.description,
-                    ean: item.upc ?? null,
+                    ean: canonicalizeEan(item.upc),
                     price: item.Prices?.ItemPrice?.[0]?.amount
                         ? parseFloat(item.Prices.ItemPrice[0].amount)
                         : null,

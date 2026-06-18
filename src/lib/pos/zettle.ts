@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
 import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
@@ -106,10 +107,7 @@ export const zettleAdapter: IPOSAdapter = {
                 products.push({
                     pos_item_id: variant.uuid,
                     name,
-                    ean: (() => {
-                        const code = variant.barcode ?? variant.sku ?? null;
-                        return code && /^\d{8,13}$/.test(code) ? code : null;
-                    })(),
+                    ean: canonicalizeEan(variant.barcode ?? variant.sku),
                     price: variant.price ? variant.price.amount / 100 : null,
                     category,
                     photo_url: photoUrl,

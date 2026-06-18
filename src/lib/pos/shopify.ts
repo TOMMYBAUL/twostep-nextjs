@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
 import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
@@ -129,7 +130,7 @@ export const shopifyAdapter: IPOSAdapter = {
                         name: product.variants.length > 1
                             ? `${product.title} — ${variant.title}`
                             : product.title,
-                        ean: variant.barcode || null,
+                        ean: canonicalizeEan(variant.barcode),
                         price: variant.price ? parseFloat(variant.price) : null,
                         category: product.product_type?.toLowerCase() || null,
                         photo_url: product.image?.src ?? null,

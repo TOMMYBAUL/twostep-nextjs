@@ -5,6 +5,35 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Collecte ② — passe 4 (EAN canonicalisé sur les 4 adaptateurs) [RUN AUTONOME]
+
+**Trouvé (angle mort mapping)** : les 4 adaptateurs **n'utilisaient pas** `canonicalizeEan`
+(`src/lib/identifiers/validators.ts`) — dont la doc impose pourtant « à utiliser
+SYSTÉMATIQUEMENT sur tout EAN reçu d'un POS/CSV/scan ». Conséquences : Shopify/Lightspeed
+stockaient des codes non-GTIN comme EAN (aucune validation) ; Square/Zettle faisaient un
+format-check sans checksum ; **personne ne canonicalisait UPC-12 → EAN-13** → un même
+produit scanné UPC-12 sur une caisse et EAN-13 sur une autre ne se regroupait pas.
+
+**Fait** : branché `canonicalizeEan` sur l'EAN des 4 getCatalog (Square, Shopify,
+Lightspeed, Zettle). Désormais : checksum GTIN validé (code non-GTIN → null, cohérent
+avec le gate « zéro faux positif »), et UPC-12 normalisé en EAN-13 (regroupement
+cross-source correct). Source unique, DRY.
+
+**Testé** : +1 test (rejet barcode non-GTIN → null) + fixture passée à un EAN-13 valide.
+376/376, tsc OK, gate vert. Commit + push.
+
+**Collecte ② — bilan**
+- ✅ Pagination / erreurs / **robustesse réseau** (retry 429/5xx + getCatalog/getStock
+  durcis, anti catalogue-fantôme) sur les 4 POS.
+- ✅ **Mapping EAN** canonicalisé+validé sur les 4 POS.
+- 🟡 Reste UNIQUEMENT (refacto trivial, pas un bug) : factoriser le fetch `Account.json`
+  répété dans Lightspeed (getCatalog/getStock/fetchPromos/pushCatalog). Optionnel.
+- → **Collecte ② est solide.** Prochaine sous-étape logique : **Collecte ③** (le chemin
+  stock — getStock mapping/quantités/fraîcheur — déjà partiellement durci ici), à valider
+  par Thomas avant de s'y engager.
+
+---
+
 ## 2026-06-18 · Collecte ② — passe 3 (retry + durcissement sur les 4 adaptateurs) [RUN AUTONOME]
 
 **Fait** (run autonome, réversible)

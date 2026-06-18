@@ -51,7 +51,7 @@ describe("Shopify getCatalog — anti catalogue fantôme", () => {
         ).rejects.toThrow(/Shopify products API error 500/);
     });
 
-    it("retourne le catalogue quand la réponse est OK", async () => {
+    it("retourne le catalogue + EAN canonicalisé quand la réponse est OK", async () => {
         mockFetchOnce([
             {
                 ok: true,
@@ -62,7 +62,8 @@ describe("Shopify getCatalog — anti catalogue fantôme", () => {
                             id: 1,
                             title: "T",
                             product_type: "Chaussures",
-                            variants: [{ id: 10, title: "Default Title", price: "5.00", barcode: "3000000000001" }],
+                            // EAN-13 valide (checksum correct).
+                            variants: [{ id: 10, title: "Default Title", price: "5.00", barcode: "5901234123457" }],
                         },
                     ],
                 }),
@@ -71,7 +72,27 @@ describe("Shopify getCatalog — anti catalogue fantôme", () => {
         const out = await shopifyAdapter.getCatalog("tok", { shopDomain: "x.myshopify.com" });
         expect(out).toHaveLength(1);
         expect(out[0].pos_item_id).toBe("10");
-        expect(out[0].ean).toBe("3000000000001");
+        expect(out[0].ean).toBe("5901234123457");
+    });
+
+    it("rejette un barcode non-GTIN (checksum invalide) → ean null", async () => {
+        mockFetchOnce([
+            {
+                ok: true,
+                status: 200,
+                json: () => ({
+                    products: [
+                        {
+                            id: 2,
+                            title: "SKU interne",
+                            variants: [{ id: 20, title: "Default Title", price: "9.00", barcode: "ABC-12345" }],
+                        },
+                    ],
+                }),
+            },
+        ]);
+        const out = await shopifyAdapter.getCatalog("tok", { shopDomain: "x.myshopify.com" });
+        expect(out[0].ean).toBeNull();
     });
 });
 
