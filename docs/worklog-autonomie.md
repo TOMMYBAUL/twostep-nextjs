@@ -5,6 +5,37 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ③ — passe 2 : bug MULTI-TENANT trouvé, run arrêté (À CADRER) [RUN AUTONOME]
+
+> Ce run autonome s'est arrêté SANS commit (jugement correct : le reste est
+> guardrail/design-gated). Il avait omis de committer son analyse → capturée ici
+> manuellement + **vérifiée dans le code** (pas juste sa déclaration).
+
+**🔴 BUG MULTI-TENANT VÉRIFIÉ (silent sale loss)** : les 4 routes webhook résolvent le
+produit par `.from("products").eq("pos_item_id", X).single()` **sans scoper par
+`merchant_id`** (ex. `api/webhooks/lightspeed/route.ts:50-54`, même pattern Square/
+Shopify/Zettle). Or `pos_item_id` n'est PAS unique globalement : les `itemID`
+**Lightspeed sont par compte** → 2 marchands Lightspeed partageant `itemID="5"` →
+`.single()` matche 2 lignes → renvoie `null` → `if(!product) continue` → **la vente est
+perdue silencieusement pour les DEUX** (aucune erreur loggée). Square/Shopify/Zettle ont
+des IDs quasi-globaux → collision peu probable en pratique ; dégâts bornés par le resync
+absolu 6 h. Mais c'est une **faille de design multi-tenant** réelle.
+
+**À CADRER AVEC THOMAS (pas en unattended)** :
+- **Fix propre** = associer chaque webhook à son marchand/compte (Lightspeed : mapper
+  l'account du webhook → la `pos_connection`), puis scoper le lookup par `merchant_id`.
+  Design + probable migration/index → garde-fou.
+- **Interim SÛR (réversible, sans migration)** : remplacer le skip silencieux par un
+  `captureError` quand le lookup échoue/est ambigu → rend la perte VISIBLE (principe
+  "pas de dérive silencieuse"). Faisable en supervisé.
+
+**Aussi en attente (passe 1)** : delta `GREATEST(v_prev_ts, p_source_ts)` côté RPC =
+**migration prod** (garde-fou §4). Le reste de Collecte ③ = migration- ou design-gated.
+
+**Aucun garde-fou dur franchi. Notif envoyée (chemin "aucun commit").**
+
+---
+
 ## 2026-06-19 · Collecte ③ — passe 1 (webhooks : fraîcheur source_ts + anti-dérive) [RUN AUTONOME]
 
 **Trouvé (angle mort / bug de dérive réel)** : la migration 104 a ajouté à
