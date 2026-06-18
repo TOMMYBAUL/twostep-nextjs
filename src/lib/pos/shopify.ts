@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function shopApi(shopDomain: string, path: string): string {
@@ -100,7 +101,7 @@ export const shopifyAdapter: IPOSAdapter = {
                 ? shopApi(shop, `/products.json?page_info=${pageInfo}&limit=250`)
                 : shopApi(shop, "/products.json?limit=250");
 
-            const res: Response = await fetch(url, {
+            const res: Response = await fetchWithRetry(url, {
                 headers: { "X-Shopify-Access-Token": accessToken },
             });
             // Anti "catalogue fantôme" : sur 429/5xx/401, NE PAS retourner un

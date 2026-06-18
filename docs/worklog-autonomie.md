@@ -5,6 +5,36 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-18 · Collecte ② — passe 2 (back-off 429/5xx) + refus Hermès/Norton
+
+**Refusé (sécurité)** : Thomas (en partant) a demandé de « contourner Norton pour
+télécharger/installer Hermès Agent et tout configurer avec, en autonomie ». REFUSÉ :
+contourner l'AV pour installer un binaire tiers sur une machine à secrets prod, en
+autonomie non supervisée, = risque de compromission majeur et irréversible. De plus
+**redondant** : Routines (natif cloud Anthropic) fait le job, sandboxé. Décision laissée
+à Thomas à son retour ; proposé d'évaluer Hermès en lecture seule (jamais via bypass AV).
+
+**Fait (vrai travail réversible, dans le cadre AUTONOMY.md)**
+- `src/lib/pos/fetch-retry.ts` : `fetchWithRetry` — retry 429 + 5xx + erreur réseau,
+  respecte `Retry-After`, back-off exponentiel plafonné + jitter, `sleep`/`jitter`
+  injectables. Réglable en ops via `POS_RETRY_MAX_RETRIES` / `POS_RETRY_BASE_MS` /
+  `POS_RETRY_MAX_MS` (lus à l'appel).
+- Câblé : `squareFetch` (chokepoint → couvre catalogue+stock+promos Square) et
+  Shopify `getCatalog` (le plus exposé au 429, limite 2 req/s).
+- Tests : `tests/pos-fetch-retry.test.ts` (11) + ajustement des 2 tests passe 1
+  (POS_RETRY_MAX_RETRIES=0 pour tester la propagation d'erreur instantanément).
+
+**Testé** : 372/372, tsc OK, gate vert (~5 s). Commit + push.
+
+**Reste / prochaine passe Collecte ②**
+- 🟡 Câbler `fetchWithRetry` dans Lightspeed (getCatalog/getStock/fetchPromos),
+  Zettle (getCatalog/getStock), et Shopify `getStock` — même bénéfice retry.
+- 🟡 Uniformiser la validation EAN (digits) Shopify/Lightspeed (cf. passe 1).
+- 🟡 Factoriser le fetch `Account.json` répété 4× dans Lightspeed.
+- 🟡 Durcir `getStock` Shopify/Lightspeed (res.ok) comme getCatalog.
+
+---
+
 ## 2026-06-18 · Collecte ② — getCatalog : passe 1 (anti « catalogue fantôme »)
 
 **Trouvé (bug critique data-integrity)**

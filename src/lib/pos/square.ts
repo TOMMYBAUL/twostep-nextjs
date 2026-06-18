@@ -1,6 +1,7 @@
 import crypto from "crypto";
 
 import { signState } from "@/lib/auth/state-token";
+import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate, PosProductUpdate } from "./types";
 
 function getBaseUrl(): string {
@@ -10,7 +11,7 @@ function getBaseUrl(): string {
 }
 
 async function squareFetch(path: string, accessToken: string, options?: RequestInit) {
-    const res = await fetch(`${getBaseUrl()}/v2${path}`, {
+    const res = await fetchWithRetry(`${getBaseUrl()}/v2${path}`, {
         ...options,
         headers: {
             Authorization: `Bearer ${accessToken}`,

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { shopifyAdapter } from "@/lib/pos/shopify";
 import { lightspeedAdapter } from "@/lib/pos/lightspeed";
 import { computeOrphanProductIds } from "@/lib/pos/sync-engine";
@@ -6,8 +6,16 @@ import { computeOrphanProductIds } from "@/lib/pos/sync-engine";
 // Collecte ② — robustesse getCatalog : un catalogue ne doit JAMAIS revenir vide
 // silencieusement sur erreur réseau, sinon sync-engine masque toute la vitrine.
 
+// On désactive le back-off retry (POS_RETRY_MAX_RETRIES=0) pour tester la propagation
+// d'erreur de façon INSTANTANÉE. La logique de retry elle-même est couverte par
+// tests/pos-fetch-retry.test.ts. Ici : un statut non-OK PERSISTANT doit lever, pas [].
+beforeEach(() => {
+    process.env.POS_RETRY_MAX_RETRIES = "0";
+});
+
 afterEach(() => {
     vi.unstubAllGlobals();
+    delete process.env.POS_RETRY_MAX_RETRIES;
 });
 
 function mockFetchOnce(responses: Array<Partial<Response> & { json?: () => unknown; text?: () => string }>) {
