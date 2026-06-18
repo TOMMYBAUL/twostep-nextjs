@@ -5,6 +5,12 @@ $ErrorActionPreference = 'Continue'
 Set-Location 'C:\Users\Thomas\Desktop\IA\twostep-nextjs'
 $env:NODE_OPTIONS = '--use-system-ca'
 $env:GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=accept-new'
+# Option A (validée Thomas 2026-06-19) : Norton intercepte le TLS sortant et sa CA n'est
+# pas approuvable (capture impossible). On désactive la vérif TLS POUR CE SEUL PROCESS
+# HEADLESS. Risque borné : l'intercepteur est l'antivirus LOCAL (pas un attaquant), Norton
+# valide le vrai cert Anthropic en sortie, et le travail est branche-only/revertable.
+# À RETIRER si un jour Norton exclut proprement claude.exe (cf. worklog).
+$env:NODE_TLS_REJECT_UNAUTHORIZED = '0'
 $ts = Get-Date -Format 'yyyyMMdd-HHmmss'
 $log = "logs\autonomy-$ts.log"
 
