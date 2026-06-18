@@ -30,8 +30,15 @@ function Send-Notify([string]$text) {
     if ($t.Length -gt 700) { $t = $t.Substring(0, 700) + ' …' }
 
     # CallMeBot (WhatsApp) — CALLMEBOT_PHONE = TON numéro perso (celui qui reçoit).
+    # CallMeBot REFUSE les non-ASCII (emoji/accents/tirets typo) → translittération ASCII.
     if ($env:CALLMEBOT_PHONE -and $env:CALLMEBOT_APIKEY) {
-        $enc = [uri]::EscapeDataString($t)
+        $a = $t -replace '[•·]', '-' -replace '[—–]', '-' -replace '✅', '[OK]' -replace '⚠', '[!]'
+        $norm = $a.Normalize([Text.NormalizationForm]::FormD)
+        $sb = New-Object Text.StringBuilder
+        foreach ($c in $norm.ToCharArray()) {
+            if (([Globalization.CharUnicodeInfo]::GetUnicodeCategory($c) -ne [Globalization.UnicodeCategory]::NonSpacingMark) -and ([int]$c -lt 128)) { [void]$sb.Append($c) }
+        }
+        $enc = [uri]::EscapeDataString($sb.ToString())
         $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
         try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
     }
