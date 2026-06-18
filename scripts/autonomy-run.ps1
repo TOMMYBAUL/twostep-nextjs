@@ -42,10 +42,12 @@ function Send-Notify([string]$text) {
         $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
         try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
     }
-    # Telegram (token @BotFather + chat_id)
+    # Telegram — JSON + UTF-8 bytes (le form-hashtable mangle les emoji/accents en PS 5.1).
     if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
         $tgUrl = "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage"
-        try { Invoke-RestMethod -Uri $tgUrl -Method Post -Body @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $t } -TimeoutSec 25 | Out-Null } catch {}
+        $tgPayload = @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $t } | ConvertTo-Json -Compress
+        $tgBytes = [System.Text.Encoding]::UTF8.GetBytes($tgPayload)
+        try { Invoke-RestMethod -Uri $tgUrl -Method Post -Body $tgBytes -ContentType 'application/json; charset=utf-8' -TimeoutSec 25 | Out-Null } catch {}
     }
 }
 
