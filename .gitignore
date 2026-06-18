@@ -47,3 +47,4 @@ graphify-out/
 logs/
 
 .norton-ca.pem
+scripts/notify.local.ps1

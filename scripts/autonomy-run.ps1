@@ -1,8 +1,8 @@
 # Wrapper d'autonomie headless Two-Step — lancé par la tâche Windows "TwoStepAutonomy".
-# Mode PROPRE : aucune désactivation TLS. Requiert que Norton n'intercepte plus
-# node/claude (sinon claude -p se fige). Voir docs/AUTONOMY.md §9 et le worklog.
+# Mode PROPRE : aucune désactivation TLS sauf Option A ci-dessous (Norton).
 $ErrorActionPreference = 'Continue'
-Set-Location 'C:\Users\Thomas\Desktop\IA\twostep-nextjs'
+$repo = 'C:\Users\Thomas\Desktop\IA\twostep-nextjs'
+Set-Location $repo
 $env:NODE_OPTIONS = '--use-system-ca'
 $env:GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=accept-new'
 # Option A (validée Thomas 2026-06-19) : Norton intercepte le TLS sortant et sa CA n'est
@@ -11,8 +11,24 @@ $env:GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=accept-new'
 # valide le vrai cert Anthropic en sortie, et le travail est branche-only/revertable.
 # À RETIRER si un jour Norton exclut proprement claude.exe (cf. worklog).
 $env:NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 $ts = Get-Date -Format 'yyyyMMdd-HHmmss'
 $log = "logs\autonomy-$ts.log"
+
+# ── Notification WhatsApp (best-effort, ne casse JAMAIS le run) ───────────────
+# Config locale NON versionnée : scripts\notify.local.ps1 doit définir
+#   $env:CALLMEBOT_PHONE  (ex: '+33XXXXXXXXX')  et  $env:CALLMEBOT_APIKEY
+$notifyCfg = Join-Path $repo 'scripts\notify.local.ps1'
+if (Test-Path $notifyCfg) { . $notifyCfg }
+
+function Send-WhatsApp([string]$text) {
+    if (-not $env:CALLMEBOT_PHONE -or -not $env:CALLMEBOT_APIKEY) { return }
+    $t = $text
+    if ($t.Length -gt 700) { $t = $t.Substring(0, 700) + ' …' }
+    $enc = [uri]::EscapeDataString($t)
+    $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
+    try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
+}
 
 $prompt = @'
 [RUN AUTONOME — Two-Step] Tu reprends la responsabilité du projet en autonomie.
@@ -24,6 +40,20 @@ $prompt = @'
 Honnêteté radicale : si un test casse, dis-le dans le worklog ; ne maquille rien.
 '@
 
-"[$ts] START autonomy run" | Out-File -FilePath $log -Encoding utf8
+$before = (git rev-parse HEAD 2>$null)
+"[$ts] START autonomy run (HEAD $before)" | Out-File -FilePath $log -Encoding utf8
 claude -p $prompt --dangerously-skip-permissions *>> $log
-"[{0}] END exit=$LASTEXITCODE" -f (Get-Date -Format 'yyyyMMdd-HHmmss') | Out-File -FilePath $log -Append -Encoding utf8
+$exit = $LASTEXITCODE
+$after = (git rev-parse HEAD 2>$null)
+"[{0}] END exit=$exit (HEAD $after)" -f (Get-Date -Format 'yyyyMMdd-HHmmss') | Out-File -FilePath $log -Append -Encoding utf8
+
+# ── Construire le résumé "ce qu'il a fait / trouvé" + notifier ───────────────
+if ($after -and $before -and ($after -ne $before)) {
+    $commits = (git log --format='• %s' "$before..$after" 2>$null) -join "`n"
+    $n = (git rev-list --count "$before..$after" 2>$null)
+    $msg = "✅ Two-Step — run autonome : $n commit(s)`n$commits`n(détails: docs/worklog-autonomie.md)"
+} else {
+    $tail = if (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
+    $msg = "⚠️ Two-Step — run autonome : AUCUN commit (exit=$exit). $tail"
+}
+Send-WhatsApp $msg
