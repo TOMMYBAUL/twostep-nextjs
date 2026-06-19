@@ -1,45 +1,55 @@
 # Wrapper d'autonomie headless Two-Step -- lance par la tache Windows "TwoStepAutonomy".
-# IMPORTANT : fichier en ASCII PUR (pas d'accents/emoji). PowerShell 5.1 lit un .ps1
-# UTF-8-sans-BOM en ANSI et casse le parsing (bug 2026-06-19 : exit 1, aucun run, aucune notif).
+# REGLES DE ROBUSTESSE (apprises a la dure le 2026-06-19) :
+#  1. ASCII PUR obligatoire (pas d'accents/emoji) : PS 5.1 lit un .ps1 UTF-8-sans-BOM en
+#     ANSI -> erreur de parsing -> exit 1, le script ne demarre meme pas, aucun log.
+#  2. Log ecrit EN PREMIER : tout echec d'execution laisse une trace diagnosticable.
+#  3. dot-source de la config en try/catch : une config cassee ne tue pas le run.
+#  4. CallMeBot via curl.exe (le TLS .NET echoue a travers Norton) ; Telegram en JSON UTF-8.
+# Verifier apres toute edition : [Parser]::ParseFile + 0 octet > 127.
 $ErrorActionPreference = 'Continue'
 $repo = 'C:\Users\Thomas\Desktop\IA\twostep-nextjs'
 Set-Location $repo
 $env:NODE_OPTIONS = '--use-system-ca'
 $env:GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=accept-new'
-# Option A (valide Thomas 2026-06-19) : Norton intercepte le TLS, CA non approuvable.
-# On desactive la verif TLS POUR CE SEUL PROCESS headless (interceptor = antivirus local).
+# Option A (Thomas 2026-06-19) : Norton intercepte le TLS, CA non approuvable.
+# Verif TLS desactivee POUR CE SEUL PROCESS headless (interceptor = antivirus local).
 $env:NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 $ts = Get-Date -Format 'yyyyMMdd-HHmmss'
 $log = "logs\autonomy-$ts.log"
+"[$ts] START autonomy run" | Out-File -FilePath $log -Encoding utf8
 
-# Config notif locale non versionnee (CallMeBot/Telegram).
+# Config notif locale non versionnee (CallMeBot/Telegram) -- jamais fatale.
 $notifyCfg = Join-Path $repo 'scripts\notify.local.ps1'
-if (Test-Path $notifyCfg) { . $notifyCfg }
+if (Test-Path $notifyCfg) {
+    try { . $notifyCfg } catch { "[$ts] notify config error: $($_.Exception.Message)" | Out-File -FilePath $log -Append -Encoding utf8 }
+}
 
 function Send-Notify([string]$text) {
-    # Norton intercepte aussi le TLS .NET -> on neutralise la verif cert POUR CE PROCESS.
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
     try { [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 } catch {}
     $t = $text
     if ($t.Length -gt 700) { $t = $t.Substring(0, 700) + ' ...' }
-    # CallMeBot refuse les non-ASCII -> translitteration (Normalize FormD + strip > 127).
+    # CallMeBot refuse les non-ASCII -> translitteration (Normalize FormD + strip > 127),
+    # puis curl.exe (PAS Invoke-RestMethod : le TLS .NET echoue a travers Norton).
     if ($env:CALLMEBOT_PHONE -and $env:CALLMEBOT_APIKEY) {
-        $norm = $t.Normalize([Text.NormalizationForm]::FormD)
-        $sb = New-Object Text.StringBuilder
-        foreach ($c in $norm.ToCharArray()) {
-            if (([Globalization.CharUnicodeInfo]::GetUnicodeCategory($c) -ne [Globalization.UnicodeCategory]::NonSpacingMark) -and ([int]$c -lt 128)) { [void]$sb.Append($c) }
-        }
-        $ascii = $sb.ToString()
-        # curl.exe (PAS Invoke-RestMethod) : le TLS .NET echoue a travers Norton, curl -k passe.
-        try { & curl.exe -k -s -G "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$($env:CALLMEBOT_PHONE)" --data-urlencode "text=$ascii" --data-urlencode "apikey=$($env:CALLMEBOT_APIKEY)" | Out-Null } catch {}
+        try {
+            $norm = $t.Normalize([Text.NormalizationForm]::FormD)
+            $sb = New-Object Text.StringBuilder
+            foreach ($c in $norm.ToCharArray()) {
+                if (([Globalization.CharUnicodeInfo]::GetUnicodeCategory($c) -ne [Globalization.UnicodeCategory]::NonSpacingMark) -and ([int]$c -lt 128)) { [void]$sb.Append($c) }
+            }
+            & curl.exe -k -s -G "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$($env:CALLMEBOT_PHONE)" --data-urlencode "text=$($sb.ToString())" --data-urlencode "apikey=$($env:CALLMEBOT_APIKEY)" | Out-Null
+        } catch {}
     }
-    # Telegram : JSON + UTF-8 bytes (garde l'unicode).
+    # Telegram : JSON + UTF-8 bytes (garde l'unicode) -- .NET fonctionne pour Telegram.
     if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
-        $tgUrl = "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage"
-        $tgPayload = @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $t } | ConvertTo-Json -Compress
-        $tgBytes = [System.Text.Encoding]::UTF8.GetBytes($tgPayload)
-        try { Invoke-RestMethod -Uri $tgUrl -Method Post -Body $tgBytes -ContentType 'application/json; charset=utf-8' -TimeoutSec 25 | Out-Null } catch {}
+        try {
+            $tgUrl = "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage"
+            $tgPayload = @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $t } | ConvertTo-Json -Compress
+            $tgBytes = [System.Text.Encoding]::UTF8.GetBytes($tgPayload)
+            Invoke-RestMethod -Uri $tgUrl -Method Post -Body $tgBytes -ContentType 'application/json; charset=utf-8' -TimeoutSec 25 | Out-Null
+        } catch {}
     }
 }
 
@@ -54,13 +64,13 @@ Honnetete radicale : si un test casse, dis-le dans le worklog ; ne maquille rien
 '@
 
 $before = (git rev-parse HEAD 2>$null)
-"[$ts] START autonomy run (HEAD $before)" | Out-File -FilePath $log -Encoding utf8
+"[$ts] claude start (HEAD $before)" | Out-File -FilePath $log -Append -Encoding utf8
 claude -p $prompt --dangerously-skip-permissions *>> $log
 $exit = $LASTEXITCODE
 $after = (git rev-parse HEAD 2>$null)
 "[{0}] END exit=$exit (HEAD $after)" -f (Get-Date -Format 'yyyyMMdd-HHmmss') | Out-File -FilePath $log -Append -Encoding utf8
 
-# Resume "fait/trouve" + notification (best-effort).
+# Resume "fait/trouve" + notification (best-effort, jamais fatale).
 if ($after -and $before -and ($after -ne $before)) {
     $commits = (git log --format='- %s' "$before..$after" 2>$null) -join "`n"
     $n = (git rev-list --count "$before..$after" 2>$null)
@@ -69,4 +79,4 @@ if ($after -and $before -and ($after -ne $before)) {
     $tail = if (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
     $msg = "[!] Two-Step - run autonome : AUCUN commit (exit=$exit). $tail"
 }
-Send-Notify $msg
+try { Send-Notify $msg } catch {}
