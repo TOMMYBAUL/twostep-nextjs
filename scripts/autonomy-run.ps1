@@ -30,9 +30,9 @@ function Send-Notify([string]$text) {
         foreach ($c in $norm.ToCharArray()) {
             if (([Globalization.CharUnicodeInfo]::GetUnicodeCategory($c) -ne [Globalization.UnicodeCategory]::NonSpacingMark) -and ([int]$c -lt 128)) { [void]$sb.Append($c) }
         }
-        $enc = [uri]::EscapeDataString($sb.ToString())
-        $url = "https://api.callmebot.com/whatsapp.php?phone=$($env:CALLMEBOT_PHONE)&text=$enc&apikey=$($env:CALLMEBOT_APIKEY)"
-        try { Invoke-RestMethod -Uri $url -TimeoutSec 25 | Out-Null } catch {}
+        $ascii = $sb.ToString()
+        # curl.exe (PAS Invoke-RestMethod) : le TLS .NET echoue a travers Norton, curl -k passe.
+        try { & curl.exe -k -s -G "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$($env:CALLMEBOT_PHONE)" --data-urlencode "text=$ascii" --data-urlencode "apikey=$($env:CALLMEBOT_APIKEY)" | Out-Null } catch {}
     }
     # Telegram : JSON + UTF-8 bytes (garde l'unicode).
     if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
