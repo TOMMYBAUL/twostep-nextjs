@@ -5,6 +5,47 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ⑤ — factures/scan : 4 fixes data-integrity + CLÔTURE [RUN AUTONOME]
+
+Reprise dans l'ordre du backlog (③④ traités, restes gated) → première sous-étape
+NON entamée = **Collecte ⑤ (factures/scan)**. Reconnaissance via agent Explore puis
+**chaque finding vérifié dans le code réel** (plusieurs claims de l'agent étaient faux).
+
+**4 bugs RÉELS corrigés (commits séparés, gate vert à chaque pas)** :
+1. **`parseCiiXml` (Factur-X, réception oblig. sept. 2026)** : champs extraits par
+   regex **non décodés** → toute marque avec `&` (Dolce&Gabbana, H&M — obligatoirement
+   `&amp;` en XML valide) stockée polluée → casse affichage + matching. + prix `0.00`
+   attesté → `null`. Fix : `decodeXmlEntities` (anti double-décode) + préserve 0. +3 tests.
+2. **Facture 0-item → statut `"parsed"`** (3 routes : email Resend, email Cloudflare,
+   upload manuel) = dérive silencieuse (marchand croit à un import réussi). Fix : helper
+   pur `invoiceStatusForParse` → 0 item = `"failed"` (valeur déjà au CHECK 003, ux_status
+   "refused" via 068 → **aucune migration**). + `captureError` sur échec upload storage
+   (avant : `console.error` perdu en serverless). **Vérifié : PAS d'orphelin DB** (record
+   créé APRÈS upload — l'audit se trompait). +2 tests.
+3. **`parseJsonResponse`** (LLM claude/gemini/spreadsheet, **0 test avant**) : `JSON.parse`
+   sans try/catch → réponse vide/non-JSON = SyntaxError opaque → 500. Fix : erreurs
+   explicites. + qté `0` explicite → 1 (fantôme) et prix NaN remonté tel quel → null. +8 tests.
+4. **`spreadsheet.ts`** (même famille "perte du 0") : `parsePrice()||null` détruisait un
+   prix 0 ; `Number()||1` un qté 0. Fix + **correction d'une régression latente que
+   j'avais introduite** en (3) : `Number(null)===0` → garde sur la valeur brute. +1 test.
+
+**Testé** : 396 → **410** tests, tsc OK, gate vert à chaque commit, push SSH sans skip.
+
+### 🏁 COLLECTE ⑤ — CLÔTURÉE (périmètre réversible/testable)
+**Restes NON traités (justifiés, pas du laisser-aller)** :
+- 🟡 **Scan : code invalide ignoré silencieusement** (`scan/session.ts:35`) = préoccupation
+  **UI/UX** (bip/flash caméra, là où le code brut est dispo), PAS logique. Changer le modèle
+  `ScanSession` serait spéculatif sans voir le consommateur React → **design/UI-gated**.
+- 🟡 **`parseCiiXml` n'est pas encore branché** dans `parseInvoice` (extraction XML depuis
+  PDF/A-3 = étape amont absente ; `einvoice.ts` throw "Available 2027"). Le parseur est durci
+  et testé, prêt au câblage. Décision de câblage = Thomas (priorité Factur-X).
+- 🟡 Header tableur cherché sur 30 lignes → au-delà, fallback LLM (coût/latence, pas une perte
+  de donnée). Élargir = risque de faux header. Laissé.
+
+**PROCHAIN (backlog) = Triage** (① identité GTIN/SKU ② gate score ③ matching/dédup ④ variantes).
+
+---
+
 ## 2026-06-19 · Enrichissement — VÉRIF crédits Serper (crainte Thomas) : SAIN, 0 fix [RUN AUTONOME]
 
 **Question (crainte explicite de Thomas)** : un produit déjà validé est-il re-vérifié par
