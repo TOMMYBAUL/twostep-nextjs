@@ -54,13 +54,23 @@ function Send-Notify([string]$text) {
 }
 
 $prompt = @'
-[RUN AUTONOME -- Two-Step] Tu reprends la responsabilite du projet en autonomie.
-1. Lis docs/AUTONOMY.md (le contrat), docs/worklog-autonomie.md (ou on en est) et docs/session-handoff-2026-06-12.md section "0ter". Verifie la branche feat/pipeline-v1-handoff-2026-06-12.
-2. Avance du travail REVERSIBLE sur le BACKLOG pre-autorise (AUTONOMY.md section 5) : Collecte 3 (stock) -> 4 -> 5 -> Triage -> Enrichissement -> Stockage -> Exploitation. Prends la PREMIERE sous-etape non terminee selon le worklog, fais-la, puis ENCHAINE la suivante (validation par lots, pas a chaque sous-etape). Commit apres chaque petit pas. Cherche failles, angles morts, couts caches. Si la sous-etape courante n'a plus que des restes BLOQUES (migration/design-gated ou garde-fou dur), documente-les dans le worklog (commit) puis PASSE a la suivante -- ne t'arrete PAS pour si peu. Ne t'arrete QUE si TOUT le backlog est bloque, ou garde-fou dur, ou test casse.
-3. AVANT d'editer un symbole : analyse l'impact (callers). Ecris/ajuste les tests.
-4. Verifie : npm run test:run + npx tsc --noEmit. Si vert -> commit + git push (SSH, SANS SKIP_PRE_PUSH). NE PUSH JAMAIS si le gate est rouge.
-5. GARDE-FOUS DURS (jamais sans humain) : pas de migration prod, pas de merge main, pas d'email, pas de depense. Si tu en atteins un, finis la sous-etape, ou es bloque : ecris un resume + la question dans docs/worklog-autonomie.md, commit/push, et ARRETE-TOI.
-Honnetete radicale : si un test casse, dis-le dans le worklog ; ne maquille rien.
+[RUN AUTONOME -- Two-Step v2] Tu reprends la responsabilite du projet en autonomie. Objectif: faire AVANCER le produit vers la metrique du north-star, pas accumuler des micro-fixes.
+
+1. LIS DANS CET ORDRE: docs/autonomy-priorities.md (LE CERVEAU: north-star, metrique unique, backlog priorise, regle de verifiability, protocole d'escalade, sourcing par signaux), docs/AUTONOMY.md (garde-fous durs), LESSONS.md (memoire d'erreurs), docs/worklog-autonomie.md (ou on en est). Verifie la branche feat/pipeline-v1-handoff-2026-06-12.
+
+2. CHOISIS le prochain travail via le SOURCING PAR SIGNAUX (priorities.md section 6), PAS par devinette: d'abord le backlog priorise (item [R] reversible de plus haut rang non termine), sinon les signaux reels (captureError/Sentry, echecs e2e, quality_alerts, crons en statut partial/error), sinon une couverture de test manquante sur un hot path, EN DERNIER SEULEMENT l'exploration libre -- et alors VERIFIE chaque finding dans le code reel (LESSONS: ~70% des findings Explore etaient faux).
+
+3. FAIS l'item: avant d'editer un symbole, analyse l'impact (callers). Ecris/ajuste les tests. Tout changement doit etre REVERSIBLE et VERIFIABLE (tests/tsc/e2e), sinon ne le committe pas.
+
+4. SI le prochain item de plus haut rang est GATED [G] ou EXTERNE [X] (design produit, migration, merge, scope OAuth, dependance externe): prepare TOUT le reversible (code derriere flag, migration idempotente NON appliquee, tests verts, commit), PUIS ESCALADE -- ecris UNE ligne de decision PRECISE et binaire en append dans logs\notify-extra.txt (cree-le si absent; le wrapper l'enverra a Thomas par WhatsApp/Telegram), marque l'item "escalade, attente Thomas" dans priorities.md, et PASSE a l'item reversible suivant. Format: [DECISION] <item> -- <option A> vs <option B>. Pret a <action> sur ton OK. NE STAGNE PAS sur un item gated.
+
+5. VERIFIE: npm run test:run + npx tsc --noEmit. Si vert -> commit + git push (SSH, SANS SKIP_PRE_PUSH). NE PUSH JAMAIS si le gate est rouge.
+
+6. GARDE-FOUS DURS (jamais sans humain, cf AUTONOMY.md): pas de migration prod APPLIQUEE, pas de merge main, pas d'email, pas de depense. Tu PEUX preparer un fichier de migration idempotente (non applique) et escalader pour le feu vert.
+
+7. FIN DE RUN (auto-amelioration, priorities.md section 5): mesure ce qui a bouge sur la metrique; si tu as appris quelque chose -> entree LESSONS.md; RE-PRIORISE priorities.md (marque fait/escalade, RETIRE le busywork sans valeur); resume dans worklog-autonomie.md; commit/push. Si le reversible est epuise ET le haut du backlog est escalade/externe: DIS-LE franchement et recommande de REDUIRE la cadence des runs (la valeur est alors chez Thomas, pas dans plus de runs).
+
+Honnetete radicale: si un test casse, dis-le; ne maquille rien. Zero complaisance: on ne "corrige" pas un code sain pour avoir quelque chose a faire.
 '@
 
 $before = (git rev-parse HEAD 2>$null)
@@ -78,5 +88,15 @@ if ($after -and $before -and ($after -ne $before)) {
 } else {
     $tail = if (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
     $msg = "[!] Two-Step - run autonome : AUCUN commit (exit=$exit). $tail"
+}
+# Escalades ecrites par la boucle pendant le run (decisions a trancher) -> ajoutees a la notif.
+$extra = Join-Path $repo 'logs\notify-extra.txt'
+if (Test-Path $extra) {
+    try {
+        $extraTxt = (Get-Content $extra -Raw -ErrorAction SilentlyContinue)
+        if ($extraTxt) { $extraTxt = $extraTxt.Trim() }
+        if ($extraTxt) { $msg = "$msg`n$extraTxt" }
+        Remove-Item $extra -Force -ErrorAction SilentlyContinue
+    } catch {}
 }
 try { Send-Notify $msg } catch {}
