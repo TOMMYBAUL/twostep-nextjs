@@ -75,10 +75,26 @@ Honnetete radicale: si un test casse, dis-le; ne maquille rien. Zero complaisanc
 
 $before = (git rev-parse HEAD 2>$null)
 "[$ts] claude start (HEAD $before)" | Out-File -FilePath $log -Append -Encoding utf8
-claude -p $prompt --dangerously-skip-permissions *>> $log
+# Sortie JSON -> mesure le cout en tokens/USD par run (Thomas: "comprends tes capacites").
+# Le format n'affecte PAS le travail de l'agent (commits identiques) : il change seulement la
+# sortie finale. stdout (JSON resultat) -> jsonOut ; stderr -> log.
+$jsonOut = "logs\autonomy-$ts.json"
+claude -p $prompt --dangerously-skip-permissions --output-format json > $jsonOut 2>> $log
 $exit = $LASTEXITCODE
 $after = (git rev-parse HEAD 2>$null)
 "[{0}] END exit=$exit (HEAD $after)" -f (Get-Date -Format 'yyyyMMdd-HHmmss') | Out-File -FilePath $log -Append -Encoding utf8
+
+# Mesure du cout (best-effort, jamais fatale) -> ledger pour apprendre la cadence soutenable.
+$cost = $null; $turns = $null; $resultText = ''
+if (Test-Path $jsonOut) {
+    try {
+        $res = (Get-Content $jsonOut -Raw -ErrorAction SilentlyContinue) | ConvertFrom-Json
+        $cost = $res.total_cost_usd; $turns = $res.num_turns; $resultText = [string]$res.result
+    } catch { "[$ts] cost parse fail: $($_.Exception.Message)" | Out-File -FilePath $log -Append -Encoding utf8 }
+}
+if ($null -ne $cost) {
+    ("{0} cost_usd={1} turns={2} exit={3} commits={4}" -f $ts, $cost, $turns, $exit, $after) | Out-File -FilePath 'logs\cost-ledger.txt' -Append -Encoding utf8
+}
 
 # Resume "fait/trouve" + notification (best-effort, jamais fatale).
 if ($after -and $before -and ($after -ne $before)) {
@@ -86,9 +102,11 @@ if ($after -and $before -and ($after -ne $before)) {
     $n = (git rev-list --count "$before..$after" 2>$null)
     $msg = "[OK] Two-Step - run autonome : $n commit(s)`n$commits`n(details: docs/worklog-autonomie.md)"
 } else {
-    $tail = if (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
+    $tail = if ($resultText) { $resultText } elseif (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
+    if ($tail.Length -gt 300) { $tail = $tail.Substring(0, 300) + ' ...' }
     $msg = "[!] Two-Step - run autonome : AUCUN commit (exit=$exit). $tail"
 }
+if ($null -ne $cost) { $msg = "$msg`nCout run: $cost USD (turns $turns)" }
 # Escalades ecrites par la boucle pendant le run (decisions a trancher) -> ajoutees a la notif.
 $extra = Join-Path $repo 'logs\notify-extra.txt'
 if (Test-Path $extra) {

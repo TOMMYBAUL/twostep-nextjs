@@ -16,6 +16,26 @@ app de découverte ensuite. **Le cœur = la qualité de la data stock** : propre
 enrichissable, affichée honnêtement (zéro faux positif). C'est ce que NearSt a réussi et ce
 qui a tué MVMS/Milo (catalogue fantôme).
 
+### L'objectif software — barre relevée par Thomas (2026-06-20)
+Le prérequis n'est PAS « une V1 démontrable » (trop bas). C'est une **gestion de data exacte,
+niveau géant du marché** — parce que Google teste la qualité du feed avant d'accorder le
+statut LFP, et qu'un marchand qui voit son stock affiché faux s'en va. **L'exactitude EST la
+promesse.** Spec fonctionnelle (Thomas dit qu'on l'a déjà sur le papier — il faut la rendre
+IRRÉPROCHABLE et PROUVÉE) :
+1. **Capter le stock de N'IMPORTE QUELLE source — caisse ET sans-caisse — en n'OUBLIANT RIEN.**
+   Aucune perte silencieuse : pagination complète, erreurs qui lèvent (jamais `[]` masqué),
+   retries, parsing sans perte (prix/qté/taille), réconciliation qui met bien à 0 le disparu.
+2. **Afficher le stock de n'importe quelle boutique inscrite en QUASI TEMPS RÉEL, honnêtement**
+   (webhooks + resync, fraîcheur `source_ts` vraie, états de confiance honnêtes).
+
+**« N'oublier rien » doit devenir des INVARIANTS TESTÉS, pas une intention** : un produit
+perdu doit être **impossible sans alerte**. C'est le travail n°1 — le rendre *vérifiable*.
+
+**Deadline (Thomas, 2026-06-20)** : ~2 semaines → cible **2026-07-04** pour l'état
+software-ready (data prouvée + déployable + démo de bout en bout). NB honnête : « prouvé en
+conditions réelles » exige des données de vrais marchands (ta moitié) — je prouve sur données
+synthétiques + invariants, tu valides en réel.
+
 ### La métrique unique de la boucle
 > **% du backlog produit à forte valeur qui est CONSTRUIT + TESTÉ + mis en scène jusqu'au
 > point d'UNE décision de Thomas.** Objectif : 100 %. Quand on l'atteint, le goulot n'est
@@ -167,3 +187,23 @@ Ordre de préférence pour trouver le prochain `[R]` (remplace « Explore devine
 3. **Chemins critiques non testés** (couverture qui manque sur un hot path).
 4. **En dernier seulement** : exploration libre — et alors **chaque finding est vérifié dans
    le code réel** avant d'être traité (cf. LESSONS : ~70 % des findings Explore étaient faux).
+
+---
+
+## 7. Cadence & budget tokens (auto-régulation — Thomas : « comprends tes capacités »)
+
+Le wrapper écrit le coût de CHAQUE run dans `logs/cost-ledger.txt` (`cost_usd`, `turns`).
+**Au début d'un run, lis le ledger** : c'est ta connaissance de toi-même.
+- Objectif : avancer vite sur la deadline (2 semaines) SANS cramer l'abonnement. Un seul run
+  tourne à la fois (tâche en `IgnoreNew`, ExecutionTimeLimit 90 min) → coût borné par le
+  temps réel, pas d'emballement parallèle.
+- **Si le coût cumulé dérive** (ex. tu te projettes à épuiser le budget avant la deadline) :
+  écris-le dans le worklog + escalade une recommandation de réduire la fréquence. Ne fais pas
+  l'autruche : mieux vaut 8 runs profonds/jour soutenables que 40 qui claquent le quota mardi.
+- **Préfère peu de runs PROFONDS** (une vraie unité finie : feature + tests + commit) à
+  beaucoup de runs courts qui se tuent à mi-chemin. La cadence n'est pas la métrique ; la
+  data exacte prouvée l'est.
+
+> Item de travail n°1 dérivé de l'objectif §1 : **construire les INVARIANTS DE COMPLÉTUDE
+> testés** (« aucune source ne perd un produit/qté/prix sans alerte ») — les transformer de
+> garde-fous épars en propriété vérifiée de bout en bout. À traiter en Rang 1-2.
