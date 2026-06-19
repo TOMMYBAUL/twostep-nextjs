@@ -5,6 +5,27 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ④ — ingestion fichier : parsing prix robuste [RUN AUTONOME]
+
+**Trouvé (perte de donnée silencieuse)** : 2 sites (`ingest/parse-stock.ts:86`,
+`parser/spreadsheet.ts:217`) parsaient le prix via `Number(String(x).replace(",","."))`
+→ un prix avec **séparateur de milliers** (`1 234,56 €`, `1.234,56`, `1,234.56`) →
+`NaN` → **prix PERDU** (silencieusement) pour tous les articles > 1000 € (mobilier,
+high-tech, mode haut de gamme).
+
+**Fait** : helper partagé `src/lib/parser/parse-price.ts` (DRY) robuste FR/EN —
+retire devise + espaces (insécables inclus), gère deux séparateurs (le plus à droite =
+décimal), single-séparateur (≤2 déc = décimal, 3 déc/multiples = milliers).
+Conservateur (null si non finançable, bornage >0/<100k laissé au caller → pas de faux
+positif). Câblé dans les 2 sites. +6 tests.
+
+**Testé** : 396/396, tsc OK, gate vert. Commit + push.
+
+**Reste (mineur)** : `validEanOrNull` possiblement orphelin (consolidation 2 utils GTIN,
+supervisé) ; robustesse encodage CSV exotique. Sinon ingestion fichier = solide.
+
+---
+
 ## 2026-06-19 · Collecte ④ — ingestion fichier : cohérence EAN cross-canal [RUN AUTONOME]
 
 (Collecte ③ restant = migration/design-gated → saut au backlog suivant, règle AUTONOMY.md §5.)

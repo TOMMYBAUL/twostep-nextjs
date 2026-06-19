@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { parsePrice } from "./parse-price";
 import type { IInvoiceParser, ParsedInvoice, ParsedInvoiceItem } from "./types";
 
 // Column header variants (case-insensitive matching)
@@ -214,7 +215,7 @@ export function extractStructured(rows: string[][], mapping: ColumnMapping): Par
         const brand = mapping.brand !== null ? String(row[mapping.brand] ?? "").trim() || null : null;
         const quantity = mapping.quantity !== null ? Number(row[mapping.quantity]) || 1 : 1;
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
-        const unit_price = rawPrice != null && rawPrice !== "" ? Number(String(rawPrice).replace(",", ".")) || null : null;
+        const unit_price = parsePrice(rawPrice) || null;
 
         items.push({ name: rawName, ean, sku, brand, quantity, unit_price });
     }

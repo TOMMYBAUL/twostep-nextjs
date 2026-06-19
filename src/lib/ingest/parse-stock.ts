@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { parseSpreadsheetBuffer, detectColumns } from "@/lib/parser/spreadsheet";
+import { parsePrice } from "@/lib/parser/parse-price";
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
 
 /**
@@ -81,13 +82,10 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
         }
 
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
-        const parsedPrice =
-            rawPrice != null && rawPrice !== ""
-                ? Number(String(rawPrice).replace(",", "."))
-                : NaN;
+        const parsedPrice = parsePrice(rawPrice);
         // Prix exploitable = strictement positif et plausible ; sinon null
         // (un prix négatif ou aberrant ne doit jamais atteindre la fiche).
-        const unit_price = Number.isFinite(parsedPrice) && parsedPrice > 0 && parsedPrice < 100_000
+        const unit_price = parsedPrice != null && parsedPrice > 0 && parsedPrice < 100_000
             ? parsedPrice
             : null;
 
