@@ -5,6 +5,25 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ③ — passe 3 : interim SÛR du bug multi-tenant (perte rendue visible) [RUN AUTONOME]
+
+**Fait (réversible, sans migration)** : créé `src/lib/pos/resolve-product.ts`
+(`pickUniqueProduct` pur + `resolveWebhookProduct`) et câblé dans **les 4 routes
+webhook** (square/shopify/lightspeed/zettle). Désormais, si un `pos_item_id` matche
+**plusieurs marchands** (collision multi-tenant, cf. passe 2), on **ne choisit plus au
+hasard** : `captureError` (Sentry) + vente non appliquée → la perte devient **VISIBLE**
+au lieu d'être silencieuse. 0 match = skip normal (inchangé), 1 match = inchangé.
++4 tests (`tests/pos-resolve-product.test.ts`).
+
+**Testé** : 389/389, tsc OK, gate vert. Commit + push.
+
+**Ce N'EST PAS le fix de fond** (toujours à cadrer avec Thomas) : scoper le lookup par
+`merchant_id` via une association webhook→compte (Lightspeed surtout) = design + probable
+migration → garde-fou. L'interim empêche juste l'application au mauvais marchand ET la
+disparition silencieuse. Le delta `GREATEST(source_ts)` (passe 1) reste migration-gated.
+
+---
+
 ## 2026-06-19 · Collecte ③ — passe 2 : bug MULTI-TENANT trouvé, run arrêté (À CADRER) [RUN AUTONOME]
 
 > Ce run autonome s'est arrêté SANS commit (jugement correct : le reste est

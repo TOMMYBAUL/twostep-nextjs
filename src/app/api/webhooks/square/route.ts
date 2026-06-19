@@ -7,6 +7,7 @@ import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { updateStockAtomic } from "@/lib/pos/update-stock";
+import { resolveWebhookProduct } from "@/lib/pos/resolve-product";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -35,13 +36,7 @@ export async function POST(request: Request) {
         const supabase = createAdminClient();
 
         for (const update of updates) {
-            // Find product by pos_item_id
-            const { data: product } = await supabase
-                .from("products")
-                .select("id, merchant_id")
-                .eq("pos_item_id", update.pos_item_id)
-                .single();
-
+            const product = await resolveWebhookProduct(supabase, update.pos_item_id, "square");
             if (!product) continue;
 
             // Atomic stock update — eliminates TOCTOU race condition.
