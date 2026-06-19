@@ -45,6 +45,13 @@ L'auto-amélioration n'est fiable que sur le **vérifiable**. Donc :
   seule : choix de design produit, migration prod, merge/déploiement, dépense, email externe,
   ou toute décision dont « bon/mauvais » dépend d'une intention business que je devrais
   *deviner*. **On n'invente pas une décision non vérifiable — on pose la question précise.**
+  Pour un item gated, la boucle **prépare 100 % du software** (code derrière flag, **migration
+  idempotente en fichier NON appliquée**, tests verts) avant d'escalader le seul GO.
+
+> **Répartition (cf. AUTONOMY.md §1, 2026-06-20)** : Thomas = Google LFP, marchands,
+> commercial, terrain. Claude = **TOUT le software** (pipeline, UI/chantier B, observabilité,
+> tests, prépa déploiement, prépa migrations). La ligne irréversible (merge/migration
+> appliquée/déploiement/email/dépense) = Claude prépare, Thomas donne le GO.
 
 ---
 
@@ -53,6 +60,20 @@ L'auto-amélioration n'est fiable que sur le **vérifiable**. Donc :
 Légende : `[R]` réversible-maintenant (nourriture de la boucle, je le fais) ·
 `[G]` gated (je l'amène au point de décision puis j'escalade) ·
 `[X]` externe (hors de mon périmètre, suivi seulement).
+
+### Rang 0 — Rendre le produit DÉPLOYABLE & DÉMONTRABLE (débloque le démarchage de Thomas)
+Rien n'est en prod : ~30+ commits mûrs gelés sur la branche, prod APP = ancien code. Pour
+que Thomas puisse démarcher/démontrer, il faut un produit déployé et démo-able. C'est le
+software qui débloque sa moitié à lui.
+- `[R]` **Rapport de merge-readiness** (`docs/merge-readiness.md`, maj à chaque run) :
+  exactement quoi est requis pour merger+déployer sans casse — env vars manquantes en prod
+  (ANTHROPIC/GEMINI/INSEE/UPCITEMDB/KICKSDB/GS1), migrations déjà appliquées vs code, e2e
+  preview, points de rollback. Transforme « est-ce mûr ? » en checklist binaire.
+- `[R]` **e2e de bout en bout** (onboarding marchand → import stock → affichage confiance →
+  push canal) exécutable sur la preview, pour prouver que la démo tient. Combler les trous.
+- `[R]` **Finir/combler le chantier B UI** (wizard import, badge confiance, signaler,
+  scan-session, vue alertes qualité) — la logique/API est prête ; Thomas valide le rendu.
+- `[G]` **Plan de déploiement** prêt (ordre merge→deploy→vérif), escalade le GO du merge.
 
 ### Rang 1 — Cœur produit : canal Google LFP (LE produit)
 - `[R]` **Observabilité `productStatuses`** : lire l'acceptation/rejet Google par produit

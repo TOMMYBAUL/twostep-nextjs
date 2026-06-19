@@ -11,6 +11,19 @@ et tranche lui-même les questions qu'il poserait normalement** — en décidant
 réflexion ce qui sert le mieux l'objectif. Il ne demande pas de permission pour le
 travail réversible. Il s'arrête au seuil des actions irréversibles non autorisées.
 
+### Répartition du travail (décidée par Thomas, 2026-06-20)
+- **Thomas** : candidature Google LFP, contact/démarchage marchands, relations
+  commerciales, opérations terrain. (Hors périmètre de la boucle — elle n'invente pas
+  de décisions là-dessus, elle peut produire des *ressources* si demandé.)
+- **Claude** : **TOUT l'aspect software** — pipeline data, UI (chantier B inclus ;
+  Thomas valide seulement le rendu visuel, la boucle n'a pas de navigateur),
+  observabilité, tests, préparation au déploiement, et **préparation** des migrations
+  (fichiers idempotents, NON appliqués).
+- **La ligne irréversible reste à Thomas** : merger sur `main`, **appliquer** une
+  migration prod, déployer, envoyer un email, dépenser. La boucle **prépare tout** puis
+  **escalade le GO** par WhatsApp/Telegram (un mot suffit). Elle n'exécute jamais ces
+  actions seule.
+
 ## 2. Garde-fous (décidés par Thomas)
 
 ### Autonome par défaut — AUCUNE permission (tout est réversible via `git revert`)
@@ -47,14 +60,22 @@ Rappel : une migration non idempotente (097) a cassé la DB prod partagée ~2 mi
 5. Si une branche test est impossible → **STOP**, on prévient Thomas.
 6. Numérotation séquentielle dans `supabase/migrations/`, fichier committé.
 
-## 5. Seuil de validation — VALIDATION PAR LOTS (maj 2026-06-19, autonomie soutenue)
+## 5. Seuil de validation — SOURCING PAR SIGNAUX (maj 2026-06-20, autonomie v2)
 
-Pour que les ~13 runs/jour produisent vraiment (sinon ils tournent à vide), Claude est
-**pré-autorisé à enchaîner les sous-étapes du plan de revue SANS s'arrêter à chacune**.
+> **Le backlog vit maintenant dans `docs/autonomy-priorities.md`** (le cerveau de la
+> boucle), PAS dans la liste figée ci-dessous. L'ancien plan « Collecte ③→…→Exploitation »
+> a été entièrement traversé ; il sert d'historique. La boucle choisit son travail par
+> *sourcing par signaux* (priorities.md §6) et re-priorise en fin de run.
 
-**Backlog pré-autorisé (ordre)** : Collecte ③ (stock) → Collecte ④ → Collecte ⑤ →
-Triage → Enrichissement → Stockage → Exploitation. Claude avance dans cet ordre,
-**une sous-étape à la fois**, **un commit après chaque petit pas**.
+Claude est pré-autorisé à enchaîner le backlog de `priorities.md` SANS s'arrêter à chaque
+item. Il **prépare aussi les items gated** : code derrière flag + **migration idempotente
+en fichier (non appliquée)** + tests, puis escalade le GO (cf. Répartition §1 + protocole
+d'escalade priorities.md §4). Validation par lots : Thomas relit ≥1×/jour (worklog +
+`git log`). La sécurité repose sur : **branche-only + gate vert OBLIGATOIRE + garde-fous
+durs (§2) intacts** — aucun merge/migration appliquée/email/dépense sans GO humain.
+
+**Historique (backlog v1, traversé)** : Collecte ③ (stock) → ④ → ⑤ → Triage →
+Enrichissement → Stockage → Exploitation.
 
 - À la fin de chaque sous-étape : écrire le résumé dans `docs/worklog-autonomie.md`,
   commit/push, **puis ENCHAÎNER la suivante** (plus besoin d'attendre Thomas).
