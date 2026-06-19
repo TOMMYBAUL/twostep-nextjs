@@ -5,6 +5,55 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Exploitation — classification + BACKLOG ENTIÈREMENT TRAVERSÉ → STOP gated [RUN AUTONOME]
+
+Dernière sous-étape du backlog. Recon de chaque volet → **aucun fix réversible/testable
+neuf**, le reste est RAS ou gated. Honnêteté : on ne fabrique pas un fix là où le code est sain.
+
+**Classement Exploitation (vérifié dans le code)** :
+- 🟢 **① confidence** (`stock/confidence.ts`, `product-confidence.ts`) : RAS. Pur, raisonné,
+  testé, et **renforcé indirectement ce run** (le fix source POS rend `storedSource` honnête).
+- 🟢 **② cold-start** (`onboarding/cold-start.ts`) : RAS. Pur, simple, testé (seuil
+  MIN_VISIBLE_FOR_READY=3, masquage carte). Rien à durcir.
+- 🔴 **③ RLS** : durcissement = migration prod (garde-fou §4, supervisé).
+- 🔴 **④ Canaux sortie — GAP RÉEL trouvé, design-gated** : `pushInventoryToGoogle` est appelé
+  par le **sync POS + les 4 webhooks**, mais **PAS par `ingestStockSnapshot`** (le chemin
+  file/token). Or ce chemin EST le mécanisme "feed Google LFP as a service" pour les marchands
+  **sans caisse** (cœur du positionnement). Conséquence : (a) un marchand qui pousse son stock
+  par fichier ne propage **jamais** à Google ; (b) un produit réconcilié à 0 garde **"in stock"
+  sur Google** (faux positif — l'enjeu n°1). **Pourquoi je ne câble PAS unattended** : (1) effet
+  EXTERNE sortant (écriture sous le compte Google du marchand) ; (2) le spec de design
+  (`docs/superpowers/.../google-local-inventory-design.md`) ne liste PAS ce trigger → intention
+  à clarifier (omission ou choix ?) ; (3) timing — l'enrichissement est async, les nouveaux
+  produits sont `visible=false` jusqu'au worker (le filtre `.eq("visible",true)` les exclut déjà,
+  mais le câblage mérite réflexion sur QUAND pousser). À cadrer avec Thomas.
+
+### 🏁 BACKLOG PRÉ-AUTORISÉ (§5) — ENTIÈREMENT TRAVERSÉ
+Collecte ③④⑤ · Triage · Enrichissement · Stockage · Exploitation : **chaque sous-étape est soit
+corrigée+testée, soit n'a plus que des restes migration- ou design-gated** (listés ci-dessous).
+**STOP evidence-based** (cf. LESSONS "rendement décroissant") : le réversible/testable est traité.
+
+**RESTES GATED (consolidés — tous nécessitent Thomas)** :
+- 🔴 **Canaux sortie : câbler `pushInventoryToGoogle` sur le chemin file-push** (+ réconciliation
+  → "out of stock" Google). Effet externe + design. **Plus haute valeur produit restante.**
+- 🔴 **Writes directs (sync/resync/file_push) bypassent la garde anti-régression 104** (seuls les
+  webhooks passent par la RPC) → design + probable migration.
+- 🔴 **Delta `GREATEST(v_prev_ts, p_source_ts)`** = migration prod (§4, supervisé).
+- 🔴 **Scoping multi-tenant webhook Lightspeed** (perte de vente silencieuse) = design + migration.
+  Interim sûr déjà posé (captureError).
+- 🔴 **RLS** durcissement = migration.
+- 🟡 Variantes orphelines (re-groupage sur édition EAN manuelle), câblage `parseCiiXml` Factur-X,
+  STRICT_DECRYPT, clés API prod manquantes — cf. handoff §0ter.
+
+**QUESTIONS / DÉCISIONS POUR THOMAS (relecture du lot — 3 commits ce run)** :
+1. Valider ce lot Stockage+Exploitation (branche `feat/pipeline-v1-handoff-2026-06-12`, gate vert).
+2. **Canaux sortie Google** : veut-on propager le stock file-push vers Google LFP ? (= cœur
+   positionnement). Si oui, je câble `pushInventoryToGoogle` dans `ingestStockSnapshot` en supervisé.
+3. Cadrer le routage des writes directs via la RPC 104 (anti-clobber) — design + migration.
+4. Feu vert migrations gated (GREATEST delta, RLS) sous protocole §4.
+
+---
+
 ## 2026-06-19 · Stockage — 2 fixes data-integrity (source POS + réconciliation) + non-bugs vérifiés [RUN AUTONOME]
 
 Backlog suivant après Enrichissement → **Stockage** (① source/source_ts ② conflit
