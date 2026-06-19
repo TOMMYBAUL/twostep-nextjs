@@ -5,6 +5,54 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Stockage — 2 fixes data-integrity (source POS + réconciliation) + non-bugs vérifiés [RUN AUTONOME]
+
+Backlog suivant après Enrichissement → **Stockage** (① source/source_ts ② conflit
+③ réconciliation ④ atomicité). Reconnaissance agent Explore → 5 findings candidats,
+**chacun vérifié dans le code réel** (zéro complaisance : 2 vrais, 3 faux/low-value).
+
+**2 bugs RÉELS corrigés (commits séparés, gate vert à chaque pas)** :
+1. **Sync catalogue POS écrivait le stock SANS `source`** (`sync-engine.ts:203`). La
+   migration 104 = `source NOT NULL DEFAULT 'manual'` → un stock issu d'une CAISSE
+   (source la plus forte) retombait sur `manual` → `confidence.ts:65` l'affichait
+   **"Stock probable" au lieu de "Disponible"**. C'était le SEUL writer à l'omettre
+   (webhooks/untracked/resync/file_push déclaraient déjà). Helper pur `buildPosStockRows`
+   (source="pos_sync", source_ts=updated_at) + 3 tests. Impact HIGH (hub sync) mais diff
+   purement additif, cohérent avec les writers frères.
+2. **Réconciliation : un seul `.in("product_id", toZero)`** (`snapshot.ts:250`) sur des
+   milliers d'UUID → URL PostgREST de centaines de Ko → **échec EN BLOC** → faux "en
+   stock" persistant (catalogue 10k ou push couvrant 60% > garde 50% → toZero ~4000).
+   Fix : helper pur `chunk()` (lots de 500) + 4 tests. + write de zeroing déclare
+   `source="file_push"` (104) + erreur `feed_events` n'est plus avalée (errors+captureError).
+
+(415 → 422 tests, +7 ; tsc OK partout.)
+
+**Findings de l'agent qui NE SONT PAS des bugs (vérifiés — pour ne pas les re-chasser)** :
+- 🟢 **resync `source_ts=now()`** (resync-stock.ts:83) : PAS un bug. Le resync fait un upsert
+  DIRECT (pas la RPC) → la garde 104 ne s'applique pas ; et `now()` est HONNÊTE (on vient
+  d'observer la vérité absolue live). Le "fix" proposé (utiliser le `updated_at` POS périmé)
+  ferait **rejeter** un resync par la garde si la ligne POS n'a pas bougé → **casserait
+  l'auto-heal de dérive**. Surtout pas.
+- 🟢 **snapshot `touched.add` après échec stock** : PAS un bug. Les `continue` (snapshot.ts:162,170)
+  sautent `touched.add` (l.173) — l'agent a mal lu son propre extrait. Un produit dont le write
+  stock échoue n'est PAS marqué touched (cohérent ; il sera re-traité au prochain push).
+- 🟢 **resync boucle séquentielle (pas de batch)** : low-value, et le per-row donne la
+  **granularité d'erreur** (writeErrors + captureError par produit) = feature anti-dérive
+  silencieuse, pas un défaut. Batcher perdrait l'attribution. Laissé.
+
+**Restes Stockage (gated, documentés)** :
+- 🔴 **Writes directs (sync/resync/file_push) BYPASS la garde anti-régression 104** : seuls les
+  webhooks passent par la RPC `update_stock_atomic`. Un file_push/resync périmé peut donc
+  clobber une vérité webhook plus fraîche. Router ces writes via la RPC = changement de
+  comportement + interaction avec la sémantique source_ts (file_push met now() → gagnerait
+  toujours) = **design + probable migration**, hors petit pas réversible. À cadrer.
+- 🔴 **Delta `GREATEST(v_prev_ts, p_source_ts)`** (déjà noté) = migration prod (§4, supervisé).
+
+**PROCHAIN (backlog) = Exploitation** (① confidence — déjà vérifié RAS cette série ② cold-start
+③ RLS — migration ④ canaux sortie app/LFP).
+
+---
+
 ## 2026-06-19 · BILAN DE SESSION (run soutenu) — 6 fixes réels, cores vérifiés, STOP evidence-based [RUN AUTONOME]
 
 **Ce run a infirmé la reco "pauser" du run précédent** : il restait du réversible à
