@@ -144,14 +144,36 @@ Règles :
 
     if (!text) throw new Error("No AI provider available for categorization (GROQ_API_KEY and GEMINI_API_KEY both failed)");
 
+    return parseCategorizationResponse(text);
+}
+
+/**
+ * Parse la réponse de catégorisation du LLM (tolère les fences ```json).
+ *
+ * LÈVE sur réponse non-JSON OU non-tableau — au lieu de l'ancien `return []`
+ * silencieux. Deux raisons :
+ *  1. `return []` masquait l'échec : le caller comptait `failed=0` alors que N
+ *     produits n'étaient pas catégorisés, et — `ai_categorized_at` restant null —
+ *     les RE-tentait à CHAQUE run en brûlant des tokens IA, indéfiniment et sans
+ *     trace (dérive/coût caché). En levant, le `catch` du caller les compte en
+ *     `failed` et logue (visible).
+ *  2. Un JSON valide mais non-tableau (ex. `{"error": ...}`) passait l'ancien
+ *     `JSON.parse` puis faisait planter le `for...of` du caller (hors try/catch)
+ *     → TypeError NON catchée qui crashait toute la route. Le garde Array.isArray
+ *     le transforme en échec catché et compté.
+ */
+export function parseCategorizationResponse(raw: string): CategorizedProduct[] {
+    const jsonStr = raw.replace(/```json?\s*/g, "").replace(/```/g, "").trim();
+    let parsed: unknown;
     try {
-        const jsonStr = text.replace(/```json?\s*/g, "").replace(/```/g, "").trim();
-        const results: CategorizedProduct[] = JSON.parse(jsonStr);
-        return results;
+        parsed = JSON.parse(jsonStr);
     } catch {
-        console.error("[categorize] Failed to parse AI response:", text.slice(0, 200));
-        return [];
+        throw new Error(`categorize: réponse IA non-JSON: ${raw.slice(0, 200)}`);
     }
+    if (!Array.isArray(parsed)) {
+        throw new Error(`categorize: réponse IA non-tableau: ${raw.slice(0, 200)}`);
+    }
+    return parsed as CategorizedProduct[];
 }
 
 type TagInsert = { product_id: string; tag_type: string; tag_value: string; source: string; confidence: number };
