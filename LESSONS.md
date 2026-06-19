@@ -61,6 +61,12 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Email git : ne pas utiliser thomasbauland1304@gmail.com → utiliser bauland@twostep.fr
 - ❌ Push sans lancer `npm run test:run` → CI rouge = révélé au mail GitHub. Hook pre-push installé le 2026-04-22 dans `.githooks/pre-push` (tests + tsc auto). Activation : `npm run prepare` (auto après clone via npm). Bypass urgence : `SKIP_PRE_PUSH=1 git push`
 
+## Parsing / data-integrity (Collecte ⑤ + Triage, 2026-06-19)
+- ❌ `Number(x) || défaut` détruit un **0 légitime** (prix attesté gratuit, qté en rupture) ET, pour la qté, `Number(null)===0` / `Number("")===0` (pas NaN !) → un champ ABSENT devient 0 au lieu du défaut "présence". Règle : garder la valeur BRUTE (`x != null && x !== ""`) avant de tester `Number.isFinite`, ne retomber sur le défaut que si vraiment absent/illisible. (parseJsonResponse, spreadsheet, einvoice-cii, parse-price callers.)
+- ❌ Texte extrait d'un XML par **regex** sans décoder les entités → toute marque avec `&` (D&G, H&M, obligatoirement `&amp;` en XML valide) stockée polluée. Décoder numériques + nommées, `&amp;` EN DERNIER (anti double-décode). (parseCiiXml)
+- ❌ Matching SKU en **exact-case** alors que l'EAN est canonique et le nom normalisé → `REF-001` (CSV) vs `ref-001` (POS) = doublon. `.toLowerCase()` des 2 côtés (set + get). (match-product.ts ; snapshot.ts le faisait déjà → asymétrie).
+- ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
+
 ## Fix bug cross-module
 - ❌ Corriger un code sans mettre à jour les tests qui référencent l'ancienne valeur → grep la constante/valeur dans `tests/` avant commit. Commit `1e45f3d fix(google): align LFP feed format` a corrigé `feed.ts` mais pas `feed.test.ts` → 2 tests failaient depuis (2026-04-22)
 

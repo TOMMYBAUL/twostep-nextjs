@@ -5,6 +5,43 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · BILAN DE SESSION (run soutenu) — 6 fixes réels, cores vérifiés, STOP evidence-based [RUN AUTONOME]
+
+**Ce run a infirmé la reco "pauser" du run précédent** : il restait du réversible à
+forte valeur. Avancé dans l'ordre du backlog (⑤ → Triage → Enrichissement) :
+
+**6 bugs RÉELS corrigés (chacun vérifié dans le code, gate vert + push à chaque pas)** :
+1. parseCiiXml : décodage entités XML (D&G/H&M pollués) + prix 0 préservé.
+2. Facture 0-item → statut "failed" (anti dérive silencieuse, 3 routes) + Sentry upload.
+3. parseJsonResponse : JSON LLM vide/malformé → erreur explicite ; qté 0 / prix NaN.
+4. spreadsheet : prix/qté 0 préservés + correction du piège `Number(null)===0`.
+5. matching SKU insensible à la casse (anti-doublon) + 1er test match-product.
+(396 → 415 tests, +19 ; tsc OK partout.)
+
+**Cores VÉRIFIÉS SOLIDES ce run (pour ne pas les re-chasser)** :
+- Confidence stock (`stock/confidence.ts`) : pur, raisonné, testé — RAS.
+- Scoring cascade (`score-cascade.ts` combineTierScores/seuils) : RAS.
+- Gate visibilité + multi-tenant scoping + reverse-search guard (Sprint 1.5) : RAS.
+- Coûts Serper (run précédent) : bornés.
+
+**STOP ici — décision EVIDENCE-BASED, pas un ressenti** (cf. LESSONS "rendement décroissant
+non fiable") : le réversible/testable du backlog immédiat est traité ; **le reste a une
+valeur réelle mais est GATED sur Thomas** :
+- 🔴 **Scoping multi-tenant webhook Lightspeed** (perte de vente silencieuse possible) =
+  design + probable migration. Interim sûr déjà posé (captureError au lieu de skip muet).
+- 🔴 **Delta `GREATEST(v_prev_ts, p_source_ts)`** (Stockage, anti-régression fraîcheur delta)
+  = migration prod (§4, supervisé).
+- 🟡 Variantes orphelines sur correction EAN manuelle = design (re-groupage).
+- 🟡 Câblage `parseCiiXml` dans `parseInvoice` (extraction XML PDF/A-3) = décision Factur-X.
+
+**QUESTIONS / DÉCISIONS POUR THOMAS (relecture du lot)** :
+1. Valider ce lot (8 commits, branche `feat/pipeline-v1-handoff-2026-06-12`).
+2. Cadrer le fix multi-tenant Lightspeed (comment relier un webhook à son compte ?).
+3. Feu vert migration GREATEST delta (je la ferai sous protocole §4 : branche test d'abord).
+4. Priorité Factur-X : câbler le parseur CII (extraction PDF/A-3) ?
+
+---
+
 ## 2026-06-19 · Triage — matching/dédup/gate/variantes : 1 fix réel + non-bugs VÉRIFIÉS [RUN AUTONOME]
 
 Backlog suivant après ⑤. Reconnaissance agent Explore (gate score, matching, variantes)
