@@ -204,6 +204,22 @@ describe("extractStructured — anti-faux-positif sur lignes (Cycle 3)", () => {
         expect(items).toHaveLength(0);
     });
 
+    it("qté/prix : 0 explicite préservé, cellule vide → qté 1 (présence)", () => {
+        const mq = { ...mapping, quantity: 6 }; // colonne "Stock" = index 6
+        const rows = [
+            headerRow,
+            // qté 0 explicite (rupture) + prix 0 explicite (article offert)
+            ["S1", "Nike Air Max", "Nike", "", "0884776073143", "0", "0", "", "", "", ""],
+            // qté vide → 1 (présence, comportement inchangé)
+            ["S2", "Adidas Stan Smith", "Adidas", "", "4055017461258", "99.90", "", "", "", "", ""],
+        ];
+        const items = extractStructured(rows, mq);
+        expect(items).toHaveLength(2);
+        expect(items[0].quantity).toBe(0); // pas transformé en 1
+        expect(items[0].unit_price).toBe(0); // pas transformé en null
+        expect(items[1].quantity).toBe(1); // cellule vide → présence
+    });
+
     it("Cycle 5 — ligne suspect (description courte avec virgule) → CONSERVÉE pour queue review", () => {
         // "Cuir blanc, talon vert" = description, pas un nom propre.
         // Cycle 5 : on la laisse passer (cascade Tier 6 va probablement échouer →

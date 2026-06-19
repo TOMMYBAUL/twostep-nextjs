@@ -74,8 +74,12 @@ export function parseJsonResponse(raw: string): ParsedInvoice {
             // Quantité : on honore une valeur explicite (y compris 0) ; on ne
             // retombe sur 1 ("présence") que si elle est absente/illisible —
             // `|| 1` transformait à tort un 0 explicite (rupture) en 1 (fantôme).
-            const qtyNum = Number(item.quantity);
-            const quantity = Number.isFinite(qtyNum) ? Math.max(0, Math.trunc(qtyNum)) : 1;
+            // NB : `Number(null)` et `Number("")` valent 0 → on garde la valeur
+            // brute pour ne PAS confondre "absent" (→1) avec un vrai 0.
+            const rawQty = item.quantity;
+            const qtyNum = Number(rawQty);
+            const hasQty = rawQty != null && rawQty !== "" && Number.isFinite(qtyNum);
+            const quantity = hasQty ? Math.max(0, Math.trunc(qtyNum)) : 1;
             const priceNum = Number(item.unit_price);
             return {
                 name: String(item.name ?? ""),

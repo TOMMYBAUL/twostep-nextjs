@@ -26,9 +26,11 @@ describe("parseJsonResponse — robustesse réponse LLM", () => {
         expect(out.items[0].quantity).toBe(0);
     });
 
-    it("quantité absente/illisible → défaut 1 (sémantique présence)", () => {
+    it("quantité absente/illisible/null → défaut 1 (sémantique présence)", () => {
         expect(parseJsonResponse('{"items":[{"name":"X"}]}').items[0].quantity).toBe(1);
         expect(parseJsonResponse('{"items":[{"name":"X","quantity":"oops"}]}').items[0].quantity).toBe(1);
+        // piège : Number(null) === 0 → ne doit PAS donner 0 (absent, pas rupture).
+        expect(parseJsonResponse('{"items":[{"name":"X","quantity":null}]}').items[0].quantity).toBe(1);
     });
 
     it("prix illisible → null (et pas NaN)", () => {

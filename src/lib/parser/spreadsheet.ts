@@ -213,9 +213,16 @@ export function extractStructured(rows: string[][], mapping: ColumnMapping): Par
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;
         const sku = mapping.sku !== null ? String(row[mapping.sku] ?? "").trim() || null : null;
         const brand = mapping.brand !== null ? String(row[mapping.brand] ?? "").trim() || null : null;
-        const quantity = mapping.quantity !== null ? Number(row[mapping.quantity]) || 1 : 1;
+        // Qté : cellule vide/absente → 1 ("présence", inchangé) ; un 0 explicite
+        // est honoré (rupture ≠ présence). `Number("")===0` d'où la garde sur "".
+        const rawQty = mapping.quantity !== null ? row[mapping.quantity] : null;
+        const qtyStr = rawQty == null ? "" : String(rawQty).trim();
+        const qtyNum = Number(qtyStr);
+        const quantity = qtyStr !== "" && Number.isFinite(qtyNum) ? Math.max(0, Math.trunc(qtyNum)) : 1;
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
-        const unit_price = parsePrice(rawPrice) || null;
+        // parsePrice renvoie déjà number|null ; le `|| null` d'avant détruisait un
+        // prix attesté de 0 (article offert) → on garde la valeur honnête du parseur.
+        const unit_price = parsePrice(rawPrice);
 
         items.push({ name: rawName, ean, sku, brand, quantity, unit_price });
     }
