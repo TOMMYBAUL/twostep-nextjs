@@ -18,9 +18,29 @@ import { validEanOrNull } from "@/lib/ean/validate";
  * cette fonction prend le XML CII déjà extrait, ou un XML CII autonome.
  */
 
+/**
+ * Décode les entités XML d'un texte extrait par regex. Indispensable : en XML
+ * valide, `&` est OBLIGATOIREMENT échappé (`&amp;`), donc tout nom de marque/
+ * fournisseur avec une esperluette (Dolce & Gabbana, H&M, Abercrombie & Fitch)
+ * arrive sous forme `Dolce &amp; Gabbana`. Sans décodage, le nom est stocké
+ * pollué → casse l'affichage ET le matching cross-source.
+ * Ordre : numériques d'abord, puis nommées, `&amp;` EN DERNIER (sinon
+ * `&amp;lt;` se décoderait par erreur en `<` au lieu de `&lt;`).
+ */
+function decodeXmlEntities(text: string): string {
+    return text
+        .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&amp;/g, "&");
+}
+
 function firstMatch(block: string, re: RegExp): string | null {
     const m = block.match(re);
-    return m ? m[1].trim() : null;
+    return m ? decodeXmlEntities(m[1].trim()) : null;
 }
 
 /** Découpe le XML en blocs de ligne (IncludedSupplyChainTradeLineItem). */
@@ -55,7 +75,10 @@ export function parseCiiXml(xml: string): ParsedInvoiceItem[] {
             block,
             /<ram:NetPriceProductTradePrice>[\s\S]*?<ram:ChargeAmount[^>]*>([\s\S]*?)<\/ram:ChargeAmount>/,
         );
-        const unit_price = priceRaw != null && priceRaw !== "" ? Number(priceRaw) || null : null;
+        // Prix : on préserve 0 (article attesté gratuit ≠ prix inconnu). `Number("")`
+        // donne 0, d'où la garde sur la chaîne vide ; `|| null` aurait perdu un 0 légitime.
+        const priceNum = priceRaw != null && priceRaw !== "" ? Number(priceRaw) : NaN;
+        const unit_price = Number.isFinite(priceNum) ? priceNum : null;
 
         // Identité requise : nom ou EAN.
         if (!name && !ean) continue;

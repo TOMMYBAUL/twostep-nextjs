@@ -61,6 +61,44 @@ describe("#4 parseCiiXml — Factur-X / EN 16931 (BT-157)", () => {
     it("XML vide → liste vide", () => {
         expect(parseCiiXml("")).toEqual([]);
     });
+
+    it("décode les entités XML dans le nom (marques avec &, accents)", () => {
+        const cii = `
+        <rsm:CrossIndustryInvoice xmlns:ram="urn:ram">
+          <ram:IncludedSupplyChainTradeLineItem>
+            <ram:Name>Dolce &amp; Gabbana Cr&#232;me &lt;Edition&gt; &quot;Pour Homme&quot;</ram:Name>
+            <ram:BilledQuantity unitCode="C62">2</ram:BilledQuantity>
+          </ram:IncludedSupplyChainTradeLineItem>
+        </rsm:CrossIndustryInvoice>`;
+        const items = parseCiiXml(cii);
+        expect(items).toHaveLength(1);
+        // Sans décodage on aurait "Dolce &amp; Gabbana ..." → nom pollué, matching cassé.
+        expect(items[0].name).toBe('Dolce & Gabbana Crème <Edition> "Pour Homme"');
+    });
+
+    it("ne double-décode pas (&amp;lt; reste &lt;, pas <)", () => {
+        const cii = `
+        <rsm:CrossIndustryInvoice xmlns:ram="urn:ram">
+          <ram:IncludedSupplyChainTradeLineItem>
+            <ram:Name>Litt&amp;lt;ral</ram:Name>
+            <ram:BilledQuantity unitCode="C62">1</ram:BilledQuantity>
+          </ram:IncludedSupplyChainTradeLineItem>
+        </rsm:CrossIndustryInvoice>`;
+        expect(parseCiiXml(cii)[0].name).toBe("Litt&lt;ral");
+    });
+
+    it("préserve un prix attesté de 0 (article offert ≠ prix inconnu)", () => {
+        const cii = `
+        <rsm:CrossIndustryInvoice xmlns:ram="urn:ram">
+          <ram:IncludedSupplyChainTradeLineItem>
+            <ram:Name>Echantillon gratuit</ram:Name>
+            <ram:NetPriceProductTradePrice><ram:ChargeAmount>0.00</ram:ChargeAmount></ram:NetPriceProductTradePrice>
+            <ram:BilledQuantity unitCode="C62">1</ram:BilledQuantity>
+          </ram:IncludedSupplyChainTradeLineItem>
+        </rsm:CrossIndustryInvoice>`;
+        const items = parseCiiXml(cii);
+        expect(items[0].unit_price).toBe(0);
+    });
 });
 
 describe("#3 Code128 — encodeur + SVG", () => {
