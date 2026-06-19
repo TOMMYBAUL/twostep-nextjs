@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
+import { invoiceStatusForParse } from "@/lib/parser/invoice-status";
 import { captureError } from "@/lib/error";
 
 const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "twostep.fr";
@@ -119,7 +120,9 @@ export async function POST(request: NextRequest) {
                 .upload(storagePath, buffer, { contentType: att.content_type });
 
             if (storageError) {
-                console.error("[inbound-email] Storage upload failed:", storageError);
+                // Échec d'upload = pièce jointe non traitée → remonter à Sentry
+                // (console.error seul est perdu en serverless).
+                captureError(storageError, { route: "inbound-email", step: "storage_upload", merchantId });
                 continue;
             }
 
@@ -154,10 +157,12 @@ export async function POST(request: NextRequest) {
             try {
                 const parsed = await parseInvoice(buffer, att.filename);
 
+                // 0 item extrait → "failed" (pas "parsed") : sinon le marchand
+                // croit que des produits ont été importés alors qu'aucun ne l'a été.
                 await supabase
                     .from("invoices")
                     .update({
-                        status: "parsed",
+                        status: invoiceStatusForParse(parsed.items.length),
                         supplier_name: parsed.supplier_name ?? null,
                         parsed_at: new Date().toISOString(),
                     })
