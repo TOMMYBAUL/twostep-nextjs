@@ -82,7 +82,10 @@ export async function buildProductIndex(
     for (const p of all) {
         if (p.pos_item_id) byPosItemId.set(p.pos_item_id, p);
         if (p.ean) byEan.set(p.ean, p);
-        if (p.sku) bySku.set(p.sku, p);
+        // SKU insensible à la casse : un même article peut arriver "REF-001"
+        // (CSV) puis "ref-001" (scan/POS). En exact-case on créait un doublon.
+        // Aligné sur snapshot.ts qui indexe déjà le SKU en minuscules.
+        if (p.sku) bySku.set(p.sku.toLowerCase(), p);
         if (p.name) byName.set(normalize(p.name), p);
     }
 
@@ -115,7 +118,7 @@ export function matchProduct(
     }
 
     if (candidate.sku) {
-        const m = index.bySku.get(candidate.sku);
+        const m = index.bySku.get(candidate.sku.toLowerCase());
         if (m) return { productId: m.id, product: m, matchType: "exact_sku" };
     }
 
