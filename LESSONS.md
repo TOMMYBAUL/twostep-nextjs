@@ -67,6 +67,9 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Matching SKU en **exact-case** alors que l'EAN est canonique et le nom normalisé → `REF-001` (CSV) vs `ref-001` (POS) = doublon. `.toLowerCase()` des 2 côtés (set + get). (match-product.ts ; snapshot.ts le faisait déjà → asymétrie).
 - ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
 
+## Git / hooks
+- ❌ `git add -A` après une série de commits a happé les fichiers régénérés par le **hook gitnexus** (`analyze` réécrit ses blocs managés `<!-- gitnexus:start -->` dans CLAUDE.md/AGENTS.md + les SKILL.md) dans un commit `docs(...)` sans relecture → contenu auto-généré bénin mais bundle trompeur. Règle : quand un hook PostToolUse peut régénérer des fichiers, **stager les chemins explicites** (`git add src/... tests/... docs/...`) ou vérifier `git status` avant `git add -A`. (2026-06-19)
+
 ## Fix bug cross-module
 - ❌ Corriger un code sans mettre à jour les tests qui référencent l'ancienne valeur → grep la constante/valeur dans `tests/` avant commit. Commit `1e45f3d fix(google): align LFP feed format` a corrigé `feed.ts` mais pas `feed.test.ts` → 2 tests failaient depuis (2026-04-22)
 
