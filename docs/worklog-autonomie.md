@@ -5,6 +5,47 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Enrichissement ④ (catégorie) — 1 fix silent-failure trouvé + 4 faux positifs écartés [RUN AUTONOME]
+
+Backlog déjà traversé (entrées ci-dessous) → ce run RE-vérifie indépendamment qu'il
+ne reste pas de réversible/testable (ne pas se fier à la conclusion du run précédent).
+Agent Explore (très large) sur les helpers purs + chemins parse/ingest/enrichment →
+7 findings candidats, **chacun vérifié dans le code réel** (zéro complaisance).
+
+**1 bug RÉEL corrigé (commit `8f4a71e`, gate vert)** :
+- **`categorizeProducts` (`src/lib/ai/categorize.ts`)** masquait une réponse IA malformée
+  par un **`return []` silencieux**. Deux conséquences (mêmes classes déjà durcies ailleurs
+  — parseJsonResponse, facture 0-item) : (a) `failed=0` reporté alors que N produits non
+  catégorisés ; `ai_categorized_at` restant null → **RE-tentés à CHAQUE run en brûlant des
+  tokens IA, indéfiniment et sans trace** (coût caché + dérive) ; (b) un JSON valide mais
+  **non-tableau** (`{"error":...}`) passait `JSON.parse` puis **crashait le `for...of` du
+  caller (hors try/catch) en TypeError NON catchée** → route entière down. Fix : helper pur
+  `parseCategorizationResponse` (extrait, **0 test avant** sur ce hot path : cron enrich +
+  sync POS + validation facture) qui **lève** sur non-JSON ET non-tableau → routé vers le
+  `catch` existant du caller (failed += N + log). +1 fichier `tests/categorize-parse.test.ts`
+  (5 cas). Impact CRITICAL (hub) mais **contenu** : seul caller direct = `categorizeMerchantProducts`,
+  déjà try/catch. **422 → 427 tests, tsc OK.**
+
+**4 findings de l'agent qui NE SONT PAS des bugs (vérifiés — pour ne pas les re-chasser)** :
+- 🟢 **`ean/lookup.ts` Gemini/Anthropic `res.ok`** (l.226/257) : l'agent criait "manque res.ok
+  avant json()" → **FAUX**, les 3 branches (Groq/Gemini/Anthropic) gardent déjà `if(res.ok)`.
+- 🟢 **`google/merchant.ts:148`** : l'agent criait "json() avant ok" → **FAUX**, `if(!res.ok)`
+  est testé EN PREMIER, body d'erreur parsé ensuite avec fallback `.catch(()=>({}))` + status.
+- 🟢 **`ean/lookup.ts` `split(",")[0]`** (l.595…) : gardé par ternaire truthy ; seul un string
+  à virgule de tête donnerait "" → edge pathologique, pas un défaut.
+- 🟢 **parse qté divergence sur booléen `false`** + serper accept-on-error : edge quasi-impossible
+  (XLSX/CSV ne produit pas de `false` JS) / safe-fail délibéré documenté. Laissés.
+
+### 🏁 SURFACE RÉVERSIBLE CONFIRMÉE THIN (re-vérifiée indépendamment ce run)
+Le précédent run disait "tout gated" ; je l'ai re-challengé → il restait **1** vrai item (ci-dessus),
+désormais corrigé. Le reste = **faux positifs OU gated sur Thomas** (liste consolidée inchangée
+ci-dessous : Google file-push, writes directs vs RPC 104, GREATEST delta, multi-tenant Lightspeed,
+RLS — tous migration- ou design-/external-write-gated). **STOP evidence-based** (cf. LESSONS).
+
+> ⚠️ Méta inchangée : **aucun lot encore relu par Thomas**. La vraie valeur restante est gated.
+
+---
+
 ## 2026-06-19 · Exploitation — classification + BACKLOG ENTIÈREMENT TRAVERSÉ → STOP gated [RUN AUTONOME]
 
 Dernière sous-étape du backlog. Recon de chaque volet → **aucun fix réversible/testable
