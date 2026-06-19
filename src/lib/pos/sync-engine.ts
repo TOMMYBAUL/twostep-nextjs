@@ -40,6 +40,40 @@ export function computeOrphanProductIds(
         .map((p) => p.id);
 }
 
+export type PosStockRow = {
+    product_id: string;
+    quantity: number;
+    updated_at: string;
+    source: string;
+    source_ts: string;
+};
+
+/**
+ * Pur (testable) : construit les lignes d'upsert stock d'un sync POS catalogue.
+ *
+ * DÉCLARE explicitement `source="pos_sync"` + `source_ts`. Sans ça, le DEFAULT
+ * de la colonne (migration 104 : `source NOT NULL DEFAULT 'manual'`) s'applique à
+ * la création de ligne → un stock issu d'une CAISSE (source la plus forte) serait
+ * lu par la confidence comme `manual` → affiché « Stock probable » au lieu de
+ * « Disponible ». La 104 impose que CHAQUE writer déclare sa source ; ce chemin
+ * (sync catalogue, le gros du stock POS) était le seul à l'omettre. `source_ts`
+ * suit `updated_at` (cohérence de la ligne) — l'horodatage POS de l'observation.
+ */
+export function buildPosStockRows(
+    stockUpdates: { pos_item_id: string; quantity: number; updated_at: string }[],
+    posItemToProductId: Map<string, string>,
+): PosStockRow[] {
+    return stockUpdates
+        .filter((s) => posItemToProductId.has(s.pos_item_id))
+        .map((s) => ({
+            product_id: posItemToProductId.get(s.pos_item_id)!,
+            quantity: s.quantity,
+            updated_at: s.updated_at,
+            source: "pos_sync",
+            source_ts: s.updated_at,
+        }));
+}
+
 // ─── Main sync function ─────────────────────────────────────────────
 
 export async function syncMerchantPOS(
@@ -200,13 +234,7 @@ export async function syncMerchantPOS(
         }
 
         // ─── Batch stock upsert ─────────────────────────────────────
-        const stockRows = stockUpdates
-            .filter((s) => posItemToProductId.has(s.pos_item_id))
-            .map((s) => ({
-                product_id: posItemToProductId.get(s.pos_item_id)!,
-                quantity: s.quantity,
-                updated_at: s.updated_at,
-            }));
+        const stockRows = buildPosStockRows(stockUpdates, posItemToProductId);
 
         if (stockRows.length > 0) {
             const BATCH_SIZE = 500;
