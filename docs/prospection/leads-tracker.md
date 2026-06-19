@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-19 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-19 (L'Auditeur)*
 
 ## Stats
 - Total leads : 137
@@ -35,6 +35,22 @@
 3. Pour les sessions jeudi suivants : pivoter vers données terrain (flyers, porte-à-porte) ou nouvelle source prospects.
 
 *Note : Notion MCP indisponible (idem toutes sessions précédentes). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-06-19".*
+
+---
+
+## Recap brouillons email — 2026-06-19 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider (Gmail non créé — token expiré, 6ème session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Christophe Corbet (FJT FRAYSSINET JOAILLIER) | contact@frayssinet-joaillier.fr | Frayssinet Joaillier sur Two-Step — tes Rolex et TAG Heuer trouvées par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT EXISTANT (voir 16/06). Revendeur officiel Rolex/TAG Heuer/Jaeger-LeCoultre, 3 boutiques Toulouse depuis 1984. |
+| 2 | Carole Reynaud (ROBERTO GIANNELLI) | info@robertogiannellifrance.com | Roberto Giannelli sur Two-Step — tes chaussures modulables trouvées par les Toulousaines | ⚠️ NON CRÉÉ | ACA — DRAFT EXISTANT (voir 16/06). Chaussures italiennes modulables à brides interchangeables, 20 rue du Languedoc. |
+| 3 | Benoit Quintana (FAUR-QUINTANA) | info@faur-quintana.com | Faur-Quintana sur Two-Step — tes Hublot et Bell & Ross trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT EXISTANT (voir 16/06). Bijouterie-horlogerie 3 générations, Hublot/Bell&Ross/Chaumet/Ginette NY, place Victor Hugo. |
+| 4 | Nicolas Julius (DR SWAG) | drswagshopofficiel@gmail.com | DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT EXISTANT (voir 16/06). Streetwear Jordan/Nike/New Era depuis 2014, 13 rue Perchepinte. |
+| 5 | Rachel Nto (RACHEL HAIR) | csrachelhair@gmail.com | Rachel Hair sur Two-Step — tes perruques et prothèses trouvées par les Toulousaines | ⚠️ NON CRÉÉ | ACA — DRAFT EXISTANT (voir 16/06). Prothèses capillaires naturelles + perruques alopécie, 12 rue de Bayard. |
+
+*Note session 19/06 (L'Auditeur) : 0 lead NOUVEAU avec email (45 NOUVEAU, tous sans email — confirmé L'Eclaireur 19/06 : Carmes ÉPUISÉ DÉFINITIVEMENT, 208/208 prospects épuisés digitalement). 5 leads BROUILLON prioritaires identiques aux sessions précédentes. Textes complets prêts à copier-coller dans la section recap 16/06 ci-dessous. **⚠️ BLOCAGE RÉCURRENT TOKEN GMAIL : 6ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06). Gmail MCP non disponible (serveur non connecté). ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès. Les 5 emails sont prêts depuis le 16/06.** Notion MCP indisponible (idem toutes sessions précédentes).*
 
 ---
 
