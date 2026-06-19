@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
-import { selectProductsToZero } from "@/lib/ingest/reconcile";
+import { selectProductsToZero, chunk } from "@/lib/ingest/reconcile";
 import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
 import { captureError } from "@/lib/error";
 
@@ -247,21 +247,35 @@ export async function ingestStockSnapshot(
                 // Preview : on annonce combien de produits PASSERAIENT à 0.
                 stockZeroed = decision.toZero.length;
             } else {
-                const { error: zeroErr } = await admin
-                    .from("stock")
-                    .update({ quantity: 0, updated_at: new Date().toISOString() })
-                    .in("product_id", decision.toZero);
-                if (zeroErr) {
-                    errors.push(`Réconciliation stock=0: ${zeroErr.message}`);
-                } else {
-                    stockZeroed = decision.toZero.length;
-                    await admin.from("feed_events").insert(
-                        decision.toZero.map((pid) => ({
+                // Batch : un seul .in() sur des milliers d'UUID dépasse la limite
+                // d'URL PostgREST → échec EN BLOC. On découpe (comme le sync POS).
+                // source="file_push" : c'est le push fichier qui décide l'épuisement
+                // (absence du snapshot) → le writer déclare sa source (migration 104),
+                // au lieu de laisser la source précédente mentir.
+                for (const batch of chunk(decision.toZero, 500)) {
+                    const nowIso = new Date().toISOString();
+                    const { error: zeroErr } = await admin
+                        .from("stock")
+                        .update({ quantity: 0, updated_at: nowIso, source: "file_push", source_ts: nowIso })
+                        .in("product_id", batch);
+                    if (zeroErr) {
+                        errors.push(`Réconciliation stock=0 (lot de ${batch.length}): ${zeroErr.message}`);
+                        continue;
+                    }
+                    stockZeroed += batch.length;
+                    const { error: feedErr } = await admin.from("feed_events").insert(
+                        batch.map((pid) => ({
                             merchant_id: merchantId,
                             product_id: pid,
                             event_type: "out_of_stock",
                         })),
                     );
+                    if (feedErr) {
+                        // Non bloquant (le stock=0 est déjà écrit, c'est l'essentiel)
+                        // mais on ne l'avale plus silencieusement.
+                        errors.push(`Réconciliation feed_events (lot de ${batch.length}): ${feedErr.message}`);
+                        captureError(feedErr, { lib: "ingest/snapshot", phase: "reconcile-feed-events", merchantId });
+                    }
                 }
             }
         }

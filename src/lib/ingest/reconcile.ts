@@ -62,3 +62,18 @@ export function selectProductsToZero(
 
     return { toZero, skipped: false };
 }
+
+/**
+ * Découpe un tableau en lots de taille `size` (pur, testable).
+ *
+ * Utilisé pour borner les écritures de réconciliation : un seul
+ * `.in("product_id", [...])` sur des milliers d'UUID construit une URL PostgREST
+ * de plusieurs centaines de Ko → dépasse la limite serveur → la réconciliation
+ * échoue EN BLOC (faux "en stock" persistant). On batch comme le sync POS.
+ */
+export function chunk<T>(arr: T[], size: number): T[][] {
+    if (size <= 0) return [arr];
+    const out: T[][] = [];
+    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+    return out;
+}
