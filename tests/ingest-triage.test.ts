@@ -27,6 +27,15 @@ describe("triageStockItems — règle d'identité GTIN/SKU (jamais le nom seul)"
         expect(r.accepted[0].sku).toBeNull(); // pas de duplication de la valeur
     });
 
+    it("UPC-12 valide → canonicalisé en EAN-13 (cohérence cross-canal avec le POS)", () => {
+        // 036000291452 = UPC-A valide → doit devenir 0036000291452 (préfixe 0),
+        // identique à ce que produit le chemin POS (canonicalizeEan).
+        const r = triageStockItems([line({ name: "Coca", ean: "036000291452" })]);
+        expect(r.gtin_lines).toBe(1);
+        expect(r.accepted[0].identity).toBe("gtin");
+        expect(r.accepted[0].ean).toBe("0036000291452");
+    });
+
     it("EAN au checksum faux (faute de frappe) → suivi comme SKU, jamais envoyé aux lookups GTIN", () => {
         const r = triageStockItems([line({ name: "Produit", ean: "3017620422004" })]);
         expect(r.gtin_lines).toBe(0);

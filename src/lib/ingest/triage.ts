@@ -1,5 +1,5 @@
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
-import { validEanOrNull } from "@/lib/ean/validate";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
 
 /**
  * Triage d'identité des lignes d'un fichier stock — LE point d'application de la
@@ -77,10 +77,13 @@ export function triageStockItems(items: ParsedInvoiceItem[]): TriageReport {
     for (const item of items) {
         // Identité forte : GTIN à checksum valide, dans la colonne code-barres
         // OU dans la colonne référence (certaines caisses y mettent l'EAN).
-        const gtin = validEanOrNull(item.ean) ?? validEanOrNull(item.sku);
+        // canonicalizeEan (et pas seulement valider) → MÊME forme canonique que le
+        // chemin POS : UPC-12 normalisé en EAN-13 (préfixe 0). Sans ça, le même produit
+        // ingéré par fichier vs caisse aurait deux EAN différents → pas de match/regroupement.
+        const gtin = canonicalizeEan(item.ean) ?? canonicalizeEan(item.sku);
         if (gtin) {
             // Si le GTIN venait de la colonne SKU, on ne duplique pas la valeur.
-            const sku = item.sku && validEanOrNull(item.sku) === gtin ? null : item.sku;
+            const sku = item.sku && canonicalizeEan(item.sku) === gtin ? null : item.sku;
             accepted.push({ ...item, ean: gtin, sku, identity: "gtin" });
             gtinLines++;
             continue;

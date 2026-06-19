@@ -5,6 +5,29 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Collecte ④ — ingestion fichier : cohérence EAN cross-canal [RUN AUTONOME]
+
+(Collecte ③ restant = migration/design-gated → saut au backlog suivant, règle AUTONOMY.md §5.)
+
+**Trouvé (incohérence cross-canal)** : le triage fichier (`src/lib/ingest/triage.ts`)
+utilisait `validEanOrNull` (valide le checksum mais **garde l'UPC-12 en 12 chiffres**),
+alors que le chemin POS utilise `canonicalizeEan` (**UPC-12 → EAN-13** préfixe 0). →
+le même produit ingéré par fichier vs caisse aurait **deux EAN différents** → échec de
+`matchProduct`/`groupVariantsByEAN` (doublons cross-canal).
+
+**Fait** : triage bascule sur `canonicalizeEan` (forme canonique unique partout). EAN-13/
+EAN-8 inchangés ; UPC-12 désormais normalisé en EAN-13 ; GTIN-14 traité comme le POS
+(→ identité SKU, pas GTIN — cohérent). +1 test (UPC-A `036000291452` → `0036000291452`).
+
+**Testé** : 390/390, tsc OK, gate vert. Commit + push.
+
+**Reste / prochaines passes (ingestion fichier)** : revoir parsing prix avec séparateur
+de milliers (`1 234,56` / `1.234,56` → NaN actuellement) ; robustesse encodage CSV exotique.
+Mineurs. `validEanOrNull` (src/lib/ean/validate.ts) possiblement orphelin désormais — à
+vérifier/consolider avec `canonicalizeEan` en supervisé (2 utils GTIN dupliqués).
+
+---
+
 ## 2026-06-19 · Collecte ③ — passe 3 : interim SÛR du bug multi-tenant (perte rendue visible) [RUN AUTONOME]
 
 **Fait (réversible, sans migration)** : créé `src/lib/pos/resolve-product.ts`
