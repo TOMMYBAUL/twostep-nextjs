@@ -5,6 +5,43 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Triage — matching/dédup/gate/variantes : 1 fix réel + non-bugs VÉRIFIÉS [RUN AUTONOME]
+
+Backlog suivant après ⑤. Reconnaissance agent Explore (gate score, matching, variantes)
+→ 14 findings candidats, **chacun vérifié dans le code réel** (zéro complaisance).
+
+**Bug RÉEL corrigé** :
+- **`matchProduct` matchait le SKU sensible à la casse** (`bySku.set(p.sku)` / `get(candidate.sku)`)
+  alors que l'EAN est canonique et le nom normalisé. Un article arrivant `REF-001` (CSV)
+  puis `ref-001` (scan/POS) ratait le match → **doublon**. `snapshot.ts` lowercase déjà le
+  SKU → asymétrie réelle entre les 2 chemins de matching. Fix : `.toLowerCase()` des deux
+  côtés. `match-product.ts` (2 appelants : sync POS + validation facture) n'avait **AUCUN
+  test** → +1 fichier (5 cas). 415/415, tsc OK, commit + push.
+
+**Findings de l'agent qui NE SONT PAS des bugs (vérifiés — pour éviter de les re-chasser)** :
+- 🟢 **available_sizes inclut qty=0** : PAS un bug. Le champ porte la quantité par taille et
+  TOUS les consommateurs filtrent `qty>0` à la lecture (`product-detail.tsx:132`,
+  `api/products/available-sizes:36`). Filtrer au write serait cosmétique/destructeur
+  (retire l'info « M — épuisé » qu'un front pourrait vouloir griser).
+- 🟢 **gate `review_status=null` → visible** : design-INTENT explicite (NULL = legacy/default
+  validated). Les nouveaux produits POS sont `pending_review` (non null) donc protégés.
+  Le changer masquerait en masse les produits legacy → **design-gated, NE PAS toucher seul**.
+- 🟢 **seuil fuzzy 0.7** + heuristique de containment : la pondération longueur (min/max) borne
+  déjà les faux positifs ; les faux NÉGATIFS (dédup ratée) sont moins nocifs qu'une fusion à
+  tort. Changer le seuil = tuning à valider sur données réelles, pas un fix unattended.
+- 🟢 **multi-tenant** (EAN/SKU/name) : scopé `merchant_id` partout (vérifié). OK by design.
+
+**Restes Triage (gated, documentés)** :
+- 🟡 Variantes orphelines si l'EAN d'un principal est corrigé à la main (variant_of non re-groupé) :
+  exige une logique de re-groupage sur édition manuelle = design, hors petit pas.
+- 🟡 available_sizes file vs POS : le garde anti-écrasement existe ; la perte de granularité
+  si le POS porte une taille structurée est un edge case design.
+
+**PROCHAIN (backlog) = Enrichissement** (déjà vérifié SAIN pour les coûts Serper le 2026-06-19 ;
+les autres volets cascade/file/worker à revoir si valeur réelle, sinon Stockage/Exploitation).
+
+---
+
 ## 2026-06-19 · Collecte ⑤ — factures/scan : 4 fixes data-integrity + CLÔTURE [RUN AUTONOME]
 
 Reprise dans l'ordre du backlog (③④ traités, restes gated) → première sous-étape
