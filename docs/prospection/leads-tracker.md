@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-18 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-19 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,32 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Rattrapage jeudi — 2026-06-19 (L'Eclaireur) — Carmes DEFINITIF — 0 email
+
+**Agent** : L'Eclaireur | **Statut** : À valider | **Quartier** : Carmes (passage final)
+
+**Résultat** : 0 email trouvé. Carmes DÉFINITIVEMENT ÉPUISÉ. 26/26 prospects traités.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| STEDIF | Carmes | Mode/Lingerie | Stéphanie Forgeront | — | 835196098 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 19/06) — aucun site, aucun RS, aucun email public confirmé. 46 rue des Filatiers. **Visite terrain.** |
+| MICHÈLE CAZAUX (L'Échangeoir) | Carmes | Dépôt-vente luxe | Michèle Louge | — | 321727455 | — | ECARTE | Confirmé HORS CIBLE — dépôt-vente 2nd main (Prada/Dior/YSL/Sonia Rykiel). Pas de stock marques propres. Tél 05 61 25 73 29. **ECARTÉE DÉFINITIF.** |
+
+**⚠️ ALERTE — Carmes ÉPUISÉ DÉFINITIVEMENT** : 26/26 prospects traités depuis le 23/04/2026 (8 semaines). Bilan :
+- 8 BROUILLON (emails trouvés, envoi en attente Gmail) : DR SWAG, EQUI-SUD, MATHIS ET SASHA, SORTILEGE, AMBIANCES ET SENTEURS (Honoré Payan), ARMURERIE BARRAUD, PLUMETIS, SARL LES CIGALES
+- 4 NOUVEAU terrain-seuil atteint (visite terrain uniquement — arrêt digital) : BOSCHERIE PERE ET FILLE, HANNAH, MADAME GEORGES/BOHEMIANS ROOM, PARALLELE
+- 2 NOUVEAU terrain possible (no seuil) : STEDIF (4 passages), LB7 (5 passages)
+- 12 ECARTE définitif : APOS 33, FUTURWARE LAB, LAMA, LA FILLE DE MARGARET, LAORA VITTORIA, LESLIE MONTE-CARLO, M.J.H., MAITYLA, POINTURE, VICOMTE A, CONCEPT TOULOUSE, MICHÈLE CAZAUX
+
+**ACTION REQUISE DE THOMAS** :
+1. Retirer Carmes de la rotation L'Eclaireur — tout a été cherché digitalement.
+2. Planifier visite terrain : BOSCHERIE (49 rue des Filatiers), HANNAH (31 rue Boulbonne), MADAME GEORGES (45 rue Boulbonne), PARALLELE (35 rue Boulbonne), STEDIF (46 rue des Filatiers).
+3. Pour les sessions jeudi suivants : pivoter vers données terrain (flyers, porte-à-porte) ou nouvelle source prospects.
+
+*Note : Notion MCP indisponible (idem toutes sessions précédentes). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-06-19".*
+
+---
 
 ## Recap brouillons email — 2026-06-18 (L'Auditeur)
 
