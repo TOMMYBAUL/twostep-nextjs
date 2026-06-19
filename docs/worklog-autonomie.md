@@ -5,6 +5,32 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-19 · Enrichissement — VÉRIF crédits Serper (crainte Thomas) : SAIN, 0 fix [RUN AUTONOME]
+
+**Question (crainte explicite de Thomas)** : un produit déjà validé est-il re-vérifié par
+Serper (gaspillage de crédits payants) ?
+
+**Vérifié (chaîne complète) → NON, c'est bien borné** :
+- `resolveAndEnrich`/`lookupEan` passent par le cache `ean_lookups` ; `searchEanByName`
+  est caché ; un EAN déjà résolu ne re-tape pas les sources externes.
+- Les `enrichment_jobs` sont enfilés **par ingestion** (snapshot.ts), PAS en récurrence
+  sur les produits validés. Le sync n'enrichit que les `newlyCreated`.
+- Cron `enrich-products` : `MAX_ATTEMPTS=3` + `claim_enrichment_jobs` **incrémente
+  `attempts`** (migration 100 l.42) → un produit non résolu est retenté **3× max** puis
+  `failed`. Donc **≤ ~3 requêtes Serper par produit, jamais en boucle**.
+
+**Conclusion** : contrôle des coûts Serper SAIN. **Aucun changement de code** (zéro
+complaisance : on n'invente pas un fix là où le code est correct). Run = vérification.
+
+> ⚠️ Méta : beaucoup de passes autonomes enchaînées cette nuit, **aucune relue par
+> Thomas**. Les prochains runs entrent en rendements décroissants (vérif de code déjà
+> solide). La vraie valeur restante est **gated sur Thomas** : (1) fix multi-tenant
+> webhook, (2) delta GREATEST (migration), (3) relire le lot. Recommandation : **pauser
+> la tâche** (`Disable-ScheduledTask -TaskName TwoStepAutonomy`) jusqu'à sa relecture,
+> ou me pointer une priorité précise.
+
+---
+
 ## 2026-06-19 · Collecte ④ — ingestion fichier : parsing prix robuste [RUN AUTONOME]
 
 **Trouvé (perte de donnée silencieuse)** : 2 sites (`ingest/parse-stock.ts:86`,
