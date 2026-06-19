@@ -68,6 +68,7 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Sur Windows, winget et npm installent deux versions de Claude Code → mettre à jour les DEUX à chaque fois
 - ❌ Bun 1.3.11 crashe (Illegal instruction) en subprocess Windows → `bun upgrade` vers ≥ 1.3.13 (2026-04-22)
 - ❌ `/plugin marketplace add X` + `/plugin install Y` sur la MÊME ligne : Claude Code concatène → lancer chaque slash command séparément (2026-04-22)
+- ❌ Un script `.ps1` exécuté par le Planificateur (PowerShell 5.1) DOIT être en **ASCII pur** (ou UTF-8 **avec BOM**) : un `.ps1` UTF-8-sans-BOM contenant emoji/accents est lu en ANSI → **erreur de parsing → exit 1, le script ne démarre même pas** (aucun log). Symptôme vécu : tâche `TwoStepAutonomy` LastResult=0x1 sans log, 0 notif (2026-06-19). `scripts/autonomy-run.ps1` gardé ASCII pur ; vérifier via `[Parser]::ParseFile` + compter les octets >127.
 
 ## Outillage installé
 - **graphify** : graphe de connaissances codebase, output dans `graphify-out/` (ignoré par git). Mettre à jour via `/graphify` ou `graphify update .`
