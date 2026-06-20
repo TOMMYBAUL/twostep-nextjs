@@ -139,8 +139,15 @@ software qui débloque sa moitié à lui.
   l'erreur → doublon catalogue / faux « en stock » / faux `ok` de resync). **Partiel (run 4)** :
   `google/inventory` (push LFP temps réel) couvert — 2 helpers purs extraits+testés
   (`resolveStockQuantity` défaut conservateur 0 ; `buildLocalInventoryPayload` invariant
-  « in stock » avec espace) + read produits non silencieux. Restent non testés : writes
-  `sync-engine` (dernier gros hot path), parse webhooks (partiel).
+  « in stock » avec espace) + read produits non silencieux. **Partiel (run 5)** : writes
+  `sync-engine` couverts (`groupVariantsByEAN` GATE visibilité + `recalculateGroupSizes`) →
+  a révélé+corrigé un **bug de prod réel** (recalc zéroait le stock d'un produit solo sans
+  taille = faux « rupture » silencieux, commit `8660497`). Restent non testés : parse webhooks
+  (partiel), `syncMerchantPOS` orchestrateur (gros, intégration).
+- `[R]` **Rendre `pushInventoryToGoogle().catch(()=>{})` visible (captureError) dans les 4
+  webhooks** (square/shopify/lightspeed/zettle) — finding revue silent-failure-hunter (run 5,
+  MEDIUM) : une divergence Google Merchant Center passe aujourd'hui sans aucun signal. Réversible,
+  vérifiable. (Idem `notifyProductFavorites.catch` = LOW.)
 - `[R]` **Variantes orphelines** sur correction EAN manuelle (re-groupage) — si design clair.
 - `[R]` **Câblage `parseCiiXml` dans `parseInvoice`** (Factur-X, oblig. sept. 2026) — le
   parseur est durci+testé, prêt ; le câblage extraction PDF/A-3 reste. Évaluer la valeur.

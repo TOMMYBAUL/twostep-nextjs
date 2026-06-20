@@ -53,6 +53,17 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 
 - ❌ `const { data } = await supabase.from(...).select(...)` qui **jette le `error`** : un échec DB devient indistinct d'« empty ». BUG seulement quand empty→corruption/no-op masqué en succès (≠ auth/lookup où `null→401` est correct → ~250 sites, NE PAS tous chasser). Trois cas réels corrigés : ingest snapshot (read produits échoué → tout le catalogue recréé en doublon ; read stock échoué → réconciliation no-op → vendus restent « en stock ») → lève / réconcil. annulée+visible ; resync (`ok:true,fetched:0` alors que rien guéri) → `ok:false`/lève. **Discriminateur : destructurer `error` est requis SSI l'appelant ne sait pas distinguer erreur de vide ET que vide cause une perte silencieuse.** (2026-06-20)
 
+- ❌ Un rollup « somme des tailles → stock du principal » appliqué à un produit SOLO SANS taille
+  donne total=0 et ÉCRASE la qté autoritaire que le webhook venait de poser → faux « rupture »
+  silencieux (vente perdue). `recalculateGroupSizesAdmin` (4 webhooks, après `updateStockAtomic`)
+  totalisait `availableSizes.reduce` (membres tailles seulement). Fix : early-return si
+  `availableSizes` vide (= solo, pas un groupe à totaliser) → ne pas toucher stock ni
+  available_sizes. **Règle : un calcul dérivé qui REMPLACE une valeur autoritaire doit no-op
+  quand son entrée est vide, jamais écrire 0.** Bug présent dans les DEUX jumeaux
+  (`recalculateGroupSizes` sync-engine + `recalculateGroupSizesAdmin`) — corriger les deux.
+  Writes du rollup rendus non silencieux (captureError sans lever : stock déjà committé, lever
+  rejouerait le webhook = double-décrément delta). (2026-06-20)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

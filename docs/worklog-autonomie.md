@@ -5,6 +5,50 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (run 5) · Rang 3 [R] — couverture `sync-engine` writes → BUG RÉEL trouvé (recalc zéroe le stock solo) [RUN AUTONOME]
+
+Sourcing par signaux : prochain [R] du worklog = couverture des writes `sync-engine`
+(dernier gros hot path non testé). En écrivant les tests du write le plus critique
+(`groupVariantsByEAN`, le GATE visibilité « zéro faux positif »), un test sur
+`recalculateGroupSizes` a échoué et révélé un **bug de prod réel**, vérifié dans le code.
+
+**🔴 Bug (faux « rupture » silencieux = enjeu n°1)** : `recalculateGroupSizesAdmin`
+(`recalculate-sizes.ts`, appelé par les **4 webhooks** square/shopify/lightspeed/zettle
+APRÈS `updateStockAtomic`) totalisait le stock sur les **seuls membres ayant une taille**
+(`availableSizes.reduce`). Pour un produit **SOLO sans pointure** (la majorité du non-mode),
+`availableSizes=[]` → `totalStock=0` → `upsert stock=0` qui **écrase la qté que le webhook
+venait de poser** → produit affiché en rupture jusqu'au resync 6 h = **vente perdue
+silencieuse**. + le write `available_sizes` était inconditionnel ([] écrasait les tailles
+de l'ingestion fichier — exactement le bug LESSONS #42, jamais appliqué à ce jumeau).
+
+**Fix (commit `8660497`, réversible, 0 migration)** : early-return `if (availableSizes.length
+=== 0) return;` dans les **deux jumeaux** (`recalculateGroupSizesAdmin` prod + son clone
+`recalculateGroupSizes` sync-engine, inutilisé en prod mais gardé identique) → un produit
+solo n'a NI son stock autoritaire NI son available_sizes écrasés. + writes du rollup rendus
+**non silencieux** (`captureError` SANS lever — le stock est déjà committé ; lever ferait
+rejouer le webhook = double-décrément en mode delta).
+
+**Couverture livrée** : `tests/pos-group-variants.test.ts` (9 cas) — verrouille (a) le **GATE
+visibilité** de `groupVariantsByEAN` (pending/masked/pending_review **jamais** visibles malgré
+stock>0 ; validated/NULL→visible si stock>0 ; regroupage par préfixe EAN, élection principal
+photo-prioritaire, available_sizes triées, total au principal) ; (b) le bug-fix ci-dessus ;
+(c) les writes du rollup remontés (Sentry) au lieu d'avalés.
+
+**Revue obligatoire** `silent-failure-hunter` (diff pipeline) : **SOUND, 0 régression**. A aussi
+flaggé 2 silent-failures **pré-existants hors scope** (laissés, anti scope-creep, → backlog) :
+les `.catch(()=>{})` sur `notifyProductFavorites` (LOW) et **`pushInventoryToGoogle` (MEDIUM —
+divergence Google MC sans signal)** dans les 4 webhooks.
+
+**Testé** : 472 → **481** tests (+9), tsc OK, pre-push gate vert, push SSH.
+
+**Métrique** : 1 item [R] fermé (dernier gros write sync-engine couvert) **+ 1 bug de prod réel
+corrigé** (silent stock loss, north-star n°1) — la couverture a directement produit un fix, pas
+juste des tests. **PROCHAIN [R]** : rendre `pushInventoryToGoogle().catch(()=>{})` visible
+(captureError) dans les 4 webhooks (MEDIUM, réversible, vérifiable) — finding de la revue.
+Le haut du backlog (Rang 0-2) reste gated/externe (merge, migrations, design multi-tenant).
+
+---
+
 ## 2026-06-20 (session supervisée, soir) · Migration 106 APPLIQUÉE + intégration ECC + token Supabase sécurisé
 
 **Fait avec Thomas (GO explicites)** :
