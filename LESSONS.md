@@ -74,6 +74,7 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Migration qui documente de nouvelles valeurs d'enum/CHECK sans ALTÉRER la contrainte (081 vs 089 : `review_status` 'pending'/'masked' refusés en prod pendant des semaines, toute création produit du pipeline cassée). Détecté uniquement par le e2e d'ingestion. Règle : toute nouvelle valeur d'état → grep le CHECK existant dans les migrations AVANT. Fix : 096. (2026-06-13)
 
 ## Git / workflow
+- ⚠️ Un run autonome interrompu (ledger `exit=1`) peut laisser du WIP **non committé** dans le working tree. **Au démarrage : lire `git status`** — si un fichier est modifié et que le diff est sain/aligné, le **FINIR** (tests + revue + commit) au lieu de le jeter ou d'empiler dessus à l'aveugle. Cas vécu : `google/inventory.ts` (helpers purs + fix silent-failure) laissé par le run `131701` exit=1 → fini run 4. (2026-06-20)
 - ❌ Ne jamais commiter directement sur main → toujours créer une branche feat/<nom>
 - ❌ Email git : ne pas utiliser thomasbauland1304@gmail.com → utiliser bauland@twostep.fr
 - ❌ Push sans lancer `npm run test:run` → CI rouge = révélé au mail GitHub. Hook pre-push installé le 2026-04-22 dans `.githooks/pre-push` (tests + tsc auto). Activation : `npm run prepare` (auto après clone via npm). Bypass urgence : `SKIP_PRE_PUSH=1 git push`

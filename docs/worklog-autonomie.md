@@ -27,6 +27,44 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (run 4) · Rang 3 [R] — couverture `google/inventory` + RÉCUPÉRATION de WIP orphelin [RUN AUTONOME]
+
+**Contexte de reprise** : `git status` au démarrage montrait `M src/lib/google/inventory.ts`
+NON committé. Le ledger confirme : le run précédent (`131701`, **exit=1**, 18 turns) a été
+**interrompu** et a laissé ce travail orphelin dans le working tree. Décision : le **finir**
+(tests + revue + commit) plutôt que le jeter — c'est du travail sain, aligné north-star, et le
+perdre aurait été une régression nette. (→ LESSONS : vérifier le WIP orphelin au démarrage.)
+
+**Item** : Rang 3 `[R]` « couverture de test des chemins critiques non testés » →
+`google/inventory` était le dernier hot path de sortie Google **sans aucun test** (listé non
+testé en run 3). C'est le faux positif n°1 (un vendu affiché « in stock » sur Google).
+
+**Livré (commit `adfb272`, 459→472 tests, +13, 0 migration, réversible)** :
+- Le WIP orphelin extrayait 2 helpers PURS de `pushInventoryToGoogle` :
+  - `resolveStockQuantity` : normalise l'embed PostgREST `stock(quantity)` (objet|tableau|
+    null|string) → qté, **défaut CONSERVATEUR 0** (forme illisible → « out of stock », jamais
+    un faux « in stock »).
+  - `buildLocalInventoryPayload` : **verrouille** `availability` = « in stock »/« out of stock »
+    AVEC ESPACE (l'underscore = rejet silencieux Google, cf. feed.ts).
+  - **Fix silent-failure** : le read produits distingue désormais `error` de « aucun produit »
+    (`captureError` + return) — avant, un échec DB laissait l'inventaire Google **périmé en
+    aveugle**. Contrôle de flux inchangé pour les 4 webhooks + sync-engine appelants (toujours
+    return sans push), seule l'observabilité est ajoutée → 0 régression.
+- **Ce que j'ai ajouté ce run** : le **fichier de test** `tests/lib/google/inventory.test.ts`
+  (13 cas : toutes les formes d'embed, défaut conservateur, NaN/négatif clampés, invariant
+  espace anti-underscore) + après revue, la **quantité dans le contexte `captureError`** du push
+  (diagnostic faux positif/négatif).
+- **Revue `silent-failure-hunter`** : changement jugé **sain**, 0 silent path résiduel. 1 reco
+  low (qté dans le contexte Sentry) **appliquée** ; 1 reco pré-existante hors scope
+  (`merchant.ts` `res.json().catch(()=>({}))`) **laissée** (anti scope-creep).
+
+**Métrique** : 1 item `[R]` fermé (dernier hot path Google sans test → couvert) + 1 WIP orphelin
+récupéré au lieu d'être perdu. Couverture des hot paths qui **monte** (garde-fou §1). Aucune
+migration/merge/email/dépense. **PROCHAIN [R]** : couverture des writes `sync-engine` (dernier
+gros hot path non testé) — chunk dédié pour un run profond. Le haut du backlog reste gated/externe.
+
+---
+
 ## 2026-06-20 (run 3) · §1 work-item n°1 [R] — invariants de complétude testés (lectures non silencieuses) [RUN AUTONOME]
 
 Sourcing par signaux → couverture de test d'un hot path + le **work-item n°1 dérivé

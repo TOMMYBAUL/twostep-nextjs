@@ -136,8 +136,11 @@ software qui débloque sa moitié à lui.
   sur les hot paths : feed Google, inventory, reconciliation). Vérifiable, fait monter la
   métrique-garde-fou. **Partiel (2026-06-20 run 3)** : `ingestStockSnapshot` + `resyncMerchant/
   AllStock` couverts + 2 silent-failures de complétude corrigés (lectures DB qui masquaient
-  l'erreur → doublon catalogue / faux « en stock » / faux `ok` de resync). Restent non testés :
-  writes `sync-engine`, parse webhooks (partiel), `google/inventory`.
+  l'erreur → doublon catalogue / faux « en stock » / faux `ok` de resync). **Partiel (run 4)** :
+  `google/inventory` (push LFP temps réel) couvert — 2 helpers purs extraits+testés
+  (`resolveStockQuantity` défaut conservateur 0 ; `buildLocalInventoryPayload` invariant
+  « in stock » avec espace) + read produits non silencieux. Restent non testés : writes
+  `sync-engine` (dernier gros hot path), parse webhooks (partiel).
 - `[R]` **Variantes orphelines** sur correction EAN manuelle (re-groupage) — si design clair.
 - `[R]` **Câblage `parseCiiXml` dans `parseInvoice`** (Factur-X, oblig. sept. 2026) — le
   parseur est durci+testé, prêt ; le câblage extraction PDF/A-3 reste. Évaluer la valeur.
