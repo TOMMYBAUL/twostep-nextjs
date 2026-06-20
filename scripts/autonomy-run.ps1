@@ -92,8 +92,12 @@ if (Test-Path $jsonOut) {
         $cost = $res.total_cost_usd; $turns = $res.num_turns; $resultText = [string]$res.result
     } catch { "[$ts] cost parse fail: $($_.Exception.Message)" | Out-File -FilePath $log -Append -Encoding utf8 }
 }
+$costStr = ''
 if ($null -ne $cost) {
-    ("{0} cost_usd={1} turns={2} exit={3} commits={4}" -f $ts, $cost, $turns, $exit, $after) | Out-File -FilePath 'logs\cost-ledger.txt' -Append -Encoding utf8
+    # Format invariant (point decimal) : sinon la locale FR ecrit une virgule -> casse le
+    # parsing du budget cumule. Arrondi 4 decimales (cents de cent).
+    $costStr = [string]::Format([Globalization.CultureInfo]::InvariantCulture, '{0:F4}', [double]$cost)
+    ("{0} cost_usd={1} turns={2} exit={3} commits={4}" -f $ts, $costStr, $turns, $exit, $after) | Out-File -FilePath 'logs\cost-ledger.txt' -Append -Encoding utf8
 }
 
 # Resume "fait/trouve" + notification (best-effort, jamais fatale).
@@ -106,7 +110,7 @@ if ($after -and $before -and ($after -ne $before)) {
     if ($tail.Length -gt 300) { $tail = $tail.Substring(0, 300) + ' ...' }
     $msg = "[!] Two-Step - run autonome : AUCUN commit (exit=$exit). $tail"
 }
-if ($null -ne $cost) { $msg = "$msg`nCout run: $cost USD (turns $turns)" }
+if ($null -ne $cost) { $msg = "$msg`nCout run: $costStr USD (turns $turns)" }
 # Escalades ecrites par la boucle pendant le run (decisions a trancher) -> ajoutees a la notif.
 $extra = Join-Path $repo 'logs\notify-extra.txt'
 if (Test-Path $extra) {
