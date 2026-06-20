@@ -54,6 +54,16 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 
+## Identifiants externes (clé de jointure côté plateforme tierce)
+- ❌ **Deux chemins de code dérivant le MÊME identifiant externe de sources différentes** créent
+  des entités fantômes en double côté plateforme. Cas : le `store_code` Google LFP était
+  `twostep-{id8}` (Voie A Content API, persisté en DB) côté crons, mais le **`slug`** côté feed XML
+  (Voie B) → Google voyait DEUX magasins pour un marchand → inventaires jamais réconciliés = faux
+  positif. **Règle : un identifiant qui sert de clé de jointure chez un tiers (store_code, GTIN,
+  account ref) doit avoir UNE source unique** (helper `resolveStoreCode` : valeur persistée prime,
+  défaut déterministe en repli, jamais une 2ᵉ dérivation) — grep tous les sites qui le produisent.
+  (`src/lib/google/store-code.ts`, 2026-06-20)
+
 ## Gate visibilité produits
 - ❌ `groupVariantsByEAN` (sync-engine, post-pass appelé par ingestion + POS) rendait visibles (stock>0) tous les produits dont `review_status !== 'pending_review'` — donc aussi les `'pending'`/`'masked'` du gate cascade (089), court-circuitant le "zéro faux positif". Masqué tant que l'enrichissement tournait INLINE juste après (il re-settait visible) ; révélé par le découplage async V2. Fix : ne rendre visible QUE `review_status === 'validated'` (NULL = legacy/default validated OK). Détecté par l'e2e local (visible=true/score=null avant worker). (2026-06-13)
 - ⚠️ Hot-reload Next/turbopack ne prend pas toujours un changement de lib importée par une route API → si un fix ne se reflète pas en e2e, **redémarrer le dev server** (kill port 3000) avant de conclure que le fix est faux. (2026-06-13)
