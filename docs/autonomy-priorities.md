@@ -85,10 +85,11 @@ Légende : `[R]` réversible-maintenant (nourriture de la boucle, je le fais) ·
 Rien n'est en prod : ~30+ commits mûrs gelés sur la branche, prod APP = ancien code. Pour
 que Thomas puisse démarcher/démontrer, il faut un produit déployé et démo-able. C'est le
 software qui débloque sa moitié à lui.
-- `[R]` **Rapport de merge-readiness** (`docs/merge-readiness.md`, maj à chaque run) :
-  exactement quoi est requis pour merger+déployer sans casse — env vars manquantes en prod
-  (ANTHROPIC/GEMINI/INSEE/UPCITEMDB/KICKSDB/GS1), migrations déjà appliquées vs code, e2e
-  preview, points de rollback. Transforme « est-ce mûr ? » en checklist binaire.
+- ✅ **FAIT (2026-06-20 run 2)** — **Rapport de merge-readiness** (`docs/merge-readiness.md`,
+  à maj à chaque run où l'état change) : checklist binaire merge→deploy. Vérifié live (Supabase
+  MCP) : prod appliquée **jusqu'à 105**, **106 gated non appliquée** → merge **sans migration** ;
+  branche **84 commits d'avance** ; seul bloquant software = `INSEE_API_TOKEN` (fail-open SIRET) +
+  validation visuelle UI + GO humain. **À rafraîchir** quand migrations/env/e2e bougent.
 - `[R]` **e2e de bout en bout** (onboarding marchand → import stock → affichage confiance →
   push canal) exécutable sur la preview, pour prouver que la démo tient. Combler les trous.
 - `[R]` **Finir/combler le chantier B UI** (wizard import, badge confiance, signaler,
@@ -103,8 +104,11 @@ software qui débloque sa moitié à lui.
   marchand** (`quality_alerts` type `google_disapproved`) est **PRÉPARÉE+ESCALADÉE** :
   migration 106 idempotente NON appliquée + code derrière flag `GOOGLE_DISAPPROVAL_ALERTS=1`
   → **en attente GO Thomas** (`logs/notify-extra.txt`, option A appliquer 106+flag vs B Sentry-only).
-- `[R]` **Unifier `store_code`** : Voie A (`twostep-{id8}`, Content API) vs Voie B (`slug`,
-  XML) divergent → réconcilier en une source unique + tests. Réversible.
+- ✅ **FAIT (2026-06-20 run 2, commit `21e9004`)** — **Unifier `store_code`** : Voie A
+  (`twostep-{id8}`, Content API) et Voie B (`slug`, XML) divergeaient → **deux magasins
+  fantômes** côté Google. Source unique : `src/lib/google/store-code.ts` (`defaultStoreCode`
+  + `resolveStoreCode`, persisté prime, jamais le slug) ; `buildLfpXml` prend un `storeCode`
+  explicite ; route feed XML lit la connexion. +14 tests, 0 migration, réversible.
 - `[G]` **Câbler `pushInventoryToGoogle` sur le chemin file-push** (`ingestStockSnapshot`) :
   c'est le mécanisme « feed LFP pour marchands SANS caisse » = cœur du positionnement.
   Aujourd'hui un stock poussé par fichier ne propage JAMAIS à Google ; un produit réconcilié

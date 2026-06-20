@@ -5,6 +5,42 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (run 2) · Rang 1 [R] store_code unifié + Rang 0 [R] merge-readiness [RUN AUTONOME]
+
+Sourcing par signaux → 2 items `[R]` de plus haut rang non faits, tous deux **fermés** ce run
+(2 unités finies + tests, gate vert à chaque commit).
+
+**① Rang 1 [R] — Unifier `store_code` (commit `21e9004`, 454 tests, +14)** :
+- **Divergence vérifiée dans le code réel** : Voie A (Content API — callback OAuth +
+  crons `google-feed`/`inventory`) persistait `twostep-{id8}` dans
+  `google_merchant_connections.store_code` ; Voie B (feed XML public `lfp-xml.ts`) émettait le
+  **`slug`** du marchand. Pour un MÊME marchand, Google recevait **deux store_code** →
+  **deux magasins fantômes** distincts, inventaires jamais réconciliés = **faux positif LFP**
+  (north-star « afficher honnêtement »).
+- **Source unique** : le store_code canonique = la valeur **persistée** dans
+  `google_merchant_connections` (liée au compte Google / futur Business Profile). Nouveau
+  `src/lib/google/store-code.ts` : `defaultStoreCode` (unique générateur de la formule, ex-inline
+  callback) + `resolveStoreCode` (persisté prime, repli déterministe, **jamais le slug**).
+- Câblé : callback (DRY), `buildLfpXml` prend un `storeCode` explicite (3ᵉ arg), route feed XML lit
+  la connexion + `resolveStoreCode` → **même store_code que Voie A**. Drop du check
+  `merchant_missing_slug` (store_code toujours résoluble). Impact LOW (seul le route consomme
+  `buildLfpXml`), 0 migration, réversible. `detect_changes` = scope attendu (2 routes + lib + test).
+
+**② Rang 0 [R] — `docs/merge-readiness.md` (NOUVEAU, commit ci-dessous)** :
+checklist binaire merge→deploy. **Faits vérifiés live** (Supabase MCP `list_migrations`) :
+prod appliquée **jusqu'à 105** ; **106 NON appliquée = volontaire** (gated derrière
+`GOOGLE_DISAPPROVAL_ALERTS`, inerte) → **le merge n'exige AUCUNE migration**. Branche =
+**84 commits d'avance** sur `main` (le backlog disait « ~30+ » = périmé, corrigé). Env prod :
+seul `INSEE_API_TOKEN` est à enjeu réel (fail-open SIRET) ; le reste = dégradations non
+bloquantes. **Bloquant restant = validation visuelle UI + GO humain** (rien côté software).
+
+**Métrique** : 2 items `[R]` fermés (1 Rang 1 + 1 Rang 0). Le Rang 0 transforme « est-ce mûr ? »
+en checklist → rapproche la décision merge du point « une décision de Thomas ». Aucun garde-fou
+franchi. **PROCHAIN [R]** : re-jouer l'e2e sur preview à jour (84 commits depuis le dernier vert)
+OU couverture de test d'un hot path non testé. Le haut du backlog non fait est sinon gated/externe.
+
+---
+
 ## 2026-06-20 · Rang 1 [R] — Observabilité productStatuses Google : fin du PUSH AVEUGLE [RUN AUTONOME]
 
 Sourcing par signaux (priorities §6) → backlog priorisé, item Rang 1 `[R]` le plus
