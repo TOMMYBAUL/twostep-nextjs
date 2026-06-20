@@ -205,6 +205,16 @@ Ordre de préférence pour trouver le prochain `[R]` (remplace « Explore devine
 
 Le wrapper écrit le coût de CHAQUE run dans `logs/cost-ledger.txt` (`cost_usd`, `turns`).
 **Au début d'un run, lis le ledger** : c'est ta connaissance de toi-même.
+
+> ⚠️ **`cost_usd` est NOTIONNEL, pas une facture.** Thomas est sur un abonnement Claude
+> (`billingType: apple_subscription`, `hasExtraUsageEnabled: false`) → **aucune facturation au
+> token possible**. Le vrai plafond = le **quota d'usage de l'abonnement** (fenêtre glissante
+> ~5 h + cap hebdomadaire), PARTAGÉ avec l'usage perso de Thomas. Mode d'échec = rate-limit
+> (run qui échoue + Thomas bloqué de son propre Claude), JAMAIS un coût. Le `cost_usd` sert de
+> **jauge relative** de quota mangé. **Si un run échoue sur rate-limit** (exit non-0 / « usage
+> limit » dans le log) : ne pas réessayer en boucle, le noter, lever le pied — le quota se
+> rétablit au reset.
+
 - Objectif : avancer vite sur la deadline (2 semaines) SANS cramer l'abonnement. Un seul run
   tourne à la fois (tâche en `IgnoreNew`, ExecutionTimeLimit 90 min) → coût borné par le
   temps réel, pas d'emballement parallèle.
