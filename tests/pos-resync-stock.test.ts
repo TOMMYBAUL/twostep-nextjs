@@ -1,5 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { mapStockUpdatesToProducts } from "@/lib/pos/resync-stock";
+import { describe, it, expect, vi } from "vitest";
+import { mapStockUpdatesToProducts, resyncMerchantStock, resyncAllMerchantsStock } from "@/lib/pos/resync-stock";
+import { getActivePosAccessToken } from "@/lib/pos/access-token";
+
+vi.mock("@/lib/pos/access-token", () => ({ getActivePosAccessToken: vi.fn() }));
 
 describe("#14 mapStockUpdatesToProducts — re-sync stock absolu (fix retours)", () => {
     const products = [
@@ -33,5 +36,40 @@ describe("#14 mapStockUpdatesToProducts — re-sync stock absolu (fix retours)",
             { pos_item_id: "sq-1", quantity: -3, updated_at: "x" },
         ]);
         expect(out).toEqual([{ productId: "p1", quantity: 0 }]);
+    });
+});
+
+/** Faux client admin : un thenable par table, résolvant selon `results`. */
+function makeAdmin(results: Record<string, { data: unknown; error: { message: string } | null }>) {
+    function builder(table: string) {
+        const b: Record<string, unknown> = {};
+        const pass = () => b;
+        for (const m of ["select", "eq", "not", "is", "gt", "limit", "update", "upsert", "in"]) b[m] = pass;
+        b.then = (resolve: (v: unknown) => unknown, reject: (e: unknown) => unknown) =>
+            Promise.resolve(results[table] ?? { data: [], error: null }).then(resolve, reject);
+        return b;
+    }
+    return { from: (t: string) => builder(t) } as never;
+}
+
+describe("resync stock — lectures non silencieuses (anti dérive derrière voyant vert)", () => {
+    it("resyncMerchantStock : échec de lecture des produits → ok:false (pas un faux ok:true/fetched:0)", async () => {
+        // Connexion présente → on atteint la lecture des produits.
+        vi.mocked(getActivePosAccessToken).mockResolvedValue({
+            adapter: { getStock: vi.fn() },
+            accessToken: "tok",
+            provider: "shopify",
+            shopDomain: null,
+        } as never);
+        const admin = makeAdmin({ products: { data: null, error: { message: "read boom" } } });
+        const r = await resyncMerchantStock("m1", admin);
+        expect(r.ok).toBe(false);
+        expect(r.reason).toBe("products_read_failed");
+        expect(r.fetched).toBe(0);
+    });
+
+    it("resyncAllMerchantsStock : échec de lecture des connexions → LÈVE (pas un faux succès sur 0 marchand)", async () => {
+        const admin = makeAdmin({ pos_connections: { data: null, error: { message: "conns boom" } } });
+        await expect(resyncAllMerchantsStock(admin)).rejects.toThrow(/connexions POS/i);
     });
 });

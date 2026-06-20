@@ -52,11 +52,19 @@ export async function resyncMerchantStock(
         return { merchant_id: merchantId, ok: false, updated: 0, fetched: 0, reason: "no_connection_or_token_expired" };
     }
 
-    const { data: products } = await admin
+    const { data: products, error: productsErr } = await admin
         .from("products")
         .select("id, pos_item_id")
         .eq("merchant_id", merchantId)
         .not("pos_item_id", "is", null);
+
+    // Un échec de lecture NE DOIT PAS être confondu avec « 0 produit suivi » :
+    // sinon resync retourne `ok:true, fetched:0` (voyant vert) alors que la dérive
+    // de stock n'a PAS été guérie et que rien ne l'alerte. On rend l'échec visible.
+    if (productsErr) {
+        captureError(productsErr, { lib: "resync-stock", merchantId, phase: "read-products" });
+        return { merchant_id: merchantId, ok: false, updated: 0, fetched: 0, reason: "products_read_failed" };
+    }
 
     const rows = (products ?? []) as { id: string; pos_item_id: string | null }[];
     const itemIds = rows.map((p) => p.pos_item_id!).filter(Boolean);
@@ -114,10 +122,17 @@ export async function resyncMerchantStock(
 
 /** Re-sync stock de TOUS les marchands ayant une connexion POS. */
 export async function resyncAllMerchantsStock(admin: SupabaseClient): Promise<StockResyncResult[]> {
-    const { data: conns } = await admin
+    const { data: conns, error: connsErr } = await admin
         .from("pos_connections")
         .select("merchant_id")
         .limit(5000);
+
+    // Si la liste des connexions n'est pas lisible, on LÈVE : un `?? []` silencieux
+    // ferait que le cron « ne guérit personne » en se rapportant ok — le cron
+    // (try/catch) transforme ça en 500 + Sentry au lieu d'un faux succès.
+    if (connsErr) {
+        throw new Error(`Lecture des connexions POS échouée (resync de tous les marchands annulé): ${connsErr.message}`);
+    }
 
     const merchantIds = Array.from(new Set((conns ?? []).map((c: { merchant_id: string }) => c.merchant_id)));
     const results: StockResyncResult[] = [];
