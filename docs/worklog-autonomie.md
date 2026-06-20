@@ -5,6 +5,52 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (session supervisée, nuit) · Rang 3 [R] — writes orchestrateur `syncMerchantPOS` non silencieux + housekeeping vérifié
+
+**Vérifs de reprise (handoff partiellement obsolète, dit franchement)** :
+- **Supabase MCP OK** via `SUPABASE_ACCESS_TOKEN` en env (list_projects + execute_sql) — le
+  passage en `${...}` n'a rien cassé. **Migration 106 reconfirmée en prod** (CHECK
+  `quality_alerts.type` contient `google_disapproved`).
+- **`google/inventory` était DÉJÀ fini, committé ET poussé** (run 4) — la tâche « finir
+  inventory » du handoff était obsolète.
+
+**Sécu `.mcp.json` — fausse info CORRIGÉE** : redaction du token Supabase en
+`${SUPABASE_ACCESS_TOKEN}` committée en local (`IA` repo = remote `TOMMYBAUL/CLYNE.git`, commit
+`51b38f5`), **redaction chirurgicale sur HEAD via l'index** → le WIP `.mcp.json` de Thomas n'est
+PAS embarqué (working tree jamais touché). **CORRECTION** : ce worklog disait « token poussé sur
+CLYNE privé » → **FAUX**. Vérif git : `f8be153` (token en clair) sur AUCUN ref distant,
+`origin/main` sans token. **Le token n'a jamais quitté le local** → **NE PAS pousser**
+`feat/twostep-phase1` (l'exposerait via `f8be153`). Urgence rotation = FAIBLE, reste propre à
+faire (Thomas). Correctif durable : `.gitignore` + `.mcp.json.example`.
+
+**Item Rang 3 [R] livré — writes de l'orchestrateur `syncMerchantPOS` (commit `567dd44`)** :
+complémentaire de run 5 (qui a couvert `recalc`/`groupVariantsByEAN`). Le trou réel restant =
+les **writes inline de `syncMerchantPOS`**, CRITIQUES sur 2 modes d'échec du north-star :
+- **Upsert stock batch** : `error` avalé ET `result.stock_updated = rows.length` posé même en
+  échec → stock NON persisté rapporté « success » = **faux positif n°1** (vendu affiché en stock).
+- **Masquage orphelins** : `error` avalé → produit retiré du POS resté visible = **catalogue
+  fantôme** (mode d'échec qui a tué MVMS/Milo).
+- Extraits en helpers exportés injectables `applyStockUpserts` + `hideOrphanProducts` qui
+  **LÈVENT** sur erreur → catch existant de `syncMerchantPOS` (`last_sync_status='error'` +
+  Sentry + rethrow ; les 4 routes appelantes tolèrent déjà un throw). `stock_updated` = nb
+  réellement écrit (ne ment plus). **Revue silent-failure : SOUND** (aucun nouveau swallow ;
+  throw correct car writes idempotents → re-sync re-converge).
+- **+8 tests** `tests/pos-sync-engine-writes.test.ts`. Gate : tsc 0, suite **481→489** (delta =
+  exactement +8/+1, mesuré par stash/baseline). Note LESSON candidate : ~9 tests de la suite
+  varient selon l'horloge murale (fenêtres fraîcheur/lock/promos) → devraient figer le temps.
+
+**⚠️ Concurrence observée** : run 5 (autonome, 23:17) a committé pendant cette session supervisée
+et a touché le MÊME fichier (`sync-engine.ts`, fix recalc l.728). Pas de casse (régions non
+chevauchantes, mon WIP non embarqué dans HEAD), mais signal : un run autonome et une session
+supervisée peuvent se marcher dessus. À cadrer (pauser la tâche pendant les sessions supervisées ?).
+
+**Métrique** : 1 item `[R]` fermé (writes orchestrateur sync = non silencieux + testés). 0
+migration/merge/email/dépense, réversible. **Restent non testés (prochain [R], ranking revue)** :
+`groupVariantsByEAN` writes (visibilité/rollup autoritaires, encore silencieux — plus gros trou),
+`updateProduct` (dérive prix/nom), `upsertPromo` (promo perdue + `promos_imported` qui ment).
+
+---
+
 ## 2026-06-20 (run 5) · Rang 3 [R] — couverture `sync-engine` writes → BUG RÉEL trouvé (recalc zéroe le stock solo) [RUN AUTONOME]
 
 Sourcing par signaux : prochain [R] du worklog = couverture des writes `sync-engine`
