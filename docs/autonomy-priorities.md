@@ -228,3 +228,38 @@ Le wrapper écrit le coût de CHAQUE run dans `logs/cost-ledger.txt` (`cost_usd`
 > Item de travail n°1 dérivé de l'objectif §1 : **construire les INVARIANTS DE COMPLÉTUDE
 > testés** (« aucune source ne perd un produit/qté/prix sans alerte ») — les transformer de
 > garde-fous épars en propriété vérifiée de bout en bout. À traiter en Rang 1-2.
+
+---
+
+## 8. Pilotage de la boucle (loop-operator + harness-optimizer + context engineering)
+
+Intégré d'ECC (2026-06-20). Agents dispo dans `.claude/agents/`. Voir aussi AUTONOMY.md §11.
+
+### 8.1 Conditions d'arrêt / escalade (taxonomie loop-operator)
+Escalade (WhatsApp, §4) ET arrête l'item courant dès que :
+- aucun progrès sur 2 checkpoints consécutifs (pas de commit/test qui avance) ;
+- échecs répétés avec la **MÊME erreur** (même message/stack) — ne pas marteler ;
+- dérive de coût hors budget (cf. §7) ;
+- conflit de merge bloquant.
+Avant de lancer un item : gate vert actif + chemin de rollback (branche) + isolation OK.
+
+### 8.2 Auto-surveillance EN run (d'après le hook ecc-context-monitor)
+Réagis sans attendre la fin :
+- **coût** : un run qui dépasse ~8-10 $ notionnels = probablement du contexte gaspillé → resserre.
+- **scope-creep** : >20 fichiers touchés dans un « petit pas » = tu as débordé → recadre/découpe.
+- **boucle d'outils** : 3× le même appel sans progrès → stop, change d'approche.
+
+### 8.3 Revues spécialistes OBLIGATOIRES (cf. AUTONOMY §11.3)
+Avant de committer : diff pipeline → `silent-failure-hunter` ; migration/concurrence →
+`database-reviewer` ; secrets/auth/Stripe → `security-reviewer`. **C'est ce qui rend le travail
+autonome DIGNE DE CONFIANCE, pas juste rapide.**
+
+### 8.4 Context engineering = LE levier coût (méthode harness-optimizer)
+- **Codemaps** : lire `docs/CODEMAPS/*` (token-lean) AVANT de re-scanner le repo ; régénérer si
+  absent/périmé (>30 % de diff). Évite de recharger Next/Supabase à chaque run.
+- **MCP** : n'activer que le strict nécessaire (Supabase + git CLI). Chaque tool MCP ≈ 500 tokens
+  de schéma → désactiver les inutiles = 1er levier coût (audit `context-budget`).
+- **Compaction** aux frontières logiques (jamais en pleine implémentation) ; « écrire avant de
+  compacter » ; seuils adaptés au modèle 1M.
+- Réduction de coût = méthode `harness-optimizer` : baseline (ledger) → top 3 leviers →
+  changement minimal réversible → mesure du delta.
