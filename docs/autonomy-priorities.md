@@ -96,9 +96,13 @@ software qui débloque sa moitié à lui.
 - `[G]` **Plan de déploiement** prêt (ordre merge→deploy→vérif), escalade le GO du merge.
 
 ### Rang 1 — Cœur produit : canal Google LFP (LE produit)
-- `[R]` **Observabilité `productStatuses`** : lire l'acceptation/rejet Google par produit
-  (`src/lib/google/*`, `api/google/stats`). Aujourd'hui on POUSSE en aveugle. Construire le
-  reader + surfacer les rejets (Sentry/quality_alerts) + tests. **Réversible, haute valeur.**
+- ✅ **FAIT (2026-06-20, commits `87ad085`+`cd74f3f`)** — **Observabilité `productStatuses`** :
+  reader paginé + `summarizeProductStatuses` pur (`src/lib/google/product-status.ts`) +
+  cron `google-status` qui relit `accounts/{account}/products` après le feed et **surface
+  les rejets via Sentry** (en prod, réversible, 0 migration). 18 tests. La **persistance
+  marchand** (`quality_alerts` type `google_disapproved`) est **PRÉPARÉE+ESCALADÉE** :
+  migration 106 idempotente NON appliquée + code derrière flag `GOOGLE_DISAPPROVAL_ALERTS=1`
+  → **en attente GO Thomas** (`logs/notify-extra.txt`, option A appliquer 106+flag vs B Sentry-only).
 - `[R]` **Unifier `store_code`** : Voie A (`twostep-{id8}`, Content API) vs Voie B (`slug`,
   XML) divergent → réconcilier en une source unique + tests. Réversible.
 - `[G]` **Câbler `pushInventoryToGoogle` sur le chemin file-push** (`ingestStockSnapshot`) :

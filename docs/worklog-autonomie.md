@@ -5,6 +5,48 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 · Rang 1 [R] — Observabilité productStatuses Google : fin du PUSH AVEUGLE [RUN AUTONOME]
+
+Sourcing par signaux (priorities §6) → backlog priorisé, item Rang 1 `[R]` le plus
+haut **non fait** : « Observabilité productStatuses — lire l'acceptation/rejet Google
+par produit. Aujourd'hui on POUSSE en aveugle. » C'est le faux positif n°1 du
+north-star (« affiché honnêtement »), réversible et haute valeur. **Fait** (vs micro-fix).
+
+**Le trou (vérifié dans le code réel)** : `google-feed` compte un produit comme
+`pushed` dès que `productInputs:insert` renvoie 200. Mais un 200 à l'insert ≠
+acceptation — Google traite ensuite de façon **asynchrone** et peut REJETER (GTIN
+invalide, image, politique). On ne relisait JAMAIS le résultat → un produit rejeté
+restait affiché « sur Google ». Shape API vérifiée sur la doc officielle
+(`products.v1beta` → `accounts/{account}/products`, `destinationStatuses` +
+`itemLevelIssues.severity ∈ NOT_IMPACTED|DEMOTED|DISAPPROVED`) **avant** de coder,
+pour ne pas bâtir une garde inerte sur un schéma deviné (cf. LESSONS).
+
+**Livré — RÉVERSIBLE, en prod via Sentry (commit `87ad085`, 442 tests)** :
+- `src/lib/google/product-status.ts` : reader **paginé** (borné anti-boucle, **lève**
+  sur erreur dure = anti stock-fantôme) + `summarizeProductStatuses` **PUR** (servis/
+  en attente/rejetés + causes agrégées par code). Verdict basé sur `destinationStatuses`
+  (signal **stable cross-version**), le rejet prime.
+- `src/app/api/cron/google-status` : relit après le feed (06:00, ajouté à `vercel.json`)
+  et rend les rejets **VISIBLES via Sentry** (`captureError`). Lecture seule, 0 migration.
+- 15 tests (classify/summarize/pagination/garde anti-boucle/erreur propagée).
+
+**Préparé + ESCALADÉ (gated, commit `cd74f3f`, 445 tests)** : persistance MARCHAND
+des rejets (dashboard qualité) via `quality_alerts` type `google_disapproved`.
+- Migration **106 idempotente NON APPLIQUÉE** (rollback + protocole §4 en tête).
+- Cron écrit la table **uniquement si `GOOGLE_DISAPPROVAL_ALERTS=1`** (sinon l'INSERT
+  casserait sur la contrainte tant que 106 n'est pas en prod — LESSONS 081/089).
+  Dedupe vs alertes ouvertes + INSERT batchés (`chunk` 500).
+- `buildDisapprovalAlerts` pur + 3 tests.
+- **Escalade `logs/notify-extra.txt`** : `[DECISION]` appliquer 106+flag (option A) vs
+  Sentry-only (B). Code+migration+tests prêts.
+
+**Métrique** : 1 item Rang 1 `[R]` **fermé** (built+testé+en prod via Sentry) ; sa suite
+gated **amenée au point de décision** (migration+code+tests prêts, GO escaladé). Aucun
+garde-fou dur franchi. **PROCHAIN** (si run suivant) : Rang 1 `[R]` « Unifier store_code »
+(Voie A `twostep-{id8}` vs Voie B `slug`) — réversible.
+
+---
+
 ## 2026-06-19 · Enrichissement ④ (catégorie) — 1 fix silent-failure trouvé + 4 faux positifs écartés [RUN AUTONOME]
 
 Backlog déjà traversé (entrées ci-dessous) → ce run RE-vérifie indépendamment qu'il
