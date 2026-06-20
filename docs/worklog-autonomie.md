@@ -5,6 +5,41 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (run 3) · §1 work-item n°1 [R] — invariants de complétude testés (lectures non silencieuses) [RUN AUTONOME]
+
+Sourcing par signaux → couverture de test d'un hot path + le **work-item n°1 dérivé
+du §1** (« aucune source ne perd un produit/qté/prix SANS ALERTE » → en faire des
+invariants TESTÉS). 2 unités finies, gate vert à chaque commit, 0 garde-fou franchi.
+
+**① ingest snapshot — 2 lectures qui masquaient une erreur DB (commit `0b991ea`, +3 tests)** :
+`ingestStockSnapshot` destructurait `data` sans `error` sur deux reads conséquents.
+- **read produits existants** échoué → index de match VIDE → chaque ligne recréée en
+  **doublon de TOUT le catalogue**, en silence. → désormais on **LÈVE** (les 2 routes
+  catch + captureError) plutôt que corrompre la boutique en aveugle.
+- **read stock en cours** (réconciliation) échoué → `?? []` → réconciliation **no-op**
+  → articles vendus restant affichés « en stock » (**faux positif n°1**). → réconciliation
+  **annulée + VISIBLE** (statut partial/error côté route + captureError).
+  Testable via `dryRun:true` (les 2 reads s'exécutent, 0 écriture) + faux client Supabase.
+
+**② resync stock — même classe (commit `3ebf7d6`, +2 tests)** :
+- `resyncMerchantStock` read produits échoué → renvoyait `ok:true, fetched:0` (resync
+  « propre » qui n'a RIEN guéri ; dérive persistante, 0 signal) → `ok:false` + captureError.
+- `resyncAllMerchantsStock` read connexions échoué → « ne guérit personne » en se rapportant
+  ok → **LÈVE** (cron pos-resync catch → 500 + Sentry).
+
+**Discriminateur (LESSON ajoutée)** : le pattern `const { data } = await ...select()` sans
+`error` existe sur ~250 sites — la PLUPART sont des reads auth/lookup où `null→401` est
+correct (NE PAS chasser, cf. ~70% faux positifs Explore). Bug SSI empty est indistinct
+d'erreur ET cause une perte silencieuse masquée en succès. `groupVariantsByEAN:520` vérifié
+**bénin** (read échoué → grouping sauté ce run, re-run à chaque sync, 0 corruption) → laissé.
+
+**Métrique** : 2 items `[R]` fermés, tous deux le work-item n°1 du §1 (complétude → invariants
+testés). +5 tests (454→459). Aucune migration/merge/email/dépense. **PROCHAIN [R]** : poursuivre
+la transformation des garde-fous épars en invariants testés (couverture hot paths restants :
+sync-engine writes, webhooks) OU e2e preview à jour. Le haut du backlog reste gated/externe.
+
+---
+
 ## 2026-06-20 (run 2) · Rang 1 [R] store_code unifié + Rang 0 [R] merge-readiness [RUN AUTONOME]
 
 Sourcing par signaux → 2 items `[R]` de plus haut rang non faits, tous deux **fermés** ce run
