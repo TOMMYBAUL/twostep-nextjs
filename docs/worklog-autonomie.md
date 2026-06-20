@@ -5,6 +5,28 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-20 (session supervisée, soir) · Migration 106 APPLIQUÉE + intégration ECC + token Supabase sécurisé
+
+**Fait avec Thomas (GO explicites)** :
+- **Migration 106 APPLIQUÉE en prod + vérifiée** (`quality_alerts.type` accepte `google_disapproved`).
+  Branche test Supabase **infaisable** (l'historique des migrations ne se rejoue PAS depuis zéro →
+  finding reproductibilité/DR à traiter) → appliquée direct sur GO Thomas après vérif live (swap de
+  CHECK atomique, sur-ensemble strict, risque nul). → la persistance MARCHAND des rejets Google
+  s'activera au merge+déploiement avec `GOOGLE_DISAPPROVAL_ALERTS=1`.
+- **Intégration ECC** (repo gagnant hackathon Anthropic, `affaan-m/ECC`) : 7 agents spécialistes
+  (`.claude/agents/` : silent-failure-hunter, database-reviewer, security-reviewer, typescript-reviewer,
+  tdd-guide, loop-operator, harness-optimizer), AUTONOMY §11 (Prompt Defense Baseline + denylist
+  destructive + revues obligatoires + honnêteté Minimum Bar 2026), priorities §8 (pilotage), 2 leviers
+  coût = set MCP minimal (Supabase seul) + codemaps `docs/CODEMAPS/`.
+- **Sécurité** : `SUPABASE_ACCESS_TOKEN` était en clair dans `IA/.mcp.json` (suivi, poussé sur CLYNE
+  **privé**) → sorti en variable d'env `${SUPABASE_ACCESS_TOKEN}` (root + autonomy.mcp.json). RESTE
+  THOMAS : **rotation** du token (dashboard Supabase — aucun outil ne révoque un PAT) + commit du
+  `.mcp.json` côté CLYNE.
+
+**Reste / déploiement** : poser `GOOGLE_DISAPPROVAL_ALERTS=1` en env Vercel au déploiement (inerte avant).
+
+---
+
 ## 2026-06-20 (run 3) · §1 work-item n°1 [R] — invariants de complétude testés (lectures non silencieuses) [RUN AUTONOME]
 
 Sourcing par signaux → couverture de test d'un hot path + le **work-item n°1 dérivé
