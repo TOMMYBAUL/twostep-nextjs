@@ -74,6 +74,52 @@ export function buildPosStockRows(
         }));
 }
 
+/**
+ * Upsert des lignes stock par lots, NON SILENCIEUX. Toute erreur d'écriture LÈVE
+ * (au lieu d'être avalée) → le sync est marqué `error` + Sentry par le catch de
+ * `syncMerchantPOS`, jamais rapporté « success » avec un stock périmé (le faux
+ * positif n°1 : un vendu affiché « en stock »). Renvoie le nombre de lignes
+ * réellement écrites (= toutes, puisqu'on lève au 1er lot en échec) — le caller
+ * en tire `stock_updated`, qui ne ment donc plus en cas d'échec d'écriture.
+ */
+export async function applyStockUpserts(
+    supabase: SupabaseClient,
+    rows: PosStockRow[],
+    batchSize = 500,
+): Promise<number> {
+    for (let i = 0; i < rows.length; i += batchSize) {
+        const { error } = await supabase
+            .from("stock")
+            .upsert(rows.slice(i, i + batchSize), { onConflict: "product_id" });
+        if (error) {
+            throw new Error(`stock upsert failed (batch @${i}, ${rows.length} rows): ${error.message}`);
+        }
+    }
+    return rows.length;
+}
+
+/**
+ * Masque les produits orphelins (retirés du catalogue POS courant) — réconciliation
+ * NON SILENCIEUSE. Un échec d'écriture LÈVE : sans ça, un produit vendu/retiré
+ * resterait visible en silence = catalogue fantôme, le mode d'échec qui a tué les
+ * concurrents (MVMS/Milo). No-op si la liste est vide (jamais d'`.in("id", [])`).
+ * NB : la garde « catalogue vide → ne rien masquer » vit en amont dans
+ * `computeOrphanProductIds` ; ici on persiste seulement, sans avaler l'erreur.
+ */
+export async function hideOrphanProducts(
+    supabase: SupabaseClient,
+    orphanIds: string[],
+): Promise<void> {
+    if (orphanIds.length === 0) return;
+    const { error } = await supabase
+        .from("products")
+        .update({ visible: false })
+        .in("id", orphanIds);
+    if (error) {
+        throw new Error(`orphan hide failed (${orphanIds.length} products): ${error.message}`);
+    }
+}
+
 // ─── Main sync function ─────────────────────────────────────────────
 
 export async function syncMerchantPOS(
@@ -237,13 +283,9 @@ export async function syncMerchantPOS(
         const stockRows = buildPosStockRows(stockUpdates, posItemToProductId);
 
         if (stockRows.length > 0) {
-            const BATCH_SIZE = 500;
-            for (let i = 0; i < stockRows.length; i += BATCH_SIZE) {
-                await supabase
-                    .from("stock")
-                    .upsert(stockRows.slice(i, i + BATCH_SIZE), { onConflict: "product_id" });
-            }
-            result.stock_updated = stockRows.length;
+            // Non silencieux : un échec d'écriture lève (catch → sync `error` + Sentry)
+            // au lieu de rapporter `stock_updated` sans rien avoir persisté.
+            result.stock_updated = await applyStockUpserts(supabase, stockRows);
         }
 
         // ─── Default stock for POS items without inventory tracking ──
@@ -258,7 +300,8 @@ export async function syncMerchantPOS(
 
         if (untrackedNewProducts.length > 0) {
             const nowIso = new Date().toISOString();
-            await supabase.from("stock").upsert(
+            await applyStockUpserts(
+                supabase,
                 untrackedNewProducts.map((id) => ({
                     product_id: id,
                     quantity: 1,
@@ -266,7 +309,6 @@ export async function syncMerchantPOS(
                     source: "pos_sync",
                     source_ts: nowIso,
                 })),
-                { onConflict: "product_id" },
             );
         }
 
@@ -285,13 +327,9 @@ export async function syncMerchantPOS(
         // ─── Mark removed POS products as invisible ─────────────────
         const currentPosItemIds = new Set(catalog.map((p) => p.pos_item_id));
         const orphanIds = computeOrphanProductIds(productIndex.all, currentPosItemIds);
-
-        if (orphanIds.length > 0) {
-            await supabase
-                .from("products")
-                .update({ visible: false })
-                .in("id", orphanIds);
-        }
+        // Non silencieux : un échec de masquage lève (catch → sync `error` + Sentry)
+        // au lieu de laisser des produits retirés visibles (catalogue fantôme).
+        await hideOrphanProducts(supabase, orphanIds);
 
         // ─── Promos sync ─────────────────────────────────────────────
 
