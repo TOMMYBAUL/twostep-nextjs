@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
                     title: "De retour en stock !",
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
-                }).catch(() => {});
+                }).catch((e) => captureError(e, { route: "webhooks/lightspeed", phase: "push-notify", productId: product.id }));
             }
         }
 
@@ -88,7 +88,9 @@ export async function POST(request: NextRequest) {
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
             if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
+                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
+                    captureError(e, { route: "webhooks/lightspeed", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+                );
             }
         }
 

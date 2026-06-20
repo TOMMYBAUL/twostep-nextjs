@@ -60,7 +60,7 @@ export async function POST(request: Request) {
                     title: "De retour en stock !",
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
-                }).catch(() => {});
+                }).catch((e) => captureError(e, { route: "webhooks/zettle", phase: "push-notify", productId: product.id }));
             }
         }
 
@@ -72,7 +72,9 @@ export async function POST(request: Request) {
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
             if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
+                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
+                    captureError(e, { route: "webhooks/zettle", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+                );
             }
         }
 
