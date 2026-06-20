@@ -24,7 +24,6 @@ const TITLE_MAX = 150;
 export interface LfpMerchant {
     id: string;
     name: string;
-    slug: string;
 }
 
 export interface LfpProductRow {
@@ -107,16 +106,19 @@ function buildItemXml(p: LfpProductRow, storeCode: string): string {
 /**
  * Construit le feed XML LFP complet pour un marchand.
  *
- * @param merchant — must have id, name, slug (slug used as store_code)
+ * @param merchant — must have id, name
  * @param products — must already be filtered (visible=true + review_status=validated)
+ * @param storeCode — store_code Google canonique (cf. resolveStoreCode dans
+ *   store-code.ts) ; NE PLUS dériver du slug (divergence Voie A/Voie B corrigée).
  * @returns string XML conforme Google LFP spec
  */
 export function buildLfpXml(
     merchant: LfpMerchant,
     products: LfpProductRow[],
+    storeCode: string,
 ): string {
     const eligible = filterFeedEligible(products);
-    const items = eligible.map((p) => buildItemXml(p, merchant.slug)).join("\n");
+    const items = eligible.map((p) => buildItemXml(p, storeCode)).join("\n");
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">

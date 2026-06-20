@@ -14,6 +14,7 @@
 import type { NextRequest } from "next/server";
 
 import { buildLfpXml, type LfpProductRow } from "@/lib/google/lfp-xml";
+import { resolveStoreCode } from "@/lib/google/store-code";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const UUID_REGEX =
@@ -33,10 +34,10 @@ export async function GET(
 
     const admin = createAdminClient();
 
-    // ─── Récup merchant (slug = store_code Google) ───
+    // ─── Récup merchant ───
     const { data: merchant, error: merchantErr } = await admin
         .from("merchants")
-        .select("id, name, slug, status")
+        .select("id, name, status")
         .eq("id", merchantId)
         .maybeSingle();
 
@@ -49,9 +50,18 @@ export async function GET(
     if (merchant.status && merchant.status !== "active") {
         return new Response("merchant_not_active", { status: 410 });
     }
-    if (!merchant.slug) {
-        return new Response("merchant_missing_slug", { status: 422 });
-    }
+
+    // ─── store_code canonique : valeur persistée à la connexion Content API si
+    //     elle existe, sinon défaut déterministe `twostep-{id8}` — JAMAIS le slug.
+    //     (Voie A et Voie B émettent désormais le MÊME store_code → un seul
+    //     magasin côté Google, fin du faux positif "deux magasins fantômes".) ───
+    const { data: connection } = await admin
+        .from("google_merchant_connections")
+        .select("store_code")
+        .eq("merchant_id", merchantId)
+        .maybeSingle();
+
+    const storeCode = resolveStoreCode(merchantId, connection?.store_code);
 
     // ─── Récup products visibles + validés ───
     const { data: products, error: productsErr } = await admin
@@ -68,8 +78,9 @@ export async function GET(
     }
 
     const xml = buildLfpXml(
-        { id: merchant.id, name: merchant.name, slug: merchant.slug },
+        { id: merchant.id, name: merchant.name },
         (products ?? []) as LfpProductRow[],
+        storeCode,
     );
 
     return new Response(xml, {
