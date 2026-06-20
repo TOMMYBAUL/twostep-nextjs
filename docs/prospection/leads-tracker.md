@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-19 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-20 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,31 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Rattrapage samedi — 2026-06-20 (L'Eclaireur) — Victor-Hugo épuisé, 0 email trouvé
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées depuis 02/05/2026 — confirmé). Tous les quartiers épuisés (208/208 prospects digitaux). Session convertie en rattrapage multi-quartiers sur 10 leads NOUVEAU à 1-3 passages seulement. 30+ recherches web + fetches effectués. **0 email confirmé.** Patterns confirmés : LA FILLE DE MARGARET (lafilledemargaret.com — ECONNREFUSED depuis US, site actif en France mais aucun email public), RECOVERY TLS (recoverytls.com — contact page 503 persistant, pas d'email public), MANIK (manik.fr — pas d'email sur le site ni en mentions légales 404, tel uniquement), EDEN/PP NEDE (edenshoes.fr ECONNREFUSED, tel 09 75 95 09 25 uniquement), PAMPY (pampy.com = domaine à vendre confirmé — 6ème passage), AGATHE ET ZOE (aucun site, aucun email — 3ème passage), TILL/TILLAMY (aucun site, tel 05 61 33 06 01 uniquement), SIENNE/5SB FAMILY (IG @sienne.boutique uniquement), LAORA VITTORIA (tel 05 61 22 07 48 uniquement — 5ème passage), RECOVERY aussi listé avec gestionnaires Gabriel + Lucas Guillermin (pas seulement Pierre Bauguil). **Situation critique confirmée : 45 NOUVEAU bloqués digitalement, tous requièrent visite terrain.** Notion MCP indisponible (idem toutes sessions précédentes). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-06-20".
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
+|---|---|---|---|---|---|---|---|---|
+| EDEN (PP NEDE) | Capitole | Chaussures | Jean-Jacques Ghebali | — | 810994947 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 20/06) — edenshoes.fr ECONNREFUSED, Yelp Updated Dec 2025 (actif), tel 09 75 95 09 25. 42 rue de la Pomme. Visite terrain. |
+| RECOVERY PROJECT | Capitole | Sport | Pierre Bauguil | — | 940957483 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 20/06) — recoverytls.com actif, contact page 503 persistant, pas d'email public, opposition données prospection signalée. 48B rue de Metz. Visite terrain. |
+| LA FILLE DE MARGARET | Carmes | Mode femme | Sarah Pelegry | — | 520610593 | 8/10 | NOUVEAU | Email non trouvé (3ème passage 20/06) — lafilledemargaret.com ECONNREFUSED depuis US (IP block), site actif en France, tel 05 61 21 52 28. 35 rue Boulbonne. Fetch impossible depuis environnement cloud. |
+| CHAUSSURES MANIK | Capitole | Chaussures | Pierre Lacabanne | — | 730801248 | 7/10 | NOUVEAU | Email non trouvé (6ème passage 20/06 ⚠️ SEUIL ATTEINT) — manik.fr actif (e-shop), aucun email sur le site ni mentions légales (404), tel 05 61 21 52 08. 33 rue d'Alsace-Lorraine. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| PAMPY | Capitole | Mode femme | Juliette Marciano | — | 997769906 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 20/06) — pampy.com = domaine à vendre confirmé (>1 000 USD), IG @_pampix (141 abonnés), tel 05 61 23 37 46. 11 rue de la Pomme. Visite terrain. |
+| TILL (TILLAMY) | Capitole | Chaussures | Yann Bellamy | — | 401862255 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 20/06) — TILLAMY siège Ablon-sur-Seine, boutique Toulouse franchise sans site propre, tel 05 61 33 06 01 uniquement. 40 rue de Metz. Visite terrain. |
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (3ème passage 20/06) — aucun site propre, aucun email public confirmé, tel 05 34 31 67 44. 29 rue Croix Baragnon. **Visite terrain PRIORITAIRE.** |
+| SIENNE (5 SB FAMILY) | Capitole | Mode femme | Stéphanie Berdah | — | 538275561 | 6/10 | NOUVEAU | Email non trouvé (2ème passage 20/06) — IG @sienne.boutique uniquement, aucun site ni email public. 44 rue des Tourneurs. Visite terrain. |
+| LAORA VITTORIA | Carmes | Chaussures | Annick Confuorto | — | 412012395 | 7/10 | NOUVEAU | Email non trouvé (5ème passage 20/06 ⚠️) — aucune présence digitale (ni site, ni email), tel 05 61 22 07 48. 19 rue Ozenne / 3 bis rue Rempart Villeneuve. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| RECOVERY (alt. gérant) | Capitole | Sport | Gabriel Guillermin | — | 940957483 | 7/10 | NOUVEAU | Note : Kompass liste aussi Gabriel + Lucas Guillermin comme co-gérants de RECOVERY PROJECT (idem SIREN 940957483). Pas d'impact sur le statut. |
+
+**⚠️ ALERTE CRITIQUE — 208/208 épuisés :** Tous les quartiers sont définitivement épuisés digitalement. Les 45 NOUVEAU restants n'ont aucun email public accessible. **ACTION REQUISE DE THOMAS :**
+1. Organiser visite terrain prioritaire : AGATHE ET ZOE (29 rue CB), SIENNE (44 rue des Tourneurs), LA FILLE DE MARGARET (35 rue Boulbonne), RECOVERY (48B rue de Metz), PAMPY (11 rue de la Pomme).
+2. Retirer CHAUSSURES MANIK et LAORA VITTORIA de la rotation digitale — seuil atteint.
+3. Envisager extension vers nouveaux quartiers (Wilson, Compans-Caffarelli, Minimes) avec données terrain ou nouvelle source prospects.
+4. Re-autoriser Gmail MCP pour que L'Auditeur crée les 5 drafts en attente depuis le 16/06.
+
+---
 
 ## Rattrapage jeudi — 2026-06-19 (L'Eclaireur) — Carmes DEFINITIF — 0 email
 
