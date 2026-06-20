@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
-import { selectProductsToZero, chunk } from "@/lib/ingest/reconcile";
+import { selectProductsToZero, chunk, type ReconcileDecision } from "@/lib/ingest/reconcile";
 import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
 import { captureError } from "@/lib/error";
 
@@ -71,11 +71,19 @@ export async function ingestStockSnapshot(
     // Le nom seul n'est JAMAIS une identité d'ingestion.
     const { accepted, ...triageSummary } = triageStockItems(items);
 
-    // Index des produits existants (match EAN > SKU > nom)
-    const { data: existingProducts } = await admin
+    // Index des produits existants (match EAN > SKU > nom).
+    // LÈVE si la lecture échoue : sans cet index, AUCUN produit ne matcherait →
+    // chaque ligne serait créée en doublon de TOUT le catalogue (corruption
+    // silencieuse). Mieux vaut échouer fort (les 2 routes catch + captureError)
+    // que dupliquer toute la boutique en aveugle. (north-star : « erreurs qui
+    // lèvent, jamais [] masqué ».)
+    const { data: existingProducts, error: existingErr } = await admin
         .from("products")
         .select("id, ean, name, sku")
         .eq("merchant_id", merchantId);
+    if (existingErr) {
+        throw new Error(`Lecture des produits existants échouée (matching impossible): ${existingErr.message}`);
+    }
 
     const byEan = new Map<string, string>();
     const bySku = new Map<string, string>();
@@ -227,18 +235,30 @@ export async function ingestStockSnapshot(
         errors.push("Réconciliation annulée: aucune ligne exploitable dans le push");
     }
     if (opts.reconcile && accepted.length > 0) {
-        const { data: inStockRows } = await admin
+        const { data: inStockRows, error: inStockErr } = await admin
             .from("stock")
             .select("product_id, quantity, products!inner(merchant_id)")
             .eq("products.merchant_id", merchantId)
             .gt("quantity", 0);
+
+        // Si la lecture du stock en cours échoue, on NE PEUT PAS décider quels
+        // produits passer à 0. Un `inStockRows ?? []` silencieux ferait croire que
+        // rien n'est en stock → réconciliation no-op → les articles VENDUS restent
+        // affichés « en stock » (faux positif n°1). On rend l'échec VISIBLE (statut
+        // partial/error côté route + Sentry) au lieu de le masquer.
+        if (inStockErr) {
+            captureError(inStockErr, { lib: "ingest/snapshot", phase: "reconcile-read-instock", merchantId });
+        }
 
         const existingInStock = ((inStockRows ?? []) as unknown as {
             product_id: string;
             quantity: number;
         }[]).map((r) => ({ id: r.product_id, quantity: r.quantity }));
 
-        const decision = selectProductsToZero(touched, existingInStock);
+        // Lecture en échec → skip gardé (avec raison) ; sinon décision normale.
+        const decision: ReconcileDecision = inStockErr
+            ? { toZero: [], skipped: true, reason: `lecture du stock en cours échouée: ${inStockErr.message}` }
+            : selectProductsToZero(touched, existingInStock);
         if (decision.skipped) {
             reconcileSkipped = true;
             errors.push(`Réconciliation annulée: ${decision.reason}`);
