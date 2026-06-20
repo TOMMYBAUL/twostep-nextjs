@@ -683,16 +683,22 @@ export async function recalculateGroupSizes(
 
     const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-    // Non-destructif : ne pas écraser available_sizes avec du vide (préserve les
-    // tailles posées par l'ingestion fichier sur des produits sans products.size).
-    if (availableSizes.length > 0) {
-        await supabase
-            .from("products")
-            .update({ available_sizes: availableSizes })
-            .eq("id", principalId);
-    }
+    // Aucune taille = produit SOLO, pas un groupe multi-tailles : ne PAS écraser sa ligne
+    // stock autoritaire par le total des tailles (0) — faux « rupture » silencieux — ni son
+    // available_sizes par []. (Même invariant que recalculateGroupSizesAdmin, cf. webhooks ;
+    // les deux jumeaux doivent rester identiques — consolidation à faire en supervisé.)
+    if (availableSizes.length === 0) return;
 
-    await supabase
+    // Writes du rollup non silencieux (cf. recalculateGroupSizesAdmin) : un échec rend
+    // available_sizes/total périmé — on le REND VISIBLE via Sentry sans casser le flux.
+    const { error: sizesErr } = await supabase
+        .from("products")
+        .update({ available_sizes: availableSizes })
+        .eq("id", principalId);
+    if (sizesErr) captureError(sizesErr, { context: "recalc-group-sizes", principalId, write: "available_sizes" });
+
+    const { error: stockErr } = await supabase
         .from("stock")
         .upsert({ product_id: principalId, quantity: totalStock }, { onConflict: "product_id" });
+    if (stockErr) captureError(stockErr, { context: "recalc-group-sizes", principalId, write: "stock_total" });
 }

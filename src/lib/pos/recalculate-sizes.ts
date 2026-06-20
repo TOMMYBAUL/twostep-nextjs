@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { captureError } from "@/lib/error";
 
 /**
  * Recalculate available_sizes on the principal product of a group
@@ -40,12 +41,26 @@ export async function recalculateGroupSizesAdmin(productId: string): Promise<voi
 
     const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-    await supabase
+    // Aucune taille = ce n'est PAS un groupe multi-tailles à totaliser, mais un produit
+    // SOLO (article sans pointure : la majorité du non-mode). Sa ligne stock vient d'être
+    // posée de façon AUTORITAIRE par updateStockAtomic (le webhook appelant) ; la REMPLACER
+    // par le total des tailles (= 0 ici) l'EFFACERAIT → faux « rupture » jusqu'au resync 6 h
+    // = vente perdue silencieuse (enjeu n°1). De même, ne pas écraser un available_sizes déjà
+    // rempli (ingestion fichier, cf. groupVariantsByEAN non-destructif) par []. On sort.
+    if (availableSizes.length === 0) return;
+
+    // Les writes du rollup ne doivent pas échouer EN SILENCE : un available_sizes/total
+    // périmé masqué en succès = dérive d'affichage invisible. On ne LÈVE pas (le stock
+    // autoritaire est déjà committé par updateStockAtomic ; faire échouer le webhook le
+    // ferait rejouer, double-décrément en mode delta), mais on REND VISIBLE via Sentry.
+    const { error: sizesErr } = await supabase
         .from("products")
         .update({ available_sizes: availableSizes })
         .eq("id", principalId);
+    if (sizesErr) captureError(sizesErr, { context: "recalc-group-sizes-admin", principalId, write: "available_sizes" });
 
-    await supabase
+    const { error: stockErr } = await supabase
         .from("stock")
         .upsert({ product_id: principalId, quantity: totalStock }, { onConflict: "product_id" });
+    if (stockErr) captureError(stockErr, { context: "recalc-group-sizes-admin", principalId, write: "stock_total" });
 }
