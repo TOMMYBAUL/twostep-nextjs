@@ -139,6 +139,45 @@ export function summarizeProductStatuses(products: GoogleProcessedProduct[]): Pr
     return { total: products.length, disapproved, served, pending, unknown, disapprovedOfferIds, issues };
 }
 
+/**
+ * Alerte qualité « produit rejeté par Google » (persistée côté marchand).
+ * `product_id` = notre `product.id` (== offerId envoyé au feed, cf. feed.ts).
+ */
+export type DisapprovalAlert = {
+    merchant_id: string;
+    product_id: string;
+    type: "google_disapproved";
+    detail: { issues: Array<{ code: string; severity: string; description: string }> };
+};
+
+/**
+ * Construit les lignes `quality_alerts` pour les produits rejetés par Google.
+ * Pur. N'émet une alerte que pour un produit rejeté ET portant un offerId
+ * (sans offerId, pas de product_id traçable → pas d'alerte fantôme).
+ */
+export function buildDisapprovalAlerts(
+    products: GoogleProcessedProduct[],
+    merchantId: string,
+): DisapprovalAlert[] {
+    const alerts: DisapprovalAlert[] = [];
+    for (const p of products) {
+        if (classifyProductStatus(p.productStatus) !== "disapproved") continue;
+        if (!p.offerId) continue;
+        const issues = (p.productStatus?.itemLevelIssues ?? []).map((i) => ({
+            code: i.code ?? "unknown",
+            severity: i.severity ?? "SEVERITY_UNSPECIFIED",
+            description: i.description ?? "",
+        }));
+        alerts.push({
+            merchant_id: merchantId,
+            product_id: p.offerId,
+            type: "google_disapproved",
+            detail: { issues },
+        });
+    }
+    return alerts;
+}
+
 /** Page size max conseillé par l'API Merchant pour products.list. */
 const PAGE_SIZE = 250;
 /** Borne anti-boucle (cf. LESSONS : un curseur qui se répète = run cloud qui hang). */

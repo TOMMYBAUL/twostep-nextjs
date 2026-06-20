@@ -3,6 +3,7 @@ import {
     classifyProductStatus,
     summarizeProductStatuses,
     fetchProcessedProducts,
+    buildDisapprovalAlerts,
     type GoogleProcessedProduct,
     type GoogleProductStatus,
 } from "@/lib/google/product-status";
@@ -146,5 +147,39 @@ describe("fetchProcessedProducts", () => {
     it("propagates a hard API error (anti silent failure)", async () => {
         const fetchPage = vi.fn().mockRejectedValue(new Error("Google API error: 503"));
         await expect(fetchProcessedProducts("at", "1", { fetchPage })).rejects.toThrow("Google API error: 503");
+    });
+});
+
+describe("buildDisapprovalAlerts", () => {
+    const issue = (code: string, severity = "DISAPPROVED", description = "") => ({ code, severity, description });
+
+    it("emits one alert per disapproved product with offerId, carrying its issues", () => {
+        const products: GoogleProcessedProduct[] = [
+            { offerId: "ok", productStatus: { destinationStatuses: [{ approvedCountries: ["FR"] }] } },
+            { offerId: "bad", productStatus: { destinationStatuses: [{ disapprovedCountries: ["FR"] }], itemLevelIssues: [issue("invalid_gtin", "DISAPPROVED", "GTIN invalide")] } },
+        ];
+        const alerts = buildDisapprovalAlerts(products, "merch-1");
+        expect(alerts).toHaveLength(1);
+        expect(alerts[0]).toEqual({
+            merchant_id: "merch-1",
+            product_id: "bad",
+            type: "google_disapproved",
+            detail: { issues: [{ code: "invalid_gtin", severity: "DISAPPROVED", description: "GTIN invalide" }] },
+        });
+    });
+
+    it("skips disapproved products without an offerId (no traceable product_id)", () => {
+        const products: GoogleProcessedProduct[] = [
+            { productStatus: { destinationStatuses: [{ disapprovedCountries: ["FR"] }] } },
+        ];
+        expect(buildDisapprovalAlerts(products, "merch-1")).toEqual([]);
+    });
+
+    it("defaults missing issue fields and tolerates no issues", () => {
+        const products: GoogleProcessedProduct[] = [
+            { offerId: "bad", productStatus: { destinationStatuses: [{ disapprovedCountries: ["FR"] }] } },
+        ];
+        const alerts = buildDisapprovalAlerts(products, "m");
+        expect(alerts[0].detail.issues).toEqual([]);
     });
 });

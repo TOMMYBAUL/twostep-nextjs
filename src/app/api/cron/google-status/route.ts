@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getGoogleAccessToken } from "@/lib/google/merchant";
-import { fetchProcessedProducts, summarizeProductStatuses } from "@/lib/google/product-status";
+import { fetchProcessedProducts, summarizeProductStatuses, buildDisapprovalAlerts } from "@/lib/google/product-status";
+import { chunk } from "@/lib/ingest/reconcile";
 import { captureError } from "@/lib/error";
 
 /**
@@ -87,6 +88,27 @@ export async function POST(req: NextRequest) {
                         disapprovedOfferIds: summary.disapprovedOfferIds.slice(0, 50),
                     },
                 );
+
+                // Persistance marchand (alerte qualité « rejeté par Google ») — GATED.
+                // Inerte tant que la migration 106 (type google_disapproved au CHECK)
+                // n'est pas appliquée ET GOOGLE_DISAPPROVAL_ALERTS=1. Sans la migration,
+                // l'INSERT échouerait sur la contrainte (cf. LESSONS 081/089). Le chemin
+                // Sentry ci-dessus reste, lui, toujours actif.
+                if (process.env.GOOGLE_DISAPPROVAL_ALERTS === "1") {
+                    const alerts = buildDisapprovalAlerts(products, conn.merchant_id);
+                    const { data: open } = await supabase
+                        .from("quality_alerts")
+                        .select("product_id")
+                        .eq("merchant_id", conn.merchant_id)
+                        .eq("type", "google_disapproved")
+                        .eq("status", "open");
+                    const openSet = new Set((open ?? []).map((a: { product_id: string | null }) => a.product_id));
+                    const fresh = alerts.filter((a) => !openSet.has(a.product_id));
+                    // Batcher les INSERT (URL/payload bornés, cf. LESSONS chunk()).
+                    for (const batch of chunk(fresh, 500)) {
+                        if (batch.length > 0) await supabase.from("quality_alerts").insert(batch);
+                    }
+                }
             }
         } catch (err) {
             errors++;
