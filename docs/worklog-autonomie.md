@@ -43,9 +43,12 @@ divergence Google MC sans signal)** dans les 4 webhooks.
 
 **Métrique** : 1 item [R] fermé (dernier gros write sync-engine couvert) **+ 1 bug de prod réel
 corrigé** (silent stock loss, north-star n°1) — la couverture a directement produit un fix, pas
-juste des tests. **PROCHAIN [R]** : rendre `pushInventoryToGoogle().catch(()=>{})` visible
-(captureError) dans les 4 webhooks (MEDIUM, réversible, vérifiable) — finding de la revue.
-Le haut du backlog (Rang 0-2) reste gated/externe (merge, migrations, design multi-tenant).
+juste des tests. **Suite (commit `12e08cc`)** : le finding de la revue traité dans la foulée —
+`pushInventoryToGoogle().catch()` (MEDIUM) + `notifyProductFavorites().catch()` (LOW) des 4
+webhooks remontent maintenant via captureError (observabilité seule, 0 flux). **PROCHAIN [R]** :
+couverture parse webhooks (partiel) OU `syncMerchantPOS` orchestrateur (intégration). Le haut du
+backlog (Rang 0-2) reste gated/externe (merge, migrations prod, design multi-tenant) — rien de
+neuf à escalader ce run (notify-extra vide ; décision 106+flag déjà tranchée par Thomas).
 
 ---
 
