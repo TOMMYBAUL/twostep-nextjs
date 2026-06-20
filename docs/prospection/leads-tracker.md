@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-19 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-20 (L'Auditeur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,122 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-06-20 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider (Gmail non créé — token expiré, 7ème session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Christophe Corbet (FJT FRAYSSINET JOAILLIER) | contact@frayssinet-joaillier.fr | Frayssinet Joaillier sur Two-Step — tes Rolex et TAG Heuer trouvées par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT RAFRAÎCHI 20/06. Rolex, Longines, TAG Heuer, Jaeger-LeCoultre, Boucheron. Modèles 2026 en boutique. 15 rue des Arts, actif confirmé 20/06. |
+| 2 | Carole Reynaud (ROBERTO GIANNELLI) | info@robertogiannellifrance.com | Roberto Giannelli sur Two-Step — tes chaussures modulables trouvées par les Toulousaines | ⚠️ NON CRÉÉ | ACA — DRAFT RAFRAÎCHI 20/06. Chaussures modulables à brides interchangeables, 20 rue du Languedoc. ⚠️ FLAG : établissement légal Castelginest depuis 2022 — boutique Toulouse à confirmer terrain avant envoi. |
+| 3 | Benoit Quintana (FAUR-QUINTANA) | info@faur-quintana.com | Faur-Quintana sur Two-Step — tes Hublot et Bell & Ross trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT RAFRAÎCHI 20/06. Hublot, Bell & Ross, Chaumet, Boucheron, Ginette NY, 19 place Victor Hugo. Actif confirmé 20/06. |
+| 4 | Nicolas Julius (DR SWAG) | drswagshopofficiel@gmail.com | DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — DRAFT RAFRAÎCHI 20/06. Jordan, New Era, Nike, Unkut, PRT by Booba. 13 rue Perchepinte, ouvert mar-sam 11h-19h. Actif confirmé 20/06. |
+| 5 | Rachel Nto (RACHEL HAIR) | csrachelhair@gmail.com | Rachel Hair sur Two-Step — tes prothèses et perruques trouvées par les Toulousaines | ⚠️ NON CRÉÉ | ACA — DRAFT RAFRAÎCHI 20/06. Prothèses capillaires cheveux naturels + perruques alopécie + association Chuchotte. 12 rue de Bayard. Actif confirmé 20/06. |
+
+*Note session 20/06 (L'Auditeur) : 0 lead NOUVEAU avec email (45 NOUVEAU, tous sans email — Carmes épuisé définitivement depuis 19/06, 208/208 prospects épuisés digitalement). 5 leads BROUILLON prioritaires rafraîchis via web search 20/06 — tous actifs sauf ⚠️ Roberto Giannelli (établissement légal quitté Toulouse en 2022 : confirmer boutique physique terrain avant envoi). Nouveaux détails : FJT modèles 2026, DR SWAG ajoute PRT by Booba, Faur-Quintana ajoute Boucheron, Rachel Hair ajoute association Chuchotte. **⚠️ BLOCAGE RÉCURRENT TOKEN GMAIL : 7ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06). Gmail MCP non disponible (serveur non connecté). ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès. Les 5 emails ci-dessous sont prêts à copier-coller.** Notion MCP indisponible (idem toutes sessions).*
+
+### TEXTES DES 5 EMAILS (prêts à copier-coller) — VERSION 20/06
+
+**1. Christophe Corbet (FJT FRAYSSINET JOAILLIER) — contact@frayssinet-joaillier.fr**
+Objet : Frayssinet Joaillier sur Two-Step — tes Rolex et TAG Heuer trouvées par les Toulousains
+
+> Bonjour Christophe,
+>
+> Frayssinet Joaillier, c'est 3 boutiques à Toulouse, détaillant officiel Rolex depuis 1984 — avec les modèles 2026 en boutique. Une référence joaillerie-horlogerie que peu de villes en France peuvent revendiquer.
+>
+> Le problème : un client qui cherche "Rolex Toulouse" depuis son téléphone tombe sur des sites avant de trouver ta boutique rue des Arts.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Rolex Toulouse" ou "TAG Heuer Toulouse", Two-Step lui montre que tu l'as en stock. Sans commission, sans livraison. Il vient chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**2. Carole Reynaud (ROBERTO GIANNELLI) — info@robertogiannellifrance.com**
+Objet : Roberto Giannelli sur Two-Step — tes chaussures modulables trouvées par les Toulousaines
+
+> Bonjour Carole,
+>
+> Roberto Giannelli, c'est un concept rare à Toulouse : des chaussures italiennes à brides interchangeables que chaque cliente adapte à sa tenue. Aucun concurrent direct en centre-ville.
+>
+> Le problème : les femmes qui cherchent "chaussures personnalisables Toulouse" en ligne ne voient pas encore ta boutique rue du Languedoc.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche ce type de produit depuis son téléphone, Two-Step lui montre ton stock disponible. Elle vient te voir. Pas de commission, pas de livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**3. Benoit Quintana (FAUR-QUINTANA) — info@faur-quintana.com**
+Objet : Faur-Quintana sur Two-Step — tes Hublot et Bell & Ross trouvés par les Toulousains
+
+> Bonjour Benoit,
+>
+> Faur-Quintana place Victor Hugo — 3 générations Quintana, revendeur Hublot, Bell & Ross, Chaumet, Boucheron et Ginette NY. La bijouterie-horlogerie indépendante de référence à Toulouse.
+>
+> Les clients qui cherchent une montre ou un bijou de prestige font leur recherche en ligne avant de se déplacer. Ils méritent de trouver ta boutique avant de commander sur un site.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Hublot Toulouse" depuis son téléphone, Two-Step lui montre que tu l'as en stock. Sans commission, sans livraison. Il vient chez toi.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**4. Nicolas Julius (DR SWAG) — drswagshopofficiel@gmail.com**
+Objet : DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousains
+
+> Bonjour Nicolas,
+>
+> DR SWAG rue Perchepinte depuis 2014 — le temple streetwear de Toulouse, Jordan, New Era, Nike, Unkut, PRT by Booba. 12 ans de boutique, c'est du solide.
+>
+> Le problème : un sneakerhead qui cherche une Jordan ou une casquette New Era spécifique à Toulouse cherche d'abord en ligne, sans savoir que tu l'as en boutique.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche "Jordan Toulouse" depuis son téléphone, Two-Step lui montre ton stock. Il passe rue Perchepinte le jour même. Pas de commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**5. Rachel Nto (RACHEL HAIR) — csrachelhair@gmail.com**
+Objet : Rachel Hair sur Two-Step — tes prothèses et perruques trouvées par les Toulousaines
+
+> Bonjour Rachel,
+>
+> Rachel Hair, c'est un créneau rare à Toulouse : prothèses capillaires en cheveux naturels, perruques sur-mesure, et derrière ça l'association Chuchotte pour les femmes touchées par l'alopécie. Une clientèle qui cherche activement et qui mérite de trouver.
+>
+> Le problème : quand une femme cherche "prothèse capillaire Toulouse" ou "perruque naturelle Toulouse" depuis son téléphone, elle ne sait pas encore que tu as exactement ça rue de Bayard.
+>
+> Je suis Thomas, je développe Two-Step : ton stock visible en temps réel. Elle vient directement chez toi. Sans commission, sans livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
 
 ## Rattrapage jeudi — 2026-06-19 (L'Eclaireur) — Carmes DEFINITIF — 0 email
 
