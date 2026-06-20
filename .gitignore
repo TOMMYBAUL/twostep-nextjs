@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# autonomie — config MCP locale de la boucle (contient le token Supabase, JAMAIS versionnee)
+/scripts/autonomy.mcp.json
+
 # next.js
 /.next/
 /out/

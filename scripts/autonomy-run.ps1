@@ -79,7 +79,12 @@ $before = (git rev-parse HEAD 2>$null)
 # Le format n'affecte PAS le travail de l'agent (commits identiques) : il change seulement la
 # sortie finale. stdout (JSON resultat) -> jsonOut ; stderr -> log.
 $jsonOut = "logs\autonomy-$ts.json"
-claude -p $prompt --dangerously-skip-permissions --output-format json > $jsonOut 2>> $log
+# Set MCP MINIMAL pour la boucle (Supabase seul) -> coupe le cout de schema des ~9 autres MCP
+# charges sinon a chaque run. Fichier gitignore (contient le token). Absent -> fallback config par defaut.
+$mcpArgs = @()
+$leanMcp = Join-Path $repo 'scripts\autonomy.mcp.json'
+if (Test-Path $leanMcp) { $mcpArgs = @('--mcp-config', $leanMcp, '--strict-mcp-config') }
+claude -p $prompt --dangerously-skip-permissions --output-format json @mcpArgs > $jsonOut 2>> $log
 $exit = $LASTEXITCODE
 $after = (git rev-parse HEAD 2>$null)
 "[{0}] END exit=$exit (HEAD $after)" -f (Get-Date -Format 'yyyyMMdd-HHmmss') | Out-File -FilePath $log -Append -Encoding utf8
