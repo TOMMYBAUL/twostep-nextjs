@@ -13,7 +13,7 @@ les 2 entrées précédentes : l'**orchestrateur `syncMerchantPOS`** lui-même (
 étaient couverts, pas le câblage d'ensemble). C'est le pilier 1 du north-star (« capter le stock
 de toute source en n'oubliant rien »).
 
-**Fait (commit `__HASH__`, 0 ligne de prod, réversible)** : `tests/pos-sync-engine-orchestrator.test.ts`
+**Fait (commit `4620d77`, 0 ligne de prod, réversible)** : `tests/pos-sync-engine-orchestrator.test.ts`
 (+5 tests) verrouille le **contrat catch→bookkeeping** de l'orchestrateur — l'invariant
 « ne rien perdre sans alerte » au niveau orchestration :
 1. **lock occupé** par un autre sync → retour all-zeros SANS toucher token/adaptateur/écriture
