@@ -5,6 +5,37 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-21 (session supervisée) · Two-Step Connect — MVP-1 : canal email-in stock (couvre Clictill/Fastmag)
+
+**Décision produit (avec Thomas)** : après recherche d'état-de-l'art, le marché POS indépendants
+FR est **majoritairement tablette** → l'agent desktop est une niche, pas la porte. Les POS réels
+de Thomas = **Clictill + Fastmag**, qui **emaillent un CSV planifié nativement**. → canal
+**email-in** = la porte. Formalisé en **ADR-002** (twostep-brain). Cloud-drive écarté (gate Google
+CASA), agent desktop différé. Voir mémoire `connect-strategie-ingestion`.
+
+**Livré (2 commits, gate vert, réversible)** :
+- `refactor(ingest)` `7deb696` : **cœur partagé** `ingestStockFileForMerchant`
+  (`lib/ingest/ingest-stock-file.ts`) extrait de `/api/ingest/stock` — comportement HTTP
+  identique, invariants conservés (idempotence hash, verrou, REPLACE+reconcile, statut honnête,
+  `last_file_hash` posé QUE si abouti = heartbeat). +8 tests.
+- `feat(ingest)` `8c68632` : **branche email** `stock-{slug}@in.twostep.fr` → cœur partagé.
+  Routeur pur `parseInboundAddress` (+8 tests, rétro-compat factures byte-for-byte). Garantit la
+  ligne `ingest_credentials` via `getOrCreateIngestToken` (verrou/heartbeat y sont keyés).
+- **Revue silent-failure : SOUND**. 2 flags **corrigés avant commit** : (A) multi-fichiers =
+  reconcile last-wins silencieux → **contrat snapshot unique** (>1 tableur → alerte + 0 ingestion) ;
+  (B) email stock sans tableur exploitable → `captureError` visible. Gate : tsc 0, **523 tests**.
+
+**RESTE** : (1) **ACTIVATION Thomas** = Resend inbound doit capter tout `@in.twostep.fr` (wildcard)
+sinon ajouter le motif `stock-`. (2) [R] **monitor de fraîcheur** sur `ingest_credentials.last_used_at`
+(couvrir le canal email, juger sur récence, pas `last_status`) — sinon un feed figé reste silencieux.
+(3) Pages onboarding guidées par POS (Clictill/Fastmag). (4) Connecteur API Hiboutik (si besoin).
+
+**⚠️ Concurrence** : `TwoStepAutonomy` **mise en pause (Disabled)** pendant la session supervisée
+(la boucle avait committé ~6× pendant la session précédente, risque de collision). **À RÉACTIVER**
+en fin de collaboration.
+
+---
+
 ## 2026-06-21 (run autonome, soir) · Rang 3 [R] — contrat d'orchestration `syncMerchantPOS` verrouillé (test-only)
 
 **Sourcing par signaux** : pas de signaux d'erreur réels (`notify-extra` vide, cost-ledger sain,
