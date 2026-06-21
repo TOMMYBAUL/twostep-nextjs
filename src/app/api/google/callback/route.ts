@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyState } from "@/lib/auth/state-token";
 import { createClient } from "@/lib/supabase/server";
 import { exchangeGoogleCode, getGoogleMerchantId } from "@/lib/google/merchant";
+import { defaultStoreCode } from "@/lib/google/store-code";
 import { encrypt } from "@/lib/email/encryption";
 import { captureError } from "@/lib/error";
 import { getSiteUrl } from "@/lib/url";
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
                 access_token: encrypt(tokens.access_token),
                 refresh_token: encrypt(tokens.refresh_token),
                 expires_at: tokens.expires_at,
-                store_code: `twostep-${merchantId.slice(0, 8)}`,
+                store_code: defaultStoreCode(merchantId),
             }, { onConflict: "merchant_id" });
 
         return NextResponse.redirect(`${baseUrl}/dashboard/google?connected=true`);

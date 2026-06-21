@@ -6,6 +6,7 @@ import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { updateStockAtomic } from "@/lib/pos/update-stock";
+import { resolveWebhookProduct } from "@/lib/pos/resolve-product";
 
 export async function POST(request: NextRequest) {
     const body = await request.text();
@@ -19,15 +20,27 @@ export async function POST(request: NextRequest) {
     const webhookId = request.headers.get("x-lightspeed-event-id") ?? request.headers.get("x-request-id");
     if (webhookId) {
         const check = createAdminClient();
-        const { data: existing } = await check
+        // Mode DELTA : un échec de lecture/écriture de l'idempotence NE DOIT PAS être avalé.
+        // Si la lecture échoue, `existing` serait null → le webhook serait re-traité (double
+        // décrément de la vente). On LÈVE le signal via 500 (le POS retente) plutôt que de
+        // risquer un double-comptage silencieux.
+        const { data: existing, error: checkErr } = await check
             .from("webhook_events")
             .select("id")
             .eq("webhook_id", webhookId)
             .maybeSingle();
+        if (checkErr) {
+            captureError(checkErr, { route: "webhooks/lightspeed", phase: "idempotence-check", webhookId });
+            return NextResponse.json({ error: "Idempotence check failed" }, { status: 500 });
+        }
         if (existing) {
             return NextResponse.json({ ok: true, skipped: "duplicate" });
         }
-        await check.from("webhook_events").insert({ webhook_id: webhookId, provider: "lightspeed" });
+        const { error: insertErr } = await check.from("webhook_events").insert({ webhook_id: webhookId, provider: "lightspeed" });
+        if (insertErr) {
+            captureError(insertErr, { route: "webhooks/lightspeed", phase: "idempotence-insert", webhookId });
+            return NextResponse.json({ error: "Idempotence insert failed" }, { status: 500 });
+        }
     }
 
     let event: Record<string, unknown>;
@@ -47,25 +60,23 @@ export async function POST(request: NextRequest) {
         const supabase = createAdminClient();
 
         for (const update of updates) {
-            const { data: product } = await supabase
-                .from("products")
-                .select("id, merchant_id")
-                .eq("pos_item_id", update.pos_item_id)
-                .single();
-
+            const product = await resolveWebhookProduct(supabase, update.pos_item_id, "lightspeed");
             if (!product) continue;
 
-            // Atomic delta stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta");
+            // Atomic delta stock update — eliminates TOCTOU race condition.
+            // source_ts = horodatage de la vente (timeStamp Lightspeed) plutôt que l'heure
+            // de réception serveur → confidence "vu il y a X" honnête.
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook", update.updated_at);
             const newQty = Math.max(0, previousQty + update.quantity);
 
             await recalculateGroupSizesAdmin(product.id);
 
-            await supabase.from("feed_events").insert({
+            const { error: feedErr } = await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,
                 product_id: product.id,
                 event_type: "sale",
             });
+            if (feedErr) captureError(feedErr, { route: "webhooks/lightspeed", phase: "feed-event", productId: product.id });
 
             // Notify favorites when product restocked (quantity went up)
             if (update.quantity > 0 && newQty > 0 && previousQty === 0) {
@@ -78,19 +89,22 @@ export async function POST(request: NextRequest) {
                     title: "De retour en stock !",
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
-                }).catch(() => {});
+                }).catch((e) => captureError(e, { route: "webhooks/lightspeed", phase: "push-notify", productId: product.id }));
             }
         }
 
         // Push updated inventory to Google
         if (updates.length > 0) {
-            const { data: firstProduct } = await supabase
+            const { data: firstProduct, error: merchantErr } = await supabase
                 .from("products")
                 .select("merchant_id")
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
+            if (merchantErr) captureError(merchantErr, { route: "webhooks/lightspeed", phase: "merchant-lookup-google" });
             if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
+                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
+                    captureError(e, { route: "webhooks/lightspeed", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+                );
             }
         }
 

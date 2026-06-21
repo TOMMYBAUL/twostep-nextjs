@@ -1,6 +1,8 @@
 import crypto from "crypto";
 
 import { signState } from "@/lib/auth/state-token";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate, PosProductUpdate } from "./types";
 
 function getBaseUrl(): string {
@@ -10,7 +12,7 @@ function getBaseUrl(): string {
 }
 
 async function squareFetch(path: string, accessToken: string, options?: RequestInit) {
-    const res = await fetch(`${getBaseUrl()}/v2${path}`, {
+    const res = await fetchWithRetry(`${getBaseUrl()}/v2${path}`, {
         ...options,
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -95,8 +97,11 @@ export const squareAdapter: IPOSAdapter = {
         const imageIdsToFetch = new Set<string>();
         const categoryIdsToFetch = new Set<string>();
         let cursor: string | undefined;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) throw new Error(`Square pagination > ${maxPages} pages — anomalie API (boucle ?)`);
             const params = new URLSearchParams({ types: "ITEM" });
             if (cursor) params.set("cursor", cursor);
 
@@ -122,9 +127,9 @@ export const squareAdapter: IPOSAdapter = {
                             ? `${item.name} — ${v.name}`
                             : item.name;
 
-                    // SKU is only a valid EAN/UPC if it's 12-13 digits
-                    const sku: string | null = v.sku || null;
-                    const ean = sku && /^\d{12,13}$/.test(sku) ? sku : null;
+                    // EAN = identité : canonicalisation + checksum GTIN (UPC-12 → EAN-13).
+                    // Un SKU non-GTIN (interne) → null. Source unique : canonicalizeEan.
+                    const ean = canonicalizeEan(v.sku);
 
                     products.push({
                         pos_item_id: variation.id,
@@ -242,8 +247,11 @@ export const squareAdapter: IPOSAdapter = {
     async fetchPromos(accessToken: string): Promise<POSPromo[]> {
         const promos: POSPromo[] = [];
         let cursor: string | undefined;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) throw new Error(`Square pagination (promos) > ${maxPages} pages — anomalie API`);
             const params = new URLSearchParams({ types: "DISCOUNT" });
             if (cursor) params.set("cursor", cursor);
 

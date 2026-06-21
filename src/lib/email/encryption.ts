@@ -1,6 +1,7 @@
-// DRAFT — to copy into src/lib/email/encryption.ts after review
-// Version: v1 versioned format + STRICT_DECRYPT fail-safe
-// Backwards-compatible during transition: legacy unencrypted tokens log warning, not silently accepted
+// Chiffrement AES-256-GCM des secrets (tokens POS, credentials).
+// Format versionné v1:iv:tag:ciphertext. Le flag STRICT_DECRYPT (à activer en
+// prod APRÈS migration des tokens legacy) fait throw au lieu d'accepter un token
+// non chiffré — cf. LESSONS "Sécurité" pour le rollout en 5 phases.
 
 import crypto from "crypto";
 

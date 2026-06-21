@@ -12,13 +12,120 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 ## Sécurité
 - ❌ `decrypt()` fail-open silencieux (`if (!ciphertext.includes(":")) return ciphertext;`) acceptait n'importe quel token non-chiffré sans erreur. Risque : fuite Vercel env = fuite TOUS tokens POS marchands. Fix : versioning format `v1:iv:tag:ciphertext` + flag `STRICT_DECRYPT=true` qui throw au lieu de fail-open. Migration tokens DB obligatoire AVANT activation strict via `scripts/migrate-encrypt-tokens.mjs`. Rollout 5 phases : déploy fix transitoire → migrate DB → audit Sentry → set STRICT → redeploy. Branche `fix/encryption-fail-open` (2026-04-25)
 
+## Ops / résilience (V3, 2026-06-13)
+- ❌ `instrumentation.ts` sans `export const onRequestError = Sentry.captureRequestError` → les crashs non catchés des Server Components / route handlers ne remontent JAMAIS à Sentry. Ajouté.
+- ❌ `resync-stock` écrivait `last_sync_status:"ok"` même quand des upserts stock échouaient (`if(!error) updated++` avalait l'erreur) → dérive de stock derrière un voyant vert. Fix : captureError par échec + statut "partial" si writeErrors>0.
+- ❌ `google-feed` : token Google expiré → `errors++; continue` silencieux (feed mort sans signal) ; et poussait TOUS les produits du marchand (pas de filtre visible/validated) = produits non identifiés sur Google Shopping. Fix : statut "error"+Sentry sur token absent, gate `visible+validated+!archived+!variant` sur le SELECT, statut "partial" si pushed<eligible.
+- ⚠️ `STRICT_DECRYPT=true` PAS activable tel quel : 1 token legacy (non `v1:`) dans `pos_connections` → throw au décryptage = POS down. Migrer via `scripts/migrate-encrypt-tokens.mjs` AVANT activation. (0 token POS dans merchant_pos_credentials, 0 Google.)
+- Backup DB : `.github/workflows/db-backup.yml` (pg_dump quotidien → artefact 30j). Nécessite le secret GitHub `SUPABASE_DB_URL` (connection directe port 5432, pas le pooler).
+
+## OAuth caisses (POS) — revue Collecte ① (2026-06-17)
+- ❌ `state` OAuth signé HMAC mais SANS expiration ni anti-rejeu → un state capturé est rejouable indéfiniment. Fix : timestamp signé + rejet >10 min (state-token.ts) + tests.
+- ❌ Lightspeed `exchangeCode` ne vérifiait pas `res.ok` → `expires_in` undefined → `new Date(NaN).toISOString()` crash / token vide stocké comme valide. Fix : garde res.ok + access_token + défaut expires_in.
+- ❌ Shopify `exchangeCode` POSTait le `client_secret` vers `https://${shop}/...` sans valider `shop` → SSRF/fuite secret. Fix : regex `^[a-z0-9][a-z0-9-]*\.myshopify\.com$`.
+- ✅ CORRIGÉ (2026-06-17, finalisation OAuth) : scope Lightspeed → `employee:inventory_read` (moindre privilège, lecture catalogue+stock) ; refresh dédupliqué via `ensureFreshAccessToken` (le sync FAISAIT déjà le refresh — c'était de la DUPLICATION, pas un trou ; l'audit s'était trompé, vérifié) ; HMAC Shopify du callback vérifié (`verifyShopifyOAuthHmac`) ; watchdog reconnexion (quality-check → alerte `pos_disconnected` si last_sync_status='error', migration 105).
+- ⏳ STRICT_DECRYPT : code prêt, **bloqué par 1 token legacy = connexion Square du compte "Two-Step Test"**. Activable après suppression de ce test + set env Vercel prod. Décision Thomas (ne pas supprimer sa connexion de test sans accord).
+- ⚠️ NB config externe : changer le scope Lightspeed dans le code exige que l'app OAuth enregistrée chez Lightspeed autorise `employee:inventory_read` (console dev Lightspeed) — à vérifier avant la 1re connexion réelle.
+
 ## Next.js / Vercel
-(vide)
+- ❌ `vercel env add` par stdin PowerShell enregistre des valeurs VIDES (et l'argument positionnel est refusé par CLI ≥54.13) → utiliser `--value` ou l'API REST (`POST /v10/projects/{id}/env?upsert=true`, token dans `%APPDATA%\xdg.data\com.vercel.cli\auth.json`). Vérifier avec `vercel env pull` + longueur des valeurs. (2026-06-13)
+- ❌ Script npm `prepare` (`git config core.hooksPath`) casse `npm install` sur Vercel (pas de .git en build CLI) → wrappé dans node try/catch. (2026-06-13)
+- ❌ **NetLimiter** (`nllMonFltProxy`, var `SSLKEYLOGFILE`) intercepte le TLS sortant ; sa CA racine n'est dans aucun magasin → git (`schannel: SEC_E_UNTRUSTED_ROOT`) ET node (`unable to verify the first certificate`, même avec `--use-system-ca`) cassent par intermittence. Fixes durables : (1) git en **SSH** (`git@github.com:...`, clé ed25519 sans passphrase, NetLimiter ne touche pas le port 22) ; (2) gate pre-push **déterministe** = `test:run` exclut `tests/db/**` (réseau live) → tests live isolés dans `npm run test:db` (vitest.config.db.ts), à lancer en CI. Vraie correction de fond = désactiver l'inspection TLS de NetLimiter ou whitelister node/git. (2026-06-18)
+
+## Sécurité RLS (audit 2026-06-13)
+- ❌ Tester une protection sur une base sans données = faux négatif. La RLS `products`/`stock`/`merchants` était `USING(true)` (001 jamais resserrée) ; le test anon renvoyait `[]` UNIQUEMENT car 0 produit `visible=false` n'existait. Toujours croiser test live + lecture du code + raisonnement sur l'état futur (1er marchand avec pending/masked = fuite). Fix 097.
+- ❌ Column-grant (`REVOKE/GRANT SELECT(cols)`) sur une table référencée par le sous-select d'une policy RLS d'une AUTRE table → `permission denied` en cascade (révoquer merchants.user_id a cassé la lecture anon de products). Solution : encapsuler le cross-table dans une fonction `SECURITY DEFINER` (`auth_owns_merchant`). Fix 098. **Toujours re-tester les surfaces publiques en anon après un REVOKE.**
+- ❌ Deux overloads d'une RPC (avec/sans param `DEFAULT`) = `PGRST203` ambigu → route morte. Garder UNE signature par nom. Fix 099 (feed/discover/promos étaient cassés en prod).
+
+## Données produit (taille / catégorie / available_sizes)
+- ❌ Le parseur de fichier (detectColumns) ne reconnaissait AUCUNE colonne taille/pointure → tailles perdues pour les exports `nom|taille|qté|prix` (cas mode/sneakers). Ajouté SIZE_HEADERS + ParsedInvoiceItem.size ; snapshot préfère la colonne (fiable) à extractSize(nom) (déduit). available_sizes porte `source` (file_column|name_regex|pos). (2026-06-14)
+- ❌ groupVariantsByEAN réécrivait `available_sizes` depuis `products.size` (NULL pour les produits-fichier, dont les tailles sont groupées en mémoire par le snapshot) → écrasait les tailles par `[]`. Deux mécanismes de groupage concurrents. Rendu non-destructif : n'écrit available_sizes que si des tailles sont calculées. Trouvé par e2e (available_sizes vide après push). (2026-06-14)
+- ❌ categorize appliquait la catégorie IA sans seuil de confiance → fausses catégories. Seuil 70 ; en dessous, pas appliquée mais tentative marquée (sélection sur ai_categorized_at null = anti-reboucle). (2026-06-14)
+- ⚠️ Rappel : l'EAN donne l'IDENTITÉ (nom/marque/photo/catégorie brute), JAMAIS la taille ni la quantité (données de la source marchand). KicksDB (sneakers, exploite le SKU) est inerte sans KICKSDB_API_KEY (gratuite).
+
+## Modèle de données stock (cœur "data propre", 2026-06-17)
+- ❌ La table stock ne traçait PAS la source ({quantity, updated_at} seulement) → la confidence DÉDUISAIT la force de source du pos_item_id (mensonge possible : un produit POS ajusté à la main restait "temps réel/Disponible"). Fix 104 : colonnes `stock.source` + `source_ts`, chaque writer déclare sa source (webhook/pos_sync/file_push/scan/invoice/cloture/manual), confidence lit `sourceStrengthFromStored(stock.source)`. Fallback legacy resolveSourceStrength conservé.
+- ❌ `update_stock_atomic` last-write-wins naïf : un REPLACE pouvait écraser une vérité plus fraîche. Fix 104 : garde anti-régression (mode absolute n'écrase pas si source_ts entrant < source_ts en base ; delta s'applique toujours). ⚠️ LIMITE : le cas "fichier périmé écrase webhook récent" n'est PAS résolu (on n'a pas l'heure de génération du fichier — source_ts=now() à réception). Résolution multi-source complète = **ledger append-only**, différé jusqu'à volume/multi-canal réel.
+- ⚠️ Pour changer la signature d'une RPC appelée par PostgREST : DROP + CREATE (pas CREATE OR REPLACE avec params en plus → crée un overload ambigu PGRST203).
+- ❌ Colonne `NOT NULL DEFAULT 'manual'` + un writer qui OMET la colonne = dérive silencieuse : le batch stock de `syncMerchantPOS` écrivait sans `source` → un stock CAISSE retombait sur `manual` → confidence l'affichait "Stock probable" au lieu de "Disponible". **Règle : pour une colonne dont le DEFAULT a un sens métier dégradé, grep TOUS les writers (`.from("stock").upsert/insert`) et vérifier que chacun la déclare** — pas seulement celui qu'on regarde. (sync-engine était le seul à l'omettre ; webhooks/resync/file_push/untracked OK.) Fix : helper pur `buildPosStockRows`. (Stockage, 2026-06-19)
+- ❌ Un seul `.in("col", [milliers d'UUID])` PostgREST = URL de centaines de Ko → dépasse la limite serveur → échec EN BLOC (ici la réconciliation stock=0 → faux "en stock" persistant). **Batcher (lots de 500) toute écriture `.in()` dont la liste est non bornée.** Helper pur `chunk()`. (Stockage, 2026-06-19)
+- ❌ Garde INERTE faute de câblage : la garde anti-régression absolue de `update_stock_atomic` (source_ts entrant < base → no-op) ne servait à RIEN car les 4 routes webhook appelaient `updateStockAtomic(...,"webhook")` sans passer `sourceTs` → défaut `now()` (réception serveur), jamais l'heure réelle. Out-of-order Square/Zettle (absolu) = le périmé écrasait le frais. Fix : router `update.updated_at` (déjà calculé par parseWebhookEvent) en `sourceTs`. **Règle : un param de sécurité optionnel d'une RPC doit être vérifié comme RÉELLEMENT passé par tous les appelants — sinon la garde est cosmétique.** (Collecte ③, 2026-06-19)
+
+- ❌ `const { data } = await supabase.from(...).select(...)` qui **jette le `error`** : un échec DB devient indistinct d'« empty ». BUG seulement quand empty→corruption/no-op masqué en succès (≠ auth/lookup où `null→401` est correct → ~250 sites, NE PAS tous chasser). Trois cas réels corrigés : ingest snapshot (read produits échoué → tout le catalogue recréé en doublon ; read stock échoué → réconciliation no-op → vendus restent « en stock ») → lève / réconcil. annulée+visible ; resync (`ok:true,fetched:0` alors que rien guéri) → `ok:false`/lève. **Discriminateur : destructurer `error` est requis SSI l'appelant ne sait pas distinguer erreur de vide ET que vide cause une perte silencieuse.** (2026-06-20)
+
+- ❌ Un rollup « somme des tailles → stock du principal » appliqué à un produit SOLO SANS taille
+  donne total=0 et ÉCRASE la qté autoritaire que le webhook venait de poser → faux « rupture »
+  silencieux (vente perdue). `recalculateGroupSizesAdmin` (4 webhooks, après `updateStockAtomic`)
+  totalisait `availableSizes.reduce` (membres tailles seulement). Fix : early-return si
+  `availableSizes` vide (= solo, pas un groupe à totaliser) → ne pas toucher stock ni
+  available_sizes. **Règle : un calcul dérivé qui REMPLACE une valeur autoritaire doit no-op
+  quand son entrée est vide, jamais écrire 0.** Bug présent dans les DEUX jumeaux
+  (`recalculateGroupSizes` sync-engine + `recalculateGroupSizesAdmin`) — corriger les deux.
+  Writes du rollup rendus non silencieux (captureError sans lever : stock déjà committé, lever
+  rejouerait le webhook = double-décrément delta). (2026-06-20)
+
+## Silent-failure : rendre un write « non silencieux »
+- ❌ Transformer un write avalé (`error` jeté) en **throw** AUGMENTE la surface de throw →
+  un caller dont le `catch` ne fait que `console.error` rend la nouvelle défaillance
+  **Sentry-invisible** en prod (pire qu'avant : on croit l'avoir rendue visible). **Règle :
+  après avoir fait lever un symbole, grep TOUS ses callers et vérifier que chaque `catch`
+  appelle `captureError`, pas seulement `console.error`.** Cas : `groupVariantsByEAN` rendu
+  throw → `invoices/[id]/validate` n'avait que `console.error`. (Trouvé par silent-failure-hunter, 2026-06-21)
+- ⚖️ **Throw vs captureError-et-continue** se choisit par MODE D'ÉCHEC, pas par uniformité :
+  LÈVE si (intégrité/faux-positif) ET (write absolu+idempotent) ET (avant le bookkeeping
+  succès) → re-converge au re-run sans double-comptage (ex. `groupVariantsByEAN`, marquage
+  `pending_review`). CAPTURE-et-continue si l'enjeu est moindre (métadonnée périmée, promo
+  manquante) ET qu'une ligne fautive ne doit pas **figer** tout le sync du marchand (un throw
+  re-planterait au même produit à chaque run) — et alors le **compteur ne compte que les
+  succès réels** (`products_updated`/`promos_imported`). (2026-06-21)
+
+- ❌ `resolveWebhookProduct` (4 routes webhook POS) faisait `const { data } = ...` sur la
+  lecture produit par `pos_item_id` → un échec DB devenait indistinct de « produit non suivi »
+  (les deux → `null` → `if(!product) continue` → 200 OK). Une MAJ stock temps réel perdue, le
+  POS ne renvoie jamais = perte silencieuse n°1. Fix : LÈVE sur `error` (≠ 0-candidat qui reste
+  null normal) → catch route → captureError + 500 → retry POS. **Mode = récupérabilité** : absolu
+  (Square/Zettle, pas d'idempotence) → retry ré-applique = récupéré ; delta (Shopify/Lightspeed,
+  `webhook_events` inséré AVANT la boucle = at-most-once) → retry dédupliqué = au moins VISIBLE,
+  l'idempotence-first protège du double-décrément. (2026-06-21, revue silent-failure-hunter)
+- ⚖️ **Idempotence webhook : le check ET l'insert `webhook_events` doivent destructurer `error`.**
+  Un check qui avale l'erreur → `existing=null` → re-traitement → **double-décrément delta**. Fix :
+  `captureError` + 500 (retry → dedup). Un insert avalé idem. (Finding 3a/3b, 2026-06-21)
+
+## Canaux sortie / feeds externes
+- ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
+
+## Identifiants externes (clé de jointure côté plateforme tierce)
+- ❌ **Deux chemins de code dérivant le MÊME identifiant externe de sources différentes** créent
+  des entités fantômes en double côté plateforme. Cas : le `store_code` Google LFP était
+  `twostep-{id8}` (Voie A Content API, persisté en DB) côté crons, mais le **`slug`** côté feed XML
+  (Voie B) → Google voyait DEUX magasins pour un marchand → inventaires jamais réconciliés = faux
+  positif. **Règle : un identifiant qui sert de clé de jointure chez un tiers (store_code, GTIN,
+  account ref) doit avoir UNE source unique** (helper `resolveStoreCode` : valeur persistée prime,
+  défaut déterministe en repli, jamais une 2ᵉ dérivation) — grep tous les sites qui le produisent.
+  (`src/lib/google/store-code.ts`, 2026-06-20)
+
+## Gate visibilité produits
+- ❌ `groupVariantsByEAN` (sync-engine, post-pass appelé par ingestion + POS) rendait visibles (stock>0) tous les produits dont `review_status !== 'pending_review'` — donc aussi les `'pending'`/`'masked'` du gate cascade (089), court-circuitant le "zéro faux positif". Masqué tant que l'enrichissement tournait INLINE juste après (il re-settait visible) ; révélé par le découplage async V2. Fix : ne rendre visible QUE `review_status === 'validated'` (NULL = legacy/default validated OK). Détecté par l'e2e local (visible=true/score=null avant worker). (2026-06-13)
+- ⚠️ Hot-reload Next/turbopack ne prend pas toujours un changement de lib importée par une route API → si un fix ne se reflète pas en e2e, **redémarrer le dev server** (kill port 3000) avant de conclure que le fix est faux. (2026-06-13)
+
+## Schéma DB
+- ❌ Migration qui documente de nouvelles valeurs d'enum/CHECK sans ALTÉRER la contrainte (081 vs 089 : `review_status` 'pending'/'masked' refusés en prod pendant des semaines, toute création produit du pipeline cassée). Détecté uniquement par le e2e d'ingestion. Règle : toute nouvelle valeur d'état → grep le CHECK existant dans les migrations AVANT. Fix : 096. (2026-06-13)
 
 ## Git / workflow
+- ⚠️ Un run autonome interrompu (ledger `exit=1`) peut laisser du WIP **non committé** dans le working tree. **Au démarrage : lire `git status`** — si un fichier est modifié et que le diff est sain/aligné, le **FINIR** (tests + revue + commit) au lieu de le jeter ou d'empiler dessus à l'aveugle. Cas vécu : `google/inventory.ts` (helpers purs + fix silent-failure) laissé par le run `131701` exit=1 → fini run 4. (2026-06-20)
 - ❌ Ne jamais commiter directement sur main → toujours créer une branche feat/<nom>
 - ❌ Email git : ne pas utiliser thomasbauland1304@gmail.com → utiliser bauland@twostep.fr
 - ❌ Push sans lancer `npm run test:run` → CI rouge = révélé au mail GitHub. Hook pre-push installé le 2026-04-22 dans `.githooks/pre-push` (tests + tsc auto). Activation : `npm run prepare` (auto après clone via npm). Bypass urgence : `SKIP_PRE_PUSH=1 git push`
+
+## Parsing / data-integrity (Collecte ⑤ + Triage, 2026-06-19)
+- ❌ `Number(x) || défaut` détruit un **0 légitime** (prix attesté gratuit, qté en rupture) ET, pour la qté, `Number(null)===0` / `Number("")===0` (pas NaN !) → un champ ABSENT devient 0 au lieu du défaut "présence". Règle : garder la valeur BRUTE (`x != null && x !== ""`) avant de tester `Number.isFinite`, ne retomber sur le défaut que si vraiment absent/illisible. (parseJsonResponse, spreadsheet, einvoice-cii, parse-price callers.)
+- ❌ Texte extrait d'un XML par **regex** sans décoder les entités → toute marque avec `&` (D&G, H&M, obligatoirement `&amp;` en XML valide) stockée polluée. Décoder numériques + nommées, `&amp;` EN DERNIER (anti double-décode). (parseCiiXml)
+- ❌ Matching SKU en **exact-case** alors que l'EAN est canonique et le nom normalisé → `REF-001` (CSV) vs `ref-001` (POS) = doublon. `.toLowerCase()` des 2 côtés (set + get). (match-product.ts ; snapshot.ts le faisait déjà → asymétrie).
+- ❌ Helper de parse LLM qui `return []` sur réponse malformée = échec MASQUÉ : le caller compte 0 échec, et si l'état "tenté" n'est pas marqué (ex. `ai_categorized_at` reste null) il RE-tente à chaque run en brûlant des tokens, sans trace (coût caché). Pire : un JSON valide mais **non-tableau** (`{"error":...}`) passe `JSON.parse` puis crashe le `for...of` du caller HORS try/catch (TypeError non catchée → route down). Règle : un parseur LLM **LÈVE** (non-JSON ET non-tableau, garde `Array.isArray`) → routé vers le catch existant du caller qui compte/logue. (parseCategorizationResponse, 2026-06-19)
+- ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
+
+## Git / hooks
+- ❌ `git add -A` après une série de commits a happé les fichiers régénérés par le **hook gitnexus** (`analyze` réécrit ses blocs managés `<!-- gitnexus:start -->` dans CLAUDE.md/AGENTS.md + les SKILL.md) dans un commit `docs(...)` sans relecture → contenu auto-généré bénin mais bundle trompeur. Règle : quand un hook PostToolUse peut régénérer des fichiers, **stager les chemins explicites** (`git add src/... tests/... docs/...`) ou vérifier `git status` avant `git add -A`. (2026-06-19)
 
 ## Fix bug cross-module
 - ❌ Corriger un code sans mettre à jour les tests qui référencent l'ancienne valeur → grep la constante/valeur dans `tests/` avant commit. Commit `1e45f3d fix(google): align LFP feed format` a corrigé `feed.ts` mais pas `feed.test.ts` → 2 tests failaient depuis (2026-04-22)
@@ -27,6 +134,7 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Sur Windows, winget et npm installent deux versions de Claude Code → mettre à jour les DEUX à chaque fois
 - ❌ Bun 1.3.11 crashe (Illegal instruction) en subprocess Windows → `bun upgrade` vers ≥ 1.3.13 (2026-04-22)
 - ❌ `/plugin marketplace add X` + `/plugin install Y` sur la MÊME ligne : Claude Code concatène → lancer chaque slash command séparément (2026-04-22)
+- ❌ Un script `.ps1` exécuté par le Planificateur (PowerShell 5.1) DOIT être en **ASCII pur** (ou UTF-8 **avec BOM**) : un `.ps1` UTF-8-sans-BOM contenant emoji/accents est lu en ANSI → **erreur de parsing → exit 1, le script ne démarre même pas** (aucun log). Symptôme vécu : tâche `TwoStepAutonomy` LastResult=0x1 sans log, 0 notif (2026-06-19). `scripts/autonomy-run.ps1` gardé ASCII pur ; vérifier via `[Parser]::ParseFile` + compter les octets >127.
 
 ## Outillage installé
 - **graphify** : graphe de connaissances codebase, output dans `graphify-out/` (ignoré par git). Mettre à jour via `/graphify` ou `graphify update .`

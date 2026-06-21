@@ -5,6 +5,8 @@ export type ParsedInvoiceItem = {
     brand: string | null;
     quantity: number;
     unit_price: number | null;
+    /** Taille issue d'une COLONNE dédiée du fichier (fiable), si présente. null sinon. */
+    size?: string | null;
 };
 
 export type ParsedInvoice = {

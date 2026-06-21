@@ -52,18 +52,43 @@ export function parseJsonResponse(raw: string): ParsedInvoice {
         jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
     }
 
-    const parsed = JSON.parse(jsonStr);
+    // Réponse LLM vide ou sans objet JSON : `JSON.parse("")` lèverait une
+    // SyntaxError opaque qui remonterait en 500 générique (diagnostic perdu).
+    // On lève un message explicite (la cascade index.ts l'agrège lisiblement).
+    if (!jsonStr || firstBrace === -1 || lastBrace === -1) {
+        throw new Error("LLM returned no JSON object (empty or non-JSON response)");
+    }
 
+    let parsed: Record<string, unknown>;
+    try {
+        parsed = JSON.parse(jsonStr);
+    } catch (e) {
+        throw new Error(`LLM returned malformed JSON: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
+    const rawItems = Array.isArray(parsed.items) ? parsed.items : [];
     return {
-        supplier_name: parsed.supplier_name ?? null,
-        invoice_date: parsed.invoice_date ?? null,
-        items: (parsed.items ?? []).map((item: Record<string, unknown>) => ({
-            name: String(item.name ?? ""),
-            ean: item.ean ? String(item.ean) : null,
-            sku: item.sku ? String(item.sku) : null,
-            brand: item.brand ? String(item.brand) : null,
-            quantity: Number(item.quantity) || 1,
-            unit_price: item.unit_price != null ? Number(item.unit_price) : null,
-        })),
+        supplier_name: (parsed.supplier_name as string | null) ?? null,
+        invoice_date: (parsed.invoice_date as string | null) ?? null,
+        items: rawItems.map((item: Record<string, unknown>) => {
+            // Quantité : on honore une valeur explicite (y compris 0) ; on ne
+            // retombe sur 1 ("présence") que si elle est absente/illisible —
+            // `|| 1` transformait à tort un 0 explicite (rupture) en 1 (fantôme).
+            // NB : `Number(null)` et `Number("")` valent 0 → on garde la valeur
+            // brute pour ne PAS confondre "absent" (→1) avec un vrai 0.
+            const rawQty = item.quantity;
+            const qtyNum = Number(rawQty);
+            const hasQty = rawQty != null && rawQty !== "" && Number.isFinite(qtyNum);
+            const quantity = hasQty ? Math.max(0, Math.trunc(qtyNum)) : 1;
+            const priceNum = Number(item.unit_price);
+            return {
+                name: String(item.name ?? ""),
+                ean: item.ean ? String(item.ean) : null,
+                sku: item.sku ? String(item.sku) : null,
+                brand: item.brand ? String(item.brand) : null,
+                quantity,
+                unit_price: item.unit_price != null && Number.isFinite(priceNum) ? priceNum : null,
+            };
+        }),
     };
 }

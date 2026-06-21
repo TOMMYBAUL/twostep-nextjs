@@ -3,12 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
+import { invoiceStatusForParse } from "@/lib/parser/invoice-status";
+import { parseInboundAddress, type InboundChannel } from "@/lib/ingest/inbound-address";
+import { ingestStockFileForMerchant } from "@/lib/ingest/ingest-stock-file";
+import { getOrCreateIngestToken } from "@/lib/ingest/token";
 import { captureError } from "@/lib/error";
 
 const INBOUND_DOMAIN = process.env.INBOUND_EMAIL_DOMAIN ?? "twostep.fr";
 const WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET ?? "";
 
 const ACCEPTED_EXTENSIONS = new Set([".pdf", ".xlsx", ".xls", ".csv"]);
+// Canal stock : QUE des tableurs (pas de PDF → pas d'appel LLM sur ce chemin machine).
+const STOCK_EXTENSIONS = new Set([".xlsx", ".xls", ".csv"]);
 
 function getExtension(filename: string): string {
     const dot = filename.lastIndexOf(".");
@@ -25,6 +31,8 @@ function verifyWebhookSignature(body: string, signature: string): boolean {
         return false;
     }
 }
+
+type EmailAttachment = { filename: string; content: string; content_type: string };
 
 export async function POST(request: NextRequest) {
     const rawBody = await request.text();
@@ -51,42 +59,101 @@ export async function POST(request: NextRequest) {
         ? emailData.to.map((t: { email?: string } | string) => typeof t === "string" ? t : t.email ?? "")
         : [emailData.to ?? ""];
 
-    // Find which merchant this email is for
+    // Find which merchant + CHANNEL this email is for.
+    // Adresse : stock-{slug}@domain (stock) | factures-{slug}@domain (factures) | {slug}@domain (factures).
     const supabase = createAdminClient();
-    let merchantId: string | null = null;
+    let resolved: { merchantId: string; channel: InboundChannel } | null = null;
 
     for (const toAddr of toList) {
-        const lower = toAddr.toLowerCase();
-        if (!lower.endsWith(`@${INBOUND_DOMAIN}`)) continue;
-
-        // Extract slug: "factures-dear-skin-abc12345@in.twostep.fr" → "dear-skin-abc12345"
-        const prefix = lower.replace(`@${INBOUND_DOMAIN}`, "");
-        const slug = prefix.replace(/^factures-/, "");
+        const parsed = parseInboundAddress(toAddr, INBOUND_DOMAIN);
+        if (!parsed) continue;
 
         const { data: merchant } = await supabase
             .from("merchants")
             .select("id")
-            .eq("inbound_email_slug", slug)
+            .eq("inbound_email_slug", parsed.slug)
             .maybeSingle();
 
         if (merchant) {
-            merchantId = merchant.id;
+            resolved = { merchantId: merchant.id, channel: parsed.channel };
             break;
         }
     }
 
-    if (!merchantId) {
+    if (!resolved) {
         return NextResponse.json({ ok: true, ignored: "no matching merchant" });
     }
 
+    const { merchantId, channel } = resolved;
+
     try {
-        // Fetch full email with attachments via Resend API
+        // Fetch full email with attachments via Resend API (commun aux deux canaux).
         const resend = new Resend(process.env.RESEND_API_KEY);
         const emailRes = await resend.emails.get(emailId);
-        const emailPayload = emailRes.data as unknown as { attachments?: { filename: string; content: string; content_type: string }[] } | null;
+        const emailPayload = emailRes.data as unknown as { attachments?: EmailAttachment[] } | null;
         const attachments = emailPayload?.attachments ?? [];
 
-        // Filter for invoice file types
+        // ─── Canal STOCK : snapshot stock via le cœur partagé d'ingestion ───
+        if (channel === "stock") {
+            // Le verrou + heartbeat vivent dans ingest_credentials (token NOT NULL) ;
+            // on garantit la ligne pour un marchand résolu par email (sinon le verrou
+            // matcherait 0 ligne → stock jamais ingéré en silence).
+            await getOrCreateIngestToken(merchantId, supabase);
+
+            const stockAttachments = attachments.filter((att) => STOCK_EXTENSIONS.has(getExtension(att.filename)));
+            if (stockAttachments.length === 0) {
+                // Un email arrivé sur le canal stock mais sans tableur exploitable = potentiellement
+                // une mise à jour perdue → la rendre VISIBLE (north-star), pas un silence.
+                captureError(new Error("email stock sans pièce jointe tableur exploitable"), {
+                    route: "inbound-email",
+                    channel: "stock",
+                    merchantId,
+                });
+                return NextResponse.json({ ok: true, ignored: "no stock spreadsheet attachment" });
+            }
+            // Contrat SNAPSHOT UNIQUE : chaque fichier est un snapshot complet (reconcile=true).
+            // Traiter plusieurs fichiers en séquence ferait que le dernier RÉCONCILIE contre le
+            // précédent et l'ANNULE en silence (mauvais stock, ok:true). On refuse de deviner :
+            // alerte + aucune ingestion (le marchand renvoie un seul fichier).
+            if (stockAttachments.length > 1) {
+                captureError(new Error(`email stock multi-fichiers (${stockAttachments.length}) — snapshot unique attendu, ingestion ignorée`), {
+                    route: "inbound-email",
+                    channel: "stock",
+                    merchantId,
+                });
+                return NextResponse.json({ ok: true, ignored: "multiple stock files; single snapshot expected" });
+            }
+
+            const results: Array<{ file: string; outcome: string; status?: string }> = [];
+            for (const att of stockAttachments) {
+                const buffer = Buffer.from(att.content, "base64");
+                const outcome = await ingestStockFileForMerchant(supabase, merchantId, buffer, att.filename);
+                results.push({
+                    file: att.filename,
+                    outcome: outcome.outcome,
+                    ...(outcome.outcome === "ingested" ? { status: outcome.status } : {}),
+                });
+
+                // Un fichier non ingéré (problème de données) doit être VISIBLE, pas perdu
+                // en silence (north-star). "locked"/"unchanged" sont bénins/transitoires.
+                if (
+                    outcome.outcome !== "ingested" &&
+                    outcome.outcome !== "unchanged" &&
+                    outcome.outcome !== "locked"
+                ) {
+                    captureError(new Error(`stock email ingest non aboutie: ${outcome.outcome}`), {
+                        route: "inbound-email",
+                        channel: "stock",
+                        merchantId,
+                        file: att.filename,
+                    });
+                }
+            }
+
+            return NextResponse.json({ ok: true, channel: "stock", results });
+        }
+
+        // ─── Canal FACTURES (existant, inchangé) ───
         const invoiceAttachments = attachments.filter(
             (att) => ACCEPTED_EXTENSIONS.has(getExtension(att.filename))
         );
@@ -119,7 +186,9 @@ export async function POST(request: NextRequest) {
                 .upload(storagePath, buffer, { contentType: att.content_type });
 
             if (storageError) {
-                console.error("[inbound-email] Storage upload failed:", storageError);
+                // Échec d'upload = pièce jointe non traitée → remonter à Sentry
+                // (console.error seul est perdu en serverless).
+                captureError(storageError, { route: "inbound-email", step: "storage_upload", merchantId });
                 continue;
             }
 
@@ -154,10 +223,12 @@ export async function POST(request: NextRequest) {
             try {
                 const parsed = await parseInvoice(buffer, att.filename);
 
+                // 0 item extrait → "failed" (pas "parsed") : sinon le marchand
+                // croit que des produits ont été importés alors qu'aucun ne l'a été.
                 await supabase
                     .from("invoices")
                     .update({
-                        status: "parsed",
+                        status: invoiceStatusForParse(parsed.items.length),
                         supplier_name: parsed.supplier_name ?? null,
                         parsed_at: new Date().toISOString(),
                     })

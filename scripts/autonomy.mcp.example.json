@@ -1,0 +1,13 @@
+{
+  "_comment": "Set MCP MINIMAL de la boucle autonome (Supabase seul) -> coupe le cout de schema des ~9 autres MCP charges par run. Copie ce fichier en scripts/autonomy.mcp.json (gitignore). Le token est lu depuis la variable d'env SUPABASE_ACCESS_TOKEN (posee au niveau User) -> aucun secret dans le fichier. Le wrapper autonomy-run.ps1 passe --mcp-config + --strict-mcp-config si le fichier existe.",
+  "mcpServers": {
+    "supabase": {
+      "command": "cmd",
+      "args": ["/c", "C:\\Program Files\\nodejs\\npx.cmd", "-y", "@supabase/mcp-server-supabase@latest"],
+      "env": {
+        "NODE_OPTIONS": "--use-system-ca",
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

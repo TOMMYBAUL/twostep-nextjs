@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
+import { fetchWithRetry } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSStockUpdate } from "./types";
 
 export const zettleAdapter: IPOSAdapter = {
@@ -64,7 +66,7 @@ export const zettleAdapter: IPOSAdapter = {
     },
 
     async getCatalog(accessToken: string): Promise<POSProduct[]> {
-        const res = await fetch("https://products.izettle.com/organizations/self/products/v2", {
+        const res = await fetchWithRetry("https://products.izettle.com/organizations/self/products/v2", {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -105,10 +107,7 @@ export const zettleAdapter: IPOSAdapter = {
                 products.push({
                     pos_item_id: variant.uuid,
                     name,
-                    ean: (() => {
-                        const code = variant.barcode ?? variant.sku ?? null;
-                        return code && /^\d{8,13}$/.test(code) ? code : null;
-                    })(),
+                    ean: canonicalizeEan(variant.barcode ?? variant.sku),
                     price: variant.price ? variant.price.amount / 100 : null,
                     category,
                     photo_url: photoUrl,
@@ -122,7 +121,7 @@ export const zettleAdapter: IPOSAdapter = {
     async getStock(accessToken: string, itemIds: string[]): Promise<POSStockUpdate[]> {
         if (itemIds.length === 0) return [];
 
-        const res = await fetch("https://inventory.izettle.com/organizations/self/inventory/v3", {
+        const res = await fetchWithRetry("https://inventory.izettle.com/organizations/self/inventory/v3", {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 

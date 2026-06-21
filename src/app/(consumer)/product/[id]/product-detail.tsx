@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, ChevronRight, Phone01, XClose, Building07, AlertCircle, Lightning02 } from "@untitledui/icons";
+import { ArrowLeft, ChevronRight, Phone01, XClose, Building07, AlertCircle, Lightning02, Flag02 } from "@untitledui/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { generateSlug } from "@/lib/slug";
 import { cx } from "@/utils/cx";
@@ -12,6 +12,8 @@ import { HeartButton } from "../../components/heart-button";
 import { useFavorites, useToggleFavorite } from "../../hooks/use-favorites";
 import { useFocusTrap } from "../../hooks/use-focus-trap";
 import { useGeolocation } from "../../hooks/use-geolocation";
+import { ConfidenceBadge, type StockConfidenceDto } from "./confidence-badge";
+import { ReportSheet } from "./report-sheet";
 import { ShopStatusBlock } from "./shop-status-block";
 import { StickyCtaBar } from "./sticky-cta-bar";
 
@@ -50,6 +52,8 @@ interface ProductDetail {
     stock: { quantity: number }[];
     promotions: { sale_price: number; ends_at: string | null }[];
     available_sizes: SizeVariant[];
+    /** État de confiance calculé serveur (jamais de compteur brut affiché). */
+    confidence?: StockConfidenceDto | null;
     merchants?: {
         name: string;
         address: string;
@@ -135,6 +139,7 @@ export default function ProductDetailClient() {
     const [sizeSheetOpen, setSizeSheetOpen] = useState(false);
     const [sizeChartOpen, setSizeChartOpen] = useState(false);
     const [contactSheetOpen, setContactSheetOpen] = useState(false);
+    const [reportSheetOpen, setReportSheetOpen] = useState(false);
     const [phoneCopied, setPhoneCopied] = useState(false);
     const [intentSent, setIntentSent] = useState(false);
     const [intentLoading, setIntentLoading] = useState(false);
@@ -321,11 +326,7 @@ export default function ProductDetailClient() {
                         <span className="text-[11px] font-medium uppercase tracking-wider text-tertiary">
                             {[product.brand, product.category].filter(Boolean).join(" \u00B7 ")}
                         </span>
-                        {quantity === 0 && (
-                            <span className="rounded-md border border-brand/25 bg-brand-secondary px-2 py-[2px] text-[10px] font-medium text-brand-secondary">
-                                Indisponible
-                            </span>
-                        )}
+                        <ConfidenceBadge confidence={product.confidence} quantity={quantity} />
                     </div>
 
                     {/* Product name */}
@@ -428,6 +429,19 @@ export default function ProductDetailClient() {
                         </div>
                     )}
 
+                    {/* ── Signaler une erreur (boucle de confiance) ── */}
+                    <button
+                        type="button"
+                        onClick={() => setReportSheetOpen(true)}
+                        className="flex w-full items-center justify-between border-b border-secondary py-3.5 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                    >
+                        <span className="flex items-center gap-2 text-[13px] text-tertiary">
+                            <Flag02 className="size-4" aria-hidden="true" />
+                            Une erreur sur ce produit ? Signaler
+                        </span>
+                        <ChevronRight className="size-4 text-tertiary" aria-hidden="true" />
+                    </button>
+
                     {/* ── Social proof ── */}
                     {othersCount > 0 && !intentSent && quantity > 0 && (
                         <div className="mt-4 flex items-center gap-2 rounded-xl bg-error-secondary px-3.5 py-2.5">
@@ -523,6 +537,17 @@ export default function ProductDetailClient() {
                     intentLoading={intentLoading}
                     onIntent={handleIntent}
                     onOpenSizeSheet={() => setSizeSheetOpen(true)}
+                />
+            )}
+
+            {/* ══════════════════════════════════════════════
+                REPORT BOTTOM SHEET
+            ══════════════════════════════════════════════ */}
+            {product && (
+                <ReportSheet
+                    open={reportSheetOpen}
+                    onClose={() => setReportSheetOpen(false)}
+                    productId={product.id}
                 />
             )}
 

@@ -1,5 +1,7 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 const LS_API = "https://api.lightspeedapp.com/API/V3";
@@ -11,7 +13,10 @@ export const lightspeedAdapter: IPOSAdapter = {
         const params = new URLSearchParams({
             response_type: "code",
             client_id: process.env.LIGHTSPEED_CLIENT_ID!,
-            scope: "employee:all",
+            // Moindre privilège : lecture catalogue (Item) + stock (ItemShop) seulement.
+            // employee:all donnait accès TOTAL au compte (ventes, clients, finances).
+            // (Si writeback stock activé un jour → passer à employee:inventory.)
+            scope: "employee:inventory_read",
             state: signState(`lightspeed:${merchantId}`),
         });
         return `https://cloud.lightspeedapp.com/oauth/authorize.php?${params}`;
@@ -29,10 +34,16 @@ export const lightspeedAdapter: IPOSAdapter = {
             }),
         });
         const data = await res.json();
+        // Sans ce garde, une erreur OAuth (res non-ok) stockait un token vide +
+        // un expires_at "Invalid Date" comme une connexion valide, indiagnosticable.
+        if (!res.ok || !data.access_token) {
+            throw new Error(data.error_description || data.error || "Lightspeed OAuth exchange failed");
+        }
+        const expiresIn = typeof data.expires_in === "number" ? data.expires_in : 3600;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token ?? null,
-            expires_at: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 
@@ -48,29 +59,42 @@ export const lightspeedAdapter: IPOSAdapter = {
             }),
         });
         const data = await res.json();
-        if (!res.ok) return null;
+        if (!res.ok || !data.access_token) return null;
+        const expiresIn = typeof data.expires_in === "number" ? data.expires_in : 3600;
         return {
             access_token: data.access_token,
             refresh_token: data.refresh_token ?? refreshToken,
-            expires_at: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+            expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
         };
     },
 
     async getCatalog(accessToken: string) {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) {
+            throw new Error(`Lightspeed Account API error: ${accountRes.status}`);
+        }
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) throw new Error("Lightspeed Account response missing accountID");
 
         const products: POSProduct[] = [];
         let offset = 0;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         while (true) {
-            const res = await fetch(
+            if (++pages > maxPages) throw new Error(`Lightspeed pagination > ${maxPages} pages — anomalie API`);
+            const res = await fetchWithRetry(
                 `${LS_API}/Account/${accountID}/Item.json?offset=${offset}&limit=100&load_relations=["Category"]`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
+            // Anti "catalogue fantôme" : lever sur erreur plutôt que de renvoyer un
+            // catalogue tronqué/vide (qui ferait masquer toute la vitrine en aval).
+            if (!res.ok) {
+                throw new Error(`Lightspeed Item API error: ${res.status}`);
+            }
             const data = await res.json();
             const items = Array.isArray(data.Item) ? data.Item : data.Item ? [data.Item] : [];
 
@@ -78,7 +102,7 @@ export const lightspeedAdapter: IPOSAdapter = {
                 products.push({
                     pos_item_id: item.itemID,
                     name: item.description,
-                    ean: item.upc ?? null,
+                    ean: canonicalizeEan(item.upc),
                     price: item.Prices?.ItemPrice?.[0]?.amount
                         ? parseFloat(item.Prices.ItemPrice[0].amount)
                         : null,
@@ -98,13 +122,17 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     async fetchPromos(accessToken: string): Promise<POSPromo[]> {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        // Promos = non critique : on reste lenient (retour [] sur échec) pour ne
+        // jamais faire échouer la sync à cause d'un hoquet sur les promos.
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) return [];
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) return [];
 
-        const res = await fetch(
+        const res = await fetchWithRetry(
             `${LS_API}/Account/${accountID}/Item.json?load_relations=["SpecialPrices"]&limit=100`,
             { headers: { Authorization: `Bearer ${accessToken}` } }
         );
@@ -166,11 +194,13 @@ export const lightspeedAdapter: IPOSAdapter = {
     },
 
     async getStock(accessToken: string, itemIds: string[]) {
-        const accountRes = await fetch(`${LS_API}/Account.json`, {
+        const accountRes = await fetchWithRetry(`${LS_API}/Account.json`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
+        if (!accountRes.ok) throw new Error(`Lightspeed Account API error: ${accountRes.status}`);
         const { Account } = await accountRes.json();
-        const accountID = Account.accountID;
+        const accountID = Account?.accountID;
+        if (!accountID) throw new Error("Lightspeed Account response missing accountID");
 
         // Batch via ItemShop endpoint — avoids N+1 (1 request per item → paginated batches)
         // ItemShop.json supports filtering by itemID via the itemID[] param
@@ -180,10 +210,13 @@ export const lightspeedAdapter: IPOSAdapter = {
         for (let i = 0; i < itemIds.length; i += PAGE_SIZE) {
             const batch = itemIds.slice(i, i + PAGE_SIZE);
             const itemIdParam = batch.map((id) => `itemID[]=${id}`).join("&");
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 `${LS_API}/Account/${accountID}/ItemShop.json?${itemIdParam}&limit=${PAGE_SIZE}`,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
+            // Lever sur erreur : un stock partiel silencieux fausse les quantités
+            // affichées (dérive). resync-stock/sync-engine attrapent et marquent error.
+            if (!res.ok) throw new Error(`Lightspeed ItemShop API error: ${res.status}`);
             const data = await res.json();
             const shops = Array.isArray(data.ItemShop) ? data.ItemShop : data.ItemShop ? [data.ItemShop] : [];
             for (const shop of shops) {

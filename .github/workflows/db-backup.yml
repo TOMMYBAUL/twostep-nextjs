@@ -1,0 +1,45 @@
+name: Backup DB (pg_dump quotidien)
+
+# Sauvegarde quotidienne de la base prod (le stock multi-sources, cœur produit,
+# n'était PAS restaurable — Supabase plan gratuit, pas de PITR). Dump compressé
+# stocké en artefact GitHub (chiffré au repos, rétention 30 j). Gratuit.
+#
+# PRÉREQUIS (à faire une fois, côté Thomas) :
+#   Repo GitHub → Settings → Secrets and variables → Actions → New secret
+#   Nom : SUPABASE_DB_URL
+#   Valeur : la connection string Postgres directe de Supabase
+#     (Dashboard Supabase → Project Settings → Database → Connection string → URI,
+#      cocher "Use connection pooling" = NON pour pg_dump, port 5432).
+#   Format : postgresql://postgres:<password>@db.<ref>.supabase.co:5432/postgres
+
+on:
+  schedule:
+    - cron: "30 2 * * *"   # 02h30 UTC (~04h30 Paris), hors heures de pointe
+  workflow_dispatch: {}     # déclenchement manuel possible
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install pg_dump (client 16)
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update && sudo apt-get install -y postgresql-client-16
+
+      - name: Dump
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$DB_URL" ]; then echo "::error::SUPABASE_DB_URL secret manquant"; exit 1; fi
+          STAMP=$(date -u +%Y%m%d-%H%M%S)
+          pg_dump "$DB_URL" --no-owner --no-privileges --format=custom --file "twostep-$STAMP.dump"
+          ls -lh "twostep-$STAMP.dump"
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ env.STAMP }}
+          path: "twostep-*.dump"
+          retention-days: 30

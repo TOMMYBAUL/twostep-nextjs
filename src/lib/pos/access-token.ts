@@ -9,6 +9,52 @@ export type ActivePosConnection = {
     shopDomain: string | null;
 };
 
+type RefreshableConn = {
+    id: string;
+    access_token: string;
+    refresh_token: string | null;
+    expires_at: string | null;
+};
+
+/**
+ * SOURCE UNIQUE de la logique de refresh des tokens POS (déduplique sync-engine
+ * et getActivePosAccessToken, qui divergeaient). Déchiffre le token courant ;
+ * s'il expire dans <5 min et qu'un refresh_token existe, rafraîchit via l'adapter,
+ * persiste (chiffré) et retourne le token frais. Retourne null si le refresh
+ * échoue (token révoqué) — le caller décide d'échouer ou de signaler.
+ */
+export async function ensureFreshAccessToken(
+    supabase: SupabaseClient,
+    conn: RefreshableConn,
+    adapter: IPOSAdapter,
+): Promise<string | null> {
+    let accessToken = decrypt(conn.access_token);
+    const expiresAt = conn.expires_at ? new Date(conn.expires_at).getTime() : Infinity;
+    const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
+
+    if (expiresAt < fiveMinFromNow && conn.refresh_token) {
+        const refreshResult = await adapter.refreshToken(decrypt(conn.refresh_token));
+        if (!refreshResult) {
+            await supabase
+                .from("pos_connections")
+                .update({ last_sync_status: "error", last_sync_error: "Token expired" })
+                .eq("id", conn.id);
+            return null;
+        }
+        await supabase
+            .from("pos_connections")
+            .update({
+                access_token: encrypt(refreshResult.access_token),
+                refresh_token: encrypt(refreshResult.refresh_token),
+                expires_at: refreshResult.expires_at,
+            })
+            .eq("id", conn.id);
+        accessToken = refreshResult.access_token;
+    }
+
+    return accessToken;
+}
+
 /**
  * Fetch the merchant's active POS connection and return a fresh access token,
  * refreshing via the adapter if it's about to expire. Returns null if no
@@ -32,30 +78,8 @@ export async function getActivePosAccessToken(
     if (!conn) return null;
 
     const adapter = getAdapter(conn.provider);
-    let accessToken = decrypt(conn.access_token);
-
-    const expiresAt = conn.expires_at ? new Date(conn.expires_at).getTime() : Infinity;
-    const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
-
-    if (expiresAt < fiveMinFromNow && conn.refresh_token) {
-        const refreshResult = await adapter.refreshToken(decrypt(conn.refresh_token));
-        if (!refreshResult) {
-            await supabase
-                .from("pos_connections")
-                .update({ last_sync_status: "error", last_sync_error: "Token expired" })
-                .eq("id", conn.id);
-            return null;
-        }
-        await supabase
-            .from("pos_connections")
-            .update({
-                access_token: encrypt(refreshResult.access_token),
-                refresh_token: encrypt(refreshResult.refresh_token),
-                expires_at: refreshResult.expires_at,
-            })
-            .eq("id", conn.id);
-        accessToken = refreshResult.access_token;
-    }
+    const accessToken = await ensureFreshAccessToken(supabase, conn, adapter);
+    if (accessToken === null) return null; // refresh échoué (token révoqué)
 
     return {
         provider: conn.provider,

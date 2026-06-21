@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { parsePrice } from "./parse-price";
 import type { IInvoiceParser, ParsedInvoice, ParsedInvoiceItem } from "./types";
 
 // Column header variants (case-insensitive matching)
@@ -44,6 +45,13 @@ const BRAND_HEADERS = [
     "griffe", "enseigne", "label",
 ];
 
+// Colonne taille/pointure dédiée. Captée explicitement = taille FIABLE (vs
+// extraction regex du nom, qui est une déduction faillible). Crucial pour mode/
+// sneakers où l'export caisse a souvent `nom | taille | quantité | prix`.
+const SIZE_HEADERS = [
+    "taille", "tailles", "size", "sizes", "pointure", "pointures",
+];
+
 type ColumnMapping = {
     name: number | null;
     ean: number | null;
@@ -52,6 +60,7 @@ type ColumnMapping = {
     quantity: number | null;
     unit_price: number | null;
     description: number | null;
+    size: number | null;
 };
 
 function normalizeHeader(header: string): string {
@@ -80,14 +89,19 @@ export function detectColumns(headers: string[]): ColumnMapping {
         quantity: null,
         unit_price: null,
         description: null,
+        size: null,
     };
 
     for (let i = 0; i < headers.length; i++) {
         const h = headers[i];
         if (!h) continue;
 
+        // Taille testée en premier : "taille"/"pointure" sont sans ambiguïté et ne
+        // doivent pas être happés par une autre colonne.
+        if (mapping.size === null && matchesAny(h, SIZE_HEADERS)) {
+            mapping.size = i;
         // Check SKU before name — "Réf. article" contains both "ref" (SKU) and "article" (name)
-        if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
+        } else if (mapping.sku === null && matchesAny(h, SKU_HEADERS)) {
             mapping.sku = i;
         } else if (mapping.name === null && matchesAny(h, NAME_HEADERS)) {
             mapping.name = i;
@@ -199,9 +213,16 @@ export function extractStructured(rows: string[][], mapping: ColumnMapping): Par
         const ean = mapping.ean !== null ? String(row[mapping.ean] ?? "").trim() || null : null;
         const sku = mapping.sku !== null ? String(row[mapping.sku] ?? "").trim() || null : null;
         const brand = mapping.brand !== null ? String(row[mapping.brand] ?? "").trim() || null : null;
-        const quantity = mapping.quantity !== null ? Number(row[mapping.quantity]) || 1 : 1;
+        // Qté : cellule vide/absente → 1 ("présence", inchangé) ; un 0 explicite
+        // est honoré (rupture ≠ présence). `Number("")===0` d'où la garde sur "".
+        const rawQty = mapping.quantity !== null ? row[mapping.quantity] : null;
+        const qtyStr = rawQty == null ? "" : String(rawQty).trim();
+        const qtyNum = Number(qtyStr);
+        const quantity = qtyStr !== "" && Number.isFinite(qtyNum) ? Math.max(0, Math.trunc(qtyNum)) : 1;
         const rawPrice = mapping.unit_price !== null ? row[mapping.unit_price] : null;
-        const unit_price = rawPrice != null && rawPrice !== "" ? Number(String(rawPrice).replace(",", ".")) || null : null;
+        // parsePrice renvoie déjà number|null ; le `|| null` d'avant détruisait un
+        // prix attesté de 0 (article offert) → on garde la valeur honnête du parseur.
+        const unit_price = parsePrice(rawPrice);
 
         items.push({ name: rawName, ean, sku, brand, quantity, unit_price });
     }
@@ -259,7 +280,7 @@ export const spreadsheetParser: IInvoiceParser = {
         // Scan the first 30 rows to find the header row (real invoices have
         // supplier info, addresses, etc. above the product table)
         let headerRowIndex = -1;
-        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null, description: null };
+        let mapping: ColumnMapping = { name: null, ean: null, sku: null, brand: null, quantity: null, unit_price: null, description: null, size: null };
 
         const scanLimit = Math.min(rows.length, 30);
         for (let r = 0; r < scanLimit; r++) {

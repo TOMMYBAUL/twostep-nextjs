@@ -1,13 +1,53 @@
 # Two-Step — Project Brief
 
 > Ce document est la reference unique pour tous les agents automatises.
-> Derniere mise a jour : 2026-04-19
+> Derniere mise a jour : 2026-06-14 (positionnement Google-LFP-first — voir section dediee)
 
 ## Vision
 
 Two-Step rend le **stock des boutiques independantes** visible aux consommateurs du quartier. Un client cherche un produit → il voit quelle boutique l'a en stock pres de chez lui → il va l'acheter en magasin.
 
 **Two-Step N'EST PAS** : une solution de paiement, de livraison, de e-commerce, de click-and-collect, ou de marketplace. C'est un moteur de decouverte de stock local.
+
+## Positionnement & sequence produit (decide 2026-06-14)
+
+> Clarification strategique majeure issue du brainstorm "qu'apporte-t-on de plus
+> qu'un site avec stock ?". A relire avant toute decision de direction.
+
+**Le constat brutal** : la valeur "app de decouverte" (carte/feed Two-Step) est
+NULLE tant qu'il n'y a pas d'audience consommateur (probleme oeuf/poule des
+marketplaces). Construire cette audience = des annees + un budget qu'on n'a pas.
+Donc l'app ne peut PAS etre l'argument de vente initial.
+
+**Le produit qui cree de la valeur des le 1er marchand = le canal Google LFP.**
+Two-Step est d'abord un **"feed Google Local Inventory as a service"** : "ton stock
+physique apparait sur Google 'en stock pres de chez moi', en temps reel, sans que
+tu touches a Google Merchant Center". Cette valeur est **independante de l'audience
+Two-Step** — elle branche le marchand sur l'audience DEJA massive de Google. C'est
+le job-to-be-done reel, et la seule traction possible sans audience prealable.
+La vraie alternative du marchand n'est pas "un site" mais "faire son Google
+Shopping seul" — ce qu'il ne sait pas faire (Merchant Center + validation LFP +
+store codes + GBP) et ne peut pas maintenir en temps reel (feed frais = caisse
+branchee). C'est la qu'est notre utilite.
+
+**L'app (carte, feed, decouverte proximite, boutiques sans site) = la COUCHE
+D'HABILLAGE differenciante**, dont la valeur CROIT avec la densite de marchands.
+Elle se vend "en plus", pas "a la place". Elle devient un vrai atout quand une
+zone atteint une masse critique — pas au demarrage.
+
+**Modele = celui de NearSt ("feed LFP as a service"), MAIS pas leur acquisition.**
+NearSt depend de partenariats editeurs (l'editeur pousse pour tous ses marchands) —
+qu'on n'a pas et qui prennent des annees. Notre acquisition :
+1. **Caisses cloud (Shopify/Square/Zettle/Lightspeed)** : OAuth 2 clics → automatique
+   a vie. DEJA construit. On EST l'integration (via API publiques). **Cible n°1.**
+2. **Caisses fermees FR** : drag-drop manuel (construit) ou email (a construire) —
+   pas d'automatique cle-en-main sans technicien. Avantage vs NearSt : on ne REFUSE
+   pas ces marchands (NearSt si).
+3. **Partenariats editeurs FR** (Clictill/Fastmag…) : plus tard, avec la traction.
+
+**Sequence d'execution** : (1) canal Google LFP irreprochable + onboarding caisses
+cloud ; (2) habillage app + boutiques sans site ; (3) partenariats editeurs.
+**Prerequis n°1 = faire ABOUTIR la candidature Google LFP** (cf. section dediee).
 
 ## Fondateur
 

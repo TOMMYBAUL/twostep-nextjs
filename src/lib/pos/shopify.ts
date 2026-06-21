@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
+import { canonicalizeEan } from "@/lib/identifiers/validators";
+import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function shopApi(shopDomain: string, path: string): string {
@@ -11,6 +13,34 @@ function requireShop(options?: POSAdapterOptions): string {
     const shop = options?.shopDomain;
     if (!shop) throw new Error("Shopify adapter requires shopDomain in options");
     return shop;
+}
+
+/**
+ * Vérifie le HMAC que Shopify ajoute aux paramètres du callback OAuth (param
+ * `hmac`). Garantit que la redirection vient réellement de Shopify et n'a pas été
+ * forgée. Shopify l'exige pour la validation d'app. Algorithme : HMAC-SHA256 sur
+ * les params triés (hors hmac/signature), comparé en temps constant.
+ */
+export function verifyShopifyOAuthHmac(params: URLSearchParams): boolean {
+    const secret = process.env.SHOPIFY_CLIENT_SECRET;
+    if (!secret) return false;
+    const hmac = params.get("hmac");
+    if (!hmac) return false;
+
+    const pairs: string[] = [];
+    for (const [k, v] of params) {
+        if (k === "hmac" || k === "signature") continue;
+        pairs.push(`${k}=${v}`);
+    }
+    pairs.sort();
+    const expected = crypto.createHmac("sha256", secret).update(pairs.join("&")).digest("hex");
+
+    if (hmac.length !== expected.length) return false;
+    try {
+        return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expected));
+    } catch {
+        return false;
+    }
 }
 
 export const shopifyAdapter: IPOSAdapter = {
@@ -30,6 +60,11 @@ export const shopifyAdapter: IPOSAdapter = {
     async exchangeCode(code: string, params?: Record<string, string>) {
         const shop = params?.shop;
         if (!shop) throw new Error("Shopify exchangeCode requires shop param");
+        // Valider le domaine AVANT de POSTer le client_secret vers ce host
+        // (sinon SSRF / fuite du secret vers un host arbitraire passé en redirect).
+        if (!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/i.test(shop)) {
+            throw new Error("Invalid Shopify shop domain");
+        }
 
         const res = await fetch(`https://${shop}/admin/oauth/access_token`, {
             method: "POST",
@@ -61,19 +96,37 @@ export const shopifyAdapter: IPOSAdapter = {
         const shop = requireShop(options);
         const products: POSProduct[] = [];
         let pageInfo: string | null = null;
+        let pages = 0;
+        const maxPages = catalogPageLimit();
 
         do {
+            if (++pages > maxPages) {
+                throw new Error(`Shopify pagination > ${maxPages} pages — anomalie API (boucle ?)`);
+            }
             const url: string = pageInfo
                 ? shopApi(shop, `/products.json?page_info=${pageInfo}&limit=250`)
                 : shopApi(shop, "/products.json?limit=250");
 
-            const res: Response = await fetch(url, {
+            const res: Response = await fetchWithRetry(url, {
                 headers: { "X-Shopify-Access-Token": accessToken },
             });
+            // Anti "catalogue fantôme" : sur 429/5xx/401, NE PAS retourner un
+            // catalogue partiel/vide silencieux — sinon sync-engine masquerait
+            // toute la vitrine du marchand. On lève → la sync est marquée "error".
+            if (!res.ok) {
+                const body = await res.text().catch(() => "");
+                throw new Error(`Shopify products API error ${res.status}: ${body.slice(0, 200)}`);
+            }
             const data = await res.json();
 
             for (const product of data.products ?? []) {
+                // Position (1-based) de l'option "Taille" structurée, si présente.
+                const sizeOptionIdx = (product.options ?? []).findIndex(
+                    (o: { name?: string }) => /taille|size|pointure/i.test(o.name ?? ""),
+                );
                 for (const variant of product.variants ?? []) {
+                    const sizeVal =
+                        sizeOptionIdx >= 0 ? variant[`option${sizeOptionIdx + 1}`] : null;
                     products.push({
                         // Use variant.id as pos_item_id — this is what webhooks send
                         pos_item_id: String(variant.id),
@@ -82,10 +135,15 @@ export const shopifyAdapter: IPOSAdapter = {
                         name: product.variants.length > 1
                             ? `${product.title} — ${variant.title}`
                             : product.title,
-                        ean: variant.barcode || null,
+                        ean: canonicalizeEan(variant.barcode),
                         price: variant.price ? parseFloat(variant.price) : null,
                         category: product.product_type?.toLowerCase() || null,
                         photo_url: product.image?.src ?? null,
+                        // Taille structurée (préférée à la regex sur le nom au sync).
+                        size:
+                            typeof sizeVal === "string" && sizeVal && sizeVal !== "Default Title"
+                                ? sizeVal
+                                : null,
                     });
                 }
             }
@@ -169,10 +227,12 @@ export const shopifyAdapter: IPOSAdapter = {
 
         for (let i = 0; i < itemIds.length; i += 50) {
             const batch = itemIds.slice(i, i + 50);
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 shopApi(shop, `/variants.json?ids=${batch.join(",")}&fields=id,inventory_item_id`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
+            // Lever sur erreur : un stock partiel silencieux fausse les quantités.
+            if (!res.ok) throw new Error(`Shopify variants API error: ${res.status}`);
             const data = await res.json();
             for (const v of data.variants ?? []) {
                 variantToInventory.set(String(v.id), String(v.inventory_item_id));
@@ -188,10 +248,11 @@ export const shopifyAdapter: IPOSAdapter = {
 
         for (let i = 0; i < inventoryIds.length; i += 50) {
             const batch = inventoryIds.slice(i, i + 50);
-            const res = await fetch(
+            const res = await fetchWithRetry(
                 shopApi(shop, `/inventory_levels.json?inventory_item_ids=${batch.join(",")}`),
                 { headers: { "X-Shopify-Access-Token": accessToken } }
             );
+            if (!res.ok) throw new Error(`Shopify inventory_levels API error: ${res.status}`);
             const data = await res.json();
 
             for (const level of data.inventory_levels ?? []) {

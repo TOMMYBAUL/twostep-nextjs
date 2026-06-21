@@ -60,6 +60,17 @@ function extractSizeInner(name: string): string | null {
  * Remove the size portion from a product name to get the "base name".
  * Used to group sibling products that differ only by size.
  */
+/**
+ * Résout la taille d'un produit POS : PRÉFÈRE la variante structurée fournie par
+ * le POS (fiable) à l'extraction regex du nom (devinette, faux positifs possibles).
+ * N'utilise la regex qu'en l'absence de taille structurée.
+ */
+export function resolveProductSize(p: { size?: string | null; name: string }): string | null {
+    const structured = p.size?.trim();
+    if (structured && structured.toLowerCase() !== "default title") return structured;
+    return extractSize(p.name);
+}
+
 export function stripSize(name: string): string {
     if (!name) return "";
     const size = extractSize(name);

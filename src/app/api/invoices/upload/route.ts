@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
+import { invoiceStatusForParse } from "@/lib/parser/invoice-status";
 import { captureError } from "@/lib/error";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -126,10 +127,14 @@ export async function POST(request: NextRequest) {
         try {
             const parsed = await parseInvoice(buffer, file.name);
 
+            // 0 item extrait → "failed" (pas "parsed") : un parse qui n'extrait
+            // aucune ligne n'est pas un succès, le marchand doit le voir.
+            const parseStatus = invoiceStatusForParse(parsed.items.length);
+
             await supabase
                 .from("invoices")
                 .update({
-                    status: "parsed",
+                    status: parseStatus,
                     supplier_name: parsed.supplier_name ?? supplierName ?? null,
                     parsed_at: new Date().toISOString(),
                 })
@@ -152,7 +157,7 @@ export async function POST(request: NextRequest) {
 
             return NextResponse.json({
                 id: invoice.id,
-                status: "parsed",
+                status: parseStatus,
                 items_count: parsed.items.length,
                 supplier_name: parsed.supplier_name ?? supplierName,
             }, { status: 201 });

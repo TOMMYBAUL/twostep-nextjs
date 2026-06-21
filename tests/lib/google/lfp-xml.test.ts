@@ -10,8 +10,9 @@ import {
 const MERCHANT = {
     id: "11111111-1111-1111-1111-111111111111",
     name: "Two-Step Test",
-    slug: "two-step-test",
 };
+
+const STORE_CODE = "twostep-11111111";
 
 const baseProduct: LfpProductRow = {
     id: "22222222-2222-2222-2222-222222222222",
@@ -85,19 +86,19 @@ describe("filterFeedEligible", () => {
 
 describe("buildLfpXml", () => {
     it("construit RSS 2.0 avec namespace g:", () => {
-        const xml = buildLfpXml(MERCHANT, [baseProduct]);
+        const xml = buildLfpXml(MERCHANT, [baseProduct], STORE_CODE);
         expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
         expect(xml).toContain('<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">');
         expect(xml).toContain("</rss>");
     });
 
     it("inclut titre du marchand échappé", () => {
-        const xml = buildLfpXml({ ...MERCHANT, name: "T&S Boutique" }, []);
+        const xml = buildLfpXml({ ...MERCHANT, name: "T&S Boutique" }, [], STORE_CODE);
         expect(xml).toContain("Two-Step LFP Feed — T&amp;S Boutique");
     });
 
     it("inclut item avec champs Google obligatoires", () => {
-        const xml = buildLfpXml(MERCHANT, [baseProduct]);
+        const xml = buildLfpXml(MERCHANT, [baseProduct], STORE_CODE);
         expect(xml).toContain("<g:id>22222222-2222-2222-2222-222222222222</g:id>");
         expect(xml).toContain("<g:gtin>0884776073143</g:gtin>");
         expect(xml).toContain("<g:title>Nike Air Max 90 Black/White</g:title>");
@@ -105,14 +106,20 @@ describe("buildLfpXml", () => {
         expect(xml).toContain("<g:image_link>https://nike.com/airmax90.jpg</g:image_link>");
         expect(xml).toContain("<g:availability>in stock</g:availability>");
         expect(xml).toContain("<g:condition>new</g:condition>");
-        expect(xml).toContain("<g:store_code>two-step-test</g:store_code>");
+        expect(xml).toContain("<g:store_code>twostep-11111111</g:store_code>");
         expect(xml).toContain("<g:content_language>fr</g:content_language>");
         expect(xml).toContain("<g:target_country>FR</g:target_country>");
         expect(xml).toContain("<g:channel>local</g:channel>");
     });
 
+    it("émet le store_code passé en argument (pas le slug — anti-divergence Voie A/B)", () => {
+        const xml = buildLfpXml(MERCHANT, [baseProduct], "twostep-deadbeef");
+        expect(xml).toContain("<g:store_code>twostep-deadbeef</g:store_code>");
+        expect(xml).not.toContain("two-step-test");
+    });
+
     it("inclut description + brand quand présents", () => {
-        const xml = buildLfpXml(MERCHANT, [baseProduct]);
+        const xml = buildLfpXml(MERCHANT, [baseProduct], STORE_CODE);
         expect(xml).toContain("<g:description>Sneakers iconiques semelle Air visible</g:description>");
         expect(xml).toContain("<g:brand>Nike</g:brand>");
     });
@@ -120,7 +127,7 @@ describe("buildLfpXml", () => {
     it("omet description + brand quand absents", () => {
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, description: null, brand: null },
-        ]);
+        ], STORE_CODE);
         expect(xml).not.toContain("<g:description>");
         expect(xml).not.toContain("<g:brand>");
     });
@@ -128,21 +135,21 @@ describe("buildLfpXml", () => {
     it("availability=out of stock quand quantity=0", () => {
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, stock: [{ quantity: 0 }] },
-        ]);
+        ], STORE_CODE);
         expect(xml).toContain("<g:availability>out of stock</g:availability>");
     });
 
     it("availability=in stock quand stock object (pas array)", () => {
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, stock: { quantity: 3 } },
-        ]);
+        ], STORE_CODE);
         expect(xml).toContain("<g:availability>in stock</g:availability>");
     });
 
     it("availability=out of stock quand stock null", () => {
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, stock: null },
-        ]);
+        ], STORE_CODE);
         expect(xml).toContain("<g:availability>out of stock</g:availability>");
     });
 
@@ -150,7 +157,7 @@ describe("buildLfpXml", () => {
         const longName = "A".repeat(200);
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, canonical_name: longName },
-        ]);
+        ], STORE_CODE);
         // 149 'A' + '…' = 150 chars
         const match = xml.match(/<g:title>([^<]+)<\/g:title>/);
         expect(match?.[1].length).toBe(150);
@@ -164,7 +171,7 @@ describe("buildLfpXml", () => {
                 photo_url: "https://nike.com/raw.jpg",
                 photo_processed_url: "https://r2/processed.png",
             },
-        ]);
+        ], STORE_CODE);
         expect(xml).toContain("<g:image_link>https://r2/processed.png</g:image_link>");
         expect(xml).not.toContain("https://nike.com/raw.jpg");
     });
@@ -173,7 +180,7 @@ describe("buildLfpXml", () => {
         const xml = buildLfpXml(MERCHANT, [
             baseProduct,
             { ...baseProduct, id: "33333333-3333-3333-3333-333333333333" },
-        ]);
+        ], STORE_CODE);
         const itemCount = (xml.match(/<item>/g) ?? []).length;
         expect(itemCount).toBe(2);
     });
@@ -182,14 +189,14 @@ describe("buildLfpXml", () => {
         const xml = buildLfpXml(MERCHANT, [
             baseProduct,
             { ...baseProduct, id: "44444444-4444-4444-4444-444444444444", ean: null },
-        ]);
+        ], STORE_CODE);
         // Seul le 1er passe (le 2e n'a pas d'EAN → filterFeedEligible le rejette)
         const itemCount = (xml.match(/<item>/g) ?? []).length;
         expect(itemCount).toBe(1);
     });
 
     it("XML valide même avec 0 product (header + channel toujours présents)", () => {
-        const xml = buildLfpXml(MERCHANT, []);
+        const xml = buildLfpXml(MERCHANT, [], STORE_CODE);
         expect(xml).toContain("<channel>");
         expect(xml).toContain("</channel>");
         expect(xml).toContain("<rss");

@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# autonomie — config MCP locale de la boucle (contient le token Supabase, JAMAIS versionnee)
+/scripts/autonomy.mcp.json
+
 # next.js
 /.next/
 /out/
@@ -44,3 +47,7 @@ next-env.d.ts
 # graphify outputs (regenerable)
 graphify-out/
 .graphify_python
+logs/
+
+.norton-ca.pem
+scripts/notify.local.ps1

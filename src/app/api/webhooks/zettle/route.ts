@@ -7,6 +7,7 @@ import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { updateStockAtomic } from "@/lib/pos/update-stock";
+import { resolveWebhookProduct } from "@/lib/pos/resolve-product";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -32,24 +33,22 @@ export async function POST(request: Request) {
         const supabase = createAdminClient();
 
         for (const update of updates) {
-            const { data: product } = await supabase
-                .from("products")
-                .select("id, merchant_id")
-                .eq("pos_item_id", update.pos_item_id)
-                .single();
-
+            const product = await resolveWebhookProduct(supabase, update.pos_item_id, "zettle");
             if (!product) continue;
 
-            // Atomic stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute");
+            // Atomic stock update — eliminates TOCTOU race condition.
+            // source_ts = horodatage RÉEL de l'événement (timestamp Zettle) → active la
+            // garde anti-régression de la 104 sur ce flux absolu (anti-dérive out-of-order).
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             await recalculateGroupSizesAdmin(product.id);
 
-            await supabase.from("feed_events").insert({
+            const { error: feedErr } = await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,
                 product_id: product.id,
                 event_type: update.quantity > previousQty ? "restock" : "sale",
             });
+            if (feedErr) captureError(feedErr, { route: "webhooks/zettle", phase: "feed-event", productId: product.id });
 
             // Notify favorites when product comes back in stock
             if (update.quantity > 0 && previousQty === 0) {
@@ -62,19 +61,22 @@ export async function POST(request: Request) {
                     title: "De retour en stock !",
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
-                }).catch(() => {});
+                }).catch((e) => captureError(e, { route: "webhooks/zettle", phase: "push-notify", productId: product.id }));
             }
         }
 
         // Push updated inventory to Google
         if (updates.length > 0) {
-            const { data: firstProduct } = await supabase
+            const { data: firstProduct, error: merchantErr } = await supabase
                 .from("products")
                 .select("merchant_id")
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
+            if (merchantErr) captureError(merchantErr, { route: "webhooks/zettle", phase: "merchant-lookup-google" });
             if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
+                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
+                    captureError(e, { route: "webhooks/zettle", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+                );
             }
         }
 

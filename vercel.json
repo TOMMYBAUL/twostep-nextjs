@@ -10,6 +10,10 @@
       "schedule": "0 3 * * *"
     },
     {
+      "path": "/api/cron/google-status",
+      "schedule": "0 6 * * *"
+    },
+    {
       "path": "/api/cron/cleanup",
       "schedule": "0 4 * * *"
     },
@@ -20,6 +24,22 @@
     {
       "path": "/api/cron/closing-reminders",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/pos-resync",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/quality-check",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/enrich-products",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/images/process",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

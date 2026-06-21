@@ -1,9 +1,9 @@
 import { getAdapter, type POSProduct, type POSPromo, type POSAdapterOptions } from "@/lib/pos";
 import { createClient } from "@/lib/supabase/server";
-import { encrypt, decrypt } from "@/lib/email/encryption";
+import { ensureFreshAccessToken } from "@/lib/pos/access-token";
 import { captureError } from "@/lib/error";
 import { createImageJob } from "@/lib/images/jobs";
-import { extractSize } from "@/lib/pos/extract-size";
+import { resolveProductSize } from "@/lib/pos/extract-size";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 
@@ -18,6 +18,107 @@ export type SyncResult = {
     pos_items_total: number;
     visible_count: number;
 };
+
+/**
+ * Calcule les produits "orphelins" à masquer = ceux liés à un pos_item_id qui
+ * n'est plus dans le catalogue POS courant.
+ *
+ * GARDE ANTI "CATALOGUE FANTÔME" : si le catalogue courant est VIDE, on ne masque
+ * RIEN. Un getCatalog vide est quasi toujours une erreur transitoire (rate-limit,
+ * 5xx, token) plutôt qu'un marchand ayant tout supprimé. Sans ce garde, un hoquet
+ * POS effacerait toute la vitrine du marchand — le mode d'échec qui a tué les
+ * concurrents (catalogue fantôme). Ceinture+bretelles : les adapters lèvent déjà
+ * sur réponse non-OK, ceci protège même d'un futur adapter qui régresserait.
+ */
+export function computeOrphanProductIds(
+    allProducts: Array<{ id: string; pos_item_id: string | null }>,
+    currentPosItemIds: Set<string>,
+): string[] {
+    if (currentPosItemIds.size === 0) return [];
+    return allProducts
+        .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
+        .map((p) => p.id);
+}
+
+export type PosStockRow = {
+    product_id: string;
+    quantity: number;
+    updated_at: string;
+    source: string;
+    source_ts: string;
+};
+
+/**
+ * Pur (testable) : construit les lignes d'upsert stock d'un sync POS catalogue.
+ *
+ * DÉCLARE explicitement `source="pos_sync"` + `source_ts`. Sans ça, le DEFAULT
+ * de la colonne (migration 104 : `source NOT NULL DEFAULT 'manual'`) s'applique à
+ * la création de ligne → un stock issu d'une CAISSE (source la plus forte) serait
+ * lu par la confidence comme `manual` → affiché « Stock probable » au lieu de
+ * « Disponible ». La 104 impose que CHAQUE writer déclare sa source ; ce chemin
+ * (sync catalogue, le gros du stock POS) était le seul à l'omettre. `source_ts`
+ * suit `updated_at` (cohérence de la ligne) — l'horodatage POS de l'observation.
+ */
+export function buildPosStockRows(
+    stockUpdates: { pos_item_id: string; quantity: number; updated_at: string }[],
+    posItemToProductId: Map<string, string>,
+): PosStockRow[] {
+    return stockUpdates
+        .filter((s) => posItemToProductId.has(s.pos_item_id))
+        .map((s) => ({
+            product_id: posItemToProductId.get(s.pos_item_id)!,
+            quantity: s.quantity,
+            updated_at: s.updated_at,
+            source: "pos_sync",
+            source_ts: s.updated_at,
+        }));
+}
+
+/**
+ * Upsert des lignes stock par lots, NON SILENCIEUX. Toute erreur d'écriture LÈVE
+ * (au lieu d'être avalée) → le sync est marqué `error` + Sentry par le catch de
+ * `syncMerchantPOS`, jamais rapporté « success » avec un stock périmé (le faux
+ * positif n°1 : un vendu affiché « en stock »). Renvoie le nombre de lignes
+ * réellement écrites (= toutes, puisqu'on lève au 1er lot en échec) — le caller
+ * en tire `stock_updated`, qui ne ment donc plus en cas d'échec d'écriture.
+ */
+export async function applyStockUpserts(
+    supabase: SupabaseClient,
+    rows: PosStockRow[],
+    batchSize = 500,
+): Promise<number> {
+    for (let i = 0; i < rows.length; i += batchSize) {
+        const { error } = await supabase
+            .from("stock")
+            .upsert(rows.slice(i, i + batchSize), { onConflict: "product_id" });
+        if (error) {
+            throw new Error(`stock upsert failed (batch @${i}, ${rows.length} rows): ${error.message}`);
+        }
+    }
+    return rows.length;
+}
+
+/**
+ * Masque les produits orphelins (retirés du catalogue POS courant) — réconciliation
+ * NON SILENCIEUSE. Un échec d'écriture LÈVE : sans ça, un produit vendu/retiré
+ * resterait visible en silence = catalogue fantôme, le mode d'échec qui a tué les
+ * concurrents (MVMS/Milo). No-op si la liste est vide (jamais d'`.in("id", [])`).
+ * NB : la garde « catalogue vide → ne rien masquer » vit en amont dans
+ * `computeOrphanProductIds` ; ici on persiste seulement, sans avaler l'erreur.
+ */
+export async function hideOrphanProducts(
+    supabase: SupabaseClient,
+    orphanIds: string[],
+): Promise<void> {
+    if (orphanIds.length === 0) return;
+    const { error } = await supabase
+        .from("products")
+        .update({ visible: false })
+        .in("id", orphanIds);
+    if (error) {
+        throw new Error(`orphan hide failed (${orphanIds.length} products): ${error.message}`);
+    }
+}
 
 // ─── Main sync function ─────────────────────────────────────────────
 
@@ -68,33 +169,11 @@ export async function syncMerchantPOS(
             throw new Error(`No POS connection found for ${provider}`);
         }
 
-        let accessToken = decrypt(conn.access_token);
-
-        const expiresAt = conn.expires_at ? new Date(conn.expires_at).getTime() : Infinity;
-        const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
-
-        if (expiresAt < fiveMinFromNow && conn.refresh_token) {
-            const refreshResult = await adapter.refreshToken(decrypt(conn.refresh_token));
-
-            if (!refreshResult) {
-                await supabase
-                    .from("pos_connections")
-                    .update({ last_sync_status: "error", last_sync_error: "Token expired" })
-                    .eq("id", conn.id);
-
-                throw new Error("Token expired and refresh failed");
-            }
-
-            await supabase
-                .from("pos_connections")
-                .update({
-                    access_token: encrypt(refreshResult.access_token),
-                    refresh_token: encrypt(refreshResult.refresh_token),
-                    expires_at: refreshResult.expires_at,
-                })
-                .eq("id", conn.id);
-
-            accessToken = refreshResult.access_token;
+        // Refresh proactif via la SOURCE UNIQUE partagée (cf. access-token.ts) —
+        // plus de logique de refresh dupliquée entre sync-engine et getActivePosAccessToken.
+        const accessToken = await ensureFreshAccessToken(supabase, conn, adapter);
+        if (accessToken === null) {
+            throw new Error("Token expired and refresh failed");
         }
 
         // ─── Fetch POS data ──────────────────────────────────────────
@@ -163,10 +242,17 @@ export async function syncMerchantPOS(
         }
 
         // ─── Update existing products ───────────────────────────────
+        // `products_updated` ne compte QUE les écritures réellement réussies : un échec
+        // d'update (prix/nom/ean périmés) est REMONTÉ via captureError (jamais avalé) sans
+        // bloquer le reste du sync — une seule ligne fautive ne doit pas figer le marchand
+        // entier (au lieu d'un throw qui re-planterait au même produit à chaque sync).
+        let productsUpdated = 0;
         for (const { existingId, existingPhotoUrl, posProduct } of toUpdate) {
-            await updateProduct(supabase, existingId, existingPhotoUrl, provider, posProduct);
+            if (await updateProduct(supabase, existingId, existingPhotoUrl, provider, posProduct)) {
+                productsUpdated++;
+            }
         }
-        result.products_updated = toUpdate.length;
+        result.products_updated = productsUpdated;
 
         // ─── Create new products (sequential — uses RPC) ────────────
         // Track newly created products so we can run enrichment + mark them
@@ -184,7 +270,7 @@ export async function syncMerchantPOS(
         if (newlyCreated.length > 0) {
             const proposedAt = new Date().toISOString();
             for (const { productId, posProduct } of newlyCreated) {
-                await supabase
+                const { error: pendingErr } = await supabase
                     .from("products")
                     .update({
                         review_status: "pending_review",
@@ -197,26 +283,24 @@ export async function syncMerchantPOS(
                         original_image_url: posProduct.photo_url,
                     })
                     .eq("id", productId);
+                // GATE « zéro faux positif » NON SILENCIEUX : si ce marquage échoue, le
+                // produit garde son review_status par défaut (NULL = validated) → le post-pass
+                // groupVariantsByEAN le rendrait VISIBLE sans validation marchand = produit non
+                // vérifié publié (le faux positif cardinal). On LÈVE (sync `error` + Sentry,
+                // retry idempotent) plutôt que de publier en silence un produit non validé.
+                if (pendingErr) {
+                    throw new Error(`pending_review mark failed (${productId}): ${pendingErr.message}`);
+                }
             }
         }
 
         // ─── Batch stock upsert ─────────────────────────────────────
-        const stockRows = stockUpdates
-            .filter((s) => posItemToProductId.has(s.pos_item_id))
-            .map((s) => ({
-                product_id: posItemToProductId.get(s.pos_item_id)!,
-                quantity: s.quantity,
-                updated_at: s.updated_at,
-            }));
+        const stockRows = buildPosStockRows(stockUpdates, posItemToProductId);
 
         if (stockRows.length > 0) {
-            const BATCH_SIZE = 500;
-            for (let i = 0; i < stockRows.length; i += BATCH_SIZE) {
-                await supabase
-                    .from("stock")
-                    .upsert(stockRows.slice(i, i + BATCH_SIZE), { onConflict: "product_id" });
-            }
-            result.stock_updated = stockRows.length;
+            // Non silencieux : un échec d'écriture lève (catch → sync `error` + Sentry)
+            // au lieu de rapporter `stock_updated` sans rien avoir persisté.
+            result.stock_updated = await applyStockUpserts(supabase, stockRows);
         }
 
         // ─── Default stock for POS items without inventory tracking ──
@@ -230,13 +314,16 @@ export async function syncMerchantPOS(
             .filter((id): id is string => !!id);
 
         if (untrackedNewProducts.length > 0) {
-            await supabase.from("stock").upsert(
+            const nowIso = new Date().toISOString();
+            await applyStockUpserts(
+                supabase,
                 untrackedNewProducts.map((id) => ({
                     product_id: id,
                     quantity: 1,
-                    updated_at: new Date().toISOString(),
+                    updated_at: nowIso,
+                    source: "pos_sync",
+                    source_ts: nowIso,
                 })),
-                { onConflict: "product_id" },
             );
         }
 
@@ -254,16 +341,10 @@ export async function syncMerchantPOS(
 
         // ─── Mark removed POS products as invisible ─────────────────
         const currentPosItemIds = new Set(catalog.map((p) => p.pos_item_id));
-        const orphanIds = productIndex.all
-            .filter((p) => p.pos_item_id && !currentPosItemIds.has(p.pos_item_id))
-            .map((p) => p.id);
-
-        if (orphanIds.length > 0) {
-            await supabase
-                .from("products")
-                .update({ visible: false })
-                .in("id", orphanIds);
-        }
+        const orphanIds = computeOrphanProductIds(productIndex.all, currentPosItemIds);
+        // Non silencieux : un échec de masquage lève (catch → sync `error` + Sentry)
+        // au lieu de laisser des produits retirés visibles (catalogue fantôme).
+        await hideOrphanProducts(supabase, orphanIds);
 
         // ─── Promos sync ─────────────────────────────────────────────
 
@@ -367,23 +448,33 @@ async function createProduct(
 
     if (createError) throw new Error(`create_product_with_stock failed: ${createError.message}`);
 
-    const size = extractSize(posProduct.name);
+    const size = resolveProductSize(posProduct);
     if (size) {
-        await supabase.from("products").update({ size }).eq("id", created as string);
+        // Non bloquant (le produit EST créé et sera ré-écrit au prochain sync via updateProduct),
+        // mais un échec rend la taille périmée d'un cycle → on le REND VISIBLE (Sentry) au lieu
+        // de l'avaler. Pas de throw : le produit existe déjà, lever rejouerait sa création.
+        const { error: sizeErr } = await supabase.from("products").update({ size }).eq("id", created as string);
+        if (sizeErr) captureError(sizeErr, { context: "pos-sync-create-product-size", productId: created as string, provider });
     }
 
     result.products_created++;
     return created as string;
 }
 
-async function updateProduct(
+/**
+ * Met à jour un produit existant (nom/prix/ean/photo/catégorie/taille) depuis le POS.
+ * Renvoie `true` si l'écriture a réussi, `false` sinon — un échec est REMONTÉ via
+ * captureError (jamais avalé), et le caller ne le compte PAS dans `products_updated`
+ * (le compteur ne ment plus). Non bloquant : une ligne fautive n'arrête pas le sync.
+ */
+export async function updateProduct(
     supabase: Awaited<ReturnType<typeof createClient>>,
     productId: string,
     existingPhotoUrl: string | null,
     provider: string,
     posProduct: POSProduct,
-): Promise<void> {
-    const newSize = extractSize(posProduct.name);
+): Promise<boolean> {
+    const newSize = resolveProductSize(posProduct);
 
     // Si la photo POS a changé, forcer le retraitement (reset photo_processed_url)
     const photoChanged = posProduct.photo_url !== null && posProduct.photo_url !== existingPhotoUrl;
@@ -408,15 +499,20 @@ async function updateProduct(
         updates.size = newSize;
     }
 
-    await supabase
+    const { error } = await supabase
         .from("products")
         .update(updates)
         .eq("id", productId);
+    if (error) {
+        captureError(error, { context: "pos-sync-update-product", productId, provider });
+        return false;
+    }
+    return true;
 }
 
 // ─── Promo upsert ────────────────────────────────────────────────────
 
-async function upsertPromo(
+export async function upsertPromo(
     supabase: Awaited<ReturnType<typeof createClient>>,
     merchantId: string,
     provider: string,
@@ -442,12 +538,19 @@ async function upsertPromo(
         const productId = posItemToProductId.get(posItemId);
         if (!productId) continue;
 
-        const { data: product } = await supabase
+        const { data: product, error: priceErr } = await supabase
             .from("products")
             .select("price")
             .eq("id", productId)
             .single();
 
+        // Lecture du prix échouée ≠ produit sans prix : on REMONTE (Sentry) au lieu de
+        // skip en silence (une promo non importée = produit affiché plein tarif). Non
+        // bloquant : on passe au produit suivant.
+        if (priceErr) {
+            captureError(priceErr, { context: "pos-sync-upsert-promo-read", productId, provider });
+            continue;
+        }
         if (!product?.price) continue;
 
         const salePrice = Math.max(
@@ -457,7 +560,7 @@ async function upsertPromo(
                 : Math.round((product.price - promo.value) * 100) / 100,
         );
 
-        await supabase
+        const { error: promoErr } = await supabase
             .from("promotions")
             .upsert(
                 {
@@ -473,6 +576,12 @@ async function upsertPromo(
                 { onConflict: "pos_promo_id,product_id" },
             );
 
+        // `promos_imported` ne compte que les upserts réussis : un échec est remonté
+        // (Sentry) au lieu d'être avalé puis compté comme importé (compteur menteur).
+        if (promoErr) {
+            captureError(promoErr, { context: "pos-sync-upsert-promo", productId, provider });
+            continue;
+        }
         result.promos_imported++;
     }
 }
@@ -484,17 +593,31 @@ async function upsertPromo(
  * Products sharing the same EAN prefix are size variants of the same model.
  * Elects a principal product, computes available_sizes, marks others as variants.
  * Products without EAN are marked as not visible (merchant must complete them).
+ *
+ * NON SILENCIEUX : la lecture et TOUTES les écritures de ce post-pass LÈVENT sur erreur.
+ * C'est le GATE de visibilité « zéro faux positif » — un échec d'écriture avalé laisserait
+ * soit une variante non masquée (doublon fantôme visible à côté du principal), soit un
+ * produit jamais rendu visible, soit un stock principal périmé. Les écritures sont toutes
+ * ABSOLUES et IDEMPOTENTES (visible=…, variant_of=…, available_sizes=…, stock=total via
+ * upsert), et ce post-pass tourne AVANT le bookkeeping de succès → lever est sûr (le sync
+ * est marqué `error` + Sentry, puis re-converge au re-run, sans double comptage). Les
+ * appelants tolèrent déjà le throw (sync rethrow ; ingestion/admin/invoice wrappent+captent).
  */
 export async function groupVariantsByEAN(
     supabase: SupabaseClient,
     merchantId: string,
 ): Promise<number> {
-    const { data: products } = await supabase
+    const { data: products, error: readError } = await supabase
         .from("products")
         .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, review_status, stock(quantity)")
         .eq("merchant_id", merchantId)
         .is("variant_of", null);
 
+    // Lecture échouée ≠ marchand sans produit : on LÈVE (sinon tout le regroupage est SKIPPÉ
+    // en silence → produits jamais rendus visibles / variantes fantômes jamais masquées).
+    if (readError) {
+        throw new Error(`groupVariantsByEAN read failed (${merchantId}): ${readError.message}`);
+    }
     if (!products || products.length === 0) return 0;
 
     let visibleCount = 0;
@@ -502,7 +625,13 @@ export async function groupVariantsByEAN(
     // A pending_review product must NEVER be made visible by this post-pass:
     // the merchant has not yet validated the enrichment, so it stays hidden
     // until they accept it from /dashboard/stock/review.
-    const isPending = (p: { review_status?: string | null }) => p.review_status === "pending_review";
+    // GATE : seul un produit explicitement `validated` (score ≥ 0,95 ou validé
+    // 1-tap) peut devenir visible. Tout statut du pipeline cascade ('pending',
+    // 'masked', 'pending_review') reste invisible — sinon ce post-pass court-circuite
+    // le gate "zéro faux positif" (un produit non scoré avec stock deviendrait public).
+    // review_status NULL = legacy/DEFAULT 'validated' → autorisé.
+    const isPending = (p: { review_status?: string | null }) =>
+        p.review_status != null && p.review_status !== "validated";
 
     // Products without EAN (or with EAN shorter than 8 chars — EAN-8 and EAN-13 both valid)
     const noEan = products.filter((p) => !p.ean || p.ean.length < 8);
@@ -513,11 +642,13 @@ export async function groupVariantsByEAN(
         const computedVisible = hasNameAndPrice && qty > 0;
         const visible = isPending(p) ? false : computedVisible;
         if (visible) visibleCount++;
-        const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty }] : [];
-        await supabase
-            .from("products")
-            .update({ visible, available_sizes: availableSizes })
-            .eq("id", p.id);
+        const availableSizes = (p as any).size ? [{ size: (p as any).size, quantity: qty, source: "pos" as const }] : [];
+        // Non-destructif : ne pas écraser un available_sizes déjà rempli (ex. par
+        // l'ingestion fichier qui groupe les tailles en mémoire) avec un tableau vide.
+        const upd: Record<string, unknown> = { visible };
+        if (availableSizes.length > 0) upd.available_sizes = availableSizes;
+        const { error: updErr } = await supabase.from("products").update(upd).eq("id", p.id);
+        if (updErr) throw new Error(`groupVariantsByEAN visibility update failed (${p.id}): ${updErr.message}`);
     }
 
     // Group products with EAN by prefix
@@ -539,14 +670,14 @@ export async function groupVariantsByEAN(
             // Solo product with EAN — visible only if stock > 0
             const p = group[0];
             const qty = (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0;
-            const availableSizes = p.size ? [{ size: p.size, quantity: qty }] : [];
+            const availableSizes = p.size ? [{ size: p.size, quantity: qty, source: "pos" as const }] : [];
             const computedVisible = qty > 0;
             const visible = isPending(p) ? false : computedVisible;
             if (visible) visibleCount++;
-            await supabase
-                .from("products")
-                .update({ visible, variant_of: null, available_sizes: availableSizes })
-                .eq("id", p.id);
+            const upd: Record<string, unknown> = { visible, variant_of: null };
+            if (availableSizes.length > 0) upd.available_sizes = availableSizes;
+            const { error: soloErr } = await supabase.from("products").update(upd).eq("id", p.id);
+            if (soloErr) throw new Error(`groupVariantsByEAN solo update failed (${p.id}): ${soloErr.message}`);
             continue;
         }
 
@@ -558,12 +689,14 @@ export async function groupVariantsByEAN(
             return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         })[0];
 
-        // Compute available_sizes from all members
+        // Compute available_sizes from all members. source:"pos" = taille issue
+        // d'une variante de caisse structurée (fiable), pour le traçage d'origine.
         const availableSizes = group
             .filter((p) => p.size)
             .map((p) => ({
                 size: p.size!,
                 quantity: (p as any).stock?.[0]?.quantity ?? (p as any).stock?.quantity ?? 0,
+                source: "pos" as const,
             }))
             .sort((a, b) => {
                 const na = parseFloat(a.size);
@@ -578,24 +711,28 @@ export async function groupVariantsByEAN(
         const groupVisible = isPending(principal) ? false : computedGroupVisible;
         if (groupVisible) visibleCount++;
 
-        // Update principal
-        await supabase
-            .from("products")
-            .update({ visible: groupVisible, variant_of: null, available_sizes: availableSizes })
-            .eq("id", principal.id);
+        // Update principal (available_sizes seulement s'il y a des tailles : ne pas
+        // écraser un available_sizes posé par l'ingestion fichier avec du vide).
+        const updPrincipal: Record<string, unknown> = { visible: groupVisible, variant_of: null };
+        if (availableSizes.length > 0) updPrincipal.available_sizes = availableSizes;
+        const { error: princErr } = await supabase.from("products").update(updPrincipal).eq("id", principal.id);
+        if (princErr) throw new Error(`groupVariantsByEAN principal update failed (${principal.id}): ${princErr.message}`);
 
         // Update stock of principal to reflect total
-        await supabase
+        const { error: stockErr } = await supabase
             .from("stock")
             .upsert({ product_id: principal.id, quantity: totalStock }, { onConflict: "product_id" });
+        if (stockErr) throw new Error(`groupVariantsByEAN principal stock upsert failed (${principal.id}): ${stockErr.message}`);
 
         // Mark other members as variants
         const variantIds = group.filter((p) => p.id !== principal.id).map((p) => p.id);
         if (variantIds.length > 0) {
-            await supabase
+            const { error: varErr } = await supabase
                 .from("products")
                 .update({ variant_of: principal.id, visible: false })
                 .in("id", variantIds);
+            // Variantes non masquées = doublons fantômes visibles à côté du principal.
+            if (varErr) throw new Error(`groupVariantsByEAN variant mark failed (${variantIds.length} ids): ${varErr.message}`);
         }
     }
 
@@ -636,6 +773,7 @@ export async function recalculateGroupSizes(
         .map((m) => ({
             size: m.size!,
             quantity: (m as any).stock?.[0]?.quantity ?? (m as any).stock?.quantity ?? 0,
+            source: "pos" as const,
         }))
         .sort((a, b) => {
             const na = parseFloat(a.size);
@@ -646,12 +784,22 @@ export async function recalculateGroupSizes(
 
     const totalStock = availableSizes.reduce((sum, s) => sum + s.quantity, 0);
 
-    await supabase
+    // Aucune taille = produit SOLO, pas un groupe multi-tailles : ne PAS écraser sa ligne
+    // stock autoritaire par le total des tailles (0) — faux « rupture » silencieux — ni son
+    // available_sizes par []. (Même invariant que recalculateGroupSizesAdmin, cf. webhooks ;
+    // les deux jumeaux doivent rester identiques — consolidation à faire en supervisé.)
+    if (availableSizes.length === 0) return;
+
+    // Writes du rollup non silencieux (cf. recalculateGroupSizesAdmin) : un échec rend
+    // available_sizes/total périmé — on le REND VISIBLE via Sentry sans casser le flux.
+    const { error: sizesErr } = await supabase
         .from("products")
         .update({ available_sizes: availableSizes })
         .eq("id", principalId);
+    if (sizesErr) captureError(sizesErr, { context: "recalc-group-sizes", principalId, write: "available_sizes" });
 
-    await supabase
+    const { error: stockErr } = await supabase
         .from("stock")
         .upsert({ product_id: principalId, quantity: totalStock }, { onConflict: "product_id" });
+    if (stockErr) captureError(stockErr, { context: "recalc-group-sizes", principalId, write: "stock_total" });
 }

@@ -7,6 +7,7 @@ import { notifyProductFavorites } from "@/lib/push-send";
 import { recalculateGroupSizesAdmin } from "@/lib/pos/recalculate-sizes";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { updateStockAtomic } from "@/lib/pos/update-stock";
+import { resolveWebhookProduct } from "@/lib/pos/resolve-product";
 
 export async function POST(request: Request) {
     const body = await request.text();
@@ -35,28 +36,26 @@ export async function POST(request: Request) {
         const supabase = createAdminClient();
 
         for (const update of updates) {
-            // Find product by pos_item_id
-            const { data: product } = await supabase
-                .from("products")
-                .select("id, merchant_id")
-                .eq("pos_item_id", update.pos_item_id)
-                .single();
-
+            const product = await resolveWebhookProduct(supabase, update.pos_item_id, "square");
             if (!product) continue;
 
-            // Atomic stock update — eliminates TOCTOU race condition
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute");
+            // Atomic stock update — eliminates TOCTOU race condition.
+            // On transmet l'horodatage RÉEL de l'événement (calculated_at Square) comme
+            // source_ts → active la garde anti-régression de la 104 : un webhook périmé
+            // (livré dans le désordre / retry tardif) n'écrase plus une vérité plus fraîche.
+            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             // Recalculate available_sizes on the group principal
             await recalculateGroupSizesAdmin(product.id);
 
             // Emit restock feed_event only when stock goes from 0 to positive
             if (previousQty === 0 && update.quantity > 0) {
-                await supabase.from("feed_events").insert({
+                const { error: feedErr } = await supabase.from("feed_events").insert({
                     merchant_id: product.merchant_id,
                     product_id: product.id,
                     event_type: "restock",
                 });
+                if (feedErr) captureError(feedErr, { route: "webhooks/square", phase: "feed-event", productId: product.id });
             }
 
             // Push notification only when back in stock (was 0, now positive)
@@ -70,19 +69,22 @@ export async function POST(request: Request) {
                     title: "De retour en stock !",
                     body: `${productInfo?.name ?? "Un produit"} est à nouveau disponible`,
                     url: `/product/${product.id}`,
-                }).catch(() => {});
+                }).catch((e) => captureError(e, { route: "webhooks/square", phase: "push-notify", productId: product.id }));
             }
         }
 
         // Push updated inventory to Google
         if (updates.length > 0) {
-            const { data: firstProduct } = await supabase
+            const { data: firstProduct, error: merchantErr } = await supabase
                 .from("products")
                 .select("merchant_id")
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
+            if (merchantErr) captureError(merchantErr, { route: "webhooks/square", phase: "merchant-lookup-google" });
             if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch(() => {});
+                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
+                    captureError(e, { route: "webhooks/square", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+                );
             }
         }
 

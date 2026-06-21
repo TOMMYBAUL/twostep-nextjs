@@ -3,6 +3,7 @@ import PostalMime from "postal-mime";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseInvoice } from "@/lib/parser";
+import { invoiceStatusForParse } from "@/lib/parser/invoice-status";
 import { captureError } from "@/lib/error";
 
 const WEBHOOK_SECRET = process.env.CF_EMAIL_WEBHOOK_SECRET ?? "";
@@ -90,7 +91,9 @@ export async function POST(request: NextRequest) {
                 .upload(storagePath, buffer, { contentType: att.mimeType ?? "application/octet-stream" });
 
             if (storageError) {
-                console.error("[inbound-email-cf] Storage upload failed:", storageError);
+                // Échec d'upload = pièce jointe non traitée → remonter à Sentry
+                // (console.error seul est perdu en serverless).
+                captureError(storageError, { route: "inbound-email-cloudflare", step: "storage_upload", merchantId: merchant.id });
                 continue;
             }
 
@@ -125,10 +128,12 @@ export async function POST(request: NextRequest) {
             try {
                 const parsed = await parseInvoice(buffer, att.filename!);
 
+                // 0 item extrait → "failed" (pas "parsed") : sinon le marchand
+                // croit que des produits ont été importés alors qu'aucun ne l'a été.
                 await supabase
                     .from("invoices")
                     .update({
-                        status: "parsed",
+                        status: invoiceStatusForParse(parsed.items.length),
                         supplier_name: parsed.supplier_name ?? null,
                         parsed_at: new Date().toISOString(),
                     })

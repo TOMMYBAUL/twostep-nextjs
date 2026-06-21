@@ -2,9 +2,8 @@ import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { parseInvoice } from "@/lib/parser";
-import { extractSize, stripSize } from "@/lib/pos/extract-size";
-import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
+import { parseStockFile } from "@/lib/ingest/parse-stock";
+import { ingestStockSnapshot } from "@/lib/ingest/snapshot";
 import { captureError } from "@/lib/error";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -19,12 +18,20 @@ const ACCEPTED_TYPES = new Set([
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 /**
- * Import a full catalog snapshot (CSV/XLSX/XLS exported from the merchant's POS).
- * Unlike invoice import (which ADDS stock), this REPLACES stock with current values.
- * Matches existing products by EAN → name, creates new ones if not found.
+ * Import d'un snapshot de catalogue (CSV/XLSX exporté de la caisse du marchand),
+ * canal "glisser-déposer" du dashboard — même cœur que le push par jeton
+ * (`/api/ingest/stock`) : `ingestStockSnapshot`, sémantique REPLACE + réconciliation.
+ *
+ * Workflow wizard en deux temps :
+ *   1. `mode=preview` → parse + triage d'identité + simulation complète
+ *      (créations/màj/passages à 0), AUCUNE écriture. Le marchand voit ce qui
+ *      va se passer — y compris les lignes rejetées et pourquoi — et confirme.
+ *   2. `mode=apply` (défaut) → ingestion réelle, enregistrée pour traçabilité.
+ *
+ * Règle d'identité (contrat NearSt) : GTIN valide ou SKU, jamais le nom seul.
  */
 export async function POST(request: NextRequest) {
-    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "catalog:import", 3);
+    const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "catalog:import", 6);
     if (limited) return limited;
 
     try {
@@ -43,6 +50,8 @@ export async function POST(request: NextRequest) {
         const file = formData.get("file") as File | null;
         if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
+        const mode = formData.get("mode") === "preview" ? "preview" : "apply";
+
         if (!ACCEPTED_TYPES.has(file.type)) {
             return NextResponse.json(
                 { error: "Type non supporté. Formats acceptés : CSV, XLSX, XLS." },
@@ -54,12 +63,10 @@ export async function POST(request: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-
-        // Sanitise filename (used for parsing only, no storage path here)
-        const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
-
-        // Dedup: block identical file re-import
         const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
+
+        // Dedup : bloquer le ré-import du fichier strictement identique (apply uniquement —
+        // re-prévisualiser un fichier est toujours permis).
         const { data: existingImport } = await supabase
             .from("invoices")
             .select("id")
@@ -67,266 +74,57 @@ export async function POST(request: NextRequest) {
             .eq("file_hash", fileHash)
             .maybeSingle();
 
-        if (existingImport) {
+        if (mode === "apply" && existingImport) {
             return NextResponse.json({ error: "Ce fichier a déjà été importé." }, { status: 409 });
         }
 
-        // Parse the file
-        const parsed = await parseInvoice(buffer, safeFilename);
+        const parsed = parseStockFile(buffer);
         if (parsed.items.length === 0) {
-            return NextResponse.json({ error: "Aucun produit détecté dans le fichier." }, { status: 400 });
+            return NextResponse.json(
+                { error: "Aucune ligne détectée. Vérifiez que le fichier contient des colonnes code-barres/référence, quantité, prix." },
+                { status: 400 },
+            );
         }
 
-        // Record as a catalog-type invoice for traceability
-        const { data: record } = await supabase
-            .from("invoices")
-            .insert({
-                merchant_id: merchant.id,
-                source: "upload",
-                status: "imported",
-                file_hash: fileHash,
-                supplier_name: "CATALOGUE IMPORT",
-                received_at: new Date().toISOString(),
-                parsed_at: new Date().toISOString(),
-                validated_at: new Date().toISOString(),
-            })
-            .select("id")
-            .single();
-
-        // Pre-fetch all existing products for this merchant
-        const { data: existingProducts } = await supabase
-            .from("products")
-            .select("id, ean, name, sku")
-            .eq("merchant_id", merchant.id);
-
-        const byEan = new Map<string, string>();
-        const byName = new Map<string, string>();
-        for (const p of existingProducts ?? []) {
-            if (p.ean) byEan.set(p.ean, p.id);
-            if (p.name) byName.set(p.name.toLowerCase().trim(), p.id);
-        }
-
-        let productsCreated = 0;
-        let productsUpdated = 0;
-        let stockReplaced = 0;
         const admin = createAdminClient();
+        const result = await ingestStockSnapshot(merchant.id, parsed.items, admin, {
+            reconcile: true,
+            dryRun: mode === "preview",
+        });
 
-        // Group items by base name (strip size) to merge size variants
-        type CatalogItem = (typeof parsed.items)[number] & { _size: string | null; _cleanName: string };
-        const groups = new Map<string, CatalogItem[]>();
+        const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
 
-        for (const item of parsed.items) {
-            const size = extractSize(item.name);
-            const cleanName = size ? stripSize(item.name) : item.name;
-            const key = cleanName.toLowerCase().trim();
-            const grouped: CatalogItem = { ...item, _size: size, _cleanName: cleanName };
-            const group = groups.get(key) ?? [];
-            group.push(grouped);
-            groups.set(key, group);
+        if (mode === "preview") {
+            return NextResponse.json({
+                preview: true,
+                already_imported: !!existingImport,
+                ...result,
+            });
         }
 
-        const errors: string[] = [];
-
-        for (const [, groupItems] of groups) {
-            const firstItem = groupItems[0];
-            const cleanName = firstItem._cleanName;
-
-            // Skip items with no name or negative quantity
-            if (!cleanName.trim()) continue;
-            const validItems = groupItems.filter((g) => g.quantity >= 0);
-            if (validItems.length === 0) continue;
-
-            // Match existing product: EAN first, then name
-            let productId: string | null = null;
-
-            // Check ALL EANs in the group for matching (not just first item)
-            for (const g of validItems) {
-                if (g.ean && byEan.has(g.ean)) {
-                    productId = byEan.get(g.ean)!;
-                    break;
-                }
-            }
-            if (!productId && byName.has(cleanName.toLowerCase().trim())) {
-                productId = byName.get(cleanName.toLowerCase().trim())!;
-            }
-
-            // Compute available sizes + total stock
-            const availableSizes = validItems
-                .filter((g) => g._size)
-                .map((g) => ({ size: g._size!, quantity: g.quantity }));
-            const totalStock = validItems.reduce((sum, g) => sum + g.quantity, 0);
-
-            if (productId) {
-                // UPDATE existing product — REPLACE stock
-                const updates: Record<string, unknown> = { visible: true };
-                if (firstItem.unit_price && firstItem.unit_price > 0) updates.price = firstItem.unit_price;
-                if (availableSizes.length > 0) updates.available_sizes = availableSizes;
-
-                const { error: updateErr } = await supabase.from("products").update(updates).eq("id", productId);
-                if (updateErr) { errors.push(`Update ${cleanName}: ${updateErr.message}`); continue; }
-
-                const { error: stockErr } = await supabase.from("stock").upsert(
-                    { product_id: productId, quantity: totalStock, updated_at: new Date().toISOString() },
-                    { onConflict: "product_id" },
-                );
-                if (stockErr) { errors.push(`Stock ${cleanName}: ${stockErr.message}`); continue; }
-
-                productsUpdated++;
-                stockReplaced++;
-            } else {
-                // CREATE new product — défaut INVISIBLE jusqu'à ce que la cascade ait confirmé
-                // un score ≥ 0.95 (cf. score-cascade.ts gates).
-                // Cf. brain Socle-identification-cascade : "Si pas sûr à 95%+ → PAS visible consumer"
-                const newId = crypto.randomUUID();
-                const { error: createErr } = await admin.from("products").insert({
-                    id: newId,
-                    merchant_id: merchant.id,
-                    name: cleanName,
-                    price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
-                    ean: firstItem.ean || null,
-                    visible: false,
-                    review_status: "pending",
-                });
-
-                if (createErr) {
-                    errors.push(`Create ${cleanName}: ${createErr.message}`);
-                    continue;
-                }
-
-                // Set stock to catalog value (REPLACE, not default 0)
-                await supabase.from("stock").upsert(
-                    { product_id: newId, quantity: totalStock, updated_at: new Date().toISOString() },
-                    { onConflict: "product_id" },
-                );
-
-                if (availableSizes.length > 0) {
-                    await supabase.from("products").update({
-                        available_sizes: availableSizes,
-                        // visible reste false jusqu'à la cascade — on n'override pas ici
-                    }).eq("id", newId);
-                }
-
-                // Feed event pour le nouveau produit
-                await admin.from("feed_events").insert({
-                    merchant_id: merchant.id,
-                    product_id: newId,
-                    event_type: "new_product",
-                });
-
-                // Track for dedup within this import
-                if (firstItem.ean) byEan.set(firstItem.ean, newId);
-                byName.set(cleanName.toLowerCase().trim(), newId);
-                productsCreated++;
-                stockReplaced++;
-            }
+        if (exploitable === 0) {
+            return NextResponse.json(
+                {
+                    error: "Aucune ligne exploitable : chaque produit doit avoir un code-barres (EAN/GTIN) ou une référence (SKU). Le nom seul ne suffit pas.",
+                    triage: result.triage,
+                },
+                { status: 422 },
+            );
         }
 
-        // Group variants by EAN (same logic as POS sync — CSV imports don't go through sync-engine)
-        try {
-            await groupVariantsByEAN(admin, merchant.id);
-        } catch (err) {
-            captureError(err, { route: "catalog/import", phase: "group-variants", merchantId: merchant.id });
-        }
+        // Traçabilité de l'import appliqué
+        await supabase.from("invoices").insert({
+            merchant_id: merchant.id,
+            source: "upload",
+            status: "imported",
+            file_hash: fileHash,
+            supplier_name: "CATALOGUE IMPORT",
+            received_at: new Date().toISOString(),
+            parsed_at: new Date().toISOString(),
+            validated_at: new Date().toISOString(),
+        });
 
-        // ── Enrichment cascade (Phase A4 + Cycle 2 — unified socle 6 tiers) ──
-        // Collect all newly created products for enrichment
-        const { data: newProducts } = await admin
-            .from("products")
-            .select("id, ean, sku, name, brand, photo_url")
-            .eq("merchant_id", merchant.id)
-            .is("photo_url", null);
-
-        const { lookupEan, searchEanByName } = await import("@/lib/ean/lookup");
-        const { searchProductImage } = await import("@/lib/images/serper");
-        const { createImageJob } = await import("@/lib/images/jobs");
-        const { runCascade } = await import("@/lib/enrichment/cascade-engine");
-
-        for (const product of newProducts ?? []) {
-            try {
-                // 1. Enrichissement DB (canonical_name, brand, category, photo) via lookupEan
-                //    qui appelle applyEnrichment en interne.
-                if (product.ean) {
-                    await lookupEan(product.ean, product.id);
-                } else {
-                    // Pas d'EAN → reverse search par nom + SKU match
-                    let foundEan: string | null = null;
-                    if (product.sku) {
-                        const { data: skuMatch } = await admin
-                            .from("products")
-                            .select("ean")
-                            .eq("sku", product.sku)
-                            .not("ean", "is", null)
-                            .neq("id", product.id)
-                            .limit(1)
-                            .single();
-                        if (skuMatch?.ean) foundEan = skuMatch.ean;
-                    }
-                    if (!foundEan) {
-                        const found = await searchEanByName(product.name, product.brand);
-                        if (found) foundEan = found.ean;
-                    }
-                    if (foundEan) {
-                        await admin.from("products").update({ ean: foundEan }).eq("id", product.id);
-                        await lookupEan(foundEan, product.id);
-                    } else {
-                        // Last resort photo Serper
-                        const photoUrl = await searchProductImage(product.name, product.brand, null, product.sku);
-                        if (photoUrl) {
-                            await admin
-                                .from("products")
-                                .update({ photo_url: photoUrl, photo_processed_url: null, photo_source: "serper" })
-                                .eq("id", product.id);
-                            await createImageJob(product.id, merchant.id, photoUrl);
-                        }
-                    }
-                }
-
-                // 2. Cascade scoring — calcule identification_score + tiers_matched
-                //    Re-fetch product after lookupEan pour avoir l'EAN potentiellement résolu
-                const { data: refreshed } = await admin
-                    .from("products")
-                    .select("ean, name, brand, sku")
-                    .eq("id", product.id)
-                    .single();
-                if (!refreshed) continue;
-
-                const outcome = await runCascade({
-                    ean: refreshed.ean,
-                    name: refreshed.name,
-                    brand: refreshed.brand,
-                    sku: refreshed.sku,
-                });
-
-                // 3. Persist score + visibility — gate à 0.95 strict
-                await admin.from("products").update({
-                    identification_score: outcome.score,
-                    identification_tiers: outcome.tiers_matched,
-                    visible: outcome.visible,
-                    review_status: outcome.review_status,
-                }).eq("id", product.id);
-            } catch (err) {
-                captureError(err, { route: "catalog/import", phase: "enrichment", productId: product.id });
-            }
-        }
-
-        // AI categorization (same as invoice validation)
-        if (productsCreated > 0 || productsUpdated > 0) {
-            try {
-                const { categorizeMerchantProducts } = await import("@/lib/ai/categorize");
-                await categorizeMerchantProducts(merchant.id);
-            } catch (err) {
-                captureError(err, { route: "catalog/import", phase: "categorize", merchantId: merchant.id });
-            }
-        }
-
-        return NextResponse.json({
-            catalog_import: true,
-            products_created: productsCreated,
-            products_updated: productsUpdated,
-            stock_replaced: stockReplaced,
-            total_items_parsed: parsed.items.length,
-            ...(errors.length > 0 && { errors }),
-        }, { status: 201 });
+        return NextResponse.json({ catalog_import: true, ...result }, { status: 201 });
     } catch (e) {
         captureError(e, { route: "catalog/import" });
         console.error("[catalog/import] Error:", e);
