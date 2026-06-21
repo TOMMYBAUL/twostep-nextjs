@@ -55,6 +55,51 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
 
 ---
 
+## 1bis. ⭐ MISSION COURANTE (2026-06-22) — VALIDER LE WORKFLOW MAILLON PAR MAILLON
+
+> **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
+> (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but
+> « durcir + préparer le merge » : ce levier est tiré. **Nouveau but, fixé par Thomas
+> (2026-06-22)** : prouver que **TOUT le workflow fonctionne, de bout en bout, à une QUALITÉ
+> SUPÉRIEURE** — pas « les tests passent + homepage 200 » (ça, c'était avancer *grossièrement*).
+
+### LA MÉTHODE (obligatoire, surtout en autonomie — cf. mémoire methode-qualite-incrementale)
+1. **Découper en PLEIN de petites étapes** ; chaque maillon du workflow = une étape.
+2. **Valider chaque maillon par une PREUVE RÉELLE** avant le suivant — pas juste un test
+   unitaire vert : le maillon exécuté sur une **vraie entrée sale**, sortie **inspectée champ
+   par champ** ; pour l'UI, **vue au navigateur (Playwright)** ; pour la DB, **donnée vérifiée**.
+3. **Ne passer au maillon suivant QUE quand le précédent est SÛR.** Profondeur > vitesse.
+4. **S'attarder sur chaque détail.** Zéro « ça compile donc c'est bon ».
+5. **Le worklog montre la PREUVE de chaque étape** (sortie inspectée, capture, requête), pas « fait ».
+6. Rythme : **~1 maillon (ou sous-étape) par run, en profondeur.** Prendre le temps qu'il faut.
+
+### LE PLAN (ordre imposé par Thomas : A puis B puis C)
+**A — Chaîne data, maillon par maillon (cœur de la promesse d'exactitude) :**
+1. ✅ **Parse** (`parseStockFile`) — FAIT (commit `2623015`, fixture FR sale, 11 assertions champ
+   par champ). *Reste pour CE maillon* : chemin **XLSX binaire**, encodage **Latin-1/CP1252**,
+   **en-têtes inhabituels** (auto-détection colonnes `detectColumns`).
+2. ⬜ **Triage / identité** (`ingestStockSnapshot` triage) — EAN canonicalisé + **checksum GTIN
+   validé**, UPC-12→EAN-13, fallback SKU, **rejet des lignes nom-seul**. Preuve : fichier réel →
+   compteurs triage corrects + lignes rejetées listées.
+3. ⬜ **Ingest / match** (items → `products`) — match par EAN/SKU, create vs update, **0 doublon**.
+   Preuve : faux client (ou DB de test) → lignes attendues.
+4. ⬜ **Réconciliation** — article absent du snapshot → **stock 0** (vendu), jamais d'écrasement
+   silencieux. Preuve.
+5. ⬜ **Confiance / fraîcheur** — `source`/`source_ts` → label de confiance honnête. Preuve.
+6. (puis 6 Affichage, 7 Feed Google, 8 email-in de bout en bout — voir B + suite.)
+
+**B — UI réelle (Playwright sur l'app live)** : parcours accueil → onboarding → upload stock →
+dashboard → vitrine + badge confiance. Screenshots. Lister sans complaisance ce qui est
+« grossier »/amateur vs pro. (= maillon 6 Affichage prouvé pour de vrai.)
+
+**C — (déjà amorcé)** : cette section EST l'encodage de la méthode dans le cerveau de la boucle.
+Maintenir à jour ; ne pas régresser vers le « grossier ».
+
+> Tant que A n'est pas prouvé maillon par maillon, NE PAS partir sur du nouveau feature.
+> Chaque run : reprendre le 1er maillon `⬜` non prouvé, le finir avec preuve, cocher, worklog.
+
+---
+
 ## 2. Règle de verifiability (ce que la boucle décide seule vs escalade)
 
 L'auto-amélioration n'est fiable que sur le **vérifiable**. Donc :
