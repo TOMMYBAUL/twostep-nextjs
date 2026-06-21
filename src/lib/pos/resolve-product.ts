@@ -23,16 +23,29 @@ export function pickUniqueProduct<T>(rows: T[] | null | undefined): { product: T
  * collision multi-tenant (cf. worklog Collecte ③ passe 2). En cas d'ambiguïté on
  * loggue (Sentry) et on renvoie null → la vente n'est pas appliquée mais devient
  * VISIBLE. Fix de fond = scoper par marchand (design + migration, supervisé).
+ *
+ * Distinction CRITIQUE erreur-DB vs produit-non-suivi : `null` SANS lever ne signifie
+ * QUE « pos_item_id non rattaché à un produit » (cas normal). Un échec de LECTURE
+ * (DB indispo, RLS, réseau) **LÈVE** au lieu de retomber sur `null` — sinon un événement
+ * stock temps réel serait perdu silencieusement (le webhook répondrait 200, le POS ne
+ * renverrait jamais) = perte silencieuse north-star n°1. Le throw remonte au catch de la
+ * route → captureError + 500 → retry POS (absolu : événement récupéré ; delta : au moins
+ * rendu VISIBLE, l'idempotence amont protège du double-décrément).
  */
 export async function resolveWebhookProduct(
     supabase: SupabaseClient,
     posItemId: string,
     provider: string,
 ): Promise<ResolvedProduct | null> {
-    const { data } = await supabase
+    const { data, error } = await supabase
         .from("products")
         .select("id, merchant_id")
         .eq("pos_item_id", posItemId);
+    if (error) {
+        throw new Error(
+            `Webhook ${provider}: échec lecture produit pour pos_item_id "${posItemId}" — ${error.message}`,
+        );
+    }
     const { product, ambiguous } = pickUniqueProduct(data as ResolvedProduct[] | null);
     if (ambiguous) {
         captureError(

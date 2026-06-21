@@ -79,6 +79,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   re-planterait au même produit à chaque run) — et alors le **compteur ne compte que les
   succès réels** (`products_updated`/`promos_imported`). (2026-06-21)
 
+- ❌ `resolveWebhookProduct` (4 routes webhook POS) faisait `const { data } = ...` sur la
+  lecture produit par `pos_item_id` → un échec DB devenait indistinct de « produit non suivi »
+  (les deux → `null` → `if(!product) continue` → 200 OK). Une MAJ stock temps réel perdue, le
+  POS ne renvoie jamais = perte silencieuse n°1. Fix : LÈVE sur `error` (≠ 0-candidat qui reste
+  null normal) → catch route → captureError + 500 → retry POS. **Mode = récupérabilité** : absolu
+  (Square/Zettle, pas d'idempotence) → retry ré-applique = récupéré ; delta (Shopify/Lightspeed,
+  `webhook_events` inséré AVANT la boucle = at-most-once) → retry dédupliqué = au moins VISIBLE,
+  l'idempotence-first protège du double-décrément. (2026-06-21, revue silent-failure-hunter)
+- ⚖️ **Idempotence webhook : le check ET l'insert `webhook_events` doivent destructurer `error`.**
+  Un check qui avale l'erreur → `existing=null` → re-traitement → **double-décrément delta**. Fix :
+  `captureError` + 500 (retry → dedup). Un insert avalé idem. (Finding 3a/3b, 2026-06-21)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

@@ -50,11 +50,12 @@ export async function POST(request: Request) {
 
             // Emit restock feed_event only when stock goes from 0 to positive
             if (previousQty === 0 && update.quantity > 0) {
-                await supabase.from("feed_events").insert({
+                const { error: feedErr } = await supabase.from("feed_events").insert({
                     merchant_id: product.merchant_id,
                     product_id: product.id,
                     event_type: "restock",
                 });
+                if (feedErr) captureError(feedErr, { route: "webhooks/square", phase: "feed-event", productId: product.id });
             }
 
             // Push notification only when back in stock (was 0, now positive)
@@ -74,11 +75,12 @@ export async function POST(request: Request) {
 
         // Push updated inventory to Google
         if (updates.length > 0) {
-            const { data: firstProduct } = await supabase
+            const { data: firstProduct, error: merchantErr } = await supabase
                 .from("products")
                 .select("merchant_id")
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
+            if (merchantErr) captureError(merchantErr, { route: "webhooks/square", phase: "merchant-lookup-google" });
             if (firstProduct) {
                 pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
                     captureError(e, { route: "webhooks/square", phase: "google-inventory", merchantId: firstProduct.merchant_id }),

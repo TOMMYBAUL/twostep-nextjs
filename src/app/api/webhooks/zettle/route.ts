@@ -43,11 +43,12 @@ export async function POST(request: Request) {
 
             await recalculateGroupSizesAdmin(product.id);
 
-            await supabase.from("feed_events").insert({
+            const { error: feedErr } = await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,
                 product_id: product.id,
                 event_type: update.quantity > previousQty ? "restock" : "sale",
             });
+            if (feedErr) captureError(feedErr, { route: "webhooks/zettle", phase: "feed-event", productId: product.id });
 
             // Notify favorites when product comes back in stock
             if (update.quantity > 0 && previousQty === 0) {
@@ -66,11 +67,12 @@ export async function POST(request: Request) {
 
         // Push updated inventory to Google
         if (updates.length > 0) {
-            const { data: firstProduct } = await supabase
+            const { data: firstProduct, error: merchantErr } = await supabase
                 .from("products")
                 .select("merchant_id")
                 .eq("pos_item_id", updates[0].pos_item_id)
                 .maybeSingle();
+            if (merchantErr) captureError(merchantErr, { route: "webhooks/zettle", phase: "merchant-lookup-google" });
             if (firstProduct) {
                 pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
                     captureError(e, { route: "webhooks/zettle", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
