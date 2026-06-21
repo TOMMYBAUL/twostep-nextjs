@@ -18,21 +18,33 @@ CASA), agent desktop différé. Voir mémoire `connect-strategie-ingestion`.
   (`lib/ingest/ingest-stock-file.ts`) extrait de `/api/ingest/stock` — comportement HTTP
   identique, invariants conservés (idempotence hash, verrou, REPLACE+reconcile, statut honnête,
   `last_file_hash` posé QUE si abouti = heartbeat). +8 tests.
-- `feat(ingest)` `8c68632` : **branche email** `stock-{slug}@in.twostep.fr` → cœur partagé.
+- `feat(ingest)` `8c68632` : **branche email** `stock-{slug}@twostep.fr` → cœur partagé.
   Routeur pur `parseInboundAddress` (+8 tests, rétro-compat factures byte-for-byte). Garantit la
   ligne `ingest_credentials` via `getOrCreateIngestToken` (verrou/heartbeat y sont keyés).
 - **Revue silent-failure : SOUND**. 2 flags **corrigés avant commit** : (A) multi-fichiers =
   reconcile last-wins silencieux → **contrat snapshot unique** (>1 tableur → alerte + 0 ingestion) ;
   (B) email stock sans tableur exploitable → `captureError` visible. Gate : tsc 0, **523 tests**.
 
-**RESTE** : (1) **ACTIVATION Thomas** = Resend inbound doit capter tout `@in.twostep.fr` (wildcard)
-sinon ajouter le motif `stock-`. (2) [R] **monitor de fraîcheur** sur `ingest_credentials.last_used_at`
-(couvrir le canal email, juger sur récence, pas `last_status`) — sinon un feed figé reste silencieux.
-(3) Pages onboarding guidées par POS (Clictill/Fastmag). (4) Connecteur API Hiboutik (si besoin).
+**🚀 MERGE + DÉPLOIEMENT PROD FAIT (GO Thomas 2026-06-21)** : `feat → main` mergé **sans conflit**
+(commit `5a93bbc`, merge 3-way propre avec les 76 commits prospection de `main`), **aucune
+migration** (prod = branche = 106), gate 523 vert sur le résultat. Poussé → déploiement Vercel
+**production `dpl_6576onJw…` READY** (build ~53 s). **`twostep.fr` LIVE** (smoke : `/`=200,
+`/connexion`,`/discover`,`/dashboard`=307). **Premier passage en prod de tout le software.**
+Filets : tag `backup/main-pre-merge-20260622` + rollback Vercel `dpl_2c1KGPKpt`. WhatsApp envoyé.
 
-**⚠️ Concurrence** : `TwoStepAutonomy` **mise en pause (Disabled)** pendant la session supervisée
-(la boucle avait committé ~6× pendant la session précédente, risque de collision). **À RÉACTIVER**
-en fin de collaboration.
+**Resend RÉSOLU** : le vrai domaine inbound = **`twostep.fr`** (cf. `email-setup-guide.tsx` :
+`factures-…@twostep.fr`, qui marche déjà en prod) → `stock-…@twostep.fr` arrive **automatiquement**,
+**Resend n'a besoin de rien**. (Correction : mes docs disaient `in.twostep.fr` à tort.)
+
+**RESTE** : (1) [R] **monitor de fraîcheur** sur `ingest_credentials.last_used_at` (couvrir le canal
+email, juger sur récence, pas `last_status`) — sinon un feed figé reste silencieux. (2) Pages
+onboarding guidées par POS (Clictill/Fastmag) avec l'adresse `stock-{slug}@twostep.fr`. (3) Connecteur
+API Hiboutik (si besoin temps-réel plus tard). (4) `GOOGLE_DISAPPROVAL_ALERTS=1` en env Vercel
+(active la persistance marchand des rejets Google ; inerte sinon). (5) Rotation PAT Supabase faite
+par Thomas — confirmer que le nouveau token est dans la var d'env User (sinon la boucle cassera).
+
+**⚠️ Concurrence** : `TwoStepAutonomy` **mise en pause (Disabled)** pendant la session supervisée.
+**À RÉACTIVER** en fin de collaboration.
 
 ---
 
