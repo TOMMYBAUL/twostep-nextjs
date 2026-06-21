@@ -207,6 +207,42 @@ describe("groupVariantsByEAN — regroupage par préfixe EAN", () => {
     });
 });
 
+describe("groupVariantsByEAN — écritures NON silencieuses (GATE visibilité)", () => {
+    it("LÈVE si la LECTURE des produits échoue (jamais un regroupage skippé en silence)", async () => {
+        // Lecture en erreur ≠ marchand sans produit : skipper le regroupage laisserait des
+        // produits jamais rendus visibles / variantes fantômes jamais masquées.
+        const { client } = makeClient((table) =>
+            table === "products" ? { data: null, error: { message: "read boom" } } : { data: [], error: null },
+        );
+        await expect(groupVariantsByEAN(client, "m1")).rejects.toThrow(/read failed/);
+    });
+
+    it("LÈVE si un update de visibilité (produit sans EAN) échoue", async () => {
+        const products = [{ id: "p1", name: "Solo", ean: null, size: null, review_status: "validated", stock: [{ quantity: 3 }] }];
+        const { client } = makeClient(
+            (table) => (table === "products" ? { data: products, error: null } : { data: [], error: null }),
+            { products: true },
+        );
+        await expect(groupVariantsByEAN(client, "m1")).rejects.toThrow(/visibility update failed/);
+    });
+
+    it("LÈVE si le masquage des variantes échoue (jamais un doublon fantôme visible en silence)", async () => {
+        // Groupe de 2 variantes même préfixe EAN → marquage des variantes en variant_of/invisible.
+        // Un échec de ce write laisserait la variante visible à côté du principal (doublon).
+        const products = [
+            { id: "v1", name: "Shoe 42", ean: "3001234567890", size: "42", photo_url: "http://i/p.jpg", photo_processed_url: null, created_at: "2026-01-01", review_status: "validated", stock: [{ quantity: 2 }] },
+            { id: "v2", name: "Shoe 43", ean: "3001234567897", size: "43", photo_url: null, photo_processed_url: null, created_at: "2026-02-01", review_status: "validated", stock: [{ quantity: 1 }] },
+        ];
+        // Échec ciblé sur l'écriture stock (le principal reçoit le total) → garde la barre
+        // « toute écriture du post-pass lève » : un stock principal périmé ne passe pas en silence.
+        const { client } = makeClient(
+            (table) => (table === "products" ? { data: products, error: null } : { data: [], error: null }),
+            { stock: true },
+        );
+        await expect(groupVariantsByEAN(client, "m1")).rejects.toThrow(/principal stock upsert failed/);
+    });
+});
+
 describe("recalculateGroupSizes — recalcul available_sizes + stock du principal", () => {
     /** Résout les 2 reads : .single() → la ligne produit ; sinon → les membres du groupe. */
     function readResolver(product: unknown, members: unknown[]) {

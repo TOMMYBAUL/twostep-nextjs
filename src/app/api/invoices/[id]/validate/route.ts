@@ -6,6 +6,7 @@ import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 import { rateLimit } from "@/lib/rate-limit";
+import { captureError } from "@/lib/error";
 
 // ── Fuzzy matching utilities ──────────────────────────────────────────
 
@@ -372,11 +373,16 @@ export async function POST(
         }
     }
 
-    // Group variants by EAN (invoice imports don't go through sync-engine)
+    // Group variants by EAN (invoice imports don't go through sync-engine).
+    // groupVariantsByEAN est le GATE de visibilité et LÈVE désormais sur tout échec
+    // d'écriture (doublon fantôme / produit non publié / stock principal périmé) → on
+    // REMONTE à Sentry (pas juste console) pour que la défaillance du gate soit visible
+    // en prod. Non bloquant : le stock facture est déjà committé, le regroupage re-converge.
     try {
         await groupVariantsByEAN(adminSupabase, merchant.id);
     } catch (err) {
         console.error("[validate] groupVariantsByEAN failed:", err);
+        captureError(err, { context: "invoices-validate-group-variants", merchantId: merchant.id });
     }
 
     return NextResponse.json({

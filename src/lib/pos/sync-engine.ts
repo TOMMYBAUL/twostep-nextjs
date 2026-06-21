@@ -242,10 +242,17 @@ export async function syncMerchantPOS(
         }
 
         // ─── Update existing products ───────────────────────────────
+        // `products_updated` ne compte QUE les écritures réellement réussies : un échec
+        // d'update (prix/nom/ean périmés) est REMONTÉ via captureError (jamais avalé) sans
+        // bloquer le reste du sync — une seule ligne fautive ne doit pas figer le marchand
+        // entier (au lieu d'un throw qui re-planterait au même produit à chaque sync).
+        let productsUpdated = 0;
         for (const { existingId, existingPhotoUrl, posProduct } of toUpdate) {
-            await updateProduct(supabase, existingId, existingPhotoUrl, provider, posProduct);
+            if (await updateProduct(supabase, existingId, existingPhotoUrl, provider, posProduct)) {
+                productsUpdated++;
+            }
         }
-        result.products_updated = toUpdate.length;
+        result.products_updated = productsUpdated;
 
         // ─── Create new products (sequential — uses RPC) ────────────
         // Track newly created products so we can run enrichment + mark them
@@ -263,7 +270,7 @@ export async function syncMerchantPOS(
         if (newlyCreated.length > 0) {
             const proposedAt = new Date().toISOString();
             for (const { productId, posProduct } of newlyCreated) {
-                await supabase
+                const { error: pendingErr } = await supabase
                     .from("products")
                     .update({
                         review_status: "pending_review",
@@ -276,6 +283,14 @@ export async function syncMerchantPOS(
                         original_image_url: posProduct.photo_url,
                     })
                     .eq("id", productId);
+                // GATE « zéro faux positif » NON SILENCIEUX : si ce marquage échoue, le
+                // produit garde son review_status par défaut (NULL = validated) → le post-pass
+                // groupVariantsByEAN le rendrait VISIBLE sans validation marchand = produit non
+                // vérifié publié (le faux positif cardinal). On LÈVE (sync `error` + Sentry,
+                // retry idempotent) plutôt que de publier en silence un produit non validé.
+                if (pendingErr) {
+                    throw new Error(`pending_review mark failed (${productId}): ${pendingErr.message}`);
+                }
             }
         }
 
@@ -435,20 +450,30 @@ async function createProduct(
 
     const size = resolveProductSize(posProduct);
     if (size) {
-        await supabase.from("products").update({ size }).eq("id", created as string);
+        // Non bloquant (le produit EST créé et sera ré-écrit au prochain sync via updateProduct),
+        // mais un échec rend la taille périmée d'un cycle → on le REND VISIBLE (Sentry) au lieu
+        // de l'avaler. Pas de throw : le produit existe déjà, lever rejouerait sa création.
+        const { error: sizeErr } = await supabase.from("products").update({ size }).eq("id", created as string);
+        if (sizeErr) captureError(sizeErr, { context: "pos-sync-create-product-size", productId: created as string, provider });
     }
 
     result.products_created++;
     return created as string;
 }
 
-async function updateProduct(
+/**
+ * Met à jour un produit existant (nom/prix/ean/photo/catégorie/taille) depuis le POS.
+ * Renvoie `true` si l'écriture a réussi, `false` sinon — un échec est REMONTÉ via
+ * captureError (jamais avalé), et le caller ne le compte PAS dans `products_updated`
+ * (le compteur ne ment plus). Non bloquant : une ligne fautive n'arrête pas le sync.
+ */
+export async function updateProduct(
     supabase: Awaited<ReturnType<typeof createClient>>,
     productId: string,
     existingPhotoUrl: string | null,
     provider: string,
     posProduct: POSProduct,
-): Promise<void> {
+): Promise<boolean> {
     const newSize = resolveProductSize(posProduct);
 
     // Si la photo POS a changé, forcer le retraitement (reset photo_processed_url)
@@ -474,15 +499,20 @@ async function updateProduct(
         updates.size = newSize;
     }
 
-    await supabase
+    const { error } = await supabase
         .from("products")
         .update(updates)
         .eq("id", productId);
+    if (error) {
+        captureError(error, { context: "pos-sync-update-product", productId, provider });
+        return false;
+    }
+    return true;
 }
 
 // ─── Promo upsert ────────────────────────────────────────────────────
 
-async function upsertPromo(
+export async function upsertPromo(
     supabase: Awaited<ReturnType<typeof createClient>>,
     merchantId: string,
     provider: string,
@@ -508,12 +538,19 @@ async function upsertPromo(
         const productId = posItemToProductId.get(posItemId);
         if (!productId) continue;
 
-        const { data: product } = await supabase
+        const { data: product, error: priceErr } = await supabase
             .from("products")
             .select("price")
             .eq("id", productId)
             .single();
 
+        // Lecture du prix échouée ≠ produit sans prix : on REMONTE (Sentry) au lieu de
+        // skip en silence (une promo non importée = produit affiché plein tarif). Non
+        // bloquant : on passe au produit suivant.
+        if (priceErr) {
+            captureError(priceErr, { context: "pos-sync-upsert-promo-read", productId, provider });
+            continue;
+        }
         if (!product?.price) continue;
 
         const salePrice = Math.max(
@@ -523,7 +560,7 @@ async function upsertPromo(
                 : Math.round((product.price - promo.value) * 100) / 100,
         );
 
-        await supabase
+        const { error: promoErr } = await supabase
             .from("promotions")
             .upsert(
                 {
@@ -539,6 +576,12 @@ async function upsertPromo(
                 { onConflict: "pos_promo_id,product_id" },
             );
 
+        // `promos_imported` ne compte que les upserts réussis : un échec est remonté
+        // (Sentry) au lieu d'être avalé puis compté comme importé (compteur menteur).
+        if (promoErr) {
+            captureError(promoErr, { context: "pos-sync-upsert-promo", productId, provider });
+            continue;
+        }
         result.promos_imported++;
     }
 }
@@ -550,17 +593,31 @@ async function upsertPromo(
  * Products sharing the same EAN prefix are size variants of the same model.
  * Elects a principal product, computes available_sizes, marks others as variants.
  * Products without EAN are marked as not visible (merchant must complete them).
+ *
+ * NON SILENCIEUX : la lecture et TOUTES les écritures de ce post-pass LÈVENT sur erreur.
+ * C'est le GATE de visibilité « zéro faux positif » — un échec d'écriture avalé laisserait
+ * soit une variante non masquée (doublon fantôme visible à côté du principal), soit un
+ * produit jamais rendu visible, soit un stock principal périmé. Les écritures sont toutes
+ * ABSOLUES et IDEMPOTENTES (visible=…, variant_of=…, available_sizes=…, stock=total via
+ * upsert), et ce post-pass tourne AVANT le bookkeeping de succès → lever est sûr (le sync
+ * est marqué `error` + Sentry, puis re-converge au re-run, sans double comptage). Les
+ * appelants tolèrent déjà le throw (sync rethrow ; ingestion/admin/invoice wrappent+captent).
  */
 export async function groupVariantsByEAN(
     supabase: SupabaseClient,
     merchantId: string,
 ): Promise<number> {
-    const { data: products } = await supabase
+    const { data: products, error: readError } = await supabase
         .from("products")
         .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, review_status, stock(quantity)")
         .eq("merchant_id", merchantId)
         .is("variant_of", null);
 
+    // Lecture échouée ≠ marchand sans produit : on LÈVE (sinon tout le regroupage est SKIPPÉ
+    // en silence → produits jamais rendus visibles / variantes fantômes jamais masquées).
+    if (readError) {
+        throw new Error(`groupVariantsByEAN read failed (${merchantId}): ${readError.message}`);
+    }
     if (!products || products.length === 0) return 0;
 
     let visibleCount = 0;
@@ -590,7 +647,8 @@ export async function groupVariantsByEAN(
         // l'ingestion fichier qui groupe les tailles en mémoire) avec un tableau vide.
         const upd: Record<string, unknown> = { visible };
         if (availableSizes.length > 0) upd.available_sizes = availableSizes;
-        await supabase.from("products").update(upd).eq("id", p.id);
+        const { error: updErr } = await supabase.from("products").update(upd).eq("id", p.id);
+        if (updErr) throw new Error(`groupVariantsByEAN visibility update failed (${p.id}): ${updErr.message}`);
     }
 
     // Group products with EAN by prefix
@@ -618,7 +676,8 @@ export async function groupVariantsByEAN(
             if (visible) visibleCount++;
             const upd: Record<string, unknown> = { visible, variant_of: null };
             if (availableSizes.length > 0) upd.available_sizes = availableSizes;
-            await supabase.from("products").update(upd).eq("id", p.id);
+            const { error: soloErr } = await supabase.from("products").update(upd).eq("id", p.id);
+            if (soloErr) throw new Error(`groupVariantsByEAN solo update failed (${p.id}): ${soloErr.message}`);
             continue;
         }
 
@@ -656,20 +715,24 @@ export async function groupVariantsByEAN(
         // écraser un available_sizes posé par l'ingestion fichier avec du vide).
         const updPrincipal: Record<string, unknown> = { visible: groupVisible, variant_of: null };
         if (availableSizes.length > 0) updPrincipal.available_sizes = availableSizes;
-        await supabase.from("products").update(updPrincipal).eq("id", principal.id);
+        const { error: princErr } = await supabase.from("products").update(updPrincipal).eq("id", principal.id);
+        if (princErr) throw new Error(`groupVariantsByEAN principal update failed (${principal.id}): ${princErr.message}`);
 
         // Update stock of principal to reflect total
-        await supabase
+        const { error: stockErr } = await supabase
             .from("stock")
             .upsert({ product_id: principal.id, quantity: totalStock }, { onConflict: "product_id" });
+        if (stockErr) throw new Error(`groupVariantsByEAN principal stock upsert failed (${principal.id}): ${stockErr.message}`);
 
         // Mark other members as variants
         const variantIds = group.filter((p) => p.id !== principal.id).map((p) => p.id);
         if (variantIds.length > 0) {
-            await supabase
+            const { error: varErr } = await supabase
                 .from("products")
                 .update({ variant_of: principal.id, visible: false })
                 .in("id", variantIds);
+            // Variantes non masquées = doublons fantômes visibles à côté du principal.
+            if (varErr) throw new Error(`groupVariantsByEAN variant mark failed (${variantIds.length} ids): ${varErr.message}`);
         }
     }
 
