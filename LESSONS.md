@@ -64,6 +64,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Writes du rollup rendus non silencieux (captureError sans lever : stock déjà committé, lever
   rejouerait le webhook = double-décrément delta). (2026-06-20)
 
+## Silent-failure : rendre un write « non silencieux »
+- ❌ Transformer un write avalé (`error` jeté) en **throw** AUGMENTE la surface de throw →
+  un caller dont le `catch` ne fait que `console.error` rend la nouvelle défaillance
+  **Sentry-invisible** en prod (pire qu'avant : on croit l'avoir rendue visible). **Règle :
+  après avoir fait lever un symbole, grep TOUS ses callers et vérifier que chaque `catch`
+  appelle `captureError`, pas seulement `console.error`.** Cas : `groupVariantsByEAN` rendu
+  throw → `invoices/[id]/validate` n'avait que `console.error`. (Trouvé par silent-failure-hunter, 2026-06-21)
+- ⚖️ **Throw vs captureError-et-continue** se choisit par MODE D'ÉCHEC, pas par uniformité :
+  LÈVE si (intégrité/faux-positif) ET (write absolu+idempotent) ET (avant le bookkeeping
+  succès) → re-converge au re-run sans double-comptage (ex. `groupVariantsByEAN`, marquage
+  `pending_review`). CAPTURE-et-continue si l'enjeu est moindre (métadonnée périmée, promo
+  manquante) ET qu'une ligne fautive ne doit pas **figer** tout le sync du marchand (un throw
+  re-planterait au même produit à chaque run) — et alors le **compteur ne compte que les
+  succès réels** (`products_updated`/`promos_imported`). (2026-06-21)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

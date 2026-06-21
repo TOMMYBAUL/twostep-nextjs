@@ -5,6 +5,51 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-21 (run autonome) · Rang 3 [R] — derniers writes silencieux de `sync-engine` rendus non silencieux (gate visibilité + compteurs honnêtes)
+
+**Sourcing** : signaux + worklog. Le prochain [R] nommé par les 2 entrées précédentes =
+les writes encore silencieux de `sync-engine.ts` (`groupVariantsByEAN` = « plus gros trou »,
+`updateProduct`, `upsertPromo`). **Chaque finding VÉRIFIÉ dans le code réel** avant d'agir
+(LESSONS : ~70 % des findings devinés sont faux) — ici tous confirmés ligne à ligne.
+
+**Trous réels corrigés (commit `6c21c5d`, réversible, 0 migration)** :
+- **`groupVariantsByEAN`** (le GATE « zéro faux positif ») : la lecture + **5 sites
+  d'écriture** avalaient `error`. Un échec laissait soit une **variante non masquée**
+  (doublon fantôme visible à côté du principal), soit un produit jamais publié, soit un
+  stock principal périmé. → **LÈVE** désormais (writes absolus+idempotents, AVANT le
+  bookkeeping succès → sync `error`+Sentry, re-converge au re-run sans double-comptage).
+- **Marquage `pending_review`** des nouveaux produits POS : avalait `error`. Vérifié :
+  `create_product_with_stock` (092) n'INSÈRE pas `review_status` → défaut NULL = traité
+  `validated` par le gate → `groupVariantsByEAN` **publierait un produit non validé** =
+  faux positif cardinal. → **LÈVE** sur échec.
+- **`updateProduct`** : avalait `error` ET le caller posait `products_updated = toUpdate.length`
+  même en échec (compteur menteur, dérive prix/nom). → renvoie un booléen + `captureError` ;
+  le caller ne compte que les succès. **Non bloquant** (1 ligne fautive ne fige pas le sync).
+- **`upsertPromo`** : lecture prix + upsert promo avalés, `promos_imported++` inconditionnel.
+  → `captureError` + n'incrémente que sur succès.
+- **2 findings de revue traités dans la foulée** : `createProduct` (write taille) +
+  `invoices/[id]/validate` (catch de `groupVariantsByEAN` qui n'avait que `console.error` —
+  **élevé par ce diff** : mon throw l'aurait rendu Sentry-invisible) → remontés à Sentry.
+
+**Revue OBLIGATOIRE `silent-failure-hunter`** (diff pipeline) : **SOUND, 0 régression**,
+choix throw-vs-capture jugés corrects par mode d'échec, pas de hazard de partial-write
+(idempotent-absolu). A surfacé les 2 findings ci-dessus (1 élevé par le diff → traité ;
+restes pré-existants hors scope : swallow interne de `createImageJob` LOW → backlog).
+
+**Testé** : +9 tests (`tests/pos-sync-product-promo-writes.test.ts` neuf : updateProduct +
+upsertPromo ; +3 cas throw dans `pos-group-variants.test.ts`). Suite **489 → 498**, tsc OK,
+pre-push gate vert, push SSH.
+
+**Métrique** : 1 item [R] fermé = **le dernier gros cluster de writes silencieux de
+`sync-engine` est clos** (le hot path POS sync n'a plus de perte/mensonge silencieux non
+testé). **LESSON** ajoutée (audit des catch des callers après avoir fait lever un symbole +
+critère throw-vs-capture). **Reste non testé (plus petit)** : parse webhooks (partiel),
+`syncMerchantPOS` end-to-end (intégration, gros mock adapter). Haut du backlog (Rang 0-2)
+toujours gated/externe (merge, migrations prod, design multi-tenant) — **rien de neuf à
+escalader** (notify-extra vide ; décision 106+flag déjà tranchée).
+
+---
+
 ## 2026-06-20 (session supervisée, nuit) · Rang 3 [R] — writes orchestrateur `syncMerchantPOS` non silencieux + housekeeping vérifié
 
 **Vérifs de reprise (handoff partiellement obsolète, dit franchement)** :

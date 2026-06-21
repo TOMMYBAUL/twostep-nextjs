@@ -142,8 +142,12 @@ software qui débloque sa moitié à lui.
   « in stock » avec espace) + read produits non silencieux. **Partiel (run 5)** : writes
   `sync-engine` couverts (`groupVariantsByEAN` GATE visibilité + `recalculateGroupSizes`) →
   a révélé+corrigé un **bug de prod réel** (recalc zéroait le stock d'un produit solo sans
-  taille = faux « rupture » silencieux, commit `8660497`). Restent non testés : parse webhooks
-  (partiel), `syncMerchantPOS` orchestrateur (gros, intégration).
+  taille = faux « rupture » silencieux, commit `8660497`). **Partiel (run 2026-06-21)** : les
+  **derniers writes silencieux de `sync-engine` sont clos** (commit `6c21c5d`) — `groupVariantsByEAN`
+  (gate visibilité : lecture + 5 writes LÈVENT, sinon doublon fantôme/produit non publié),
+  marquage `pending_review` (LÈVE, sinon produit non validé publié = faux positif), `updateProduct`
+  + `upsertPromo` (compteurs honnêtes via captureError). +9 tests. Restent non testés (plus petit) :
+  parse webhooks (partiel), `syncMerchantPOS` orchestrateur end-to-end (gros mock adapter).
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)
