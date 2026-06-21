@@ -129,6 +129,11 @@ software qui débloque sa moitié à lui.
   migration. ESCALADE après avoir préparé l'option.
 - `[G]` **Delta `GREATEST(v_prev_ts, p_source_ts)`** côté RPC = migration prod (protocole §4).
   Préparer la migration idempotente + branche test, ESCALADE le feu vert.
+- `[G]` **ESCALADÉ 2026-06-21** — **Idempotence webhook delta = at-most-once** (`webhook_events`
+  inséré AVANT le traitement, Shopify/Lightspeed) : un échec de traitement + retry-dedup perd
+  une VENTE. **Rendu VISIBLE** (Sentry, commit `8e5872f`) → plus silencieux. Choix de fond A
+  (garder, perte rare tracée) vs B (at-least-once exactly-once = design + possible migration).
+  **Exposition NULLE (0 marchand)** → urgence faible. En attente Thomas (`notify-extra`).
 
 ### Rang 3 — Réversible « nourriture » (à faire quand Rang 1-2 escaladé)
 - `[R]` **SIRET non-diffusible** : `verify-siret` échoue en silence → message onboarding dédié.
@@ -146,8 +151,12 @@ software qui débloque sa moitié à lui.
   **derniers writes silencieux de `sync-engine` sont clos** (commit `6c21c5d`) — `groupVariantsByEAN`
   (gate visibilité : lecture + 5 writes LÈVENT, sinon doublon fantôme/produit non publié),
   marquage `pending_review` (LÈVE, sinon produit non validé publié = faux positif), `updateProduct`
-  + `upsertPromo` (compteurs honnêtes via captureError). +9 tests. Restent non testés (plus petit) :
-  parse webhooks (partiel), `syncMerchantPOS` orchestrateur end-to-end (gros mock adapter).
+  + `upsertPromo` (compteurs honnêtes via captureError). +9 tests. **Partiel (run 2026-06-21
+  après-midi, commit `8e5872f`)** : **hot path WEBHOOKS POS durci** — `resolveWebhookProduct`
+  LÈVE sur erreur DB (≠ produit non suivi, sinon MAJ stock temps réel perdue + 200 OK silencieux) ;
+  idempotence `webhook_events` check+insert non avalés (sinon double-décrément delta) ; inserts
+  `feed_events` + lookup Google merchant des 4 routes en `captureError`. +4 tests, 2 revues SOUND.
+  Restent non testés (plus petit) : `syncMerchantPOS` orchestrateur end-to-end (gros mock adapter).
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

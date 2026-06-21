@@ -5,6 +5,50 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-21 (run autonome, après-midi) · Rang 3 [R] — hot path WEBHOOKS POS : aucun `error` avalé (commit `8e5872f`)
+
+**Sourcing par signaux** : pas de signaux d'erreur réels (Supabase MCP : 1 connexion POS
+`success`, 0 `quality_alerts` — cohérent 0 marchand). Haut backlog gated/externe, notify vide.
+→ §6.3 couverture/intégrité d'un hot path. Le hot path **webhooks temps réel** (push stock POS,
+= « afficher en quasi temps réel honnêtement » du north-star) avait un `error` avalé **vérifié
+ligne à ligne** dans `resolveWebhookProduct` (LESSONS ligne 54, pattern exact).
+
+**Trou réel #1 (le fix cœur)** : `resolveWebhookProduct` (appelé par les 4 routes
+square/shopify/lightspeed/zettle) faisait `const { data } = ...` sur la lecture produit par
+`pos_item_id` → un **échec DB transitoire** devenait indistinct de « produit non suivi » (les deux
+→ `null` → `if(!product) continue` → **200 OK**). Une MAJ stock temps réel **perdue, le POS ne
+renvoie jamais** = perte silencieuse n°1. → **LÈVE** sur `error` (distinct du 0-candidat qui reste
+`null` normal) → catch route → `captureError` + 500 → **retry POS**. Récupérabilité selon mode :
+absolu (Square/Zettle, pas d'idempotence) → retry ré-applique = **récupéré** ; delta
+(Shopify/Lightspeed, `webhook_events` inséré AVANT la boucle) → retry dédupliqué = au moins
+**VISIBLE** (l'idempotence-first protège du double-décrément). **+4 tests** (cas erreur DB lève).
+
+**Balayage du reste du hot path (findings revue, tous VÉRIFIÉS dans le code)** :
+- **3a/3b** (shopify+lightspeed, HIGH/MEDIUM) : le **check ET l'insert `webhook_events`**
+  (idempotence) avalaient `error` → un check raté = `existing=null` = **re-traitement = double-
+  décrément delta**. → `captureError` + 500 (retry → dedup).
+- **3c** (4 routes) : insert `feed_events` avalé → `captureError`-et-continue (stock déjà committé ;
+  throw → 500 → retry = double-décrément delta, donc **pas** de throw).
+- **3e** (4 routes) : lookup merchant pour `pushInventoryToGoogle` avalé → `captureError`.
+- **3d** (nom produit pour push) écarté à juste titre (fire-and-forget, fallback sain).
+
+**Revues OBLIGATOIRES `silent-failure-hunter`** (2 passes, diff pipeline) : **SOUND**, 0 régression,
+choix throw-vs-capture validés par mode d'échec, UNIQUE-violation concurrente sûre (retry → dedup).
+
+**Testé** : suite **498 → 502**, tsc OK, pre-push gate vert, push SSH (`8e5872f`). LESSON ajoutée
+(2 entrées : erreur-DB ≠ absent dans un résolveur webhook ; check/insert idempotence non avalés).
+
+**Escalade (notify-extra)** : **Finding 2** = design idempotence delta (insert-AVANT = at-most-once :
+une vente peut être perdue sur échec de traitement + retry-dedup — **désormais VISIBLE**, plus
+silencieuse). Binaire A (garder, perte rare tracée) vs B (at-least-once exactly-once = design +
+migration). **Urgence FAIBLE** (0 marchand, visibilité posée). Préparé : visibilité committée.
+
+**Métrique** : 1 item [R] fermé = **hot path webhooks POS sans perte/double-comptage silencieux
+non testé** (le 2ᵉ pilier du north-star « temps réel honnête » durci). 0 migration/merge/email,
+réversible. Reste non testé (plus petit) : `syncMerchantPOS` orchestrateur end-to-end (gros mock).
+
+---
+
 ## 2026-06-21 (run autonome) · Rang 3 [R] — derniers writes silencieux de `sync-engine` rendus non silencieux (gate visibilité + compteurs honnêtes)
 
 **Sourcing** : signaux + worklog. Le prochain [R] nommé par les 2 entrées précédentes =
