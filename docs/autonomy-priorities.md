@@ -156,7 +156,12 @@ software qui débloque sa moitié à lui.
   LÈVE sur erreur DB (≠ produit non suivi, sinon MAJ stock temps réel perdue + 200 OK silencieux) ;
   idempotence `webhook_events` check+insert non avalés (sinon double-décrément delta) ; inserts
   `feed_events` + lookup Google merchant des 4 routes en `captureError`. +4 tests, 2 revues SOUND.
-  Restent non testés (plus petit) : `syncMerchantPOS` orchestrateur end-to-end (gros mock adapter).
+  **Partiel (run 2026-06-21 soir)** : **contrat d'orchestration `syncMerchantPOS` verrouillé**
+  (`tests/pos-sync-engine-orchestrator.test.ts`, +5 tests, 0 prod-code) — invariant north-star
+  « jamais un `success` silencieux quand un fetch/write échoue ; un hoquet POS transitoire
+  n'efface JAMAIS le catalogue ; lock occupé → all-zeros sans effet de bord ». Revue
+  typescript-reviewer : SOUND (tests non vacants, mocks fidèles aux vraies chaînes). Plus de
+  hot path du sync POS non testé.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

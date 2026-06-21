@@ -5,6 +5,48 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-21 (run autonome, soir) · Rang 3 [R] — contrat d'orchestration `syncMerchantPOS` verrouillé (test-only)
+
+**Sourcing par signaux** : pas de signaux d'erreur réels (`notify-extra` vide, cost-ledger sain,
+haut backlog Rang 0-2 gated/externe). Le seul hot path du sync POS encore non testé, nommé par
+les 2 entrées précédentes : l'**orchestrateur `syncMerchantPOS`** lui-même (les writes unitaires
+étaient couverts, pas le câblage d'ensemble). C'est le pilier 1 du north-star (« capter le stock
+de toute source en n'oubliant rien »).
+
+**Fait (commit `__HASH__`, 0 ligne de prod, réversible)** : `tests/pos-sync-engine-orchestrator.test.ts`
+(+5 tests) verrouille le **contrat catch→bookkeeping** de l'orchestrateur — l'invariant
+« ne rien perdre sans alerte » au niveau orchestration :
+1. **lock occupé** par un autre sync → retour all-zeros SANS toucher token/adaptateur/écriture
+   (skip de concurrence sûr, pas une perte) ;
+2. **refresh token KO** → `last_sync_status="error"` + `last_sync_error` + `syncing_since` libéré
+   + `captureError({merchantId,provider})` + RE-LÈVE ; catalogue jamais fetché ;
+3. **lecture connexion en erreur DB** → LÈVE `No POS connection found`, status `error` ;
+4. **hoquet POS transitoire** (`getCatalog` jette) → status `error`, **JAMAIS** de masquage
+   orphelins (anti catalogue-fantôme) **NI** de bookkeeping `success` (anti faux-positif) ;
+5. **chemin nominal** (catalogue vide) → `success`, `last_sync_error=null`, sans `captureError`.
+
+**Trouvé** : rien de cassé — l'orchestrateur respecte déjà son contrat (les runs précédents
+avaient câblé les throws). Ces tests **prouvent** la chaîne catch→`error`→Sentry→rethrow que la
+LESSON « après avoir fait lever un symbole, vérifier que CHAQUE caller remonte à Sentry » exigeait
+de garantir. Faux client Supabase thenable (`makeSupabase` + `respond`) fidèle aux 4 vraies chaînes
+(lock acquire / conn read / error-bookkeeping / success-bookkeeping), discrimination non-chevauchante.
+
+**Revue OBLIGATOIRE** : diff **test-only** (0 code pipeline modifié → pas de nouvelle surface de
+silent-failure prod). Revue `typescript-reviewer` (le bon spécialiste pour un diff de test) :
+**SOUND** — 5 tests non vacants (chaque régression plausible casse un test), mocks fidèles, pas de
+fuite de mock ni de souci async/hoisting. 0 action requise.
+
+**Testé** : suite **502 → 507**, tsc OK. (Pre-push gate au push.)
+
+**Métrique** : 1 item [R] fermé = **dernier hot path du sync POS non testé** → couvert. La
+métrique-garde-fou (couverture des chemins critiques) MONTE. 0 migration/merge/email, réversible.
+
+**Reste** : haut du backlog (Rang 0 e2e/preview, Rang 1-2 Google file-push / multi-tenant webhook /
+RPC delta) reste **gated/externe** (en attente GO Thomas, déjà escaladé). Le réversible « couverture
+hot path » du pipeline stock est désormais **épuisé** sur le sync — cf. §5.4 honnêteté de rendement.
+
+---
+
 ## 2026-06-21 (run autonome, après-midi) · Rang 3 [R] — hot path WEBHOOKS POS : aucun `error` avalé (commit `8e5872f`)
 
 **Sourcing par signaux** : pas de signaux d'erreur réels (Supabase MCP : 1 connexion POS
