@@ -5,6 +5,45 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 3 (Ingest / match items→products) — COMPLÉTÉ
+
+**Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 3 (Ingest/match : EAN/SKU,
+create vs update, **0 doublon**). Constat : le test existant `ingest-snapshot.test.ts` ne couvrait
+que les LECTURES en **dryRun** (aucune écriture) → le chemin RÉEL create/update et l'invariant
+« 0 doublon » n'étaient JAMAIS prouvés sur le hot path n°1. Trou de couverture réel comblé.
+
+**FAIT — PREUVE RÉELLE** (`tests/ingest-maillon3-match.test.ts`, +10) : construit un faux client
+Supabase **stateful** (≠ le faux dryRun) qui applique vraiment `insert/update/upsert` sur un store
+en mémoire, reproduisant la sémantique PostgREST utilisée par `snapshot.ts` (upsert onConflict
+`product_id`, update-by-id, join réconciliation). Chaîne exécutée de bout en bout : CSV FR sale →
+`parseStockFile` → `ingestStockSnapshot` AVEC ÉCRITURES → table `products`/`stock` inspectée champ
+par champ (sortie loggée). 6 scénarios couvrant l'invariant north-star « capter sans rien oublier
+ET sans doublon » :
+- **(a) 1er push, catalogue vide** → 3 produits créés, ligne nom-seul rejetée = 0 ligne créée ;
+  EAN-13 conservé, **UPC-12 `036000291452`→`0036000291452` canonicalisé AU CREATE** (cohérence
+  cross-canal), SKU-only → `ean:null`, prix réels, **qté 6/24/7 (PAS le défaut 1)**, `visible:false`
+  + `review_status:pending` (gate « zéro faux positif »), 3 enrichment_jobs enfilés.
+- **(b) re-push du MÊME fichier → 0 créé / 3 update / table à 3 lignes inchangée** = l'invariant
+  d'idempotence « 0 doublon » prouvé (match EAN + SKU casse-insensible), 0 ré-enfilement.
+- **(c) cross-canal EAN** : produit déjà créé par le POS en EAN-13, fichier en UPC-12 → matché en
+  UPDATE, 1 seul produit (le format d'EAN différent ne fabrique pas un fantôme).
+- **(d) SKU casse-insensible** (`ts-0042` POS ↔ `TS-0042` fichier) → UPDATE.
+- **(e) match par NOM** quand EAN/SKU ont changé (réétiquetage) → le nom dédoublonne l'existant.
+- **(f) intra-push** : même EAN sur 2 libellés distincts dans UN fichier → CREATE puis UPDATE =
+  1 seul produit (l'EAN identifie un produit). Sémantique REPLACE notée honnêtement : la 2e ligne
+  écrase le stock de la 1re (dernière valeur, pas la somme) — défendable, un EAN = une quantité.
+
+**REVUE** : diff **test-only** (0 ligne de code prod du pipeline modifiée) → `silent-failure-hunter`
+n'a aucune surface prod à analyser. Non-vacuité du test établie par l'inspection de la sortie réelle
+(qté ≠ 1, EAN canonicalisé, compteurs created/updated) + fidélité du faux client aux vraies chaînes.
+
+**TESTÉ** : suite **560 → 570** verte, `tsc` 0. Réversible (`git revert`), 0 migration.
+
+**MÉTRIQUE** : maillon 3 (Ingest/match) **prouvé COMPLET**. Prochain : maillon 4 (Réconciliation —
+article absent du snapshot → stock 0, jamais d'écrasement silencieux ; preuve).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 2 (Triage / identité) — COMPLÉTÉ + bug HIGH corrigé
 
 **Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 2 (triage/identité). Méthode

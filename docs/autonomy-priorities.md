@@ -93,8 +93,16 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    (revue silent-failure-hunter HIGH) : le stock upsert du produit CRÉÉ avalait son erreur (≠ branche
    UPDATE) → produit sans ligne stock lu « 0 » = perte silencieuse ; rendu visible + `stock_replaced`
    non compté si l'écriture échoue ; tailles/feed_events de création idem (captureError). +16 tests.
-3. ⬜ **Ingest / match** (items → `products`) — match par EAN/SKU, create vs update, **0 doublon**.
-   Preuve : faux client (ou DB de test) → lignes attendues.
+3. ✅ **Ingest / match** (items → `products`) — **COMPLET (2026-06-22)**. Preuve réelle
+   `tests/ingest-maillon3-match.test.ts` (+10) : faux client Supabase **stateful** (applique
+   vraiment insert/update/upsert) → chaîne CSV FR sale **parse → ingest AVEC ÉCRITURES**, table
+   `products`/`stock` inspectée champ par champ. 6 scénarios prouvant l'invariant « 0 doublon » :
+   (a) 1er push catalogue vide → 3 créés (nom-seul rejeté = 0 ligne), EAN/SKU/prix/qté réels
+   (UPC-12 `036000291452`→`0036000291452` au CREATE, qté 6/24/7 ≠ défaut 1), `visible:false`/
+   `pending` ; (b) **re-push du même fichier → 0 créé / 3 update / table inchangée** (idempotence) ;
+   (c) cross-canal EAN (produit POS EAN-13 ↔ fichier UPC-12 → UPDATE) ; (d) SKU casse-insensible
+   (`ts-0042` ↔ `TS-0042`) ; (e) match par NOM quand l'identité a changé ; (f) intra-push même EAN
+   sur 2 libellés → 1 seul produit. Diff **test-only** (0 code prod) → pas de surface silent-failure.
 4. ⬜ **Réconciliation** — article absent du snapshot → **stock 0** (vendu), jamais d'écrasement
    silencieux. Preuve.
 5. ⬜ **Confiance / fraîcheur** — `source`/`source_ts` → label de confiance honnête. Preuve.
