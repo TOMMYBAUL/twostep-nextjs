@@ -5,6 +5,72 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · Rang 3 [R] — **Vérif SIRET honnête** (fin du faux positif « vérifié » silencieux) + 3 silent-failures · commit `4a03ca4`
+
+**Sourcing (§6)** : chaîne A 1→8 COMPLÈTE → sourcing par signaux sur le backlog Rang 3 `[R]`.
+Item choisi : « **SIRET non-diffusible : `verify-siret` échoue en silence → message onboarding
+dédié** ». Vérifié dans le code réel (LESSONS ~70 % faux findings) → le trou est **plus profond
+que noté** : 3 silent-failures composés sur la porte d'entrée de l'onboarding marchand.
+
+**TROUVÉ (vérifié dans le code, pas supposé)** :
+1. `verifySIRET` **fail-open en `valid:true` SANS signal** dans 3 cas — token INSEE absent (**le cas
+   PROD aujourd'hui**, INSEE_API_TOKEN non posé), HTTP non-OK (401 expiré/429/5xx), throw réseau.
+   Le caller ne pouvait pas distinguer « vérifié INSEE » de « passé sans contrôle ».
+2. La route renvoie `valid:false` au **statut 400**, mais les **2 forms** (`devenir-marchand`,
+   `auth/signup`) testaient `res.status === 404` → la branche était **morte** → un SIRET introuvable
+   ou fermé **tombait en SILENCE à l'étape profil** (le blocage « introuvable » ne s'est jamais
+   déclenché).
+3. La route n'émettait **NI `company` NI `pending`** que les forms consomment pourtant
+   (`data.company` → pré-remplissage du profil ; `data.pending` → `merchant_siret_pending` →
+   `create-merchant-from-metadata:57` `status: pending|active`). Conséquence concrète : en prod
+   (sans token) **100 % des marchands self-signup étaient créés `status:"active"` (confiance pleine)
+   sans AUCUNE vérification** — toute la machinerie « pending » (message ambre, dashboard lecture
+   seule) était câblée de bout en bout mais le signal ne circulait JAMAIS.
+
+**DÉCIDÉ + FAIT (réversible, 0 migration)** :
+- `src/lib/siret.ts` : contrat honnête avec `pending`. Non vérifié = `valid:true, pending:true`
+  (le marchand passe — fail-open assumé, on ne bloque pas l'onboarding — MAIS son compte est marqué
+  en attente). Token absent = config attendue → **pas** de Sentry ; 401/5xx/réseau/200-sans-
+  établissement → **captureError** (rendus VISIBLES). Parse INSEE **gardé** (plus de TypeError sur
+  payload partiel) + **sanitisation `[ND]`** (établissements non-diffusibles → champs `null`, pas de
+  crash ni de « [ND] » affiché — c'était le cœur de l'item « non-diffusible »).
+- route `verify-siret` : renvoie `{valid, pending, company:{...}|null}` + garde `typeof siret`.
+- 2 forms : `!res.ok` bloque avec `data.error` (le check `===404` était mort).
+
+**REVUES OBLIGATOIRES** (auth + pipeline silent-failure) :
+- **silent-failure-hunter** : aucun chemin `valid:true,pending:false` sans vérif réelle ; `pending`
+  propagé correctement (signup → metadata → create-merchant) ; discrimination config/erreur correcte ;
+  pas de nouveau TypeError. **2 findings adjacents corrigés** dans le run : (MED) le `catch` des 2 forms
+  avalait l'erreur réseau/JSON → `captureError` ; (LOW) `create-merchant-from-metadata:60` avalait
+  l'erreur d'insert (marchand inscrit SANS ligne `merchants`, mais redirigé `/dashboard` = succès) →
+  `captureError`.
+- **security-reviewer** : pas de fuite token (contexte Sentry = `siret/status/phase` uniquement) ;
+  SIRET validé `^\d{14}$` avant l'URL INSEE (pas de SSRF/path-injection) ; `pending=false` non
+  forgeable via le SIRET (URL INSEE hardcodée). **ESCALADE posée** (notify-extra) : `status:"active"`
+  dérivé de `user_metadata` **client-writable** (pré-existant ; impact **borné** : `status` ne gate PAS
+  la visibilité produit consumer — gate produit `visible+validated+!archived` séparé, cf. maillon 7 —
+  seulement la file de revue admin) = décision **produit** (toujours-pending vs vérif serveur).
+
+**TESTÉ** : `tests/siret.test.ts` (+12) drive le **vrai `verifySIRET`** (fixtures INSEE
+diffusible/non-diffusible/fermé/404/401/réseau/200-sans-établissement) **ET la vraie route POST**
+(contrat `company`/`pending`, 400 introuvable). `npm run test:run` → **624/624** vert (était 612, +12),
+`tsc` OK, pre-push vert, poussé.
+
+**MÉTRIQUE** : 1 item `[R]` fermé (SIRET honnête) + 3 silent-failures réels corrigés. Net : un faux
+positif de confiance qui touchait **100 % des marchands en prod** est supprimé ; la perte silencieuse
+n°1 du canal onboarding (email/inscription) est rendue visible. **Reste** : escalade trust-gate (binaire,
+notify-extra) ; notes sécu non bloquantes (x-forwarded-for spoofable + Sentry flooding, pré-existants
+app-wide ; SIRET non format-validé dans `/api/merchants`) consignées ci-dessous pour un run futur.
+
+**Notes sécu non bloquantes (pré-existantes, pour run futur — vérifiées réelles)** :
+- `x-forwarded-for` utilisé tel quel comme clé de rate-limit (toutes les routes) → spoofable derrière
+  proxy ; + `captureError` par échec INSEE → risque de flooding Sentry pendant une panne INSEE.
+  Cross-cutting (pas propre à ce diff) → à traiter globalement, pas ici.
+- `/api/merchants` POST n'applique pas `^\d{14}$` sur le `siret` avant insert (borné : statut toujours
+  `pending` sur cette route).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 8 (Canal EMAIL-IN stock, de bout en bout) — PROUVÉ + 2 silent-failures réels corrigés → **CHAÎNE A 1→8 COMPLÈTE**
 
 **Sourcing** : mission §1bis, dernier maillon `⬜` de la chaîne A = maillon 8 (email-in : la PORTE

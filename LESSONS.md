@@ -136,6 +136,24 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   suppression prudente. Rappel : 0€ promo INATTEIGNABLE (`promotionBody.sale_price = z.number().positive()`)
   → ne pas « corriger » le cas 0 côté front (vérifié avant d'agir). (maillon 6, 2026-06-22)
 
+## Vérification / fail-open (trust gate)
+- ❌ **Une fonction de vérification qui fail-open en `valid:true` sans signal distinctif = faux
+  positif silencieux.** `verifySIRET` retournait `valid:true` quand l'INSEE n'était pas joignable
+  (token absent = cas PROD / 401 / 5xx / réseau) — indistinct d'un « vérifié ». Règle : un résultat de
+  vérif doit DIRE qu'il n'a pas vérifié (champ `pending`/`unverified`), pas se faire passer pour validé ;
+  laisser passer (fail-open) est OK SI on le dit ET qu'on marque l'aval (ici `status:"pending"`).
+  Discriminer l'erreur **attendue** (config : token absent → pas de Sentry) de l'**inattendue**
+  (401/5xx/throw → captureError). (`siret.ts`, 2026-06-22)
+- ❌ **Contrat write/read incohérent route↔form, double faute** : la route émettait des champs PLATS
+  (`{name,address}`) mais les forms lisaient `data.company.*` (toujours `undefined` → pré-remplissage MORT) ;
+  et la route renvoyait `valid:false` au statut **400** alors que les forms testaient `res.status===404`
+  (branche morte → introuvable/fermé passait en silence à l'étape suivante). Une machinerie entière
+  (`pending` → `merchant_siret_pending` → `status active|pending`) câblée de bout en bout mais le signal
+  ne circulait JAMAIS → 100 % des marchands prod créés `active` sans vérif. **Règle : un contrat
+  route↔client se prouve par un test qui drive la VRAIE route ET vérifie la forme exacte que le client
+  consomme** (clé `company`, statut HTTP). Même classe que maillon 5/6 (garde write non rejouée au read).
+  ⚠️ Sécurité : `status` dérivé de `user_metadata` client-writable = trust-gate à durcir (escaladé). (2026-06-22)
+
 ## Canaux entrée / webhooks tiers (Resend, POS)
 - ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
   « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas

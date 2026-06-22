@@ -259,7 +259,17 @@ software qui débloque sa moitié à lui.
   **Exposition NULLE (0 marchand)** → urgence faible. En attente Thomas (`notify-extra`).
 
 ### Rang 3 — Réversible « nourriture » (à faire quand Rang 1-2 escaladé)
-- `[R]` **SIRET non-diffusible** : `verify-siret` échoue en silence → message onboarding dédié.
+- ✅ **FAIT (2026-06-22, commit `4a03ca4`)** — **Vérif SIRET honnête** : `verifySIRET` fail-open en
+  `valid:true` SANS signal (token absent = cas prod / 401 / 5xx / réseau) → faux positif « vérifié »
+  silencieux. Pire : la route renvoyait `valid:false` au statut **400** mais les 2 forms testaient
+  `res.status===404` (branche morte → introuvable/fermé passait en silence) ; et la route n'émettait
+  ni `company` ni `pending` que les forms consomment → en prod **100 % des marchands créés `active`
+  sans vérification** (machinerie pending wirée mais signal jamais propagé). Fix : `pending` honnête
+  (non vérifié = pending, fail-open assumé mais DIT), captureError sur erreurs INSEE réelles (pas le
+  no-token = config), sanitisation `[ND]` non-diffusible, route émet `{valid,pending,company}`, forms
+  bloquent sur `!res.ok`. +2 silent-failures adjacents (catch forms, insert create-merchant). +12 tests.
+  2 revues SOUND. **Escalade posée** (notify-extra) : `status:"active"` dérivé de metadata client (décision
+  produit). 0 migration, réversible.
 - `[R]` **Couverture de test des chemins critiques non testés** (sourcer les modules sans test
   sur les hot paths : feed Google, inventory, reconciliation). Vérifiable, fait monter la
   métrique-garde-fou. **Partiel (2026-06-20 run 3)** : `ingestStockSnapshot` + `resyncMerchant/
