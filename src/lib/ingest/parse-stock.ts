@@ -4,17 +4,48 @@ import { parsePrice } from "@/lib/parser/parse-price";
 import type { ParsedInvoiceItem } from "@/lib/parser/types";
 
 /**
+ * Décode un buffer CSV/texte en chaîne JS en DÉTECTANT l'encodage, puis strip BOM.
+ *
+ * Pourquoi c'est critique (north-star « ne rien perdre silencieusement ») : les POS
+ * legacy FR (Clictill, Fastmag) et Excel-FR exportent massivement en **Windows-1252 /
+ * Latin-1**, pas en UTF-8. Un `buffer.toString("utf-8")` naïf transforme alors
+ * « Quantité » → « Quantit� » (mojibake) → `detectColumns` ne reconnaît plus la
+ * colonne → **les quantités sont perdues en silence** (chaque ligne retombe sur qty=1
+ * « présence »). Bug prouvé empiriquement (octet 0xE9 = é CP1252).
+ *
+ * Stratégie (standard pour le CSV FR) :
+ *  - BOM UTF-16 (Excel « Texte Unicode ») → décode utf-16le/be ;
+ *  - sinon UTF-8 STRICT (`fatal`) : s'il décode, c'est de l'UTF-8 (avec/sans BOM) ;
+ *  - sinon (séquence UTF-8 invalide) → repli Windows-1252 (legacy FR).
+ */
+function decodeCsvBuffer(buffer: Buffer): string {
+    const stripBom = (s: string) => s.replace(/^﻿/, "");
+    if (buffer.length >= 2 && buffer[0] === 0xff && buffer[1] === 0xfe) {
+        return stripBom(new TextDecoder("utf-16le").decode(buffer));
+    }
+    if (buffer.length >= 2 && buffer[0] === 0xfe && buffer[1] === 0xff) {
+        return stripBom(new TextDecoder("utf-16be").decode(buffer));
+    }
+    try {
+        return stripBom(new TextDecoder("utf-8", { fatal: true }).decode(buffer));
+    } catch {
+        // UTF-8 invalide → quasi certainement un export legacy Windows-1252 / Latin-1.
+        return stripBom(new TextDecoder("windows-1252").decode(buffer));
+    }
+}
+
+/**
  * Lit les lignes d'un fichier stock.
  * - XLSX (binaire, signature ZIP "PK") → parseur partagé (encodage géré par XLSX).
- * - CSV (texte) → décodage UTF-8 explicite (strip BOM) AVANT parsing, sinon les
- *   en-têtes accentués FR ("quantité") sont mal décodés (mojibake) et les colonnes
- *   ne sont plus reconnues. Gère aussi le délimiteur `;` français.
+ * - CSV (texte) → décodage avec DÉTECTION d'encodage (UTF-8/UTF-16/Windows-1252,
+ *   strip BOM) AVANT parsing, sinon les en-têtes accentués FR (« Quantité ») d'un
+ *   export Latin-1 sont mojibakés et les colonnes perdues. Gère le délimiteur `;` FR.
  */
 function readRows(buffer: Buffer): string[][] {
     const isZip = buffer[0] === 0x50 && buffer[1] === 0x4b; // "PK" → XLSX
     if (isZip) return parseSpreadsheetBuffer(buffer);
 
-    const text = buffer.toString("utf-8").replace(/^﻿/, "");
+    const text = decodeCsvBuffer(buffer);
     const read = (fs?: string): string[][] => {
         const wb = XLSX.read(text, fs ? { type: "string", FS: fs } : { type: "string" });
         const sheetName = wb.SheetNames[0];

@@ -75,12 +75,19 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
 
 ### LE PLAN (ordre imposé par Thomas : A puis B puis C)
 **A — Chaîne data, maillon par maillon (cœur de la promesse d'exactitude) :**
-1. ✅ **Parse** (`parseStockFile`) — FAIT (commit `2623015`, fixture FR sale, 11 assertions champ
-   par champ). *Reste pour CE maillon* : chemin **XLSX binaire**, encodage **Latin-1/CP1252**,
-   **en-têtes inhabituels** (auto-détection colonnes `detectColumns`).
+1. ✅ **Parse** (`parseStockFile`) — **COMPLET**. (a) commit `2623015` : fixture FR sale CSV
+   UTF-8, 11 assertions champ par champ. (b) **2026-06-22** : 3 facettes restantes prouvées +
+   **bug réel corrigé** — encodage **Windows-1252/Latin-1** (POS legacy FR Clictill/Fastmag/
+   Excel-FR) était décodé en UTF-8 → « Quantité » mojibake → colonne qté **perdue en silence**
+   (qty→1) ; fix `decodeCsvBuffer` (détection UTF-8-strict/UTF-16-BOM/CP1252) ; + chemin **XLSX
+   binaire** (cellules numériques natives) + **en-têtes inhabituels** (Gencode/Libellé/Qté/PU HT/
+   Pointure/Fabricant) prouvés. +10 tests. Revue silent-failure-hunter : SOUND.
 2. ⬜ **Triage / identité** (`ingestStockSnapshot` triage) — EAN canonicalisé + **checksum GTIN
    validé**, UPC-12→EAN-13, fallback SKU, **rejet des lignes nom-seul**. Preuve : fichier réel →
-   compteurs triage corrects + lignes rejetées listées.
+   compteurs triage corrects + lignes rejetées listées. **NB (report de la revue maillon 1)** :
+   le vrai point de perte silencieuse résiduel = **colonne quantité NON détectée → qty=1 sans
+   alerte**. Y poser une **alerte de couverture de colonnes** (identité/qté absente du mapping →
+   signal, jamais un défaut muet) — c'est ICI que cet invariant nord vit, pas au décodage.
 3. ⬜ **Ingest / match** (items → `products`) — match par EAN/SKU, create vs update, **0 doublon**.
    Preuve : faux client (ou DB de test) → lignes attendues.
 4. ⬜ **Réconciliation** — article absent du snapshot → **stock 0** (vendu), jamais d'écrasement

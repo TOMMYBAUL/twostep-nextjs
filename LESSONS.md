@@ -122,6 +122,13 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Texte extrait d'un XML par **regex** sans décoder les entités → toute marque avec `&` (D&G, H&M, obligatoirement `&amp;` en XML valide) stockée polluée. Décoder numériques + nommées, `&amp;` EN DERNIER (anti double-décode). (parseCiiXml)
 - ❌ Matching SKU en **exact-case** alors que l'EAN est canonique et le nom normalisé → `REF-001` (CSV) vs `ref-001` (POS) = doublon. `.toLowerCase()` des 2 côtés (set + get). (match-product.ts ; snapshot.ts le faisait déjà → asymétrie).
 - ❌ Helper de parse LLM qui `return []` sur réponse malformée = échec MASQUÉ : le caller compte 0 échec, et si l'état "tenté" n'est pas marqué (ex. `ai_categorized_at` reste null) il RE-tente à chaque run en brûlant des tokens, sans trace (coût caché). Pire : un JSON valide mais **non-tableau** (`{"error":...}`) passe `JSON.parse` puis crashe le `for...of` du caller HORS try/catch (TypeError non catchée → route down). Règle : un parseur LLM **LÈVE** (non-JSON ET non-tableau, garde `Array.isArray`) → routé vers le catch existant du caller qui compte/logue. (parseCategorizationResponse, 2026-06-19)
+- ❌ **`buffer.toString("utf-8")` en dur sur un CSV marchand** : les POS legacy FR (Clictill,
+  Fastmag, Excel-FR) exportent en **Windows-1252/Latin-1**. L'octet accentué (é=0xE9) devient `�`
+  → l'en-tête « Quantité » ne matche plus `detectColumns` → **colonne qté perdue en silence**
+  (qty→1 « présence »). Fix : détecter l'encodage (`TextDecoder utf-8 {fatal:true}` → si throw,
+  repli `windows-1252` ; BOM UTF-16 d'abord). Byte-identique pour tout UTF-8 valide. Le vrai point
+  de perte résiduel = colonne qté/identité **non détectée sans alerte** → alerte de couverture de
+  colonnes au triage/ingest, pas au décodage. (`parse-stock.ts decodeCsvBuffer`, 2026-06-22)
 - ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
 
 ## Git / hooks

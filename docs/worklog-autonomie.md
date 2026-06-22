@@ -5,6 +5,47 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 1 (Parse) — COMPLÉTÉ + bug réel corrigé
+
+**Sourcing** : mission §1bis (valider le workflow maillon par maillon, profondeur > vitesse).
+Maillon 1 `Parse` avait 3 facettes restantes explicitement listées : XLSX binaire, encodage
+Latin-1/CP1252, en-têtes inhabituels. Reprise du 1er `⬜` non prouvé.
+
+**TROUVÉ (bug réel, prouvé EMPIRIQUEMENT avant de coder)** : `parseStockFile` décodait le CSV
+texte en `buffer.toString("utf-8")` en dur. Or les POS legacy FR (Clictill, Fastmag) et Excel-FR
+exportent en **Windows-1252 / Latin-1**. Repro octet par octet : en-tête « Quantité » (é=0xE9
+CP1252) → `toString("utf-8")` = « Quantit� » → `detectColumns` ne matche plus → **la colonne
+quantité est PERDUE EN SILENCE** → chaque ligne retombe sur qty=1 (« présence »). C'est
+exactement l'ennemi north-star (« ne rien perdre silencieusement ») sur le hot path d'ingestion
+(file-push API + canal email-in passent tous deux par ce parseur).
+
+**FAIT (1 fichier prod + 1 test, réversible, 0 migration)** :
+- Fix `decodeCsvBuffer` (`src/lib/ingest/parse-stock.ts`) : détection d'encodage — BOM UTF-16
+  (le/be) → ; UTF-8 STRICT (`TextDecoder fatal`) : s'il décode c'est de l'UTF-8 ; sinon repli
+  **Windows-1252**. Byte-identique pour tout UTF-8 valide (zéro régression) ; ne change le
+  comportement QUE pour les fichiers qui cassaient déjà.
+- `tests/parse-stock-encoding-formats.test.ts` (+10) — chaque facette sur une entrée RÉELLE,
+  sortie inspectée champ par champ (PREUVE loggée) : (A) CP1252 → noms « Crème dépilatoire »/
+  « Bûche pâtissière » décodés, marque « Lâncome », **qté 12 et 0 détectées** (pas le défaut 1) ;
+  (B) **XLSX binaire** construit avec cellules numériques natives → qté/prix corrects, qté 0
+  conservée ; (C) en-têtes **Gencode/Libellé/Qté/PU HT/Pointure/Fabricant** tous auto-mappés.
+
+**REVUE OBLIGATOIRE** (diff pipeline ingest) `silent-failure-hunter` : **SOUND**. Confirmé :
+catch→windows-1252 ne peut pas throw ni produire U+FFFD ; BOM UTF-16 ne peut pas faux-positiver
+sur de l'UTF-8 valide (0xFF/0xFE jamais valides en UTF-8) ; byte-identique pour UTF-8 valide.
+Seule suggestion (LOW) : logger le repli CP1252. **Écartée à dessein** : ce repli est le chemin
+SAIN attendu pour les POS FR (le logguer = bruit, pas signal). Le vrai point de perte résiduel
+nommé par la revue = « colonne qté non détectée → qty=1 sans alerte » → **reporté au maillon 2/3**
+(triage/ingest) sous forme d'alerte de couverture de colonnes, là où l'invariant vit.
+
+**TESTÉ** : suite **534 → 544** verte, `tsc` 0. Impact (hook gitnexus) : `parseStockFile` ←
+2 routes POST (ingest/stock + catalog/import) ; changement interne `readRows`, risque LOW.
+
+**MÉTRIQUE** : maillon 1 (Parse) **prouvé COMPLET** (3/3 facettes + 1 bug north-star corrigé).
+Prochain : maillon 2 (Triage/identité) — avec l'alerte de couverture de colonnes en tête de pont.
+
+---
+
 ## 2026-06-21 (session supervisée) · Two-Step Connect — MVP-1 : canal email-in stock (couvre Clictill/Fastmag)
 
 **Décision produit (avec Thomas)** : après recherche d'état-de-l'art, le marché POS indépendants
