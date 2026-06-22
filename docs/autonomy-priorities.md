@@ -406,14 +406,17 @@ Thomas LIT WhatsApp/Telegram. Quand le prochain item à plus forte valeur est `[
 
 ### 5bis. ⭐ SCORECARD DE FIN DE RUN (obligatoire — Thomas le reçoit sur WhatsApp/Telegram)
 À CHAQUE run qui produit du travail, **s'auto-noter HONNÊTEMENT** (une note basse est un SIGNAL
-utile, pas un échec ; Thomas/Claude-supervisé audite). 5 axes, **note 1-5** :
-1. **Preuve** : 1 = « tests verts » seulement ; 5 = sortie RÉELLE inspectée champ par champ sur une
-   entrée sale (la méthode §1bis).
-2. **Sécurité north-star** : 1 = risque de faux positif / perte silencieuse non vérifié ;
-   5 = revue silent-failure-hunter SOUND, aucun faux positif/perte introduit.
-3. **Réversibilité** : 1 = irréversible (migration appliquée…) ; 5 = `git revert` propre, 0 migration.
-4. **Discipline de scope** : 1 = >20 fichiers ou hors-sujet ; 5 = 1 unité ciblée.
-5. **Alignement north-star** : 1 = busywork ; 5 = avance directement la data exacte / le pilote.
+utile, pas un échec ; Thomas/Claude-supervisé audite). 5 axes, **note 1-10** — repère DUR (le /5 saturait ; sur /10 le 10 doit rester RARE) :
+**9-10** = exceptionnel ET **prouvé en RÉEL** (vrai marchand/prod), rare ; **7-8** = solide (prouvé
+synthétique + revue OK) ; **5-6** = acceptable mais lacunes ; **≤4** = problème. **Ne JAMAIS mettre
+10 par défaut** ; tant que ce n'est prouvé que sur données synthétiques, plafonner à **8**.
+1. **Preuve** : 2 = « tests verts » seulement ; 8 = sortie RÉELLE inspectée champ par champ sur une
+   entrée sale (méthode §1bis) ; 9-10 = idem prouvé sur vraie data marchand.
+2. **Sécurité north-star** : 2 = risque de faux positif / perte silencieuse non vérifié ;
+   8-10 = revue silent-failure-hunter SOUND, aucun faux positif/perte introduit.
+3. **Réversibilité** : 1 = irréversible (migration appliquée…) ; 9-10 = `git revert` propre, 0 migration.
+4. **Discipline de scope** : 2 = >20 fichiers ou hors-sujet ; 9-10 = 1 unité ciblée.
+5. **Alignement north-star** : 2 = busywork ; 9-10 = avance directement la data exacte / le pilote.
 
 **+ Métriques OBJECTIVES** (faits, pas auto-flatterie) :
 - tests : total + delta (`X→Y`) ; **bugs réels** trouvés+corrigés ce run ; **fichiers touchés**.
@@ -424,7 +427,7 @@ utile, pas un échec ; Thomas/Claude-supervisé audite). 5 axes, **note 1-5** :
 **Sortie** : (a) bloc scorecard complet dans l'entrée `worklog-autonomie.md` du run ; (b) version
 COMPACTE **en append dans `logs/notify-extra.txt`** (le wrapper l'envoie à Thomas sur WhatsApp +
 Telegram puis le vide). Format compact :
-`[NOTE <date>] Preuve x | Secu x | Rev x | Scope x | Align x || tests A->B | N bug(s) reel(s) | F fichiers | CFR 10 runs: P% OK`
+`[NOTE <date>] Preuve x/10 | Secu x/10 | Rev x/10 | Scope x/10 | Align x/10 || tests A->B | N bug(s) reel(s) | F fichiers | CFR 10 runs: P% OK`
 
 ---
 
