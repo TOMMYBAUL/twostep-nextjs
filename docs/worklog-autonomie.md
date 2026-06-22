@@ -5,7 +5,7 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
-## 2026-06-23 (run autonome) · PHASE D — item **D3 `[R]` Métrique « % publiable » (KPI pilote)** PROUVÉ · commit `<à compléter>`
+## 2026-06-23 (run autonome) · PHASE D — item **D3 `[R]` Métrique « % publiable » (KPI pilote)** PROUVÉ · commit `beb8826`
 
 **Sourcing (§6)** : chaîne A 1→8 + D1 faits ; haut du backlog Phase D = D2 `[G]` (escaladé), donc item
 `[R]` de plus haut rang non terminé = **D3**. D1 avait explicitement renvoyé à D3 l'observabilité
