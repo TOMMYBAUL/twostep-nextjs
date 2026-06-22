@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { honestSalePrice } from "@/lib/products/sale-price";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "feed-promos", 30);
@@ -36,7 +37,13 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Promos query failed" }, { status: 500 });
         }
 
-        return NextResponse.json(data ?? [], {
+        // Feed "promos" : ne renvoyer QUE de vraies promos. Une promo périmée (sale_price ≥ prix
+        // courant après baisse de prix) ne doit ni s'afficher comme rabais ni peupler ce feed.
+        const promos = (data ?? [])
+            .map((row: any) => ({ ...row, sale_price: honestSalePrice(row.product_price, row.sale_price) }))
+            .filter((row: any) => row.sale_price != null);
+
+        return NextResponse.json(promos, {
             headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
         });
     } catch {

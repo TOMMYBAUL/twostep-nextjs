@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { discoverQuery, parseQuery } from "@/lib/validation";
 import { captureError } from "@/lib/error";
+import { honestSalePrice } from "@/lib/products/sale-price";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
@@ -57,7 +58,8 @@ export async function GET(request: NextRequest) {
         // Apply brand/color/gender/price filters
         promoItems = await applyTagAndPriceFilters(supabase, promoItems, brand, color, gender, priceMin, priceMax);
 
-        const products = promoItems.map((row: any) => ({
+        const products = promoItems
+            .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
                 product_price: row.product_price,
@@ -66,9 +68,13 @@ export async function GET(request: NextRequest) {
                 merchant_id: row.merchant_id,
                 merchant_name: row.merchant_name,
                 distance_km: row.distance_km,
-                sale_price: row.sale_price,
+                sale_price: honestSalePrice(row.product_price, row.sale_price),
                 category: categoryMap.get(row.product_id)?.[0] ?? null,
-            }));
+            }))
+            // Section "promos" : ne lister QUE les vraies promos. Une promo périmée (sale_price
+            // ≥ prix courant après baisse de prix) ne doit pas apparaître dans l'onglet promos
+            // (cohérent avec explorer-feed.tsx:47 qui filtrait déjà côté client).
+            .filter((p: any) => p.sale_price != null);
 
         return NextResponse.json({ products }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
@@ -135,7 +141,7 @@ export async function GET(request: NextRequest) {
         merchant_name: row.merchant_name,
         merchant_photo: merchantPhotoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
-        sale_price: row.sale_price ?? promoMap.get(row.product_id) ?? null,
+        sale_price: honestSalePrice(row.product_price, row.sale_price ?? promoMap.get(row.product_id) ?? null),
         category: categoryMap.get(row.product_id)?.[0] ?? null,
     }));
 

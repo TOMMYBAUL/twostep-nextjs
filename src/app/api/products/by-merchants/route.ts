@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
+import { honestSalePrice } from "@/lib/products/sale-price";
 
 export async function GET(request: NextRequest) {
     const merchantIds = request.nextUrl.searchParams.get("merchant_ids");
@@ -90,7 +91,9 @@ export async function GET(request: NextRequest) {
             merchant_id: p.merchant_id,
             merchant_name: p.merchants?.name ?? "",
             merchant_photo: p.merchants?.photo_url ?? null,
-            sale_price: promoMap.get(p.id) ?? null,
+            // Garde d'honnêteté read-side : pas de faux rabais (promo périmée ≥ prix courant).
+            // Le tri promo_first ci-dessous s'aligne automatiquement (stale promo → null → non-promo).
+            sale_price: honestSalePrice(p.price, promoMap.get(p.id) ?? null),
             category: p.category,
             confidence: productConfidence({
                 ...stockRowToConfidenceInput(stockMap.get(p.id)),

@@ -119,6 +119,23 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Un check qui avale l'erreur → `existing=null` → re-traitement → **double-décrément delta**. Fix :
   `captureError` + 500 (retry → dedup). Un insert avalé idem. (Finding 3a/3b, 2026-06-21)
 
+- ❌ **Garde write-side d'affichage non rejouée au READ quand sa dépendance peut changer** : `POST
+  /promotions` valide `sale_price < product.price` à la CRÉATION, mais le prix produit peut BAISSER ensuite
+  (re-ingest fichier / sync POS) sous une promo encore active → promo périmée `sale_price ≥ prix courant`.
+  Les routes de lecture renvoyaient `sale_price` brut → `followed-feed` calcule `(price-sale)/price*100` =
+  **% négatif/aberrant**, `product-detail` un `displayPrice` > prix réel = faux rabais (north-star « afficher
+  honnêtement »). **Règle (symétrique à maillon 5)** : une garde posée au WRITE doit être rejouée au READ —
+  le point où les deux opérandes (prix courant + sale_price) se rencontrent — dès que l'une peut évoluer
+  indépendamment après le write. Fix : helper pur unique `honestSalePrice(price, salePrice)` (source unique
+  serveur, sémantique = gardes client `sticky-cta-bar`/`explorer-feed`), appliqué aux 6 routes émettrices.
+  **Méta-leçon** : un invariant connu mais appliqué de façon INCOHÉRENTE (ici gardé dans 2 fronts sur 4 +
+  au write, pas au read) = même risque qu'un invariant absent → centraliser en 1 helper traversé par tous.
+  (maillon 6, 2026-06-22, 2 revues silent-failure-hunter)
+- ⚠️ **`honestSalePrice` côté `products/[id]` masquait toutes les promos si `price` null/0** (indistinct de
+  « aucune promo ») → rendu VISIBLE via `captureError` (PAS `console.warn`, Sentry-invisible) en gardant la
+  suppression prudente. Rappel : 0€ promo INATTEIGNABLE (`promotionBody.sale_price = z.number().positive()`)
+  → ne pas « corriger » le cas 0 côté front (vérifié avant d'agir). (maillon 6, 2026-06-22)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

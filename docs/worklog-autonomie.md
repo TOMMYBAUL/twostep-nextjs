@@ -5,6 +5,60 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 6 (Affichage honnête — prix promo) — COMPLÉTÉ + bug réel corrigé
+
+**Sourcing** : mission §1bis plan B = maillon 6 (Affichage) via Playwright sur l'app live. **Contrainte
+vérifiée** : ni Playwright ni MCP navigateur dispo dans l'environnement de la boucle (confirme le constat
+récurrent « la boucle n'a pas de navigateur → Thomas valide le rendu »). La validation PUREMENT VISUELLE
+(rendu « grossier vs pro », screenshots) reste donc à escalader à Thomas. J'ai traité la moitié
+**vérifiable sans navigateur** : le READ-PATH qui alimente l'affichage = l'honnêteté de la donnée affichée
+(north-star « afficher honnêtement, zéro faux positif »), comme aux maillons 4 (tailles fantômes) et 5
+(fraîcheur). Surface choisie : le **prix promo** sur la grille consumer (hot path #1, route discover SANS
+aucun test).
+
+**TROUVÉ + CORRIGÉ — bug réel (faux rabais, garde asymétrique write→read)** : `POST /promotions` vérifie
+`sale_price < product.price` à la CRÉATION (route promotions.ts:80), mais cette garde est FIGÉE. Le prix
+produit peut BAISSER ensuite (re-ingest fichier, sync POS) sous une promo encore active (`ends_at` futur)
+→ promo périmée dont `sale_price ≥ prix courant`. Les routes de lecture passaient `sale_price` BRUT au
+front. `followed-feed.tsx:103` calcule alors `Math.round((price - sale)/price*100)` → **pourcentage
+NÉGATIF/aberrant** (badge « -(-14)% »), prix barré incohérent (montant < « prix promo » mis en avant) ; et
+`product-detail.tsx:125-128` → `discount` 0/négatif + `displayPrice` SUPÉRIEUR au prix réel. C'est le
+mensonge de rabais que la garde de création existe pour empêcher. **Note** : `sticky-cta-bar.tsx:36` ET
+`explorer-feed.tsx:47` gardaient DÉJÀ `sale_price < price` côté client — invariant connu mais appliqué de
+façon **incohérente** (pas sur la grille principale, ni followed-feed, ni la fiche produit).
+
+**FIX (réversible, 0 migration, pur read-path)** : helper pur unique `honestSalePrice(price, salePrice)`
+(`src/lib/products/sale-price.ts`) = SOURCE UNIQUE serveur de l'invariant (sémantique identique aux gardes
+client : renvoie `salePrice` ssi `< price`, sinon `null`). Appliqué aux **6 surfaces serveur** émettrices :
+`products/discover` (primary RPC + fallback), `discover` (section promos + feed trending/nearby),
+`by-merchants` (le tri `promo_first` s'aligne tout seul), `search`, `feed/promos`, et `products/[id]`
+(filtre la jointure `promotions`). Pour les feeds « promos » (`discover?section=promos`, `feed/promos`),
+en plus de neutraliser le rabais, la promo périmée est **filtrée du feed** (cohérent avec explorer-feed).
+
+**REVUES silent-failure-hunter (2 passes)** : pass 1 sur les 3 routes discover → a révélé 5 surfaces
+ADJACENTES non couvertes (mon « source unique » était surévalué) : `search`, `feed/promos`, `products/[id]`
+(toutes corrigées serveur), + `shop-profile` (query promotions CÔTÉ CLIENT, hors périmètre serveur → suivi)
++ `followed-feed` cas `sale_price===0` (**INATTEIGNABLE** : `promotionBody.sale_price` = `z.number().positive()`
+→ non corrigé, vérifié). Pass 2 sur les 3 nouvelles routes → SOUND + 1 LOW : `products/[id]` masquait
+silencieusement TOUTES les promos si `price` null/0 (indistinct de « aucune promo ») → rendu VISIBLE via
+`captureError` (pas `console.warn`, Sentry-invisible) en gardant la suppression prudente.
+
+**PREUVE** (`tests/ingest-maillon6-honest-sale-price.test.ts`, +9) : helper (vrai rabais conservé, promo
+périmée → null, == price → null, entrées non finies → null, sémantique identique aux gardes client) +
+**verrou de contrat par route** (réplique la transformation inline de chaque route sur une vraie promo +
+une périmée : map/filter/jointure → la périmée est neutralisée/exclue ; product-detail recalcule alors un
+discount honnête +21% au lieu de -14%).
+
+**TESTÉ** : `npm run test:run` → **596/596** vert (était 587, +9), `tsc` OK.
+
+**MÉTRIQUE** : maillon 6 (Affichage) — **moitié read-path/honnêteté du prix promo PROUVÉE COMPLÈTE** (6
+routes unifiées + bug réel corrigé). **Reste de maillon 6 = validation VISUELLE → ESCALADE Thomas** (pas de
+navigateur côté boucle). Suivi non bloquant : `shop-profile` interroge `promotions` côté client (re-garder
+inline ou router via API) ; le feed promos `discover` n'expose pas de `total` filtré (observabilité). Aucune
+escalade de décision binaire requise (tout réversible) — seule l'escalade « valide le rendu visuel » subsiste.
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 5 (Confiance / fraîcheur) — COMPLÉTÉ + bug réel corrigé
 
 **Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 5 (`source`/`source_ts` → label de

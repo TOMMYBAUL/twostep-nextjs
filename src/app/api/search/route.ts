@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { searchQuery, parseQuery } from "@/lib/validation";
+import { honestSalePrice } from "@/lib/products/sale-price";
 
 export async function GET(request: Request) {
     try {
@@ -48,6 +49,10 @@ export async function GET(request: Request) {
                 results = results.filter((r: any) => categoryMap.get(r.product_id) === categoryFilter);
             }
         }
+
+        // Garde d'honnêteté read-side : un sale_price ≥ prix courant (promo périmée après
+        // baisse de prix) ne doit jamais s'afficher comme rabais. Cf. lib/products/sale-price.ts.
+        results = results.map((r: any) => ({ ...r, sale_price: honestSalePrice(r.product_price, r.sale_price) }));
 
         return NextResponse.json({ results, count: results.length }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" },

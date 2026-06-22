@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { honestSalePrice } from "@/lib/products/sale-price";
 
 export async function GET(request: NextRequest) {
     const params = request.nextUrl.searchParams;
@@ -42,7 +43,9 @@ export async function GET(request: NextRequest) {
             merchant_name: row.merchant_name,
             merchant_photo: row.merchant_photo,
             distance_km: row.distance_km,
-            sale_price: row.sale_price,
+            // Garde d'honnêteté read-side : un sale_price ≥ prix courant (promo périmée après
+            // baisse de prix) ne doit jamais s'afficher comme rabais. Cf. sale-price.ts.
+            sale_price: honestSalePrice(row.product_price, row.sale_price),
         }));
 
         // Enrich with merchant pos_type (POS vs non-POS affects consumer display)
@@ -200,7 +203,7 @@ export async function GET(request: NextRequest) {
         merchant_name: row.merchant_name,
         merchant_photo: photoMap.get(row.merchant_id) ?? null,
         distance_km: row.distance_km,
-        sale_price: promoMap.get(row.product_id) ?? null,
+        sale_price: honestSalePrice(row.product_price, promoMap.get(row.product_id) ?? null),
     }));
 
     return NextResponse.json(

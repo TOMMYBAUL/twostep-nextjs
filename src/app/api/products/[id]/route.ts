@@ -5,6 +5,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
 import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
+import { honestSalePrice } from "@/lib/products/sale-price";
+import { captureError } from "@/lib/error";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -53,6 +55,30 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
             }
 
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        }
+
+        // Garde d'honnêteté read-side : ne conserver que les promos qui sont un VRAI rabais
+        // (sale_price < prix courant). Une promo encore active mais dont le prix produit a baissé
+        // en dessous du sale_price (re-ingest/sync) afficherait sinon un « -X% » aberrant (négatif)
+        // et un prix promo SUPÉRIEUR au prix courant côté product-detail. Cf. lib/products/sale-price.ts.
+        const rawPromos = (data as any).promotions;
+        if (Array.isArray(rawPromos) && rawPromos.length > 0) {
+            const price = (data as any).price;
+            if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
+                // Prix invalide : impossible de juger l'honnêteté d'un rabais → on masque les promos
+                // (choix prudent). Mais on rend la corruption VISIBLE (sinon indistinct de « aucune
+                // promo ») — un produit visible avec un prix null/0 portant une promo est anormal.
+                captureError(new Error("product price null/0 with active promotions — promos suppressed"), {
+                    route: "products/[id]",
+                    productId,
+                    price: String(price),
+                });
+                (data as any).promotions = [];
+            } else {
+                (data as any).promotions = rawPromos.filter(
+                    (pr: any) => honestSalePrice(price, pr?.sale_price) != null,
+                );
+            }
         }
 
         const merchant = (data as any).merchants;

@@ -127,7 +127,17 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    unique anti-régression) + `source_ts` aux 3 SELECT. Revue silent-failure-hunter : 1 MED (lignes pré-104
    `source_ts=DEFAULT now()` surévalue) **adressé sans migration** via `freshnessTs()` qui PLAFONNE source_ts
    à updated_at (artefact = on prend le plus ancien). 587 tests verts. → **Chaîne data A : maillons 1→5 ✅.**
-6. (puis 6 Affichage, 7 Feed Google, 8 email-in de bout en bout — voir B + suite.)
+6. 🔶 **Affichage** — **READ-PATH/HONNÊTETÉ PROUVÉ (2026-06-22)** ; **VISUEL escaladé à Thomas** (pas de
+   navigateur côté boucle). Prouvé : honnêteté du **prix promo** sur tout le hot path consumer. Bug réel
+   corrigé (garde asymétrique write→read) : `POST /promotions` garde `sale_price < price` à la création mais
+   le prix produit peut BAISSER ensuite sous une promo active → faux rabais (« -X% » négatif, prix promo >
+   prix réel). Helper pur unique `honestSalePrice` (`src/lib/products/sale-price.ts`) appliqué aux **6 routes
+   émettrices** (`products/discover`, `discover`, `by-merchants`, `search`, `feed/promos`, `products/[id]`).
+   2 revues silent-failure-hunter (SOUND + 1 LOW adressé : prix null/0 → captureError). +9 tests, 0 migration.
+   **Reste maillon 6 = rendu visuel** (accueil→onboarding→upload→dashboard→vitrine, « grossier vs pro ») →
+   **B ci-dessous, à valider par Thomas au navigateur**. Suivi non bloquant : `shop-profile` lit `promotions`
+   côté client (hors source unique serveur).
+7. (puis 7 Feed Google, 8 email-in de bout en bout — voir suite.)
 
 **B — UI réelle (Playwright sur l'app live)** : parcours accueil → onboarding → upload stock →
 dashboard → vitrine + badge confiance. Screenshots. Lister sans complaisance ce qui est
