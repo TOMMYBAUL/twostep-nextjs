@@ -1,5 +1,7 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 
+import { captureError } from "@/lib/error";
+
 /**
  * After a newly-confirmed user lands on /auth/callback or /auth/confirm,
  * if their user_metadata carries the merchant payload captured at signup,
@@ -56,6 +58,13 @@ export async function createMerchantFromMetadata(
         phone: (meta.merchant_phone as string) ?? null,
         status: meta.merchant_siret_pending ? "pending" : "active",
     });
+
+    if (error) {
+        // L'insertion du marchand a échoué mais le caller (callback/confirm/finalize)
+        // redirige quand même vers /dashboard → sans ce signal, le marchand inscrit se
+        // retrouve SANS ligne `merchants` et personne ne le sait (perte silencieuse n°1).
+        captureError(error, { phase: "createMerchantFromMetadata", userId: user.id });
+    }
 
     return { created: !error };
 }

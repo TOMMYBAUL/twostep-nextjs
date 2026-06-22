@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { captureError } from "@/lib/error";
 
 function validatePasswordStrength(pwd: string): string | null {
     if (pwd.length < 8) return "Mot de passe : 8 caractères minimum";
@@ -102,8 +103,9 @@ export default function SignupPage() {
                 body: JSON.stringify({ siret }),
             });
             const data = await res.json();
-            if (!res.ok && res.status === 404) {
-                setError("SIRET introuvable. Vérifiez le numéro.");
+            if (!res.ok) {
+                // SIRET rejeté (introuvable / fermé / format) — l'API répond 400 avec un motif.
+                setError(data.error ?? "SIRET invalide. Vérifiez le numéro.");
                 return;
             }
             if (data.company) {
@@ -114,7 +116,9 @@ export default function SignupPage() {
             }
             setSiretPending(data.pending ?? false);
             setStep("profile");
-        } catch {
+        } catch (err) {
+            // Échec réseau / réponse non-JSON : rendu visible (Sentry), pas juste un message UI.
+            captureError(err, { phase: "handleSiretVerify", form: "signup" });
             setError("Erreur de vérification");
         } finally {
             setIsLoading(false);

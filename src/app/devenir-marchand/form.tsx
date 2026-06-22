@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { captureError } from "@/lib/error";
+
 interface CompanyInfo {
     name: string;
     address: string;
@@ -57,8 +59,9 @@ export function BecomeMerchantForm({ userEmail }: { userEmail: string }) {
                 body: JSON.stringify({ siret }),
             });
             const data = await res.json();
-            if (!res.ok && res.status === 404) {
-                setError("SIRET introuvable. Vérifiez le numéro.");
+            if (!res.ok) {
+                // SIRET rejeté (introuvable / fermé / format) — l'API répond 400 avec un motif.
+                setError(data.error ?? "SIRET invalide. Vérifiez le numéro.");
                 return;
             }
             if (data.company) {
@@ -69,7 +72,9 @@ export function BecomeMerchantForm({ userEmail }: { userEmail: string }) {
             }
             setSiretPending(data.pending ?? false);
             setStep("profile");
-        } catch {
+        } catch (err) {
+            // Échec réseau / réponse non-JSON : rendu visible (Sentry), pas juste un message UI.
+            captureError(err, { phase: "handleSiretVerify", form: "devenir-marchand" });
             setError("Erreur de vérification");
         } finally {
             setIsLoading(false);
@@ -186,7 +191,7 @@ export function BecomeMerchantForm({ userEmail }: { userEmail: string }) {
                         </div>
                         {siretPending && (
                             <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
-                                SIRET en cours d'immatriculation — ton compte sera marqué en attente et activé après vérification.
+                                SIRET non vérifié automatiquement — ton compte sera marqué en attente et activé après vérification manuelle.
                             </p>
                         )}
                         <button
