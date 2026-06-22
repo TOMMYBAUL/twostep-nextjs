@@ -5,6 +5,73 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · PHASE D — item **D3 `[R]` Métrique « % publiable » (KPI pilote)** PROUVÉ · commit `<à compléter>`
+
+**Sourcing (§6)** : chaîne A 1→8 + D1 faits ; haut du backlog Phase D = D2 `[G]` (escaladé), donc item
+`[R]` de plus haut rang non terminé = **D3**. D1 avait explicitement renvoyé à D3 l'observabilité
+« combien filtrés par cause ». Vérifié dans le code réel (LESSONS ~70 % faux findings) → le KPI EXISTE
+déjà (`/api/google/stats` + `dashboard/google/page.tsx`) mais **ment**.
+
+**TROUVÉ (vérifié dans le code, pas supposé)** — faux positif du KPI, même classe que maillon 7 / store_code :
+1. `/api/google/stats` calculait `eligible_google = ean && price !== null` → comptait « éligibles » des
+   produits **SANS image, au prix 0, au GTIN tronqué (<8)** que le vrai gate du feed (`isFeedEligible`,
+   D1) rejette en silence. La page affiche « X produits seront visibles immédiatement sur Google » → le
+   pilote aurait cru ~100 % alors que la moitié est bloquée par l'image (la cause D3 explicite).
+2. La population était `visible=true` **SEULEMENT**, alors que les 2 feeds exigent aussi
+   `validated + archived_at IS NULL + variant_of IS NULL`. `archive_product` (068) met `archived_at`
+   sans toucher `visible` → un produit archivé resté visible était compté publiable (même bug exact que
+   maillon 7, surface KPI cette fois).
+3. La lecture produits **avalait son `error`** (`const { data: products } = …`) → un blip DB renvoyait
+   un KPI **all-zeros** (faux « catalogue vide / 0 % publiable ») en silence sur la page Google.
+
+**FAIT (réversible, 0 migration)** :
+- Helper pur **`summarizePublishability(rows)`** (`feed-eligibility.ts`) **réutilise le VRAI gate** :
+  3 prédicats par dimension (`hasPublishableGtin`/`hasPublishablePrice`/`hasImage`) que `isFeedEligible`
+  ET le KPI partagent → le KPI ne peut PAS diverger du feed (source unique, leçon store_code/honestSalePrice).
+  `isFeedEligible` refactoré pour les composer = **comportement strictement identique** (vérifié + revue).
+  Renvoie `total/publishable/missing_ean/missing_price/missing_image/blocked_only_by_image/score`.
+  `blocked_only_by_image` (EAN+prix OK, image seule manquante) = cible actionnable directe du sourcing
+  image (D2/D5).
+- Route réécrite : population alignée **EXACTEMENT** sur le gate des 2 feeds, `eligible_google`/`score`
+  = `isFeedEligible`, **champ additif** `blocked_only_by_image` (contrat client inchangé, dashboard lit
+  les mêmes clés). Read produits + lookup marchand : erreur → **500+captureError** (≠ PGRST116 = 403),
+  null-sans-erreur → 500 (état SDK inattendu, parité défensive avec cron/google-feed).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff = surface KPI/observabilité feed) : **SOUND** — refactor
+`isFeedEligible` prouvé identique clause par clause ; population KPI == population des 2 feeds (table de
+parité) ; read-error→500 au lieu d'all-zeros. Findings restants LOW/pré-existants (titre Sentry
+`[object Object]` systémique ; LFP route Voie B sans captureError = hors scope, non touché). 1 amélioration
+appliquée suite revue : `products` null-sans-erreur → 500 (au lieu d'un KPI vide trompeur).
+
+**PREUVE RÉELLE** (méthode §1bis) : `tests/lib/google/publishability.test.ts` (+10). (a) fonction pure sur
+**catalogue SALE mixte** (9 produits) inspecté champ par champ : publishable 2, missing_ean 3 (null+tronqué
++cumul), missing_price 2 (0+null), missing_image 3, blocked_only_by_image 2, score 22 % ; invariant
+`publishable == count(isFeedEligible)`. (b) chemin réel route : sans-image NON éligibilisé (l'ancien proxy
+le faisait), archivé/variante/non-validé **hors population** (parité feed), read-error→500+Sentry,
+lookup-marchand-error≠PGRST116→500, PGRST116→403 sans Sentry, non-auth→401. Chaque assertion échouerait
+sur l'ancien code.
+
+**TESTÉ** : `npm run test:run` → **654/654** (était 644, +10), `tsc` OK.
+
+**MÉTRIQUE** : 1 item `[R]` Phase D fermé (D3). **1 faux positif KPI réel comblé** (le KPI pilote mentait :
+sur-évaluation publiabilité + ignore image/archivé) + **1 silent-failure réel fermé** (read all-zeros).
+4 fichiers code/test (1 lib + 1 route + 1 test ; + 3 docs). 0 migration, réversible. Aucune escalade.
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car prouvé synthétique, pas vrai marchand)
+- **Preuve : 8/10** — KPI réel des 2 surfaces inspecté champ par champ sur catalogue sale + chemin réel route
+  (6 facettes). Plafond 8 (pas de vrai marchand/feed Google live).
+- **Sécurité north-star : 8/10** — revue SF-hunter SOUND, fin d'un faux positif affiché au pilote + d'un
+  silent-failure de lecture ; parité KPI↔feed garantie par helper unique. Aucun nouveau risque introduit.
+- **Réversibilité : 10/10** — 0 migration, additif (champ optionnel + refactor iso-comportement), revert propre.
+- **Discipline de scope : 9/10** — 1 unité ciblée (D3), 3 fichiers code/test ; visibilité/validation non
+  étendues au-delà de la parité feed (anti scope-creep).
+- **Alignement north-star : 9/10** — le KPI du pilote dit enfin la VÉRITÉ du feed (« afficher honnêtement,
+  zéro faux positif ») et pointe la cause actionnable n°1 (manque image) pour D2/D5.
+**Objectif (§5bis)** : tests 644→654 ; **1 faux positif KPI + 1 silent-failure** comblés ; 4 fichiers ;
+CFR 10 derniers runs : 10/10 `exit=0` avec commit (ledger), 0 revert détecté → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · PHASE D — item **D1 `[R]` Audit complétude feed Google + `g:sale_price`** PROUVÉ · commit `ecfbd9b`
 
 **Sourcing (§6)** : chaîne A 1→8 COMPLÈTE → Phase D (cerveau priorities.md). Item `[R]` de plus haut

@@ -208,6 +208,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   `filterEligibleProducts` acceptait `price=0` + EAN tronqué que Voie B `filterFeedEligible` rejetait
   (`price>0`, `ean.length>=8`) → ensembles émis différents vers le MÊME tiers. Fix : prédicat partagé
   `isFeedEligible` (`feed-eligibility.ts`) délégué par les 2 ; `nowMs` capturé une fois par feed. (D1)
+- ❌ **Un KPI qui PRÉDIT un gate via un proxy plus laxe que le gate = faux positif affiché.** Le KPI
+  « % publiable Google » (`/api/google/stats`, montré au pilote) comptait `eligible_google = ean && price
+  !== null` → comptait « éligibles » des produits SANS image / prix 0 / GTIN tronqué que le feed
+  (`isFeedEligible`) rejette en silence ; + population `visible=true` SEULEMENT vs gate feed
+  (`+validated +archived_at IS NULL +variant_of IS NULL`) → un archivé resté visible (068) compté publiable.
+  **Règle : un indicateur qui prédit ce qu'un gate laisse passer doit RÉUTILISER le prédicat du gate (pas
+  un proxy « à peu près »), et sa population doit être celle du gate** — sinon il ment dans le sens flatteur.
+  Fix D3 : 3 prédicats partagés (`hasPublishableGtin/Price/hasImage`) que `isFeedEligible` ET
+  `summarizePublishability` composent (source unique anti-dérive, classe store_code/honestSalePrice) +
+  SELECT aligné. Exposé aussi `blocked_only_by_image` (EAN+prix OK, image seule manquante) = cause
+  actionnable n°1. Et la lecture produits qui avalait `error` → KPI all-zeros silencieux sur blip DB →
+  500+captureError. (D3, 2026-06-23, revue SF-hunter SOUND)
 - ❌ Sur un cron multi-marchand, le SELECT de la LISTE (`google_merchant_connections`) qui avale son
   `error` est PIRE qu'un select par-marchand avalé : un blip DB → `data=null` → `length===0` →
   `200 "aucun marchand connecté"` = TOUT le feed Google abandonné, 0 Sentry, 0 statut. **Règle : le

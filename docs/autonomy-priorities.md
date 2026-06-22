@@ -210,9 +210,15 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   et **MESURER le taux de rejet** via le cron `google-status` + `quality_alerts google_disapproved`
 >   (déjà en place). **Préparer derrière flag OFF + tests, puis ESCALADE** (peut affecter la
 >   réputation du compte Google → GO Thomas). Ne PAS activer seul.
-> - **D3 `[R]` Métrique « % publiable »** : pour un marchand donné, combien de produits ont
->   EAN+prix+IMAGE (publiables Google) vs exclus, **ventilé par cause** (surtout : manque image).
->   C'est **le KPI du pilote**. Preuve : exécuté sur fixture, comptes par cause.
+> - ✅ **D3 `[R]` Métrique « % publiable » — PROUVÉ (2026-06-23)**. `summarizePublishability`
+>   (`src/lib/google/feed-eligibility.ts`) réutilise le VRAI gate du feed (`isFeedEligible` via 3 prédicats
+>   partagés) → KPI qui ne peut PAS diverger de ce qui publie ; ventilé par cause + `blocked_only_by_image`
+>   (cible D2/D5). **Bug réel corrigé (faux positif KPI, classe maillon 7)** : `/api/google/stats` comptait
+>   « éligibles » via `ean && price!==null` → produits SANS image / prix 0 / GTIN tronqué que le feed rejette,
+>   et population `visible=true` SEULEMENT (archivé resté visible compté publiable). Aligné sur le gate des
+>   2 feeds + read-error→500+Sentry (fin du KPI all-zeros silencieux). Preuve `tests/lib/google/
+>   publishability.test.ts` (+10, catalogue sale champ par champ + chemin réel route). Revue SF-hunter SOUND.
+>   654 tests, 0 migration, réversible.
 > - **D4 `[R]` Open Beauty Facts** dans la cascade (cosmétique, GRATUIT) sur le modèle `kicksdb.ts` ;
 >   **redescendre GS1** au rang « identité gratuite seulement » (NE PAS intégrer l'API GS1 payante —
 >   food-only, inutile pour nos verticaux, cf [[google-lfp-etat]]). Preuve : vrai EAN cosmétique → nom+image.

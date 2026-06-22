@@ -225,8 +225,28 @@ Voie B `<g:sale_price>99.99 EUR</g:sale_price>` placé juste après `<g:price>`)
 `tests/lib/google/feed.test.ts` + `tests/lib/google/lfp-xml.test.ts` (promo active/expirée/future/
 non-avantageuse/multi → meilleur ; parité price=0 + EAN court). 644 tests verts, `tsc` OK.
 
+## D3 — KPI « % publiable » du pilote (ventilé par cause) — PROUVÉ 2026-06-23
+
+`summarizePublishability(rows)` (`src/lib/google/feed-eligibility.ts`) — **réutilise le VRAI gate du feed**
+(`isFeedEligible` via 3 prédicats partagés `hasPublishableGtin`/`hasPublishablePrice`/`hasImage`), donc le
+KPI ne peut PAS diverger de ce que le feed publie. Renvoie `total / publishable / missing_ean / missing_price
+/ missing_image / blocked_only_by_image / score`. `blocked_only_by_image` = EAN+prix OK, image seule
+manquante = cible directe du sourcing image (D2/D5).
+
+**Bug réel corrigé (faux positif du KPI, même classe que maillon 7) :** `/api/google/stats` calculait
+`eligible_google = ean && price !== null` → comptait « éligibles » des produits **sans image, au prix 0, au
+GTIN tronqué** que le feed rejette en silence ; et sélectionnait `visible=true` SEULEMENT (pas
+validated/non-archivé/non-variante) → un produit archivé resté `visible=true` était compté publiable. Le
+pilote aurait cru « ~100 % sur Google » avec la moitié des produits bloqués par l'image. Fix : population
+alignée EXACTEMENT sur le gate des 2 feeds + `isFeedEligible` + lecture produits qui **lève (500+Sentry)**
+au lieu d'un KPI all-zeros silencieux sur blip DB.
+
+**Preuve** (`tests/lib/google/publishability.test.ts`, +10) : fonction pure sur catalogue SALE mixte
+(9 produits → publishable 2, missing_ean 3 [null+tronqué+cumul], missing_price 2 [0+null], missing_image 3,
+blocked_only_by_image 2, score 22 %) inspecté champ par champ + invariant `publishable == count(isFeedEligible)` ;
+chemin réel de la route (sans-image exclu, archivé/variante/non-validé hors population, read-error→500,
+PGRST116→403, 401). Revue silent-failure-hunter : **SOUND**. 654 tests verts, `tsc` OK, 0 migration.
+
 ### Reste (escaladé / autres items D)
-- Observabilité « combien de produits filtrés par cause » (price=0, manque image, EAN court) = **item D3**
-  (« % publiable ventilé par cause »), KPI du pilote — pas dupliqué ici.
 - Voie B « vraie » LFP (`lfpInventories:insert`, format micros, `collectionTime`/`pickupMethod`) reste un
   module à part bloqué sur l'activation Google côté sub-account (cf. §STRATEGIQUE ci-dessus).

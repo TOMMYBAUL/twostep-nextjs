@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { summarizePublishability } from "@/lib/google/feed-eligibility";
+import { captureError } from "@/lib/error";
 
 export async function GET() {
     try {
@@ -10,50 +12,71 @@ export async function GET() {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { data: merchant } = await supabase
+        const { data: merchant, error: merchantErr } = await supabase
             .from("merchants")
             .select("id")
             .eq("user_id", user.id)
             .single();
 
+        // PGRST116 = aucune ligne (pas un profil marchand) → 403. Toute autre erreur DB
+        // ≠ « pas de marchand » : la remonter (sinon un blip donnait un 403 trompeur).
+        if (merchantErr && merchantErr.code !== "PGRST116") {
+            captureError(merchantErr, { route: "google/stats", step: "load-merchant" });
+            return NextResponse.json({ error: "db_error" }, { status: 500 });
+        }
         if (!merchant) {
             return NextResponse.json({ error: "No merchant profile" }, { status: 403 });
         }
 
-        // Get all visible products for this merchant
-        const { data: products } = await supabase
+        // Population = EXACTEMENT celle que le feed Google considère (parité avec
+        // cron/google-feed + feed/lfp/[merchantId]) : visible + validated + non archivé +
+        // non variante. Sinon le KPI « % publiable » surévalue en comptant des produits
+        // que le feed exclut en silence (notamment un produit archivé reste visible=true,
+        // cf. maillon 7 — même classe de faux positif).
+        const { data: products, error: productsErr } = await supabase
             .from("products")
-            .select("ean, price, photo_url, photo_processed_url, visible")
+            .select("ean, price, photo_url, photo_processed_url")
             .eq("merchant_id", merchant.id)
-            .eq("visible", true);
+            .eq("visible", true)
+            .eq("review_status", "validated")
+            .is("archived_at", null)
+            .is("variant_of", null);
 
+        // Échec de lecture ≠ « 0 produit » : sans cette garde, un blip DB renvoyait un KPI
+        // all-zeros (faux « catalogue vide / 0 % publiable ») en silence sur la page Google.
+        if (productsErr) {
+            captureError(productsErr, { route: "google/stats", merchantId: merchant.id, step: "load-products" });
+            return NextResponse.json({ error: "db_error" }, { status: 500 });
+        }
+        // data null SANS error = état SDK inattendu (un SELECT liste renvoie [] sur 0 ligne,
+        // jamais null) : lever plutôt que renvoyer un KPI all-zeros = faux « catalogue vide »
+        // (même garde défensive que cron/google-feed, parité du raisonnement anti-silence).
         if (!products) {
-            return NextResponse.json({
-                total_visible: 0,
-                eligible_google: 0,
-                missing_ean: 0,
-                missing_photo: 0,
-                missing_price: 0,
-                score: 0,
+            captureError(new Error("products null without error — unexpected SDK state"), {
+                route: "google/stats",
+                merchantId: merchant.id,
+                step: "load-products",
             });
+            return NextResponse.json({ error: "db_error" }, { status: 500 });
         }
 
-        const total_visible = products.length;
-        const missing_ean = products.filter((p) => !p.ean).length;
-        const missing_photo = products.filter((p) => !p.photo_url && !p.photo_processed_url).length;
-        const missing_price = products.filter((p) => p.price === null).length;
-        const eligible_google = products.filter((p) => p.ean && p.price !== null).length;
-        const score = total_visible > 0 ? Math.round((eligible_google / total_visible) * 100) : 0;
+        // `eligible_google`/`score` réutilisent le VRAI gate du feed (`isFeedEligible` via
+        // summarizePublishability) — image + prix>0 + GTIN≥8 inclus. L'ancien proxy
+        // `ean && price !== null` comptait comme « éligibles » des produits sans photo / au
+        // prix 0 / au GTIN tronqué que le feed rejette → KPI menteur (faux positif pilote).
+        const s = summarizePublishability(products);
 
         return NextResponse.json({
-            total_visible,
-            eligible_google,
-            missing_ean,
-            missing_photo,
-            missing_price,
-            score,
+            total_visible: s.total,
+            eligible_google: s.publishable,
+            missing_ean: s.missing_ean,
+            missing_photo: s.missing_image,
+            missing_price: s.missing_price,
+            blocked_only_by_image: s.blocked_only_by_image,
+            score: s.score,
         });
-    } catch {
+    } catch (err) {
+        captureError(err, { route: "google/stats" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
