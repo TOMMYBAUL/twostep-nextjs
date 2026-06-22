@@ -13,6 +13,7 @@
 
 import type { NextRequest } from "next/server";
 
+import { captureError } from "@/lib/error";
 import { buildLfpXml, type LfpProductRow } from "@/lib/google/lfp-xml";
 import { resolveStoreCode } from "@/lib/google/store-code";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -55,15 +56,28 @@ export async function GET(
     //     elle existe, sinon défaut déterministe `twostep-{id8}` — JAMAIS le slug.
     //     (Voie A et Voie B émettent désormais le MÊME store_code → un seul
     //     magasin côté Google, fin du faux positif "deux magasins fantômes".) ───
-    const { data: connection } = await admin
+    const { data: connection, error: connectionErr } = await admin
         .from("google_merchant_connections")
         .select("store_code")
         .eq("merchant_id", merchantId)
         .maybeSingle();
 
+    // Échec DB ici ≠ « pas de store_code persisté » : on garde le feed disponible
+    // (endpoint public crawlé) via le fallback déterministe, mais on TRACE l'anomalie
+    // — sinon un store_code divergent côté Google passerait pour une erreur de config.
+    if (connectionErr) {
+        captureError(connectionErr, { route: "lfp-feed", merchantId, step: "load-store-code" });
+    }
+
     const storeCode = resolveStoreCode(merchantId, connection?.store_code);
 
     // ─── Récup products visibles + validés ───
+    // GATE identique à la Voie A (cron `google-feed`) : un feed Google ne doit
+    // JAMAIS annoncer un produit archivé (`archive_product` 068 met archived_at
+    // SANS toucher visible → un archivé reste visible=true) ni une variante
+    // (poussée individuellement = produit non identifié sur Google Shopping).
+    // Les deux canaux de sortie Google émettent ainsi le MÊME ensemble de
+    // produits — fin de la divergence (cf. store_code Voie A/B, maillon 7).
     const { data: products, error: productsErr } = await admin
         .from("products")
         .select(
@@ -71,7 +85,9 @@ export async function GET(
         )
         .eq("merchant_id", merchantId)
         .eq("visible", true)
-        .eq("review_status", "validated");
+        .eq("review_status", "validated")
+        .is("archived_at", null)
+        .is("variant_of", null);
 
     if (productsErr) {
         return new Response(`db_error: ${productsErr.message}`, { status: 500 });

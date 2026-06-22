@@ -12,9 +12,17 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
 
-    const { data: connections } = await supabase
+    const { data: connections, error: connectionsErr } = await supabase
         .from("google_merchant_connections")
         .select("merchant_id, store_code");
+
+    // Échec de lecture DB ≠ « aucun marchand connecté » : sans cette garde, un blip
+    // DB faisait no-op SILENCIEUX pour TOUS les marchands (HTTP 200, aucun Sentry,
+    // aucun statut) = tout le feed Google abandonné sans trace.
+    if (connectionsErr) {
+        captureError(connectionsErr, { cron: "google-feed", step: "load-connections" });
+        return NextResponse.json({ error: "db_error", message: connectionsErr.message }, { status: 500 });
+    }
 
     if (!connections || connections.length === 0) {
         return NextResponse.json({ processed: 0, message: "No Google-connected merchants" });
@@ -41,7 +49,7 @@ export async function POST(req: NextRequest) {
             // GATE : ne pousser à Google QUE les produits réellement publiables
             // (validés, visibles, non archivés, non variantes). Sinon on expose des
             // produits non identifiés sur Google Shopping (faux positif public).
-            const { data: products } = await supabase
+            const { data: products, error: productsErr } = await supabase
                 .from("products")
                 .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity)")
                 .eq("merchant_id", conn.merchant_id)
@@ -50,7 +58,13 @@ export async function POST(req: NextRequest) {
                 .is("archived_at", null)
                 .is("variant_of", null);
 
-            if (!products) continue;
+            // Échec de lecture DB ≠ « marchand sans produit » : un `continue` muet ici
+            // laissait le feed du marchand SILENCIEUSEMENT périmé (aucun statut, aucun
+            // Sentry). On route vers le catch externe (captureError + statut "error").
+            if (productsErr) throw new Error(`products read failed: ${productsErr.message}`);
+            // data null SANS error = état SDK inattendu : lever plutôt que skip muet
+            // (sinon ce cas re-silencerait le feed du marchand si le SDK évoluait).
+            if (!products) throw new Error("products null without error — unexpected SDK state");
 
             const eligible = filterEligibleProducts(products as any);
             const parent = `accounts/${auth.connection.google_merchant_id}`;

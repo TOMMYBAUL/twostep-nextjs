@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 7 (Sortie Google LFP — gate honnête) — PROUVÉ + bug réel corrigé
+
+**Sourcing** : mission §1bis, prochain maillon de la chaîne A après 1→6(read) = maillon 7 « Feed Google »
+(le canal de SORTIE = cœur du north-star « feed Google LFP as a service d'abord »). Les fonctions PURES
+(`buildLfpXml`, `transformProductToGoogle`, `filterFeedEligible`) étaient déjà testées
+(`tests/lib/google/*`). Le trou = le **CHEMIN RÉEL** : le GATE des routes (le SELECT qui décide quels
+produits atteignent le transform), exactement le motif maillon 5/6 + store_code.
+
+**TROUVÉ + CORRIGÉ — bug réel n°1 (faux positif de sortie, divergence Voie A / Voie B)** : les DEUX
+canaux Google filtraient DIFFÉREMMENT. Voie A (cron `google-feed`, Content API) : `visible AND validated
+AND archived_at IS NULL AND variant_of IS NULL`. Voie B (`/api/feed/lfp/[merchantId]`, XML crawlé par
+Google) : `visible AND validated` SEULEMENT. Or `archive_product` (RPC migration 068, granté
+`authenticated`) met `archived_at = now()` SANS toucher `visible` → un produit archivé reste `visible=true`
+→ la Voie B l'annonçait au crawler Google alors que les 6 autres surfaces (by-ean, quality-check,
+pos/status, dashboard, cron, RPC consumer 065) l'excluent. Un produit archivé/supprimé annoncé aux
+acheteurs Google = le catalogue fantôme qui a tué MVMS/Milo. **Vérifié dans le code réel** (LESSONS ~70 %
+de faux findings) : variantes déjà exclues par `visible=false` (`sync-engine:732` pose `variant_of`+`visible:false`
+ensemble) → `.is("variant_of", null)` redondant mais ajouté en PARITÉ défensive (le gate ne doit pas
+dépendre de cette co-occurrence). **FIX** : `.is("archived_at", null).is("variant_of", null)` ajouté au
+SELECT Voie B → les deux canaux émettent le MÊME ensemble (0 migration, pur read-path, réversible).
+
+**TROUVÉ + CORRIGÉ — silent-failures adjacents (revue silent-failure-hunter)** : (Voie A) le SELECT
+`products` avalait son `error` (`const { data: products } = ...` → `if(!products) continue`) = skip
+SILENCIEUX du marchand sur erreur DB (feed périmé, 0 statut, 0 Sentry) → routé vers le catch externe
+(captureError + statut "error") ; `if(!products)` théorique → throw plutôt que skip. (Finding 2, IMPORTANT)
+le SELECT de LISTE `google_merchant_connections` avalait aussi son `error` → un blip DB faisait
+`200 "aucun marchand connecté"` = TOUT le feed abandonné sans trace → `captureError` + `500`. (Finding 3,
+Voie B) erreur DB du SELECT `connections` → fallback store_code par défaut sans trace → `captureError`
+(feed gardé dispo, anomalie visible).
+
+**PREUVE RÉELLE** (`tests/ingest-maillon7-google-feed-gate.test.ts`, +6) : faux client Supabase
+**read-side** qui applique réellement `.eq()/.is()` + `.maybeSingle()` + thenable → on exerce le VRAI gate
+des routes (TDD : 2 tests RED d'abord = produit archivé + variante qui fuitent dans le XML, puis GREEN
+après fix). Couvre : archivé-mais-visible exclu, variante-visible exclue, produit actif passé (non-rég),
+erreur DB products→500 (Voie B), erreur DB products→captureError+statut error (Voie A), erreur DB
+connections→500+captureError (Voie A).
+
+**TESTÉ** : `npm run test:run` → **602/602** vert (était 596, +6), `tsc` OK. Revue silent-failure-hunter :
+3 findings traités (Finding 2 important = le select de liste).
+
+**MÉTRIQUE** : maillon 7 (Sortie Google) — **gate de sortie PROUVÉ honnête + cohérent entre les 2 canaux**
+(bug fantôme corrigé + 3 silent-failures clos). Aucune escalade de décision binaire (tout réversible,
+0 migration). Reste de la chaîne A : maillon 8 (email-in de bout en bout). NB : le câblage `pushInventoryToGoogle`
+sur le file-push reste `[G]` (écriture externe sous le compte Google du marchand — escaladé, hors périmètre boucle).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 6 (Affichage honnête — prix promo) — COMPLÉTÉ + bug réel corrigé
 
 **Sourcing** : mission §1bis plan B = maillon 6 (Affichage) via Playwright sur l'app live. **Contrainte

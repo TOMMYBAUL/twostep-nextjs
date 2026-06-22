@@ -137,7 +137,17 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    **Reste maillon 6 = rendu visuel** (accueil→onboarding→upload→dashboard→vitrine, « grossier vs pro ») →
    **B ci-dessous, à valider par Thomas au navigateur**. Suivi non bloquant : `shop-profile` lit `promotions`
    côté client (hors source unique serveur).
-7. (puis 7 Feed Google, 8 email-in de bout en bout — voir suite.)
+7. ✅ **Sortie Google LFP (gate honnête)** — **PROUVÉ (2026-06-22)**. Preuve réelle
+   `tests/ingest-maillon7-google-feed-gate.test.ts` (+6, faux client read-side qui applique `.eq/.is`) :
+   le GATE des 2 canaux Google (Voie A cron Content API + Voie B XML crawlé) exercé sur le CHEMIN RÉEL,
+   pas juste la fonction pure. **Bug réel corrigé (faux positif de sortie, divergence Voie A/B)** : Voie B
+   filtrait `visible AND validated` seulement vs Voie A `+ archived_at IS NULL + variant_of IS NULL` ;
+   `archive_product` (RPC 068) met `archived_at` SANS toucher `visible` → un produit archivé restait
+   annoncé au crawler Google (catalogue fantôme) → parité de gate (les 2 canaux émettent le MÊME ensemble).
+   3 silent-failures clos (revue silent-failure-hunter) : SELECT products avalé (skip muet du marchand),
+   SELECT de LISTE connections avalé (200 silencieux = tout le feed abandonné), fallback store_code tracé.
+   0 migration, réversible. Reste chaîne A : **maillon 8 (email-in de bout en bout)**. NB : câbler
+   `pushInventoryToGoogle` sur le file-push reste `[G]` (écriture externe sous compte Google marchand — escaladé).
 
 **B — UI réelle (Playwright sur l'app live)** : parcours accueil → onboarding → upload stock →
 dashboard → vitrine + badge confiance. Screenshots. Lister sans complaisance ce qui est

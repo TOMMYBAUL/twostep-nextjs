@@ -139,6 +139,22 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 
+- ❌ **Gate de sortie appliqué de façon INCOHÉRENTE entre deux canaux vers le MÊME tiers** : les
+  deux feeds Google (Voie A cron Content API + Voie B XML crawlé) filtraient différemment. Voie A :
+  `visible AND validated AND archived_at IS NULL AND variant_of IS NULL` ; Voie B : `visible AND
+  validated` seulement. Or `archive_product` (RPC 068, granté authenticated) met `archived_at` SANS
+  toucher `visible` → un produit archivé reste `visible=true` → la Voie B l'annonçait au crawler
+  Google = produit fantôme (le catalogue fantôme qui a tué MVMS/Milo). Les variantes étaient déjà
+  exclues par `visible=false` (redondant) mais le gate ne doit pas DÉPENDRE de cette co-occurrence.
+  **Règle : les N canaux de sortie vers une même plateforme doivent émettre le MÊME ensemble — gate
+  centralisé/identique, vérifié par test de chemin réel (faux client read qui applique `.eq/.is`),
+  pas juste la fonction pure de transformation.** (maillon 7, 2026-06-22, même classe que store_code)
+- ❌ Sur un cron multi-marchand, le SELECT de la LISTE (`google_merchant_connections`) qui avale son
+  `error` est PIRE qu'un select par-marchand avalé : un blip DB → `data=null` → `length===0` →
+  `200 "aucun marchand connecté"` = TOUT le feed Google abandonné, 0 Sentry, 0 statut. **Règle : le
+  read qui décide « rien à traiter » doit distinguer erreur de vide (throw/500 + captureError) — le
+  blast radius d'un select de liste avalé = tous les items.** (Finding 2 silent-failure-hunter, maillon 7)
+
 ## Identifiants externes (clé de jointure côté plateforme tierce)
 - ❌ **Deux chemins de code dérivant le MÊME identifiant externe de sources différentes** créent
   des entités fantômes en double côté plateforme. Cas : le `store_code` Google LFP était
