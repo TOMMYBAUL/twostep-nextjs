@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-22 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-22 (L'Auditeur)*
 
 ## Stats
 - Total leads : 137
@@ -32,6 +32,17 @@
 | BAGWOOD (ALFRED WOOD) | Capitole | Mode homme | Jeffrey/Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — Yelp mis à jour mars 2026 (actif), tél 05 61 12 14 46. 75 rue d'Alsace Lorraine. **Visite terrain.** |
 
 *Note : Notion MCP indisponible (idem toutes sessions précédentes). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-06-22".*
+
+---
+
+## Recap brouillons email — 2026-06-22 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : Bloqué — Gmail MCP indisponible (8ème session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+
+*Note session 22/06 (L'Auditeur) : 0 lead NOUVEAU avec email (45 NOUVEAU, tous sans email — Capitole épuisé définitivement 22/06, Carmes épuisé définitivement 19/06, 208/208 prospects épuisés digitalement). Aucun nouveau brouillon possible. Les 5 emails rédigés le 20/06 restent valides et prêts à envoyer (voir section ci-dessous). **⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 8ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06 → 22/06). Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 5 emails prêts à copier-coller ci-dessous.** Notion MCP indisponible (idem toutes sessions).*
 
 ---
 
