@@ -5,7 +5,7 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
-## 2026-06-23 (run autonome) · PHASE D — item **D1 `[R]` Audit complétude feed Google + `g:sale_price`** PROUVÉ · commit `<à compléter>`
+## 2026-06-23 (run autonome) · PHASE D — item **D1 `[R]` Audit complétude feed Google + `g:sale_price`** PROUVÉ · commit `ecfbd9b`
 
 **Sourcing (§6)** : chaîne A 1→8 COMPLÈTE → Phase D (cerveau priorities.md). Item `[R]` de plus haut
 rang non terminé = **D1**. Trou identifié explicitement par le plan : les **promos ne remontaient sur

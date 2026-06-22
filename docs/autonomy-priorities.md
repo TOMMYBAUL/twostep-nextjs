@@ -192,7 +192,7 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 > traîne FR, (c) les images anti-rejet. **Stock/prix = toujours nous.** Même MÉTHODE (preuve par
 > maillon). Objectif : **être réellement compatibles Google + prêts pour un pilote live**.
 >
-> - ✅ **D1 `[R]` Audit complétude feed Google — PROUVÉ (2026-06-23, commit `<à compléter>`)**.
+> - ✅ **D1 `[R]` Audit complétude feed Google — PROUVÉ (2026-06-23, commit `ecfbd9b`)**.
 >   `g:sale_price`/`salePrice` AJOUTÉ aux 2 voies (trou promo fermé : les promos remontent enfin sur
 >   Google) via helper pur unique `activeFeedSalePrice` (réutilise `honestSalePrice` = source unique du
 >   « vrai rabais » ; promo émise UNIQUEMENT si active [fenêtre `starts_at`/`ends_at`] ET avantageuse ;
