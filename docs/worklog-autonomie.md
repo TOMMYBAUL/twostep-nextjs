@@ -5,6 +5,54 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 5 (Confiance / fraîcheur) — COMPLÉTÉ + bug réel corrigé
+
+**Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 5 (`source`/`source_ts` → label de
+confiance honnête). Les fonctions PURES (`computeStockConfidence`, `productConfidence`,
+`sourceStrengthFromStored`) étaient déjà bien testées. Le trou : le **CHEMIN RÉEL** — comment les 3 routes
+consommatrices (`products/[id]`, `by-ean`, `by-merchants`) lisent `stock.*` en DB et le passent à
+`productConfidence`. C'est exactement le motif « garde cosmétique » (LESSONS) : un paramètre de sécurité
+ajouté par une migration doit être vérifié comme RÉELLEMENT lu par tous les appelants.
+
+**TROUVÉ + CORRIGÉ — bug réel (faux positif de fraîcheur)** : la migration 104 a ajouté `stock.source_ts`
+(heure RÉELLE de l'observation source) SPÉCIFIQUEMENT pour une fraîcheur honnête, et les webhooks le
+remplissent avec l'heure de l'événement (commentaire route shopify : « source_ts = horodatage de la
+vérité source … → confidence 'vu il y a X' honnête »). MAIS les 3 routes passaient `stock.updated_at`
+(heure d'ÉCRITURE DB, bumpée à chaque write) comme `lastEventAt` → la garde était **cosmétique**. Un
+webhook de vente traité avec retard (retry storm / backfill après outage POS) porte `updated_at=now` mais
+`source_ts=heure de la vente` → l'app affichait **« vu à l'instant / Disponible »** pour une vente
+observée des heures plus tôt. C'est précisément le mensonge de fraîcheur (« fraîcheur source_ts vraie »,
+north-star §1) que la confidence existe pour empêcher.
+
+**FIX (réversible, 0 migration, derrière aucun flag — pur read-path d'affichage)** : helper unique
+`stockRowToConfidenceInput(stock)` dans `product-confidence.ts` (mappe une ligne `stock` → {quantity,
+lastEventAt, storedSource}), `source_ts` ajouté aux 3 SELECT, les 3 routes routées par le helper. La
+source unique évite qu'une 4ᵉ route régresse en silence vers `updated_at`.
+
+**PREUVE RÉELLE** (`tests/ingest-maillon5-confidence-freshness.test.ts`, +9) : DIVERGENCE prouvée sur la
+MÊME ligne — ANCIEN câblage (updated_at) → `available` + « vu à l'instant » (mensonge) ; NOUVEAU (source_ts
+via helper) → webhook 30 h de retard = 30 h > limite realtime 24 h → `probable` + « vu il y a 1 j »
+(honnête) ; retard modéré 3 h → reste `available` MAIS « vu il y a 3 h » (pas « à l'instant »). + forme
+tableau PostgREST, stock absent → {0, null, null}, non-régression file_push frais.
+
+**REVUE silent-failure-hunter** sur le diff → SOUND sauf 1 MED : les lignes pré-104 ont `source_ts`
+back-fillé à l'heure de l'ALTER (`DEFAULT now()`, 2026-06-17), plus récent que leur vraie dernière
+observation → surévaluation de fraîcheur. Vérifié en code réel : l'ALTER a aussi back-fillé `source='manual'`
+(plafonné à `probable`, jamais `available`) → impact borné. **Adressé sans migration** : `freshnessTs()`
+PLAFONNE `source_ts` à `updated_at` (on ne peut pas observer la source APRÈS l'avoir écrite ; un `source_ts`
+postérieur est toujours un artefact migration/dérive d'horloge → on prend le plus ANCIEN, prudent). Le cas
+honnête (source_ts < updated_at) renvoie bien source_ts. +1 test du plafonnement.
+
+**TESTÉ** : `npm run test:run` → 587/587 vert, `tsc` OK.
+
+**MÉTRIQUE** : maillon 5 (Confiance/fraîcheur) **prouvé COMPLET** (chemin réel câblé + divergence prouvée +
+bug de fraîcheur corrigé). Chaîne data A : maillons 1→5 tous ✅. Prochain : **B — UI réelle (Playwright sur
+l'app live)** = maillon 6 (Affichage) prouvé pour de vrai (accueil → onboarding → upload → dashboard →
+vitrine + badge confiance), screenshots, liste sans complaisance du « grossier » vs pro. Aucune escalade
+(travail 100 % réversible).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 4 (Réconciliation de décrémentation) — COMPLÉTÉ
 
 **Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 4 (Réconciliation : article absent

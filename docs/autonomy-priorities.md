@@ -117,7 +117,16 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    globale (`/api/products/available-sizes`, gate visible-only, lit `available_sizes.quantity` PAS le
    total stock) affichaient des **pointures fantômes « disponibles »** ; fix : vidage `available_sizes:[]`
    batché dans le write de réconciliation (non bloquant, captureError). Revue silent-failure-hunter : SOUND.
-5. ⬜ **Confiance / fraîcheur** — `source`/`source_ts` → label de confiance honnête. Preuve.
+5. ✅ **Confiance / fraîcheur** — **COMPLET (2026-06-22)**. Preuve réelle
+   `tests/ingest-maillon5-confidence-freshness.test.ts` (+9) : le CHEMIN RÉEL (3 routes `products/[id]`,
+   `by-ean`, `by-merchants` → `productConfidence`) câblé sur `source_ts`. **Bug réel corrigé (faux positif
+   de fraîcheur, motif « garde cosmétique »)** : les 3 routes passaient `stock.updated_at` (heure d'ÉCRITURE
+   DB) au lieu de `stock.source_ts` (heure RÉELLE de l'observation, migration 104, rempli par les webhooks
+   avec l'heure de l'événement) → un webhook traité avec retard affichait « vu à l'instant / Disponible »
+   pour une vente observée des heures plus tôt. Fix : helper unique `stockRowToConfidenceInput` (source
+   unique anti-régression) + `source_ts` aux 3 SELECT. Revue silent-failure-hunter : 1 MED (lignes pré-104
+   `source_ts=DEFAULT now()` surévalue) **adressé sans migration** via `freshnessTs()` qui PLAFONNE source_ts
+   à updated_at (artefact = on prend le plus ancien). 587 tests verts. → **Chaîne data A : maillons 1→5 ✅.**
 6. (puis 6 Affichage, 7 Feed Google, 8 email-in de bout en bout — voir B + suite.)
 
 **B — UI réelle (Playwright sur l'app live)** : parcours accueil → onboarding → upload stock →

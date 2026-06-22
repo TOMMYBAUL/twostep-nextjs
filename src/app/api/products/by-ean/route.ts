@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
-import { productConfidence } from "@/lib/stock/product-confidence";
+import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
 
 const EAN_REGEX = /^[0-9]{8,14}$/;
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     const { data: merchantHit } = await supabase
         .from("products")
-        .select("id, slug, name, canonical_name, brand, category, photo_url, photo_processed_url, price, ean, pos_item_id, stock(quantity, updated_at, source)")
+        .select("id, slug, name, canonical_name, brand, category, photo_url, photo_processed_url, price, ean, pos_item_id, stock(quantity, updated_at, source, source_ts)")
         .eq("ean", ean)
         .eq("merchant_id", merchant.id)
         .is("archived_at", null)
@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
 
     if (merchantHit) {
         // RLS : le marchand lit son propre jeton d'ingestion et ses signalements.
-        const s = (merchantHit as any).stock;
-        const stockRow = Array.isArray(s) ? s[0] : s;
+        const stockInput = stockRowToConfidenceInput((merchantHit as any).stock);
         const [{ data: ingest }, { count: reportCount }] = await Promise.all([
             supabase.from("ingest_credentials").select("merchant_id").eq("merchant_id", merchant.id).maybeSingle(),
             supabase
@@ -62,9 +61,7 @@ export async function GET(request: NextRequest) {
                 .gte("created_at", reportsWindowStartIso()),
         ]);
         const confidence = productConfidence({
-            quantity: stockRow?.quantity ?? 0,
-            lastEventAt: stockRow?.updated_at ?? null,
-            storedSource: stockRow?.source ?? null,
+            ...stockInput,
             posItemId: (merchantHit as any).pos_item_id ?? null,
             merchantHasIngest: !!ingest,
             recentNotInStoreReports: reportCount ?? 0,

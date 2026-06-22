@@ -64,6 +64,19 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Writes du rollup rendus non silencieux (captureError sans lever : stock déjà committé, lever
   rejouerait le webhook = double-décrément delta). (2026-06-20)
 
+- ❌ **Garde cosmétique côté LECTURE** : la 104 a ajouté `stock.source_ts` (heure RÉELLE de
+  l'observation) « pour une confidence honnête » et les webhooks le remplissent avec l'heure de
+  l'événement — MAIS les 3 routes d'affichage passaient `stock.updated_at` (heure d'ÉCRITURE DB)
+  à `productConfidence`. Un webhook traité en retard (retry/outage) → `updated_at=now` →
+  « vu à l'instant / Disponible » pour une vente observée des heures plus tôt = faux positif de
+  fraîcheur. **Règle (symétrique au write) : une colonne ajoutée par une migration "pour X honnête"
+  doit être vérifiée comme RÉELLEMENT LUE par tous les consommateurs** — sinon la migration est
+  cosmétique. Fix : helper unique `stockRowToConfidenceInput` (source unique anti-régression d'un
+  4ᵉ caller) + `source_ts` aux SELECT. **Invariant de fraîcheur** : `freshnessTs` PLAFONNE source_ts
+  à updated_at — on ne peut pas observer la source APRÈS l'écriture DB ; un `source_ts` postérieur est
+  toujours un artefact (DEFAULT now() de l'ALTER sur lignes back-fillées, dérive d'horloge) → prendre
+  le plus ANCIEN. (maillon 5, 2026-06-22, revue silent-failure-hunter)
+
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **Branches JUMELLES CREATE/UPDATE traitant le même write de façon ASYMÉTRIQUE** : dans
   `ingestStockSnapshot`, la branche UPDATE vérifiait `stockErr` mais la branche CREATE faisait
