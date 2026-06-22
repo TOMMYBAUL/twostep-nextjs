@@ -5,6 +5,52 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · Rang 3 [R] — **Hot path facture→catalogue/stock (`POST invoices/[id]/validate`) durci : 7 pertes silencieuses réelles fermées + 1er test du chemin** · commit `<à compléter>`
+
+**Sourcing (§6)** : chaîne A 1→8 COMPLÈTE, haut du backlog [G]/[X] → couverture hot path manquante.
+Trouvé que la route `validate` (CRÉE produits + ÉCRIT stock `source:"invoice"` = marchandise reçue)
+n'avait **AUCUN test** et portait plusieurs pertes silencieuses, toutes du motif déjà connu (maillons 2/8 :
+`const { data } = …` qui avale `error` → vide indistinct d'échec → perte/écrasement silencieux).
+
+**TROUVÉ + CORRIGÉ (vérifié dans le code réel, 0 migration, réversible)** :
+1. **Insert produit avalé** (`insertErr` destructuré mais `console.log` dev-only) → un produit de facture
+   qui échoue à l'insert était DROPPÉ en silence (0 stock, 0 lien, 0 compteur) alors que la facture
+   finissait « validée ». → branche `else` : `captureError` + `errors[]`.
+2. **Lecture `currentStock` avalée** (exact match) → `data=null` indistinct de « pas de stock » → l'upsert
+   ÉCRASAIT la qté réelle existante par la seule qté facture (read-modify-write corrompu = perte de stock).
+   → sur erreur : `captureError` + **skip de l'upsert** (préservation), jamais d'écrasement.
+3. **Lecture `available_sizes` avalée** (×2 : exact match + branche même-batch) → même écrasement, mais des
+   **tailles** réelles par la liste partielle de la facture. → sur erreur : préservation + Sentry.
+4. **Inserts/upserts stock non vérifiés** (création + match + `stock_incoming`) → `stock_updated` comptait
+   des écritures en échec (faux succès). → comptage **par succès réel** + `captureError` par échec.
+5. **MAJ statut facture non vérifiée** → 200 « validée » mais statut périmé en base (et re-validate jamais
+   déclenché). → `captureError` + `errors[]`.
+6. **`catch {}` global sans `captureError`** → tout crash de ce hot path invisible en prod. → `captureError`.
+
+**REVUE OBLIGATOIRE** `silent-failure-hunter` (diff pipeline) : mes 4 premiers fixes jugés **SOUND**
+(capture-and-continue correct : re-validate re-converge sans double-comptage car l'écriture en échec n'a PAS
+eu lieu — vérifié branche par branche). A surfacé 3 HIGH adjacents du MÊME motif (available_sizes ×2 +
+statut facture) → **tous corrigés dans le run**. Findings LOW (feed_events, lectures merchant/invoice→404)
+laissés (observabilité, 0 perte data, anti scope-creep).
+
+**PREUVE RÉELLE** (`tests/invoice-validate-writes.test.ts`, +8) : on drive la VRAIE route POST avec un faux
+client Supabase **qui enregistre les écritures** et permet d'INJECTER des erreurs ciblées. Couvre : happy
+path (stock écrit `source:invoice`) ; insert produit échoué → pas de drop (captureError + errors, 0 stock
+fantôme) ; exact match → stock **ajouté** (5+3=8, pas écrasé par 3) ; lecture stock échouée → pas de wipe ;
+insert stock création échoué → non compté + Sentry ; lecture available_sizes échouée → tailles préservées ;
+MAJ statut échouée → erreur visible ; crash → captureError + 500. Chaque assertion échouerait sur l'ancien code.
+
+**TESTÉ** : `npm run test:run` → **632/632** vert (était 624, +8), `tsc` OK.
+
+**MÉTRIQUE** : 1 hot path d'écriture stock majeur (facture) passe de **0 test + 7 pertes silencieuses** à
+**prouvé + durci**. Couverture des chemins critiques (métrique-garde-fou) qui MONTE. Aucune escalade (tout
+réversible, 0 migration). **Reste / suivi non bloquant** (vérifiés réels, pour run futur, pas dans ce diff) :
+re-validate d'une facture déjà « validated » N'EST PAS idempotent sur le stock (read-modify-write add) → un
+double-validate double-compte (pré-existant, orthogonal au silent-failure ; gate UI = passage en `imported`
+bloque, mais `validated` re-validatable) ; feed_events inserts non vérifiés (visibilité consumer, LOW).
+
+---
+
 ## 2026-06-22 (run autonome) · Rang 3 [R] — **Vérif SIRET honnête** (fin du faux positif « vérifié » silencieux) + 3 silent-failures · commit `4a03ca4`
 
 **Sourcing (§6)** : chaîne A 1→8 COMPLÈTE → sourcing par signaux sur le backlog Rang 3 `[R]`.

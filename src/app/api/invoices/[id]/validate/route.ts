@@ -110,6 +110,13 @@ export async function POST(
     let productsUpdated = 0;
     let stockUpdated = 0;
     let fuzzyMatched = 0;
+    // Compteur d'échecs RENDUS VISIBLES (north-star « ne rien perdre silencieusement ») :
+    // une facture = marchandise REÇUE ; un produit/stock qu'on n'arrive pas à écrire ne
+    // doit JAMAIS disparaître en silence derrière un statut « validée ». On accumule, on
+    // remonte à Sentry, et on l'expose dans la réponse (le marchand voit que tout n'est
+    // pas passé). Pas de throw : les écritures déjà faites dans le batch restent valides
+    // et un re-validate re-converge (le produit manquant sera créé/matché au prochain run).
+    const errors: string[] = [];
     const productsToEnrich: { ean: string | null; sku: string | null; productId: string }[] = [];
 
     const validItems = invoice.invoice_items.filter(
@@ -194,40 +201,66 @@ export async function POST(
                 ...(firstEan && { ean: firstEan }),
             };
 
-            // Merge all sizes from this group into available_sizes
+            // Merge all sizes from this group into available_sizes.
+            // MÊME CLASSE que la lecture stock : si la lecture des tailles existantes échoue,
+            // `data=null` était indistinct de « aucune taille » → le merge ÉCRASAIT les tailles
+            // réelles par la seule liste de cette facture (perte de tailles silencieuse). On
+            // distingue erreur de vide : sur erreur, on REMONTE et on N'ÉCRIT PAS available_sizes
+            // (préservation) ; le re-validate re-fusionnera.
             if (allSizes.length > 0) {
-                const { data: existingProduct } = await supabase
+                const { data: existingProduct, error: sizesReadErr } = await supabase
                     .from("products")
                     .select("available_sizes")
                     .eq("id", match.productId)
                     .single();
 
-                const existingSizes: { size: string; quantity: number }[] = existingProduct?.available_sizes ?? [];
-                // Merge sizes as {size, quantity} objects (not raw strings)
-                const sizeMap = new Map(existingSizes.map((s: any) => [typeof s === "string" ? s : s.size, typeof s === "object" ? s.quantity : 0]));
-                for (const gi of groupItems) {
-                    if (gi._size) {
-                        sizeMap.set(gi._size, (sizeMap.get(gi._size) ?? 0) + gi.quantity);
+                if (sizesReadErr) {
+                    errors.push(`Sizes read ${cleanName}: ${sizesReadErr.message}`);
+                    captureError(sizesReadErr, { context: "invoices-validate-sizes-read", merchantId: merchant.id, productId: match.productId });
+                } else {
+                    const existingSizes: { size: string; quantity: number }[] = existingProduct?.available_sizes ?? [];
+                    // Merge sizes as {size, quantity} objects (not raw strings)
+                    const sizeMap = new Map(existingSizes.map((s: any) => [typeof s === "string" ? s : s.size, typeof s === "object" ? s.quantity : 0]));
+                    for (const gi of groupItems) {
+                        if (gi._size) {
+                            sizeMap.set(gi._size, (sizeMap.get(gi._size) ?? 0) + gi.quantity);
+                        }
                     }
+                    updateFields.available_sizes = Array.from(sizeMap.entries()).map(([size, quantity]) => ({ size, quantity }));
                 }
-                updateFields.available_sizes = Array.from(sizeMap.entries()).map(([size, quantity]) => ({ size, quantity }));
             }
 
             await adminSupabase.from("products").update(updateFields).eq("id", match.productId);
 
-            // Add stock directly (invoice = goods received)
+            // Add stock directly (invoice = goods received).
+            // read-modify-write : on LIT la qté courante pour AJOUTER la marchandise reçue.
+            // Si la lecture échoue (blip DB), `data=null` était indistinct de « pas de stock »
+            // → l'upsert ÉCRASAIT la qté réelle existante par la seule qté facture = perte
+            // silencieuse de stock. On distingue donc erreur de vide : sur erreur, on REMONTE
+            // (captureError) et on N'ÉCRASE PAS (skip de l'upsert) ; le re-validate ré-ajoutera.
             const matchTotalQty = groupItems.reduce((sum, gi) => sum + gi.quantity, 0);
-            const { data: currentStock } = await adminSupabase
+            const { data: currentStock, error: currentStockErr } = await adminSupabase
                 .from("stock")
                 .select("quantity")
                 .eq("product_id", match.productId)
                 .maybeSingle();
-            await adminSupabase.from("stock").upsert({
-                product_id: match.productId,
-                quantity: (currentStock?.quantity ?? 0) + matchTotalQty,
-                source: "invoice",
-                source_ts: new Date().toISOString(),
-            });
+            if (currentStockErr) {
+                errors.push(`Stock read ${cleanName}: ${currentStockErr.message}`);
+                captureError(currentStockErr, { context: "invoices-validate-stock-read", merchantId: merchant.id, productId: match.productId });
+            } else {
+                const { error: stockUpsertErr } = await adminSupabase.from("stock").upsert({
+                    product_id: match.productId,
+                    quantity: (currentStock?.quantity ?? 0) + matchTotalQty,
+                    source: "invoice",
+                    source_ts: new Date().toISOString(),
+                });
+                if (stockUpsertErr) {
+                    errors.push(`Stock ${cleanName}: ${stockUpsertErr.message}`);
+                    captureError(stockUpsertErr, { context: "invoices-validate-stock-upsert", merchantId: merchant.id, productId: match.productId });
+                } else {
+                    stockUpdated += groupItems.length;
+                }
+            }
 
             for (const gi of groupItems) {
                 await adminSupabase
@@ -241,7 +274,6 @@ export async function POST(
             }
 
             productsUpdated++;
-            stockUpdated += groupItems.length;
 
             // Feed event for restock
             await adminSupabase.from("feed_events").insert({
@@ -269,20 +301,35 @@ export async function POST(
             // (another group with slightly different name might have matched)
             const existingBatchId = createdInThisBatch.get(groupKey);
             if (existingBatchId) {
-                // Just add sizes and stock to the already-created product
+                // Just add sizes and stock to the already-created product.
+                // Lecture des tailles existantes : même garde anti-écrasement que ci-dessus.
                 if (allSizes.length > 0) {
-                    const { data: p } = await supabase
+                    const { data: p, error: pErr } = await supabase
                         .from("products").select("available_sizes").eq("id", existingBatchId).single();
-                    const merged = [...new Set([...(p?.available_sizes ?? []), ...allSizes])];
-                    await adminSupabase.from("products").update({ available_sizes: merged }).eq("id", existingBatchId);
+                    if (pErr) {
+                        errors.push(`Sizes read ${cleanName}: ${pErr.message}`);
+                        captureError(pErr, { context: "invoices-validate-sizes-read", merchantId: merchant.id, productId: existingBatchId });
+                    } else {
+                        const merged = [...new Set([...(p?.available_sizes ?? []), ...allSizes])];
+                        await adminSupabase.from("products").update({ available_sizes: merged }).eq("id", existingBatchId);
+                    }
                 }
+                // stock_incoming = marchandise reçue en attente : un insert échoué qui était
+                // avalé + compté (stockUpdated++) = faux succès. On compte par succès réel.
+                let incomingOk = 0;
                 for (const gi of groupItems) {
-                    await adminSupabase.from("stock_incoming").insert({
+                    const { error: incErr } = await adminSupabase.from("stock_incoming").insert({
                         product_id: existingBatchId, quantity: gi.quantity, invoice_id: id, status: "incoming",
                     });
+                    if (incErr) {
+                        errors.push(`Stock incoming ${cleanName}: ${incErr.message}`);
+                        captureError(incErr, { context: "invoices-validate-stock-incoming", merchantId: merchant.id, productId: existingBatchId });
+                    } else {
+                        incomingOk++;
+                    }
                     await adminSupabase.from("invoice_items").update({ product_id: existingBatchId, status: "validated" }).eq("id", gi.id);
                 }
-                stockUpdated += groupItems.length;
+                stockUpdated += incomingOk;
                 continue;
             }
 
@@ -327,9 +374,19 @@ export async function POST(
             if (newProduct) {
                 createdInThisBatch.set(groupKey, newProduct.id);
 
-                // Stock = total quantity from all sizes in this group
+                // Stock = total quantity from all sizes in this group.
+                // SYMÉTRIE avec ingest/snapshot : un produit créé dont l'insert stock échoue
+                // resterait SANS ligne stock → lu « 0 » en aval = perte silencieuse de la qté.
+                // On rend l'échec visible (erreurs + Sentry) sans throw (le produit existe ;
+                // le prochain validate le matchera en UPDATE et ré-écrira le stock).
                 const totalQty = groupItems.reduce((sum, gi) => sum + gi.quantity, 0);
-                await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: totalQty, source: "invoice", source_ts: new Date().toISOString() });
+                const { error: newStockErr } = await adminSupabase.from("stock").insert({ product_id: newProduct.id, quantity: totalQty, source: "invoice", source_ts: new Date().toISOString() });
+                if (newStockErr) {
+                    errors.push(`Stock (création) ${cleanName}: ${newStockErr.message}`);
+                    captureError(newStockErr, { context: "invoices-validate-create-stock", merchantId: merchant.id, productId: newProduct.id });
+                } else {
+                    stockUpdated += groupItems.length;
+                }
 
                 // Update each invoice item
                 for (const gi of groupItems) {
@@ -344,18 +401,32 @@ export async function POST(
                 });
 
                 productsCreated++;
-                stockUpdated += groupItems.length;
 
                 // Collect products for post-response enrichment
                 productsToEnrich.push({ ean: firstEan, sku: firstSku, productId: newProduct.id });
+            } else {
+                // insertErr était destructuré mais JAMAIS remonté (console.log dev only) :
+                // un produit de facture (marchandise reçue) qui échoue à l'insert disparaissait
+                // en SILENCE — 0 stock, 0 invoice_item lié, 0 compteur, facture quand même
+                // marquée « validée ». On le rend VISIBLE (erreurs + Sentry). Pas de throw : on
+                // ne perd pas les produits déjà écrits dans le batch ; le re-validate re-tente.
+                errors.push(`Create ${cleanName}: ${insertErr?.message ?? "insert returned no row"}`);
+                captureError(insertErr ?? new Error(`Product insert returned no row: ${cleanName}`), { context: "invoices-validate-create-product", merchantId: merchant.id });
             }
         }
     }
 
-    await adminSupabase
+    // Si cette MAJ échoue en silence, la réponse 200 dit « validée » mais la facture
+    // reste à son ancien statut en base → état UI périmé ET le re-validate ne sera pas
+    // déclenché correctement. On rend l'échec visible (Sentry + errors).
+    const { error: statusErr } = await adminSupabase
         .from("invoices")
         .update({ status: "validated", validated_at: new Date().toISOString() })
         .eq("id", id);
+    if (statusErr) {
+        errors.push(`Invoice status: ${statusErr.message}`);
+        captureError(statusErr, { context: "invoices-validate-status", invoiceId: id, merchantId: merchant.id });
+    }
 
     // Enrichment cascade — orchestrated by the unified resolveAndEnrich module.
     // Cascade: EAN → SKU match → reverse search → Serper photo fallback.
@@ -385,13 +456,29 @@ export async function POST(
         captureError(err, { context: "invoices-validate-group-variants", merchantId: merchant.id });
     }
 
+    // Un échec d'écriture survenu en cours de batch est RENDU VISIBLE (déjà remonté à
+    // Sentry plus haut) : on le signale au marchand plutôt que de présenter un succès
+    // total trompeur derrière le statut « validée ».
+    if (errors.length > 0) {
+        captureError(new Error(`Invoice validate partial: ${errors.length} write error(s)`), {
+            context: "invoices-validate-partial",
+            invoiceId: id,
+            merchantId: merchant.id,
+            errors: errors.slice(0, 20),
+        });
+    }
+
     return NextResponse.json({
         products_created: productsCreated,
         products_updated: productsUpdated,
         stock_updated: stockUpdated,
         pending_review: fuzzyMatched,
+        ...(errors.length > 0 && { errors }),
     });
-    } catch {
+    } catch (err) {
+        // Le catch global avalait l'erreur (500 sans trace) → tout crash inattendu de ce
+        // hot path (écriture produit/stock d'une facture) était INVISIBLE en prod. Remonté.
+        captureError(err, { context: "invoices-validate" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

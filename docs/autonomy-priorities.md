@@ -289,6 +289,13 @@ software qui débloque sa moitié à lui.
   LÈVE sur erreur DB (≠ produit non suivi, sinon MAJ stock temps réel perdue + 200 OK silencieux) ;
   idempotence `webhook_events` check+insert non avalés (sinon double-décrément delta) ; inserts
   `feed_events` + lookup Google merchant des 4 routes en `captureError`. +4 tests, 2 revues SOUND.
+  **Partiel (run 2026-06-22 soir)** : **hot path facture→catalogue/stock couvert** —
+  `POST invoices/[id]/validate` (CRÉE produits + ÉCRIT stock `source:"invoice"`) n'avait **0 test** et portait
+  **7 pertes silencieuses réelles** (insert produit avalé → drop ; lecture stock/available_sizes avalée →
+  écrasement par valeur partielle ; writes stock non vérifiés → faux succès ; MAJ statut + `catch{}` global
+  sans Sentry). Toutes fermées (`captureError` + champ `errors`, comptage par succès réel, préservation sur
+  lecture en échec). `tests/invoice-validate-writes.test.ts` (+8). Revue silent-failure-hunter : 4 fixes SOUND
+  + 3 HIGH adjacents corrigés. Suivi non bloquant : re-validate non idempotent sur stock (pré-existant).
   **Partiel (run 2026-06-21 soir)** : **contrat d'orchestration `syncMerchantPOS` verrouillé**
   (`tests/pos-sync-engine-orchestrator.test.ts`, +5 tests, 0 prod-code) — invariant north-star
   « jamais un `success` silencieux quand un fetch/write échoue ; un hoquet POS transitoire

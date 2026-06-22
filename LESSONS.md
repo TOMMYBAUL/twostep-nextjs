@@ -78,6 +78,22 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   le plus ANCIEN. (maillon 5, 2026-06-22, revue silent-failure-hunter)
 
 ## Silent-failure : rendre un write « non silencieux »
+- ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
+  `invoices/[id]/validate` (facture = marchandise reçue) : `const { data: currentStock } = …` puis
+  `upsert(quantity = (currentStock?.quantity ?? 0) + facture)` → un blip DB sur la lecture rendait
+  `data=null` indistinct de « pas de stock » → l'upsert ÉCRASAIT la qté réelle par la seule qté facture
+  (perte de stock). MÊME motif sur la lecture `available_sizes` (tailles réelles écrasées par la liste
+  partielle de la facture). **Règle : dans un read-modify-write, une lecture qui échoue ≠ valeur vide →
+  distinguer (`error`) et, sur erreur, NE PAS écrire (préserver l'existant) + `captureError` ; le re-run
+  re-fusionne.** Idem : un `insertErr` destructuré mais seulement `console.log` (dev) = produit droppé en
+  silence (facture quand même « validée ») → branche `else` qui remonte ; compteur (`stock_updated`) compté
+  **par succès réel**, jamais sur une écriture en échec. (route validate, 2026-06-22, revue silent-failure-hunter)
+- ⚠️ **Capture-and-continue n'est sûr que si le re-run re-converge SANS double-comptage** — vrai ici car
+  l'écriture en échec n'a PAS eu lieu (le re-validate la re-tente une 1re fois). MAIS un re-validate d'une
+  facture déjà entièrement « validated » double-compte le stock (read-modify-write add non idempotent) :
+  silent-failure ≠ idempotence ; vérifier les DEUX, ne pas conclure « ré-exécutable » sans tracer le cas succès.
+
+## Silent-failure : rendre un write « non silencieux » (suite)
 - ❌ **Branches JUMELLES CREATE/UPDATE traitant le même write de façon ASYMÉTRIQUE** : dans
   `ingestStockSnapshot`, la branche UPDATE vérifiait `stockErr` mais la branche CREATE faisait
   `await admin.from("stock").upsert(...)` SANS capturer l'erreur → un produit créé dont l'upsert
