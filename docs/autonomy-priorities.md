@@ -404,6 +404,28 @@ Thomas LIT WhatsApp/Telegram. Quand le prochain item à plus forte valeur est `[
    escaladé/externe → l'écrire franchement et RECOMMANDER de réduire la cadence des runs
    (la valeur est alors chez Thomas, pas dans plus de runs). Ne pas fabriquer du travail.
 
+### 5bis. ⭐ SCORECARD DE FIN DE RUN (obligatoire — Thomas le reçoit sur WhatsApp/Telegram)
+À CHAQUE run qui produit du travail, **s'auto-noter HONNÊTEMENT** (une note basse est un SIGNAL
+utile, pas un échec ; Thomas/Claude-supervisé audite). 5 axes, **note 1-5** :
+1. **Preuve** : 1 = « tests verts » seulement ; 5 = sortie RÉELLE inspectée champ par champ sur une
+   entrée sale (la méthode §1bis).
+2. **Sécurité north-star** : 1 = risque de faux positif / perte silencieuse non vérifié ;
+   5 = revue silent-failure-hunter SOUND, aucun faux positif/perte introduit.
+3. **Réversibilité** : 1 = irréversible (migration appliquée…) ; 5 = `git revert` propre, 0 migration.
+4. **Discipline de scope** : 1 = >20 fichiers ou hors-sujet ; 5 = 1 unité ciblée.
+5. **Alignement north-star** : 1 = busywork ; 5 = avance directement la data exacte / le pilote.
+
+**+ Métriques OBJECTIVES** (faits, pas auto-flatterie) :
+- tests : total + delta (`X→Y`) ; **bugs réels** trouvés+corrigés ce run ; **fichiers touchés**.
+- **Change-failure-rate roulant** : lire `logs/cost-ledger.txt`, sur les **10 derniers runs**
+  calculer le % avec `exit=0` ET un commit (+ nb de reverts détectés dans le `git log`). C'est
+  le chiffre non-gameable de fiabilité de la boucle.
+
+**Sortie** : (a) bloc scorecard complet dans l'entrée `worklog-autonomie.md` du run ; (b) version
+COMPACTE **en append dans `logs/notify-extra.txt`** (le wrapper l'envoie à Thomas sur WhatsApp +
+Telegram puis le vide). Format compact :
+`[NOTE <date>] Preuve x | Secu x | Rev x | Scope x | Align x || tests A->B | N bug(s) reel(s) | F fichiers | CFR 10 runs: P% OK`
+
 ---
 
 ## 6. Sourcing du travail — par SIGNAUX, pas par devinette
