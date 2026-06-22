@@ -342,6 +342,24 @@ export async function ingestStockSnapshot(
                         continue;
                     }
                     stockZeroed += batch.length;
+                    // Honnêteté d'affichage : un produit DÉCRÉMENTÉ à 0 (sorti de
+                    // l'export = épuisé) garde sinon son `available_sizes` JSON avec
+                    // des quantités positives périmées → la fiche produit afficherait
+                    // encore des pointures « disponibles » et la facette de tailles
+                    // globale (`/api/products/available-sizes`, gate visible-only) un
+                    // chip fantôme. La liste discover filtre déjà sur stock>0, mais
+                    // la fiche/facette lisent `available_sizes.quantity`, pas le total.
+                    // On vide donc les tailles des produits passés à 0 (restauré au
+                    // prochain push qui les contient). Non bloquant (le stock=0 est
+                    // l'essentiel) mais jamais avalé. `[]` = sentinelle vide du schéma.
+                    const { error: sizesZeroErr } = await admin
+                        .from("products")
+                        .update({ available_sizes: [] })
+                        .in("id", batch);
+                    if (sizesZeroErr) {
+                        errors.push(`Réconciliation available_sizes (lot de ${batch.length}): ${sizesZeroErr.message}`);
+                        captureError(sizesZeroErr, { lib: "ingest/snapshot", phase: "reconcile-available-sizes", merchantId });
+                    }
                     const { error: feedErr } = await admin.from("feed_events").insert(
                         batch.map((pid) => ({
                             merchant_id: merchantId,

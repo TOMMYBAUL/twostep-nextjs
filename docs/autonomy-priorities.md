@@ -103,8 +103,20 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    (c) cross-canal EAN (produit POS EAN-13 ↔ fichier UPC-12 → UPDATE) ; (d) SKU casse-insensible
    (`ts-0042` ↔ `TS-0042`) ; (e) match par NOM quand l'identité a changé ; (f) intra-push même EAN
    sur 2 libellés → 1 seul produit. Diff **test-only** (0 code prod) → pas de surface silent-failure.
-4. ⬜ **Réconciliation** — article absent du snapshot → **stock 0** (vendu), jamais d'écrasement
-   silencieux. Preuve.
+4. ✅ **Réconciliation** — **COMPLET (2026-06-22)**. Preuve réelle `tests/ingest-maillon4-reconcile.test.ts`
+   (+8, faux client Supabase stateful) : CSV FR sale → ingest AVEC ÉCRITURES, `stock`/`products`/
+   `feed_events` inspectés champ par champ. (a) **décrémentation honnête** : un article en stock ABSENT
+   du push passe à `quantity:0`, `source:"file_push"` (le push décide l'épuisement, pas la source
+   périmée), `source_ts` rafraîchi, `feed_events out_of_stock` émis ; le PRÉSENT garde sa qté (REPLACE),
+   jamais touché. (b) **GARDE-FOU zéro écrasement silencieux** : fichier tronqué (<50 % d'un catalogue
+   ≥10) → réconciliation ANNULÉE, **12/12 stocks préservés**, erreur visible ; idem push 0-ligne-
+   exploitable (illisible) → annulé, stock préservé. (c) **rupture déclarée** (qty 0 au fichier) passe
+   par l'UPDATE (touched), pas par la réconciliation → pas de double comptage. **Bug réel adjacent
+   corrigé** (faux positif d'affichage) : un produit sized décrémenté à 0 gardait son `available_sizes`
+   JSON avec des qtés positives → la fiche produit (`product-detail.tsx`) + la facette de tailles
+   globale (`/api/products/available-sizes`, gate visible-only, lit `available_sizes.quantity` PAS le
+   total stock) affichaient des **pointures fantômes « disponibles »** ; fix : vidage `available_sizes:[]`
+   batché dans le write de réconciliation (non bloquant, captureError). Revue silent-failure-hunter : SOUND.
 5. ⬜ **Confiance / fraîcheur** — `source`/`source_ts` → label de confiance honnête. Preuve.
 6. (puis 6 Affichage, 7 Feed Google, 8 email-in de bout en bout — voir B + suite.)
 

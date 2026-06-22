@@ -150,6 +150,14 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   `insert/update/upsert` (upsert onConflict, update-by-id) → on inspecte la table résultante (count
   + champs). C'est le seul moyen de prouver l'idempotence (re-push → 0 créé) et le dédoublonnage
   cross-canal/intra-push. Vaut pour tous les maillons à écriture (3→8). (`ingest-maillon3-match`, 2026-06-22)
+- ❌ **Décrémentation à 0 qui ne nettoie PAS les champs dérivés d'affichage** : la réconciliation
+  snapshot mettait `stock.quantity=0` pour un produit absent du push (vendu) MAIS laissait
+  `products.available_sizes` avec des qtés positives périmées. La liste discover gate sur stock>0
+  (donc disparaît), mais la **fiche produit** + la **facette tailles globale** lisent
+  `available_sizes.quantity` indépendamment du total stock → pointures fantômes « disponibles » =
+  faux positif d'affichage. **Règle : quand un write met une valeur autoritaire à 0/épuisé, vider
+  AUSSI les champs dérivés que des READ consomment séparément** (ici `available_sizes:[]` batché dans
+  la réconciliation). Restauré au prochain push qui contient le produit. (maillon 4, 2026-06-22)
 - ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
 
 ## Git / hooks

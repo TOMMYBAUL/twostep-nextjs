@@ -5,6 +5,49 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 4 (Réconciliation de décrémentation) — COMPLÉTÉ
+
+**Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 4 (Réconciliation : article absent
+du snapshot → stock 0, jamais d'écrasement silencieux). Constat : le helper PUR (`selectProductsToZero`,
+`chunk`) était bien testé en isolation (`ingest-reconcile.test.ts`), mais le **CHEMIN D'ÉCRITURE réel**
+à travers `ingestStockSnapshot` (qui zéroe vraiment, émet `feed_events`, applique la source) n'était
+JAMAIS prouvé de bout en bout. Trou comblé + un bug réel d'affichage trouvé en route.
+
+**FAIT — PREUVE RÉELLE** (`tests/ingest-maillon4-reconcile.test.ts`, +8, faux client stateful comme
+maillon 3) : CSV FR sale → `parseStockFile` → `ingestStockSnapshot` AVEC ÉCRITURES → `stock`/`products`/
+`feed_events` inspectés champ par champ (sorties loggées) :
+- **(a) décrémentation honnête** : catalogue {Nutella 6, Sneaker 3}, push ne contenant QUE le Nutella →
+  Sneaker (absent = vendu) passe à `quantity:0`, `source:"file_push"` (le push décide l'épuisement, PAS
+  la `pos_sync`/source périmée qui mentirait « en stock »), `source_ts` rafraîchi (≠ valeur seed),
+  `feed_events out_of_stock` émis ; Nutella (présent) gardé à 5 (REPLACE), jamais touché par la réconcil.
+- **(b) GARDE-FOU « zéro écrasement silencieux »** (le cœur du maillon) : un fichier tronqué couvrant
+  17 % d'un catalogue de 12 (≥ `minCatalogForGuard`) → `reconcile_skipped:true`, **`stock_zeroed:0`,
+  12/12 stocks restent à 5**, erreur « push probablement partiel, réconciliation annulée » visible.
+  Idem un push 0-ligne-exploitable (fichier illisible, tout rejeté au triage) → annulé, stock préservé.
+  Un fichier qu'on ne sait pas lire n'efface JAMAIS la boutique.
+- **(c) rupture déclarée** : produit listé au fichier avec qty 0 → passe par l'UPDATE (touched), PAS par
+  la réconciliation ; un 2e produit absent → décrémenté. Les deux finissent à 0 par des chemins
+  DISTINCTS, sans double comptage (`products_updated:1`, `stock_zeroed:1`).
+
+**TROUVÉ + CORRIGÉ — bug réel d'affichage (faux positif), 1 ligne de code prod élargie** : un produit
+SIZED décrémenté à 0 gardait `products.available_sizes` avec des quantités positives périmées. La liste
+discover gate sur `stock>0` (donc le produit disparaît bien), MAIS la **fiche produit**
+(`product-detail.tsx:131` calcule `inStockSizes` depuis `available_sizes.quantity`) et la **facette de
+tailles globale** (`/api/products/available-sizes`, gate `visible=true` seulement) lisent les qtés par
+taille INDÉPENDAMMENT du total stock → **pointures fantômes « disponibles »** sur un produit épuisé =
+malhonnête (north-star « afficher honnêtement »). Fix : vidage `available_sizes:[]` batché dans le write
+de réconciliation (à côté du `stock=0` + `feed_events`), non bloquant (captureError + errors.push, le
+stock=0 reste l'essentiel), restauré au prochain push qui re-contient le produit.
+
+**REVUE** : silent-failure-hunter sur le diff `snapshot.ts` → **SOUND** (gestion d'erreur cohérente
+avec les writes frères, pas de perte silencieuse, `[]` = sentinelle non destructive, ordering correct :
+sizes vidées juste après stock=0, avant l'event). **TESTÉ** : `npm run test:run` → 578/578 vert, `tsc` OK.
+
+**Reste** : maillon 5 (Confiance/fraîcheur : `source`/`source_ts` → label de confiance honnête) au
+prochain run, puis B (UI Playwright sur l'app live). Aucune escalade (travail 100 % réversible).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 3 (Ingest / match items→products) — COMPLÉTÉ
 
 **Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 3 (Ingest/match : EAN/SKU,
