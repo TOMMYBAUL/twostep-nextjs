@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "boutiques-sport-toulouse",
+        title: "Shopping sport à Toulouse : trouver ton équipement en boutique (sans se déplacer pour rien)",
+        description:
+            "Running, fitness, outdoor, trail... Toulouse a des boutiques spécialisées pour chaque discipline. Le guide pour trouver ce que tu cherches — et savoir si c'est en stock avant de bouger.",
+        publishedAt: "2026-06-22",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
