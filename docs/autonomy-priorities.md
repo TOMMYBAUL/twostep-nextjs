@@ -45,13 +45,21 @@ synthétiques + invariants, tu valides en réel.
 commit ; couverture de test des chemins critiques qui MONTE, jamais qui baisse.
 
 ### Ce que la boucle ne peut PAS faire (vérité, pas défaitisme)
-Les 2 vrais goulots du projet sont **externes et appartiennent à Thomas** :
-1. **Candidature Google LFP en limbo depuis avril** (tickets 5-9519000040422 /
-   6-7242000040976, MC 5755722759). Aucune ligne de code ne débloque ça.
-2. **Zéro marchand.** Le hardening sert des marchands qui n'existent pas encore.
+**CORRECTION 2026-06-23** (l'ancien texte « LFP en limbo, rien ne le débloque » était FAUX — cf
+[[google-lfp-etat]] / mails Google avril 2026) :
+1. **Google LFP n'est PAS bloqué.** Google a TOUT débloqué en avril (tickets 5-9519000040422 /
+   6-7242000040976, MC 5755722759) : revue **en parallèle** du recrutement, l'**email = candidature
+   formelle**, vérification **à distance par sondage**, et **on PEUT pousser l'inventaire via
+   Content/Merchant API MAINTENANT, avant le statut Trusted**. Le vrai blocage = **NOTRE EXÉCUTION**
+   (1 marchand pilote live sur le feed), PAS Google, PAS le code. Prérequis/marchand : Business
+   Profile vérifié + lié au MC, >11 offres, feed quotidien ; Trusted = 5 marchands vérifiés.
+2. **Zéro marchand encore** = le vrai prochain pas. Pilotes visés : **Deerskin + une 2e boutique
+   multimarque (neuf)** au centre de Toulouse. **PAS de revente/seconde-main** (Prego écarté : pas
+   de GTIN propre, `condition=used` → casse l'ancrage EAN + le match Google).
 
-Donc la boucle rend le produit **prêt**, jamais **adopté**. « Terminer le projet » =
-prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans mon périmètre.
+Donc la boucle rend le produit **prêt + compatible Google** ; Thomas amène le pilote. « Terminer le
+projet » = pilote live sur le feed → vérifié → Trusted. Le software est le quasi-dernier blocage,
+plus un mur Google externe.
 
 ---
 
@@ -173,8 +181,50 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 > **✅ CHAÎNE A 1→8 COMPLÈTE (2026-06-22).** Tous les maillons data sont prouvés de bout en bout
 > avec preuve réelle + bugs réels corrigés. **Reste de la mission §1bis** : plan **B** (validation
 > VISUELLE de l'UI au navigateur — maillon 6 visuel/Playwright) = **hors périmètre boucle (pas de
-> navigateur) → escaladé à Thomas**. Prochain travail boucle = sourcing par signaux (§6) sur le
-> backlog Rang 3 `[R]` (couverture hot path restante) puisque le haut du backlog est `[G]`/`[X]`.
+> navigateur) → escaladé à Thomas**. **Prochain travail boucle = Phase D ci-dessous.**
+
+### ⭐ PHASE D (2026-06-23) — COMPATIBILITÉ GOOGLE MERCHANT + RÉADAPTATION ENRICHISSEMENT
+> **Pourquoi** : décisions de la session 2026-06-22/23. Google a tout débloqué (cf §1 corrigé +
+> [[google-lfp-etat]]) et **on peut pousser via Content/Merchant API maintenant**. Le modèle
+> d'enrichissement **s'appuie sur Google pour la tête de catalogue** (trick NearSt : GTIN propre →
+> Google remplit nom/image sur SES surfaces) — donc **ne PAS sur-enrichir nous-mêmes les produits
+> populaires pour le feed Google** ; concentrer NOTRE enrichissement sur (a) notre app, (b) la
+> traîne FR, (c) les images anti-rejet. **Stock/prix = toujours nous.** Même MÉTHODE (preuve par
+> maillon). Objectif : **être réellement compatibles Google + prêts pour un pilote live**.
+>
+> - **D1 `[R]` Audit complétude feed Google** : `feed.ts` (Voie A) + `lfp-xml.ts` (Voie B) émettent-ils
+>   TOUS les attributs requis+recommandés ? **Ajouter `g:sale_price`** (trou promo identifié — les
+>   promos ne remontent pas sur Google). Vérifier parité Voie A/B (même ensemble, mêmes champs).
+>   Preuve : feed généré sur fixture + diff champ-à-champ + comparé à la spec Google.
+> - **D2 `[G]` Tier « GTIN-only → Google enrichit »** : autoriser l'envoi des produits SANS photo/nom
+>   en **tier séparé basse-confiance, derrière flag** (au lieu de les exclure via `filterEligible`),
+>   et **MESURER le taux de rejet** via le cron `google-status` + `quality_alerts google_disapproved`
+>   (déjà en place). **Préparer derrière flag OFF + tests, puis ESCALADE** (peut affecter la
+>   réputation du compte Google → GO Thomas). Ne PAS activer seul.
+> - **D3 `[R]` Métrique « % publiable »** : pour un marchand donné, combien de produits ont
+>   EAN+prix+IMAGE (publiables Google) vs exclus, **ventilé par cause** (surtout : manque image).
+>   C'est **le KPI du pilote**. Preuve : exécuté sur fixture, comptes par cause.
+> - **D4 `[R]` Open Beauty Facts** dans la cascade (cosmétique, GRATUIT) sur le modèle `kicksdb.ts` ;
+>   **redescendre GS1** au rang « identité gratuite seulement » (NE PAS intégrer l'API GS1 payante —
+>   food-only, inutile pour nos verticaux, cf [[google-lfp-etat]]). Preuve : vrai EAN cosmétique → nom+image.
+> - **D5 `[R]` Gate de match image (CLIP)** : avant de publier une image SOURCÉE (Serper/Google
+>   Shopping), vérifier qu'elle **matche vraiment** le produit (colonnes `clip_embedding_*` existantes)
+>   → anti faux-positif visuel ; repli sur la **photo marchand**. Preuve.
+> - **D6 `[R]` Mode pilote « shadow/preview »** : ingérer un marchand + montrer ce qu'on PUBLIERAIT
+>   (catalogue + feed + % publiable) **AVANT toute publication** (lecture-seule = sécurité marchand,
+>   « ne pas casser sa gestion de stock »). + **test verrouillant l'invariant « aucun adaptateur POS
+>   n'écrit vers la caisse »** (contrat read-only). Preuve.
+> - **D7 `[R]` Concordance EAN↔nom-marchand** : confirmer/renforcer que `identification_score` croise
+>   le nom marchand vs le nom résolu par EAN → auto-publish si concordance, **review sinon** (gate
+>   zéro-faux-positif : on ne fait confiance à AUCUNE source seule). Preuve.
+>
+> **READINESS (= ce que la boucle signale « prêt pour les marchands » via WhatsApp)** : D1+D3+D4+D5+
+> D6+D7 prouvés (gate vert) + D2 préparé/escaladé + **checklist go-live pilote rédigée** (BP vérifié
+> + MC lié + ≥11 offres + feed quotidien + bouton « Request inventory verification »). Alors :
+> notif « prêt — Deerskin + 2e boutique peuvent être onboardés ».
+>
+> **Gate irréversible** : la boucle construit sur `feat`. Passer en prod = merge→main+deploy = **GO
+> Thomas** (ou supervisé sous mandat backup). La boucle NE merge/déploie PAS seule.
 
 ---
 
