@@ -144,6 +144,12 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   repli `windows-1252` ; BOM UTF-16 d'abord). Byte-identique pour tout UTF-8 valide. Le vrai point
   de perte résiduel = colonne qté/identité **non détectée sans alerte** → alerte de couverture de
   colonnes au triage/ingest, pas au décodage. (`parse-stock.ts decodeCsvBuffer`, 2026-06-22)
+- ❌ Un test d'ingestion en **dryRun seul** prouve les LECTURES mais JAMAIS create/update ni
+  l'invariant « 0 doublon » (aucune écriture exercée) → fausse confiance sur le hot path. Pour
+  prouver le chemin d'écriture : faux client Supabase **stateful** qui applique réellement
+  `insert/update/upsert` (upsert onConflict, update-by-id) → on inspecte la table résultante (count
+  + champs). C'est le seul moyen de prouver l'idempotence (re-push → 0 créé) et le dédoublonnage
+  cross-canal/intra-push. Vaut pour tous les maillons à écriture (3→8). (`ingest-maillon3-match`, 2026-06-22)
 - ✅ **Avant de "corriger" un champ côté WRITE, vérifier comment le READ le consomme.** `available_sizes` inclut qty=0 mais TOUS les consommateurs filtrent `qty>0` à la lecture (product-detail, route facette) → ce n'était PAS un bug. L'agent Explore signale des "bugs" qu'il faut vérifier dans le code réel (plusieurs étaient faux : orphelin DB inexistant car insert APRÈS upload ; prix 0 déjà géré dans shared.ts). Zéro complaisance = lire, pas croire l'audit.
 
 ## Git / hooks
