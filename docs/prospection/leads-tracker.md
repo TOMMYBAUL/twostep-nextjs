@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-20 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-22 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,29 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage lundi — 2026-06-22 (L'Eclaireur) — Capitole épuisé, 0 email trouvé
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
+
+**Note de session :** Capitole ÉPUISÉ DÉFINITIF (75/75 prospects traités depuis 18/05 — confirmé 15/06). Session convertie en 2e passage sur les 10 meilleurs prospects NOUVEAU restants sans email (SIENNE 5 SB FAMILY, STOCK AMERICAIN, MOSQUITOS, SERHA/LE LIEU, SARL PERLIN'S, SADIA, SOCIETE LAKO, MANOUSHKA, AMA LUNA, BAGWOOD). 20+ recherches web + fetches effectués. **0 email nouveau confirmé.** Confirmations supplémentaires : ALFRED WOOD/BAGWOOD Yelp mis à jour mars 2026 (actif), MANOUSHKA manoushka.fr toujours ECONNREFUSED (7ème semaine consécutive), SADIA site square.site inaccessible depuis IP cloud, SARL PERLIN'S site actif mais tél uniquement (05 61 21 18 81). Tous les prospects Capitole restants sont en terrain-only. **⚠️ ACTION URGENTE THOMAS : planifier tournée terrain Capitole — 10 boutiques sans email à visiter : SIENNE (44 rue des Tourneurs), STOCK AMERICAIN (20 rue Bayard), MOSQUITOS (12B rue Pomme), SERHA/LE LIEU (37 rue Metz), SARL PERLIN'S (49 rue Pomme), SADIA (39 rue Bayard), SOCIETE LAKO/BERNARD KOK (36 rue Pomme), AMA LUNA (66 rue Pomme), MANOUSHKA (53 rue Pomme), BAGWOOD/ALFRED WOOD (75 rue Alsace Lorraine).** Notion MCP indisponible (idem toutes sessions).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| SIENNE (5 SB FAMILY) | Capitole | Mode femme | Stéphanie Berdah | — | 538275561 | 6/10 | NOUVEAU | Email non trouvé (2e passage 22/06) — IG @sienne.boutique actif, Yelp Jul 2025, aucun email public. 44 rue des Tourneurs. **Visite terrain.** |
+| STOCK AMERICAIN | Capitole | Mode/Vintage | Andre Lelte | — | 309289775 | 6/10 | NOUVEAU | Email non trouvé (2e passage 22/06) — surplus américain/vintage depuis 1977, Yelp actif, tel 08 99 86 54 45. 20 rue de Bayard. **Visite terrain.** |
+| MOSQUITOS | Capitole | Chaussures | Laurent Bensimon | — | 444997753 | 6/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — aucun site ni email public. 12B rue de la Pomme. **Visite terrain.** |
+| SERHA (LE LIEU) | Capitole | Chaussures | Nathalie Serfati | — | 532946712 | 6/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — tél 05 31 15 02 34, aucun email. 37 rue de Metz. **Visite terrain.** |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — perlins.fr actif, tél 05 61 21 18 81 uniquement. 49 rue de la Pomme. **Visite terrain.** |
+| SADIA | Capitole | Mode femme | Sadia Belkelfa | — | 918125394 | 5/10 | NOUVEAU | Email non trouvé (4e passage 22/06) — site square.site inaccessible depuis IP cloud. 39 rue de Bayard. **Visite terrain.** |
+| SOCIETE LAKO (BERNARD KOK) | Capitole | Mode homme | Bernard Kok | — | 310896709 | 6/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — tél 05 61 21 50 72 uniquement. 36 rue de la Pomme. **Visite terrain.** |
+| AMA LUNA | Capitole | Mode femme | Judith Soustiel | — | 812259299 | 7/10 | NOUVEAU | Email non trouvé (6e passage 22/06 ⚠️ SEUIL ATTEINT) — IG @amalunacreation + FB actifs, aucun email public. 66 rue de la Pomme. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| MANOUSHKA | Capitole | Mode femme | Dominique Sellem | — | 814281812 | 6/10 | NOUVEAU | Email non trouvé (6e passage 22/06 ⚠️ SEUIL ATTEINT) — manoushka.fr ECONNREFUSED 7e semaine consécutive. 53 rue de la Pomme. **Visite terrain UNIQUEMENT — arrêt recherche email.** |
+| BAGWOOD (ALFRED WOOD) | Capitole | Mode homme | Jeffrey/Therese Wood | — | 408176311 | 7/10 | NOUVEAU | Email non trouvé (5e passage 22/06) — Yelp mis à jour mars 2026 (actif), tél 05 61 12 14 46. 75 rue d'Alsace Lorraine. **Visite terrain.** |
+
+*Note : Notion MCP indisponible (idem toutes sessions précédentes). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-06-22".*
+
+---
 
 ## Recap brouillons email — 2026-06-20 (L'Auditeur)
 
