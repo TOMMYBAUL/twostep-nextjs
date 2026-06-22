@@ -81,7 +81,7 @@ export async function GET(
     const { data: products, error: productsErr } = await admin
         .from("products")
         .select(
-            "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity)",
+            "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity), promotions(sale_price, starts_at, ends_at)",
         )
         .eq("merchant_id", merchantId)
         .eq("visible", true)

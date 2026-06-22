@@ -35,3 +35,59 @@ export function honestSalePrice(
     if (salePrice >= price) return null; // pas un rabais → ne jamais afficher de promo
     return salePrice;
 }
+
+/** Ligne `promotions` telle que jointe par les feeds (sous-ensemble des colonnes migration 001). */
+export interface FeedPromoRow {
+    sale_price: number | null;
+    starts_at?: string | null;
+    ends_at?: string | null;
+}
+
+/**
+ * Une promo est ACTIVE à l'instant `nowMs` si sa fenêtre l'englobe.
+ * `starts_at` a un DEFAULT now() en DB (toujours posé) ; on traite une borne absente ou
+ * illisible comme « pas de contrainte » (prudence : on ne fabrique pas de promo, mais on ne
+ * la masque pas non plus sur un timestamp corrompu — l'honnêteté du PRIX est gardée à part).
+ */
+function isPromoActive(p: FeedPromoRow, nowMs: number): boolean {
+    // Bornes INCLUSIVES : starts_at == now → commencée ; ends_at == now → encore active.
+    // (En pratique `starts_at` est `timestamptz NOT NULL DEFAULT now()` et `ends_at` un
+    // timestamptz nullable — PostgREST renvoie donc toujours de l'ISO valide ; le garde
+    // `Number.isFinite` reste une ceinture-bretelles, jamais déclenché par le schéma 001.)
+    if (p.starts_at) {
+        const s = Date.parse(p.starts_at);
+        if (Number.isFinite(s) && s > nowMs) return false; // pas encore commencée
+    }
+    if (p.ends_at) {
+        const e = Date.parse(p.ends_at);
+        if (Number.isFinite(e) && e < nowMs) return false; // déjà terminée
+    }
+    return true;
+}
+
+/**
+ * Prix promo à ANNONCER dans un feed sortant (Google Voie A + Voie B), ou `null`.
+ *
+ * Réutilise `honestSalePrice` (source unique de la règle « vrai rabais ») et n'admet qu'une
+ * promo ACTIVE (fenêtre `starts_at`/`ends_at`). Parmi les promos actives honnêtes, renvoie le
+ * MEILLEUR rabais (sale_price le plus bas). Cohérent avec l'affichage consumer : on ne pousse à
+ * Google qu'un prix promo qui est réellement un rabais sur le prix courant — sinon faux « -X% »
+ * côté Google (north-star : afficher honnêtement). On n'émet PAS de `sale_price_effective_date` :
+ * le feed reflète l'état COURANT (re-push cron 3h / re-crawl ISR 15 min), comme availability/price ;
+ * la promo disparaît du feed dès qu'elle expire — pas d'intervalle à maintenir.
+ */
+export function activeFeedSalePrice(
+    price: number | null | undefined,
+    promotions: FeedPromoRow[] | null | undefined,
+    nowMs: number,
+): number | null {
+    if (!Array.isArray(promotions) || promotions.length === 0) return null;
+    let best: number | null = null;
+    for (const promo of promotions) {
+        if (!isPromoActive(promo, nowMs)) continue;
+        const honest = honestSalePrice(price, promo.sale_price);
+        if (honest == null) continue;
+        if (best == null || honest < best) best = honest;
+    }
+    return best;
+}

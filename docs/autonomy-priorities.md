@@ -192,10 +192,19 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 > traîne FR, (c) les images anti-rejet. **Stock/prix = toujours nous.** Même MÉTHODE (preuve par
 > maillon). Objectif : **être réellement compatibles Google + prêts pour un pilote live**.
 >
-> - **D1 `[R]` Audit complétude feed Google** : `feed.ts` (Voie A) + `lfp-xml.ts` (Voie B) émettent-ils
->   TOUS les attributs requis+recommandés ? **Ajouter `g:sale_price`** (trou promo identifié — les
->   promos ne remontent pas sur Google). Vérifier parité Voie A/B (même ensemble, mêmes champs).
->   Preuve : feed généré sur fixture + diff champ-à-champ + comparé à la spec Google.
+> - ✅ **D1 `[R]` Audit complétude feed Google — PROUVÉ (2026-06-23, commit `<à compléter>`)**.
+>   `g:sale_price`/`salePrice` AJOUTÉ aux 2 voies (trou promo fermé : les promos remontent enfin sur
+>   Google) via helper pur unique `activeFeedSalePrice` (réutilise `honestSalePrice` = source unique du
+>   « vrai rabais » ; promo émise UNIQUEMENT si active [fenêtre `starts_at`/`ends_at`] ET avantageuse ;
+>   meilleur rabais si plusieurs). **Parité Voie A/B fermée** : (a) éligibilité centralisée
+>   `isFeedEligible` (Voie A laissait passer `price=0` + EAN tronqué que Voie B rejetait → divergence
+>   d'ensemble corrigée, même classe que store_code maillon 7) ; (b) `nowMs` capturé une fois par feed
+>   (cohérence intra-feed). **Preuve réelle** : feed généré sur fixture (promo active) inspecté champ par
+>   champ — les 2 voies émettent le MÊME ensemble + `99.99 EUR` (cf. worklog). +18 tests (632→644).
+>   Revue silent-failure-hunter : north-star (faux positif promo→Google) **SOUND** (3 gardes composées).
+>   0 migration, réversible. NB : `sale_price_effective_date` volontairement NON émis (feed = état
+>   courant, re-push 3h/re-crawl 15 min, comme availability). **Suivi → D3** : observabilité « combien
+>   filtrés par cause » (price=0/EAN court) = exactement le KPI D3, pas dupliqué ici.
 > - **D2 `[G]` Tier « GTIN-only → Google enrichit »** : autoriser l'envoi des produits SANS photo/nom
 >   en **tier séparé basse-confiance, derrière flag** (au lieu de les exclure via `filterEligible`),
 >   et **MESURER le taux de rejet** via le cron `google-status` + `quality_alerts google_disapproved`

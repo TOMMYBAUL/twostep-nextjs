@@ -1,3 +1,9 @@
+> **MAJ 2026-06-23 (Phase D / item D1) — état COURANT** : l'audit historique ci-dessous (2026-04-22)
+> est partiellement périmé. Depuis : `availability` corrigé (`"in stock"`/`"out of stock"` espace, les
+> 2 voies), troncation `title` à 150 (les 2 voies), `description`+`brand` émis (les 2 voies). **Item D1
+> traité ce jour** : ajout de `g:sale_price`/`salePrice` aux 2 voies + parité éligibilité fermée. Voir la
+> **section finale « D1 — état courant + preuve »** en bas de ce fichier pour la matrice à jour.
+
 # Audit format `cron/google-feed` vs spec officielle Aftab
 
 *Date : 2026-04-22*
@@ -173,3 +179,54 @@ D'après [Google docs LFP](https://developers.google.com/merchant/api/guides/loc
 
 - Implémenter Voie B en suivant les specs Google + retours du specialist
 - Migrer progressivement les marchands de Voie A vers Voie B (ou les laisser en parallèle, à voir)
+
+---
+
+## D1 — état courant + preuve (2026-06-23, Phase D)
+
+**But** : combler le **trou promo** (les `promotions` marchand ne remontaient sur AUCUN des 2 canaux
+Google) et **prouver la parité** Voie A (`feed.ts` → Content API) / Voie B (`lfp-xml.ts` → feed XML).
+
+### Matrice à jour — les 2 voies émettent le MÊME ensemble de champs
+
+| Champ Google | Voie A (`transformProductToGoogle`) | Voie B (`buildItemXml`) | Conforme |
+|---|---|---|---|
+| id / `g:id` | `offerId = product.id` | `<g:id>` | ✅ |
+| gtin / `g:gtin` | `gtin = ean` | `<g:gtin>` | ✅ |
+| title / `g:title` | tronqué 150 | tronqué 150 | ✅ |
+| description / `g:description` | optionnel | optionnel | ✅ |
+| brand / `g:brand` | optionnel | optionnel | ✅ |
+| price / `g:price` | `{value,currency}` | `<g:price>129.99 EUR</g:price>` | ✅ |
+| **sale_price / `g:sale_price`** | **`salePrice {value,currency}` (NEW D1)** | **`<g:sale_price>99.99 EUR</g:sale_price>` (NEW D1)** | ✅ |
+| image / `g:image_link` | `imageLink` | `<g:image_link>` | ✅ |
+| availability / `g:availability` | `"in stock"`/`"out of stock"` | idem | ✅ |
+| condition / `g:condition` | `"new"` | `"new"` | ✅ |
+| store_code / `g:store_code` | `resolveStoreCode` | `resolveStoreCode` | ✅ (source unique) |
+| content_language / target_country / channel | `fr` / `FR` / `local` | idem | ✅ |
+
+### Règle d'émission du prix promo (anti faux positif — north-star)
+`activeFeedSalePrice(price, promotions, nowMs)` (`src/lib/products/sale-price.ts`) — source unique :
+- réutilise `honestSalePrice` (sale_price émis SSI `< prix courant` → jamais de « -X% » aberrant) ;
+- promo **active** seulement (`starts_at <= now <= ends_at`, bornes inclusives) ;
+- meilleur rabais si plusieurs promos actives ;
+- **pas de `sale_price_effective_date`** : le feed reflète l'état COURANT (re-push cron 3h / re-crawl
+  ISR 15 min), exactement comme `availability`/`price` — la promo disparaît du feed dès expiration.
+
+### Parité d'éligibilité (fermeture d'une divergence réelle)
+Avant D1, `filterEligibleProducts` (Voie A) acceptait `price=0` et un EAN tronqué que `filterFeedEligible`
+(Voie B) rejetait (`price>0`, `ean.length>=8`) → **ensembles divergents** vers le MÊME tiers (même classe
+que la divergence `store_code` maillon 7). Fermé via le prédicat partagé `isFeedEligible`
+(`src/lib/google/feed-eligibility.ts`), délégué par les 2 filtres. `nowMs` capturé **une fois par feed**
+(cohérence intra-feed, parité A/B).
+
+### Preuve (feed généré sur fixture, promo active 99.99 sur prix 129.99) — inspecté champ par champ
+Les 2 voies produisent le même ensemble + `sale_price 99.99 EUR` (Voie A `salePrice:{value:"99.99"}`,
+Voie B `<g:sale_price>99.99 EUR</g:sale_price>` placé juste après `<g:price>`). Couvert par
+`tests/lib/google/feed.test.ts` + `tests/lib/google/lfp-xml.test.ts` (promo active/expirée/future/
+non-avantageuse/multi → meilleur ; parité price=0 + EAN court). 644 tests verts, `tsc` OK.
+
+### Reste (escaladé / autres items D)
+- Observabilité « combien de produits filtrés par cause » (price=0, manque image, EAN court) = **item D3**
+  (« % publiable ventilé par cause »), KPI du pilote — pas dupliqué ici.
+- Voie B « vraie » LFP (`lfpInventories:insert`, format micros, `collectionTime`/`pickupMethod`) reste un
+  module à part bloqué sur l'activation Google côté sub-account (cf. §STRATEGIQUE ci-dessus).

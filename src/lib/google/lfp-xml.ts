@@ -19,6 +19,9 @@
  *   2026-04-22 pre-fix)
  */
 
+import { isFeedEligible } from "@/lib/google/feed-eligibility";
+import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
+
 const TITLE_MAX = 150;
 
 export interface LfpMerchant {
@@ -37,21 +40,17 @@ export interface LfpProductRow {
     photo_url: string | null;
     photo_processed_url: string | null;
     stock: Array<{ quantity: number }> | { quantity: number } | null;
+    /** Promos actives jointes par la route — optionnel. */
+    promotions?: FeedPromoRow[] | null;
 }
 
 /**
  * Filtre les products éligibles au feed LFP : doivent avoir EAN + price + photo.
  * (Le caller doit déjà avoir filtré sur visible=true + review_status=validated.)
+ * Délègue à `isFeedEligible` — source unique partagée avec la Voie A (parité, cf. maillon 7).
  */
 export function filterFeedEligible(products: LfpProductRow[]): LfpProductRow[] {
-    return products.filter(
-        (p) =>
-            p.ean !== null &&
-            p.ean.length >= 8 &&
-            p.price !== null &&
-            p.price > 0 &&
-            (p.photo_url !== null || p.photo_processed_url !== null),
-    );
+    return products.filter(isFeedEligible);
 }
 
 /** Échappement XML conformiste (5 char base) — utiliser pour TOUT contenu utilisateur. */
@@ -72,7 +71,7 @@ function getStockQty(
     return s.quantity ?? 0;
 }
 
-function buildItemXml(p: LfpProductRow, storeCode: string): string {
+function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): string {
     const qty = getStockQty(p.stock);
     const rawTitle = p.canonical_name ?? p.name;
     const title =
@@ -88,11 +87,17 @@ function buildItemXml(p: LfpProductRow, storeCode: string): string {
         ? `\n      <g:brand>${escapeXml(p.brand)}</g:brand>`
         : "";
 
+    // Promo : `g:sale_price` émis UNIQUEMENT pour une promo active + vrai rabais (parité Voie A).
+    // Sans cet attribut, les promos marchand ne remontaient pas sur Google (trou D1).
+    const sale = activeFeedSalePrice(p.price, p.promotions, nowMs);
+    const optSalePrice =
+        sale != null ? `\n      <g:sale_price>${sale.toFixed(2)} EUR</g:sale_price>` : "";
+
     return `    <item>
       <g:id>${escapeXml(p.id)}</g:id>
       <g:gtin>${escapeXml(p.ean!)}</g:gtin>
       <g:title>${escapeXml(title)}</g:title>${optDescription}${optBrand}
-      <g:price>${p.price!.toFixed(2)} EUR</g:price>
+      <g:price>${p.price!.toFixed(2)} EUR</g:price>${optSalePrice}
       <g:image_link>${escapeXml(photo)}</g:image_link>
       <g:availability>${qty > 0 ? "in stock" : "out of stock"}</g:availability>
       <g:condition>new</g:condition>
@@ -116,9 +121,10 @@ export function buildLfpXml(
     merchant: LfpMerchant,
     products: LfpProductRow[],
     storeCode: string,
+    nowMs: number = Date.now(),
 ): string {
     const eligible = filterFeedEligible(products);
-    const items = eligible.map((p) => buildItemXml(p, storeCode)).join("\n");
+    const items = eligible.map((p) => buildItemXml(p, storeCode, nowMs)).join("\n");
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">

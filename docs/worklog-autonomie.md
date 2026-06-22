@@ -5,6 +5,67 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · PHASE D — item **D1 `[R]` Audit complétude feed Google + `g:sale_price`** PROUVÉ · commit `<à compléter>`
+
+**Sourcing (§6)** : chaîne A 1→8 COMPLÈTE → Phase D (cerveau priorities.md). Item `[R]` de plus haut
+rang non terminé = **D1**. Trou identifié explicitement par le plan : les **promos ne remontaient sur
+AUCUN canal Google** (Voie A `feed.ts` Content API ni Voie B `lfp-xml.ts` XML crawlé).
+
+**TROUVÉ (vérifié dans le code réel, pas supposé)** :
+1. Ni `transformProductToGoogle` (Voie A) ni `buildItemXml` (Voie B) n'émettaient `sale_price` — un
+   marchand qui crée une promo (`/promotions`, table `promotions{sale_price,starts_at,ends_at}`) la voit
+   sur l'app/feed consumer (maillon 6 `honestSalePrice`) mais **JAMAIS sur Google**. Manque à gagner +
+   incohérence prix Google vs vitrine.
+2. **Divergence d'éligibilité Voie A/B** (même classe que `store_code` maillon 7) : `filterEligibleProducts`
+   (A) acceptait `price=0` et un EAN tronqué que `filterFeedEligible` (B) rejetait (`price>0`,
+   `ean.length>=8`) → les 2 canaux vers le MÊME tiers émettaient des **ensembles différents**.
+
+**FAIT (réversible, 0 migration)** :
+- Helper pur **`activeFeedSalePrice(price, promotions, nowMs)`** (`src/lib/products/sale-price.ts`) :
+  réutilise `honestSalePrice` (source unique « vrai rabais » `< prix courant`) + filtre **promo active**
+  (fenêtre `starts_at`/`ends_at`, bornes inclusives) + **meilleur rabais** si plusieurs. **Pas de
+  `sale_price_effective_date`** (feed = état courant, re-push 3h/re-crawl 15 min, comme `availability`).
+- Voie A : `transformProductToGoogle` émet `salePrice {value,currency}` ; Voie B : `<g:sale_price>X EUR</g:sale_price>`
+  placé juste après `<g:price>`. Les 2 voies SELECT désormais `promotions(sale_price,starts_at,ends_at)`.
+- **Parité fermée** : prédicat partagé **`isFeedEligible`** (`src/lib/google/feed-eligibility.ts`) délégué
+  par les 2 filtres ; `nowMs` capturé **une fois par feed** (cohérence intra-feed, suite revue).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff = canal sortie pipeline) : north-star **SOUND** —
+le faux positif « promo non-rabais / hors fenêtre poussée à Google » est bloqué par 3 gardes composées
+(write `/promotions` + fenêtre active + `honestSalePrice` au read-feed). Findings traités : MED `nowMs`
+par-produit dans la boucle cron → **capturé une fois** (corrigé) ; MED observabilité « filtrés par cause »
+→ **renvoyé à D3** (KPI dédié, anti-duplication + anti Sentry-flood) ; LOW timestamp corrompu → **moot**
+(`starts_at timestamptz NOT NULL DEFAULT now()`, `ends_at` nullable timestamptz → PostgREST renvoie
+toujours de l'ISO valide, vérifié migration 001) ; LOW borne inclusive → commentée.
+
+**PREUVE RÉELLE** (méthode §1bis — feed généré sur fixture promo active 99.99 / prix 129.99, **inspecté
+champ par champ**) : les 2 voies émettent le MÊME ensemble + le prix promo — Voie A
+`"salePrice":{"value":"99.99","currency":"EUR"}`, Voie B `<g:sale_price>99.99 EUR</g:sale_price>`.
+Couvert par `tests/lib/google/feed.test.ts` + `lfp-xml.test.ts` : promo active émise / expirée omise /
+future omise / non-avantageuse omise / multi → meilleur rabais ; parité `price=0` + EAN court rejetés A.
+Matrice champ-à-champ + spec Google : `docs/prospection/google-lfp-feed-audit.md` (section D1).
+
+**TESTÉ** : `npm run test:run` → **644/644** (était 632, +12 nets ; +18 cas feed/lfp), `tsc` OK.
+
+**MÉTRIQUE** : 1 item `[R]` Phase D fermé (D1). **1 trou produit réel comblé** (promos→Google) +
+**1 divergence de canaux réelle fermée** (éligibilité A/B). 7 fichiers touchés (2 libs + 1 lib neuve +
+2 routes + 2 tests ; + 3 docs). 0 migration, réversible. Aucune escalade (tout réversible).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car prouvé synthétique, pas vrai marchand)
+- **Preuve : 8/10** — sortie RÉELLE des 2 feeds inspectée champ par champ sur fixture promo active +
+  6 facettes de la règle d'émission testées. Plafond 8 (pas de vrai marchand/feed Google live).
+- **Sécurité north-star : 8/10** — revue SF-hunter SOUND, 3 gardes composées contre le faux rabais→Google,
+  parity de canaux fermée. Aucune perte/faux positif introduit ; finding nowMs corrigé.
+- **Réversibilité : 10/10** — 0 migration, pur additif (champ optionnel + params défaut), `git revert` propre.
+- **Discipline de scope : 9/10** — 1 unité ciblée (D1), 7 fichiers code/test cohérents, observabilité
+  renvoyée à D3 plutôt qu'élargir le diff.
+- **Alignement north-star : 9/10** — avance directement « compatible Google + prêt pilote » (Phase D) :
+  les promos marchand atteignent enfin Google, honnêtement.
+**Objectif (§5bis)** : tests 632→644 ; **2 trous réels** comblés (promo feed + divergence éligibilité) ;
+7 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit (ledger), 0 revert détecté → **100 %**.
+
+---
+
 ## 2026-06-22 (run autonome) · Rang 3 [R] — **Hot path facture→catalogue/stock (`POST invoices/[id]/validate`) durci : 7 pertes silencieuses réelles fermées + 1er test du chemin** · commit `<à compléter>`
 
 **Sourcing (§6)** : chaîne A 1→8 COMPLÈTE, haut du backlog [G]/[X] → couverture hot path manquante.

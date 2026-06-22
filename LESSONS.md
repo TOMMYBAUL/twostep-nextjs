@@ -195,6 +195,19 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   **Règle : les N canaux de sortie vers une même plateforme doivent émettre le MÊME ensemble — gate
   centralisé/identique, vérifié par test de chemin réel (faux client read qui applique `.eq/.is`),
   pas juste la fonction pure de transformation.** (maillon 7, 2026-06-22, même classe que store_code)
+- ❌ **Garde d'honnêteté affichée mais ABSENTE des canaux sortants** : `honestSalePrice` gardait le
+  `sale_price` sur le hot path consumer (maillon 6) mais les 2 feeds Google (Voie A `feed.ts` + Voie B
+  `lfp-xml.ts`) **n'émettaient AUCUN sale_price** → les promos marchand ne remontaient pas sur Google
+  (manque à gagner) ET, dès qu'on les ajoute naïvement, risque de pousser un faux rabais. Fix D1 : helper
+  pur unique `activeFeedSalePrice` (réutilise `honestSalePrice` + fenêtre active `starts_at`/`ends_at`,
+  meilleur rabais) → un prix promo n'atteint Google que s'il est actif ET un vrai rabais. **Règle : une
+  garde d'honnêteté d'affichage doit couvrir TOUS les exutoires d'un prix — read consumer ET feeds
+  sortants** (3ᵉ surface après write `/promotions` + read). Pas de `sale_price_effective_date` : le feed
+  = état courant (re-push 3h/re-crawl 15 min), comme availability. (D1, 2026-06-23, revue SF-hunter SOUND)
+- ❌ **Éligibilité de feed divergente entre 2 canaux** (même classe que store_code maillon 7) : Voie A
+  `filterEligibleProducts` acceptait `price=0` + EAN tronqué que Voie B `filterFeedEligible` rejetait
+  (`price>0`, `ean.length>=8`) → ensembles émis différents vers le MÊME tiers. Fix : prédicat partagé
+  `isFeedEligible` (`feed-eligibility.ts`) délégué par les 2 ; `nowMs` capturé une fois par feed. (D1)
 - ❌ Sur un cron multi-marchand, le SELECT de la LISTE (`google_merchant_connections`) qui avale son
   `error` est PIRE qu'un select par-marchand avalé : un blip DB → `data=null` → `length===0` →
   `200 "aucun marchand connecté"` = TOUT le feed Google abandonné, 0 Sentry, 0 statut. **Règle : le

@@ -202,4 +202,44 @@ describe("buildLfpXml", () => {
         expect(xml).toContain("<rss");
         expect(xml).not.toContain("<item>");
     });
+
+    // ─── g:sale_price (trou D1 — parité avec Voie A salePrice) ───
+    const NOW = Date.parse("2026-06-23T12:00:00Z");
+    const activePromo = {
+        sale_price: 99.99,
+        starts_at: "2026-06-01T00:00:00Z",
+        ends_at: "2026-07-01T00:00:00Z",
+    };
+
+    it("émet g:sale_price pour une promo active et avantageuse", () => {
+        const xml = buildLfpXml(MERCHANT, [{ ...baseProduct, promotions: [activePromo] }], STORE_CODE, NOW);
+        expect(xml).toContain("<g:sale_price>99.99 EUR</g:sale_price>");
+        // toujours après g:price (ordre attendu du feed)
+        expect(xml.indexOf("<g:price>")).toBeLessThan(xml.indexOf("<g:sale_price>"));
+    });
+
+    it("omet g:sale_price sans promo", () => {
+        const xml = buildLfpXml(MERCHANT, [baseProduct], STORE_CODE, NOW);
+        expect(xml).not.toContain("<g:sale_price>");
+    });
+
+    it("omet g:sale_price si pas un vrai rabais (sale_price >= price)", () => {
+        const xml = buildLfpXml(
+            MERCHANT,
+            [{ ...baseProduct, promotions: [{ ...activePromo, sale_price: 200 }] }],
+            STORE_CODE,
+            NOW,
+        );
+        expect(xml).not.toContain("<g:sale_price>");
+    });
+
+    it("omet g:sale_price pour une promo expirée", () => {
+        const xml = buildLfpXml(
+            MERCHANT,
+            [{ ...baseProduct, promotions: [{ ...activePromo, ends_at: "2026-06-10T00:00:00Z" }] }],
+            STORE_CODE,
+            NOW,
+        );
+        expect(xml).not.toContain("<g:sale_price>");
+    });
 });

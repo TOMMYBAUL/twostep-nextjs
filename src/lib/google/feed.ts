@@ -1,3 +1,6 @@
+import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
+import { isFeedEligible } from "@/lib/google/feed-eligibility";
+
 type ProductRow = {
     id: string;
     name: string;
@@ -10,6 +13,8 @@ type ProductRow = {
     photo_url: string | null;
     visible: boolean;
     stock: Array<{ quantity: number }>;
+    /** Promos actives jointes par la route (cf. cron/google-feed) — optionnel. */
+    promotions?: FeedPromoRow[] | null;
 };
 
 type GoogleProduct = {
@@ -19,6 +24,12 @@ type GoogleProduct = {
     description?: string;
     brand?: string;
     price: { value: string; currency: string };
+    /**
+     * Prix promo Google (object Price, même forme que `price`). N'est émis QUE pour une promo
+     * ACTIVE et réellement avantageuse (`activeFeedSalePrice`). Sans cet attribut, les promos
+     * configurées par le marchand ne remontaient JAMAIS sur les surfaces Google (trou D1).
+     */
+    salePrice?: { value: string; currency: string };
     imageLink: string | null;
     /**
      * Google Merchant Center product attribute spec uses literal strings
@@ -41,7 +52,11 @@ function truncateTitle(s: string): string {
     return s.slice(0, TITLE_MAX - 1).trimEnd() + "…";
 }
 
-export function transformProductToGoogle(product: ProductRow, storeCode: string): GoogleProduct {
+export function transformProductToGoogle(
+    product: ProductRow,
+    storeCode: string,
+    nowMs: number = Date.now(),
+): GoogleProduct {
     const s = (product as any).stock;
     const quantity = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
 
@@ -66,11 +81,16 @@ export function transformProductToGoogle(product: ProductRow, storeCode: string)
     if (product.description) out.description = product.description;
     if (product.brand) out.brand = product.brand;
 
+    // Promo : émise UNIQUEMENT si active + vrai rabais (sale_price < price courant).
+    const sale = activeFeedSalePrice(product.price, product.promotions, nowMs);
+    if (sale != null) out.salePrice = { value: sale.toFixed(2), currency: "EUR" };
+
     return out;
 }
 
 export function filterEligibleProducts(products: ProductRow[]): ProductRow[] {
-    return products.filter(
-        (p) => p.ean !== null && p.visible !== false && p.price !== null && (p.photo_processed_url !== null || p.photo_url !== null),
-    );
+    // `visible` est propre à la Voie A (gardé en redondance du gate SQL) ; le reste de
+    // l'éligibilité (GTIN/prix/photo) vit dans `isFeedEligible` — source unique partagée avec
+    // la Voie B pour garantir le MÊME ensemble de produits émis (fin de divergence price>0/EAN).
+    return products.filter((p) => p.visible !== false && isFeedEligible(p));
 }

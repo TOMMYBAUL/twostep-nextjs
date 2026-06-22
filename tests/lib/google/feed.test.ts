@@ -72,4 +72,69 @@ describe("Google feed generation", () => {
         const eligible = filterEligibleProducts([onlyRaw]);
         expect(eligible).toHaveLength(1);
     });
+
+    // ─── Parité Voie A/B : la Voie A doit rejeter price<=0 et EAN trop court (avant centralisation
+    //     elle les laissait passer alors que la Voie B les rejetait → ensembles divergents). ───
+    it("rejette price 0 (parité Voie B — un produit à 0€ ne doit pas partir sur Google)", () => {
+        const eligible = filterEligibleProducts([{ ...baseProduct, id: "free", price: 0 }]);
+        expect(eligible).toHaveLength(0);
+    });
+
+    it("rejette EAN trop court (< 8 chiffres) — parité Voie B", () => {
+        const eligible = filterEligibleProducts([{ ...baseProduct, id: "short-ean", ean: "1234" }]);
+        expect(eligible).toHaveLength(0);
+    });
+
+    // ─── g:sale_price (trou D1 : les promos ne remontaient pas sur Google) ───
+    const NOW = Date.parse("2026-06-23T12:00:00Z");
+    const activePromo = { sale_price: 99.99, starts_at: "2026-06-01T00:00:00Z", ends_at: "2026-07-01T00:00:00Z" };
+
+    it("émet salePrice pour une promo active et réellement avantageuse", () => {
+        const result = transformProductToGoogle({ ...baseProduct, promotions: [activePromo] }, "store-001", NOW);
+        expect(result.salePrice).toEqual({ value: "99.99", currency: "EUR" });
+    });
+
+    it("n'émet PAS salePrice sans promo", () => {
+        const result = transformProductToGoogle(baseProduct, "store-001", NOW);
+        expect(result.salePrice).toBeUndefined();
+    });
+
+    it("n'émet PAS salePrice si le prix promo n'est pas un vrai rabais (sale_price >= price)", () => {
+        const result = transformProductToGoogle(
+            { ...baseProduct, promotions: [{ ...activePromo, sale_price: 129.99 }] },
+            "store-001",
+            NOW,
+        );
+        expect(result.salePrice).toBeUndefined();
+    });
+
+    it("n'émet PAS salePrice pour une promo expirée", () => {
+        const result = transformProductToGoogle(
+            { ...baseProduct, promotions: [{ ...activePromo, ends_at: "2026-06-10T00:00:00Z" }] },
+            "store-001",
+            NOW,
+        );
+        expect(result.salePrice).toBeUndefined();
+    });
+
+    it("n'émet PAS salePrice pour une promo pas encore commencée", () => {
+        const result = transformProductToGoogle(
+            { ...baseProduct, promotions: [{ ...activePromo, starts_at: "2026-07-15T00:00:00Z" }] },
+            "store-001",
+            NOW,
+        );
+        expect(result.salePrice).toBeUndefined();
+    });
+
+    it("choisit le MEILLEUR rabais quand plusieurs promos actives", () => {
+        const result = transformProductToGoogle(
+            {
+                ...baseProduct,
+                promotions: [activePromo, { ...activePromo, sale_price: 79.99 }],
+            },
+            "store-001",
+            NOW,
+        );
+        expect(result.salePrice).toEqual({ value: "79.99", currency: "EUR" });
+    });
 });

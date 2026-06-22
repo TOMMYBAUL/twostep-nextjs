@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
             // produits non identifiés sur Google Shopping (faux positif public).
             const { data: products, error: productsErr } = await supabase
                 .from("products")
-                .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity)")
+                .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
                 .eq("merchant_id", conn.merchant_id)
                 .eq("visible", true)
                 .eq("review_status", "validated")
@@ -69,10 +69,15 @@ export async function POST(req: NextRequest) {
             const eligible = filterEligibleProducts(products as any);
             const parent = `accounts/${auth.connection.google_merchant_id}`;
 
+            // `nowMs` capturé UNE fois pour tout le marchand (parité avec la Voie B qui capture
+            // au niveau buildLfpXml) : sinon une promo expirant pendant la boucle serait émise
+            // pour les 1ers produits et pas les derniers (incohérence intra-feed).
+            const nowMs = Date.now();
+
             let pushed = 0;
             for (const product of eligible) {
                 try {
-                    const googleProduct = transformProductToGoogle(product as any, conn.store_code);
+                    const googleProduct = transformProductToGoogle(product as any, conn.store_code, nowMs);
                     await googleMerchantFetch(
                         `/products/v1beta/${parent}/productInputs:insert`,
                         auth.accessToken,
