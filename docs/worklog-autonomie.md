@@ -5,6 +5,48 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 2 (Triage / identité) — COMPLÉTÉ + bug HIGH corrigé
+
+**Sourcing** : mission §1bis, 1er maillon `⬜` non prouvé = maillon 2 (triage/identité). Méthode
+qualité : maillon exécuté de bout en bout sur une vraie entrée sale, sortie inspectée champ par champ.
+
+**FAIT — A. PREUVE RÉELLE du triage** (`tests/ingest-maillon2-triage.test.ts`, +15 puis +1) : export
+FR sale (séparateur `;`, accents, codes répartis Code-barres/Référence) passé `parseStockFile` →
+`triageStockItems`, chaque ligne inspectée : **4 GTIN** (EAN-13 valide ; **UPC-12 `036000291452`→
+`0036000291452`** préfixe 0 = cohérence cross-canal POS ; GTIN rangé en colonne Référence → promu,
+SKU non dupliqué ; **EAN-8 `96385074`** checksum 8-chiffres honoré), **3 SKU** (EAN au checksum
+FAUX `3017620422004`→ suivi SKU, jamais envoyé aux lookups GTIN ; référence interne ; PLU court
+`4011`), **2 rejets LISTÉS+MOTIVÉS** (`no_identifier` nom-seul / `invalid_identifier` code trop
+court). Invariant `accepté(7)+rejeté(2)=total parsé(9)` vérifié — aucune ligne ne s'évapore.
+
+**FAIT — B. ALERTE DE COUVERTURE DE COLONNES** (l'invariant north-star posé À CE MAILLON, cf. report
+de la revue maillon 1) : `parseStockFile` renvoie désormais `coverage{quantity,identifier,price}`
+(quelle colonne critique a été reconnue). `ingestStockSnapshot` reçoit `opts.coverage`, l'expose en
+`column_coverage`, et **quand la colonne quantité n'est PAS reconnue** (→ qty=1 « présence » sur tout
+le fichier) **pousse un message d'erreur** (statut honnête « partial » côté route + wizard) **+ Sentry
+hors simulation**. On ne change PAS la sémantique présence (décision produit) — on l'arrête d'être
+MUETTE. `identifier`/`price` manquants déjà non-silencieux en aval (tout-rejeté→`no_exploitable` ;
+prix optionnel). Câblé dans les 2 appelants (`ingest-stock-file`, `catalog/import`).
+
+**REVUE OBLIGATOIRE** (diff pipeline ingest) `silent-failure-hunter` : chaîne de propagation **SOUND**,
+0 régression introduite. A trouvé **1 bug réel HIGH PRÉ-EXISTANT** (corrigé dans ce run) : le **stock
+upsert du produit CRÉÉ** (`snapshot.ts` branche CREATE) **avalait son erreur** alors que la branche
+UPDATE vérifie déjà `stockErr` → asymétrie : un produit créé dont l'upsert stock échoue restait SANS
+ligne stock = lu « 0 » en aval = **perte silencieuse de la quantité**. Fix : erreur remontée
+(`errors`+`captureError`, statut partial), `stock_replaced` **non compté** si l'écriture échoue (pas
+de mensonge de compteur), pas de throw (le produit existe → prochain push complet le matche en UPDATE
+= auto-guérison) ; tailles + feed_events de création idem (captureError, secondaire). DEFECT-2 (MEDIUM,
+route 422 perdait `column_coverage`) corrigé. DEFECT-3 (LOW, bruit Sentry) : écarté — message
+**constant** → Sentry groupe en 1 seule issue ; canal signal établi du projet pour data-quality.
+
+**TESTÉ** : suite **544 → 560** verte, `tsc` 0. Réversible (`git revert`), 0 migration.
+
+**MÉTRIQUE** : maillon 2 (Triage/identité) **prouvé COMPLET** (4 facettes + invariant couverture +
+bug HIGH corrigé). Prochain : maillon 3 (Ingest/match items→products : match EAN/SKU, create vs
+update, 0 doublon — preuve sur faux client/DB de test).
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 1 (Parse) — COMPLÉTÉ + bug réel corrigé
 
 **Sourcing** : mission §1bis (valider le workflow maillon par maillon, profondeur > vitesse).

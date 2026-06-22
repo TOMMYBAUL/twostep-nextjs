@@ -65,6 +65,25 @@ function readRows(buffer: Buffer): string[][] {
 }
 
 /**
+ * Couverture des colonnes critiques par la détection d'en-têtes.
+ *
+ * Pourquoi c'est un livrable du north-star (« ne rien perdre silencieusement ») :
+ * quand une colonne critique n'est PAS reconnue, le parseur retombe sur un défaut
+ * MUET (qté → 1 « présence »). Un marchand dont le fichier portait bien des
+ * quantités, mais sous un en-tête non reconnu, verrait alors « 1 de chaque » SANS
+ * AUCUN signal. La couverture transforme ce défaut muet en SIGNAL : le triage /
+ * l'ingestion la relaie (statut honnête + Sentry + wizard), jamais un silence.
+ */
+export type ColumnCoverage = {
+    /** Une colonne quantité a-t-elle été reconnue ? Si non → CHAQUE ligne = qty 1. */
+    quantity: boolean;
+    /** Au moins une colonne d'identité (code-barres OU référence) reconnue ? */
+    identifier: boolean;
+    /** Une colonne prix reconnue ? */
+    price: boolean;
+};
+
+/**
  * Parseur dédié au SNAPSHOT de stock (contrat NearSt) — distinct du parseur de
  * factures.
  *
@@ -76,14 +95,21 @@ function readRows(buffer: Buffer): string[][] {
  * `canonical_name`.
  *
  * Réutilise la détection de colonnes FR/EN et le parsing tableur (gère le
- * délimiteur `;` français) du parseur partagé.
+ * délimiteur `;` français) du parseur partagé. Retourne aussi la `coverage` des
+ * colonnes critiques pour que l'ingestion puisse SIGNALER une colonne manquante
+ * (quantité notamment) au lieu de défaut-muter en silence.
  */
-export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
+export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[]; coverage: ColumnCoverage } {
     const rows = readRows(buffer);
-    if (rows.length < 2) return { items: [] };
+    if (rows.length < 2) return { items: [], coverage: { quantity: false, identifier: false, price: false } };
 
     const headers = rows[0].map((h) => String(h ?? ""));
     const mapping = detectColumns(headers);
+    const coverage: ColumnCoverage = {
+        quantity: mapping.quantity !== null,
+        identifier: mapping.ean !== null || mapping.sku !== null,
+        price: mapping.unit_price !== null,
+    };
 
     const items: ParsedInvoiceItem[] = [];
     for (let i = 1; i < rows.length; i++) {
@@ -124,5 +150,5 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[] } {
         items.push({ name: displayName, ean, sku, brand, quantity, unit_price, size });
     }
 
-    return { items };
+    return { items, coverage };
 }

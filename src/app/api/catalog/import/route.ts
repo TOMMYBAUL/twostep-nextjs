@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
         const result = await ingestStockSnapshot(merchant.id, parsed.items, admin, {
             reconcile: true,
             dryRun: mode === "preview",
+            coverage: parsed.coverage,
         });
 
         const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
@@ -107,6 +108,9 @@ export async function POST(request: NextRequest) {
                 {
                     error: "Aucune ligne exploitable : chaque produit doit avoir un code-barres (EAN/GTIN) ou une référence (SKU). Le nom seul ne suffit pas.",
                     triage: result.triage,
+                    // Conserve le diagnostic de couverture (ex. colonne quantité non
+                    // reconnue) même quand tout est rejeté — sinon il serait perdu ici.
+                    column_coverage: result.column_coverage,
                 },
                 { status: 422 },
             );

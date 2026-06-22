@@ -82,12 +82,17 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    (qty→1) ; fix `decodeCsvBuffer` (détection UTF-8-strict/UTF-16-BOM/CP1252) ; + chemin **XLSX
    binaire** (cellules numériques natives) + **en-têtes inhabituels** (Gencode/Libellé/Qté/PU HT/
    Pointure/Fabricant) prouvés. +10 tests. Revue silent-failure-hunter : SOUND.
-2. ⬜ **Triage / identité** (`ingestStockSnapshot` triage) — EAN canonicalisé + **checksum GTIN
-   validé**, UPC-12→EAN-13, fallback SKU, **rejet des lignes nom-seul**. Preuve : fichier réel →
-   compteurs triage corrects + lignes rejetées listées. **NB (report de la revue maillon 1)** :
-   le vrai point de perte silencieuse résiduel = **colonne quantité NON détectée → qty=1 sans
-   alerte**. Y poser une **alerte de couverture de colonnes** (identité/qté absente du mapping →
-   signal, jamais un défaut muet) — c'est ICI que cet invariant nord vit, pas au décodage.
+2. ✅ **Triage / identité** (`ingestStockSnapshot` triage) — **COMPLET (2026-06-22)**. Preuve réelle
+   `tests/ingest-maillon2-triage.test.ts` : export FR sale (parse → triage) inspecté champ par champ —
+   4 GTIN (EAN-13 + **UPC-12→EAN-13 préfixe 0** + GTIN-en-colonne-Référence + **EAN-8**), 3 SKU
+   (EAN checksum FAUX → fallback SKU + référence interne + PLU court), 2 rejets **listés + motivés**
+   (`no_identifier`/`invalid_identifier`) ; invariant `accepté + rejeté = total` vérifié. **Alerte de
+   couverture de colonnes POSÉE** : `parseStockFile` renvoie `coverage{quantity,identifier,price}` ;
+   `ingestStockSnapshot` SIGNALE une colonne quantité non reconnue (sinon qty=1 muet partout) → message
+   d'erreur (statut honnête « partial » + wizard) + Sentry hors simulation. **Bug réel adjacent corrigé**
+   (revue silent-failure-hunter HIGH) : le stock upsert du produit CRÉÉ avalait son erreur (≠ branche
+   UPDATE) → produit sans ligne stock lu « 0 » = perte silencieuse ; rendu visible + `stock_replaced`
+   non compté si l'écriture échoue ; tailles/feed_events de création idem (captureError). +16 tests.
 3. ⬜ **Ingest / match** (items → `products`) — match par EAN/SKU, create vs update, **0 doublon**.
    Preuve : faux client (ou DB de test) → lignes attendues.
 4. ⬜ **Réconciliation** — article absent du snapshot → **stock 0** (vendu), jamais d'écrasement

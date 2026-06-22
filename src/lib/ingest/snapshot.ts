@@ -5,6 +5,7 @@ import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 import { selectProductsToZero, chunk, type ReconcileDecision } from "@/lib/ingest/reconcile";
 import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
+import type { ColumnCoverage } from "@/lib/ingest/parse-stock";
 import { captureError } from "@/lib/error";
 
 export type SnapshotResult = {
@@ -19,6 +20,12 @@ export type SnapshotResult = {
     errors: string[];
     /** Rapport de triage d'identité (règle GTIN/SKU — rejets comptés, jamais silencieux). */
     triage: Omit<TriageReport, "accepted">;
+    /**
+     * Couverture des colonnes critiques du fichier (si l'appelant l'a fournie).
+     * `quantity:false` = la colonne quantité n'a pas été reconnue → toutes les
+     * quantités valent 1 (« présence ») → perte SIGNALÉE (errors + Sentry), jamais muette.
+     */
+    column_coverage?: ColumnCoverage;
     /** true si exécution en simulation (preview wizard) — AUCUNE écriture effectuée. */
     dry_run: boolean;
 };
@@ -36,6 +43,12 @@ export type SnapshotOptions = {
      * l'enrichissement. Le marchand confirme, puis on rappelle sans dryRun.
      */
     dryRun?: boolean;
+    /**
+     * Couverture des colonnes critiques telle que détectée au parse (`parseStockFile`).
+     * Fournie par l'appelant car le triage/ingest ne voit que les items, pas l'en-tête.
+     * Sert à SIGNALER une colonne quantité non reconnue (sinon qty=1 muet sur tout le fichier).
+     */
+    coverage?: ColumnCoverage;
 };
 
 /**
@@ -70,6 +83,31 @@ export async function ingestStockSnapshot(
     // Règle d'identité : GTIN valide ou SKU exploitable, sinon rejet compté.
     // Le nom seul n'est JAMAIS une identité d'ingestion.
     const { accepted, ...triageSummary } = triageStockItems(items);
+
+    // ── Alerte de COUVERTURE DE COLONNES (invariant north-star « ne rien perdre
+    // silencieusement ») ──────────────────────────────────────────────────────
+    // Si l'en-tête « quantité » n'a pas été reconnu au parse, CHAQUE ligne est
+    // retombée sur qty=1 (« présence ») dans `parseStockFile`. Sans signal, un
+    // marchand dont le fichier portait de vraies quantités verrait « 1 de chaque »
+    // affiché comme une vérité. On rend ce défaut VISIBLE : un message d'erreur
+    // (→ statut honnête « partial » côté route + wizard) et, hors simulation, un
+    // signal Sentry. On ne CHANGE pas la sémantique présence (décision produit) —
+    // on l'arrête juste d'être muette. (`identifier`/`price` manquants sont déjà
+    // non-silencieux en aval : tout-rejeté → `no_exploitable` ; prix optionnel.)
+    if (opts.coverage && opts.coverage.quantity === false && accepted.length > 0) {
+        errors.push(
+            "Colonne quantité non reconnue dans l'en-tête : toutes les quantités sont à 1 " +
+                "(mode « présence »). Vérifiez l'intitulé de la colonne quantité du fichier.",
+        );
+        if (!dryRun) {
+            captureError(new Error("Stock ingest: colonne quantité non détectée (qty=1 sur tout le fichier)"), {
+                lib: "ingest/snapshot",
+                phase: "column-coverage-quantity",
+                merchantId,
+                accepted: accepted.length,
+            });
+        }
+    }
 
     // Index des produits existants (match EAN > SKU > nom).
     // LÈVE si la lecture échoue : sans cet index, AUCUN produit ne matcherait →
@@ -184,6 +222,8 @@ export async function ingestStockSnapshot(
         } else {
             // CREATE — invisible jusqu'à validation cascade ≥ 0.95
             const newId = crypto.randomUUID();
+            // En simulation (dryRun), le replace est compté tel qu'il SE FERAIT.
+            let stockOk = true;
             if (!dryRun) {
                 const { error: createErr } = await admin.from("products").insert({
                     id: newId,
@@ -197,19 +237,38 @@ export async function ingestStockSnapshot(
                 });
                 if (createErr) { errors.push(`Create ${cleanName}: ${createErr.message}`); continue; }
 
+                // Stock du produit fraîchement créé : SYMÉTRIQUE de la branche UPDATE
+                // (qui vérifie déjà `stockErr`). Sans cette garde, un échec d'upsert
+                // laissait un produit SANS ligne stock — lu « 0 » en aval = perte
+                // silencieuse de la quantité. On le rend visible (statut « partial »
+                // + Sentry) ; pas de throw : le produit existe, le prochain push
+                // complet le matchera en UPDATE et ré-écrira le stock (auto-guérison).
                 const nowIsoNew = new Date().toISOString();
-                await admin.from("stock").upsert(
+                const { error: stockErr } = await admin.from("stock").upsert(
                     { product_id: newId, quantity: totalStock, updated_at: nowIsoNew, source: "file_push", source_ts: nowIsoNew },
                     { onConflict: "product_id" },
                 );
-                if (availableSizes.length > 0) {
-                    await admin.from("products").update({ available_sizes: availableSizes }).eq("id", newId);
+                if (stockErr) {
+                    stockOk = false;
+                    errors.push(`Stock (création) ${cleanName}: ${stockErr.message}`);
+                    captureError(stockErr, { lib: "ingest/snapshot", phase: "create-stock-upsert", merchantId });
                 }
-                await admin.from("feed_events").insert({
+                if (availableSizes.length > 0) {
+                    const { error: sizesErr } = await admin.from("products").update({ available_sizes: availableSizes }).eq("id", newId);
+                    if (sizesErr) {
+                        // Secondaire (groupVariantsByEAN re-calcule les tailles) → visible sans bloquer.
+                        captureError(sizesErr, { lib: "ingest/snapshot", phase: "create-available-sizes", merchantId });
+                    }
+                }
+                const { error: feedErr } = await admin.from("feed_events").insert({
                     merchant_id: merchantId,
                     product_id: newId,
                     event_type: "new_product",
                 });
+                if (feedErr) {
+                    // Canal notification (favoris) — non bloquant mais plus jamais avalé.
+                    captureError(feedErr, { lib: "ingest/snapshot", phase: "create-feed-event", merchantId });
+                }
                 createdProductIds.push(newId);
             }
 
@@ -218,7 +277,7 @@ export async function ingestStockSnapshot(
             byName.set(cleanName.toLowerCase().trim(), newId);
             touched.add(newId);
             productsCreated++;
-            stockReplaced++;
+            if (stockOk) stockReplaced++;
         }
     }
 
@@ -312,6 +371,7 @@ export async function ingestStockSnapshot(
             total_items: items.length,
             errors,
             triage: triageSummary,
+            column_coverage: opts.coverage,
             dry_run: true,
         };
     }
@@ -348,6 +408,7 @@ export async function ingestStockSnapshot(
         total_items: items.length,
         errors,
         triage: triageSummary,
+        column_coverage: opts.coverage,
         dry_run: false,
     };
 }

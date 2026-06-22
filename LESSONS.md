@@ -65,6 +65,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   rejouerait le webhook = double-décrément delta). (2026-06-20)
 
 ## Silent-failure : rendre un write « non silencieux »
+- ❌ **Branches JUMELLES CREATE/UPDATE traitant le même write de façon ASYMÉTRIQUE** : dans
+  `ingestStockSnapshot`, la branche UPDATE vérifiait `stockErr` mais la branche CREATE faisait
+  `await admin.from("stock").upsert(...)` SANS capturer l'erreur → un produit créé dont l'upsert
+  stock échoue restait sans ligne stock = lu « 0 » en aval = perte silencieuse de la qté. Fix :
+  symétrie (errors+captureError, statut partial), `stock_replaced` non compté si l'écriture
+  échoue (compteur honnête), pas de throw (le produit existe → prochain push complet le matche en
+  UPDATE = auto-guérison). **Règle : quand deux branches (create vs update, twins recalc) écrivent
+  la MÊME donnée, leur gestion d'erreur doit être identique — grep les deux avant de committer.**
+  (Trouvé par silent-failure-hunter au maillon 2, 2026-06-22)
+- ✅ **Alerte de couverture de colonnes** (maillon 2) : un défaut MUET (colonne quantité non
+  reconnue → qty=1 « présence » partout) devient un SIGNAL en faisant remonter la couverture du
+  parse (`parseStockFile` → `coverage`) jusqu'à l'ingest (`column_coverage` + errors + Sentry).
+  L'invariant « ne rien perdre silencieusement » vit au TRIAGE/INGEST (là où on connaît l'impact),
+  pas au décodage. Ne PAS changer la sémantique dégradée (décision produit) — juste l'arrêter
+  d'être muette. (2026-06-22)
 - ❌ Transformer un write avalé (`error` jeté) en **throw** AUGMENTE la surface de throw →
   un caller dont le `catch` ne fait que `console.error` rend la nouvelle défaillance
   **Sentry-invisible** en prod (pire qu'avant : on croit l'avoir rendue visible). **Règle :

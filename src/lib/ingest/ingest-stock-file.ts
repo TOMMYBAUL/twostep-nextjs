@@ -94,7 +94,12 @@ export async function ingestStockFileForMerchant(
         }
 
         // reconcile: true → snapshot complet, on décrémente les vendus absents du fichier.
-        const result = await ingestStockSnapshot(merchantId, parsed.items, admin, { reconcile: true });
+        // coverage : transmet la couverture des colonnes pour SIGNALER une colonne
+        // quantité non reconnue (sinon qty=1 muet sur tout le fichier).
+        const result = await ingestStockSnapshot(merchantId, parsed.items, admin, {
+            reconcile: true,
+            coverage: parsed.coverage,
+        });
 
         // Aucune ligne exploitable (ni GTIN valide ni SKU) → échec explicite, pas un faux succès.
         const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
