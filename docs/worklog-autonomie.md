@@ -5,6 +5,58 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-22 (run autonome) · MISSION COURANTE maillon 8 (Canal EMAIL-IN stock, de bout en bout) — PROUVÉ + 2 silent-failures réels corrigés → **CHAÎNE A 1→8 COMPLÈTE**
+
+**Sourcing** : mission §1bis, dernier maillon `⬜` de la chaîne A = maillon 8 (email-in : la PORTE
+des POS FR Clictill/Fastmag qui émaillent un CSV vers `stock-{slug}@twostep.fr`, ADR-002). Les
+sous-pièces (`parseInboundAddress`, `ingestStockFileForMerchant`) étaient testées ISOLÉMENT
+(`inbound-address.test.ts`, `ingest-stock-file.test.ts`) mais l'**ORCHESTRATION** de la route
+`POST /api/inbound-email` (signature Resend → routage canal → résolution marchand → contrat
+snapshot-unique → décodage base64 → câblage ingestion) n'avait **AUCUN test** — exactement le motif
+maillons 5/6/7 (l'invariant vit dans l'orchestration, pas dans une fonction pure).
+
+**TROUVÉ + CORRIGÉ — bug réel n°1 (faux négatif de résolution = perte silencieuse n°1)** : la
+résolution `merchants.inbound_email_slug` AVALAIT son `error` (`const { data: merchant } = ...`). Un
+blip DB → `merchant=null` → `resolved=null` → `200 OK "no matching merchant"` → **Resend ne réessaie
+JAMAIS** → l'email stock planifié du marchand est PERDU EN SILENCE (feed figé, 0 Sentry, 0 statut).
+Même classe que `resolveWebhookProduct` (erreur DB ≠ « marchand inconnu »). **FIX** : retenir
+l'erreur ; si rien ne matche ET erreur DB → `captureError` + **500** (Resend retry) ; un slug
+réellement inconnu (spam) reste un **200 bénin** (ne pas faire boucler Resend). TDD : test RED prouvé
+sur l'ancien code (`git stash` du route → le test « erreur DB » échoue), GREEN après fix.
+
+**TROUVÉ + CORRIGÉ — bug réel n°2 (revue silent-failure-hunter, MEDIUM, même hot path)** :
+`resend.emails.get(emailId)` peut renvoyer `{data:null, error}` sur un blip API → `attachments=[]` →
+le canal stock conclut « pas de pièce jointe tableur » + **200** → un email stock qui CONTENAIT
+pourtant son CSV est dropé, jamais réessayé, et l'alerte Sentry **MISDIAGNOSTIQUE** « no attachment »
+au lieu de « fetch échoué ». **FIX** : vérifier `emailRes.error || !emailRes.data` → **throw** →
+outer catch → `captureError` + 500 → Resend RÉESSAIE. Distingue « fetch raté » (retry) de « email
+sans tableur » (200 bénin légitime). +1 test.
+
+**REVUE OBLIGATOIRE** `silent-failure-hunter` (diff pipeline ingest) : fix n°1 jugé **SOUND**
+(discrimination erreur-DB/no-match correcte, pas de boucle 500 sur spam, pas de double-ingestion : le
+500 est PRÉ-ingestion + `ingestStockFileForMerchant` hash-idempotent). A surfacé le finding n°2
+(MEDIUM, corrigé dans le run). Findings B/C (LOW) = enrichissement de contexte Sentry sur des chemins
+qui remontent DÉJÀ 500+captureError (pas de perte) → laissés (anti scope-creep).
+
+**PREUVE RÉELLE** (`tests/ingest-maillon8-email-in.test.ts`, +10) : on drive la VRAIE route POST avec
+un payload Resend `email.received` réaliste signé HMAC + une pièce jointe **CSV FR sale réelle**
+(séparateur `;`, accents, en-tête « Quantité ») encodée base64. Couvre : signature invalide→401 ;
+type≠received→200 ; **erreur DB résolution→500+captureError** ; slug inconnu→200 sans Sentry ;
+**décodage base64 SANS PERTE** (le buffer reçu par l'ingestion == le CSV d'origine octet pour octet) ;
+**erreur Resend fetch→500** ; canal stock sans tableur→captureError ; **multi-fichiers→snapshot-unique
+(captureError + 0 ingestion)** ; ingestion non aboutie (no_exploitable)→captureError ; unchanged→bénin.
+
+**TESTÉ** : `npm run test:run` → **612/612** vert (était 602, +10), `tsc` OK.
+
+**MÉTRIQUE** : maillon 8 (Email-in) **prouvé COMPLET** + 2 silent-failures réels corrigés → **la
+CHAÎNE DATA A (1 parse → 2 triage → 3 match → 4 reconcile → 5 confiance → 6 affichage read-path →
+7 sortie Google → 8 email-in) EST PROUVÉE MAILLON PAR MAILLON DE BOUT EN BOUT.** Aucune escalade de
+décision binaire (tout réversible, 0 migration). **Reste** : plan B (validation VISUELLE de l'UI au
+navigateur — maillon 6 visuel) = hors périmètre boucle, escaladé à Thomas ; items `[G]`/`[X]` du
+backlog inchangés.
+
+---
+
 ## 2026-06-22 (run autonome) · MISSION COURANTE maillon 7 (Sortie Google LFP — gate honnête) — PROUVÉ + bug réel corrigé
 
 **Sourcing** : mission §1bis, prochain maillon de la chaîne A après 1→6(read) = maillon 7 « Feed Google »

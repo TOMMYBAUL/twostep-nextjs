@@ -136,6 +136,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   suppression prudente. Rappel : 0€ promo INATTEIGNABLE (`promotionBody.sale_price = z.number().positive()`)
   → ne pas « corriger » le cas 0 côté front (vérifié avant d'agir). (maillon 6, 2026-06-22)
 
+## Canaux entrée / webhooks tiers (Resend, POS)
+- ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
+  « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas
+  `POST /api/inbound-email` (canal email-in stock) : (a) résolution `merchants.inbound_email_slug`
+  avalait `error` (`const { data: merchant } = ...`) → blip DB → merchant=null → `200 "no matching
+  merchant"` → email stock du marchand perdu ; (b) `resend.emails.get` `{data:null,error}` →
+  `attachments=[]` → faux « no attachment »+200 → CSV pourtant présent perdu (et l'alerte Sentry
+  MISDIAGNOSTIQUE « no attachment » au lieu de « fetch raté »). **Règle (même classe que
+  `resolveWebhookProduct`) : dans un handler webhook, erreur DB/API ≠ « rien à traiter » → throw/500
+  + captureError (l'émetteur réessaie) ; ne réserver le 200 bénin qu'au VRAI no-match (spam/slug
+  inconnu) pour ne pas faire boucler les retries.** (maillon 8, 2026-06-22, revue silent-failure-hunter)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

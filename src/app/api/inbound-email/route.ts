@@ -63,16 +63,28 @@ export async function POST(request: NextRequest) {
     // Adresse : stock-{slug}@domain (stock) | factures-{slug}@domain (factures) | {slug}@domain (factures).
     const supabase = createAdminClient();
     let resolved: { merchantId: string; channel: InboundChannel } | null = null;
+    let lookupError: unknown = null;
 
     for (const toAddr of toList) {
         const parsed = parseInboundAddress(toAddr, INBOUND_DOMAIN);
         if (!parsed) continue;
 
-        const { data: merchant } = await supabase
+        const { data: merchant, error: merchantErr } = await supabase
             .from("merchants")
             .select("id")
             .eq("inbound_email_slug", parsed.slug)
             .maybeSingle();
+
+        // Un échec DB (≠ slug inconnu) ne doit JAMAIS être confondu avec « aucun
+        // marchand » : sinon un blip Supabase → merchant=null → 200 OK ci-dessous →
+        // Resend ne réessaie jamais → l'email stock planifié est PERDU EN SILENCE
+        // (feed figé, 0 Sentry, 0 statut) = perte silencieuse n°1 du north-star, exactement
+        // le motif resolveWebhookProduct. On retient l'erreur et, si rien ne matche, on
+        // remonte 500 (Resend retry) + Sentry au lieu d'avaler.
+        if (merchantErr) {
+            lookupError = merchantErr;
+            continue;
+        }
 
         if (merchant) {
             resolved = { merchantId: merchant.id, channel: parsed.channel };
@@ -81,6 +93,17 @@ export async function POST(request: NextRequest) {
     }
 
     if (!resolved) {
+        // Erreur DB rencontrée sans aucun match → distinguer de « slug inconnu » (spam,
+        // qui doit rester un 200 bénin et ne PAS faire boucler Resend) : rendre VISIBLE +
+        // faire réessayer, ne pas avaler l'éventuel email stock.
+        if (lookupError) {
+            captureError(lookupError, {
+                route: "inbound-email",
+                step: "resolve_merchant",
+                to: toList.join(","),
+            });
+            return NextResponse.json({ error: "merchant lookup failed" }, { status: 500 });
+        }
         return NextResponse.json({ ok: true, ignored: "no matching merchant" });
     }
 
@@ -90,6 +113,15 @@ export async function POST(request: NextRequest) {
         // Fetch full email with attachments via Resend API (commun aux deux canaux).
         const resend = new Resend(process.env.RESEND_API_KEY);
         const emailRes = await resend.emails.get(emailId);
+        // L'email EXISTE chez Resend (on vient d'en recevoir le webhook) ; si la
+        // RÉCUPÉRATION de son contenu échoue (blip API), data=null → attachments=[]
+        // → on conclurait à tort « pas de pièce jointe » et on DROPPERAIT un email
+        // stock qui contenait pourtant son CSV (perte silencieuse n°1). On lève pour
+        // que l'outer catch remonte 500 → Resend RÉESSAIE (au lieu de perdre le fichier).
+        const emailErr = (emailRes as { error?: { message?: string } | null }).error;
+        if (emailErr || !emailRes.data) {
+            throw new Error(`resend.emails.get a échoué pour ${emailId}: ${emailErr?.message ?? "data nulle"}`);
+        }
         const emailPayload = emailRes.data as unknown as { attachments?: EmailAttachment[] } | null;
         const attachments = emailPayload?.attachments ?? [];
 

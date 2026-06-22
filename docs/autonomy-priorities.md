@@ -146,8 +146,19 @@ prêt-à-merger + Google répond + 1er marchand. Seul le premier tiers est dans 
    annoncé au crawler Google (catalogue fantôme) → parité de gate (les 2 canaux émettent le MÊME ensemble).
    3 silent-failures clos (revue silent-failure-hunter) : SELECT products avalé (skip muet du marchand),
    SELECT de LISTE connections avalé (200 silencieux = tout le feed abandonné), fallback store_code tracé.
-   0 migration, réversible. Reste chaîne A : **maillon 8 (email-in de bout en bout)**. NB : câbler
-   `pushInventoryToGoogle` sur le file-push reste `[G]` (écriture externe sous compte Google marchand — escaladé).
+   0 migration, réversible. NB : câbler `pushInventoryToGoogle` sur le file-push reste `[G]` (écriture
+   externe sous compte Google marchand — escaladé).
+8. ✅ **Email-in (canal stock de bout en bout)** — **PROUVÉ (2026-06-22)**. Preuve réelle
+   `tests/ingest-maillon8-email-in.test.ts` (+10) : on drive la VRAIE route `POST /api/inbound-email`
+   avec un payload Resend `email.received` signé HMAC + une pièce jointe CSV FR sale (base64). Prouvé :
+   signature→401, routage canal stock, **décodage base64 sans perte** (buffer reçu == CSV d'origine
+   octet pour octet), contrat snapshot-unique (multi-fichiers → captureError + 0 ingestion). **2 bugs
+   réels corrigés (perte silencieuse n°1, classe `resolveWebhookProduct`)** : (a) résolution
+   `merchants.inbound_email_slug` avalait son `error` → blip DB → `200 "no matching merchant"` → Resend
+   ne réessaie jamais → email stock perdu ; fix : erreur DB ≠ no-match → `captureError`+500 (retry),
+   slug inconnu = 200 bénin. (b) `resend.emails.get` `{data:null,error}` → `attachments=[]` → faux
+   « no attachment »+200 → CSV perdu ; fix : throw→500 (retry). Revue silent-failure-hunter : SOUND
+   (fix a) + finding b corrigé. 0 migration, réversible. → **CHAÎNE DATA A : maillons 1→8 ✅ COMPLÈTE.**
 
 **B — UI réelle (Playwright sur l'app live)** : parcours accueil → onboarding → upload stock →
 dashboard → vitrine + badge confiance. Screenshots. Lister sans complaisance ce qui est
@@ -158,6 +169,12 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 
 > Tant que A n'est pas prouvé maillon par maillon, NE PAS partir sur du nouveau feature.
 > Chaque run : reprendre le 1er maillon `⬜` non prouvé, le finir avec preuve, cocher, worklog.
+
+> **✅ CHAÎNE A 1→8 COMPLÈTE (2026-06-22).** Tous les maillons data sont prouvés de bout en bout
+> avec preuve réelle + bugs réels corrigés. **Reste de la mission §1bis** : plan **B** (validation
+> VISUELLE de l'UI au navigateur — maillon 6 visuel/Playwright) = **hors périmètre boucle (pas de
+> navigateur) → escaladé à Thomas**. Prochain travail boucle = sourcing par signaux (§6) sur le
+> backlog Rang 3 `[R]` (couverture hot path restante) puisque le haut du backlog est `[G]`/`[X]`.
 
 ---
 
