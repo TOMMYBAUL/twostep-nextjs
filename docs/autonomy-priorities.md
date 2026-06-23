@@ -97,6 +97,13 @@ plus un mur Google externe.
 > `logs/notify-extra.txt` : « plus de [R] in-scope — valeur = pilote (Thomas) + décisions gated » +
 > **RECOMMANDER de réduire la cadence** (§5.4). **Un idle honnête vaut mieux que du busywork.**
 > Auto-check : si le score **Align < 9**, c'est probablement hors-cap → stop, re-choisir ou idle.
+>
+> **🟢 ÉTAT 2026-06-23 (run autonome) — IDLE HONNÊTE ATTEINT, RÈGLE APPLIQUÉE.** Sourcing §6 refait :
+> backlog A+D épuisé, **signaux réels vérifiés en DB prod** (quality_alerts = data SYNTHÉTIQUE de test, pas
+> un défaut ; 0 marchand réel = 0 signal in-scope), couverture = hors-cap. **Aucun `[R]` in-scope ne reste.**
+> Conclusion conforme : escalade (notify-extra) + reco cadence, **PAS de dérive**. **Prochain run : si même
+> état (0 [R] in-scope, 0 signal réel), RE-IDLE — ne pas se rabattre sur du hors-cap.** La valeur est chez
+> Thomas (GO merge des 39 commits gelés / validation visuelle UI / pilote).
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but

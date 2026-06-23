@@ -5,6 +5,44 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · IDLE HONNÊTE — **plus aucun `[R]` IN-SCOPE ; sourcing par signaux fait, escalade + reco cadence (ANTI-DRIFT §1bis appliquée)**
+
+**Sourcing (§6, ordre strict)** : (1) backlog — chaîne A 1→8 ✅, Phase D D1-D7 ✅, readiness LFP ✅, backing
+data onboarding (`stats` + `feed-preview` shadow) ✅ ; reste = VISUEL (Thomas) ou GATED (déjà escaladé).
+(2) **Signaux réels — VÉRIFIÉS en DB prod ce run** (pas deviné) : `quality_alerts` = 104 `stock_stale` +
+1 `pos_disconnected` + 1 `price_aberrant`, **TOUS sur marchands SYNTHÉTIQUES** (TEST PAY / TESTE SIGNUP /
+test stripe / Two-Step Test + demos seedés Chez Nous/Maison Dorée/… créés en avril, jamais rafraîchis) →
+c'est le **cron qualité qui FONCTIONNE** sur de la data périmée de test, **pas un défaut de code**.
+`pos_disconnected` = la connexion Square du compte test (le token legacy connu, LESSONS). **0 marchand réel
+⇒ 0 signal in-scope.** (3) couverture hot-path manquante = **explicitement HORS-CAP** (FILTRE DE CAP : « couverture
+pour la couverture »). (4) exploration libre = non (rien à explorer in-scope).
+
+**Décision (ANTI-DRIFT §1bis)** : **NE PAS fabriquer de travail hors-cap.** Les 4 runs précédents (google-status
+route, ingest/stock route, webhooks absolus, factures) **dérivaient déjà** (gate vert mais hors cap pilote) —
+le commit `1e65529` a posé le FILTRE DE CAP pour stopper exactement ça. Un 5e run de couverture serait la 5e
+dérive. → **idle honnête + escalade** (notify-extra) au lieu de busywork.
+
+**Escaladé à Thomas** (`logs/notify-extra.txt`) : (1) **LEVIER PRINCIPAL** — la branche est **39 commits d'avance
+sur `main`** (toute la Phase D Google-compat + onboarding backing data **gelés hors prod** ; `twostep.fr` tourne
+sur du code pré-Phase-D) → GO merge feat→main + redeploy (gate vert, réversible). (2) Rappel de la file de
+décisions GATED déjà préparées (D2 GTIN-only flag, D5 clé ANTHROPIC, file-push→Google, Rang 2 idempotence).
+(3) **RECO CADENCE** : réduire la fréquence des runs — le réversible in-scope est ÉPUISÉ ; la prochaine vraie
+valeur est chez Thomas (GO merge / validation visuelle UI / recrutement pilote Deerskin+2e boutique).
+
+**Testé** : aucune modif code ce run (3 fichiers docs : notify-extra, worklog, priorities). Gate HEAD `a3d0e25`
+vert par construction (pre-push hook `test:run`+`tsc` à chaque push). 831 tests.
+
+**Scorecard** : Preuve 6 (état DB réel vérifié, 0 code à prouver) · Sécu 8 (0 changement, 0 risque introduit) ·
+Rev 10 (docs-only, 0 migration) · Scope 9 (sourcing + escalade ciblés, 0 dérive) · Align 9 (refus de la dérive
++ escalade du vrai levier = l'action north-star correcte ici). tests 831→831 · 0 bug réel (aucun in-scope) ·
+3 fichiers · CFR 10 runs : 100 % exit=0+commit (mais 4 derniers = dérive hors-cap, vert ≠ haute valeur).
+
+**Reste / questions** : tout est chez Thomas. Rappeler la boucle quand (a) merge GO'd, (b) UI validée au navigateur,
+ou (c) un pilote avance. **Si le prochain run retrouve le même état (0 [R] in-scope, 0 signal réel) → re-idle, ne
+pas dériver.**
+
+---
+
 ## 2026-06-23 (run autonome) · ONBOARDING PILOTE (item 2 IN-SCOPE) — **Backing data du mode SHADOW/PREVIEW : `GET /api/google/feed-preview` (montrer ce qu'on publierait AVANT de publier, lecture-seule) + 2 silent-failures (1 dans le neuf, 1 sur le feed live Voie B)**
 
 **Sourcing (§6 + FILTRE DE CAP §1bis)** : chaîne A 1→8 ✅, Phase D D1-D7 ✅/escaladé, webhooks/crons/factures
