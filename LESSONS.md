@@ -27,6 +27,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ⏳ STRICT_DECRYPT : code prêt, **bloqué par 1 token legacy = connexion Square du compte "Two-Step Test"**. Activable après suppression de ce test + set env Vercel prod. Décision Thomas (ne pas supprimer sa connexion de test sans accord).
 - ⚠️ NB config externe : changer le scope Lightspeed dans le code exige que l'app OAuth enregistrée chez Lightspeed autorise `employee:inventory_read` (console dev Lightspeed) — à vérifier avant la 1re connexion réelle.
 
+## OAuth — scope vs promesse read-only (D6, 2026-06-23)
+- ❌ **Un scope OAuth qui demande PLUS que ce que le code utilise = contradiction SILENCIEUSE d'une
+  promesse de sûreté au CONSENTEMENT.** Square demandait `INVENTORY_WRITE`, Shopify `write_inventory`,
+  mais AUCUN chemin n'écrit de quantité d'inventaire vers le POS (getStock = lecture ; les writes stock
+  vont vers Supabase). Le marchand voyait « peut modifier mon inventaire » à l'autorisation → contredit
+  « on ne casse pas ta gestion de stock » + viole le moindre-privilège. Fix : retirer le scope mort
+  (narrowing = sûr, tokens existants gardent leur grant, on demande un sous-ensemble — pas de changement
+  app Square/Shopify requis). **Règle : grep les endpoints d'écriture de chaque scope demandé ; tout scope
+  d'écriture sans appelant est mort → le retirer.** Lock par test : `getAuthUrl` ne doit jamais contenir un
+  token write-inventory (`tests/pos-readonly-stock-contract.test.ts`). (même classe « garde/promesse
+  appliquée de façon incohérente » que maillon 5/6/D7)
+- ⚠️ **Vérifier la prémisse d'un item AVANT de la coder** : D6 disait « aucun adaptateur n'écrit vers la
+  caisse » — FAUX (pushCatalog + updatePosProduct écrivent du CATALOGUE). La vraie promesse = ne pas écrire
+  les QUANTITÉS de stock. Reformuler l'invariant sur ce qui est vrai+vérifiable, ne pas tester un slogan faux.
+
 ## Next.js / Vercel
 - ❌ `vercel env add` par stdin PowerShell enregistre des valeurs VIDES (et l'argument positionnel est refusé par CLI ≥54.13) → utiliser `--value` ou l'API REST (`POST /v10/projects/{id}/env?upsert=true`, token dans `%APPDATA%\xdg.data\com.vercel.cli\auth.json`). Vérifier avec `vercel env pull` + longueur des valeurs. (2026-06-13)
 - ❌ Script npm `prepare` (`git config core.hooksPath`) casse `npm install` sur Vercel (pas de .git en build CLI) → wrappé dans node try/catch. (2026-06-13)
