@@ -1,16 +1,41 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-22 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-23 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
-- NOUVEAU : 45
+- NOUVEAU : 43
 - CONTACTE : 1
 - BROUILLON : 69
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Rattrapage mardi — 2026-06-23 (L'Eclaireur) — Saint-Etienne épuisé, 0 email trouvé + 2 nouvelles écartées
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi)
+
+**Note de session :** Saint-Etienne ÉPUISÉ DÉFINITIF (27/27 prospects traités — confirmé 17/06). Session de vérification finale : 5 prospects NOUVEAU restants sous le seuil de 6 passages investigués (AGATHE ET ZOE, TIABEL, ESTHER MICHELE/BOTE, JAILLET, CHRISTOMET). 15+ recherches web + fetches effectués. **0 email nouveau confirmé.** 2 nouvelles ÉCARTÉES DÉFINITIVES découvertes : AGATHE ET ZOE (SIREN 501691844 — radiée RCS depuis 30/11/2020, cessation d'activité 2016 — annuaires outdatés la montrent encore active) et ESTHER MICHELE/BOTE (SIREN 818920985 — liquidation judiciaire clôturée 27/04/2018, insuffisance d'actif — plus référencée sur Kompass). Confirmations : TIABEL/JAILLET/CHRISTOMET (tous famille Dorise, 41-28-23 rue CB) — formulaire dorise-joaillier.com uniquement, contact@dorise-joaillier.com déjà dans tracker — pas d'email propre à ces entités. L'ESPION et TOULOUSE MONTRES toujours en seuil atteint (visite terrain uniquement). Saint-Etienne est maintenant 100% traité. **⚠️ ACTION URGENTE THOMAS : la totalité des 208 prospects sont traités digitalement. Il faut planifier des tournées terrain pour les NOUVEAU restants. Saint-Etienne terrain prioritaire : TIABEL (41 rue CB), JAILLET (28 rue CB), L'ESPION (21B rue CB).** Notion MCP indisponible (idem toutes sessions).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | — | ECARTE | Radiée RCS depuis 30/11/2020 (cessation activité 2016 — pappers.fr confirmé 23/06). Annuaires outdatés. **ÉCARTÉE DÉFINITIF.** |
+| ESTHER MICHELE (BOTE) | Saint-Etienne | Cosmétique | Isabelle Bouygue | — | 818920985 | — | ECARTE | Liquidation judiciaire clôturée 27/04/2018 (insuffisance d'actif — pappers.fr confirmé 23/06). Plus référencée sur Kompass. **ÉCARTÉE DÉFINITIF.** |
+| TIABEL | Saint-Etienne | Bijouterie | Armand Dorise | — | 983791369 | 7/10 | NOUVEAU | Email non trouvé (3e passage 23/06) — formulaire dorise-joaillier.com uniquement (05 61 52 38 03), contact@dorise-joaillier.com déjà dans tracker pour entité principale. Pas d'email propre à TIABEL. 41 rue Croix Baragnon. **Visite terrain.** |
+| JAILLET | Saint-Etienne | Horlogerie | Edouard Dorise | — | 901806471 | 7/10 | NOUVEAU | Email non trouvé (3e passage 23/06) — même famille Dorise, même site, formulaire uniquement. 28 rue Croix Baragnon. **Visite terrain.** |
+| CHRISTOMET | Saint-Etienne | Horlogerie réparation | Edouard Dorise | — | 917739880 | 5/10 | NOUVEAU | Email non trouvé (3e passage 23/06) — même famille Dorise, SAV uniquement, pertinence Two-Step limitée. 23 rue Croix Baragnon. **Visite terrain (pertinence limitée).** |
+
+**Nouvelles écartées (session 23/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| AGATHE ET ZOE | Saint-Etienne | 501691844 | Radiée RCS 30/11/2020, cessation activité 2016 — ÉCARTÉE DÉFINITIF |
+| ESTHER MICHELE (BOTE) | Saint-Etienne | 818920985 | Liquidation judiciaire clôturée 27/04/2018 (insuffisance d'actif) — ÉCARTÉE DÉFINITIF |
+
+*Note : Notion MCP indisponible (idem toutes sessions précédentes). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-06-23".*
+
+---
 
 ### Rattrapage lundi — 2026-06-22 (L'Eclaireur) — Capitole épuisé, 0 email trouvé
 
