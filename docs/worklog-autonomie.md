@@ -5,6 +5,44 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome #2) · RE-IDLE HONNÊTE — **même état, RE-VÉRIFIÉ en DB prod ; escalade renforcée = PAUSE/espacer le cron**
+
+**Pourquoi ce run ne produit pas de code** : la directive FILTRE DE CAP (§1bis) est explicite — *« Prochain run :
+si même état (0 [R] in-scope, 0 signal réel), RE-IDLE — ne pas se rabattre sur du hors-cap. »* J'ai refait le
+sourcing §6 **et re-vérifié l'état directement en prod** (ne pas faire confiance aveugle au run #1) :
+
+**Sourcing §6 (ordre strict), vérifié contre la DB prod (`nagyprzjtheyeuuwxgpg`) ce run :**
+- (1) **Backlog** : chaîne A 1→8 ✅, Phase D D1–D7 ✅, readiness LFP (a) ✅, backing data onboarding
+  (`/api/google/stats` + `/api/google/feed-preview` shadow) ✅ ; D2/D5 préparés+escaladés. **Reste = VISUEL**
+  (UI onboarding/shadow-preview, pas de navigateur côté boucle → Thomas) ou **GATED** (déjà escaladé).
+- (2) **Signaux réels — REQUÊTÉS en prod** : `merchants`=9, **TOUS seed/test** (« L'Atelier de Léa », « Sole
+  Store », « Peau Douce », « Maison Dorée », « Chez Nous » créés en lot le 18/04 ; + « Two-Step Test », « test
+  stripe », « TESTE SIGNUP », « TEST PAY ») — **aucun marchand réel, aucun créé depuis avril**.
+  `google_merchant_connections`=**0** (aucun feed LFP live). `quality_alerts`=106 = `stock_stale`×**104** (=
+  TOUS les produits) + `price_aberrant`×1 + `pos_disconnected`×1, daté **22/06 05:00** → **signature d'un
+  catalogue test DORMANT** (le cron qualité FONCTIONNE et décrit correctement de la data périmée), **pas un
+  défaut de code**. → **0 [R] in-scope, 0 signal réel frais.**
+- (3) **Couverture hot-path** = explicitement HORS-CAP (FILTRE DE CAP : « couverture pour la couverture »).
+- (4) **Exploration libre** = non (la directive interdit de se rabattre sur du hors-cap ; auto-check Align < 9).
+
+**Décision** : RE-IDLE honnête, **0 fichier de code touché**. Un 5e/6e run de couverture serait la dérive que
+le commit `1e65529` (FILTRE DE CAP) a justement posé pour stopper. Zéro complaisance (§5.3) : on ne fabrique pas
+de busywork pour « avoir quelque chose à faire ».
+
+**Escalade renforcée** (`logs/notify-extra.txt`) : la reco cadence du run #1 **n'a pas encore été appliquée** —
+le cron tourne ~toutes les 30 min (**12 runs le 23/06**, ledger) pour **0 travail in-scope** → ça grignote le
+quota d'abonnement **partagé** (§7) sans valeur. Donc escalade = **METTRE EN PAUSE / espacer le cron** jusqu'à un
+déblocage côté Thomas (GO merge des commits gelés / validation visuelle UI / recrutement pilote Deerskin+2e
+boutique / vraie data marchand). **Prochain run même état → RE-IDLE et NE PAS re-notifier en boucle** (le message
+est déjà posé ; re-spammer = bruit + quota).
+
+**Scorecard** : run de pilotage (pas de livrable code) — non noté sur les 5 axes produit. Métrique north-star
+**inchangée** : 100 % du backlog produit in-scope est construit+testé+mis en scène jusqu'au point d'une décision
+Thomas. **CFR 10 derniers runs = 100 %** (10/10 `exit=0` + commit, 0 revert détecté au `git log`). **Tests/fichiers
+de code : 0 delta** (idle). Le goulot n'est PLUS la boucle — il est sur Thomas (pilote/merge) et l'externe (Google).
+
+---
+
 ## 2026-06-23 (run autonome) · IDLE HONNÊTE — **plus aucun `[R]` IN-SCOPE ; sourcing par signaux fait, escalade + reco cadence (ANTI-DRIFT §1bis appliquée)**
 
 **Sourcing (§6, ordre strict)** : (1) backlog — chaîne A 1→8 ✅, Phase D D1-D7 ✅, readiness LFP ✅, backing

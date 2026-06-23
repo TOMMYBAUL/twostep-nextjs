@@ -104,6 +104,15 @@ plus un mur Google externe.
 > Conclusion conforme : escalade (notify-extra) + reco cadence, **PAS de dérive**. **Prochain run : si même
 > état (0 [R] in-scope, 0 signal réel), RE-IDLE — ne pas se rabattre sur du hors-cap.** La valeur est chez
 > Thomas (GO merge des 39 commits gelés / validation visuelle UI / pilote).
+>
+> **🟢 ÉTAT 2026-06-23 (run autonome #2) — RE-IDLE HONNÊTE, état RE-VÉRIFIÉ EN PROD (pas trust du run #1).**
+> Requêtes DB ce run : `merchants`=9 TOUS seed/test (« L'Atelier de Léa »…« TEST PAY »/« TESTE SIGNUP », créés
+> en lot 18/04, aucun depuis) ; `google_merchant_connections`=0 ; `quality_alerts`=106 = cron qualité sur
+> catalogue DORMANT (`stock_stale`×104 = TOUS les produits, +1 `price_aberrant`, +1 `pos_disconnected`, daté
+> 22/06 05:00) = **signature d'un catalogue test inerte, pas un défaut**. **0 [R] in-scope, 0 signal réel
+> frais.** RE-IDLE conforme. **Nouveau** : la reco cadence (run #1) n'a pas encore été appliquée (cron ~toutes
+> les 30 min, 12 runs le 23/06) → escalade renforcée = **METTRE EN PAUSE / espacer le cron** (grignote le quota
+> abonnement partagé pour 0 valeur). Prochain run même état → RE-IDLE, ne PAS re-notifier en boucle.
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but
