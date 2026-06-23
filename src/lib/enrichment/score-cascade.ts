@@ -117,19 +117,39 @@ export interface CascadeOutcome {
     visible: boolean;
 }
 
-/** Construit l'outcome complet à partir des tiers matchés + EAN canonique trouvé. */
+/**
+ * Construit l'outcome complet à partir des tiers matchés + EAN canonique trouvé.
+ *
+ * @param opts.identityConcords — garde de concordance d'identité (D7, zéro faux
+ *   positif). `false` = le caller a vérifié que le nom résolu par la source
+ *   externe NE concorde PAS avec le nom saisi par le marchand (EAN mal saisi /
+ *   réutilisé → identité réelle mais FAUSSE). Dans ce cas on ne fait confiance à
+ *   AUCUNE source seule : un produit qui aurait été auto-publié (`validated`) est
+ *   rétrogradé en `pending` (review 1-tap), jamais publié en silence.
+ *   `true`/`undefined` = concordant OU non évaluable (pas de nom des deux côtés)
+ *   → aucun downgrade.
+ */
 export function buildCascadeOutcome(
     tiers_matched: Tier[],
     canonical_ean: string | null,
     canonical_name: string | null,
+    opts?: { identityConcords?: boolean },
 ): CascadeOutcome {
     const score = combineTierScores(tiers_matched);
+    let review_status = scoreToReviewStatus(score);
+    let visible = scoreToVisible(score);
+
+    if (opts?.identityConcords === false && review_status === "validated") {
+        review_status = "pending";
+        visible = false;
+    }
+
     return {
         score,
         tiers_matched,
         canonical_ean,
         canonical_name,
-        review_status: scoreToReviewStatus(score),
-        visible: scoreToVisible(score),
+        review_status,
+        visible,
     };
 }

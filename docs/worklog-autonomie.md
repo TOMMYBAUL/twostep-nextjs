@@ -5,6 +5,84 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · PHASE D — **D7 `[R]` Concordance EAN↔nom-marchand** PROUVÉ + **D4 vérifié déjà-fait/retiré** · commit `<à compléter>`
+
+**Sourcing (§6)** : backlog Phase D, item `[R]` de plus haut rang non terminé = D4. **Vérifié dans le code
+réel d'abord** (LESSONS ~70 % de faux findings) → **D4 est caduc** : Open Beauty Facts est DÉJÀ entièrement
+câblé dans la cascade (`fetchFromOpenBeautyFacts`, reverse-search, `collectAllEanSources` → `tier2_obf` 0.97,
+appelé par `fetchEanData`/`runCascade`) et « pas d'API GS1 payante » déjà respecté (`lookupGs1` inerte sans
+clé, tier Basic 0€). Retiré du backlog (§5, zéro complaisance — ne pas fabriquer du busywork). En vérifiant,
+trou réel central au north-star repéré → **D7** (item `[R]` suivant), traité ce run.
+
+**TROUVÉ (vérifié dans le code, pas supposé) — faux positif d'identité, chemin forward non gardé** :
+`runCascade` (`cascade-engine.ts`), quand le marchand fournit un EAN, fait `collectAllEanSources(ean)` → un
+seul tier OBF/EAN-Search qui matche le code-barres pousse `tier2_obf` (0.97) → `buildCascadeOutcome` → score
+≥0.95 → `validated`+`visible:true` = **AUTO-PUBLISH, SANS jamais vérifier que le nom résolu concorde avec le
+nom saisi par le marchand**. Le chemin **reverse** (nom→EAN) a `verifyEanMatchWithAI` (`pickBestCandidate`),
+mais le chemin **forward** (EAN→nom) n'avait AUCUN croisement → un EAN mal saisi ou réutilisé (barcode reuse)
+résout une identité RÉELLE mais FAUSSE et la publie. C'est exactement « ne faire confiance à AUCUNE source
+seule » (north-star « zéro faux positif »). Consommateur réel : `enrichOneProduct` applique `outcome.visible`/
+`review_status` au produit (chemin EAN déclaré = `eanGuessed=false` → `outcome.visible` brut = le trou).
+
+**FAIT (réversible, 0 migration)** :
+- `score-cascade.ts` : `buildCascadeOutcome(..., opts?: { identityConcords })` — si `=== false` ET status
+  dérivé `validated` → rétrograde `pending`/`visible:false` (**downgrade-only**, jamais l'inverse ; rétro-
+  compatible : `undefined`/`true` = comportement historique ; **score brut préservé** pour `identification_score`).
+- `cascade-engine.ts` : helper pur `evalIdentityConcordance(merchantName, resolvedName, brand)` =
+  `scoreNameMatch(...) ≥ IDENTITY_CONCORDANCE_THRESHOLD (0.25)` (réutilise la fonction existante = source
+  unique de matching de noms). Seuil conservateur : divergence claire (~0-0.2) → review ; nom terse cohérent
+  (recouvrement de mots, poids 60 %) → reste validated. Appliqué aux **DEUX points de sortie**.
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline identité = gate de publication) :
+- **CRITIQUE-1 retenu+corrigé** : l'early-return CIP médicament contournait la garde → un CIP mal saisi mais
+  valide+présent dans BDPM s'auto-publiait en 0.99 (le cas le plus dangereux). Garde appliquée aussi sur CIP
+  (helper aux 2 returns). +2 tests (CIP mismatch→pending, CIP concordant→validated).
+- **HAUTE-1 réfuté par calcul** (« asymétrie brand → faux downgrade ») : le brand est préfixé sur l'ORIGINAL
+  (le rallonge vers le candidat → aide levScore), et `overlapScore` (60 %) est symétrique ; leur exemple
+  "Air Force 1"/"Nike Air Force 1 Retro" donne **0.89**, pas 0.22. Test terse "Crème hydratante" le prouve.
+- **HAUTE-3 retenu** : +1 test convergence 2 tiers + nom long divergent → pending malgré 0.985.
+- **CRITIQUE-2** (GS1 sans nom → garde inerte) : limitation réelle mais `lookupGs1` inerte en prod (pas de
+  clé) + over-gater une source autoritative sans nom = friction → documenté (`undefined`=non évaluable), non
+  corrigé. **HAUTE-2 / MOYENNE-1/2/3 / BASSE-1** : pré-existants, orthogonaux à D7, impact borné (eanGuessed
+  plafonne déjà à pending ; tiers best-effort) → différés, listés ci-dessous.
+
+**PREUVE RÉELLE** (méthode §1bis) : `cascade-engine.test.ts` (chemin réel `runCascade`, faux multi-source +
+vrai `scoreNameMatch`) + `score-cascade.test.ts` (garde pure). +12 tests : mismatch→pending malgré
+0.97/0.985/0.99 ; concordant→validated ; terse-cohérent→validated ; CIP mismatch/concordant ; convergence
+mismatch ; nom marchand absent→inerte ; canonicalName null→inerte (score décide). Chaque assertion échouerait
+sur l'ancien code (la mismatch aurait été `validated`/`visible`).
+
+**TESTÉ** : `npm run test:run` → **666/666** (était 654, +12), `tsc` OK. `detect_changes` MCP gitnexus
+indisponible dans l'env → périmètre confirmé par git : 2 fichiers prod (additif/interne) + 3 tests.
+
+**MÉTRIQUE** : 2 items Phase D traités (D4 vérifié caduc/retiré ; D7 prouvé). **1 faux positif d'identité
+réel comblé** (forward EAN→nom non gardé) + **1 CRITIQUE de revue corrigé** (CIP). 5 fichiers (2 lib + 3 test ;
++3 docs). 0 migration, réversible. Aucune escalade (tout réversible).
+
+**Reste / suivi non bloquant (vérifiés réels, pour run futur — anti scope-creep ce run)** :
+- (D4-suite) **Images anti-rejet GRATUITES** : `fetchFromOpenBeautyFacts`/`OpenProductsFacts` jettent
+  l'image OBF/OPF (GTIN-keyée, gratuite) → arbitrer la SOURCE-image avec D5 (gate CLIP), décision préférence
+  Serper vs OBF = produit (ne pas trancher en solo).
+- (HAUTE-2) `enrich-product.ts:62` `.update({ean:foundEan})` non vérifié → si l'écriture échoue, runCascade
+  tourne sur EAN null (impact borné : `eanGuessed=true` plafonne déjà à pending).
+- (MOYENNE-1) `canonical_name` non persisté dans `enrichOneProduct` (traçabilité du pourquoi-pending).
+- (MOYENNE-2/BASSE-1) Tier 3 GPC / Tier 4 CLIP : erreurs swallowed `NODE_ENV==='development'`-only en prod.
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car prouvé synthétique, pas vrai marchand)
+- **Preuve : 8/10** — chemin réel `runCascade` exercé sur mismatch/concordance/CIP/convergence, divergence
+  prouvée vs l'ancien code. Plafond 8 (pas de vrai marchand/EAN réel live).
+- **Sécurité north-star : 8/10** — revue SF-hunter, CRITIQUE-1 corrigé, faux positif d'identité (publier une
+  identité fausse en confiance d'une source) fermé sur les 2 chemins ; downgrade-only (aucun nouveau risque).
+- **Réversibilité : 10/10** — 0 migration, additif (param optionnel + garde downgrade-only), revert propre.
+- **Discipline de scope : 9/10** — 1 unité (D7) + correctif de revue ; 2 fichiers prod ; findings pré-existants
+  différés au lieu d'élargir le diff ; D4 retiré au lieu de fabriquer du busywork.
+- **Alignement north-star : 9/10** — cœur « zéro faux positif » : on ne fait plus confiance à une seule source
+  pour publier une identité ; le pilote ne verra pas un produit faussement identifié auto-publié.
+**Objectif (§5bis)** : tests 654→666 ; **1 faux positif d'identité + 1 CRITIQUE de revue** comblés ; 5 fichiers ;
+CFR 10 derniers runs : 10/10 `exit=0` avec commit (ledger), 0 revert détecté → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · PHASE D — item **D3 `[R]` Métrique « % publiable » (KPI pilote)** PROUVÉ · commit `beb8826`
 
 **Sourcing (§6)** : chaîne A 1→8 + D1 faits ; haut du backlog Phase D = D2 `[G]` (escaladé), donc item

@@ -219,9 +219,16 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   2 feeds + read-error→500+Sentry (fin du KPI all-zeros silencieux). Preuve `tests/lib/google/
 >   publishability.test.ts` (+10, catalogue sale champ par champ + chemin réel route). Revue SF-hunter SOUND.
 >   654 tests, 0 migration, réversible.
-> - **D4 `[R]` Open Beauty Facts** dans la cascade (cosmétique, GRATUIT) sur le modèle `kicksdb.ts` ;
->   **redescendre GS1** au rang « identité gratuite seulement » (NE PAS intégrer l'API GS1 payante —
->   food-only, inutile pour nos verticaux, cf [[google-lfp-etat]]). Preuve : vrai EAN cosmétique → nom+image.
+> - ✅ **D4 `[R]` Open Beauty Facts — DÉJÀ FAIT (vérifié 2026-06-23, retiré, zéro complaisance §5)**.
+>   Vérifié dans le code réel (LESSONS ~70 % de faux findings) : OBF est **déjà entièrement câblé** dans la
+>   cascade — `fetchFromOpenBeautyFacts` (`ean/lookup.ts`), reverse-search `searchEanByNameOpenBeautyFacts`,
+>   agrégation `collectAllEanSources` (`tier2_obf` scoré 0.97), appelé par `fetchEanData`/`runCascade`. Et
+>   « ne pas intégrer l'API GS1 payante » est **déjà respecté** : `gs1.ts` `lookupGs1` est inerte sans
+>   `GS1_CODEONLINE_API_KEY` + tier Basic documenté à 0€. Item caduc → retiré. **Reste réel séparé** (image
+>   anti-rejet GRATUITE) : `fetchFromOpenBeautyFacts`/`OpenProductsFacts` JETTENT l'image (`photo_url:null`,
+>   « Serper handles photos ») alors que OBF/OPF exposent une image GTIN-keyée gratuite → trou « images
+>   anti-rejet » (cf intro Phase D + `blocked_only_by_image` de D3). **Décision SOURCE-image = ambiguë** (le
+>   commentaire dit Serper préféré pour la qualité) → à arbitrer avec D5 (gate CLIP) plutôt qu'en solo.
 > - **D5 `[R]` Gate de match image (CLIP)** : avant de publier une image SOURCÉE (Serper/Google
 >   Shopping), vérifier qu'elle **matche vraiment** le produit (colonnes `clip_embedding_*` existantes)
 >   → anti faux-positif visuel ; repli sur la **photo marchand**. Preuve.
@@ -229,9 +236,19 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   (catalogue + feed + % publiable) **AVANT toute publication** (lecture-seule = sécurité marchand,
 >   « ne pas casser sa gestion de stock »). + **test verrouillant l'invariant « aucun adaptateur POS
 >   n'écrit vers la caisse »** (contrat read-only). Preuve.
-> - **D7 `[R]` Concordance EAN↔nom-marchand** : confirmer/renforcer que `identification_score` croise
->   le nom marchand vs le nom résolu par EAN → auto-publish si concordance, **review sinon** (gate
->   zéro-faux-positif : on ne fait confiance à AUCUNE source seule). Preuve.
+> - ✅ **D7 `[R]` Concordance EAN↔nom-marchand — PROUVÉ (2026-06-23)**. Trou réel comblé : le chemin
+>   **forward** (EAN saisi → nom résolu par OBF/EAN-Search) n'avait AUCUN croisement avec le nom marchand
+>   (seul le chemin reverse nom→EAN passait par `verifyEanMatchWithAI`) → un EAN mal saisi/réutilisé (barcode
+>   reuse) résolvait une identité RÉELLE mais FAUSSE, auto-publiée en confiance d'un seul tier (0.90-0.99 ≥
+>   0.95). Fix : garde pure `evalIdentityConcordance` dans `runCascade` (`scoreNameMatch(merchantName,
+>   resolvedName, brand) ≥ 0.25`, seuil conservateur) → `buildCascadeOutcome` rétrograde `validated`→`pending`
+>   (downgrade-only, jamais l'inverse ; score brut préservé pour traçabilité). **Appliqué aux DEUX points de
+>   sortie** (chemin multi-source ET early-return CIP médicament — finding CRITIQUE-1 de la revue SF-hunter,
+>   le cas le plus dangereux). Preuve `tests/lib/enrichment/cascade-engine.test.ts` + `score-cascade.test.ts`
+>   (+12 : mismatch→pending malgré 0.97/0.985/0.99, concordant→validated, terse-cohérent→validated, CIP
+>   mismatch, convergence mismatch, garde inerte sans nom). Revue SF-hunter : CRITIQUE-1 corrigé ; HAUTE-1
+>   (asymétrie brand) **réfuté par calcul** (0.89 pas 0.22, overlap symétrique 60 %) ; HAUTE-2/MOYENNE
+>   pré-existants orthogonaux différés. 666 tests, 0 migration, réversible.
 >
 > **READINESS (= ce que la boucle signale « prêt pour les marchands » via WhatsApp)** : D1+D3+D4+D5+
 > D6+D7 prouvés (gate vert) + D2 préparé/escaladé + **checklist go-live pilote rédigée** (BP vérifié

@@ -20,7 +20,7 @@
  */
 
 import { canonicalizeEan, detectIdentifierType } from "@/lib/identifiers/validators";
-import { searchEanByName } from "@/lib/ean/lookup";
+import { searchEanByName, scoreNameMatch } from "@/lib/ean/lookup";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
 import { lookupGs1 } from "@/lib/enrichment/gs1";
@@ -39,6 +39,43 @@ export interface CascadeInput {
     sku?: string | null;
     /** Si fourni, runCascade tente Tier 4 CLIP après les autres tiers (Cycle 9). */
     productId?: string | null;
+}
+
+/**
+ * Seuil de concordance nom-marchand ↔ nom-résolu-par-EAN (`scoreNameMatch`, 0..1).
+ *
+ * Garde D7 (« on ne fait confiance à AUCUNE source seule ») : le chemin reverse
+ * (nom → EAN) passe déjà par `verifyEanMatchWithAI`, MAIS le chemin forward
+ * (EAN → nom) n'avait aucun croisement → un EAN mal saisi ou réutilisé
+ * (barcode reuse) résolvait une identité RÉELLE mais FAUSSE, auto-publiée en
+ * confiance d'un seul tier (OBF/EAN-Search 0.90-0.97 ≥ 0.95).
+ *
+ * Seuil conservateur : on ne rétrograde qu'en cas de DIVERGENCE CLAIRE — deux
+ * produits différents scorent ~0–0.2, tandis qu'un nom marchand terse mais
+ * cohérent (« Crème » vs « Crème hydratante BioDerm ») reste haut grâce au poids
+ * du recouvrement de mots dans `scoreNameMatch`. Coût d'un faux downgrade =
+ * friction (review 1-tap, pas un rejet) ; coût d'un faux positif manqué =
+ * identité fausse publiée (violation north-star) → on biaise vers la détection.
+ */
+const IDENTITY_CONCORDANCE_THRESHOLD = 0.25;
+
+/**
+ * Évalue la concordance nom-marchand ↔ nom-résolu-par-source (garde D7).
+ * Retourne `undefined` si non évaluable (un des deux noms manque) → pas de
+ * downgrade. Appliqué à TOUS les points de sortie de runCascade (y compris le
+ * early return CIP : un médicament mal saisi mais valide dans BDPM résoudrait une
+ * identité réelle mais fausse en 0.99 — le cas le plus dangereux à ne pas rater).
+ */
+function evalIdentityConcordance(
+    merchantName: string | null | undefined,
+    resolvedName: string | null,
+    brand: string | null | undefined,
+): boolean | undefined {
+    if (!merchantName || !resolvedName) return undefined;
+    return (
+        scoreNameMatch(merchantName, resolvedName, brand ?? null) >=
+        IDENTITY_CONCORDANCE_THRESHOLD
+    );
 }
 
 // sourceToTier déplacé dans `multi-source.ts` — les fetchFromX retournent déjà
@@ -73,7 +110,13 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
             tiersMatched.push("tier1_cip");
             canonicalEan = canonical;
             canonicalName = cipMatch.canonical_name;
-            return buildCascadeOutcome(tiersMatched, canonicalEan, canonicalName);
+            return buildCascadeOutcome(tiersMatched, canonicalEan, canonicalName, {
+                identityConcords: evalIdentityConcordance(
+                    input.name,
+                    canonicalName,
+                    input.brand,
+                ),
+            });
         }
         // Si CIP pas trouvé dans BDPM : on continue cascade Tier 2/6 quand même
     }
@@ -207,7 +250,20 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
         }
     }
 
-    return buildCascadeOutcome(tiersMatched, canonicalEan, canonicalName);
+    // ─── Garde de concordance d'identité (D7, zéro faux positif) ───
+    // Quand une source externe a résolu un NOM pour l'EAN saisi ET que le marchand
+    // a fourni son propre nom, on vérifie qu'ils décrivent le MÊME produit. Sinon
+    // (EAN mal saisi / réutilisé → identité réelle mais fausse), on refuse l'auto-
+    // publish : `buildCascadeOutcome` rétrograde `validated` → `pending` (1-tap).
+    // Non évaluable (un des deux noms manque) → undefined = pas de downgrade ; le
+    // chemin reverse (canonicalName laissé null) reste couvert par AI verify amont.
+    return buildCascadeOutcome(tiersMatched, canonicalEan, canonicalName, {
+        identityConcords: evalIdentityConcordance(
+            input.name,
+            canonicalName,
+            input.brand,
+        ),
+    });
 }
 
 /**

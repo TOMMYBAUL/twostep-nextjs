@@ -14,13 +14,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock toutes les sources externes pour garder les tests déterministes
-vi.mock("@/lib/ean/lookup", () => ({
-    searchEanByName: vi.fn().mockResolvedValue(null),
-    fetchFromEanSearch: vi.fn().mockResolvedValue(null),
-    fetchFromUpcDatabase: vi.fn().mockResolvedValue(null),
-    fetchFromOpenBeautyFacts: vi.fn().mockResolvedValue(null),
-    fetchFromOpenProductsFacts: vi.fn().mockResolvedValue(null),
-}));
+// On garde le VRAI `scoreNameMatch` (pur) pour exercer la garde de concordance D7,
+// et on mocke uniquement les sources réseau.
+vi.mock("@/lib/ean/lookup", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/lib/ean/lookup")>();
+    return {
+        ...actual,
+        searchEanByName: vi.fn().mockResolvedValue(null),
+        fetchFromEanSearch: vi.fn().mockResolvedValue(null),
+        fetchFromUpcDatabase: vi.fn().mockResolvedValue(null),
+        fetchFromOpenBeautyFacts: vi.fn().mockResolvedValue(null),
+        fetchFromOpenProductsFacts: vi.fn().mockResolvedValue(null),
+    };
+});
 vi.mock("@/lib/enrichment/multi-source", () => ({
     collectAllEanSources: vi.fn(),
 }));

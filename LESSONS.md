@@ -170,6 +170,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   consomme** (clé `company`, statut HTTP). Même classe que maillon 5/6 (garde write non rejouée au read).
   ⚠️ Sécurité : `status` dérivé de `user_metadata` client-writable = trust-gate à durcir (escaladé). (2026-06-22)
 
+- ❌ **Garde anti-faux-positif présente sur UN chemin, absente sur le chemin SYMÉTRIQUE** (même classe que
+  maillon 5/6 « garde write non rejouée au read »). La cascade d'identité gardait le chemin **reverse**
+  (nom→EAN via `verifyEanMatchWithAI`) mais PAS le chemin **forward** (EAN saisi→nom résolu par OBF) : un EAN
+  mal saisi/réutilisé résolvait une identité réelle mais FAUSSE et l'auto-publiait (tier2 0.97 ≥ 0.95) sans
+  croiser avec le nom marchand = « confiance à une seule source ». Fix D7 : garde de concordance pure
+  `evalIdentityConcordance` (`scoreNameMatch ≥ 0.25`, downgrade-only validated→pending, score brut préservé),
+  appliquée à TOUS les points de sortie de `runCascade` — **y compris l'early-return CIP** (trouvé par
+  silent-failure-hunter : médicament = le faux positif le plus dangereux). **Règle : quand un gate de sûreté
+  existe sur un chemin, grep TOUS les chemins jumeaux/points de sortie qui produisent la même décision et
+  vérifier qu'ils l'appliquent — un early-return est un trou classique.** (cascade-engine, D7, 2026-06-23)
+- ⚠️ Revue adversariale : un finding « faux downgrade » doit être vérifié PAR CALCUL avant d'agir.
+  SF-hunter a signalé une asymétrie de brand dans `scoreNameMatch` donnant 0.22 → faux. Calcul réel = 0.89
+  (brand préfixé sur l'original le RALLONGE vers le candidat ; `overlapScore` pèse 60 % et est symétrique).
+  ~70 % des findings non vérifiés sont faux, y compris ceux d'un agent spécialiste. (2026-06-23)
+
 ## Canaux entrée / webhooks tiers (Resend, POS)
 - ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
   « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas

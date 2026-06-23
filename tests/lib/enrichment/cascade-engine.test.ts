@@ -3,9 +3,15 @@ import { preflightEan, runCascade } from "@/lib/enrichment/cascade-engine";
 
 // Cycle 4 : on mock désormais `collectAllEanSources` au lieu de `fetchEanData`
 // pour refléter le refactor multi-source convergence.
-vi.mock("@/lib/ean/lookup", () => ({
-    searchEanByName: vi.fn(),
-}));
+// On mocke `searchEanByName` (appel réseau) mais on garde le VRAI `scoreNameMatch`
+// (fonction pure) pour que la garde de concordance D7 soit réellement exercée.
+vi.mock("@/lib/ean/lookup", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/lib/ean/lookup")>();
+    return {
+        ...actual,
+        searchEanByName: vi.fn(),
+    };
+});
 
 vi.mock("@/lib/enrichment/multi-source", () => ({
     collectAllEanSources: vi.fn(),
@@ -262,5 +268,123 @@ describe("runCascade — pas d'EAN, reverse search par nom", () => {
         expect(out.review_status).toBe("pending"); // Score 0.90 < 0.95 → queue OBLIGATOIRE
         // Bonne nouvelle : même si la cascade match, on ne publie PAS auto.
         // L'admin valide ou rejette en review.
+    });
+});
+
+describe("runCascade — garde de concordance EAN↔nom-marchand (D7, zéro faux positif)", () => {
+    it("EAN saisi résout un nom qui NE CONCORDE PAS avec le nom marchand → pending malgré tier2 0.97", async () => {
+        // Cas réel : le marchand a tapé/réutilisé un mauvais code-barres. OBF résout
+        // une identité RÉELLE mais FAUSSE (« Shampooing » pour une « Crème solaire »).
+        // AVANT D7 : tier2_obf=0.97 ≥ 0.95 → validated + visible → identité fausse
+        // publiée en confiance d'UNE seule source. APRÈS : review 1-tap obligatoire.
+        mockCollectAll.mockResolvedValueOnce(
+            multi(["tier2_obf"], "Shampooing Garnier Ultra Doux"),
+        );
+        const out = await runCascade({
+            ean: "5449000000996",
+            name: "Crème solaire Nivea SPF50",
+            brand: "Nivea",
+        });
+        expect(out.score).toBe(0.97); // score brut conservé (traçabilité)
+        expect(out.canonical_name).toBe("Shampooing Garnier Ultra Doux");
+        expect(out.review_status).toBe("pending"); // ← le garde : pas d'auto-publish
+        expect(out.visible).toBe(false);
+    });
+
+    it("EAN saisi résout un nom CONCORDANT avec le nom marchand → validated/visible (non-régression)", async () => {
+        mockCollectAll.mockResolvedValueOnce(
+            multi(["tier2_obf"], "Coca-Cola Original Taste 33cl"),
+        );
+        const out = await runCascade({
+            ean: "5449000000996",
+            name: "Coca-Cola 33cl",
+        });
+        expect(out.score).toBe(0.97);
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("nom marchand terse mais cohérent → concorde (pas de faux downgrade)", async () => {
+        // Garde-fou anti-friction : un nom court ne doit pas tomber en review s'il
+        // décrit bien le produit (poids du recouvrement de mots dans scoreNameMatch).
+        mockCollectAll.mockResolvedValueOnce(
+            multi(["tier2_obf"], "Crème hydratante BioDerm 50ml"),
+        );
+        const out = await runCascade({
+            ean: "5449000000996",
+            name: "Crème hydratante",
+        });
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("aucun nom marchand fourni → garde inerte (non évaluable), comportement historique", async () => {
+        // Chemin POS/fichier EAN-seul : on ne peut pas croiser → on garde le score brut.
+        mockCollectAll.mockResolvedValueOnce(multi(["tier2_obf"], "Coca-Cola Original 33cl"));
+        const out = await runCascade({ ean: "5449000000996" });
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("CIP-13 médicament : nom marchand divergent du nom BDPM → pending malgré tier1_cip 0.99 (cas le plus dangereux)", async () => {
+        // Un CIP mal saisi mais valide+présent dans BDPM résout un AUTRE médicament.
+        // La garde D7 doit s'appliquer AUSSI sur l'early return CIP (sinon 0.99 auto-publish).
+        mockLookupCipBdpm.mockResolvedValueOnce({
+            canonical_name: "DOLIPRANE 1000 mg, comprimé",
+            brand: "SANOFI",
+            category: "comprimé",
+            sectorial_id: "3400933264963",
+            source: "tier1_cip_bdpm",
+        });
+        const out = await runCascade({
+            ean: "3400933264963",
+            name: "Smecta poudre suspension buvable",
+        });
+        expect(out.score).toBe(0.99);
+        expect(out.tiers_matched).toEqual(["tier1_cip"]);
+        expect(out.review_status).toBe("pending"); // ← garde appliquée sur le chemin CIP
+        expect(out.visible).toBe(false);
+    });
+
+    it("CIP-13 : nom marchand concordant avec BDPM → validated (non-régression)", async () => {
+        mockLookupCipBdpm.mockResolvedValueOnce({
+            canonical_name: "DOLIPRANE 1000 mg, comprimé",
+            brand: "SANOFI",
+            category: "comprimé",
+            sectorial_id: "3400933264963",
+            source: "tier1_cip_bdpm",
+        });
+        const out = await runCascade({
+            ean: "3400933264963",
+            name: "Doliprane 1000mg comprimé",
+        });
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("convergence 2 tiers (boost) : nom canonique divergent du nom marchand → pending malgré 0.985", async () => {
+        // Le boost de convergence ne doit pas court-circuiter la garde : même à 0.985,
+        // si le nom résolu (le plus long via pickCanonicalName) ne concorde pas → review.
+        mockCollectAll.mockResolvedValueOnce(
+            multi(["tier2_obf", "tier6_eansearch"], "Parfum Dior Sauvage EDT 100ml"),
+        );
+        const out = await runCascade({
+            ean: "5449000000996",
+            name: "Lessive Ariel Pods 38 capsules",
+        });
+        expect(out.score).toBeCloseTo(0.985, 3);
+        expect(out.review_status).toBe("pending");
+        expect(out.visible).toBe(false);
+    });
+
+    it("source ne résout aucun nom (canonical_name null) → garde inerte, score décide seul", async () => {
+        // tier6 seul, sans nom canonique → 0.90 → pending par le SCORE, pas par le garde.
+        mockCollectAll.mockResolvedValueOnce(multi(["tier6_eansearch"], null));
+        const out = await runCascade({
+            ean: "5449000000996",
+            name: "Un produit quelconque très différent",
+        });
+        expect(out.score).toBe(0.9);
+        expect(out.review_status).toBe("pending");
     });
 });

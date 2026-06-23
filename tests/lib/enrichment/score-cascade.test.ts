@@ -150,3 +150,39 @@ describe("buildCascadeOutcome", () => {
         expect(out.review_status).toBe("pending");
     });
 });
+
+describe("buildCascadeOutcome — garde de concordance d'identité (D7)", () => {
+    it("identityConcords=false sur un score auto-publish → rétrograde validated→pending, visible false", () => {
+        // tier2_obf = 0.97 → normalement validated/visible. La divergence de nom
+        // (EAN mal saisi → identité fausse) force la review 1-tap, jamais l'auto-publish.
+        const out = buildCascadeOutcome(["tier2_obf"], "5449000000996", "Shampooing X", {
+            identityConcords: false,
+        });
+        expect(out.score).toBe(0.97); // le score brut n'est PAS altéré (traçabilité)
+        expect(out.review_status).toBe("pending");
+        expect(out.visible).toBe(false);
+    });
+
+    it("identityConcords=true → aucun downgrade (validated/visible conservés)", () => {
+        const out = buildCascadeOutcome(["tier2_obf"], "5449000000996", "Coca-Cola", {
+            identityConcords: true,
+        });
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("identityConcords=undefined → comportement historique inchangé (non évaluable)", () => {
+        const out = buildCascadeOutcome(["tier2_obf"], "5449000000996", "Coca-Cola");
+        expect(out.review_status).toBe("validated");
+        expect(out.visible).toBe(true);
+    });
+
+    it("identityConcords=false NE remonte PAS un score déjà sous le seuil (pending reste pending)", () => {
+        // tier6 = 0.90 → déjà pending : la garde ne doit ni l'aggraver ni le toucher.
+        const out = buildCascadeOutcome(["tier6_eansearch"], "1234567890123", "X", {
+            identityConcords: false,
+        });
+        expect(out.review_status).toBe("pending");
+        expect(out.visible).toBe(false);
+    });
+});
