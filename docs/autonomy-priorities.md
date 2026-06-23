@@ -281,11 +281,22 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   pré-existants orthogonaux différés. 666 tests, 0 migration, réversible.
 >
 > **READINESS (= ce que la boucle signale « prêt pour les marchands » via WhatsApp)** : D1+D3+D4+D5+
-> D6+D7 prouvés (gate vert) + **D2 préparé/escaladé ✅ (2026-06-23)**. **Reste avant le signal « prêt »** :
-> (a) **checklist go-live pilote rédigée** (BP vérifié + MC lié + ≥11 offres + feed quotidien + bouton
-> « Request inventory verification ») = prochain `[R]` boucle ; (b) validation VISUELLE de l'UI (chantier
-> B, Thomas, pas de navigateur côté boucle). Quand (a) faite → notif « prêt — Deerskin + 2e boutique
-> peuvent être onboardés ».
+> D6+D7 prouvés (gate vert) + **D2 préparé/escaladé ✅ (2026-06-23)**.
+> - ✅ **(a) Checklist go-live pilote — RÉDIGÉE + RENDUE PROGRAMMATIQUE (2026-06-23)**.
+>   `docs/prospection/go-live-checklist.md` : maillons binaires (≥11 offres + connecté + feed quotidien
+>   + actions Google externes du marchand). **Software ajouté** (pas qu'un doc) : le seuil LFP « ≥11 offres »
+>   ne vivait QUE dans la prose → encodé en source unique `src/lib/google/pilot-readiness.ts`
+>   (`LFP_MIN_PUBLISHABLE_OFFERS=11`, `evaluateFeedReadiness`) + exposé par `GET /api/google/stats`
+>   (`lfp_feed_ready`, `lfp_meets_offer_threshold`, `lfp_offer_shortfall`, `google_connected`, `lfp_blockers`).
+>   `publishable` réutilise le VRAI gate du feed (`isFeedEligible`) → readiness ne peut pas diverger de ce
+>   qui publie. **Bug réel corrigé (revue SF-hunter HIGH, classe D3)** : `summarizePublishability` hardcodait
+>   `allowMissingImage:false` alors que les 2 feeds passent `gtinOnlyTierEnabled()` → flag GTIN-only ON, le KPI
+>   SOUS-COMPTAIT les produits sans image que le feed PUBLIE = faux « pas prêt » au moment exact du go-live
+>   (D2 active ce tier au 1er pilote) ; fix : flag threadé dans le KPI, parité testée OFF/ON. +15 tests
+>   (705→720). 0 migration, réversible.
+> - **Reste avant le signal « prêt »** : (b) validation VISUELLE de l'UI (chantier B, Thomas, pas de
+>   navigateur côté boucle). **Signal « prêt » à émettre dès qu'un marchand atteint `lfp_feed_ready=true`** →
+>   notif « prêt — Deerskin + 2e boutique peuvent être onboardés ».
 >
 > **Gate irréversible** : la boucle construit sur `feat`. Passer en prod = merge→main+deploy = **GO
 > Thomas** (ou supervisé sous mandat backup). La boucle NE merge/déploie PAS seule.

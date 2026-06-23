@@ -5,6 +5,51 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · READINESS — **(a) Checklist go-live pilote RÉDIGÉE + readiness LFP rendue PROGRAMMATIQUE** + 1 bug réel (revue SF-hunter HIGH)
+
+**Sourcing (§6)** : chaîne A 1→8 ✅ + D1/D3/D4/D5/D6/D7 prouvés + D2 préparé/escaladé. Backlog en premier →
+section READINESS nomme explicitement le prochain `[R]` : **« (a) checklist go-live pilote rédigée »**. Vérifié
+le code réel d'abord (LESSONS ~70 % faux findings) : (1) AUCUN bouton « Request inventory verification » dans
+`src/` (grep) → c'est une action **côté Google MC du marchand**, pas du software manquant (prémisse corrigée) ;
+(2) le seuil LFP « ≥11 offres » ne vivait **QUE dans la prose** (`google-lfp-preparation-v2.md`), nulle part en
+code → `/api/google/stats` montrait un compte brut + score % mais ne répondait jamais « prêt LFP ou pas ».
+
+**DÉCISION** : ne pas livrer QU'un doc. Le vrai trou north-star = la readiness n'est pas un invariant TESTÉ.
+→ encoder le seuil + le verdict en software vérifiable, puis ancrer la checklist dessus.
+
+**FAIT (réversible, 0 migration)** :
+- **NEW `src/lib/google/pilot-readiness.ts`** : source unique `LFP_MIN_PUBLISHABLE_OFFERS=11` +
+  `evaluateFeedReadiness({publishable, googleConnected})` pur → `{meetsOfferThreshold, offerShortfall,
+  feedReady, blockers[]}`. `feedReady` = seuil atteint ET connecté. Codes blocker stables
+  (`below_offer_threshold`/`google_not_connected`). Garde défensive : compte négatif/NaN → 0 (jamais publiable).
+- **EDIT `src/app/api/google/stats/route.ts`** : ajoute un read `google_merchant_connections` (`.maybeSingle()`,
+  erreur DB ≠ « pas connecté » → 500+captureError, anti faux négatif) + expose `lfp_feed_ready`,
+  `lfp_meets_offer_threshold`, `lfp_offer_shortfall`, `google_connected`, `lfp_blockers`, `lfp_offers_threshold`.
+  `publishable` réutilise le VRAI gate (`isFeedEligible`) → readiness ne peut pas diverger de ce qui publie.
+- **NEW `docs/prospection/go-live-checklist.md`** : checklist binaire ancrée sur `GET /api/google/stats`
+  (maillons software vérifiables) + maillons externes (BP vérifié + lié MC + clic « Request inventory
+  verification ») clairement marqués « hors champ boucle ».
+
+**TROUVÉ (revue SF-hunter, HIGH, vérifié par calcul + grep) — 1 bug réel** : `summarizePublishability` hardcodait
+`allowMissingImage:false`, mais les 2 feeds (`feed.ts:101`, `lfp-xml.ts:56`) passent `gtinOnlyTierEnabled()`.
+→ flag `GOOGLE_GTIN_ONLY_TIER=1` (que D2 active au 1er pilote), le KPI SOUS-COMPTAIT les produits GTIN+prix sans
+image que le feed PUBLIE → `lfp_feed_ready` faussement `false` au moment EXACT du go-live = faux négatif de
+readiness. **Même classe que D3** (« un KPI qui prédit un gate réutilise le prédicat DU gate »). Fix : `allowMissingImage`
+threadé dans `summarizePublishability` + route passe `gtinOnlyTierEnabled()` → parité KPI↔feed dans les 2 états.
+Comportement flag OFF **préservé byte-for-byte** (publishable exige l'image → branche missing_image jamais atteinte).
+Findings MED (getUser error→401 silencieux) et LOW (Math.floor) : **non retenus** — MED pré-existant + LESSONS dit
+auth `null→401` est le pattern CORRECT (pas une perte à chasser) ; LOW = chemin jamais atteint (caller produit des int).
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/lib/google/pilot-readiness.test.ts` (+11, champ par champ : seuil exact
+11, sous-seuil, 0/négatif/NaN, déconnecté, ordre blockers stable) ; `publishability.test.ts` (+4 : chemin réel route
+→ readiness OK/pas-prêt/erreur connexion 500 ; parité flag OFF→{a}/ON→{a,b}). Sorties JSON inspectées.
+
+**TESTÉ** : `npm run test:run` → **720/720** (705→720, +15), `tsc` OK, pre-push vert. 5 fichiers (2 lib + 1 route
++ 2 tests) + 3 docs. NB : `merge-readiness.md` est périmé (dit merge pending, or merge+deploy FAITS) — à rafraîchir
+hors de cette unité.
+
+---
+
 ## 2026-06-23 (run autonome) · PHASE D — **D2 `[G]` Tier GTIN-only préparé derrière flag (OFF) + escaladé** + 1 bug réel · commit `81d17d1`
 
 **Sourcing (§6)** : chaîne A + D1/D3/D4/D5/D6/D7 faits ; seul item Phase D non traité = **D2** (`[G]`). Vérifié

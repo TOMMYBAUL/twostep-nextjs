@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { summarizePublishability } from "@/lib/google/feed-eligibility";
+import { summarizePublishability, gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
+import { evaluateFeedReadiness } from "@/lib/google/pilot-readiness";
 import { captureError } from "@/lib/error";
 
 export async function GET() {
@@ -64,7 +65,33 @@ export async function GET() {
         // summarizePublishability) — image + prix>0 + GTIN≥8 inclus. L'ancien proxy
         // `ean && price !== null` comptait comme « éligibles » des produits sans photo / au
         // prix 0 / au GTIN tronqué que le feed rejette → KPI menteur (faux positif pilote).
-        const s = summarizePublishability(products);
+        // Parité avec le feed réel : si le tier GTIN-only est actif, un produit GTIN+prix sans image
+        // EST publié → il doit compter comme publiable ici aussi (sinon readiness sous-évaluée).
+        const s = summarizePublishability(products, { allowMissingImage: gtinOnlyTierEnabled() });
+
+        // Connexion Google Merchant : 2e signal (avec le seuil d'offres) de la readiness LFP.
+        // `maybeSingle` → data=null SANS error sur 0 ligne (pas connecté), error sur vrai échec.
+        // Un échec de lecture ≠ « pas connecté » : le distinguer (sinon on afficherait
+        // faussement « pas prêt / non connecté » sur un blip DB) → 500 + captureError.
+        const { data: connection, error: connectionErr } = await supabase
+            .from("google_merchant_connections")
+            .select("merchant_id")
+            .eq("merchant_id", merchant.id)
+            .maybeSingle();
+
+        if (connectionErr) {
+            captureError(connectionErr, { route: "google/stats", merchantId: merchant.id, step: "load-connection" });
+            return NextResponse.json({ error: "db_error" }, { status: 500 });
+        }
+
+        // Readiness LFP SOFTWARE : seuil d'offres publiables (≥ 11) atteint ET connecté à Google.
+        // `publishable` = le gate réel du feed (pas un proxy) → le signal de readiness ne peut pas
+        // diverger de ce qui publie réellement. Prérequis EXTERNES (Business Profile vérifié + lié,
+        // « Request inventory verification ») = hors champ boucle → checklist go-live.
+        const readiness = evaluateFeedReadiness({
+            publishable: s.publishable,
+            googleConnected: connection !== null,
+        });
 
         return NextResponse.json({
             total_visible: s.total,
@@ -74,6 +101,13 @@ export async function GET() {
             missing_price: s.missing_price,
             blocked_only_by_image: s.blocked_only_by_image,
             score: s.score,
+            // Readiness LFP (item READINESS du backlog) — la checklist go-live lit ces champs.
+            lfp_offers_threshold: readiness.threshold,
+            lfp_meets_offer_threshold: readiness.meetsOfferThreshold,
+            lfp_offer_shortfall: readiness.offerShortfall,
+            google_connected: readiness.googleConnected,
+            lfp_feed_ready: readiness.feedReady,
+            lfp_blockers: readiness.blockers,
         });
     } catch (err) {
         captureError(err, { route: "google/stats" });

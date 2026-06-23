@@ -271,6 +271,20 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   propre flag. Prouvé par un test de parité explicite dans les 2 états (OFF→{a}, ON→{a,b}). **Champ optionnel
   (undefined) > null pour une sortie JSON** : `imageLink?:string` omis → `JSON.stringify` retire la clé → Google
   matche par GTIN ; un `imageLink:null` explicite serait rejeté. (D2, 2026-06-23, revue SF-hunter SOUND)
+- ❌ **Un KPI qui prédit un gate doit réutiliser le prédicat ET ses MODES SOUS FLAG.** `summarizePublishability`
+  (KPI « % publiable » + base de la readiness LFP `lfp_feed_ready`) hardcodait `allowMissingImage:false`, mais les
+  2 feeds (`feed.ts`/`lfp-xml.ts`) passent `gtinOnlyTierEnabled()` à `isFeedEligible`. Flag `GOOGLE_GTIN_ONLY_TIER=1`
+  (activé au 1er pilote, D2) → le feed PUBLIE les produits GTIN+prix sans image, mais le KPI les comptait « non
+  publiables » → `lfp_feed_ready` faussement `false` au moment EXACT du go-live = faux négatif de readiness. Fix :
+  thread le flag dans le KPI (parité OFF/ON testée ; OFF préservé byte-for-byte car publishable exige déjà l'image).
+  **Règle (extension de D3) : réutiliser le prédicat du gate ne suffit pas si le gate a un comportement CONDITIONNEL
+  (flag/env) — le KPI doit lire la MÊME condition, sinon il diverge dans l'état où la condition bascule.** Trouvé par
+  SF-hunter ; vérifié par grep (les 2 feeds passent bien le flag). (readiness, 2026-06-23)
+- ✅ **Rendre la readiness pilote PROGRAMMATIQUE plutôt qu'un doc** : un seuil métier (Google LFP « ≥11 offres »)
+  qui ne vit que dans la prose = invérifiable + dérive. Encodé en source unique (`LFP_MIN_PUBLISHABLE_OFFERS`,
+  `evaluateFeedReadiness`) + exposé par l'API → la checklist go-live lit un champ (`lfp_feed_ready`) au lieu d'un
+  comptage manuel. Avant de coder : grep le « bouton » supposé manquant — « Request inventory verification » est une
+  action côté Google MC du marchand, PAS du software à construire (prémisse corrigée, classe D6). (readiness, 2026-06-23)
 - ❌ Sur un cron multi-marchand, le SELECT de la LISTE (`google_merchant_connections`) qui avale son
   `error` est PIRE qu'un select par-marchand avalé : un blip DB → `data=null` → `length===0` →
   `200 "aucun marchand connecté"` = TOUT le feed Google abandonné, 0 Sentry, 0 statut. **Règle : le

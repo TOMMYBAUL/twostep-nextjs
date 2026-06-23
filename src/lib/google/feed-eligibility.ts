@@ -108,7 +108,19 @@ export interface PublishabilitySummary {
     score: number;
 }
 
-export function summarizePublishability(rows: FeedEligibleRow[]): PublishabilitySummary {
+export function summarizePublishability(
+    rows: FeedEligibleRow[],
+    opts: FeedEligibilityOptions = {},
+): PublishabilitySummary {
+    // PARITÉ avec le gate réel du feed : `summarizePublishability` PRÉDIT `isFeedEligible`, donc il
+    // doit honorer le MÊME `allowMissingImage` que les deux filtres de sortie (`feed.ts`/`lfp-xml.ts`
+    // passent `gtinOnlyTierEnabled()`). Sinon, flag ON, un produit GTIN+prix SANS image que le feed
+    // PUBLIE était compté ici « non publiable » → KPI/readiness sous-évalués = faux « pas prêt » au
+    // moment exact du go-live pilote (D2 active ce tier au 1er pilote). Même classe que D3 :
+    // « un indicateur qui prédit un gate réutilise le prédicat du gate ». Défaut `false` (image
+    // requise) → comportement identique au feed OFF (et aux appels existants qui omettent l'option).
+    const allowMissingImage = opts.allowMissingImage === true;
+
     let publishable = 0;
     let missing_ean = 0;
     let missing_price = 0;
@@ -120,13 +132,20 @@ export function summarizePublishability(rows: FeedEligibleRow[]): Publishability
         const price = hasPublishablePrice(p);
         const image = hasImage(p);
 
-        if (gtin && price && image) {
+        if (gtin && price && (allowMissingImage || image)) {
             publishable++;
+            // Tier GTIN-only actif : le produit publie SANS image, mais l'absence d'image reste un
+            // fait actionnable (qualité de fiche) → on la compte quand même pour le KPI honnête.
+            // Flag OFF : cette branche n'est jamais atteinte sans image (publishable exige l'image),
+            // donc `missing_image` garde sa sémantique d'origine (jamais incrémenté ici).
+            if (!image) missing_image++;
             continue;
         }
         if (!gtin) missing_ean++;
         if (!price) missing_price++;
         if (!image) missing_image++;
+        // « Bloqué SEULEMENT par l'image » n'a de sens que si l'image est REQUISE (flag OFF) :
+        // sous le tier GTIN-only un tel produit publie (branche au-dessus) → 0 ici, jamais double-compté.
         if (gtin && price && !image) blocked_only_by_image++;
     }
 

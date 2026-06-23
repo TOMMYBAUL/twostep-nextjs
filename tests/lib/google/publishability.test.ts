@@ -102,6 +102,29 @@ describe("D3 — summarizePublishability (fonction pure, fixture catalogue sale)
         expect(s.blocked_only_by_image).toBe(0); // image présente mais EAN+prix KO
         expect(s.publishable).toBe(0);
     });
+
+    // PARITÉ FLAG (revue SF-hunter HIGH) : le KPI prédit `isFeedEligible`, qui sous le tier GTIN-only
+    // (`allowMissingImage`) publie les produits GTIN+prix SANS image. Le KPI doit suivre les DEUX états.
+    it("tier GTIN-only (allowMissingImage): un produit GTIN+prix sans image devient publiable + parité feed", () => {
+        const rows: FeedEligibleRow[] = [
+            r({}), // publiable normal (avec image)
+            r({ ean: "3601234567890", photo_url: null, photo_processed_url: null }), // GTIN+prix, sans image
+            r({ ean: null, photo_url: null, photo_processed_url: null }), // sans EAN → jamais publiable
+            r({ price: 0, photo_url: null, photo_processed_url: null }), // prix 0 → jamais publiable
+        ];
+
+        const off = summarizePublishability(rows); // flag OFF (défaut) — image requise
+        expect(off.publishable).toBe(1);
+        expect(off.blocked_only_by_image).toBe(1); // le GTIN+prix sans image est BLOQUÉ
+        expect(off.publishable).toBe(rows.filter((p) => isFeedEligible(p)).length);
+
+        const on = summarizePublishability(rows, { allowMissingImage: true }); // tier GTIN-only
+        expect(on.publishable).toBe(2); // le GTIN+prix sans image PUBLIE maintenant
+        expect(on.blocked_only_by_image).toBe(0); // plus rien n'est bloqué QUE par l'image
+        expect(on.missing_image).toBe(3); // l'info « sans image » reste comptée (fait actionnable)
+        // PARITÉ : publishable == count(isFeedEligible avec le MÊME flag) — source unique anti-dérive
+        expect(on.publishable).toBe(rows.filter((p) => isFeedEligible(p, { allowMissingImage: true })).length);
+    });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -145,6 +168,13 @@ function makeServerClient(opts: {
                 if (error) return Promise.resolve({ data: null, error });
                 if (!data || data.length === 0)
                     return Promise.resolve({ data: null, error: { code: "PGRST116", message: "no rows" } });
+                return Promise.resolve({ data: data[0], error: null });
+            },
+            // maybeSingle : 0 ligne → data=null SANS error (≠ single qui renvoie PGRST116).
+            maybeSingle: () => {
+                const { data, error } = resolve();
+                if (error) return Promise.resolve({ data: null, error });
+                if (!data || data.length === 0) return Promise.resolve({ data: null, error: null });
                 return Promise.resolve({ data: data[0], error: null });
             },
             then: (onfulfilled: (v: { data: Row[] | null; error: unknown }) => unknown) =>
@@ -292,5 +322,66 @@ describe("D3 — GET /api/google/stats (chemin réel : parité feed + garde sile
         const { GET } = await import("@/app/api/google/stats/route");
         const res = await GET();
         expect(res.status).toBe(401);
+    });
+
+    // ── Readiness LFP (item READINESS) — wiring du chemin réel route → evaluateFeedReadiness ──
+    it("≥ 11 offres publiables ET connecté → lfp_feed_ready, 0 blocker, shortfall 0", async () => {
+        const eans = Array.from({ length: 12 }, (_, i) => `001234567890${i % 10}`);
+        mockClient.current = makeServerClient({
+            user: { id: USER_ID },
+            tables: {
+                merchants: { rows: [{ id: MERCHANT_ID, user_id: USER_ID }], error: null },
+                products: { rows: eans.map((ean) => product({ ean })), error: null },
+                google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+            },
+        });
+
+        const { GET } = await import("@/app/api/google/stats/route");
+        const body = await (await GET()).json();
+        expect(body.eligible_google).toBe(12);
+        expect(body.lfp_offers_threshold).toBe(11);
+        expect(body.lfp_meets_offer_threshold).toBe(true);
+        expect(body.lfp_offer_shortfall).toBe(0);
+        expect(body.google_connected).toBe(true);
+        expect(body.lfp_feed_ready).toBe(true);
+        expect(body.lfp_blockers).toEqual([]);
+    });
+
+    it("trop peu d'offres ET pas de connexion → pas prêt, deux blockers, shortfall honnête", async () => {
+        mockClient.current = makeServerClient({
+            user: { id: USER_ID },
+            tables: {
+                merchants: { rows: [{ id: MERCHANT_ID, user_id: USER_ID }], error: null },
+                products: { rows: [product({}), product({ ean: "0012345678901" })], error: null },
+                // pas de google_merchant_connections → maybeSingle data=null → non connecté
+            },
+        });
+
+        const { GET } = await import("@/app/api/google/stats/route");
+        const body = await (await GET()).json();
+        expect(body.eligible_google).toBe(2);
+        expect(body.lfp_meets_offer_threshold).toBe(false);
+        expect(body.lfp_offer_shortfall).toBe(9); // 11 - 2
+        expect(body.google_connected).toBe(false);
+        expect(body.lfp_feed_ready).toBe(false);
+        expect(body.lfp_blockers).toEqual(["below_offer_threshold", "google_not_connected"]);
+    });
+
+    it("échec de lecture de la CONNEXION ≠ « pas connecté » → 500 + captureError (anti faux négatif)", async () => {
+        mockClient.current = makeServerClient({
+            user: { id: USER_ID },
+            tables: {
+                merchants: { rows: [{ id: MERCHANT_ID, user_id: USER_ID }], error: null },
+                products: { rows: [product({})], error: null },
+                google_merchant_connections: { rows: [], error: { message: "connection reset" } },
+            },
+        });
+
+        const { GET } = await import("@/app/api/google/stats/route");
+        const res = await GET();
+        const body = await res.json();
+        expect(res.status).toBe(500);
+        expect(body.error).toBe("db_error");
+        expect(captureErrorMock).toHaveBeenCalledTimes(1);
     });
 });
