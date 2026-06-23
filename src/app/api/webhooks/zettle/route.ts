@@ -41,7 +41,14 @@ export async function POST(request: Request) {
             // garde anti-régression de la 104 sur ce flux absolu (anti-dérive out-of-order).
             const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
-            await recalculateGroupSizesAdmin(product.id);
+            // Stock absolu déjà committé ; recalc = métadonnée d'affichage DÉRIVÉE → un throw
+            // réseau ne doit PAS faire 500 (échec d'affichage ≠ échec du canal stock + retry POS
+            // inutile). captureError-et-continue (cohérent avec shopify/lightspeed/square).
+            try {
+                await recalculateGroupSizesAdmin(product.id);
+            } catch (recalcErr) {
+                captureError(recalcErr, { route: "webhooks/zettle", phase: "recalc-sizes", productId: product.id });
+            }
 
             const { error: feedErr } = await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,

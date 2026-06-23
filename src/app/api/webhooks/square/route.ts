@@ -45,8 +45,16 @@ export async function POST(request: Request) {
             // (livré dans le désordre / retry tardif) n'écrase plus une vérité plus fraîche.
             const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
-            // Recalculate available_sizes on the group principal
-            await recalculateGroupSizesAdmin(product.id);
+            // Recalculate available_sizes on the group principal.
+            // Le stock absolu est déjà committé ; recalc = métadonnée d'affichage DÉRIVÉE → un
+            // throw réseau (≠ erreurs Supabase qu'il capture en interne) ne doit PAS faire 500 :
+            // ça transformerait un échec d'affichage en échec du canal stock + déclencherait un
+            // retry POS inutile. captureError-et-continue (cohérent avec shopify/lightspeed).
+            try {
+                await recalculateGroupSizesAdmin(product.id);
+            } catch (recalcErr) {
+                captureError(recalcErr, { route: "webhooks/square", phase: "recalc-sizes", productId: product.id });
+            }
 
             // Emit restock feed_event only when stock goes from 0 to positive
             if (previousQty === 0 && update.quantity > 0) {

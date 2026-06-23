@@ -377,6 +377,16 @@ software qui débloque sa moitié à lui.
   migration. ESCALADE après avoir préparé l'option.
 - `[G]` **Delta `GREATEST(v_prev_ts, p_source_ts)`** côté RPC = migration prod (protocole §4).
   Préparer la migration idempotente + branche test, ESCALADE le feu vert.
+- `[G]` **NOUVEAU 2026-06-23** — **feed_event Zettle émis inconditionnellement (pollution feed sur write
+  rejeté/retry)** : la route zettle insère un `feed_event` (restock/sale) à CHAQUE livraison même quand
+  `update_stock_atomic` a no-opé (garde anti-régression 104 : `source_ts` entrant ≤ base) → un retry absolu
+  ré-émet un event « sale » (type erroné, `previousQty==quantity`) = pollution du feed consumer. **Cause racine** :
+  la RPC renvoie `v_previous` indistinctement en write-committé ET en stale-rejeté → la route ne peut pas savoir
+  si elle a vraiment écrit. Fix propre = signal de skip dans la RPC (DROP+CREATE → **migration**, protocole §4),
+  OU décision produit (« émet-on les ventes au feed comme Square ne le fait PAS ? » — Square ne pousse que les
+  restock 0→positif). Square non affecté (gate restock-from-zero). Exposition NULLE (0 marchand Zettle). Trouvé
+  par silent-failure-hunter au run de couverture des routes absolues. → préparer l'option (migration idempotente
+  non appliquée + flag) puis ESCALADE le choix produit/GO.
 - `[G]` **ESCALADÉ 2026-06-21** — **Idempotence webhook delta = at-most-once** (`webhook_events`
   inséré AVANT le traitement, Shopify/Lightspeed) : un échec de traitement + retry-dedup perd
   une VENTE. **Rendu VISIBLE** (Sentry, commit `8e5872f`) → plus silencieux. Choix de fond A

@@ -5,6 +5,77 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route handlers webhook POS ABSOLUS (`POST /api/webhooks/{square,zettle}`) couverts de bout en bout + parité recalc avec les jumeaux delta**
+
+**Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, READINESS (a) ✅ ; `notify-extra.txt` vide (rien en
+attente). Signaux Sentry/quality_alerts inchangés (data test, 0 actionable). §6.3 chemin critique non testé :
+le run précédent a couvert les jumeaux **delta** (shopify+lightspeed) du canal webhook temps réel ; vérifié
+(`grep -oE 'square|zettle' tests/webhook-routes-stock.test.ts` = 0) que les jumeaux **absolus** (Square/Zettle)
+n'avaient **AUCUN test de route de bout en bout**. C'est le 2e pilier north-star (temps réel honnête) sur le
+sous-chemin à sémantique DIFFÉRENTE : mode `absolute` (la qté = état absolu, pas un delta) + **pas d'idempotence
+`webhook_events`** (le ré-envoi ré-applique l'absolu, idempotent via la garde anti-régression 104 sur `source_ts`).
+
+**TROUVÉ (vérifié dans le code réel)** :
+- **Adapters OK (pas le bug Shopify du run précédent)** : Square (`c.calculated_at`) et Zettle (`event.timestamp`)
+  extraient DÉJÀ le vrai horodatage de l'événement → `source_ts` honnête transmis à `updateStockAtomic`. Pas de
+  faux positif de fraîcheur à corriger ici (contrairement à Shopify la veille).
+- **Parité recalc manquante (MED, classe du HIGH delta de la veille)** : `await recalculateGroupSizesAdmin(product.id)`
+  **non gardé** dans square+zettle → un throw réseau (≠ erreurs Supabase capturées en interne) remonte au catch →
+  **500 APRÈS le write stock committé**. Sévérité MED ici (pas HIGH) car en mode absolu SANS dedup, le retry POS
+  ré-applique l'absolu (idempotent) ET rejoue recalc → auto-guérison possible. MAIS : (a) transforme un échec
+  d'AFFICHAGE en échec du CANAL STOCK (500), (b) déclenche un retry POS inutile, (c) incohérent avec les jumeaux
+  delta durcis la veille. Fix = captureError-et-continue sur les 2 (cohérence 4 routes, LESSONS « grep les N jumeaux »).
+
+**FIX** : `recalculateGroupSizesAdmin` wrappé en try/catch + captureError (`phase:"recalc-sizes"`) dans square+zettle
+→ 200 conservé (stock déjà committé), recalc raté = métadonnée d'affichage qui re-converge au prochain événement.
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline webhooks) : **changement introduit ce run = SOUND, 0
+silent-failure introduit** ; recalc captureError-et-continue **vérifié correct pour le mode absolu** (write stock
+atomique committé AVANT recalc → aucune corruption/double-comptage possible ; la garde 104 no-op sur retry equal/older).
+4 routes désormais cohérentes sur le recalc. Findings **PRÉ-EXISTANTS (NON introduits, documentés, hors scope)** :
+(1) **[HIGH] feed_event Zettle émis inconditionnellement** y compris sur un write rejeté par la garde anti-régression
+(retry absolu → previousQty==quantity → type « sale » dupliqué) = pollution du feed consumer. **Cause racine** :
+`update_stock_atomic` renvoie `v_previous` à la fois en write-committé ET en stale-rejeté → la route ne peut PAS
+distinguer → fix propre = signal de skip dans la RPC (**migration → Rang 2 gated**), OU décision produit « émet-on
+les ventes au feed comme Square ne le fait pas ? ». → **nouvel item Rang 2** (cf. priorities). (2) **[HIGH/déjà
+connu]** lookup Google post-boucle re-query `pos_item_id` au lieu de `product.merchant_id` (= finding LOW #6 déjà
+différé la veille, identique aux 4 routes). (3) **[MED]** `productInfo .single()` error avalé avant push-notify
+(fallback « Un produit » déjà présent, identique aux 4 routes, non north-star). → laissés hors scope (anti scope-creep).
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/webhook-routes-stock-absolute.test.ts` (+24 = contrat partagé sur les 2
+jumeaux + sémantiques feed_event par provider) drive le VRAI `POST` : signature invalide → **403** (≠ 401 delta) +
+0 effet ; JSON invalide → 400 ; événement non géré (parse null/[]) → 200 sans write ; happy → `updateStockAtomic(
+prod-1, 8, "absolute", "webhook", "2026-06-19T10:00:00Z")` (qté ABSOLUE + source + source_ts=heure événement vérifiés
+champ par champ) + recalc ; **PAS d'idempotence webhook_events** (table jamais touchée — verrou anti-régression) ;
+resolve null → skip ; resolve throw → 500 ; updateStock throw → 500 ; recalc throw → **200 + captureError** (le fix) ;
+feed_event Square = restock UNIQUEMENT sur 0→positif (pas de « sale ») ; feed_event Zettle = toujours émis (restock si
+qté monte sinon sale) + notify sur retour-en-stock.
+
+**TESTÉ** : `npm run test:run` → **800/800** (776→800, +24), `tsc` OK. 3 fichiers (2 routes prod + 1 test).
+0 migration, réversible (`git revert`). Impact : route handlers feuilles (0 caller), signatures recalc/updateStock
+inchangées → contrat appelant préservé.
+
+**Reste / suivi** : le canal webhook temps réel est désormais couvert de bout en bout sur les **4 providers**
+(delta + absolu). Le réversible « hot path stock non testé » est très largement épuisé. Nouveau Rang 2 ajouté
+(feed_event Zettle / signal skip RPC). La valeur bascule franchement côté Thomas (pilote, chantier B visuel) et
+Rang 2 gated (idempotence/ledger). → recommandation cadence : cf. §5.4 (le réversible se raréfie).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — vrai `POST` route exercé champ par champ sur les 2 jumeaux absolus (mode absolu, source_ts=heure
+  événement, 403/400/500/200 par mode d'échec, absence d'idempotence vérifiée). Unitaire (faux client/adapters mockés).
+- **Sécurité north-star : 8/10** — revue SF-hunter : changement introduit SOUND, 0 silent-failure ; parité recalc
+  fermée sur les 4 routes ; 1 HIGH pré-existant (feed_event Zettle) **identifié + escaladé** en Rang 2 plutôt que demi-corrigé.
+- **Réversibilité : 10/10** — 0 migration, 2 prod + 1 test, `git revert` propre, signatures inchangées.
+- **Discipline de scope : 9/10** — 1 canal (webhook absolu) + son test ; recalc dans le code exactement couvert ;
+  findings pré-existants explicitement hors scope (pas de dérive vers une migration).
+- **Alignement north-star : 7/10** — durcit le 2e pilier (temps réel honnête) sur les 2 derniers providers non testés ;
+  parité de comportement = pas de surprise au 1er pilote Square/Zettle. Pas de nouveau bug réel majeur (parité, pas correctif).
+
+**Métriques objectives** : tests 776→800 (+24) ; **0 bug réel** corrigé (parité de robustesse, pas un correctif de
+perte) ; 3 fichiers touchés. CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert détecté → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route handlers webhook POS temps réel (`POST /api/webhooks/{shopify,lightspeed}`) couverts + 1 bug fraîcheur réel + 1 HIGH recalc**
 
 **Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, READINESS (a) ✅ ; `notify-extra.txt` vide (rien en

@@ -111,6 +111,23 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   drive le vrai `POST` avec adapters/admin/updateStockAtomic mockés → prouve signature→401 (0 effet de bord),
   idempotence doublon→skip (0 décrément) / erreur→500, delta+`source="webhook"`+`source_ts`=heure événement câblés,
   resolve null→skip vs throw→500. Paramétré sur les 2 jumeaux = parité prouvée d'un coup. (2026-06-23, revue SF-hunter)
+- ✅ **Les jumeaux ABSOLUS (Square/Zettle) ont une sémantique distincte des jumeaux DELTA (Shopify/Lightspeed) — les
+  tester à part.** Mode `"absolute"` (qté = état, pas un décrément) + **PAS d'idempotence `webhook_events`** (le ré-envoi
+  ré-applique l'absolu, idempotent via la garde anti-régression 104 sur `source_ts`) → le test doit prouver que la table
+  `webhook_events` n'est JAMAIS touchée (mettre un sentinelle `webhookEventsTouched`), 403 (≠ 401 delta) sur signature,
+  `updateStockAtomic(...,"absolute",...,source_ts=heure événement)`. Square/Zettle extraient DÉJÀ le vrai timestamp
+  (`calculated_at`/`event.timestamp`) → pas le bug fraîcheur de Shopify. `tests/webhook-routes-stock-absolute.test.ts`.
+- ⚖️ **Le `recalculateGroupSizesAdmin` non gardé est MED (pas HIGH) en mode absolu** : le retry POS ré-applique l'absolu
+  (idempotent) ET rejoue recalc → auto-guérison, contrairement au delta (idempotence-skip → recalc jamais rejoué = HIGH).
+  Le fix (captureError-et-continue) reste justifié pour les 2 : (a) un échec d'AFFICHAGE ne doit pas devenir un 500 du
+  CANAL STOCK, (b) évite un retry POS inutile, (c) **parité des 4 routes** (un mainteneur attend un traitement identique).
+  Régler la sévérité par le MODE D'ÉCHEC réel, pas par uniformité — mais corriger pour la cohérence quand même. (2026-06-23)
+- ❌ **feed_event émis sur un write rejeté par la garde anti-régression** : `update_stock_atomic` renvoie `v_previous`
+  indistinctement en write-committé ET en stale-rejeté (104) → la route zettle (feed_event INCONDITIONNEL) ré-émet un
+  event sur un no-op (retry absolu → `previousQty==quantity` → type « sale » faux) = pollution feed. Square évite ça en
+  gateant `previousQty===0 && quantity>0` (restock-from-zero only). Fix propre = signal de skip dans la RPC (migration) ou
+  décision produit (émet-on les ventes au feed ?). **Règle : un effet de bord dérivé d'un write conditionnel (garde 104)
+  doit savoir si le write a VRAIMENT eu lieu — sinon il se déclenche sur le no-op.** → Rang 2 gated. (2026-06-23, SF-hunter)
 
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
