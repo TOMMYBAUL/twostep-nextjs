@@ -443,6 +443,16 @@ software qui débloque sa moitié à lui.
   transformaient un blip DB en 404. Toutes fermées (captureError + `failed`, `received`=succès réels, échec total→500,
   partiel→200 honnête ; capture-and-continue sûr car RPC atomique/idempotente, ligne reste `incoming` re-cliquable).
   `tests/stock-receive-writes.test.ts` (+8). Revue SF-hunter SOUND (2 findings MED adjacents corrigés). 0 migration, réversible.
+  **Partiel (run 2026-06-23, invoices/[id]/cancel)** : **chemin annulation→réversion stock couvert** — `POST /api/
+  invoices/[id]/cancel` (réverse la marchandise reçue d'une facture annulée) n'avait **0 test** et portait **1 CORRUPTION
+  + 3 pertes silencieuses** : (#1) appel à la RPC `increment_stock_quantity` **inexistante dans toute migration** → le
+  fallback read-modify-write tournait à chaque appel et **forçait le stock à 0 sur un blip de lecture** (`max(0,(null??0)-
+  delta)=0` = vraie qté écrasée) ; (#2) `update` de réversion avalé → stock non décrémenté mais facture remise `parsed` =
+  stock fantôme gonflé ; (#3) reset-statut avalé ; (#4 revue SF-hunter) lecture `invoice_items` avalée → `stockDeltas={}` →
+  fausse « annulée » sans réversion. Toutes fermées (helper `reverseStock` qui distingue erreur de vide et **n'écrit JAMAIS
+  0**, captureError, 500 honnête sur échec partiel sans remettre la facture en `parsed`). `tests/invoice-cancel-writes.test.ts`
+  (+10, TDD 5 rouges→vert). Revue SF-hunter : 0 silent-failure introduit ; résidu idempotence-au-retry **pré-existant** laissé
+  hors scope (durcissement Rang 2). 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

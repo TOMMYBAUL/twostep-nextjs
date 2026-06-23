@@ -5,6 +5,74 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`POST /api/invoices/[id]/cancel` (annulation → réversion stock) durci + testé** : 1 CORRUPTION + 3 pertes silencieuses
+
+**Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D ✅/escaladé + READINESS (a) ✅ ; runs récents = `activateInvoice`,
+`stock/receive`. Haut du backlog = escaladé/externe ; `notify-extra.txt` vide (rien en attente). Signaux Sentry/
+quality_alerts inchangés depuis 2026-06-23 (data test, 0 actionable, vérifié au run précédent). → §6.3 **chemin
+d'écriture stock NON testé**. Codemap `01-data-pipeline.md §1d` + `02-api-routes.md` : `invoices/[id]/{validate,
+activate}` couverts (runs précédents), **`cancel` PAS** — or il MUTE le stock (réverse la marchandise reçue quand
+le marchand annule une facture mal saisie). Lu d'abord : `stock/cloture` (candidat) = **écarté** (n'écrit PAS le
+stock, juste un record de streak gamifié) → pas north-star. `cancel` = vraie écriture stock.
+
+**TROUVÉ (vérifié dans le code) — 1 corruption + 3 pertes silencieuses, même classe que `resync-stock`/invoice-validate** :
+- **#1 (CORRUPTION, north-star)** : la route appelait `admin.rpc("increment_stock_quantity", …)` — **RPC qui
+  n'existe dans AUCUNE migration** (grep `supabase/migrations/` : 0 résultat) → `res.error` toujours vrai → le
+  fallback tournait à CHAQUE annulation. Et ce fallback faisait `const { data: current } = await admin.from("stock")
+  .select("quantity")…` (error avalé) → sur un blip DB `current=null` → `next = max(0, (null ?? 0) - delta) = 0` →
+  **le stock du produit FORCÉ À 0** (au lieu d'être décrémenté) = vraie quantité écrasée, faux « rupture » silencieux.
+- **#2 (north-star)** : l'`update` de réversion (`admin.from("stock").update(...).eq(...)`) avalait son `error` → un
+  échec d'écriture laissait le stock NON décrémenté mais la facture quand même remise en `parsed` → **stock fantôme
+  gonflé derrière un faux « annulée »** (la marchandise « retirée » reste comptée en stock).
+- **#3** : la remise à jour du statut facture (`update {status:"parsed"…}`) avalait son `error`.
+- **#4 (revue SF-hunter, MED)** : la lecture `invoice_items` (qui détermine les deltas) avalait son `error` → un
+  blip → `stockDeltas={}` → annulation « réussie » avec **0 réversion** = stock fantôme. Corrigé ce run.
+- Mêmes #1/#2 sur le chemin **correctif** (>10 min) ; insert `invoice_items` correctif (audit) aussi avalé.
+
+**FIX** : helper unique `reverseStock(productId, delta)` (read err → captureError + return false **sans jamais
+écrire 0** ; update err → captureError + return false ; sinon décrémente). Hard-undo ET correctif comptent les
+échecs : réversion partielle → **500 honnête** (`{reversed, failed}`) **sans** remettre la facture en `parsed`
+(elle reste annulable) ; reset-statut err → captureError + 500 ; items_read err → captureError + 500. Suppression
+de la RPC fantôme + du commentaire « fallback » trompeur.
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** : **0 silent-failure INTRODUIT** ; mes 4 améliorations SOUND
+(suppression RPC morte, garde read-error dans `reverseStock`, blocage du reset facture sur échec partiel, items_read).
+Finding 1 (MED, items_read avalé) **corrigé ce run**. Résidus signalés **PRÉ-EXISTANTS, hors scope** (NON introduits) :
+réversion delta non idempotente au retry (re-décrément borné à 0) ; correctif ré-exécutable (original non marqué
+« corrigé ») ; update sans ligne stock = no-op silencieux ; Sentry-outage invisible. → durcissement Rang 2 (idempotence/
+ledger), pas ce run (anti scope-creep).
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/invoice-cancel-writes.test.ts` (+10) — on drive la VRAIE route `POST`
+avec un faux client Supabase qui ENREGISTRE les écritures de stock + injecte des erreurs ciblées par produit. Prouvé
+champ par champ : hard-undo happy (prod-1 20→15, prod-2 10→7, facture→parsed, 0 Sentry) ; **#1 read blip → prod-1
+RESTE à 20 (PAS écrasé à 0)** + 500 + captureError + facture NON resetée ; #2 update err → 500 visible ; partiel
+(1 ok/1 échoue) → 500 + `failed:1` + l'item OK bien décrémenté ; #3 reset-statut err → 500 ; #4 items_read err →
+500 + 0 stock touché ; correctif happy (corrective créée + 2 items + stock réversé) ; correctif read blip → pas de 0.
+TDD : **5 rouges d'abord** (corruption #1, #2, #3, partiel, correctif-corruption) → fix → 10 verts.
+
+**TESTÉ** : `npm run test:run` → **749/749** (739→749, +10), `tsc` OK. 2 fichiers (1 route + 1 test). 0 migration,
+réversible (`git revert`). Impact : route handler, 1 seul caller (`dashboard/invoices/[id]/page.tsx` lit `res.ok` +
+`data.mode`) → contrat préservé (200 `{mode}` succès, 500 sur échec déjà géré par `!res.ok`).
+
+**Reste / suivi** : haut du backlog reste escaladé/externe. Le réversible « chemin d'écriture stock non testé » se
+raréfie encore (validate/activate/receive/cancel désormais couverts) → §5.4 honnêteté de rendement : la valeur
+bascule de plus en plus côté Thomas (pilote, chantier B visuel). Durcissement idempotence cancel = Rang 2 (gated).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — chemin réel `POST cancel` exercé champ par champ (écritures stock enregistrées, erreurs
+  injectées par produit), divergence vs l'avant prouvée (TDD 5 rouges, dont la CORRUPTION à 0). Unitaire (faux client).
+- **Sécurité north-star : 9/10** — revue SF-hunter : 0 silent-failure introduit ; **corruption réelle** (stock forcé
+  à 0 sur blip, via RPC fantôme jamais détectée) + 3 pertes silencieuses comblées ; Finding MED adjacent corrigé.
+- **Réversibilité : 10/10** — 0 migration, 1 route + 1 test, `git revert` propre, contrat appelant préservé.
+- **Discipline de scope : 9/10** — 1 route ciblée + son test ; tout same-class same-file ; résidus pré-existants
+  explicitement laissés hors scope (pas de dérive idempotence/ledger).
+- **Alignement north-star : 8/10** — durcit un canal d'écriture stock réel (« afficher honnêtement ») ; un stock
+  écrasé à 0 ou non réversé = faux positif exactement du type qui tue (MVMS/Milo). Valeur pleine au 1er marchand.
+**Objectif (§5bis)** : tests 739→749 (+10) ; **4 défauts réels** comblés (1 corruption + 3 pertes silencieuses) ;
+2 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`POST /api/stock/receive` (livraison reçue → stock) durci + testé** : 1 perte silencieuse north-star + 2 adjacentes
 
 **Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D ✅/escaladé + READINESS (a) ✅ + dernier run `activateInvoice` ✅.

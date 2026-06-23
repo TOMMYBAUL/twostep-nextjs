@@ -224,6 +224,22 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Règle déjà connue (maillon 8 / `resolveWebhookProduct`), re-trouvée par grep des reads du fichier qu'on durcit.
   (`stock/receive`, 2026-06-23, revue SF-hunter SOUND)
 
+## Annulation facture → réversion de stock (cancel route)
+- ❌ **RPC référencée mais INEXISTANTE → le fallback buggé tourne à CHAQUE appel.**
+  `invoices/[id]/cancel` appelait `admin.rpc("increment_stock_quantity", …)` (aucune migration ne
+  la définit) → `res.error` toujours vrai → le fallback read-modify-write tournait toujours. Et ce
+  fallback **forçait le stock à 0 sur un blip de lecture** : `const { data: current } = …` (error avalé)
+  → `current=null` → `max(0, (null ?? 0) - delta) = 0` → une vraie quantité écrasée à 0 = faux « rupture »
+  silencieux. **Règle : grep que toute RPC `admin.rpc("nom")` existe dans `supabase/migrations/` — sinon
+  le « fallback » EST le chemin réel (et doit être correct), pas un secours.** Fix : `reverseStock` qui
+  distingue erreur de vide (read err → captureError + skip, JAMAIS écrire 0), update err → captureError ;
+  réversion partielle → 500 honnête sans remettre la facture en `parsed` (reste annulable). Mêmes 2
+  écritures avalées sur le chemin correctif. + items_read avalé (blip → `stockDeltas={}` → faux « annulée »
+  sans réversion = stock fantôme). `tests/invoice-cancel-writes.test.ts` (+10, TDD 5 rouges→vert).
+  ⚠️ Résidu pré-existant (NON introduit) hors scope : réversion delta non idempotente au retry (re-décrément
+  borné à 0) + correctif ré-exécutable (original non marqué « corrigé ») = durcissement Rang 2 (idempotence).
+  (cancel route, 2026-06-23, revue SF-hunter : 0 silent-failure introduit, Finding 1 items_read corrigé ce run)
+
 ## Canaux entrée / webhooks tiers (Resend, POS)
 - ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
   « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas
