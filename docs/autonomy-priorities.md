@@ -92,10 +92,13 @@ plus un mur Google externe.
 >   (couverture pour la couverture). Le gate est vert ; ce n'est pas le goulot.
 > - ❌ Tout nouveau feature hors du chemin pilote.
 >
-> **RÈGLE ANTI-DÉRIVE :** si **aucun [R] IN-SCOPE** ne reste (cas probable : A+D faits, onboarding
-> pilote bâti, le reste gated/pilote) → **NE PAS se rabattre sur du hors-cap.** Écrire dans
-> `logs/notify-extra.txt` : « plus de [R] in-scope — valeur = pilote (Thomas) + décisions gated » +
-> **RECOMMANDER de réduire la cadence** (§5.4). **Un idle honnête vaut mieux que du busywork.**
+> **RÈGLE ANTI-DÉRIVE / IDLE SILENCIEUX :** si **aucun [R] IN-SCOPE** ne reste → **NE PAS se
+> rabattre sur du hors-cap, et NE PAS committer de note d'idle** (ça pollue l'historique ET
+> déclenche une notif inutile). **Idle = 0 code, 0 commit, sortie SILENCIEUSE.** UNE SEULE fois
+> (la 1re fois que tu constates l'épuisement), écris dans `logs/notify-extra.txt` : « plus de [R]
+> in-scope — valeur = pilote (Thomas) + décisions gated ; RECOMMANDE de réduire la cadence » (le
+> wrapper l'envoie UNE fois). Les runs idle SUIVANTS = **totalement silencieux** (le wrapper ne
+> notifie plus sans commit ni escalade). **Un idle silencieux vaut mieux que du busywork OU du spam.**
 > Auto-check : si le score **Align < 9**, c'est probablement hors-cap → stop, re-choisir ou idle.
 >
 > **🟢 ÉTAT 2026-06-23 (run autonome) — IDLE HONNÊTE ATTEINT, RÈGLE APPLIQUÉE.** Sourcing §6 refait :

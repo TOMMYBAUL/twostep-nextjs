@@ -106,24 +106,28 @@ if ($null -ne $cost) {
 }
 
 # Resume "fait/trouve" + notification (best-effort, jamais fatale).
+# Notifier SEULEMENT si vrai travail (commit) OU escalade. Un run idle (0 commit, 0 escalade)
+# ou une erreur API transitoire = SILENCIEUX -> pas de spam telephone. cf priorities anti-derive.
+$notify = $false
 if ($after -and $before -and ($after -ne $before)) {
     $commits = (git log --format='- %s' "$before..$after" 2>$null) -join "`n"
     $n = (git rev-list --count "$before..$after" 2>$null)
     $msg = "[OK] Two-Step - run autonome : $n commit(s)`n$commits`n(details: docs/worklog-autonomie.md)"
+    $notify = $true
 } else {
     $tail = if ($resultText) { $resultText } elseif (Test-Path $log) { ((Get-Content $log -Tail 6) -join ' ').Trim() } else { '' }
     if ($tail.Length -gt 300) { $tail = $tail.Substring(0, 300) + ' ...' }
     $msg = "[!] Two-Step - run autonome : AUCUN commit (exit=$exit). $tail"
 }
 if ($null -ne $cost) { $msg = "$msg`nCout run: $costStr USD (turns $turns)" }
-# Escalades ecrites par la boucle pendant le run (decisions a trancher) -> ajoutees a la notif.
+# Escalades ecrites par la boucle pendant le run (decisions a trancher) -> ajoutees a la notif + forcent l'envoi.
 $extra = Join-Path $repo 'logs\notify-extra.txt'
 if (Test-Path $extra) {
     try {
         $extraTxt = (Get-Content $extra -Raw -ErrorAction SilentlyContinue)
         if ($extraTxt) { $extraTxt = $extraTxt.Trim() }
-        if ($extraTxt) { $msg = "$msg`n$extraTxt" }
+        if ($extraTxt) { $msg = "$msg`n$extraTxt"; $notify = $true }
         Remove-Item $extra -Force -ErrorAction SilentlyContinue
     } catch {}
 }
-try { Send-Notify $msg } catch {}
+if ($notify) { try { Send-Notify $msg } catch {} }
