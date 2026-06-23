@@ -5,6 +5,56 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route `POST /api/ingest/stock` (canal STOCK SANS-CAISSE = cœur « feed LFP as a service ») couverte au niveau ROUTE + 1 silent-failure réel (résolution de jeton qui avalait l'erreur DB → faux 401)**
+
+**Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, webhooks 4 providers ✅, crons (`google-status`/
+`google-feed`/`pos-resync`) ✅, factures (validate/activate/receive/cancel) ✅, `stock/receive` ✅ ;
+`notify-extra.txt` vide (rien en attente). **§6.3 chemin critique non testé** : le **route handler `POST
+/api/ingest/stock`** — LE canal de stock pour les marchands **SANS caisse** (push de fichier par jeton, le
+positionnement « feed LFP as a service » pour les caisses FR à API fermée) — avait son cœur métier
+(`ingestStockFileForMerchant`) et toute la chaîne snapshot (maillons 1→8) prouvés, **mais AUCUN test ne drivait
+le route handler lui-même** : présence/résolution du jeton, rate-limit, lecture du corps (multipart vs brut),
+mapping outcome→HTTP. C'est la porte d'entrée du pilier 1 north-star, non couverte au niveau route.
+
+**TROUVÉ (vérifié dans le code réel, pas Explore) — 1 silent-failure réel, classe documentée (maillon 8 /
+`resolveWebhookProduct` / inbound-email)** :
+- **`resolveIngestToken` avalait l'erreur DB** (`const { data } = …maybeSingle()`) → un blip DB rendait `data=null`
+  **indistinct d'un vrai « jeton inconnu »** → la route renvoyait **401 « Invalid ingest token »** → la caisse/cron
+  du marchand **croit son jeton révoqué et CESSE de pousser** = perte silencieuse sur le canal sans-caisse. Un 401
+  dit « ton jeton est définitivement mauvais » ; or c'était un hoquet DB transitoire qui mérite un **500 (la caisse
+  RÉESSAIE)**. `.maybeSingle()` rend `error:null` à 0 ligne → un vrai jeton inconnu reste un 401 légitime ; seule
+  une VRAIE erreur DB doit lever.
+
+**FIX (1, prod)** : destructurer `error` + `if (error) throw` → la route (try/catch existant) renvoie
+500 + `captureError({route:"ingest/stock"})`. Caller unique (impact : 1 appelant, LOW) → la levée atterrit dans
+le catch existant, 0 régression. Vrai no-match → null → 401 préservé.
+
+**TEST (`tests/ingest-stock-route.test.ts`, +24, 808→832)** : drive le VRAI `resolveIngestToken` (admin mocké
+uniquement au niveau de la réponse DB) + le route handler. Verrouille : (a) **RÉGRESSION north-star** : blip DB
+→ **500 (PAS 401)** + captureError, cœur non appelé ; (b) jeton absent→401, rate-limit→réponse limiteur, jeton
+inconnu→401, cœur throw→500 ; (c) mapping des 8 outcomes (`empty`→400, `too_large`→413, `not_spreadsheet`→415,
+`unchanged`→200, `locked`→429, `no_products`→400, `no_exploitable`→422+triage, `ingested`→200 + champs aplatis) ;
+(d) lecture du corps : brut→buffer intact + filename défaut/`?filename=`/content-type ; multipart→champ `file`,
+sans file→400 ; jeton en `Authorization: Bearer` accepté.
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline ingest) : **fix SOUND** (HIGH correctement résolu),
+discrimination `maybeSingle()` correcte, throw sûr (1 caller try/catch). **Lectures adjacentes vérifiées
+FAIL-SAFE, 0 action** (zéro complaisance, LESSONS : ne pas sur-chasser le error-destructuring sans perte) :
+hash-read `ingest-stock-file.ts:63` (blip → re-traite un fichier identique = redondant idempotent, pas perdu) ;
+lock-UPDATE `:78` (blip → `locked`/429 → la caisse retente = pas perdu). Test jugé substantiel (échouerait sur
+l'ancien code). 0 silent-failure introduit.
+
+**Décidé (réversible)** : 0 migration. `getOrCreateIngestToken` (chemin setup, pas hot) laissé hors scope
+(blip → throw sur l'INSERT par contrainte unique = pas un faux succès silencieux).
+
+**Métrique** : 808→832 tests (+24), 1 bug réel (faux 401 sur blip DB du canal sans-caisse), 3 fichiers
+(1 prod + 1 test + docs). tsc OK. CFR 10 derniers runs = 100% OK, 0 revert.
+
+**Reste / questions** : aucune escalade ce run (réversible pur). Prochain `[R]` candidat : route `POST
+/api/stock/incoming` ou `cron/quality-check` (route-level), même méthode.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Cron `google-status` (read-back du statut Google) couvert au niveau ROUTE + 1 bug silent-failure réel (jumeau oublié de google-feed) + 2 durcissements gated**
 
 **Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, webhooks 4 providers ✅, factures (validate/

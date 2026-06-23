@@ -387,6 +387,25 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   même run/fichier (même classe) : read err → captureError + **skip la persistance** (pas de dédup en aveugle) ;
   insert err → captureError **sans throw** (persistance secondaire après le signal Sentry critique). (2026-06-23)
 
+## Résolution de jeton d'auth machine — erreur DB ≠ jeton inconnu (canal sans-caisse)
+- ❌ **Une résolution de jeton d'auth qui avale l'erreur DB sert un blip transitoire comme « jeton
+  invalide » (401) → l'émetteur automatisé croit son jeton révoqué et CESSE d'émettre = perte silencieuse.**
+  `resolveIngestToken` (`POST /api/ingest/stock`, LE canal stock des marchands SANS caisse) faisait
+  `const { data } = …maybeSingle()` → blip DB → `data=null` **indistinct du vrai no-match** → route 401
+  « Invalid ingest token » → la caisse/cron du marchand arrête de pousser son stock. Un 401 = « ton jeton
+  est définitivement mauvais » ; un hoquet DB transitoire mérite **500 (l'émetteur RÉESSAIE)**. Fix :
+  destructurer `error`, `if (error) throw` → la route (try/catch) → 500 + captureError ; `.maybeSingle()`
+  rend `error:null` à 0 ligne donc un vrai jeton inconnu reste un 401 légitime. **Règle (même classe que
+  maillon 8 / `resolveWebhookProduct` / inbound-email) : dans un auth/lookup d'un canal machine, erreur DB ≠
+  no-match → 500 (retry), réserver le 401/200 bénin au VRAI no-match.** Caller unique → throw sûr (atterrit
+  dans le catch existant). (`token.ts`, 2026-06-23, revue SF-hunter SOUND)
+- ✅ **Couvrir le route handler `POST /api/ingest/stock` au niveau ROUTE** (pas que le cœur métier déjà testé) :
+  `tests/ingest-stock-route.test.ts` drive le VRAI `resolveIngestToken` (admin mocké au seul niveau réponse DB)
+  → prouve blip DB→500 (PAS 401), jeton absent/inconnu→401, rate-limit, mapping des 8 outcomes→HTTP, lecture
+  corps brut vs multipart. **Multipart en test** : `request.formData()` d'undici jette une assertion d'instance
+  `File` en env de test → stuber un faux request exposant `formData()` qui rend un vrai `File` (couvre la BRANCHE
+  du handler sans le ré-parseur undici). (2026-06-23)
+
 ## Identifiants externes (clé de jointure côté plateforme tierce)
 - ❌ **Deux chemins de code dérivant le MÊME identifiant externe de sources différentes** créent
   des entités fantômes en double côté plateforme. Cas : le `store_code` Google LFP était

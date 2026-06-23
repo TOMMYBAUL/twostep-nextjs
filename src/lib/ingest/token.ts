@@ -58,10 +58,17 @@ export async function resolveIngestToken(
     admin: SupabaseClient,
 ): Promise<string | null> {
     if (!token || token.length < 32) return null;
-    const { data } = await admin
+    const { data, error } = await admin
         .from("ingest_credentials")
         .select("merchant_id")
         .eq("token", token)
         .maybeSingle();
+    // Un blip DB ne doit PAS se faire passer pour « jeton inconnu » : `data=null` sur
+    // erreur serait indistinct du vrai no-match → la route renverrait 401 « Invalid ingest
+    // token » → la caisse/cron du marchand croit son jeton révoqué et CESSE de pousser =
+    // perte silencieuse n°1 sur le canal sans-caisse (north-star). `.maybeSingle()` rend
+    // `error:null` à 0 ligne, donc une erreur est forcément une vraie défaillance DB → on
+    // LÈVE : la route (try/catch) renvoie 500 + captureError → la caisse RÉESSAIE.
+    if (error) throw new Error(`ingest token resolution failed: ${error.message}`);
     return data?.merchant_id ?? null;
 }

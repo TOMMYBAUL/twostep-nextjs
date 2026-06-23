@@ -482,6 +482,16 @@ software qui débloque sa moitié à lui.
   `connectionsErr` → captureError + 500. + 2 durcissements gated (`GOOGLE_DISAPPROVAL_ALERTS=1`, finding SF-hunter
   A/B : dédup-read avalé → doublons ; INSERT avalé) corrigés (skip persistance en aveugle / captureError sans throw).
   `tests/cron-google-status-route.test.ts` (+8). Revue SF-hunter SOUND. 800→808, 0 migration, réversible.
+  **Partiel (run 2026-06-23, route `POST /api/ingest/stock`)** : **canal stock SANS-CAISSE couvert au niveau ROUTE** —
+  le push de fichier par jeton (cœur « feed LFP as a service » pour caisses FR à API fermée, pilier 1 north-star)
+  avait son cœur (`ingestStockFileForMerchant`) + chaîne snapshot (maillons 1→8) prouvés mais **0 test de route**.
+  **1 silent-failure réel** (classe maillon 8 / `resolveWebhookProduct`) : `resolveIngestToken` avalait l'erreur DB
+  (`const { data } = …maybeSingle()`) → blip DB indistinct d'un vrai « jeton inconnu » → **401 « Invalid token »**
+  → la caisse/cron du marchand croit son jeton révoqué et CESSE de pousser = perte silencieuse. Fix : `if (error)
+  throw` → route 500 + captureError (la caisse RÉESSAIE) ; vrai no-match → null → 401 préservé (caller unique, LOW).
+  `tests/ingest-stock-route.test.ts` (+24) : RÉGRESSION blip→500 (PAS 401) via le VRAI resolver, jeton absent/
+  inconnu→401, rate-limit, mapping des 8 outcomes→HTTP, lecture corps brut/multipart/Bearer. Revue SF-hunter SOUND
+  (lectures adjacentes hash-read/lock-UPDATE vérifiées FAIL-SAFE → 0 action). 808→832, 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)
