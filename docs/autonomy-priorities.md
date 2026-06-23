@@ -84,6 +84,13 @@ plus un mur Google externe.
 >      positif `google_connected` sur blip ; MED-2 feed live Voie B `(products ?? [])` → XML vide silencieux). +11
 >      tests (832→843), revue SF-hunter SOUND. **Reste = rendu VISUEL** (consommer l'endpoint dans l'UI) → Thomas.
 > 3. **Préparer** les items GATED en attente de Thomas (D2 tier GTIN-only, D5 vérif image) — rien de plus.
+> 4. **SCALE / VOLUME (Thomas 2026-06-23 — IN-SCOPE, prioritaire)** : les 8 maillons sont prouvés
+>    sur de PETITES fixtures. Valider tout le chemin sur de GROS catalogues **synthétiques (10k→50k
+>    produits)** : pagination complète des adapters (Zettle/Square notamment), **mémoire du feed**
+>    (`lfp-xml` construit TOUT en RAM → risque sur 50k items), **batch upserts** stock, **timeouts**
+>    des routes/crons (Vercel ~max), réconciliation qui lit tout le catalogue. **Preuve** : ingest +
+>    feed + réconciliation sur N milliers, **0 perte, 0 timeout**, mesure du temps/mémoire. Pilote-
+>    pertinent : une boutique multimarque = des **milliers** de SKU (Deerskin). C'est le prochain [R].
 >
 > **OUT-OF-SCOPE / INTERDIT sans GO Thomas :**
 > - ❌ Le **pipeline FACTURES fournisseurs → stock** (`parseInvoice`, activate/cancel invoice,
