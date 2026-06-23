@@ -435,6 +435,14 @@ software qui débloque sa moitié à lui.
   statut avalées. Toutes fermées (throw+captureError pour les reads d'aiguillage ; captureError-sans-throw pour le
   mapping = anti doublon POS ; helper `markInvoiceImported`). `tests/invoice-activate-writes.test.ts` (+11). Revue
   silent-failure-hunter SOUND (3c `markProductsRedispo` réfuté = déjà non-throwing). 0 migration, réversible.
+  **Partiel (run 2026-06-23, stock/receive)** : **chemin livraison reçue→stock couvert** — `POST /api/stock/receive`
+  (route live, déplace `stock_incoming`→stock via RPC atomique `receive_stock_incoming`) n'avait **0 test** et portait
+  **1 perte silencieuse north-star + 2 adjacentes** : la boucle `await rpc(...)` ne destructurait PAS `error` puis
+  `received++` inconditionnel → marchand voit « N reçus / stock mis à jour » alors que la RPC a échoué (stock non
+  incrémenté) = livraison perdue derrière voyant vert ; + 2 reads d'aiguillage (incoming, lookup marchand `.single()`)
+  transformaient un blip DB en 404. Toutes fermées (captureError + `failed`, `received`=succès réels, échec total→500,
+  partiel→200 honnête ; capture-and-continue sûr car RPC atomique/idempotente, ligne reste `incoming` re-cliquable).
+  `tests/stock-receive-writes.test.ts` (+8). Revue SF-hunter SOUND (2 findings MED adjacents corrigés). 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

@@ -5,6 +5,67 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`POST /api/stock/receive` (livraison reçue → stock) durci + testé** : 1 perte silencieuse north-star + 2 adjacentes
+
+**Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D ✅/escaladé + READINESS (a) ✅ + dernier run `activateInvoice` ✅.
+Haut du backlog = escaladé/externe (D2/D5/D6 GO Thomas, chantier B visuel, pilote). Signaux Sentry/quality_alerts
+vérifiés au run précédent (0 actionable, alertes = data test périmée). → §6.3 **chemin critique d'écriture NON
+testé**. Codemap `01-data-pipeline.md` §1d : `api/stock/receive` (source="scan"/livraison) écrit le stock via la
+RPC atomique `receive_stock_incoming` (incrémente stock + marque ligne `received` + feed_event `restock`) — **0 test**.
+
+**TROUVÉ (vérifié dans le code, pas supposé) — 1 perte silencieuse north-star + 2 adjacentes, même classe que
+`resync-stock` (`if(!error) updated++`) / invoice-validate (« erreur ≠ succès »)** :
+- **#1 (north-star)** : la boucle faisait `await admin.rpc("receive_stock_incoming", …)` **SANS destructurer
+  `error`**, puis `received++` quoi qu'il arrive. Un échec RPC (blip DB / contrainte / RAISE) → le stock n'est PAS
+  incrémenté, la ligne reste `incoming`, MAIS la réponse annonce « received: N » → **le marchand croit son stock à
+  jour = livraison perdue en silence, derrière un voyant vert.** Fix : destructurer `error` ; sur erreur →
+  `captureError` + `failed++` + `continue` (la RPC est atomique par item → un échec ne demi-applique rien et laisse
+  la ligne `incoming` = re-cliquable, **idempotent**, pas de double comptage) ; `received` ne compte QUE les succès
+  réels. Contrat de réponse honnête : `received===0 && failed>0` → **500** (l'UI affiche « Erreur » au lieu d'un
+  faux « stock mis à jour ») ; partiel → 200 avec `{received, failed}` (received honnête, lignes échouées re-cliquables).
+- **#2** : la lecture `stock_incoming` avalait son `error` (`const { data } = await query`) → un blip DB devenait
+  indistinct de « aucune livraison en attente » (`404 No incoming stock found`) = faux diagnostic. Fix : distinguer
+  (throw→captureError+500 sur erreur ; vide RÉEL [error null, []] reste 404).
+- **#3 (revue SF-hunter, MED)** : lookup marchand `.single()` transformait un blip DB en `404 No merchant` (même
+  classe). Fix : `captureError`+500 si `merchantErr.code !== "PGRST116"` ; PGRST116 (0 ligne) reste 404 légitime.
+  + erreur `auth.getUser()` désormais `captureError` (observabilité panne auth ; le 401 bloque déjà).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline) : **mes 3 changements SOUND**. Confirmé : (1)
+distinction error/empty fiable (Supabase renvoie `error:null` à 0 ligne) ; (2) capture-and-continue correct +
+idempotence prouvée (RPC atomique → ligne reste `incoming`) ; (3) contrat partiel honnête (received = succès réels,
+échec total = 500). 2 findings MED adjacents (lookup marchand `.single()`→404, auth error avalée) **corrigés ce run**.
+Finding LOW (createAdminClient guard) déjà sûr (catch externe → captureError). 0 régression.
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/stock-receive-writes.test.ts` (+8) — on drive la VRAIE route `POST` avec
+un faux client qui ENREGISTRE les appels RPC + injecte des erreurs ciblées par incoming-id. Prouvé champ par champ :
+happy 2 lignes (2 RPC `{incomingId,productId,delta}` exacts, received=2, 0 Sentry) ; #1 RPC échoue sur 1 item →
+received=1 (honnête) + failed=1 + 1 captureError ; #1 toutes échouent → 500 + received non annoncé + 2 captureError ;
+#2 incoming err → 500 + 0 RPC ; vide réel → 404 ; #3 merchant blip → 500 ; merchant absent (PGRST116) → 404. TDD :
+3 rouges d'abord → fix → 8 verts.
+
+**TESTÉ** : `npm run test:run` → **739/739** (731→739, +8), `tsc` OK. 2 fichiers (1 route + 1 test). 0 migration,
+réversible (`git revert`). Impact (hook GitNexus) : route handler, 1 appelant (`factures-view.tsx handleConfirmDelivery`
+lit `data.received`, gère `!res.ok`) → contrat préservé (`failed` additif, `received` honnête, 500 sur échec total).
+
+**Reste / suivi (anti scope-creep)** : haut du backlog reste escaladé/externe. Le réversible « chemin d'écriture non
+testé » se raréfie (la plupart des hot paths d'écriture stock sont désormais couverts) → §5.4 honnêteté de rendement :
+la valeur bascule de plus en plus côté Thomas (pilote, chantier B visuel) ; encore quelques routes d'écriture
+secondaires à auditer.
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — chemin réel `POST /api/stock/receive` exercé champ par champ (appels RPC enregistrés + erreurs
+  injectées par item), divergence vs l'avant prouvée (TDD 3 rouges). Unitaire (faux client, pas un vrai marchand POS).
+- **Sécurité north-star : 9/10** — revue SF-hunter SOUND ; perte silencieuse n°1 (livraison « reçue » sans stock
+  incrémenté derrière voyant vert) comblée ; idempotence prouvée ; 2 findings MED adjacents corrigés ; 0 régression.
+- **Réversibilité : 10/10** — 0 migration, 1 route + 1 test, `git revert` propre, contrat appelant préservé.
+- **Discipline de scope : 9/10** — 1 route ciblée + son test ; findings adjacents même-classe même-fichier ; pas de dérive UI/RPC.
+- **Alignement north-star : 8/10** — durcit un canal d'écriture stock réel (« ne rien oublier ») ; valeur pleine au
+  1er marchand qui confirme une livraison (gated pilote) → 8.
+**Objectif (§5bis)** : tests 731→739 (+8) ; **3 pertes silencieuses** réelles comblées (1 north-star + 2 adjacentes) ;
+2 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`activateInvoice` (push catalogue POS) durci + testé** : 1 perte silencieuse north-star + 4 adjacentes
 
 **Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D (D1/D3/D4/D7 ✅, D2/D5/D6 préparés+escaladés) ✅ + READINESS (a) ✅.

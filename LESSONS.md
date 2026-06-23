@@ -209,6 +209,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   « vérifié OK ». `verifyImageUrl` HEAD laissé en skip silencieux (URL morte = bénin/fréquent, captureError y
   flood). (`serper.ts`, D5, 2026-06-23, revue SF-hunter SOUND)
 
+## Boucle d'écriture par item + RPC atomique (livraison reçue)
+- ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`
+  inconditionnel** = perte silencieuse derrière voyant vert. `POST /api/stock/receive` (livraison
+  confirmée → `receive_stock_incoming` incrémente le stock + marque la ligne `received` + feed_event)
+  comptait `received++` même si la RPC échouait → marchand voit « N reçus / stock mis à jour » alors que
+  le stock n'a PAS bougé. **Fix (classe `resync` `if(!error) updated++`)** : destructurer `error` ; sur erreur
+  → captureError + `failed++` + `continue` ; `received` ne compte QUE les succès. **Contrat de réponse honnête** :
+  échec TOTAL (`received===0 && failed>0`) → 500 (l'UI montre une erreur, pas un faux succès) ; partiel → 200 avec
+  `{received, failed}` honnête. **Capture-and-continue SÛR ici car la RPC est atomique par item** (transaction plpgsql
+  unique) → un échec ne demi-applique rien, la ligne reste `incoming` = re-cliquable, idempotent, 0 double-comptage.
+- ⚠️ Même run : 2 reads d'aiguillage du même fichier transformaient un blip DB en 404 (incoming `const {data}`,
+  merchant `.single()`) → distinguer erreur de vide (throw/500 + captureError ; PGRST116 = 0 ligne reste 404 légitime).
+  Règle déjà connue (maillon 8 / `resolveWebhookProduct`), re-trouvée par grep des reads du fichier qu'on durcit.
+  (`stock/receive`, 2026-06-23, revue SF-hunter SOUND)
+
 ## Canaux entrée / webhooks tiers (Resend, POS)
 - ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
   « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas
