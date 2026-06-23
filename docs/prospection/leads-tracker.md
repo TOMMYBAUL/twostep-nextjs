@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-23 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-23 (L'Auditeur)*
 
 ## Stats
 - Total leads : 137
 - NOUVEAU : 43
 - CONTACTE : 1
-- BROUILLON : 69
+- BROUILLON : 68
 - Reponses : 0
 - Signes : 0
 
@@ -44,7 +44,13 @@
 | # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
 |---|---|---|---|---|---|
 
-*Note session 23/06 (L'Auditeur) : 0 lead NOUVEAU avec email (43 NOUVEAU, tous sans email — 208/208 prospects épuisés digitalement, Saint-Etienne épuisé 23/06, Capitole épuisé 22/06, Carmes épuisé 19/06). Aucun nouveau brouillon possible. Les 5 emails rédigés le 20/06 restent valides et prêts à envoyer (voir section ci-dessous — vérification activité 23/06 en cours). **⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 9ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06 → 22/06 → 23/06). Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 5 emails prêts à copier-coller dans la section "Textes des 5 emails" ci-dessous.** Notion MCP indisponible (idem toutes sessions).*
+*Note session 23/06 (L'Auditeur) : 0 lead NOUVEAU avec email (43 NOUVEAU, tous sans email — 208/208 prospects épuisés digitalement, Saint-Etienne épuisé 23/06, Capitole épuisé 22/06, Carmes épuisé 19/06). Aucun nouveau brouillon possible. Les 5 emails rédigés le 20/06 restent valides — vérification activité 23/06 :*
+*— ✅ FJT FRAYSSINET JOAILLIER : ACTIF (comptes 2025 déposés 24/03/2026, 3 boutiques Toulouse, revendeur officiel Rolex/TAG Heuer/OMEGA/IWC/Breitling/Cartier/Longines — 4,1/5 sur 212 avis Google). Email 20/06 valide, aucun changement.*
+*— ✅ RACHEL HAIR : ACTIF (restructuration légale juin 2025 : EI NTO RACHEL → EURL RACHEL HAIR INTERNATIONAL, même adresse 12 rue Bayard, même gérante Rachel Nto — dernier avis Planity 24/05/2026 confirmant activité). Email 20/06 valide.*
+*— ✅ FAUR-QUINTANA : ACTIF (CA 2024 : 1 605 400€, bénéficiaire, Benoit Quintana toujours gérant — ⚠️ faur-quintana.com en HTTP 503, site groupe quintana-joaillier.com actif). Email 20/06 (info@faur-quintana.com) encore valide — à surveiller si bounce.*
+*— ✅ DR SWAG : ACTIF (Nicolas Julius gérant confirmé, 13 rue Perchepinte, dr-swag.com actif, IG @dr.swag.officiel 7695 abonnés, 4,6/5 sur 210+ avis). Nouvelles marques site : Karl Kani, Mitchell & Ness (en plus Jordan/Nike/New Era/Unkut). Email 20/06 valide.*
+*— 🚫 ROBERTO GIANNELLI : ÉCARTÉ DÉFINITIF 23/06 — boutique 20 rue du Languedoc Toulouse FERMÉE le 17/05/2022 (SIRET 78880434200020 radié). Siège transféré à Castelginest, modèle VAD/e-commerce uniquement, aucune boutique physique ouverte au public. Hors cible Two-Step. Email 20/06 à NE PAS ENVOYER.*
+***⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 9ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06 → 22/06 → 23/06). Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 5 emails prêts à copier-coller dans la section "Textes des 5 emails" ci-dessous.** Notion MCP indisponible (idem toutes sessions).*
 
 ---
 
@@ -610,7 +616,7 @@ Objet : MAC DOUGLAS Toulouse sur Two-Step — tes sacs cuir trouvés par les Tou
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Prochaine action |
 |---|---|---|---|---|---|---|---|---|
 | FJT (FRAYSSINET JOAILLIER TOULOUSE) | Saint-Etienne | Bijouterie/Horlogerie | HOLDING FRAYSSINET | contact@frayssinet-joaillier.fr ✅ | 501696819 | 7/10 | BROUILLON | Valider + envoyer (brouillon Gmail à créer) — joaillier-horloger indépendant 3 boutiques Toulouse (Languedoc + Capitole + Arts), revendeur Rolex/Longines/Jaeger-LeCoultre/TAG Heuer, fondé 1905 famille Frayssinet. 5 ets (Toulouse + Montpellier), email mentions légales confirmé 13/06. Tel boutique Toulouse : 05 61 53 99 04. |
-| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com ✅ | 788804342 | 5/10 | BROUILLON | Valider + envoyer (brouillon Gmail à créer) — chaussures modulables à brides interchangeables marque propre, boutique 20 rue du Languedoc (siège Castelginest 31780 depuis 2022), e-shop actif 2026. Score réduit (marque propre, pas multi-marques). Email confirmé 13/06 via page contact robertogiannellifrance.com. |
+| ROBERTO GIANNELLI | Saint-Etienne | Chaussures | Carole Reynaud | info@robertogiannellifrance.com | 788804342 | — | ECARTE | **ÉCARTÉE DÉFINITIF 23/06** — boutique 20 rue du Languedoc Toulouse FERMÉE le 17/05/2022 (SIRET 78880434200020 radié — confirmé societe.com + pappers.fr 23/06). Siège à Castelginest (5 chemin Peyrandrieu), modèle VAD/e-commerce uniquement. Hors cible Two-Step (pas de boutique physique). Email 20/06 NON ENVOYÉ (correct). |
 | AGATHE ET ZOE | Saint-Etienne | Chaussures | Ariane Dayonnet | — | 501691844 | 7/10 | NOUVEAU | Email non trouvé (1er passage 13/06) — boutique multi-marques chaussures/sacs cuir (Fratelli Rossetti, Buttero, Homers, Pare Gabia, Lario...), 29 rue Croix Baragnon, active, tel 05 34 31 67 44, aucun site propre ni IG ni email public. Cible idéale Two-Step. Visite terrain. |
 | SIENNE (5 SB FAMILY) | Capitole | Mode femme | Stéphanie Berdah | — | 538275561 | 6/10 | NOUVEAU | Email non trouvé (1er passage 13/06) — SIREN valide (538275561 = 5 SB FAMILY, Stéphanie Berdah — différent du 428969711 invalide), IG @sienne.boutique actif + Yelp "Updated July 2025", boutique confirmée active 44 rue des Tourneurs. Aucun email public. Visite terrain ou contact IG. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | — | 326727633 | 6/10 | NOUVEAU | Email non trouvé (4ème passage 13/06) — perlins.fr actif (présentation + catalogue, pas d'email visible), tel 05 61 21 18 81. 49 rue de la Pomme. Visite terrain. |
