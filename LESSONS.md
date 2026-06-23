@@ -185,6 +185,15 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   (brand préfixé sur l'original le RALLONGE vers le candidat ; `overlapScore` pèse 60 % et est symétrique).
   ~70 % des findings non vérifiés sont faux, y compris ceux d'un agent spécialiste. (2026-06-23)
 
+- ❌ **Une fonction « verify » qui `return true` sur ERREUR (clé absente / HTTP !ok / catch) publie sans
+  preuve.** `verifyPhotoWithAI` (`serper.ts`, gate d'image sourcée Serper) fail-openait en `true` sur ses 3
+  échecs → image potentiellement FAUSSE publiée. Pire : `ANTHROPIC_API_KEY` absente en prod → 100 % des images
+  non vérifiées. Règle (classe SIRET) : vérif ON + erreur ≠ preuve de match → retourner `false` (écarter le
+  candidat) + `captureError` ; vérif OFF par config (clé absente) → on peut laisser passer MAIS le DIRE
+  (captureError 1×/process, flag module anti-flood) — jamais silencieux. Distinguer « pas pu vérifier » de
+  « vérifié OK ». `verifyImageUrl` HEAD laissé en skip silencieux (URL morte = bénin/fréquent, captureError y
+  flood). (`serper.ts`, D5, 2026-06-23, revue SF-hunter SOUND)
+
 ## Canaux entrée / webhooks tiers (Resend, POS)
 - ❌ **Un handler de webhook tiers qui renvoie 200 sur une erreur DB/API confond « perdu » avec
   « rien à faire »** → l'émetteur (Resend, POS) ne réessaie JAMAIS = perte silencieuse n°1. Cas

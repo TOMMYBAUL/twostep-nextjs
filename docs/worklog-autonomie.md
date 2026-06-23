@@ -5,7 +5,75 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
-## 2026-06-23 (run autonome) · PHASE D — **D7 `[R]` Concordance EAN↔nom-marchand** PROUVÉ + **D4 vérifié déjà-fait/retiré** · commit `<à compléter>`
+## 2026-06-23 (run autonome) · PHASE D — **D5 (partiel) `[R]` Gate de match image : fail-open de la vérif corrigé** + décision produit escaladée · commit `<à compléter>`
+
+**Sourcing (§6)** : chaîne A + D1/D3/D4/D7 faits ; haut backlog Phase D = **D5** (item `[R]` suivant). Vérifié
+dans le code réel d'abord (LESSONS ~70 % faux findings) → **la prémisse de D5 « pas de gate, utiliser CLIP » est
+partiellement fausse** : (a) un gate de match d'image EXISTE déjà via `verifyPhotoWithAI` (Haiku vision) dans
+`serper.ts` ; (b) le CLIP de `clip-pipeline.ts` est un matching **produit↔produit** (Tier 4 identité), inadapté à
+« cette image sourcée matche-t-elle ce NOM » (CLIP image-image exige une image de référence qu'on n'a pas pour un
+candidat sourcé) — la vision Haiku (image + texte) est l'outil juste. **Le vrai trou** était ailleurs.
+
+**TROUVÉ (vérifié dans le code, pas supposé) — fail-open silencieux de la vérif image (classe `verifySIRET`)** :
+`verifyPhotoWithAI` retournait `true` (= « image matche ») dans 3 cas d'ÉCHEC : clé absente (`!apiKey`),
+HTTP `!res.ok`, et `catch`. Conséquence : une erreur de vérif (ou pas de clé) = image acceptée **sans preuve** →
+photo potentiellement FAUSSE publiée sur le produit (faux positif visuel + risque de rejet Google). Or
+**`ANTHROPIC_API_KEY` est ABSENTE en prod** (priorities §3 Rang 4) → en prod, **100 % des images Serper sont
+publiées sans aucune vérif de contenu**. Callers (6 sites d'enrichissement) écrivent `photo_url` sur le produit ;
+`searchSerperImages` fait `if (!aiMatch) continue` → un `false` écarte le candidat (essaie le suivant).
+
+**FAIT (réversible, 0 migration)** — `src/lib/images/serper.ts` :
+- **Vérif ON + erreur** (HTTP !ok / timeout / throw) → désormais `false` (candidat écarté, ≠ accepté à
+  l'aveugle) + `captureError` → VISIBLE. Best-effort : si tous les candidats échouent, aucune image ce run,
+  re-tentée au prochain cycle d'enrich (`photo_url` reste null = pas de flag « tried » qui figerait → vérifié
+  par la revue : auto-guérison SOUND).
+- **Vérif OFF** (clé absente, mode prod actuel) → garde `true` (compat, on ne strippe pas unilatéralement
+  toutes les images prod) MAIS rendu OBSERVABLE via `captureError` **une seule fois/process** (flag module
+  `warnedVerifierDisabled`, anti-flood) → Thomas voit enfin « images publiées sans vérif ».
+- Bonus même thème (revue) : les erreurs **niveau Serper** (`!res.ok` + catch de `searchSerperImages`) passaient
+  en `console.warn` (Sentry-invisible) → `captureError` : une panne Serper = plus d'images, désormais visible.
+  (`verifyImageUrl` HEAD-check laissé en skip silencieux : un candidat URL mort est bénin/fréquent, captureError
+  y floodrait — décision justifiée, pas complaisance.)
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff = surface enrichissement/publication d'image) : **SOUND** sur
+le diff (aucun nouveau silent-failure ; guard one-time correct ; pas de flag « tried » → retry naturel via
+`photo_url IS NULL` confirmé sur les 6 callers ; pas de fuite `clearTimeout`). Les 2 `console.warn` Serper
+qu'elle a relevés (BASSE, pré-existants) ont été corrigés ci-dessus.
+
+**PREUVE RÉELLE** (méthode §1bis) : `tests/images-verify-photo.test.ts` (+5) drive `verifyPhotoWithAI` exporté,
+fetch + `@/lib/error` mockés : « oui »→accepté/0 erreur ; « non »→refusé/0 erreur (no-match légitime ≠ panne) ;
+**HTTP 529→false + captureError** ; **throw→false + captureError** ; **clé absente→true MAIS captureError 1×
+sur 2 appels** (anti-flood prouvé) + fetch jamais appelé sans clé. Chaque assertion d'erreur échouerait sur
+l'ancien code (`return true`).
+
+**TESTÉ** : `npm run test:run` → **671/671** (666→671, +5), `tsc` OK. 3 fichiers (1 lib + 1 test + docs).
+
+**ESCALADE (§4, décision produit/dépense)** : `logs/notify-extra.txt` — A) ajouter `ANTHROPIC_API_KEY` prod
+(Haiku vérifie, ~0,001 $/img) [reco] vs B) bloquer images non vérifiées vs C) garder l'acceptation non vérifiée
++ tracer. Le software est prêt+testé pour les 3 ; seul le GO est à Thomas. **D5 marqué partiel** (le gate est
+durci+observable ; le choix de politique en prod reste ouvert).
+
+**Reste / suivi (vérifiés réels, anti scope-creep)** : (D4-suite) images anti-rejet GRATUITES OBF/OPF jetées
+(`photo_url:null`) → arbitrer la SOURCE-image avec ce choix A/B/C (produit). (revue BASSE) `verifyImageUrl`
+catch silencieux laissé volontairement (bruit HEAD). D6 (shadow/preview + invariant read-only POS) non entamé.
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — `verifyPhotoWithAI` exercé sur les 5 modes (match/no-match/HTTP-err/throw/no-key) avec
+  divergence prouvée vs l'ancien code ; mais testé unitairement (pas le chemin intégré `searchProductImage` ni
+  un vrai appel Haiku/Serper). Plafond.
+- **Sécurité north-star : 8/10** — revue SF-hunter SOUND, fail-open d'une vérif (= publier une image sans preuve)
+  fermé ; mode dégradé prod rendu visible ; aucune nouvelle perte silencieuse.
+- **Réversibilité : 10/10** — 0 migration, additif (export + garde-fous d'erreur), revert propre.
+- **Discipline de scope : 9/10** — 1 fichier prod ciblé + 1 test ; correctifs de revue (même fichier/thème)
+  inclus, findings hors-thème différés ; D5 marqué partiel honnêtement au lieu de sur-implémenter.
+- **Alignement north-star : 8/10** — cœur « zéro faux positif visuel » + observabilité du mode dégradé prod ;
+  borné par le fait que le levier majeur (clé prod) est une décision Thomas (escaladée).
+**Objectif (§5bis)** : tests 666→671 ; **1 fail-open réel** comblé (vérif image) + 2 `console.warn` Serper rendus
+Sentry-visibles ; 3 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit (ledger), 0 revert → **100 %**.
+
+---
+
+## 2026-06-23 (run autonome) · PHASE D — **D7 `[R]` Concordance EAN↔nom-marchand** PROUVÉ + **D4 vérifié déjà-fait/retiré** · commit `2887263`
 
 **Sourcing (§6)** : backlog Phase D, item `[R]` de plus haut rang non terminé = D4. **Vérifié dans le code
 réel d'abord** (LESSONS ~70 % de faux findings) → **D4 est caduc** : Open Beauty Facts est DÉJÀ entièrement

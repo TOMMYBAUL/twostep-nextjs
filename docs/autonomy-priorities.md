@@ -229,9 +229,18 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   « Serper handles photos ») alors que OBF/OPF exposent une image GTIN-keyée gratuite → trou « images
 >   anti-rejet » (cf intro Phase D + `blocked_only_by_image` de D3). **Décision SOURCE-image = ambiguë** (le
 >   commentaire dit Serper préféré pour la qualité) → à arbitrer avec D5 (gate CLIP) plutôt qu'en solo.
-> - **D5 `[R]` Gate de match image (CLIP)** : avant de publier une image SOURCÉE (Serper/Google
->   Shopping), vérifier qu'elle **matche vraiment** le produit (colonnes `clip_embedding_*` existantes)
->   → anti faux-positif visuel ; repli sur la **photo marchand**. Preuve.
+> - 🔶 **D5 `[R]` Gate de match image — DURCI + ESCALADÉ (2026-06-23)**. Prémisse « pas de gate / utiliser
+>   CLIP » **partiellement fausse** (vérifié) : un gate existe déjà via `verifyPhotoWithAI` (Haiku vision,
+>   `serper.ts`) ; le CLIP `clip-pipeline.ts` est un matching produit↔produit (Tier 4 identité), inadapté à
+>   « image sourcée matche-t-elle ce NOM ». **Vrai trou comblé** : `verifyPhotoWithAI` **fail-openait en
+>   `return true`** sur 3 échecs (clé absente / HTTP !ok / catch) = image publiée **sans preuve** (classe
+>   `verifySIRET`). Or `ANTHROPIC_API_KEY` ABSENTE en prod → 100 % des images Serper publiées non vérifiées.
+>   Fix : vérif ON + erreur → `false` (candidat écarté) + `captureError` ; vérif OFF (clé absente) → `true`
+>   (compat) mais OBSERVABLE 1×/process ; + 2 `console.warn` Serper → `captureError`. Preuve
+>   `tests/images-verify-photo.test.ts` (+5). Revue SF-hunter SOUND. 671 tests, 0 migration, réversible.
+>   **Décision produit escaladée** (`notify-extra`) : A) clé ANTHROPIC prod (~0,001 $/img) [reco] vs B) bloquer
+>   images non vérifiées vs C) accepter non vérifié + tracer. **Repli photo marchand** non couvert ce run
+>   (dépend du choix A/B/C). NB : à arbitrer avec la SOURCE-image OBF/OPF gratuite (D4-suite).
 > - **D6 `[R]` Mode pilote « shadow/preview »** : ingérer un marchand + montrer ce qu'on PUBLIERAIT
 >   (catalogue + feed + % publiable) **AVANT toute publication** (lecture-seule = sécurité marchand,
 >   « ne pas casser sa gestion de stock »). + **test verrouillant l'invariant « aucun adaptateur POS

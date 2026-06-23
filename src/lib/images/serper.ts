@@ -6,21 +6,54 @@
  * Free tier: 2500 credits (~50$/year).
  */
 
+import { captureError } from "@/lib/error";
+
 const SERPER_API_URL = "https://google.serper.dev/images";
 
 /**
- * Ask Claude Haiku to verify if a product photo matches the expected product.
- * Returns true if the photo matches, false if it doesn't or on error.
+ * One-time guard so we surface the "verification disabled" degraded mode ONCE per
+ * process instead of flooding Sentry on every candidate of every product.
+ */
+let warnedVerifierDisabled = false;
+
+/**
+ * Ask Claude Haiku to verify if a sourced product photo actually matches the
+ * expected product (anti visual false-positive — north-star « zéro faux positif »).
+ *
+ * Contract (corrigé 2026-06-23) :
+ *  - **Verification ON** (clé présente) et une ERREUR survient (HTTP !ok / timeout /
+ *    throw) → on retourne **false** = « non vérifié » : le candidat est ÉCARTÉ (le
+ *    caller passe au suivant). Une erreur de vérif n'est PAS une preuve de match —
+ *    retourner true reviendrait à publier une image potentiellement fausse sans preuve
+ *    (même anti-pattern fail-open que `verifySIRET valid:true`). Best-effort : si TOUS
+ *    les candidats échouent, aucune image ce run, ré-essayée au prochain cycle d'enrich.
+ *  - **Verification OFF** (clé ABSENTE, cas prod aujourd'hui) → on retourne true (on ne
+ *    bloque pas), MAIS on le rend OBSERVABLE (captureError une fois) car des images
+ *    sourcées sont alors publiées SANS vérification de contenu. Le choix « publier ou
+ *    bloquer les images non vérifiées en prod » est une décision produit → escaladée.
  * Cost: ~$0.001 per call.
  */
-async function verifyPhotoWithAI(
+export async function verifyPhotoWithAI(
     imageUrl: string,
     productName: string,
     brand?: string | null,
     color?: string | null,
 ): Promise<boolean> {
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) return true; // Skip verification if no API key
+    if (!apiKey) {
+        // Verification désactivée par config (clé absente). On NE bloque pas (compat),
+        // mais on le signale une fois — sinon « images publiées sans vérif » est muet.
+        if (!warnedVerifierDisabled) {
+            warnedVerifierDisabled = true;
+            captureError(
+                new Error(
+                    "Image AI verification disabled: ANTHROPIC_API_KEY missing — sourced images are published WITHOUT content verification",
+                ),
+                { module: "serper", phase: "verifyPhotoWithAI" },
+            );
+        }
+        return true;
+    }
 
     try {
         const controller = new AbortController();
@@ -59,7 +92,16 @@ Réponds UNIQUEMENT "oui" si TOUS les critères sont remplis, sinon "non".` },
         });
 
         clearTimeout(timeout);
-        if (!res.ok) return true; // On error, don't block — accept the photo
+        if (!res.ok) {
+            // Verification ON mais en erreur → on ne PEUT pas affirmer le match → écarter
+            // le candidat (≠ accepter à l'aveugle). Visible pour Sentry, ré-essayé au prochain run.
+            captureError(new Error(`Image verifier HTTP ${res.status}`), {
+                module: "serper",
+                phase: "verifyPhotoWithAI",
+                productName,
+            });
+            return false;
+        }
 
         const data = await res.json();
         const answer = (data.content?.[0]?.text ?? "").toLowerCase().trim();
@@ -70,8 +112,10 @@ Réponds UNIQUEMENT "oui" si TOUS les critères sont remplis, sinon "non".` },
         }
 
         return isMatch;
-    } catch {
-        return true; // On error, accept the photo rather than blocking
+    } catch (err) {
+        // Timeout / réseau / throw : pas une preuve de match → écarter le candidat (visible).
+        captureError(err, { module: "serper", phase: "verifyPhotoWithAI", productName });
+        return false;
     }
 }
 
@@ -213,7 +257,13 @@ async function searchSerperImages(
         clearTimeout(timeout);
 
         if (!res.ok) {
-            console.warn(`[serper] API error: ${res.status}`);
+            // Le moteur d'images lui-même est en erreur (≠ « 0 résultat ») → rendre visible :
+            // sinon une panne Serper = plus aucune image publiée, en silence.
+            captureError(new Error(`Serper API HTTP ${res.status}`), {
+                module: "serper",
+                phase: "searchSerperImages",
+                query,
+            });
             return null;
         }
 
@@ -260,11 +310,9 @@ async function searchSerperImages(
 
         return null;
     } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-            console.warn("[serper] Request timed out");
-        } else {
-            console.warn("[serper] Error:", err);
-        }
+        // Timeout / réseau sur l'appel Serper → image search KO sans signal = images perdues
+        // en silence. Visible (le retry naturel = prochain cycle d'enrich, photo_url toujours null).
+        captureError(err, { module: "serper", phase: "searchSerperImages", query });
         return null;
     }
 }
