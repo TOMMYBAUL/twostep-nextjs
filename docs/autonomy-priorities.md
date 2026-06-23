@@ -113,6 +113,14 @@ plus un mur Google externe.
 > frais.** RE-IDLE conforme. **Nouveau** : la reco cadence (run #1) n'a pas encore été appliquée (cron ~toutes
 > les 30 min, 12 runs le 23/06) → escalade renforcée = **METTRE EN PAUSE / espacer le cron** (grignote le quota
 > abonnement partagé pour 0 valeur). Prochain run même état → RE-IDLE, ne PAS re-notifier en boucle.
+>
+> **🟢 ÉTAT 2026-06-23 (run autonome #4) — RE-IDLE, vérif prod PLUS PROFONDE que #3.** Ce run j'ai décomposé les 9
+> marchands un par un (4 tests paiement/signup + 5 seed du 18/04, **aucun créé depuis le 25/04, 0 marchand réel**) et
+> inspecté les tables jobs que #3 n'avait pas vues : `enrichment_jobs`=vide, `image_jobs`=103 pending **mais stale
+> depuis le 23/04** (dépend clé ANTHROPIC déjà escaladée D5). `google_conns`=0, `quality_alerts` 0 frais (max 22/06).
+> **0 [R] in-scope, 0 signal réel.** RE-IDLE conforme, 0 code, 0 re-notif (escalades merge+cadence déjà posées).
+> **4e run zéro-valeur consécutif** → la pause/espacement du cron est de plus en plus justifiée. Prochain run même
+> état → RE-IDLE, ne PAS dériver, ne PAS re-notifier.
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but

@@ -5,6 +5,36 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome #4) · RE-IDLE HONNÊTE — **4e run même état, vérif prod PLUS PROFONDE ; 0 re-notif (escalades déjà posées)**
+
+**Pourquoi pas de code** : directive §1bis + runs #1–#3 (*« Prochain run même état → RE-IDLE, ne pas dériver, ne pas
+re-notifier »*). Sourcing §6 refait, et ce run j'ai poussé la vérif **plus loin que #3** (pas de trust aveugle) :
+
+**Signaux réels — REQUÊTÉS moi-même en prod (`nagyprzjtheyeuuwxgpg`) :**
+- `merchants`=**9**, décomposés un par un : 4 = tests de paiement/signup (« TEST PAY » 25/04, « TESTE SIGNUP »
+  22/04, « test stripe » 21/04, « Two-Step Test » 19/04 — 0 produit réel sauf 30 synthétiques) + 5 boutiques seed
+  du 18/04 (14-15 produits synthétiques chacune). **Aucun Deerskin, aucune boutique Toulouse réelle, aucun créé
+  depuis le 25/04.**
+- `google_merchant_connections`=**0** (aucun feed live). `quality_alerts`=**106**, **0 aujourd'hui**, max
+  created = **22/06 05:00** (cron qualité sur catalogue dormant, pas un défaut).
+- **NOUVEAU ce run** (tables jobs, non inspectées par #3) : `enrichment_jobs`=**vide** ; `image_jobs`=**103 pending
+  mais latest = 23/04** (stale depuis avril, dépend de la clé ANTHROPIC déjà escaladée en D5 — pas un signal frais).
+- → **0 [R] in-scope, 0 signal réel frais.** Backlog : chaîne A 1→8 ✅, Phase D D1–D7 ✅, readiness LFP (a) ✅,
+  backing data onboarding (`/api/google/stats` + `/api/google/feed-preview`) ✅ ; D2/D5 préparés+escaladés.
+  Reste = VISUEL (UI → Thomas) ou GATED (escaladé). Couverture hot-path = HORS-CAP. Exploration libre = interdite.
+
+**Décision** : RE-IDLE honnête, **0 fichier de code touché**, **0 ajout à `notify-extra`** (escalades merge +
+pause/espacer-cron déjà envoyées+vidées aux runs #1/#2 ; re-spammer = bruit + quota partagé §7). 4e run zéro-valeur
+consécutif → la **pause/espacement du cron** (escaladée run #2) devient de plus en plus justifiée ; la valeur est
+100 % chez Thomas (GO merge des commits gelés / validation visuelle UI / recrutement pilote / vraie data marchand).
+
+**Scorecard** : run de pilotage (0 livrable code) — non noté sur les 5 axes produit (§5bis). Métrique north-star
+**inchangée** (100 % du backlog in-scope construit+testé jusqu'au point de décision Thomas). **Tests/code : 0 delta.**
+
+**Reste / questions** : inchangé. Prochain run même état → RE-IDLE, ne PAS dériver, ne PAS re-notifier.
+
+---
+
 ## 2026-06-23 (run autonome #3) · RE-IDLE HONNÊTE — **3e run même état, prod RE-RE-VÉRIFIÉE ; AUCUNE re-notif (escalade déjà posée)**
 
 **Pourquoi pas de code** : directive FILTRE DE CAP (§1bis) + run #2 — *« Prochain run même état (0 [R] in-scope,
