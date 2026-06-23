@@ -97,6 +97,19 @@ plus un mur Google externe.
 >    via OBF/KicksDB/Serper + vérif** → vitrine publiée). **Une pierre deux coups : teste le workflow
 >    + le scale ET produit des vitrines PRÉSENTABLES** pour démarcher. Réutiliser les catalogues du #4.
 >    (Le JUGEMENT visuel final reste à Thomas/Playwright — la boucle produit la DATA, pas le rendu CSS.)
+> 6. **PHASE E — matcher les 8 maillons à une UI ACCESSIBLE + IDIOTPROOF + PRO (Thomas 2026-06-24, NOUVELLE MISSION)** :
+>    chaque maillon fonctionnel doit avoir un écran clair et utilisable par un commerçant non-technicien.
+>    **Stack DÉJÀ optimale, NE PAS changer de lib** : Untitled UI React (Tailwind v4 + React Aria = WCAG
+>    natif, design « expensive » out-of-the-box) — vérifié 2026-06-24 comme top choix pro+accessible. La
+>    mission = l'UTILISER partout, pas en chercher une autre.
+>    - **LA BOUCLE FAIT (vérifiable, code)** : pour chaque maillon (import/ingest stock, vue % publiable,
+>      shadow/preview via `feed-preview`, review enrichissement, connexion Google, onboarding) → **états
+>      vides** (« aucun produit — connecte ta caisse »), **chargement**, **erreurs + validation claires**,
+>      **textes de guidage**, **CTA évidents**, **zéro cul-de-sac**, **labels/ARIA**. **Preuve** :
+>      `ui-journey.mjs` (ariaSnapshot = a11y, overflow/max-width = layout) + tests. Token-léger.
+>    - **SUPERVISÉ (Thomas + Claude-in-Chrome sur Edge / Playwright)** : le JUGEMENT « pro vs moyen », le
+>      responsive, la beauté. Outil = skill **design-from-reference** (s'active si un écran est « moyen/
+>      plat/amateur »). **La boucle ne tranche JAMAIS le visuel** (pas d'yeux — cf. OUT-OF-SCOPE).
 >
 > **OUT-OF-SCOPE / INTERDIT sans GO Thomas :**
 > - ❌ **Responsive / rendu CSS à l'aveugle** : la boucle n'a PAS d'yeux (pas de navigateur) → toucher
