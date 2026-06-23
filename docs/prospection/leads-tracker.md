@@ -37,6 +37,17 @@
 
 ---
 
+## Recap brouillons email — 2026-06-23 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : Bloqué — Gmail MCP indisponible (9ème session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+
+*Note session 23/06 (L'Auditeur) : 0 lead NOUVEAU avec email (43 NOUVEAU, tous sans email — 208/208 prospects épuisés digitalement, Saint-Etienne épuisé 23/06, Capitole épuisé 22/06, Carmes épuisé 19/06). Aucun nouveau brouillon possible. Les 5 emails rédigés le 20/06 restent valides et prêts à envoyer (voir section ci-dessous — vérification activité 23/06 en cours). **⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 9ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06 → 22/06 → 23/06). Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 5 emails prêts à copier-coller dans la section "Textes des 5 emails" ci-dessous.** Notion MCP indisponible (idem toutes sessions).*
+
+---
+
 ### Rattrapage lundi — 2026-06-22 (L'Eclaireur) — Capitole épuisé, 0 email trouvé
 
 **Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
