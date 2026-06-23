@@ -91,8 +91,17 @@ plus un mur Google externe.
 >    des routes/crons (Vercel ~max), réconciliation qui lit tout le catalogue. **Preuve** : ingest +
 >    feed + réconciliation sur N milliers, **0 perte, 0 timeout**, mesure du temps/mémoire. Pilote-
 >    pertinent : une boutique multimarque = des **milliers** de SKU (Deerskin). C'est le prochain [R].
+> 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
+>    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
+>    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles
+>    via OBF/KicksDB/Serper + vérif** → vitrine publiée). **Une pierre deux coups : teste le workflow
+>    + le scale ET produit des vitrines PRÉSENTABLES** pour démarcher. Réutiliser les catalogues du #4.
+>    (Le JUGEMENT visuel final reste à Thomas/Playwright — la boucle produit la DATA, pas le rendu CSS.)
 >
 > **OUT-OF-SCOPE / INTERDIT sans GO Thomas :**
+> - ❌ **Responsive / rendu CSS à l'aveugle** : la boucle n'a PAS d'yeux (pas de navigateur) → toucher
+>   le visuel/responsive (surtout `/discover`) = **SUPERVISÉ (Thomas + Playwright)**, jamais en
+>   autonomie (changer du CSS sans voir = casser au hasard).
 > - ❌ Le **pipeline FACTURES fournisseurs → stock** (`parseInvoice`, activate/cancel invoice,
 >   invoice_items) = **ANCIENNE idée, hors cap.** Ne PAS le durcir.
 > - ❌ **Couverture/durcissement de routes/crons déjà fonctionnels** « parce que non testés »
