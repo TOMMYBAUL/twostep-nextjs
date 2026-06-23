@@ -5,7 +5,7 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
-## 2026-06-23 (run autonome) · PHASE D — **D5 (partiel) `[R]` Gate de match image : fail-open de la vérif corrigé** + décision produit escaladée · commit `<à compléter>`
+## 2026-06-23 (run autonome) · PHASE D — **D5 (partiel) `[R]` Gate de match image : fail-open de la vérif corrigé** + décision produit escaladée · commit `4e9be32`
 
 **Sourcing (§6)** : chaîne A + D1/D3/D4/D7 faits ; haut backlog Phase D = **D5** (item `[R]` suivant). Vérifié
 dans le code réel d'abord (LESSONS ~70 % faux findings) → **la prémisse de D5 « pas de gate, utiliser CLIP » est
