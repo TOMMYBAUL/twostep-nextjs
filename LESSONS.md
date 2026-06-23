@@ -372,6 +372,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   read qui décide « rien à traiter » doit distinguer erreur de vide (throw/500 + captureError) — le
   blast radius d'un select de liste avalé = tous les items.** (Finding 2 silent-failure-hunter, maillon 7)
 
+## Crons multi-marchands — SELECT de liste avalé (jumeau oublié)
+- ❌ **Une garde anti-silent-failure posée sur UN cron et oubliée sur son JUMEAU.** `cron/google-feed`
+  destructurait `error` sur le SELECT de la liste `google_merchant_connections` (fix maillon 7) mais
+  `cron/google-status` (le read-back qui rend visible le faux positif n°1 « sur Google alors que rejeté »)
+  faisait encore `const { data: connections } = …` → blip DB → `data=null` → `length===0` → `200 "No
+  Google-connected merchants"` = **tout le read-back abandonné pour TOUS les marchands**, 0 Sentry → le contrôle
+  s'aveugle lui-même sur un hoquet DB. **Règle (re-confirmée) : quand on durcit un cron à boucle multi-marchand,
+  grep les N crons jumeaux qui lisent la même liste — le SELECT de liste avalé a un blast radius = tous les items.**
+  Fix : garde `connectionsErr` → captureError + 500 AVANT le check « vide ». (`cron/google-status`, 2026-06-23, SF-hunter SOUND)
+- ⚖️ **Bloc gated inerte = landmine, pas hors-scope** : le bloc `GOOGLE_DISAPPROVAL_ALERTS=1` de google-status
+  avalait `error` sur le read de dédup `quality_alerts` (→ `open ?? []` → ré-insertion en double à chaque cron) ET
+  sur l'INSERT. Inerte en prod (flag OFF + 106 non appliquée) mais se déclenche à l'activation D2. Corrigé dans le
+  même run/fichier (même classe) : read err → captureError + **skip la persistance** (pas de dédup en aveugle) ;
+  insert err → captureError **sans throw** (persistance secondaire après le signal Sentry critique). (2026-06-23)
+
 ## Identifiants externes (clé de jointure côté plateforme tierce)
 - ❌ **Deux chemins de code dérivant le MÊME identifiant externe de sources différentes** créent
   des entités fantômes en double côté plateforme. Cas : le `store_code` Google LFP était

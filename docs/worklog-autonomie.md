@@ -5,6 +5,70 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Cron `google-status` (read-back du statut Google) couvert au niveau ROUTE + 1 bug silent-failure réel (jumeau oublié de google-feed) + 2 durcissements gated**
+
+**Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, webhooks 4 providers ✅, factures (validate/
+activate/receive/cancel) ✅ ; `notify-extra.txt` vide. **§6.2 signaux réels** vérifiés en DB (MCP Supabase) :
+`quality_alerts` **vide**, 104 produits / 9 marchands / 0 connexion Google / 1 POS = data test, **0 actionnable**
+(confirme les runs précédents). **§6.3 chemin critique non testé** : les **route handlers de crons** orchestrent
+des boucles multi-marchands (le blast radius d'un skip muet = TOUS les marchands). Audit : les libs sont testées,
+mais peu de crons ont un test de ROUTE. `pos-resync` (wrapper mince/lib testée) et `google-feed` (durci+testé
+maillon 7) OK. `cleanup` minimal. **`google-status` (read-back du faux positif n°1) : 0 test de route.**
+
+**TROUVÉ (vérifié dans le code réel, pas Explore) — 1 silent-failure réel, classe documentée** :
+- **Le SELECT de la LISTE `google_merchant_connections` avalait son `error`** (`const { data: connections } = …`)
+  → blip DB → `data=null` → `length===0` → `200 "No Google-connected merchants"` = **tout le read-back
+  silencieusement abandonné pour TOUS les marchands**, 0 Sentry, 0 statut. Or ce cron EST le contrôle du faux
+  positif n°1 (« sur Google » alors que rejeté) → il se ré-aveugle lui-même sur un hoquet DB. **Exactement le
+  jumeau** corrigé dans `google-feed` au maillon 7 (garde `connectionsErr` → captureError + 500) : la garde a été
+  posée sur un canal et **oubliée sur son jumeau** (motif récurrent « invariant appliqué de façon incohérente »).
+  Grep confirme : `google-status` était le SEUL cron restant à avaler ce read de liste.
+
+**FIX (1)** : destructurer `error` + garde `connectionsErr` → `captureError({step:"load-connections"})` + 500, AVANT
+le check « liste vide » (distinguer erreur de vide). Calqué byte-pour-byte sur le jumeau google-feed.
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline cron) : **fix introduit SOUND**, parité google-feed
+confirmée, **0 silent-failure introduit**. 2 findings **PRÉ-EXISTANTS, même fichier, dans le bloc gated
+`GOOGLE_DISAPPROVAL_ALERTS=1`** (inerte en prod, 106 non appliquée) → corrigés ce run car même classe + même
+fichier + landmine au moment EXACT de l'activation D2 : **Finding A** lecture de dédup `quality_alerts`
+(`const {data:open}=…`) avalait `error` → `open ?? []` sur blip → tout traité comme neuf → **ré-insertion en
+double à chaque cron** ; fix : captureError(`step:"load-open-alerts"`) + **skip la persistance ce cycle** (on ne
+déduplique pas en aveugle ; le signal Sentry critique reste émis ; retente au prochain cron). **Finding B** l'INSERT
+`quality_alerts` jetait son résultat → écriture ratée (contrainte 106 absente / RLS) **avalée** ; fix :
+captureError(`step:"insert-alerts"`) **sans throw** (persistance secondaire après le signal critique, ne pas faire
+échouer tout le marchand). Finding C (précision per_merchant sur throw helper) = informatif, hors scope. **Tous les
+fixes dans 1 SEUL fichier prod.**
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/cron-google-status-route.test.ts` (+8) drive le VRAI `POST` route avec
+faux client Supabase read-side (applique `.eq` + thenable, injecte erreur read ET insert) : 401 sans bearer (0
+lecture) ; **SELECT connections erreur → 500 `db_error` + captureError + jamais de lecture de statut** (LE fix,
+échouerait sans : data=null→200) ; liste vide SANS erreur → 200 « no merchants » (no-op légitime, distinct) ; token
+indisponible → `errors++` + captureError, pas de `fetchProcessedProducts` ; happy → rejets remontés (captureError)
++ `per_merchant` honnête + 0 write sans flag ; **flag ON dédup-read erreur → captureError + 0 insert** (Finding A) ;
+**flag ON insert erreur → captureError** (Finding B) ; échec d'1 marchand → `errors++` sans arrêter les autres.
+
+**TESTÉ** : `npm run test:run` → **808/808** (800→808, +8), `tsc` OK. 2 fichiers (1 route prod + 1 test).
+0 migration, réversible (`git revert`). Impact : route feuille (0 caller, Vercel cron), signature inchangée.
+
+**Reste / suivi** : les crons north-star (pos-resync, google-feed, google-status) sont désormais couverts/durcis
+contre le skip muet de liste. Réversible « hot path non testé » très largement épuisé. La valeur reste côté Thomas
+(pilote, chantier B visuel) + Rang 2 gated (idempotence/ledger, feed_event Zettle). Recommandation cadence inchangée (§5.4).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — vrai `POST` route exercé champ par champ (4 modes d'échec + happy + 2 chemins gated), faux
+  client read/insert qui applique vraiment filtres+erreurs. Unitaire (Google/adapters mockés), pas de vraie data marchand.
+- **Sécurité north-star : 8/10** — revue SF-hunter SOUND, 0 silent-failure introduit ; **1 bug réel fermé** (jumeau
+  oublié = read-back qui s'aveugle) + 2 landmines gated désamorcées avant l'activation D2. Aucun faux positif introduit.
+- **Réversibilité : 10/10** — 0 migration, 1 prod + 1 test, `git revert` propre, signature route inchangée.
+- **Discipline de scope : 9/10** — 1 fichier prod (un seul cron), tous les fixes de la même classe ; finding C hors scope.
+- **Alignement north-star : 7/10** — durcit le contrôle du faux positif n°1 (read-back Google) contre un skip muet
+  à blast radius « tous les marchands ». Correctif réel + parité, pas busywork.
+
+**Métriques objectives** : tests 800→808 (+8) ; **1 bug réel** corrigé (SELECT liste avalé = read-back muet) + 2
+durcissements gated ; 2 fichiers touchés. CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route handlers webhook POS ABSOLUS (`POST /api/webhooks/{square,zettle}`) couverts de bout en bout + parité recalc avec les jumeaux delta**
 
 **Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, READINESS (a) ✅ ; `notify-extra.txt` vide (rien en

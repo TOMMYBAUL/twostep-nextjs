@@ -474,6 +474,14 @@ software qui débloque sa moitié à lui.
   **HIGH recalc** (revue SF-hunter) — `await recalculateGroupSizesAdmin()` non gardé → throw réseau → 500 post-
   décrément → retry → idempotence skip → recalc perdu jusqu'au resync 6h ; fix captureError-et-continue sur les 2
   jumeaux. +4 tests parse (`processed_at` fallback). Revue SF-hunter SOUND. 776 tests (749→776), 0 migration, réversible.
+  **Partiel (run 2026-06-23, cron `google-status`)** : **read-back du statut Google couvert au niveau ROUTE** —
+  `cron/google-status` (relit `accounts/{account}/products`, rend visibles les rejets Google = contrôle du faux
+  positif n°1) n'avait **0 test de route**. **1 bug réel (jumeau oublié de google-feed)** : le SELECT de la LISTE
+  `google_merchant_connections` avalait son `error` → blip DB → `200 "No Google-connected merchants"` = tout le
+  read-back muet pour TOUS les marchands (la garde maillon 7 était sur google-feed mais pas son jumeau). Fix :
+  `connectionsErr` → captureError + 500. + 2 durcissements gated (`GOOGLE_DISAPPROVAL_ALERTS=1`, finding SF-hunter
+  A/B : dédup-read avalé → doublons ; INSERT avalé) corrigés (skip persistance en aveugle / captureError sans throw).
+  `tests/cron-google-status-route.test.ts` (+8). Revue SF-hunter SOUND. 800→808, 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

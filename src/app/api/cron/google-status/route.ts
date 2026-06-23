@@ -25,9 +25,20 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
 
-    const { data: connections } = await supabase
+    const { data: connections, error: connectionsErr } = await supabase
         .from("google_merchant_connections")
         .select("merchant_id");
+
+    // Échec de lecture DB ≠ « aucun marchand connecté » : sans cette garde, un blip
+    // DB faisait no-op SILENCIEUX pour TOUS les marchands (HTTP 200, aucun Sentry,
+    // aucun statut). Or ce cron EST le read-back qui rend visible le faux positif
+    // n°1 du north-star (« sur Google » alors que rejeté) → un skip muet ré-aveugle
+    // exactement ce contrôle. Parité avec le jumeau google-feed (fix maillon 7,
+    // cf. LESSONS « le read qui décide rien-à-traiter doit distinguer erreur de vide »).
+    if (connectionsErr) {
+        captureError(connectionsErr, { cron: "google-status", step: "load-connections" });
+        return NextResponse.json({ error: "db_error", message: connectionsErr.message }, { status: 500 });
+    }
 
     if (!connections || connections.length === 0) {
         return NextResponse.json({ merchants: 0, message: "No Google-connected merchants" });
@@ -96,17 +107,32 @@ export async function POST(req: NextRequest) {
                 // Sentry ci-dessus reste, lui, toujours actif.
                 if (process.env.GOOGLE_DISAPPROVAL_ALERTS === "1") {
                     const alerts = buildDisapprovalAlerts(products, conn.merchant_id);
-                    const { data: open } = await supabase
+                    const { data: open, error: openErr } = await supabase
                         .from("quality_alerts")
                         .select("product_id")
                         .eq("merchant_id", conn.merchant_id)
                         .eq("type", "google_disapproved")
                         .eq("status", "open");
-                    const openSet = new Set((open ?? []).map((a: { product_id: string | null }) => a.product_id));
-                    const fresh = alerts.filter((a) => !openSet.has(a.product_id));
-                    // Batcher les INSERT (URL/payload bornés, cf. LESSONS chunk()).
-                    for (const batch of chunk(fresh, 500)) {
-                        if (batch.length > 0) await supabase.from("quality_alerts").insert(batch);
+                    // Lecture de dédup en erreur ≠ « aucune alerte ouverte » : `open ?? []`
+                    // sur un blip DB traiterait TOUT comme neuf → ré-insertion en double à
+                    // chaque cron. On rend l'erreur visible et on SKIP la persistance ce
+                    // cycle (le signal Sentry au-dessus reste émis ; la persistance retente
+                    // au prochain cron sans polluer la table). (revue SF-hunter, finding A)
+                    if (openErr) {
+                        captureError(openErr, { cron: "google-status", merchantId: conn.merchant_id, step: "load-open-alerts" });
+                    } else {
+                        const openSet = new Set((open ?? []).map((a: { product_id: string | null }) => a.product_id));
+                        const fresh = alerts.filter((a) => !openSet.has(a.product_id));
+                        // Batcher les INSERT (URL/payload bornés, cf. LESSONS chunk()).
+                        for (const batch of chunk(fresh, 500)) {
+                            if (batch.length === 0) continue;
+                            // INSERT best-effort APRÈS le signal Sentry critique : une écriture
+                            // ratée (contrainte CHECK si 106 non appliquée, RLS, drop) ne doit
+                            // pas être avalée → captureError, sans throw (ne pas faire échouer
+                            // tout le marchand sur une persistance secondaire). (finding B)
+                            const { error: insErr } = await supabase.from("quality_alerts").insert(batch);
+                            if (insErr) captureError(insErr, { cron: "google-status", merchantId: conn.merchant_id, step: "insert-alerts" });
+                        }
                     }
                 }
             }
