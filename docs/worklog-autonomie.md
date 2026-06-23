@@ -5,6 +5,35 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome #3) · RE-IDLE HONNÊTE — **3e run même état, prod RE-RE-VÉRIFIÉE ; AUCUNE re-notif (escalade déjà posée)**
+
+**Pourquoi pas de code** : directive FILTRE DE CAP (§1bis) + run #2 — *« Prochain run même état (0 [R] in-scope,
+0 signal réel) → RE-IDLE et NE PAS re-notifier en boucle »*. J'ai refait le sourcing §6 **et re-requêté la prod
+moi-même** (`nagyprzjtheyeuuwxgpg`, pas de confiance aveugle aux runs #1/#2) :
+
+**Sourcing §6 (ordre strict), vérifié contre la DB prod ce run :**
+- (1) **Backlog** : chaîne A 1→8 ✅, Phase D D1–D7 ✅, readiness LFP (a) ✅, backing data onboarding
+  (`/api/google/stats` + `/api/google/feed-preview`) ✅ ; D2/D5 préparés+escaladés. Reste = **VISUEL** (UI
+  onboarding/shadow-preview, pas de navigateur côté boucle → Thomas) ou **GATED** (déjà escaladé).
+- (2) **Signaux réels — REQUÊTÉS** : `merchants`=9 (**0 créé depuis le 2026-05-01**, tous seed/test d'avril) ;
+  `google_merchant_connections`=**0** ; `quality_alerts`=106 (tous open), **0 nouveau depuis le 2026-06-23**,
+  max created = **2026-06-22 05:00** = signature catalogue test DORMANT (cron qualité OK sur data périmée, pas un
+  défaut) ; `pos_connections` = **1 en `error` depuis le 2026-04-23** = le compte Square de test connu (LESSONS,
+  = le `pos_disconnected`). → **0 [R] in-scope, 0 signal réel frais.**
+- (3) **Couverture hot-path** = explicitement HORS-CAP. (4) **Exploration libre** = interdite (anti-drift).
+
+**Décision** : RE-IDLE honnête, **0 fichier de code touché**, **0 ajout à `notify-extra`** (vide = run #2 déjà
+envoyé+vidé par le wrapper ; re-spammer la même escalade = bruit + quota partagé §7). La valeur reste chez Thomas
+(GO merge des commits gelés / validation visuelle UI / recrutement pilote / vraie data marchand).
+
+**Scorecard** : run de pilotage (0 livrable code) — non noté sur les 5 axes produit (§5bis : noter les runs qui
+PRODUISENT du travail). Métrique north-star **inchangée** (100 % du backlog in-scope construit+testé jusqu'au point
+de décision Thomas). **Tests/fichiers de code : 0 delta.** Le goulot n'est PAS la boucle.
+
+**Reste / questions** : inchangé. Prochain run même état → RE-IDLE, ne PAS dériver, ne PAS re-notifier.
+
+---
+
 ## 2026-06-23 (run autonome #2) · RE-IDLE HONNÊTE — **même état, RE-VÉRIFIÉ en DB prod ; escalade renforcée = PAUSE/espacer le cron**
 
 **Pourquoi ce run ne produit pas de code** : la directive FILTRE DE CAP (§1bis) est explicite — *« Prochain run :
