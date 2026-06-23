@@ -19,7 +19,7 @@
  *   2026-04-22 pre-fix)
  */
 
-import { isFeedEligible } from "@/lib/google/feed-eligibility";
+import { gtinOnlyTierEnabled, isFeedEligible } from "@/lib/google/feed-eligibility";
 import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
 
 const TITLE_MAX = 150;
@@ -49,8 +49,13 @@ export interface LfpProductRow {
  * (Le caller doit déjà avoir filtré sur visible=true + review_status=validated.)
  * Délègue à `isFeedEligible` — source unique partagée avec la Voie A (parité, cf. maillon 7).
  */
-export function filterFeedEligible(products: LfpProductRow[]): LfpProductRow[] {
-    return products.filter(isFeedEligible);
+export function filterFeedEligible(
+    products: LfpProductRow[],
+    // Tier GTIN-only (D2) : lu via le flag par défaut → parité avec la Voie A (même flag).
+    // Override explicite pour les tests. OFF en prod tant que `GOOGLE_GTIN_ONLY_TIER` non posé.
+    allowMissingImage: boolean = gtinOnlyTierEnabled(),
+): LfpProductRow[] {
+    return products.filter((p) => isFeedEligible(p, { allowMissingImage }));
 }
 
 /** Échappement XML conformiste (5 char base) — utiliser pour TOUT contenu utilisateur. */
@@ -79,6 +84,12 @@ function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): strin
             ? rawTitle
             : rawTitle.slice(0, TITLE_MAX - 1).trimEnd() + "…";
     const photo = p.photo_processed_url ?? p.photo_url ?? "";
+    // Tier GTIN-only (D2) : un produit sans image part SANS `g:image_link` (Google matche par
+    // GTIN). Un `<g:image_link></g:image_link>` VIDE serait pire qu'absent (rejet d'item). Tant
+    // que le flag est OFF, l'éligibilité exige une image → la balise est toujours émise.
+    const optImageLink = photo
+        ? `\n      <g:image_link>${escapeXml(photo)}</g:image_link>`
+        : "";
 
     const optDescription = p.description
         ? `\n      <g:description>${escapeXml(p.description)}</g:description>`
@@ -97,8 +108,7 @@ function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): strin
       <g:id>${escapeXml(p.id)}</g:id>
       <g:gtin>${escapeXml(p.ean!)}</g:gtin>
       <g:title>${escapeXml(title)}</g:title>${optDescription}${optBrand}
-      <g:price>${p.price!.toFixed(2)} EUR</g:price>${optSalePrice}
-      <g:image_link>${escapeXml(photo)}</g:image_link>
+      <g:price>${p.price!.toFixed(2)} EUR</g:price>${optSalePrice}${optImageLink}
       <g:availability>${qty > 0 ? "in stock" : "out of stock"}</g:availability>
       <g:condition>new</g:condition>
       <g:store_code>${escapeXml(storeCode)}</g:store_code>
@@ -122,8 +132,10 @@ export function buildLfpXml(
     products: LfpProductRow[],
     storeCode: string,
     nowMs: number = Date.now(),
+    // Tier GTIN-only (D2) : lu via le flag par défaut (parité Voie A). Override pour les tests.
+    allowMissingImage: boolean = gtinOnlyTierEnabled(),
 ): string {
-    const eligible = filterFeedEligible(products);
+    const eligible = filterFeedEligible(products, allowMissingImage);
     const items = eligible.map((p) => buildItemXml(p, storeCode, nowMs)).join("\n");
 
     return `<?xml version="1.0" encoding="UTF-8"?>

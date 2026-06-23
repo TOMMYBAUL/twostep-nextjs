@@ -1,5 +1,5 @@
 import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
-import { isFeedEligible } from "@/lib/google/feed-eligibility";
+import { gtinOnlyTierEnabled, isFeedEligible } from "@/lib/google/feed-eligibility";
 
 type ProductRow = {
     id: string;
@@ -30,7 +30,12 @@ type GoogleProduct = {
      * configurées par le marchand ne remontaient JAMAIS sur les surfaces Google (trou D1).
      */
     salePrice?: { value: string; currency: string };
-    imageLink: string | null;
+    /**
+     * Émis UNIQUEMENT quand le produit a une image. En tier GTIN-only (D2, flag), un produit
+     * sans image part SANS `imageLink` → Google matche par GTIN (un `imageLink: null` explicite
+     * serait rejeté). Tant que le flag est OFF, l'éligibilité exige une image → toujours présent.
+     */
+    imageLink?: string;
     /**
      * Google Merchant Center product attribute spec uses literal strings
      * with a space, not an underscore. Sending "in_stock" causes silent
@@ -68,7 +73,6 @@ export function transformProductToGoogle(
             value: product.price!.toFixed(2),
             currency: "EUR",
         },
-        imageLink: product.photo_processed_url ?? product.photo_url,
         availability: quantity > 0 ? "in stock" : "out of stock",
         channel: "local",
         contentLanguage: "fr",
@@ -78,6 +82,8 @@ export function transformProductToGoogle(
     };
 
     // Optional fields — only emit when present so we don't send empty strings
+    const image = product.photo_processed_url ?? product.photo_url;
+    if (image) out.imageLink = image;
     if (product.description) out.description = product.description;
     if (product.brand) out.brand = product.brand;
 
@@ -88,9 +94,14 @@ export function transformProductToGoogle(
     return out;
 }
 
-export function filterEligibleProducts(products: ProductRow[]): ProductRow[] {
+export function filterEligibleProducts(
+    products: ProductRow[],
+    // Tier GTIN-only (D2) : lu via le flag par défaut → parité avec la Voie B (même flag).
+    // Override explicite pour les tests. OFF en prod tant que `GOOGLE_GTIN_ONLY_TIER` non posé.
+    allowMissingImage: boolean = gtinOnlyTierEnabled(),
+): ProductRow[] {
     // `visible` est propre à la Voie A (gardé en redondance du gate SQL) ; le reste de
     // l'éligibilité (GTIN/prix/photo) vit dans `isFeedEligible` — source unique partagée avec
     // la Voie B pour garantir le MÊME ensemble de produits émis (fin de divergence price>0/EAN).
-    return products.filter((p) => p.visible !== false && isFeedEligible(p));
+    return products.filter((p) => p.visible !== false && isFeedEligible(p, { allowMissingImage }));
 }

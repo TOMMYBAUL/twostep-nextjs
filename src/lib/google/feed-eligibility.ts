@@ -33,11 +33,49 @@ export function hasPublishablePrice(p: Pick<FeedEligibleRow, "price">): boolean 
     return p.price !== null && p.price > 0;
 }
 export function hasImage(p: Pick<FeedEligibleRow, "photo_url" | "photo_processed_url">): boolean {
-    return p.photo_url !== null || p.photo_processed_url !== null;
+    // Non-vide : une chaîne `""` (ex. colonne back-fillée en "" au lieu de NULL) n'est PAS une
+    // image publiable — elle passait `!== null` mais produit un `g:image_link` vide que Google
+    // rejette. Compter ces produits comme « sans image » est honnête (KPI) et sûr (le tier D2
+    // les routera correctement en GTIN-only au lieu d'émettre une balise image vide).
+    return (
+        (p.photo_url !== null && p.photo_url !== "") ||
+        (p.photo_processed_url !== null && p.photo_processed_url !== "")
+    );
 }
 
-export function isFeedEligible(p: FeedEligibleRow): boolean {
-    return hasPublishableGtin(p) && hasPublishablePrice(p) && hasImage(p);
+/**
+ * Tier « GTIN-only » (item D2) — FLAG, OFF par défaut.
+ *
+ * Quand activé (`GOOGLE_GTIN_ONLY_TIER=1`/`true`), les produits SANS image mais avec
+ * GTIN + prix valides deviennent éligibles au feed : Google enrichit la tête de catalogue
+ * depuis le GTIN (trick NearSt — `g:image_link` omis → matching par code-barres). Ce tier
+ * peut affecter la réputation du compte Google (taux de rejet) → activation = décision Thomas,
+ * mesurée par le cron `google-status` + `quality_alerts google_disapproved`. **Ne PAS activer
+ * sans GO.** Tant qu'OFF, le gate exige toujours une image (`hasImage`).
+ *
+ * Lu À CHAQUE appel des deux filtres de sortie (Voie A `feed.ts` + Voie B `lfp-xml.ts`) → les
+ * deux canaux émettent le MÊME ensemble (parité, source unique — cf. LESSONS maillon 7).
+ */
+export function gtinOnlyTierEnabled(
+    env: Record<string, string | undefined> = process.env,
+): boolean {
+    const v = env.GOOGLE_GTIN_ONLY_TIER;
+    return v === "1" || v === "true";
+}
+
+export interface FeedEligibilityOptions {
+    /**
+     * Tier GTIN-only (D2) : l'image n'est PAS requise (Google enrichit depuis le GTIN).
+     * Défaut `false` (image obligatoire). N'est passé `true` que par les filtres de feed
+     * quand `gtinOnlyTierEnabled()` est vrai.
+     */
+    allowMissingImage?: boolean;
+}
+
+export function isFeedEligible(p: FeedEligibleRow, opts: FeedEligibilityOptions = {}): boolean {
+    if (!hasPublishableGtin(p) || !hasPublishablePrice(p)) return false;
+    if (opts.allowMissingImage) return true;
+    return hasImage(p);
 }
 
 /**
