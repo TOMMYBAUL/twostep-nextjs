@@ -51,3 +51,6 @@ logs/
 
 .norton-ca.pem
 scripts/notify.local.ps1
+
+# Screenshots du parcours UI (non versionnes)
+scripts/.ui-shots/
