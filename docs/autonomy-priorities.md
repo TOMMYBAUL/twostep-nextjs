@@ -427,6 +427,14 @@ software qui débloque sa moitié à lui.
   n'efface JAMAIS le catalogue ; lock occupé → all-zeros sans effet de bord ». Revue
   typescript-reviewer : SOUND (tests non vacants, mocks fidèles aux vraies chaînes). Plus de
   hot path du sync POS non testé.
+  **Partiel (run 2026-06-23, activateInvoice)** : **chemin facture→catalogue POS couvert** —
+  `activateInvoice` (route live `POST /api/invoices/[id]/activate`, push `pushCatalog` + mapping `pos_item_id`)
+  n'avait **0 test** et portait **1 perte silencieuse north-star + 4 adjacentes** : lecture `pos_connections` avalée
+  → marchand POS pris pour non-POS → **catalogue jamais poussé** (facture `imported` en silence) ; reads
+  `invoice_items`/`products`/`invoice` avalés (err≠vide/introuvable) ; mapping `pos_item_id` post-push avalé ; 3 MAJ
+  statut avalées. Toutes fermées (throw+captureError pour les reads d'aiguillage ; captureError-sans-throw pour le
+  mapping = anti doublon POS ; helper `markInvoiceImported`). `tests/invoice-activate-writes.test.ts` (+11). Revue
+  silent-failure-hunter SOUND (3c `markProductsRedispo` réfuté = déjà non-throwing). 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

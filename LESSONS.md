@@ -221,6 +221,19 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   + captureError (l'émetteur réessaie) ; ne réserver le 200 bénin qu'au VRAI no-match (spam/slug
   inconnu) pour ne pas faire boucler les retries.** (maillon 8, 2026-06-22, revue silent-failure-hunter)
 
+## Facture → catalogue POS (activateInvoice)
+- ❌ **Une lecture qui distingue « POS vs non-POS » et avale son `error` fait passer un marchand POS pour non-POS →
+  catalogue jamais poussé en silence.** `activateInvoice` lisait `pos_connections` via `.maybeSingle()` sans
+  destructurer `error` → blip DB → `conn=null` → branche non-POS → facture marquée `imported` SANS `pushCatalog` →
+  produits sans `pos_item_id` → plus aucun stock temps réel. **Règle (classe maillon 8 / `resolveWebhookProduct`) :
+  un read dont le résultat AIGUILLE entre deux branches (a un effet de bord différent par branche) doit distinguer
+  erreur de vide — `.maybeSingle()` renvoie `error:null` à 0 ligne, donc `if (err) throw+captureError` ; l'absence
+  vraie = `{data:null,error:null}` reste la branche par défaut.** Idem `invoice_items` (err déguisé en « run validate
+  first »). Mapping `pos_item_id` post-push réussi : captureError SANS throw (re-run → doublon POS). (activate.ts, 2026-06-23)
+- ⚠️ **Un `if (err || !data) throw new Error("not found")` perd l'erreur Supabase d'origine** : le throw synthétique
+  remonte au catch route mais code/hint/message Supabase sont effacés côté Sentry. Séparer : `if (err){captureError(err);
+  throw}` puis `if (!data){throw "not found"}`. (revue SF-hunter, activate.ts 3a/3b, 2026-06-23)
+
 ## Canaux sortie / feeds externes
 - ❌ **Push aveugle** : un `2xx` à l'insert d'un produit dans un feed traité en ASYNCHRONE (Google Merchant `productInputs:insert`) ne vaut PAS acceptation — la plateforme peut REJETER ensuite (GTIN/image/politique). Compter « pushed = HTTP ok » affiche « sur Google » un produit en fait rejeté = faux positif n°1. **Règle : tout canal sortant async doit avoir un READ-BACK du statut traité** (Google : `products.v1beta` → `destinationStatuses`/`itemLevelIssues`, cron `google-status`). Classer sur `destinationStatuses` (stable cross-version), pas sur les libellés de severity. (2026-06-20)
 

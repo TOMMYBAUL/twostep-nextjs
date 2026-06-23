@@ -5,6 +5,69 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`activateInvoice` (push catalogue POS) durci + testé** : 1 perte silencieuse north-star + 4 adjacentes
+
+**Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D (D1/D3/D4/D7 ✅, D2/D5/D6 préparés+escaladés) ✅ + READINESS (a) ✅.
+Haut du backlog = escaladé/externe. **Signaux réels vérifiés en prod (§6.2, Supabase MCP)** : 9 marchands test, 1
+connexion POS, 106 `quality_alerts` ouvertes (104 `stock_stale` + 1 `price_aberrant` + 1 `pos_disconnected`) —
+**toutes explicables par data test périmée + 1 POS test déconnecté** (les crons signalent correctement = système qui
+marche, pas un défaut code ; rien de neuf depuis 2026-06-22) → **0 signal code actionnable**. → §6.3 : **chemin
+critique d'écriture NON testé**. `activateInvoice` (`src/lib/invoice/activate.ts`, route live `POST /api/invoices/[id]/
+activate`) — pousse le catalogue groupé vers la caisse (`pushCatalog`) + écrit le mapping `pos_item_id` — **0 test**.
+
+**TROUVÉ (vérifié dans le code, pas supposé) — 1 perte silencieuse north-star + 4 adjacentes, même classe que
+maillon 8 / `resolveWebhookProduct` (« erreur DB ≠ rien à faire »)** :
+- **#1 (north-star)** : lecture `pos_connections` avalait son `error` (`maybeSingle()` non destructuré). Blip DB →
+  `conn=null` → **marchand POS traité comme NON-POS** → facture marquée `imported` MAIS catalogue **JAMAIS poussé** →
+  produits sans `pos_item_id` → plus aucun stock temps réel = **perte silencieuse de la propagation POS**. Fix :
+  destructurer `error` → throw + captureError (route → 500 + retry). Absence VRAIE de connexion = `{data:null,
+  error:null}` (distinct → branche non-POS intacte).
+- **#2** : lecture `invoice_items` avalée → un blip se présentait comme « run validate first » (faux diagnostic).
+  Fix : throw + captureError ; le vide RÉEL (sans erreur) garde « run validate first » sans Sentry (erreur user).
+- **#3** : écriture du mapping `pos_item_id` (après push RÉUSSI) avalée → produit dans la caisse mais mapping perdu =
+  webhooks futurs non résolus, en silence. Fix : captureError SANS throw (re-run re-pousserait → doublon POS).
+- **#3a/#3b** (revue SF-hunter) : lectures `products` et `invoice` ne **throwaient que** sans `captureError` →
+  l'erreur Supabase d'origine (code/hint) perdue côté Sentry. Fix : captureError avant throw + séparer le VRAI
+  « introuvable » du blip DB.
+- **#4** : les 3 MAJ de statut facture avalaient leur `error` → facture « bloquée » sans signal. Fix : helper unique
+  `markInvoiceImported` (captureError, non-bloquant car le catalogue est déjà poussé).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline) : **fixes SOUND**. Confirmé : (1) `.maybeSingle()`
+renvoie `error:null` à 0 ligne → le non-POS légitime ne throw jamais (et 2 lignes = PGRST116 correctement remonté) ;
+(2) capture-and-continue #3 correct (throw → doublon POS) ; (4) `markInvoiceImported` non-bloquant approprié.
+Findings 3a/3b adressés. **3c réfuté par vérif** : `markProductsRedispo` est DÉJÀ non-throwing (try/catch +
+captureError, retourne void) → ne peut pas propager. `validated_at` réécrit au retry = cosmétique, hors périmètre.
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/invoice-activate-writes.test.ts` (+11) — faux client Supabase stateful
+qui ENREGISTRE les écritures + injecte des erreurs ciblées (par table + par payload pour viser le mapping vs redispo).
+Prouvé champ par champ : happy POS (push + mapping `pos-999` écrit + `imported`), non-POS sans erreur (0 push, 0
+Sentry), #1 (conn err → throw, **pushCatalog PAS appelé, facture PAS imported**, captureError), #2/#2b (err vs vide),
+#3 (mapping err → captureError sans throw, imported quand même), #3a/#3b, #4, pushCatalog throw (PAS imported),
+produits déjà en POS (0 push). TDD : 4 rouges d'abord → fix → 11 verts.
+
+**TESTÉ** : `npm run test:run` → **731/731** (720→731, +11), `tsc` OK, pre-push vert. 2 fichiers (1 lib + 1 test).
+0 migration, réversible (`git revert`). Impact (hook GitNexus) : `activateInvoice` appelé par 1 seul caller (route
+`POST`), signature inchangée → callers non affectés, risque LOW.
+
+**Reste / suivi (anti scope-creep)** : haut du backlog reste escaladé/externe (D2/D5/D6 GO Thomas, chantier B visuel,
+pilote marchand). Prochain `[R]` boucle = autre chemin d'écriture non testé si signal, sinon honnêteté de rendement
+§5.4 (le réversible se raréfie ; la valeur bascule côté Thomas/pilote).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — chemin réel `activateInvoice` exercé champ par champ avec écritures enregistrées + erreurs
+  injectées ciblées ; divergence vs l'état d'avant prouvée (TDD 4 rouges). Mais unitaire (faux client, pas un vrai
+  POS ni vrai marchand).
+- **Sécurité north-star : 9/10** — revue SF-hunter SOUND ; la perte silencieuse n°1 (catalogue POS jamais poussé sous
+  blip DB) comblée ; distinction error/empty prouvée ; 0 régression (non-POS légitime intact).
+- **Réversibilité : 10/10** — 0 migration, 1 lib + 1 test, `git revert` propre, signature inchangée.
+- **Discipline de scope : 9/10** — 1 fonction ciblée + son test ; helper DRY pour 3 sites jumeaux ; pas de dérive.
+- **Alignement north-star : 8/10** — durcit un canal d'écriture stock/catalogue réel (« ne rien oublier ») ; valeur
+  pleine au 1er marchand POS via facture (gated pilote) → 8.
+**Objectif (§5bis)** : tests 720→731 (+11) ; **5 pertes silencieuses** réelles comblées (1 north-star + 4 adjacentes) ;
+2 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · READINESS — **(a) Checklist go-live pilote RÉDIGÉE + readiness LFP rendue PROGRAMMATIQUE** + 1 bug réel (revue SF-hunter HIGH)
 
 **Sourcing (§6)** : chaîne A 1→8 ✅ + D1/D3/D4/D5/D6/D7 prouvés + D2 préparé/escaladé. Backlog en premier →

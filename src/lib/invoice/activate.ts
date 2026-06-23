@@ -5,6 +5,24 @@ import { captureError } from "@/lib/error";
 import { markProductsRedispo } from "@/lib/invoice/redispo";
 
 /**
+ * Marque la facture « imported » (statut final des 3 branches d'activation). Une MAJ
+ * de statut en échec ne doit pas être avalée : la facture resterait « bloquée » sans
+ * signal. Non-bloquant (le catalogue est déjà poussé dans la branche POS) mais VISIBLE.
+ */
+async function markInvoiceImported(
+    supabase: ReturnType<typeof createAdminClient>,
+    invoiceId: string,
+): Promise<void> {
+    const { error } = await supabase
+        .from("invoices")
+        .update({ status: "imported", validated_at: new Date().toISOString() })
+        .eq("id", invoiceId);
+    if (error) {
+        captureError(error, { context: "invoice-activate-status", invoiceId });
+    }
+}
+
+/**
  * Activate an invoice: push the GROUPED products (created by validate)
  * to the merchant's POS. Does NOT trigger a sync — the products are
  * already in Two-Step's DB from validate.
@@ -25,7 +43,13 @@ export async function activateInvoice(invoiceId: string): Promise<{
         .eq("id", invoiceId)
         .single();
 
-    if (invoiceErr || !invoice) {
+    // Distinguer un échec DB (à remonter avec son contexte d'origine) d'un VRAI
+    // « introuvable » : sinon l'erreur Supabase (code/hint) est perdue côté Sentry.
+    if (invoiceErr) {
+        captureError(invoiceErr, { context: "invoice-activate-invoice-read", invoiceId });
+        throw new Error(`Failed to read invoice ${invoiceId}`);
+    }
+    if (!invoice) {
         throw new Error(`Invoice not found: ${invoiceId}`);
     }
 
@@ -35,11 +59,18 @@ export async function activateInvoice(invoiceId: string): Promise<{
 
     // 2. Get the PRODUCTS created by validate (not the raw invoice_items)
     //    These are already grouped by model with sizes consolidated.
-    const { data: invoiceItems } = await supabase
+    const { data: invoiceItems, error: itemsErr } = await supabase
         .from("invoice_items")
         .select("product_id")
         .eq("invoice_id", invoiceId)
         .not("product_id", "is", null);
+
+    // Une lecture en échec ≠ « aucun produit » : ne pas la déguiser en « run validate
+    // first » (faux diagnostic). On lève pour que la route remonte 500 + retry possible.
+    if (itemsErr) {
+        captureError(itemsErr, { context: "invoice-activate-items-read", invoiceId });
+        throw new Error(`Failed to read invoice items for ${invoiceId}`);
+    }
 
     if (!invoiceItems || invoiceItems.length === 0) {
         throw new Error("No validated products to push — run validate first");
@@ -53,25 +84,36 @@ export async function activateInvoice(invoiceId: string): Promise<{
         .select("id, name, canonical_name, ean, price, category, photo_url, pos_item_id")
         .in("id", productIds);
 
-    if (prodErr || !products || products.length === 0) {
+    // Même classe : un échec DB ≠ « 0 produit ». On capture l'erreur d'origine.
+    if (prodErr) {
+        captureError(prodErr, { context: "invoice-activate-products-read", invoiceId });
+        throw new Error(`Failed to read products for invoice ${invoiceId}`);
+    }
+    if (!products || products.length === 0) {
         throw new Error("Products not found in database");
     }
 
     // 3. Get merchant POS connection (optional for non-POS merchants)
-    const { data: conn } = await supabase
+    const { data: conn, error: connErr } = await supabase
         .from("pos_connections")
         .select("provider, access_token, shop_domain")
         .eq("merchant_id", invoice.merchant_id)
         .maybeSingle();
 
+    // North-star : une lecture en échec ≠ « marchand non-POS ». Si on avalait l'erreur,
+    // un blip DB ferait passer un marchand POS pour non-POS → facture marquée « imported »
+    // SANS jamais pousser le catalogue → produits sans pos_item_id → plus aucun stock
+    // temps réel = perte silencieuse de la propagation POS. On lève → 500 + retry.
+    // L'absence VRAIE de connexion = { data: null, error: null } (distinct → branche non-POS).
+    if (connErr) {
+        captureError(connErr, { context: "invoice-activate-conn-read", invoiceId, merchantId: invoice.merchant_id });
+        throw new Error(`Failed to read POS connection for invoice ${invoiceId}`);
+    }
+
     // Non-POS merchants: products are already in Two-Step DB from validate.
     // Just update invoice status — no POS push needed.
     if (!conn) {
-        await supabase
-            .from("invoices")
-            .update({ status: "imported", validated_at: new Date().toISOString() })
-            .eq("id", invoiceId);
-
+        await markInvoiceImported(supabase, invoiceId);
         await markProductsRedispo(productIds);
         return { pushed: 0, synced: false };
     }
@@ -93,11 +135,7 @@ export async function activateInvoice(invoiceId: string): Promise<{
 
     if (posProducts.length === 0) {
         // All products already exist in POS — just update status
-        await supabase
-            .from("invoices")
-            .update({ status: "imported", validated_at: new Date().toISOString() })
-            .eq("id", invoiceId);
-
+        await markInvoiceImported(supabase, invoiceId);
         await markProductsRedispo(productIds);
         return { pushed: 0, synced: false };
     }
@@ -121,18 +159,21 @@ export async function activateInvoice(invoiceId: string): Promise<{
         const tempId = `ts-${product.id}`;
         const posId = idMappings[tempId];
         if (posId) {
-            await supabase
+            const { error: mapErr } = await supabase
                 .from("products")
                 .update({ pos_item_id: posId, pos_provider: conn.provider })
                 .eq("id", product.id);
+            // Le push POS a DÉJÀ réussi (le produit existe dans la caisse) : NE PAS lever
+            // (un re-run le re-pousserait → doublon POS). Mais perdre le mapping en silence
+            // = webhooks temps réel non résolus → on le rend VISIBLE (captureError).
+            if (mapErr) {
+                captureError(mapErr, { context: "invoice-activate-posid-write", invoiceId, productId: product.id, posId });
+            }
         }
     }
 
     // 7. Update invoice status
-    await supabase
-        .from("invoices")
-        .update({ status: "imported", validated_at: new Date().toISOString() })
-        .eq("id", invoiceId);
+    await markInvoiceImported(supabase, invoiceId);
 
     await markProductsRedispo(productIds);
 
