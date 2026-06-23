@@ -129,6 +129,26 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   décision produit (émet-on les ventes au feed ?). **Règle : un effet de bord dérivé d'un write conditionnel (garde 104)
   doit savoir si le write a VRAIMENT eu lieu — sinon il se déclenche sur le no-op.** → Rang 2 gated. (2026-06-23, SF-hunter)
 
+## Mode shadow/preview d'un feed sortant — la PARITÉ est la seule valeur (sinon le preview ment)
+- ✅ **Un endpoint « preview/dry-run » d'un feed sortant doit RÉUTILISER le chemin live, jamais le ré-implémenter.**
+  `GET /api/google/feed-preview` (montrer au marchand ce qu'on publierait sur Google AVANT de publier, lecture-seule)
+  réutilise la MÊME population (`visible+validated+!archived+!variant`), le MÊME gate (`classifyFeedRow`/`isFeedEligible`),
+  le MÊME `transformProductToGoogle`, le MÊME `store_code` (`resolveStoreCode`), le MÊME `nowMs` et le MÊME flag
+  `gtinOnlyTierEnabled()` que les 2 feeds live (Voie A cron + Voie B XML). Un preview qui diverge du feed réel est PIRE
+  que pas de preview (fausse confiance au pilote). **Verrou anti-divergence** : `isFeedEligible` DÉLÈGUE à `classifyFeedRow`
+  (`return classifyFeedRow(p,opts).eligible`) → gate et ventilation par-produit ne peuvent pas diverger (classe « source
+  unique » store_code/honestSalePrice/D3). Vérifier la délégation byte-for-byte par table de vérité (16 cas : 2³ combinaisons
+  × 2 états de flag). (feed-preview, 2026-06-23)
+- ❌ **`x !== null` sur une variable issue d'une lecture qui a ÉCHOUÉ = faux positif** : `google_connected: connection
+  !== null` valait `true` quand le read connexion échouait (on ne PEUT pas affirmer « connecté » sur un blip). Règle : un
+  booléen dérivé d'une lecture doit être gardé par son `error` (`connectionErr ? false : connection !== null`) — valeur
+  conservatrice (« pas prêt ») + Sentry, jamais l'affirmation flatteuse. (MED-1, SF-hunter, feed-preview, 2026-06-23)
+- ❌ **`(data ?? [])` après un `productsErr` géré masque le cas `data:null`-SANS-error** : `feed/lfp/[merchantId]` (feed
+  XML LIVE crawlé par Google) levait 500 sur `productsErr` mais convertissait un `data=null` inattendu en feed **VIDE (200)**
+  = faux « aucun produit » silencieux, là où Voie A (cron) ET le preview lèvent. **Règle (re-confirmée maillon 7) : les N
+  chemins de sortie vers le même tiers doivent traiter `data:null`-sans-error IDENTIQUEMENT** (`if (!data) → captureError +
+  500` partout, pas un `?? []` sur un seul). (MED-2, SF-hunter, 2026-06-23)
+
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
   `invoices/[id]/validate` (facture = marchandise reçue) : `const { data: currentStock } = …` puis

@@ -5,6 +5,63 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · ONBOARDING PILOTE (item 2 IN-SCOPE) — **Backing data du mode SHADOW/PREVIEW : `GET /api/google/feed-preview` (montrer ce qu'on publierait AVANT de publier, lecture-seule) + 2 silent-failures (1 dans le neuf, 1 sur le feed live Voie B)**
+
+**Sourcing (§6 + FILTRE DE CAP §1bis)** : chaîne A 1→8 ✅, Phase D D1-D7 ✅/escaladé, webhooks/crons/factures
+couverts, `notify-extra.txt` vide. **Filtre de cap appliqué** : le durcissement de routes secondaires est
+déclaré HORS-CAP ; le SEUL `[R]` IN-SCOPE restant = **onboarding marchand PILOTE (item 2)**, dont le rendu
+VISUEL est à Thomas mais la **partie API non-visuelle = travail boucle**. Item 2 nomme explicitement le **mode
+shadow/preview**. Vérifié dans le code réel (LESSONS ~70 % faux) : **aucun endpoint preview/shadow n'existait** —
+`/api/google/stats` ne donne que des COMPTEURS agrégés (% publiable, readiness), jamais la **liste produit par
+produit** de « ce qu'on publierait » vs « ce qui est bloqué et pourquoi ». C'est précisément le backing data dont
+l'UI d'onboarding (Thomas) a besoin pour rendre Deerskin onboardable.
+
+**FAIT**
+- **Nouvel endpoint lecture-seule `GET /api/google/feed-preview`** : pour le marchand authentifié, renvoie
+  `would_publish` (le **payload Google EXACT** via le vrai `transformProductToGoogle`), `blocked` (chaque produit
+  hors feed + ses **causes par produit**), `summary` (= `summarizePublishability`), `store_code`, `google_connected`,
+  `gtin_only_tier`. **AUCUN appel Google, aucune écriture** (pur calcul + lecture DB).
+- **Propriété d'honnêteté = PARITÉ** (le point crucial, classe « source unique » de toutes les LESSONS) : même
+  population (`visible+validated+!archived+!variant`), même gate, même transform, même `store_code`, même `nowMs`,
+  même flag `gtinOnlyTierEnabled()` que les DEUX feeds live (Voie A cron + Voie B XML) → **le preview ne PEUT PAS
+  mentir** sur ce que le feed publierait. Verrou : nouveau helper pur `classifyFeedRow` (causes par produit) auquel
+  `isFeedEligible` **DÉLÈGUE** (`return classifyFeedRow(...).eligible`) → gate et ventilation ne peuvent pas diverger.
+
+**TROUVÉ (revue silent-failure-hunter OBLIGATOIRE du diff pipeline) — 2 silent-failures réels** :
+- **MED-1 (dans MON code neuf)** : `google_connected: connection !== null` valait `true` quand la lecture connexion
+  ÉCHOUE (blip DB tracé + repli store_code) → **faux positif « connecté Google »** sur un simple hoquet (interdit
+  north-star). Fix : `connectionErr ? false : connection !== null` (conservateur « pas prêt », anomalie tracée).
+- **MED-2 (sur le FEED LIVE Voie B `feed/lfp/[merchantId]`, pré-existant, même classe maillon 7)** : `(products ??
+  [])` convertissait SILENCIEUSEMENT un `data:null`-sans-error (état SDK inattendu) en **feed XML VIDE (200)** crawlé
+  par Google = faux « aucun produit », là où la Voie A (cron) ET le preview lèvent un 500. Fix : garde `if (!products)`
+  → captureError + 500 (parité anti-silence des 3 chemins de sortie). LOW-1/LOW-2 SOUND (délégation prouvée
+  byte-for-byte par table de vérité 16 cas ; assertions non-null garanties par le gate). LOW-3 (`as never`)/LOW-4
+  (Voie A passe `store_code` brut sans `resolveStoreCode`, edge `""`) = suivi non bloquant.
+
+**DÉCIDÉ (réversible)** : construire l'API du shadow/preview (et pas escalader tout l'item 2) car c'est la moitié
+SOFTWARE non-visuelle qui DÉBLOQUE le chantier B de Thomas ; le rendu reste à lui. 0 migration, `git revert` propre.
+
+**TESTÉ** : `tests/lib/google/feed-preview.test.ts` (+11) — (1) parité STRICTE `classifyFeedRow ⟺ isFeedEligible`
+sur batterie sale × 3 états de flag + causes par produit ; (2) CHEMIN RÉEL de la route (faux client server) :
+`would_publish` payload Google **champ par champ** (gtin/price.value/availability depuis qty/storeCode/imageLink),
+`blocked` causes exactes, rupture qty 0 → `out of stock` mais publié, store_code persisté prime sur défaut, EXCLUT
+archivés/variantes/non-validés (parité feed), lecture produits err→500+captureError, connexion err→200 mais
+`google_connected:false`+captureError (MED-1), marchand err≠PGRST116→500, PGRST116→403, non-auth→401.
+**Gate : `npm run test:run` 832→843 ✅, `tsc` ✅.** Revue SF-hunter : MED-1+MED-2 corrigés, reste SOUND.
+
+**SCORECARD** : Preuve **7**/10 (sortie route inspectée champ par champ sur catalogue sale + payload Google réel ;
+synthétique, pas encore vraie data marchand) · Sécu north-star **8**/10 (revue SF-hunter SOUND après fix des 2
+MED ; parité gate↔preview verrouillée = anti-faux-positif) · Réversibilité **10**/10 (0 migration, nouvel endpoint
++ 1 garde, revert propre) · Scope **9**/10 (4 fichiers, 1 unité ciblée in-scope) · Align **9**/10 (item 2 nommé,
+débloque l'onboarding pilote Deerskin = north-star « montrer honnêtement avant de publier »).
+Objectifs : tests 832→843 (+11) · **2 bugs réels** (MED-1 neuf, MED-2 feed live) · **4 fichiers**.
+
+**RESTE / escalade** : le **rendu visuel** du shadow/preview (consommer cet endpoint dans l'UI d'onboarding) =
+chantier B → Thomas (pas de navigateur côté boucle). Après ce run, l'item 2 IN-SCOPE est **réduit à sa moitié
+visuelle** (Thomas) + les items gated (D2/D5) déjà escaladés → cf. notify-extra (cadence).
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route `POST /api/ingest/stock` (canal STOCK SANS-CAISSE = cœur « feed LFP as a service ») couverte au niveau ROUTE + 1 silent-failure réel (résolution de jeton qui avalait l'erreur DB → faux 401)**
 
 **Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, webhooks 4 providers ✅, crons (`google-status`/

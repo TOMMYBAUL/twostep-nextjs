@@ -92,10 +92,22 @@ export async function GET(
     if (productsErr) {
         return new Response(`db_error: ${productsErr.message}`, { status: 500 });
     }
+    // data null SANS error = état SDK inattendu (un SELECT liste renvoie [] sur 0 ligne, jamais
+    // null). Le `products ?? []` d'origine le convertissait SILENCIEUSEMENT en feed XML vide (200) =
+    // faux « aucun produit » crawlé par Google, là où la Voie A (cron) et le preview lèvent un 500.
+    // Garde de parité anti-silence (même raisonnement que cron/google-feed + google/feed-preview).
+    if (!products) {
+        captureError(new Error("products null without error — unexpected SDK state"), {
+            route: "lfp-feed",
+            merchantId,
+            step: "load-products",
+        });
+        return new Response("db_error", { status: 500 });
+    }
 
     const xml = buildLfpXml(
         { id: merchant.id, name: merchant.name },
-        (products ?? []) as LfpProductRow[],
+        products as LfpProductRow[],
         storeCode,
     );
 

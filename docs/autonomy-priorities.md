@@ -75,8 +75,14 @@ plus un mur Google externe.
 >    feed Google LFP (Voie A/B) → readiness LFP**. Déjà très mûr : n'y toucher QUE pour un vrai
 >    signal Sentry/quality_alert, PAS pour « plus de couverture ».
 > 2. **Onboarding marchand PILOTE = LE prochain [R] PRINCIPAL** : wizard/UI d'import + connexion,
->    **vue « % publiable »** par marchand, **mode shadow/preview** (montrer avant de publier,
->    lecture-seule). C'est ce qui rend Deerskin onboardable. (Le rendu VISUEL = Thomas/Playwright.)
+>    **vue « % publiable »** par marchand (✅ `GET /api/google/stats`), **mode shadow/preview** (montrer
+>    avant de publier, lecture-seule). C'est ce qui rend Deerskin onboardable. (Le rendu VISUEL = Thomas/Playwright.)
+>    - ✅ **Backing data shadow/preview FAIT (2026-06-23)** : `GET /api/google/feed-preview` renvoie le payload
+>      Google EXACT qu'on publierait (`would_publish`, via le vrai `transformProductToGoogle`) + `blocked` (causes
+>      par produit) + `summary`, **lecture-seule, parité garantie** avec les 2 feeds live (même gate/population/
+>      transform/store_code ; verrou `classifyFeedRow` ⟸ `isFeedEligible`). 2 silent-failures corrigés (MED-1 faux
+>      positif `google_connected` sur blip ; MED-2 feed live Voie B `(products ?? [])` → XML vide silencieux). +11
+>      tests (832→843), revue SF-hunter SOUND. **Reste = rendu VISUEL** (consommer l'endpoint dans l'UI) → Thomas.
 > 3. **Préparer** les items GATED en attente de Thomas (D2 tier GTIN-only, D5 vérif image) — rien de plus.
 >
 > **OUT-OF-SCOPE / INTERDIT sans GO Thomas :**

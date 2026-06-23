@@ -73,9 +73,48 @@ export interface FeedEligibilityOptions {
 }
 
 export function isFeedEligible(p: FeedEligibleRow, opts: FeedEligibilityOptions = {}): boolean {
-    if (!hasPublishableGtin(p) || !hasPublishablePrice(p)) return false;
-    if (opts.allowMissingImage) return true;
-    return hasImage(p);
+    // Délègue à `classifyFeedRow` (source unique) : le gate du feed et la ventilation PAR PRODUIT
+    // des causes de blocage (mode shadow/preview) ne peuvent donc PAS diverger. `eligible` ⟺
+    // `reasons.length === 0` ⟺ (gtin ∧ prix ∧ (allowMissingImage ∨ image)) = l'ancienne condition,
+    // byte-for-byte (équivalence vérifiée par `tests/lib/google/feed-preview-classify.test.ts`).
+    return classifyFeedRow(p, opts).eligible;
+}
+
+/**
+ * Causes de blocage stables (machine-readable) d'un produit hors du feed Google — le mode
+ * shadow/preview (« montrer au marchand ce qu'on publierait AVANT de publier ») et le dashboard
+ * mappent ces codes vers un libellé FR. Codes (pas des libellés) pour ne pas casser un consommateur
+ * quand le texte change. Mêmes dimensions que `PublishabilitySummary` (un seul vocabulaire de cause).
+ */
+export type FeedBlockReason = "missing_ean" | "missing_price" | "missing_image";
+
+export interface FeedRowClassification {
+    /** Le produit passe le gate du feed (`isFeedEligible`) = serait réellement publié. */
+    eligible: boolean;
+    /** Causes de NON-publication (vide ssi `eligible`). Ordre stable : ean, prix, image. */
+    reasons: FeedBlockReason[];
+}
+
+/**
+ * Classe UN produit pour le feed Google : éligible ou bloqué + POURQUOI (par produit).
+ *
+ * Réutilise EXACTEMENT les mêmes prédicats que `isFeedEligible`/`summarizePublishability`
+ * (`hasPublishableGtin`/`Price`/`hasImage`) → le mode preview ne peut pas mentir sur ce que le
+ * feed live publierait (même classe « source unique » que store_code/honestSalePrice/D3). Pure
+ * (pas d'I/O) → testable champ par champ. `opts.allowMissingImage` (tier GTIN-only D2) suit le
+ * même contrat que le gate : si l'image n'est pas requise, son absence n'est PAS une cause.
+ */
+export function classifyFeedRow(
+    p: FeedEligibleRow,
+    opts: FeedEligibilityOptions = {},
+): FeedRowClassification {
+    const reasons: FeedBlockReason[] = [];
+    if (!hasPublishableGtin(p)) reasons.push("missing_ean");
+    if (!hasPublishablePrice(p)) reasons.push("missing_price");
+    // L'image n'est un BLOCAGE que si elle est REQUISE (tier GTIN-only OFF). Sous le flag, un
+    // produit GTIN+prix sans image EST publié (Google enrichit depuis le GTIN) → pas une cause.
+    if (!opts.allowMissingImage && !hasImage(p)) reasons.push("missing_image");
+    return { eligible: reasons.length === 0, reasons };
 }
 
 /**
