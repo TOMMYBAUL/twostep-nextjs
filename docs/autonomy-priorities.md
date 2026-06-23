@@ -205,11 +205,20 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   0 migration, réversible. NB : `sale_price_effective_date` volontairement NON émis (feed = état
 >   courant, re-push 3h/re-crawl 15 min, comme availability). **Suivi → D3** : observabilité « combien
 >   filtrés par cause » (price=0/EAN court) = exactement le KPI D3, pas dupliqué ici.
-> - **D2 `[G]` Tier « GTIN-only → Google enrichit »** : autoriser l'envoi des produits SANS photo/nom
->   en **tier séparé basse-confiance, derrière flag** (au lieu de les exclure via `filterEligible`),
->   et **MESURER le taux de rejet** via le cron `google-status` + `quality_alerts google_disapproved`
->   (déjà en place). **Préparer derrière flag OFF + tests, puis ESCALADE** (peut affecter la
->   réputation du compte Google → GO Thomas). Ne PAS activer seul.
+> - 🔶 **D2 `[G]` Tier « GTIN-only → Google enrichit » — PRÉPARÉ + ESCALADÉ (2026-06-23, commit `81d17d1`)**.
+>   Flag `GOOGLE_GTIN_ONLY_TIER` (OFF par défaut → 0 changement prod) : quand ON, les produits GTIN+prix
+>   SANS image entrent dans le feed (Google enrichit la tête de catalogue depuis le GTIN). Source unique
+>   `gtinOnlyTierEnabled` lue par les DEUX canaux (`feed.ts` Voie A + `lfp-xml.ts` Voie B) → parité préservée
+>   (même ensemble émis dans les 2 états du flag, classe store_code/maillon 7). `imageLink` rendu optionnel
+>   (omis quand pas d'image → `JSON.stringify` l'omet, jamais de `null`/balise vide rejetée par Google).
+>   **Bug réel adjacent corrigé** (revue SF-hunter) : `hasImage` comptait `""` comme une image (`"" !== null`)
+>   → produit éligible émettant un `g:image_link` VIDE (rejet Google) ; durci `!== "" `. **MESURE** : le trou
+>   est déjà couvert (cron `google-status` lit `destinationStatuses` → `quality_alerts google_disapproved` ;
+>   KPI D3 `blocked_only_by_image` = combien de produits ce tier ajouterait). Preuve `tests/lib/google/
+>   gtin-only-tier.test.ts` (+16 : flag OFF/ON, relaxation image SEULE [GTIN/prix toujours requis], parité
+>   A/B, `""`≠image). Revue SF-hunter : core SOUND, 0 silent-failure introduit. 705 tests, 0 migration,
+>   réversible. **GO escaladé** (`notify-extra`) : activer le flag au 1er pilote (option A) vs garder OFF (B).
+>   Ne PAS activer seul (réputation compte Google).
 > - ✅ **D3 `[R]` Métrique « % publiable » — PROUVÉ (2026-06-23)**. `summarizePublishability`
 >   (`src/lib/google/feed-eligibility.ts`) réutilise le VRAI gate du feed (`isFeedEligible` via 3 prédicats
 >   partagés) → KPI qui ne peut PAS diverger de ce qui publie ; ventilé par cause + `blocked_only_by_image`
@@ -272,9 +281,11 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   pré-existants orthogonaux différés. 666 tests, 0 migration, réversible.
 >
 > **READINESS (= ce que la boucle signale « prêt pour les marchands » via WhatsApp)** : D1+D3+D4+D5+
-> D6+D7 prouvés (gate vert) + D2 préparé/escaladé + **checklist go-live pilote rédigée** (BP vérifié
-> + MC lié + ≥11 offres + feed quotidien + bouton « Request inventory verification »). Alors :
-> notif « prêt — Deerskin + 2e boutique peuvent être onboardés ».
+> D6+D7 prouvés (gate vert) + **D2 préparé/escaladé ✅ (2026-06-23)**. **Reste avant le signal « prêt »** :
+> (a) **checklist go-live pilote rédigée** (BP vérifié + MC lié + ≥11 offres + feed quotidien + bouton
+> « Request inventory verification ») = prochain `[R]` boucle ; (b) validation VISUELLE de l'UI (chantier
+> B, Thomas, pas de navigateur côté boucle). Quand (a) faite → notif « prêt — Deerskin + 2e boutique
+> peuvent être onboardés ».
 >
 > **Gate irréversible** : la boucle construit sur `feat`. Passer en prod = merge→main+deploy = **GO
 > Thomas** (ou supervisé sous mandat backup). La boucle NE merge/déploie PAS seule.

@@ -259,6 +259,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   SELECT aligné. Exposé aussi `blocked_only_by_image` (EAN+prix OK, image seule manquante) = cause
   actionnable n°1. Et la lecture produits qui avalait `error` → KPI all-zeros silencieux sur blip DB →
   500+captureError. (D3, 2026-06-23, revue SF-hunter SOUND)
+- ❌ **Un prédicat « présence » testé `!== null` accepte une chaîne VIDE** : `hasImage` (gate feed Google)
+  faisait `photo_url !== null` → `""` (back-fill DB en "" au lieu de NULL) comptait comme une image → produit
+  éligible émettant un `<g:image_link>` VIDE = rejet Google silencieux. **Règle : un prédicat d'éligibilité dont
+  la valeur alimente un système externe qui rejette le vide doit tester `!== null && !== ""`** (pas juste null).
+  Bonus : le compter « sans image » est honnête pour le KPI (`summarizePublishability` partage `hasImage`). (D2, 2026-06-23)
+- ✅ **Relâcher un gate de sortie derrière un flag SANS casser la parité multi-canal** : D2 (tier GTIN-only)
+  autorise les produits sans image dans le feed Google quand `GOOGLE_GTIN_ONLY_TIER=1`. Pour que les 2 canaux
+  (Voie A Content API + Voie B XML) émettent TOUJOURS le MÊME ensemble (anti-catalogue-fantôme), les deux lisent
+  le **MÊME** `gtinOnlyTierEnabled()` (default-param évalué au call-time = lecture fraîche) ; aucun ne hardcode son
+  propre flag. Prouvé par un test de parité explicite dans les 2 états (OFF→{a}, ON→{a,b}). **Champ optionnel
+  (undefined) > null pour une sortie JSON** : `imageLink?:string` omis → `JSON.stringify` retire la clé → Google
+  matche par GTIN ; un `imageLink:null` explicite serait rejeté. (D2, 2026-06-23, revue SF-hunter SOUND)
 - ❌ Sur un cron multi-marchand, le SELECT de la LISTE (`google_merchant_connections`) qui avale son
   `error` est PIRE qu'un select par-marchand avalé : un blip DB → `data=null` → `length===0` →
   `200 "aucun marchand connecté"` = TOUT le feed Google abandonné, 0 Sentry, 0 statut. **Règle : le

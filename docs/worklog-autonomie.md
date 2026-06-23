@@ -5,7 +5,69 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
-## 2026-06-23 (run autonome) · PHASE D — **D6 (partiel) `[R]` Contrat read-only STOCK prouvé** + 2 trous réels comblés · commit `<this>`
+## 2026-06-23 (run autonome) · PHASE D — **D2 `[G]` Tier GTIN-only préparé derrière flag (OFF) + escaladé** + 1 bug réel · commit `81d17d1`
+
+**Sourcing (§6)** : chaîne A + D1/D3/D4/D5/D6/D7 faits ; seul item Phase D non traité = **D2** (`[G]`). Vérifié
+dans le code réel d'abord (LESSONS ~70 % faux findings) → **prémisse de D2 confirmée** : `isFeedEligible`
+exige GTIN+prix+**image** ; le KPI D3 trace déjà `blocked_only_by_image` (GTIN+prix OK, image seule manquante)
+= « cible D2 ». Les 2 routes feed (cron `google-feed` Voie A + `feed/lfp/[merchantId]` Voie B) sélectionnent
+TOUS les produits visible+validés et délèguent le gate image à la lib → **relâcher la lib derrière un flag
+suffit, 0 changement SQL/route**.
+
+**FAIT (réversible, 0 migration, flag OFF par défaut = 0 changement prod)** :
+- `feed-eligibility.ts` : `gtinOnlyTierEnabled(env)` (lit `GOOGLE_GTIN_ONLY_TIER`, `1`/`true` → ON) +
+  `isFeedEligible(p, {allowMissingImage})` (image optionnelle SI tier ON ; GTIN+prix TOUJOURS requis —
+  la relaxation ne touche QUE l'image).
+- `feed.ts` (Voie A) : `filterEligibleProducts(.., allowMissingImage=gtinOnlyTierEnabled())` ; `GoogleProduct.imageLink`
+  rendu **optionnel** (émis seulement si image) → `JSON.stringify` (route `productInputs:insert`) **omet** la clé →
+  Google matche par GTIN, jamais un `imageLink:null` explicite (rejetable).
+- `lfp-xml.ts` (Voie B) : `filterFeedEligible`/`buildLfpXml` threadent le flag ; `<g:image_link>` **omis** quand
+  photo vide (jamais de balise VIDE — pire qu'absente côté Google).
+- **PARITÉ Voie A/B préservée** : les 2 canaux lisent le **MÊME** flag → émettent le MÊME ensemble dans les
+  2 états (classe store_code/maillon 7, prouvé par test dédié).
+
+**TROUVÉ (revue SF-hunter, vérifié) — 1 bug réel adjacent** : `hasImage` comptait une chaîne `""` comme une
+image (`"" !== null` → true) → un produit dont `photo_url=""` (back-fill DB en "" au lieu de NULL) passait
+l'éligibilité ET émettait un `g:image_link` VIDE = rejet Google silencieux. Durci : `!== null && !== ""`
+(parité — les 2 canaux + le KPI `summarizePublishability` partagent `hasImage`, donc honnête partout).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff = canal de sortie Google) : **core SOUND, 0 silent-failure
+introduit**. Findings : (1) parité — vérifié OK (default-param évalué au call-time, les 2 canaux lisent le même
+flag ; `buildLfpXml` résout une fois et thread) ; (2) `imageLink` undefined→Content API — vérifié : la route fait
+`JSON.stringify` qui omet `undefined` → plus sûr que l'ancien `null` ; (3) `""`→image vide = corrigé ci-dessus.
+
+**PREUVE RÉELLE** (méthode §1bis) : `tests/lib/google/gtin-only-tier.test.ts` (+16) — flag OFF (défaut) exclut
+le produit sans image des 2 feeds ; flag ON l'inclut SANS imageLink (JSON) / SANS `<g:image_link>` (XML) ;
+relaxation image SEULE (sans GTIN/prix reste exclu même tier ON) ; **parité A/B** : `{a}` flag OFF, `{a,b}`
+flag ON (b sans image rejoint le tier), jamais c (sans GTIN)/d (prix 0) ; `""`≠image. Sorties XML/JSON inspectées.
+
+**TESTÉ** : `npm run test:run` → **705/705** (704→705, +16 nouveaux dont -1 doublon d'assertion), `tsc` OK,
+pre-push vert. 4 fichiers (3 lib + 1 test).
+
+**ESCALADE (§4)** : `logs/notify-extra.txt` — `[DECISION]` activer `GOOGLE_GTIN_ONLY_TIER=1` au 1er pilote
+(option A) vs garder OFF (B). Réversible (revert flag). Ne PAS activer seul (réputation compte Google). MESURE
+déjà en place : cron `google-status` (`destinationStatuses` → `quality_alerts google_disapproved`) + KPI D3.
+
+**Reste / suivi (anti scope-creep)** : prochain `[R]` boucle = **checklist go-live pilote** (READINESS (a)).
+D6 shadow/preview UI + validation visuelle = chantier B (Thomas, pas de navigateur).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — feeds exercés champ par champ (JSON Voie A + XML Voie B), parité prouvée dans les 2 états
+  du flag, divergence vs l'état d'avant prouvée ; mais unitaire (pas un vrai push Content API ni vrai marchand).
+- **Sécurité north-star : 9/10** — revue SF-hunter SOUND ; parité A/B verrouillée par test (anti-catalogue
+  fantôme) ; bug réel `""`→image vide comblé ; flag OFF = 0 changement prod, activation gated.
+- **Réversibilité : 10/10** — 0 migration, flag OFF par défaut, params additifs (default = ancien comportement),
+  `git revert` propre.
+- **Discipline de scope : 9/10** — 3 fichiers lib (mêmes que le gate) + 1 test ; 0 changement SQL/route (vérifié
+  inutile) ; D2 amené au point d'escalade sans sur-construire.
+- **Alignement north-star : 8/10** — débloque le levier NearSt (Google enrichit) compatible Google ; mais valeur
+  réelle seulement une fois activé au pilote (gated) → 8.
+**Objectif (§5bis)** : tests 704→705 ; **1 bug réel** comblé (`g:image_link` vide possible sur `photo_url=""`) ;
+4 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
+## 2026-06-23 (run autonome) · PHASE D — **D6 (partiel) `[R]` Contrat read-only STOCK prouvé** + 2 trous réels comblés · commit `618c31a`
 
 **Sourcing (§6)** : chaîne A + D1/D3/D4/D5/D7 faits ; haut backlog Phase D non terminé = **D6** (item `[R]`).
 Vérifié dans le code réel d'abord (LESSONS ~70 % faux findings) → **la prémisse de D6 « aucun adaptateur POS
