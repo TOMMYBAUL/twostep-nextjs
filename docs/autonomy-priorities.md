@@ -63,7 +63,34 @@ plus un mur Google externe.
 
 ---
 
-## 1bis. ⭐ MISSION COURANTE (2026-06-22) — VALIDER LE WORKFLOW MAILLON PAR MAILLON
+## 1bis. ⭐ MISSION COURANTE — VALIDER LE WORKFLOW MAILLON PAR MAILLON
+
+### 🚧 FILTRE DE CAP (2026-06-23, Thomas) — À APPLIQUER AVANT DE CHOISIR TOUT TRAVAIL
+> Phase A (8 maillons) + Phase D (D1-D7) sont FAITES. La boucle a commencé à **dériver** : durcir
+> des chemins SECONDAIRES (pipeline factures, routes/crons déjà fonctionnels) = vrai travail mais
+> **hors cap** = procrastination productive. STOP. **Avant chaque item, passe ce filtre :**
+>
+> **IN-SCOPE (le SEUL périmètre — le chemin critique vers le PILOTE) :**
+> 1. Chemin **stock POS/CSV sans-caisse → ingest → identité/concordance → confiance/fraîcheur →
+>    feed Google LFP (Voie A/B) → readiness LFP**. Déjà très mûr : n'y toucher QUE pour un vrai
+>    signal Sentry/quality_alert, PAS pour « plus de couverture ».
+> 2. **Onboarding marchand PILOTE = LE prochain [R] PRINCIPAL** : wizard/UI d'import + connexion,
+>    **vue « % publiable »** par marchand, **mode shadow/preview** (montrer avant de publier,
+>    lecture-seule). C'est ce qui rend Deerskin onboardable. (Le rendu VISUEL = Thomas/Playwright.)
+> 3. **Préparer** les items GATED en attente de Thomas (D2 tier GTIN-only, D5 vérif image) — rien de plus.
+>
+> **OUT-OF-SCOPE / INTERDIT sans GO Thomas :**
+> - ❌ Le **pipeline FACTURES fournisseurs → stock** (`parseInvoice`, activate/cancel invoice,
+>   invoice_items) = **ANCIENNE idée, hors cap.** Ne PAS le durcir.
+> - ❌ **Couverture/durcissement de routes/crons déjà fonctionnels** « parce que non testés »
+>   (couverture pour la couverture). Le gate est vert ; ce n'est pas le goulot.
+> - ❌ Tout nouveau feature hors du chemin pilote.
+>
+> **RÈGLE ANTI-DÉRIVE :** si **aucun [R] IN-SCOPE** ne reste (cas probable : A+D faits, onboarding
+> pilote bâti, le reste gated/pilote) → **NE PAS se rabattre sur du hors-cap.** Écrire dans
+> `logs/notify-extra.txt` : « plus de [R] in-scope — valeur = pilote (Thomas) + décisions gated » +
+> **RECOMMANDER de réduire la cadence** (§5.4). **Un idle honnête vaut mieux que du busywork.**
+> Auto-check : si le score **Align < 9**, c'est probablement hors-cap → stop, re-choisir ou idle.
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but
