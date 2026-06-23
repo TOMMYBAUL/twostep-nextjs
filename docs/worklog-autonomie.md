@@ -5,6 +5,31 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome #6) · RE-IDLE HONNÊTE — **6e run même état, prod re-vérifiée (1 requête), 0 code, 0 re-notif**
+
+**Pourquoi pas de code** : directive §1bis + runs #1–#5 (*« Prochain run même état → RE-IDLE, ne pas dériver, ne pas
+re-notifier »*). Sourcing §6 refait ; prod re-requêtée moi-même (1 requête consolidée, pas de trust aveugle des runs).
+
+**Signaux réels — REQUÊTÉS en prod (`nagyprzjtheyeuuwxgpg`), identiques à #3/#4/#5 :**
+- `merchants`=**9**, latest **2026-04-25** (tous seed/test, aucun marchand réel depuis). `google_merchant_connections`=**0**.
+- `quality_alerts`=**106**, max created **2026-06-22 05:00**, **0 frais sur 24 h** (cron qualité sur catalogue dormant).
+- `pos_connections` en `error`=**1** (compte Square de test connu, LESSONS). `enrichment_jobs` pending=**0**.
+- → **0 [R] in-scope, 0 signal réel frais.** Backlog A 1→8 ✅, Phase D D1–D7 ✅, readiness LFP (a) ✅,
+  backing data onboarding (`/api/google/stats` + `/api/google/feed-preview`) ✅ ; D2/D5 préparés+escaladés.
+  Reste = VISUEL (UI → Thomas) ou GATED (escaladé). Couverture hot-path = HORS-CAP. Exploration libre = interdite.
+
+**Décision** : RE-IDLE honnête, **0 fichier de code**, **0 ajout à `notify-extra`** (vide = escalades merge +
+pause/espacer-cron déjà envoyées ; re-spammer = bruit + quota partagé §7). **CFR 10 derniers runs : 100 % exit=0 +
+commit, 0 revert.** Observation de pilotage : 6e run zéro-valeur consécutif ; la pause/espacement du cron (escaladée
+run #2, non encore appliquée) reste la SEULE action à valeur — et elle est chez Thomas, pas dans plus de runs.
+
+**Scorecard** : run de pilotage (0 livrable code) — non noté sur les 5 axes produit (§5bis). Métrique north-star
+**inchangée** (100 % du backlog in-scope construit+testé jusqu'au point de décision Thomas). **Tests/code : 0 delta.**
+
+**Reste / questions** : inchangé. Prochain run même état → RE-IDLE, ne PAS dériver, ne PAS re-notifier.
+
+---
+
 ## 2026-06-23 (run autonome #5) · RE-IDLE HONNÊTE — **5e run même état, prod re-vérifiée (1 requête), 0 code, 0 re-notif**
 
 **Pourquoi pas de code** : directive §1bis + runs #1–#4 (*« Prochain run même état → RE-IDLE, ne pas dériver,

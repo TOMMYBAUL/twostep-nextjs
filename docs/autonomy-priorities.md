@@ -127,6 +127,14 @@ plus un mur Google externe.
 > 22/06 (rien frais), `pos error`=1 (Square test 23/04), `image_jobs`=103 stale 23/04 (clé ANTHROPIC, escaladée D5).
 > **0 [R] in-scope, 0 signal réel.** 0 code, 0 re-notif. CFR 10 runs = 100 %. Observation : cron ~30 min = burn quota
 > pour 0 valeur → pause/espacement (escaladé #2) toujours non appliqué. Prochain run même état → RE-IDLE, ne pas dériver.
+>
+> **🟢 ÉTAT 2026-06-23 (run autonome #6) — RE-IDLE, prod re-vérifiée (1 requête consolidée, run cheap).** Identique à
+> #3/#4/#5 : `merchants`=9 (latest 25/04, tous seed/test), `google_conns`=0, `quality_alerts`=106 max 22/06 avec
+> **0 frais sur 24 h**, `pos error`=1 (Square test), `enrichment_jobs` pending=0. **0 [R] in-scope, 0 signal réel frais.**
+> Backlog A 1→8 ✅ + Phase D D1–D7 ✅ + readiness LFP (a) ✅ + backing data onboarding ✅ ; D2/D5 préparés+escaladés.
+> Reste = VISUEL (Thomas) / GATED (escaladé). 0 code, 0 re-notif (escalades merge + pause-cron déjà envoyées ; vider
+> notify = preuve d'envoi). CFR 10 runs = 100 %. **6e run zéro-valeur consécutif** → la pause/espacement du cron
+> (escaladé #2, non appliqué) est la SEULE action à valeur, et elle est chez Thomas. Prochain run même état → RE-IDLE.
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but
