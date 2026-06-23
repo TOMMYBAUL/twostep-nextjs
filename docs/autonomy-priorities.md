@@ -153,6 +153,15 @@ plus un mur Google externe.
 > escaladés. Reste = VISUEL (Thomas) / GATED. 0 code, 0 re-notif (`notify-extra` absent = escalades merge + pause-cron
 > déjà envoyées). CFR = **100 %**. **8e run zéro-valeur consécutif.** La pause/espacement du cron (escaladé #2, non
 > appliqué) reste la SEULE action à valeur, chez Thomas. Prochain run même état → RE-IDLE, ne pas dériver, ne pas re-notifier.
+>
+> **🟢 ÉTAT 2026-06-23 (run autonome #9) — RE-IDLE, prod re-vérifiée moi-même (1 requête consolidée, run cheap).**
+> Strictement identique à #3–#8 : `merchants`=9 (latest **25/04**, tous seed/test, 0 réel depuis ~2 mois), `google_conns`=0,
+> `quality_alerts`=106 max **22/06 05:00** avec **0 frais sur 24 h**, `pos error`=1 (Square test), `enrichment_jobs` pending=0,
+> `image_jobs`=103 pending stale (clé ANTHROPIC, escaladée D5). **0 [R] in-scope, 0 signal réel frais.** Backlog A 1→8 ✅ +
+> D1–D7 ✅ + readiness (a) ✅ + backing data onboarding ✅ ; D2/D5 préparés+escaladés. Reste = VISUEL (Thomas) / GATED.
+> 0 code, 0 re-notif (`notify-extra` absent = escalades merge + pause-cron déjà envoyées). CFR 10 runs = **100 %** (0 revert ;
+> coût idle en baisse continue ~2,1 $). **9e run zéro-valeur consécutif.** La pause/espacement du cron (escaladé #2, non
+> appliqué) reste la SEULE action à valeur, chez Thomas. Prochain run même état → RE-IDLE, ne pas dériver, ne pas re-notifier.
 
 > **Contexte qui a changé** : le merge `feat → main` + **déploiement prod sont FAITS**
 > (`twostep.fr` est LIVE, deploy `dpl_6576onJw…` READY). La boucle n'a donc PLUS pour but
