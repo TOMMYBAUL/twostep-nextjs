@@ -5,6 +5,78 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **Route handlers webhook POS temps réel (`POST /api/webhooks/{shopify,lightspeed}`) couverts + 1 bug fraîcheur réel + 1 HIGH recalc**
+
+**Sourcing (§6)** : chaîne A 1→8 ✅, Phase D ✅/escaladé, READINESS (a) ✅ ; `notify-extra.txt` vide (rien en
+attente). Signaux Sentry/quality_alerts inchangés (data test, 0 actionable). Le réversible « chemin d'écriture
+stock non testé » côté FACTURE est épuisé (validate/activate/receive/cancel tous couverts les runs précédents).
+→ §6.3 chemin critique non testé restant = **les route handlers WEBHOOK** (2e pilier north-star « temps réel
+honnête »). Vérifié : `pos-webhook-parse` teste les adapters, `pos-resolve-product` teste la résolution, mais
+**AUCUN test ne drive le route handler de bout en bout** (`grep -rl "webhooks/" tests/` = 0). Or c'est lui qui
+orchestre le contrat critique signature→idempotence→resolve→`updateStockAtomic`→recalc→Google.
+
+**TROUVÉ (vérifié dans le code réel, pas Explore) — 1 bug de fraîcheur + 1 HIGH recalc** :
+- **Bug fraîcheur (classe garde cosmétique maillon 5)** : `shopifyAdapter.parseWebhookEvent` mettait
+  `updated_at: new Date().toISOString()` (heure de RÉCEPTION) → le `source_ts` transmis à `update_stock_atomic`
+  était faux → un webhook Shopify livré en retard (retry/outage) affichait « vu à l'instant / Disponible » pour
+  une vente passée = **faux positif de fraîcheur** (north-star « afficher honnêtement »). Or l'objet order Shopify
+  porte toujours `updated_at`/`created_at`/`processed_at`. **Lightspeed (`line.timeStamp`) et Square
+  (`calculated_at`) extrayaient déjà le vrai timestamp** → Shopify était le seul jumeau à jeter la fraîcheur. Le
+  commentaire de la route (« source_ts = heure de l'événement ») mentait pour Shopify. Le test de parse existant
+  l'« actait » (« pas d'horodatage par ligne → fallback ») — vrai par LIGNE, faux au niveau ORDER.
+  Fix : `event.updated_at || event.created_at || event.processed_at || now()` (`||` : "" inutilisable → fallback ;
+  fallback = byte-identique à l'ancien comportement si rien présent).
+- **HIGH (revue SF-hunter, classe « throw vs captureError-et-continue ») : `await recalculateGroupSizesAdmin()`
+  non gardé dans les 2 routes** → un throw réseau (≠ erreurs Supabase qu'il capture en interne) remonte au catch
+  route → 500 APRÈS que le stock a été décrémenté → retry POS → idempotence skip (`webhook_id` déjà vu) → recalc
+  JAMAIS rejoué (available_sizes périmé jusqu'au resync 6h). Le stock autoritaire est committé ; recalc = méta
+  d'affichage dérivée → **captureError-et-continue** (comme `feedErr`/`notify`/`google` le sont DÉJÀ dans la même
+  route), pas un throw. Corrigé sur les 2 jumeaux.
+
+**FIX** : (1) parser Shopify reporte le vrai timestamp order ; (2) recalc wrappé en try/catch+captureError dans
+shopify+lightspeed (200 conservé, stock déjà committé).
+
+**REVUE OBLIGATOIRE `silent-failure-hunter`** (diff pipeline) : core fix parser **SOUND** (fallback préserve,
+aucune perte introduite) ; tests **non vacants** (`source_ts`=heure événement vérifié directement, idempotence
+prouvée). 1 HIGH (recalc) **corrigé ce run** ; findings test (processed_at non testé, JSON-invalide-avec-id,
+resolve-throw vs null) **verrouillés ce run**. Findings LOW laissés hors scope (NON introduits, documentés) :
+#6 lookup Google dupliquée (utilise une 2e query au lieu de `product.merchant_id` ; merchantErr déjà captureError
+→ dégradation visible, Google re-sync 3h) ; #7 webhook sans `webhook_id` traité sans alerte (Shopify/Lightspeed
+envoient toujours l'ID ; ajouter un captureError risquerait de flooder Sentry sans throttle) → durcissement futur.
+
+**PREUVE RÉELLE (méthode §1bis)** : `tests/webhook-routes-stock.test.ts` (+18 = 9 contrats × 2 jumeaux) drive le
+VRAI `POST` route : signature invalide → 401 + 0 effet de bord ; doublon `webhook_id` → skip + 0 décrément ;
+erreur lecture/insert idempotence → 500 + captureError + 0 décrément ; happy → `updateStockAtomic(prod-1, -2,
+"delta", "webhook", "2026-06-19T10:00:00Z")` (source ET source_ts=heure événement vérifiés champ par champ) +
+feed_event "sale" ; resolve null → skip 200 ; resolve throw → 500 ; recalc throw → **200** (stock committé) +
+captureError ; updateStock throw → 500 ; sans webhook_id → idempotence sautée + traité ; JSON invalide (avec et
+sans id) → 400. + `tests/pos-webhook-parse.test.ts` (+4) : Shopify reporte le vrai `updated_at`/`created_at`/
+`processed_at`, fallback ISO si tout absent.
+
+**TESTÉ** : `npm run test:run` → **776/776** (749→776, +27), `tsc` OK. 5 fichiers (3 prod : shopify.ts +
+2 routes ; 2 tests). 0 migration, réversible (`git revert`). Impact (gitnexus) : `parseWebhookEvent` shopify
+appelé uniquement par la route shopify ; recalc inchangé en signature. Contrat appelant préservé.
+
+**Reste / suivi** : le réversible « hot path stock non testé » se raréfie encore (factures + webhooks couverts).
+La valeur bascule de plus en plus côté Thomas (pilote, chantier B visuel). Durcissements résiduels = Rang 2 gated
+(idempotence at-most-once déjà escaladée ; lookup Google dupliquée ; alerte webhook-sans-id).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — vrai `POST` route exercé champ par champ (source_ts=heure événement vérifié, idempotence,
+  401/500/200 par mode d'échec), sur les 2 jumeaux. Unitaire (faux client/adapters mockés), pas vrai POS.
+- **Sécurité north-star : 8/10** — revue SF-hunter : 0 silent-failure introduit ; **1 bug de fraîcheur réel**
+  (faux positif « vu à l'instant ») + **1 HIGH** (recalc throw → perte du rollup au retry) comblés ; jumeaux alignés.
+- **Réversibilité : 10/10** — 0 migration, 3 prod + 2 tests, `git revert` propre, signatures inchangées.
+- **Discipline de scope : 9/10** — 1 canal (webhook temps réel) ciblé + son test ; le HIGH recalc est dans le
+  code exactement couvert ; findings LOW explicitement hors scope (pas de dérive).
+- **Alignement north-star : 8/10** — durcit le 2e pilier (temps réel honnête) : une vente affichée « à l'instant »
+  des heures après, ou un rollup tailles perdu, = faux positif du type qui tue (MVMS/Milo). Valeur pleine au 1er pilote.
+
+**Métriques objectives** : tests 749→776 (+27) ; **2 bugs réels** corrigés (fraîcheur Shopify + recalc HIGH) ;
+5 fichiers touchés. CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert détecté → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · COUVERTURE Rang 3 — **`POST /api/invoices/[id]/cancel` (annulation → réversion stock) durci + testé** : 1 CORRUPTION + 3 pertes silencieuses
 
 **Sourcing (§6)** : chaîne A 1→8 ✅ + Phase D ✅/escaladé + READINESS (a) ✅ ; runs récents = `activateInvoice`,

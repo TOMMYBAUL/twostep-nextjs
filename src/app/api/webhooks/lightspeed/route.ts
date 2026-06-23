@@ -69,7 +69,16 @@ export async function POST(request: NextRequest) {
             const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook", update.updated_at);
             const newQty = Math.max(0, previousQty + update.quantity);
 
-            await recalculateGroupSizesAdmin(product.id);
+            // Le stock autoritaire est DÉJÀ committé par updateStockAtomic ci-dessus ; recalc
+            // n'est qu'une métadonnée d'affichage dérivée. Si elle THROW (réseau/RPC ≠ erreurs
+            // Supabase qu'elle capture en interne), on NE laisse PAS remonter au catch route : un
+            // 500 ferait retenter le POS → idempotence skip → recalc jamais rejoué + risque de
+            // double-décrément delta. captureError + on continue. Cohérent avec feed/notify/google.
+            try {
+                await recalculateGroupSizesAdmin(product.id);
+            } catch (e) {
+                captureError(e, { route: "webhooks/lightspeed", phase: "recalc-sizes", productId: product.id });
+            }
 
             const { error: feedErr } = await supabase.from("feed_events").insert({
                 merchant_id: product.merchant_id,

@@ -92,6 +92,26 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   toujours un artefact (DEFAULT now() de l'ALTER sur lignes back-fillées, dérive d'horloge) → prendre
   le plus ANCIEN. (maillon 5, 2026-06-22, revue silent-failure-hunter)
 
+## Webhook POS temps réel — fraîcheur source_ts + recalc (route handlers)
+- ❌ **Un adapter `parseWebhookEvent` qui hardcode `updated_at: new Date().toISOString()` jette la vraie
+  heure de l'événement → `source_ts` faux → faux positif de fraîcheur** (classe « garde cosmétique » maillon 5).
+  Shopify le faisait alors que l'objet order porte toujours `updated_at`/`created_at`/`processed_at` ; Lightspeed
+  (`line.timeStamp`) et Square (`calculated_at`) extrayaient déjà le vrai timestamp. Un webhook livré en retard
+  (retry/outage) affichait « vu à l'instant / Disponible » pour une vente passée. Fix : `event.updated_at ||
+  event.created_at || event.processed_at || now()` (`||` pas `??` : "" = timestamp inutilisable → fallback).
+  **Règle : grep les N adapters jumeaux d'un même contrat (fraîcheur) — celui qui jette le timestamp est le trou.**
+- ❌ **`await recalculateGroupSizesAdmin()` non gardé dans un route handler webhook = un throw réseau (≠ erreurs
+  Supabase qu'il capture en interne) remonte au catch route → 500 APRÈS décrément stock committé → retry POS →
+  idempotence skip (`webhook_id` déjà vu) → recalc JAMAIS rejoué** (available_sizes périmé jusqu'au resync 6h).
+  Le stock autoritaire est déjà committé ; recalc = métadonnée d'affichage dérivée → **captureError-et-continue**
+  (comme `feedErr`/`notify`/`google` le sont DÉJÀ dans la même route), PAS un throw (re-décrément delta). Fix sur
+  les 2 jumeaux (shopify+lightspeed). **Règle : dans un webhook delta, tout effet APRÈS le write stock committé
+  doit être non-fatal (captureError) — un 500 post-write + idempotence-first = perte de l'effet secondaire.**
+- ✅ **Couvrir un route handler webhook au niveau ROUTE** (pas juste l'adapter) : `tests/webhook-routes-stock.test.ts`
+  drive le vrai `POST` avec adapters/admin/updateStockAtomic mockés → prouve signature→401 (0 effet de bord),
+  idempotence doublon→skip (0 décrément) / erreur→500, delta+`source="webhook"`+`source_ts`=heure événement câblés,
+  resolve null→skip vs throw→500. Paramétré sur les 2 jumeaux = parité prouvée d'un coup. (2026-06-23, revue SF-hunter)
+
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
   `invoices/[id]/validate` (facture = marchandise reçue) : `const { data: currentStock } = …` puis

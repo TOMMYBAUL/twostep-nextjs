@@ -297,13 +297,29 @@ export const shopifyAdapter: IPOSAdapter = {
     },
 
     parseWebhookEvent(body: unknown): POSStockUpdate[] | null {
-        const event = body as { line_items?: Array<{ variant_id: number; quantity: number }> };
+        const event = body as {
+            line_items?: Array<{ variant_id: number; quantity: number }>;
+            updated_at?: string;
+            created_at?: string;
+            processed_at?: string;
+        };
         if (!event.line_items) return null;
+
+        // Fraîcheur honnête (cf. maillon 5 / LESSON "garde cosmétique") : le webhook order
+        // Shopify n'a pas d'horodatage PAR LIGNE, mais l'objet order porte toujours
+        // updated_at/created_at/processed_at (ISO 8601, champs cœur de la ressource Order).
+        // On reporte l'heure RÉELLE de l'événement dans source_ts plutôt que l'heure de
+        // réception serveur — sinon un webhook livré en retard (retry/outage) afficherait
+        // "vu à l'instant" pour une vente passée. Fallback now() seulement si tout absent
+        // (= byte-identique à l'ancien comportement). Aligné sur Lightspeed (line.timeStamp).
+        // `||` (pas `??`) : une chaîne vide "" est un timestamp inutilisable (→ new Date("")
+        // = Invalid Date) donc on retombe au champ suivant ; aligné sur Lightspeed (line.timeStamp || now).
+        const eventTs = event.updated_at || event.created_at || event.processed_at || new Date().toISOString();
 
         return event.line_items.map((item) => ({
             pos_item_id: String(item.variant_id),
             quantity: -item.quantity, // Negative = stock decrease from order
-            updated_at: new Date().toISOString(),
+            updated_at: eventTs,
         }));
     },
 };

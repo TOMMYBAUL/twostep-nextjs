@@ -453,6 +453,17 @@ software qui débloque sa moitié à lui.
   0**, captureError, 500 honnête sur échec partiel sans remettre la facture en `parsed`). `tests/invoice-cancel-writes.test.ts`
   (+10, TDD 5 rouges→vert). Revue SF-hunter : 0 silent-failure introduit ; résidu idempotence-au-retry **pré-existant** laissé
   hors scope (durcissement Rang 2). 0 migration, réversible.
+  **Partiel (run 2026-06-23, route handlers WEBHOOK temps réel)** : **2e pilier north-star couvert** — `POST /api/
+  webhooks/{shopify,lightspeed}` (canal stock temps réel) n'avait **0 test de bout en bout** (seuls les adapters/
+  resolve en unité). +18 (`tests/webhook-routes-stock.test.ts`, 9 contrats × 2 jumeaux) drivant le vrai `POST` :
+  signature→401 (0 effet), idempotence doublon→skip (0 décrément) / erreur→500, delta+`source="webhook"`+`source_ts`=
+  heure événement câblés, resolve null→skip vs throw→500, recalc throw→200 (stock committé)+captureError, JSON
+  invalide→400. **2 bugs réels corrigés** : (a) **fraîcheur Shopify** (classe garde cosmétique maillon 5) —
+  `parseWebhookEvent` mettait `updated_at=now()` (réception) au lieu du timestamp order → faux « vu à l'instant »
+  pour vente passée ; fix `updated_at||created_at||processed_at||now()` (Lightspeed/Square le faisaient déjà). (b)
+  **HIGH recalc** (revue SF-hunter) — `await recalculateGroupSizesAdmin()` non gardé → throw réseau → 500 post-
+  décrément → retry → idempotence skip → recalc perdu jusqu'au resync 6h ; fix captureError-et-continue sur les 2
+  jumeaux. +4 tests parse (`processed_at` fallback). Revue SF-hunter SOUND. 776 tests (749→776), 0 migration, réversible.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)

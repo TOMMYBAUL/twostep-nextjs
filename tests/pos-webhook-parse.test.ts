@@ -70,14 +70,42 @@ describe("Collecte ③ · parseWebhookEvent — mapping quantité + fraîcheur (
     });
 
     describe("Shopify (mode delta — order)", () => {
-        it("mappe les line_items en décréments négatifs avec un updated_at ISO valide", () => {
+        it("reporte l'horodatage RÉEL de l'order (updated_at) dans source_ts, pas l'heure de réception", () => {
+            // L'objet order Shopify porte toujours updated_at/created_at (champs cœur de la
+            // ressource). Le perdre → faux positif de fraîcheur (cf. maillon 5 garde cosmétique).
+            const out = shopifyAdapter.parseWebhookEvent({
+                updated_at: "2026-06-19T10:00:00Z",
+                created_at: "2026-06-19T09:00:00Z",
+                line_items: [{ variant_id: 12345, quantity: 3 }],
+            });
+            expect(out).toEqual([
+                { pos_item_id: "12345", quantity: -3, updated_at: "2026-06-19T10:00:00Z" },
+            ]);
+        });
+
+        it("retombe sur created_at quand updated_at est absent", () => {
+            const out = shopifyAdapter.parseWebhookEvent({
+                created_at: "2026-06-19T09:00:00Z",
+                line_items: [{ variant_id: 7, quantity: 1 }],
+            });
+            expect(out![0].updated_at).toBe("2026-06-19T09:00:00Z");
+        });
+
+        it("retombe sur processed_at quand updated_at ET created_at sont absents", () => {
+            const out = shopifyAdapter.parseWebhookEvent({
+                processed_at: "2026-06-19T08:00:00Z",
+                line_items: [{ variant_id: 7, quantity: 1 }],
+            });
+            expect(out![0].updated_at).toBe("2026-06-19T08:00:00Z");
+        });
+
+        it("fallback ISO maintenant si l'order ne porte aucun horodatage (≥ ancien comportement)", () => {
             const out = shopifyAdapter.parseWebhookEvent({
                 line_items: [{ variant_id: 12345, quantity: 3 }],
             });
             expect(out).not.toBeNull();
             expect(out![0].pos_item_id).toBe("12345");
             expect(out![0].quantity).toBe(-3);
-            // Shopify order webhook n'a pas d'horodatage par ligne → fallback ISO maintenant.
             expect(Number.isNaN(Date.parse(out![0].updated_at))).toBe(false);
         });
 

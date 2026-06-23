@@ -68,8 +68,18 @@ export async function POST(request: NextRequest) {
             const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook", update.updated_at);
             const newQty = Math.max(0, previousQty + update.quantity);
 
-            // Recalculate available_sizes on the group principal
-            await recalculateGroupSizesAdmin(product.id);
+            // Recalculate available_sizes on the group principal.
+            // Le stock autoritaire est DÉJÀ committé par updateStockAtomic ci-dessus ; recalc
+            // n'est qu'une métadonnée d'affichage dérivée (available_sizes/total). Si elle THROW
+            // (réseau/RPC ≠ erreurs Supabase qu'elle capture déjà en interne), on NE laisse PAS
+            // remonter au catch route : un 500 ferait retenter le POS → idempotence skip (webhook_id
+            // déjà vu) → recalc jamais rejoué + risque de double-décrément delta. captureError + on
+            // continue (re-convergence au resync). Cohérent avec feed/notify/google ci-dessous.
+            try {
+                await recalculateGroupSizesAdmin(product.id);
+            } catch (e) {
+                captureError(e, { route: "webhooks/shopify", phase: "recalc-sizes", productId: product.id });
+            }
 
             // Negative delta = sale (stock consumed), positive = restock/return
             const eventType = update.quantity < 0 ? "sale" : "restock";
