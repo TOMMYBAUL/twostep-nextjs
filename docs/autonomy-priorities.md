@@ -241,10 +241,22 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   **Décision produit escaladée** (`notify-extra`) : A) clé ANTHROPIC prod (~0,001 $/img) [reco] vs B) bloquer
 >   images non vérifiées vs C) accepter non vérifié + tracer. **Repli photo marchand** non couvert ce run
 >   (dépend du choix A/B/C). NB : à arbitrer avec la SOURCE-image OBF/OPF gratuite (D4-suite).
-> - **D6 `[R]` Mode pilote « shadow/preview »** : ingérer un marchand + montrer ce qu'on PUBLIERAIT
->   (catalogue + feed + % publiable) **AVANT toute publication** (lecture-seule = sécurité marchand,
->   « ne pas casser sa gestion de stock »). + **test verrouillant l'invariant « aucun adaptateur POS
->   n'écrit vers la caisse »** (contrat read-only). Preuve.
+> - 🔶 **D6 `[R]` Mode pilote « shadow/preview »** — **CONTRAT READ-ONLY STOCK PROUVÉ (2026-06-23)** ;
+>   shadow/preview UI non entamé. Prémisse « aucun adaptateur n'écrit vers la caisse » **partiellement
+>   fausse** (vérifié) : 2 writebacks CATALOGUE existent (`pushCatalog` sur validation facture ; `updatePosProduct`
+>   EAN, flag `POS_WRITEBACK_ENABLED`) — mais **aucun n'écrit de QUANTITÉ DE STOCK** (la vraie promesse north-star).
+>   **2 trous réels comblés** : (a) Square OAuth demandait `INVENTORY_WRITE` + Shopify `write_inventory` = scopes
+>   d'écriture stock JAMAIS utilisés → le marchand voyait « peut modifier mon inventaire » au consentement (anti
+>   moindre-privilège) ; retirés (`INVENTORY_READ`/`read_inventory` gardés pour `getStock` ; existants non affectés,
+>   nouvelles autorisations seulement). (b) Shopify `pushCatalog` droppait un produit en SILENCE sur HTTP !ok →
+>   jamais de `pos_item_id` → jamais de MAJ stock (perte silencieuse, finding SF-hunter MED) → `captureError`+continue.
+>   **Test verrouillant** `tests/pos-readonly-stock-contract.test.ts` (+17) : A) aucun `getAuthUrl` ne demande
+>   l'écriture d'inventaire ; B) aucun adaptateur n'expose de méthode d'écriture de stock ; C) `pushCatalog`/
+>   `updatePosProduct` n'émettent aucune mutation de quantité (Square/Shopify/Lightspeed) + flag-gating writeback.
+>   Revues SF-hunter + security-reviewer : scope removal **SOUND, 0 régression**. 0 migration, réversible.
+>   **Reste D6** : shadow/preview UI (ingest marchand → montrer ce qu'on PUBLIERAIT avant publication) = chantier
+>   B visuel → escaladé Thomas (pas de navigateur côté boucle). Suivi non bloquant : invariant read-only POS sur
+>   resync/webhooks non testé en comportement (garde B couvre déjà l'absence de méthode d'écriture).
 > - ✅ **D7 `[R]` Concordance EAN↔nom-marchand — PROUVÉ (2026-06-23)**. Trou réel comblé : le chemin
 >   **forward** (EAN saisi → nom résolu par OBF/EAN-Search) n'avait AUCUN croisement avec le nom marchand
 >   (seul le chemin reverse nom→EAN passait par `verifyEanMatchWithAI`) → un EAN mal saisi/réutilisé (barcode

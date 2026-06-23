@@ -36,7 +36,12 @@ export const squareAdapter: IPOSAdapter = {
     getAuthUrl(merchantId: string): string {
         const params = new URLSearchParams({
             client_id: process.env.SQUARE_APP_ID!,
-            scope: "MERCHANT_PROFILE_READ ITEMS_READ ITEMS_WRITE INVENTORY_READ INVENTORY_WRITE",
+            // Moindre privilège : on LIT l'inventaire (getStock → INVENTORY_READ) mais
+            // on n'y ÉCRIT JAMAIS — aucun adaptateur ne pousse de quantité de stock vers
+            // la caisse (promesse marchand « on ne casse pas ta gestion de stock »).
+            // ITEMS_WRITE sert au pushCatalog (création de produits sur validation de
+            // facture) + updatePosProduct (EAN, flag-gardé), pas au stock. Pas d'INVENTORY_WRITE.
+            scope: "MERCHANT_PROFILE_READ ITEMS_READ ITEMS_WRITE INVENTORY_READ",
             session: "false",
             state: signState(`square:${merchantId}`),
         });

@@ -3,6 +3,7 @@ import { signState } from "@/lib/auth/state-token";
 import { getSiteUrl } from "@/lib/url";
 import { canonicalizeEan } from "@/lib/identifiers/validators";
 import { fetchWithRetry, catalogPageLimit } from "./fetch-retry";
+import { captureError } from "@/lib/error";
 import type { IPOSAdapter, POSAdapterOptions, POSProduct, POSPromo, POSStockUpdate } from "./types";
 
 function shopApi(shopDomain: string, path: string): string {
@@ -50,7 +51,10 @@ export const shopifyAdapter: IPOSAdapter = {
         const baseUrl = getSiteUrl();
         const params = new URLSearchParams({
             client_id: process.env.SHOPIFY_CLIENT_ID!,
-            scope: "read_products,write_products,read_inventory,write_inventory",
+            // Moindre privilège : read_inventory pour getStock, jamais write_inventory
+            // (on ne pousse pas de quantité de stock vers la caisse). write_products =
+            // pushCatalog (création de produits sur validation de facture), pas le stock.
+            scope: "read_products,write_products,read_inventory",
             redirect_uri: `${baseUrl}/api/pos/shopify/callback`,
             state: signState(`shopify:${merchantId}`),
         });
@@ -178,13 +182,23 @@ export const shopifyAdapter: IPOSAdapter = {
                     },
                 }),
             });
-            if (res.ok) {
-                const data = await res.json();
-                // Use variant.id — webhooks and stock APIs use variant IDs, not product IDs
-                const variantId = data.product?.variants?.[0]?.id;
-                if (variantId) {
-                    idMappings[p.pos_item_id || p.name] = String(variantId);
-                }
+            if (!res.ok) {
+                // Ne PAS dropper le produit en silence : un produit créé côté Two-Step mais
+                // refusé par Shopify (422/429/401) n'aura jamais de pos_item_id → ne recevra
+                // jamais les MAJ de stock du POS (perte silencieuse). Rendre visible, continuer
+                // (le produit existe dans notre DB ; un prochain push le re-tentera).
+                const detail = await res.text().catch(() => "");
+                captureError(new Error(`Shopify pushCatalog failed (${res.status}): ${detail.slice(0, 200)}`), {
+                    context: "shopify-push-catalog",
+                    productName: p.name,
+                });
+                continue;
+            }
+            const data = await res.json();
+            // Use variant.id — webhooks and stock APIs use variant IDs, not product IDs
+            const variantId = data.product?.variants?.[0]?.id;
+            if (variantId) {
+                idMappings[p.pos_item_id || p.name] = String(variantId);
             }
         }
         return idMappings;

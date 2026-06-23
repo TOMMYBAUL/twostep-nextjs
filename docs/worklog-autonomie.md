@@ -5,6 +5,84 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-23 (run autonome) · PHASE D — **D6 (partiel) `[R]` Contrat read-only STOCK prouvé** + 2 trous réels comblés · commit `<this>`
+
+**Sourcing (§6)** : chaîne A + D1/D3/D4/D5/D7 faits ; haut backlog Phase D non terminé = **D6** (item `[R]`).
+Vérifié dans le code réel d'abord (LESSONS ~70 % faux findings) → **la prémisse de D6 « aucun adaptateur POS
+n'écrit vers la caisse » est PARTIELLEMENT FAUSSE** : `IPOSAdapter` expose 2 méthodes d'écriture vers le POS —
+`pushCatalog` (câblé, ungated, via `activateInvoice` sur validation facture) et `updatePosProduct` (EAN, Square
+seul, flag `POS_WRITEBACK_ENABLED`). MAIS, vérifié sur les 3 implémentations (Square `/catalog/batch-upsert`,
+Shopify `POST /products.json`, Lightspeed `Item.json`) : **aucune n'écrit de QUANTITÉ DE STOCK** — elles créent
+du CATALOGUE (name/price/EAN/sku). La vraie promesse north-star (« ne pas casser sa gestion de stock ») = **ne
+jamais réécrire les quantités d'inventaire vers la caisse** — et CET invariant tient. C'est lui que je verrouille.
+
+**TROUVÉ (vérifié dans le code, pas supposé) — 2 trous réels au consentement/observabilité** :
+1. **Scopes OAuth d'écriture d'inventaire DEMANDÉS mais jamais utilisés.** Square `getAuthUrl` demandait
+   `INVENTORY_WRITE`, Shopify `write_inventory` — or **aucun chemin de code n'appelle d'endpoint d'écriture
+   d'inventaire** (Square `getStock` = `/inventory/counts/batch-retrieve` lecture ; Shopify `getStock` =
+   `inventory_levels.json` GET ; les writes stock vont vers Supabase via RPC, jamais vers le POS). Conséquence :
+   l'écran de **consentement marchand** affichait « peut modifier mon inventaire » = contredit la promesse
+   read-only + viole le moindre-privilège (LESSONS OAuth). Lightspeed (`employee:inventory_read`) et Zettle
+   (pas de `WRITE:INVENTORY`) faisaient déjà bien.
+2. **Shopify `pushCatalog` droppait un produit en SILENCE sur HTTP !ok** (finding SF-hunter MED) : un produit
+   créé côté Two-Step mais refusé par Shopify (422/429/401) n'obtenait jamais de `pos_item_id` → ne recevait
+   jamais les MAJ stock du POS = perte silencieuse (vente/dispo fantôme).
+
+**FAIT (réversible, 0 migration)** :
+- `square.ts` : scope `INVENTORY_WRITE` retiré (gardé `INVENTORY_READ` pour getStock, `ITEMS_WRITE` pour
+  pushCatalog/updatePosProduct). `shopify.ts` : scope `write_inventory` retiré (gardé `read_inventory`,
+  `write_products`). Narrowing = sûr : les tokens déjà accordés gardent leur grant, seules les NOUVELLES
+  autorisations demandent moins ; pas de changement requis côté app Square/Shopify (on demande un sous-ensemble).
+- `shopify.ts pushCatalog` : `!res.ok` → `captureError`+`continue` (rendu visible, pas avalé ; le produit existe
+  dans notre DB, un prochain push le re-tente → pas de throw qui figerait toute la création).
+- **Test** `tests/pos-readonly-stock-contract.test.ts` (+17) : **A** aucun `getAuthUrl` ne demande l'écriture
+  d'inventaire (4 OAuth adapters) + détecteur anti-vacant ; **B** aucun adaptateur n'expose de méthode
+  d'écriture de stock (6 adapters, `getStock` seule lecture autorisée) ; **C** `pushCatalog` (Square/Shopify/
+  Lightspeed) n'émet aucune mutation de quantité (recording fetch + `isInventoryWrite`) + preuve positive
+  (write catalogue bien émis) ; **+** échec 422 Shopify → captureError (Finding #3) ; **D** Square
+  `updatePosProduct` no-op sans flag / SKU-only avec flag, jamais le stock.
+
+**REVUES OBLIGATOIRES (§11.3)** — diff pipeline POS + OAuth :
+- `silent-failure-hunter` : **scope removal SOUND, 0 régression** (aucun endpoint inventory-write appelé ; pas
+  de 403 silencieux possible). Findings : #1 LOW (heuristique `"available":` → resserrée à `:\s*-?\d`) corrigé ;
+  #3 MED (drop silencieux pushCatalog) corrigé + testé ; #2/#4 LOW différés (garde B couvre déjà l'absence de
+  méthode d'écriture ; fetchPromos `[]` lenient = pré-existant intentionnel, hors D6).
+- `security-reviewer` : **SOUND** — tokens existants non affectés ; aucun chemin n'exige inventory-write ;
+  demander un sous-ensemble est sûr sur les 2 plateformes ; `ITEMS_WRITE`/`write_products` justifiés (pushCatalog).
+  Observation (non bloquante) : asymétrie — Shopify `pushCatalog` n'est pas flag-gardé comme Square
+  `updatePosProduct` ; si on veut rendre le writeback catalogue opt-in, c'est là. → noté en escalade FYI.
+
+**PREUVE RÉELLE** (méthode §1bis) : chaque garde du test échouerait sur l'état d'AVANT (Square/Shopify auraient
+échoué la garde A avant retrait du scope ; le test 422 échouerait sur l'ancien `if(res.ok)` muet). Sorties
+inspectées : les corps `pushCatalog` capturés ne portent name/price/EAN, jamais de quantité.
+
+**TESTÉ** : `npm run test:run` → **688/688** (671→688, +17), `tsc` OK. 4 fichiers (2 lib + 1 test + docs).
+
+**ESCALADE (§4, FYI design — pas bloquant)** : `logs/notify-extra.txt` — Shopify `pushCatalog` (création produit
+sur validation facture) écrit dans le catalogue POS du marchand SANS flag, contrairement à l'EAN-writeback Square
+(flaggé). Garder tel quel (action marchand explicite = valider une facture) ou flag-gater aussi ? Réversible.
+
+**Reste / suivi (vérifiés, anti scope-creep)** : D6 shadow/preview UI (ingest → preview avant publication) =
+chantier B visuel → Thomas (pas de navigateur). Invariant read-only sur resync/webhooks non testé en
+comportement (garde B couvre déjà l'absence de méthode d'écriture — résiduel documenté). D2 `[G]` reste à
+préparer+escalader (tier GTIN-only).
+
+### 5bis. SCORECARD (auto-évaluation honnête /10 — plafond 8 car synthétique, pas vrai marchand)
+- **Preuve : 7/10** — adapters exercés sur les vrais chemins (getAuthUrl réel, pushCatalog/updatePosProduct avec
+  fetch enregistré, corps inspectés), divergence prouvée vs l'état d'avant ; mais unitaire (pas un vrai OAuth
+  Square/Shopify ni un vrai marchand). Plafond.
+- **Sécurité north-star : 9/10** — 2 revues SOUND ; promesse read-only STOCK durcie AU CONSENTEMENT (le marchand
+  ne nous accorde plus l'écriture d'inventaire) + 1 perte silencieuse comblée ; invariant verrouillé par test.
+- **Réversibilité : 10/10** — 0 migration, 2 strings de scope + captureError additif + test, revert propre.
+- **Discipline de scope : 9/10** — 3 fichiers prod (mêmes 2 fichiers + fix de revue même fichier) + 1 test ;
+  D6 marqué partiel honnêtement (UI escaladée) au lieu de sur-construire.
+- **Alignement north-star : 9/10** — cœur « ne pas casser sa gestion de stock » prouvé ET renforcé au niveau
+  OAuth ; directement pertinent pour la confiance marchand au pilote.
+**Objectif (§5bis)** : tests 671→688 ; **2 trous réels** comblés (scopes inventory-write morts ×2 + drop
+silencieux pushCatalog Shopify) ; 4 fichiers ; CFR 10 derniers runs : 10/10 `exit=0` avec commit, 0 revert → **100 %**.
+
+---
+
 ## 2026-06-23 (run autonome) · PHASE D — **D5 (partiel) `[R]` Gate de match image : fail-open de la vérif corrigé** + décision produit escaladée · commit `4e9be32`
 
 **Sourcing (§6)** : chaîne A + D1/D3/D4/D7 faits ; haut backlog Phase D = **D5** (item `[R]` suivant). Vérifié
