@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétique à Toulouse : trouver les bons produits en boutique (et éviter le déplacement pour rien)",
+        description:
+            "Tu cherches de la cosmétique à Toulouse ? Carmes, Capitole, Wilson... Guide des boutiques indépendantes et comment vérifier le stock avant de traverser la ville.",
+        publishedAt: "2026-06-24",
+        readingTime: "7 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
