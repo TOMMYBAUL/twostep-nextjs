@@ -21,6 +21,16 @@ export type GoogleStatsData = {
     missing_photo: number;
     missing_price: number;
     score: number;
+    // Readiness LFP (déjà calculée par `/api/google/stats` via `evaluateFeedReadiness`, mais
+    // jamais affichée au marchand jusqu'ici) : le signal go-live « êtes-vous prêt à publier
+    // sur Google LFP ? ». Source de vérité serveur = `lfp_feed_ready` (seuil d'offres ATTEINT
+    // ET connecté). Les autres champs servent à GUIDER (combien d'offres manquantes, etc.).
+    blocked_only_by_image: number;
+    lfp_offers_threshold: number;
+    lfp_meets_offer_threshold: boolean;
+    lfp_offer_shortfall: number;
+    google_connected: boolean;
+    lfp_feed_ready: boolean;
 };
 
 export type GoogleConnectionData = {
@@ -52,6 +62,94 @@ export type ConnectionView =
     | { kind: "error" }
     | { kind: "disconnected" }
     | { kind: "connected"; connection: GoogleConnectionData };
+
+/** Un frein à la readiness LFP, avec un code stable + un libellé + un conseil actionnable. */
+export type ReadinessBlocker = {
+    code: "below_offer_threshold" | "google_not_connected";
+    label: string;
+    /** Conseil actionnable supplémentaire (ex. « K produits ne manquent que d'une photo »). */
+    hint?: string;
+};
+
+export type ReadinessView =
+    /** Stats non chargées OK, ou catalogue vide → la readiness n'ajoute rien (les cartes
+     *  « erreur » / « importer mon stock » guident déjà — pas de double message). */
+    | { kind: "hidden" }
+    /** Seuil d'offres atteint ET connecté → prêt pour le feed LFP (le signal go-live).
+     *  `publishable` = nombre d'offres publiables, ou `null` si le serveur ne l'a pas fourni
+     *  (incohérence : `lfp_feed_ready=true` mais `eligible_google` absent/0) → ne pas afficher
+     *  un trompeur « Vos 0 offres publiables dépassent le seuil ». */
+    | { kind: "ready"; publishable: number | null }
+    /** Pas encore prêt → ce qu'il reste à faire, sans cul-de-sac. */
+    | { kind: "blocked"; blockers: ReadinessBlocker[] };
+
+const plural = (n: number): string => (n > 1 ? "s" : "");
+
+/**
+ * Vue de la readiness LFP (« êtes-vous prêt à publier sur Google LFP ? ») dérivée du MÊME
+ * payload `/api/google/stats`. Pure → testable champ par champ.
+ *
+ * Honnêteté (north-star) : on ne RECALCULE pas la readiness côté client — `lfp_feed_ready`
+ * est la source de vérité serveur (`evaluateFeedReadiness`, qui réutilise le vrai gate du
+ * feed). On ne fait que MAPPER ce verdict + les compteurs vers un message actionnable.
+ * @param load.ok    `false` si le fetch a échoué (l'état « error » est rendu par deriveStatsView).
+ * @param load.stats le corps parsé quand `ok` ; sinon `null`.
+ */
+export function deriveReadinessView(load: { ok: boolean; stats: GoogleStatsData | null }): ReadinessView {
+    if (!load.ok || !load.stats) return { kind: "hidden" };
+    const s = load.stats;
+    // Catalogue vide : deriveStatsView renvoie déjà « empty » avec le CTA d'import → ne pas
+    // doubler avec un « pas prêt » redondant.
+    if (!(s.total_visible > 0)) return { kind: "hidden" };
+
+    // `lfp_feed_ready` = verdict serveur (seuil ATTEINT ET connecté). On lui fait confiance
+    // pour la décision prêt/pas-prêt (pas de 2ᵉ logique de readiness côté client = anti-dérive).
+    if (s.lfp_feed_ready === true) {
+        const publishable = Number.isFinite(s.eligible_google) && s.eligible_google > 0 ? Math.floor(s.eligible_google) : null;
+        return { kind: "ready", publishable };
+    }
+
+    // Pas prêt → expliciter CHAQUE frein (ordre stable : offres puis connexion).
+    const blockers: ReadinessBlocker[] = [];
+
+    if (s.lfp_meets_offer_threshold !== true) {
+        const shortfall = Number.isFinite(s.lfp_offer_shortfall) && s.lfp_offer_shortfall > 0 ? Math.floor(s.lfp_offer_shortfall) : 0;
+        const threshold = Number.isFinite(s.lfp_offers_threshold) && s.lfp_offers_threshold > 0 ? Math.floor(s.lfp_offers_threshold) : 0;
+        const blockedByImage = Number.isFinite(s.blocked_only_by_image) && s.blocked_only_by_image > 0 ? Math.floor(s.blocked_only_by_image) : 0;
+        blockers.push({
+            code: "below_offer_threshold",
+            label:
+                shortfall > 0
+                    ? `Il vous manque ${shortfall} offre${plural(shortfall)} publiable${plural(shortfall)} pour atteindre le seuil Google LFP (${threshold}).`
+                    : `Vous devez atteindre le seuil Google LFP (${threshold} offres publiables).`,
+            // `blocked_only_by_image` = produits éligibles à tout SAUF la photo → le levier le plus
+            // rapide pour gagner des offres (cf. KPI D3 `blocked_only_by_image`).
+            hint:
+                blockedByImage > 0
+                    ? `${blockedByImage} produit${plural(blockedByImage)} ${blockedByImage > 1 ? "ne manquent" : "ne manque"} que d'une photo pour devenir publiable${plural(blockedByImage)}.`
+                    : undefined,
+        });
+    }
+
+    if (s.google_connected !== true) {
+        blockers.push({
+            code: "google_not_connected",
+            label: "Connectez votre boutique à Google pour publier vos offres (voir ci-dessous).",
+        });
+    }
+
+    // Garde défensive : `lfp_feed_ready=false` SANS frein identifié = contrat serveur incohérent
+    // (feed_ready ⟺ seuil ATTEINT ET connecté). Ne pas afficher une carte « pas prêt » vide.
+    if (blockers.length === 0) {
+        const threshold = Number.isFinite(s.lfp_offers_threshold) && s.lfp_offers_threshold > 0 ? Math.floor(s.lfp_offers_threshold) : 0;
+        blockers.push({
+            code: "below_offer_threshold",
+            label: `Vous devez atteindre le seuil Google LFP (${threshold} offres publiables).`,
+        });
+    }
+
+    return { kind: "blocked", blockers };
+}
 
 /**
  * @param load.ok    `false` si le fetch a échoué (statut HTTP non-2xx, corps `{error}`, réseau).

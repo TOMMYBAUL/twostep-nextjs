@@ -8,8 +8,10 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import {
     deriveStatsView,
     deriveConnectionView,
+    deriveReadinessView,
     type StatsView,
     type ConnectionView,
+    type ReadinessView,
     type GoogleStatsData,
     type GoogleConnectionData,
 } from "@/lib/google/dashboard-view";
@@ -17,6 +19,7 @@ import {
 export default function GooglePage() {
     const { merchant, loading: merchantLoading, error: merchantError } = useMerchant();
     const [statsView, setStatsView] = useState<StatsView | null>(null);
+    const [readinessView, setReadinessView] = useState<ReadinessView | null>(null);
     const [connectionView, setConnectionView] = useState<ConnectionView | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
@@ -58,6 +61,7 @@ export default function GooglePage() {
         const [conn, stats] = await Promise.all([connLoad, statsLoad]);
         setConnectionView(deriveConnectionView(conn));
         setStatsView(deriveStatsView(stats));
+        setReadinessView(deriveReadinessView(stats));
         setLoading(false);
     }, []);
 
@@ -97,6 +101,7 @@ export default function GooglePage() {
             }
             setConnectionView({ kind: "disconnected" });
             setStatsView(null);
+            setReadinessView(null);
         } catch {
             // keep current state on failure
             setActionError("La déconnexion a échoué. Vos produits sont toujours connectés à Google.");
@@ -185,6 +190,43 @@ export default function GooglePage() {
 
                 {statsView?.kind === "stats" && (
                     <>
+                        {/* Readiness LFP : le signal go-live « êtes-vous prêt à publier sur Google LFP ? ».
+                            Affiché en tête car c'est la question d'onboarding pilote n°1. */}
+                        {readinessView?.kind === "ready" && (
+                            <div className="rounded-2xl border border-success-primary bg-success-primary p-6" role="status" aria-live="polite">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-success-solid">
+                                        <svg aria-hidden="true" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-success-primary">Prêt pour Google LFP</p>
+                                        <p className="mt-0.5 text-xs text-success-primary">
+                                            {readinessView.publishable !== null
+                                                ? `Vos ${readinessView.publishable} offres publiables dépassent le seuil et votre boutique est connectée à Google.`
+                                                : "Votre boutique est connectée à Google et le seuil d'offres publiables est atteint."}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {readinessView?.kind === "blocked" && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6">
+                                <p className="text-sm font-semibold text-primary">Bientôt prêt pour Google LFP</p>
+                                <p className="mt-1 text-xs text-tertiary">Voici ce qu'il reste à faire pour publier vos offres :</p>
+                                <ul className="mt-3 space-y-2">
+                                    {readinessView.blockers.map((b) => (
+                                        <li key={b.code} className="rounded-xl bg-secondary px-4 py-3">
+                                            <p className="text-xs font-medium text-primary">{b.label}</p>
+                                            {b.hint && <p className="mt-1 text-xs text-tertiary">{b.hint}</p>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
                         {/* Score de visibilité */}
                         <div className="rounded-2xl border border-secondary bg-primary p-6">
                             <div className="flex items-center justify-between">

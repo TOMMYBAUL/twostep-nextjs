@@ -5,6 +5,59 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-24 (run autonome) · PHASE E maillon 2 — surfacer la READINESS LFP dans l'UI (signal go-live)
+
+**Pourquoi (sourcing §6)** : candidat explicitement nommé en fin de l'entrée E1 (« Surfacer
+`lfp_feed_ready`/`blocked_only_by_image` (déjà dans l'API) dans l'UI = candidat suivant »). C'est le
+signal go-live n°1 de l'onboarding pilote : `GET /api/google/stats` CALCULE déjà la readiness LFP
+(`evaluateFeedReadiness` : seuil ≥11 offres publiables ATTEINT **ET** connecté → `lfp_feed_ready`) mais
+le marchand ne la VOYAIT pas — l'écran montrait un score % et un compte brut, jamais « il vous manque K
+offres pour être prêt pour Google LFP ». Construit côté serveur (readiness D-item) mais invisible.
+
+**Fait (vérifiable, code — le rendu visuel reste à Thomas, cap §1bis)** :
+- Helper PUR `deriveReadinessView` (`src/lib/google/dashboard-view.ts`) : mappe le MÊME payload
+  `/api/google/stats` vers une vue discriminée `hidden | ready | blocked`. **Ne RECALCULE pas** la
+  readiness côté client — `lfp_feed_ready` est le verdict serveur (anti-divergence, classe « source
+  unique » de LESSONS). `blocked` explicite chaque frein (ordre stable : offres → connexion) avec un
+  libellé actionnable + un hint `blocked_only_by_image` (« K produits ne manquent que d'une photo »).
+- `GoogleStatsData` étendu des champs readiness que l'API renvoie déjà (`lfp_feed_ready`,
+  `lfp_meets_offer_threshold`, `lfp_offer_shortfall`, `lfp_offers_threshold`, `google_connected`,
+  `blocked_only_by_image`).
+- Page `dashboard/google/page.tsx` : carte readiness en TÊTE du bloc stats (question d'onboarding n°1).
+  État `ready` (vert, `role="status"`) ; état `blocked` (`<ul>/<li>` des freins). `readinessView` réinit
+  sur déconnexion (pas de carte « prêt » fantôme).
+
+**Trouvé / corrigé** :
+- **0 bug d'origine** (l'API readiness était déjà durcie aux runs readiness/D3). 1 finding LOW de la revue
+  SF-hunter corrigé ce run : un verdict serveur incohérent (`lfp_feed_ready=true` + `eligible_google=0`)
+  aurait rendu « Vos **0** offres publiables dépassent le seuil » → `publishable: number | null`, sous-titre
+  sans compte quand absent (honnêteté d'affichage). Le seuil LFP=11 rend ce cas non atteignable hors bug
+  serveur, mais le fix est gratuit et aligné north-star.
+
+**Preuve** : `tests/lib/google/dashboard-view.test.ts` (+10, **857→867**) — readiness champ par champ :
+chargement échoué→hidden, catalogue vide→hidden (pas de double message), `lfp_feed_ready`→ready (+ cas
+incohérent `publishable:null`), sous-le-seuil+non-connecté→2 freins ordonnés, singulier « 1 offre » (jamais
+« 1 offres »), hint photo (+jamais « 0 produit »), seuil-atteint-mais-non-connecté→1 frein, garde défensive
+(feed_ready=false sans frein → liste jamais vide). **Rendu visuel/responsive = Thomas + `ui-journey.mjs`.**
+
+**Testé** : `npm run test:run` **857→867** vert ; `tsc --noEmit` OK. Revue **silent-failure-hunter** :
+**SOUND** sur les 6 concerns north-star (pas de faux « prêt » sur chargement échoué ; verdict serveur
+trusté, pas recalculé ; jamais de carte vide ; reset correct sur déconnexion ; pluriels OK), 1 LOW corrigé.
+0 migration, réversible.
+
+**Scorecard** : Preuve 7/10 (sortie d'état champ par champ sur données synthétiques ; pas de vrai marchand,
+rendu visuel non vu) · Sécu 8/10 (SF-hunter SOUND, verdict serveur trusté = pas de 2ᵉ logique divergente, 1
+LOW d'affichage clos) · Rev 10/10 (0 migration, `git revert` propre) · Scope 9/10 (1 helper + 1 écran + tests
+= 3 fichiers, additif) · Align 9/10 (surface LE signal go-live qui rend Deerskin onboardable — north-star
+direct). **tests 857→867 · 1 bug (LOW d'affichage, corrigé) · 3 fichiers · CFR 10 runs ≈ 80 % (8/10 ; 2 échecs
+ENV exit=1 au 16:17/16:47, dont un startup 0-cost = probable rate-limit/Norton, §7).**
+
+**Reste / questions** : Phase E maillons suivants (écran import/ingest stock, review enrichissement,
+onboarding) = prochains runs, même méthode (helper pur + tests, rendu à Thomas). Passe VISUELLE/responsive
+de cet écran (carte readiness incluse) = Thomas + `ui-journey.mjs`.
+
+---
+
 ## 2026-06-24 (run autonome) · PHASE E maillon 1 — UI honnête de l'écran Google (vue % publiable + connexion)
 
 **Pourquoi (sourcing §6)** : Thomas a ajouté **PHASE E** hier (commit `5319123`, 2026-06-24) = nouvelle mission

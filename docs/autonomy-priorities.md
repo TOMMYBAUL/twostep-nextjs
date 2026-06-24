@@ -110,6 +110,15 @@ plus un mur Google externe.
 >      (`res.ok` non vérifié → bouton mort / faux « déconnecté », revue SF-hunter). ARIA (progressbar/status/alert/ul-li).
 >      Preuve `tests/lib/google/dashboard-view.test.ts` (+14, 843→857). Revue SF-hunter SOUND. 0 migration, réversible.
 >      **Reste = passe VISUELLE/responsive (Thomas + `ui-journey.mjs`)** + surfacer `lfp_feed_ready` dans l'UI (suivant).
+>    - ✅ **E2 — surfacer la READINESS LFP dans l'UI (signal go-live) FAIT (2026-06-24)** : `/api/google/stats` CALCULAIT
+>      déjà la readiness (`lfp_feed_ready` = seuil ≥11 offres publiables ATTEINT ET connecté, via `evaluateFeedReadiness`)
+>      mais le marchand ne la VOYAIT pas. Helper pur `deriveReadinessView` (`dashboard-view.ts`, vue `hidden|ready|blocked`)
+>      qui **ne recalcule pas** le verdict (trust `lfp_feed_ready` = anti-divergence) → carte en tête de l'écran Google :
+>      « Prêt pour Google LFP » (vert, `role="status"`) ou « Bientôt prêt » avec les freins ordonnés (offres → connexion) +
+>      hint `blocked_only_by_image` (« K produits ne manquent que d'une photo »). 1 LOW d'affichage corrigé (verdict
+>      incohérent `ready`+`eligible_google=0` → `publishable:null`, jamais « Vos 0 offres dépassent le seuil »). Preuve
+>      `dashboard-view.test.ts` (+10, **857→867**). Revue SF-hunter **SOUND** (6 concerns north-star). 0 migration, réversible.
+>      **Reste = rendu VISUEL/responsive (Thomas + `ui-journey.mjs`)** + maillons E suivants (import/ingest, review enrichissement, onboarding).
 >    - **LA BOUCLE FAIT (vérifiable, code)** : pour chaque maillon (import/ingest stock, vue % publiable,
 >      shadow/preview via `feed-preview`, review enrichissement, connexion Google, onboarding) → **états
 >      vides** (« aucun produit — connecte ta caisse »), **chargement**, **erreurs + validation claires**,

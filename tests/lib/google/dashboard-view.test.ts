@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
     deriveStatsView,
     deriveConnectionView,
+    deriveReadinessView,
     type GoogleStatsData,
     type GoogleConnectionData,
 } from "@/lib/google/dashboard-view";
@@ -13,6 +14,12 @@ const baseStats: GoogleStatsData = {
     missing_photo: 0,
     missing_price: 0,
     score: 75,
+    blocked_only_by_image: 0,
+    lfp_offers_threshold: 11,
+    lfp_meets_offer_threshold: false,
+    lfp_offer_shortfall: 2,
+    google_connected: false,
+    lfp_feed_ready: false,
 };
 
 const baseConnection: GoogleConnectionData = {
@@ -78,6 +85,81 @@ describe("deriveStatsView — suggestions actionnables", () => {
     it("compteur à 0 → pas de suggestion (jamais « +0 »)", () => {
         const view = deriveStatsView({ ok: true, stats: { ...baseStats, missing_photo: 0, missing_price: 0 } });
         expect(view.kind === "stats" && view.suggestions).toEqual([]);
+    });
+});
+
+describe("deriveReadinessView — signal go-live LFP (verdict serveur, pas recalculé client)", () => {
+    it("chargement échoué → hidden (l'état error est rendu par deriveStatsView)", () => {
+        expect(deriveReadinessView({ ok: false, stats: null })).toEqual({ kind: "hidden" });
+        expect(deriveReadinessView({ ok: true, stats: null })).toEqual({ kind: "hidden" });
+    });
+
+    it("catalogue vide → hidden (pas de double message avec le CTA import)", () => {
+        const view = deriveReadinessView({ ok: true, stats: { ...baseStats, total_visible: 0 } });
+        expect(view).toEqual({ kind: "hidden" });
+    });
+
+    it("lfp_feed_ready=true → ready avec le nombre d'offres publiables", () => {
+        const view = deriveReadinessView({
+            ok: true,
+            stats: { ...baseStats, lfp_feed_ready: true, lfp_meets_offer_threshold: true, google_connected: true, eligible_google: 14 },
+        });
+        expect(view).toEqual({ kind: "ready", publishable: 14 });
+    });
+
+    it("lfp_feed_ready=true mais eligible_google incohérent (0) → publishable null (jamais « 0 offres »)", () => {
+        const view = deriveReadinessView({
+            ok: true,
+            stats: { ...baseStats, lfp_feed_ready: true, lfp_meets_offer_threshold: true, google_connected: true, eligible_google: 0 },
+        });
+        expect(view).toEqual({ kind: "ready", publishable: null });
+    });
+
+    it("sous le seuil + non connecté → blocked, freins dans l'ordre (offres puis connexion)", () => {
+        const view = deriveReadinessView({ ok: true, stats: { ...baseStats, lfp_offer_shortfall: 2 } });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers.map((b) => b.code)).toEqual(["below_offer_threshold", "google_not_connected"]);
+        expect(view.blockers[0].label).toContain("2 offres publiables");
+        expect(view.blockers[0].label).toContain("11");
+    });
+
+    it("manque 1 offre → libellé au singulier (jamais « 1 offres »)", () => {
+        const view = deriveReadinessView({ ok: true, stats: { ...baseStats, lfp_offer_shortfall: 1 } });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers[0].label).toContain("1 offre publiable");
+        expect(view.blockers[0].label).not.toContain("1 offres");
+    });
+
+    it("blocked_only_by_image>0 → hint actionnable « ne manque que d'une photo »", () => {
+        const view = deriveReadinessView({ ok: true, stats: { ...baseStats, blocked_only_by_image: 3 } });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers[0].hint).toContain("3 produits");
+        expect(view.blockers[0].hint).toContain("photo");
+    });
+
+    it("blocked_only_by_image=0 → pas de hint (jamais « 0 produit »)", () => {
+        const view = deriveReadinessView({ ok: true, stats: { ...baseStats, blocked_only_by_image: 0 } });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers[0].hint).toBeUndefined();
+    });
+
+    it("seuil atteint mais NON connecté → seul frein = connexion", () => {
+        const view = deriveReadinessView({
+            ok: true,
+            stats: { ...baseStats, lfp_meets_offer_threshold: true, lfp_offer_shortfall: 0, google_connected: false },
+        });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers.map((b) => b.code)).toEqual(["google_not_connected"]);
+    });
+
+    it("garde défensive : feed_ready=false sans frein identifié → ne renvoie jamais une liste vide", () => {
+        // Contrat serveur incohérent (feed_ready=false alors que seuil ATTEINT ET connecté).
+        const view = deriveReadinessView({
+            ok: true,
+            stats: { ...baseStats, lfp_meets_offer_threshold: true, lfp_offer_shortfall: 0, google_connected: true, lfp_feed_ready: false },
+        });
+        if (view.kind !== "blocked") throw new Error("expected blocked");
+        expect(view.blockers.length).toBeGreaterThan(0);
     });
 });
 

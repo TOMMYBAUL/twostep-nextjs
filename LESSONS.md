@@ -175,6 +175,19 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   suffit PAS — grep les `fetch` des handlers d'action du même composant, ils ont la même obligation `res.ok`.**
   (Phase E, 2026-06-24)
 
+## UI client — afficher un VERDICT serveur, ne pas le recalculer (Phase E, readiness LFP)
+- ✅ **Surfacer dans l'UI un verdict DÉJÀ calculé serveur = mapper, jamais recalculer.** `/api/google/stats`
+  renvoyait `lfp_feed_ready` (readiness LFP : seuil ≥11 offres ATTEINT ET connecté, via `evaluateFeedReadiness`)
+  mais l'écran ne l'affichait pas. Helper pur `deriveReadinessView` (`dashboard-view.ts`) TRUST `lfp_feed_ready`
+  pour la décision prêt/pas-prêt (pas de 2ᵉ logique de readiness côté client = anti-divergence, classe « source
+  unique » store_code/honestSalePrice) ; il ne fait que mapper le verdict + les compteurs (`lfp_offer_shortfall`,
+  `blocked_only_by_image`) vers des freins actionnables ordonnés. **Règle : un client qui affiche un go/no-go
+  serveur doit consommer le booléen serveur, pas réimplémenter le calcul — sinon les deux divergent au flip.**
+- ❌ **Un verdict `ready` + un compteur incohérent rend un sous-titre absurde.** `lfp_feed_ready=true` mais
+  `eligible_google=0` (drift serveur) aurait affiché « Vos 0 offres publiables dépassent le seuil ». Fix :
+  `publishable: number | null`, omettre le compte du sous-titre quand absent. Le verdict reste trusté (pas un
+  faux positif) ; seul le COMPTE devient honnête. (Phase E, dashboard/google, 2026-06-24, SF-hunter SOUND)
+
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
   `invoices/[id]/validate` (facture = marchandise reçue) : `const { data: currentStock } = …` puis
