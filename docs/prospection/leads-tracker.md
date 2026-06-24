@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-23 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-24 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,16 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mardi — 2026-06-24 (L'Eclaireur) — Saint-Etienne ÉPUISÉ — aucune action possible
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi)
+
+**Note de session :** Saint-Etienne ÉPUISÉ DÉFINITIF confirmé (27/27 prospects traités, dernière vérification 23/06). Aucun nouveau prospect à traiter. Tous les 208 prospects du fichier top-prospects-centre.json sont épuisés digitalement. Notion MCP indisponible (idem toutes sessions). **⚠️ ACTION REQUISE THOMAS : planifier tournées terrain — Saint-Etienne prioritaire (TIABEL 41 rue Croix Baragnon, JAILLET 28 rue CB, L'ESPION 21B rue CB). Débloquer Gmail OAuth pour les 5 emails prêts à envoyer. Sans nouvelles données terrain, les agents ne peuvent plus générer de leads digitaux.**
+
+*Notion MCP indisponible. Cible : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c.*
+
+---
 
 ### Rattrapage mardi — 2026-06-23 (L'Eclaireur) — Saint-Etienne épuisé, 0 email trouvé + 2 nouvelles écartées
 
