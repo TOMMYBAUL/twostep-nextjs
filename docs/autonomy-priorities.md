@@ -119,6 +119,19 @@ plus un mur Google externe.
 >      incohérent `ready`+`eligible_google=0` → `publishable:null`, jamais « Vos 0 offres dépassent le seuil »). Preuve
 >      `dashboard-view.test.ts` (+10, **857→867**). Revue SF-hunter **SOUND** (6 concerns north-star). 0 migration, réversible.
 >      **Reste = rendu VISUEL/responsive (Thomas + `ui-journey.mjs`)** + maillons E suivants (import/ingest, review enrichissement, onboarding).
+>    - ✅ **E3 — écran « Mon stock » (import/ingest, pilier 1) honnête au CHARGEMENT FAIT (2026-06-25)** : même classe
+>      d'honnêteté que E1, sur l'écran d'entrée du marchand pilote. `MyStockView` consommait `useProducts()` SANS lire
+>      son champ `error` → un 500/blip DB sur `GET /api/products` → `products=[]` + `loading=false` → l'écran rendait
+>      l'EmptyState « Aucun produit encore — Ajoutez votre premier produit » = **faux cul-de-sac** (un marchand qui
+>      vient d'importer des milliers de SKU voit « 0 produit » et ré-importe en panique). Helper PUR `deriveStockListView`
+>      (`src/lib/stock/stock-list-view.ts`, vue `loading|error|list|empty|no-results`) → branche `error` honnête
+>      (`role="alert"` + Réessayer), jamais d'EmptyState sur load raté. **+1 MEDIUM pré-existant fermé (revue SF-hunter,
+>      même écran/même classe)** : `useIncompleteProducts` avalait son `error` (`catch{}`) → sur échec, compteur « à
+>      compléter » silencieusement 0 + pastille absente (marchand avec N fiches ne voit AUCUN signal) ; fix : expose
+>      `error` (motif `useProducts`) + notice honnête « à compléter : impossible à charger ». Preuve `tests/lib/stock/
+>      stock-list-view.test.ts` (+8, **867→875**, dont la RÉGRESSION load-échoué→error≠empty). Revue SF-hunter **SOUND**
+>      (mapping cycle de vie correct, ferme le faux-OK principal + le secondaire, Réessayer sûr). 0 migration, réversible.
+>      **Reste = rendu VISUEL/responsive (Thomas + `ui-journey.mjs`)** + maillons E suivants (review enrichissement, onboarding).
 >    - **LA BOUCLE FAIT (vérifiable, code)** : pour chaque maillon (import/ingest stock, vue % publiable,
 >      shadow/preview via `feed-preview`, review enrichissement, connexion Google, onboarding) → **états
 >      vides** (« aucun produit — connecte ta caisse »), **chargement**, **erreurs + validation claires**,

@@ -15,6 +15,7 @@ import { useToast } from "@/components/dashboard/toast";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useProducts } from "@/hooks/use-products";
 import { useIncompleteProducts } from "@/hooks/use-incomplete-products";
+import { deriveStockListView } from "@/lib/stock/stock-list-view";
 
 type StockFilter = "all" | "ruptures" | "incomplete" | { kind: "category"; value: string };
 
@@ -25,8 +26,8 @@ function isCategoryFilter(f: StockFilter): f is { kind: "category"; value: strin
 export function MyStockView() {
     const router = useRouter();
     const { merchant } = useMerchant();
-    const { products, loading, updateStock, refetch: refetchProducts } = useProducts(merchant?.id);
-    const { products: incompleteProducts, count: incompleteCount, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
+    const { products, loading, error: loadError, updateStock, refetch: refetchProducts } = useProducts(merchant?.id);
+    const { products: incompleteProducts, count: incompleteCount, error: incompleteError, refetch: refetchIncomplete } = useIncompleteProducts(merchant?.id);
     const { toast } = useToast();
     const [search, setSearch] = useState("");
     const [activeFilter, setActiveFilter] = useState<StockFilter>("all");
@@ -228,6 +229,16 @@ export function MyStockView() {
 
     const filtered = products.filter((p) => searchMatches(p) && filterMatches(p));
 
+    // Vue honnête de la liste : un échec de chargement (`loadError`) ne doit pas se
+    // déguiser en « catalogue vide » (faux cul-de-sac → re-import en panique). Cf.
+    // src/lib/stock/stock-list-view.ts (Phase E, même classe que l'écran Google E1).
+    const listView = deriveStockListView({
+        loading,
+        loadFailed: loadError !== null,
+        filteredCount: filtered.length,
+        hasSearch: search !== "",
+    });
+
     const hasPOS = !!merchant?.pos_type;
     const totalProducts = products.length;
     const inStock = products.filter((p) => getQty(p) > 0).length;
@@ -314,6 +325,14 @@ export function MyStockView() {
                             <span className="font-semibold text-warning-primary">{incompleteCount}</span> à compléter
                         </>
                     )}
+                    {/* Honnêteté : si le chargement des « à compléter » a échoué, le DIRE plutôt
+                        que d'afficher un « 0 à compléter » silencieux (pastille absente). */}
+                    {incompleteError && incompleteCount === 0 && (
+                        <>
+                            {" · "}
+                            <span className="font-semibold text-warning-primary">à compléter : impossible à charger</span>
+                        </>
+                    )}
                 </p>
 
                 <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
@@ -376,13 +395,29 @@ export function MyStockView() {
                     </div>
 
                     {/* Product list */}
-                    {loading ? (
+                    {listView.kind === "loading" ? (
                         <div className="flex flex-col gap-1.5">
                             {[...Array(5)].map((_, i) => (
                                 <div key={i} className="animate-pulse rounded-xl bg-primary px-4 py-5" />
                             ))}
                         </div>
-                    ) : filtered.length === 0 && search === "" ? (
+                    ) : listView.kind === "error" ? (
+                        // Chargement échoué : on le DIT (pas un faux « catalogue vide ») + Réessayer.
+                        <div role="alert" className="rounded-xl bg-error-secondary px-5 py-6 text-center">
+                            <p className="text-2xl" aria-hidden="true">⚠️</p>
+                            <p className="mt-1 text-sm font-semibold text-error-primary">Impossible de charger votre stock</p>
+                            <p className="mt-0.5 text-xs text-error-primary">
+                                Vos produits sont bien là — c'est l'affichage qui a échoué. Réessayez dans un instant.
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => { refetchProducts(); }}
+                                className="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-solid px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-solid_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                            >
+                                Réessayer
+                            </button>
+                        </div>
+                    ) : listView.kind === "empty" ? (
                         <EmptyState
                             icon="📦"
                             title="Aucun produit encore"
@@ -393,7 +428,7 @@ export function MyStockView() {
                                 </Link>
                             }
                         />
-                    ) : filtered.length === 0 ? (
+                    ) : listView.kind === "no-results" ? (
                         <p className="py-8 text-center text-sm text-tertiary">Aucun résultat pour &quot;{search}&quot;</p>
                     ) : (
                         <div className="flex flex-col gap-1.5">

@@ -175,6 +175,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   suffit PAS — grep les `fetch` des handlers d'action du même composant, ils ont la même obligation `res.ok`.**
   (Phase E, 2026-06-24)
 
+## UI client — un composant qui JETTE le champ `error` de son hook = faux « vide » (Phase E, écran Mon stock)
+- ❌ **Un hook expose `error` (correctement) mais le composant ne le destructure pas → l'échec de chargement
+  devient un faux état vide.** `MyStockView` consommait `useProducts()` en ne prenant que `{products, loading,
+  refetch}` — `error` JETÉ → un 500/blip sur `GET /api/products` → `products=[]`, `loading=false` → EmptyState
+  « Aucun produit encore » = faux cul-de-sac (marchand panique, ré-importe). Même classe que E1 (écran Google) mais
+  la perte est en AVAL du hook : le hook fait bien son travail, c'est le CONSOMMATEUR qui avale. **Règle : quand un
+  hook de chargement expose `error`, grep ses CONSOMMATEURS — un composant qui ne lit pas `error` rend un faux vide
+  sur échec.** Fix : helper pur `deriveStockListView` (loading>error>list>no-results>empty) + branche error honnête
+  (`role="alert"`+Réessayer). Ordre loading>error OK car `useProducts` remet `error=null` au début du fetch.
+- ❌ **Jumeau du même écran qui avale TOUT (`catch{}`) → signal disparu en silence.** `useIncompleteProducts`
+  (`catch { /* ignore */ }`, set produits seulement sur `res.ok`) → sur échec, `count=0` muet → la pastille « À
+  compléter » (gated `count>0`) absente → marchand avec N fiches ne voit AUCUN signal. Fix : exposer `error` (motif
+  `useProducts`) + notice « à compléter : impossible à charger » au lieu d'un 0 silencieux. **Règle : grep les hooks
+  de chargement JUMEAUX du même écran — celui qui `catch{}` sans exposer l'erreur est le trou.** (Phase E, my-stock-view, 2026-06-25, SF-hunter SOUND)
+
 ## UI client — afficher un VERDICT serveur, ne pas le recalculer (Phase E, readiness LFP)
 - ✅ **Surfacer dans l'UI un verdict DÉJÀ calculé serveur = mapper, jamais recalculer.** `/api/google/stats`
   renvoyait `lfp_feed_ready` (readiness LFP : seuil ≥11 offres ATTEINT ET connecté, via `evaluateFeedReadiness`)

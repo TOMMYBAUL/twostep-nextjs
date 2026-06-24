@@ -5,6 +5,57 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-25 (run autonome) · PHASE E maillon 3 — écran « Mon stock » (import/ingest, pilier 1) honnête au chargement
+
+**Pourquoi (sourcing §6)** : maillon E explicitement nommé en fin de l'entrée E2 (« écran import/ingest stock »
+= prochain). C'est le pilier 1 du north-star (capter le stock) ET l'écran d'ENTRÉE du marchand pilote
+(`/dashboard/stock/mon-stock`). En le lisant j'ai trouvé le MÊME motif d'honnêteté que E1 (faux « tout va bien »),
+non corrigé : `MyStockView` consommait `useProducts(merchant?.id)` mais **jetait son champ `error`** (destructurait
+seulement `{products, loading, updateStock, refetch}`). Le hook capture pourtant bien l'erreur. Résultat : un
+échec de `GET /api/products` (500/blip DB) → `products=[]`, `loading=false` → l'écran rendait l'EmptyState
+« Aucun produit encore — Ajoutez votre premier produit » = **faux cul-de-sac** : un marchand qui vient d'importer
+des milliers de SKU voit « 0 produit » et ré-importe en panique (ou croit l'app cassée).
+
+**Fait (vérifiable, code — rendu visuel reste à Thomas, cap §1bis)** :
+- Helper PUR `deriveStockListView` (`src/lib/stock/stock-list-view.ts`) : mappe l'état brut
+  (`{loading, loadFailed, filteredCount, hasSearch}`) → vue discriminée `loading | error | list | empty | no-results`.
+  Ordre : `loading > error > list > no-results > empty` (cohérent avec le cycle de vie de `useProducts`, qui remet
+  `error=null` au début de chaque fetch → pas d'erreur périmée pendant un refetch).
+- `my-stock-view.tsx` : destructure `error: loadError`, calcule `listView`, et remplace le bloc de rendu
+  `loading ? … : filtered===0&&search==="" ? EmptyState : …` par un switch sur `listView.kind` AJOUTANT une branche
+  `error` honnête (`role="alert"` + « Impossible de charger votre stock — vos produits sont bien là » + bouton
+  Réessayer → `refetchProducts()`). Sémantique empty/no-results préservée à l'identique (pas de changement visuel
+  hors la nouvelle branche error).
+
+**Trouvé / corrigé (revue SF-hunter)** :
+- Diff **SOUND** : ferme le faux-OK principal, n'introduit aucune perte/masquage ; mapping cycle de vie correct ;
+  bouton Réessayer sûr.
+- **+1 MEDIUM pré-existant fermé (même écran, même classe north-star)** : `useIncompleteProducts` avalait TOUT
+  (`catch { /* ignore */ }`, set produits uniquement sur `res.ok`) → sur échec, `count=0` silencieux → le segment
+  « N à compléter » disparaît + la pastille « À compléter » (gated `count>0`) absente → un marchand avec N fiches à
+  compléter ne voit AUCUN signal. Fix : le hook expose `error` (motif `useProducts`, throw sur `!res.ok`/catch →
+  setError) ; `MyStockView` rend une notice honnête « à compléter : impossible à charger » au lieu d'un 0 muet.
+
+**Preuve** : `tests/lib/stock/stock-list-view.test.ts` (+8, **867→875**) — vue champ par champ : loading→loading,
+loading prime sur loadFailed (refetch), **RÉGRESSION load-échoué+0-produit→error (jamais le faux « catalogue vide »)**,
+error prime même avec recherche active, OK+produits→list, OK+0+recherche-vide→empty, OK+0+recherche→no-results,
+OK+produits+recherche→list.
+
+**Testé** : `npm run test:run` **867→875** vert ; `tsc --noEmit` OK. Revue **silent-failure-hunter** : **SOUND**
+(0 silent-failure introduit ; faux-OK principal ET secondaire fermés). 0 migration, réversible.
+
+**Scorecard** : Preuve 7/10 (sortie d'état champ par champ sur données synthétiques ; rendu visuel non vu, pas de
+vrai marchand) · Sécu 8/10 (SF-hunter SOUND, 2 faux-OK d'affichage fermés sur le même écran, 0 introduit) · Rev
+10/10 (0 migration, `git revert` propre) · Scope 9/10 (1 helper + 1 hook + 1 écran + tests = 4 fichiers, 1 écran,
+1 concern) · Align 9/10 (honnêteté de l'écran d'ENTRÉE du marchand pilote = pilier 1 north-star, anti-panique-réimport).
+**tests 867→875 · 2 bugs réels (1 du run + 1 MEDIUM pré-existant adjacent) · 4 fichiers · CFR 10 runs ≈ 80-90 %.**
+
+**Reste / questions** : maillons E suivants (review enrichissement `stock/review`, onboarding wizard) = prochains
+runs, même méthode (helper pur + tests, rendu à Thomas). Passe VISUELLE/responsive de l'écran Mon stock (branche
+error + notice incl.) = Thomas + `ui-journey.mjs`.
+
+---
+
 ## 2026-06-24 (run autonome) · PHASE E maillon 2 — surfacer la READINESS LFP dans l'UI (signal go-live)
 
 **Pourquoi (sourcing §6)** : candidat explicitement nommé en fin de l'entrée E1 (« Surfacer
