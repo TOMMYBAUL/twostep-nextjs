@@ -1,82 +1,105 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
 import { PageHeader } from "@/components/dashboard/page-header";
-
-type GoogleConnection = {
-    google_merchant_id: string;
-    products_pushed: number;
-    last_feed_at: string | null;
-    last_feed_status: string;
-    last_feed_error: string | null;
-    store_code: string;
-};
-
-type GoogleStats = {
-    total_visible: number;
-    eligible_google: number;
-    missing_ean: number;
-    missing_photo: number;
-    missing_price: number;
-    score: number;
-};
+import {
+    deriveStatsView,
+    deriveConnectionView,
+    type StatsView,
+    type ConnectionView,
+    type GoogleStatsData,
+    type GoogleConnectionData,
+} from "@/lib/google/dashboard-view";
 
 export default function GooglePage() {
-    const { merchant } = useMerchant();
-    const [connection, setConnection] = useState<GoogleConnection | null>(null);
-    const [stats, setStats] = useState<GoogleStats | null>(null);
+    const { merchant, loading: merchantLoading, error: merchantError } = useMerchant();
+    const [statsView, setStatsView] = useState<StatsView | null>(null);
+    const [connectionView, setConnectionView] = useState<ConnectionView | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
     const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+    // Erreur d'ACTION (connecter/déconnecter) affichée à côté du bouton — ne pas avaler
+    // un échec en silence (le bouton paraîtrait cassé / un faux « déconnecté »).
+    const [actionError, setActionError] = useState<string | null>(null);
+
+    const loadData = useCallback(async (merchantId: string) => {
+        setLoading(true);
+        const supabase = createClient();
+
+        // On GARDE l'error : un blip de lecture ≠ « pas connecté » (cf. deriveConnectionView).
+        const connLoad = (async (): Promise<{ error: boolean; connection: GoogleConnectionData | null }> => {
+            try {
+                const { data, error } = await supabase
+                    .from("google_merchant_connections")
+                    .select("google_merchant_id, products_pushed, last_feed_at, last_feed_status, last_feed_error, store_code")
+                    .eq("merchant_id", merchantId)
+                    .maybeSingle();
+                return { error: !!error, connection: (data as GoogleConnectionData | null) ?? null };
+            } catch {
+                return { error: true, connection: null };
+            }
+        })();
+
+        // On respecte le statut HTTP : un 500 `{error}` ne doit PAS passer pour un état vide.
+        const statsLoad = (async (): Promise<{ ok: boolean; stats: GoogleStatsData | null }> => {
+            try {
+                const r = await fetch("/api/google/stats");
+                const body = r.ok ? ((await r.json()) as GoogleStatsData & { error?: string }) : null;
+                const ok = r.ok && !!body && !body.error;
+                return { ok, stats: ok ? body : null };
+            } catch {
+                return { ok: false, stats: null };
+            }
+        })();
+
+        const [conn, stats] = await Promise.all([connLoad, statsLoad]);
+        setConnectionView(deriveConnectionView(conn));
+        setStatsView(deriveStatsView(stats));
+        setLoading(false);
+    }, []);
 
     useEffect(() => {
         if (!merchant?.id) return;
-
-        const supabase = createClient();
-
-        // Load connection + stats in parallel
-        Promise.all([
-            supabase
-                .from("google_merchant_connections")
-                .select("google_merchant_id, products_pushed, last_feed_at, last_feed_status, last_feed_error, store_code")
-                .eq("merchant_id", merchant.id)
-                .maybeSingle()
-                .then(({ data }: { data: GoogleConnection | null }) => data),
-            fetch("/api/google/stats").then((r) => r.json()),
-        ]).then(([conn, statsData]) => {
-            setConnection(conn);
-            if (!statsData.error) setStats(statsData);
-            setLoading(false);
-        }).catch(() => {
-            setLoading(false);
-        });
-    }, [merchant?.id]);
+        void loadData(merchant.id);
+    }, [merchant?.id, loadData]);
 
     async function handleConnect() {
+        setActionError(null);
         try {
             const res = await fetch("/api/google/auth");
-            const { auth_url } = await res.json();
-            if (auth_url) window.location.href = auth_url;
+            const body = res.ok ? await res.json().catch(() => null) : null;
+            const authUrl = body?.auth_url as string | undefined;
+            // res.ok manquant OU pas d'auth_url = échec : le DIRE, ne pas laisser un bouton mort.
+            if (!res.ok || !authUrl) {
+                setActionError("Impossible d'ouvrir la connexion Google. Réessayez dans un instant.");
+                return;
+            }
+            window.location.href = authUrl;
         } catch {
-            setConnection(null);
+            // Échec réseau : ne pas corrompre l'état affiché, mais le signaler.
+            setActionError("Impossible d'ouvrir la connexion Google. Vérifiez votre connexion.");
         }
     }
 
     async function handleDisconnect() {
-        if (!confirmDisconnect) {
-            setConfirmDisconnect(true);
-            return;
-        }
         setConfirmDisconnect(false);
         setDisconnecting(true);
+        setActionError(null);
         try {
-            await fetch("/api/google/disconnect", { method: "POST" });
-            setConnection(null);
-            setStats(null);
+            const res = await fetch("/api/google/disconnect", { method: "POST" });
+            // Un 500 ne doit PAS afficher « déconnecté » alors que la connexion existe encore en base.
+            if (!res.ok) {
+                setActionError("La déconnexion a échoué. Vos produits sont toujours connectés à Google.");
+                return;
+            }
+            setConnectionView({ kind: "disconnected" });
+            setStatsView(null);
         } catch {
             // keep current state on failure
+            setActionError("La déconnexion a échoué. Vos produits sont toujours connectés à Google.");
         } finally {
             setDisconnecting(false);
         }
@@ -91,20 +114,38 @@ export default function GooglePage() {
         return `il y a ${days}j`;
     }
 
-    if (loading) {
+    // Chargement (profil marchand OU données Google) — annoncé aux lecteurs d'écran.
+    if (merchantLoading || (merchant?.id && loading)) {
         return (
             <>
                 <PageHeader title="Google" storeName={merchant?.name} />
-                <div className="mt-8 text-center text-sm text-tertiary">Chargement...</div>
+                <div className="mt-8 text-center text-sm text-tertiary" role="status" aria-live="polite">
+                    Chargement…
+                </div>
             </>
         );
     }
 
-    const suggestions: Array<{ count: number; label: string; colorClass: string }> = [];
-    if (stats) {
-        if (stats.missing_photo > 0) suggestions.push({ count: stats.missing_photo, label: "produits sans photo — ajoutez une photo pour les rendre visibles", colorClass: "text-warning-primary" });
-        if (stats.missing_ean > 0) suggestions.push({ count: stats.missing_ean, label: "produits sans code-barres — complétez-les dans votre caisse", colorClass: "text-error-primary" });
-        if (stats.missing_price > 0) suggestions.push({ count: stats.missing_price, label: "produits sans prix — ajoutez un prix pour les rendre visibles", colorClass: "text-warning-primary" });
+    // Profil marchand introuvable / en erreur → état honnête avec porte de sortie (pas de spinner infini).
+    if (merchantError || !merchant?.id) {
+        return (
+            <>
+                <PageHeader title="Google" storeName={merchant?.name} />
+                <div className="mx-auto mt-6 max-w-lg rounded-2xl border border-secondary bg-primary p-8 text-center" role="alert">
+                    <h2 className="text-lg font-semibold text-primary">Profil boutique indisponible</h2>
+                    <p className="mt-2 text-sm text-tertiary">
+                        Impossible de charger votre boutique pour le moment. Vérifiez votre connexion puis réessayez.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => window.location.reload()}
+                        className="mt-6 rounded-xl bg-brand-solid px-6 py-3 min-h-[44px] text-sm font-medium text-white transition hover:bg-brand-solid_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                    >
+                        Réessayer
+                    </button>
+                </div>
+            </>
+        );
     }
 
     return (
@@ -112,48 +153,99 @@ export default function GooglePage() {
             <PageHeader title="Google" storeName={merchant?.name} />
 
             <div className="mx-auto mt-6 max-w-lg space-y-4">
-                {/* Score de visibilité — toujours visible */}
-                {stats && stats.total_visible > 0 && (
-                    <div className="rounded-2xl border border-secondary bg-primary p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-tertiary">Visibilité Google</p>
-                                <p className="mt-0.5 text-xs text-tertiary">
-                                    {stats.eligible_google} / {stats.total_visible} produits éligibles
-                                </p>
-                            </div>
-                            <p className={`text-3xl font-bold ${stats.score >= 70 ? "text-success-primary" : stats.score >= 40 ? "text-warning-primary" : "text-error-primary"}`}>
-                                {stats.score}%
-                            </p>
-                        </div>
-                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
-                            <div
-                                className={`h-full rounded-full transition-all duration-500 ${stats.score >= 70 ? "bg-success-solid" : stats.score >= 40 ? "bg-warning-solid" : "bg-error-solid"}`}
-                                style={{ width: `${stats.score}%` }}
-                            />
-                        </div>
+                {/* Section visibilité : score, vide (guidage import), ou erreur de chargement honnête. */}
+                {statsView?.kind === "error" && (
+                    <div className="rounded-2xl border border-secondary bg-primary p-6 text-center" role="alert">
+                        <p className="text-sm font-semibold text-primary">Impossible de charger votre visibilité Google</p>
+                        <p className="mt-1 text-xs text-tertiary">Une erreur est survenue. Vos produits ne sont pas affectés.</p>
+                        <button
+                            type="button"
+                            onClick={() => merchant?.id && loadData(merchant.id)}
+                            className="mt-4 rounded-xl border border-secondary px-4 py-2.5 min-h-[44px] text-sm font-medium text-secondary transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            Réessayer
+                        </button>
                     </div>
                 )}
 
-                {/* Suggestions */}
-                {suggestions.length > 0 && (
-                    <div className="rounded-2xl border border-secondary bg-primary p-6">
-                        <p className="mb-3 text-sm font-semibold text-primary">Suggestions</p>
-                        <div className="space-y-2">
-                            {suggestions.map((s, i) => (
-                                <div key={i} className="rounded-xl bg-warning-secondary px-4 py-3">
-                                    <p className="text-xs text-primary">
-                                        <span className={`font-bold ${s.colorClass}`}>+{s.count}</span>{" "}
-                                        {s.label}
+                {statsView?.kind === "empty" && (
+                    <div className="rounded-2xl border border-secondary bg-primary p-8 text-center">
+                        <h2 className="text-lg font-semibold text-primary">Aucun produit visible pour l'instant</h2>
+                        <p className="mt-2 text-sm text-tertiary">
+                            Importez votre stock pour rendre vos produits visibles sur Google Shopping et Google Maps.
+                        </p>
+                        <Link
+                            href="/dashboard/stock"
+                            className="mt-6 inline-flex items-center justify-center rounded-xl bg-brand-solid px-6 py-3 min-h-[44px] text-sm font-medium text-white transition hover:bg-brand-solid_hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            Importer mon stock
+                        </Link>
+                    </div>
+                )}
+
+                {statsView?.kind === "stats" && (
+                    <>
+                        {/* Score de visibilité */}
+                        <div className="rounded-2xl border border-secondary bg-primary p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-tertiary">Visibilité Google</p>
+                                    <p className="mt-0.5 text-xs text-tertiary">
+                                        {statsView.eligible} / {statsView.total} produits éligibles
                                     </p>
                                 </div>
-                            ))}
+                                <p className={`text-3xl font-bold ${statsView.score >= 70 ? "text-success-primary" : statsView.score >= 40 ? "text-warning-primary" : "text-error-primary"}`}>
+                                    {statsView.score}%
+                                </p>
+                            </div>
+                            <div
+                                className="mt-3 h-2 overflow-hidden rounded-full bg-secondary"
+                                role="progressbar"
+                                aria-valuenow={statsView.score}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                                aria-label={`Score de visibilité Google : ${statsView.score} %`}
+                            >
+                                <div
+                                    className={`h-full rounded-full transition-all duration-500 ${statsView.score >= 70 ? "bg-success-solid" : statsView.score >= 40 ? "bg-warning-solid" : "bg-error-solid"}`}
+                                    style={{ width: `${statsView.score}%` }}
+                                />
+                            </div>
                         </div>
-                    </div>
+
+                        {/* Suggestions actionnables */}
+                        {statsView.suggestions.length > 0 && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6">
+                                <p className="mb-3 text-sm font-semibold text-primary">Suggestions</p>
+                                <ul className="space-y-2">
+                                    {statsView.suggestions.map((s, i) => (
+                                        <li key={i} className="rounded-xl bg-warning-secondary px-4 py-3">
+                                            <p className="text-xs text-primary">
+                                                <span className={`font-bold ${s.tone === "error" ? "text-error-primary" : "text-warning-primary"}`}>+{s.count}</span>{" "}
+                                                {s.label}
+                                            </p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </>
                 )}
 
-                {/* Connexion Google */}
-                {!connection ? (
+                {/* Section connexion Google : erreur de lecture, déconnecté, ou connecté. */}
+                {connectionView?.kind === "error" ? (
+                    <div className="rounded-2xl border border-secondary bg-primary p-6 text-center" role="alert">
+                        <p className="text-sm font-semibold text-primary">Impossible de vérifier votre connexion Google</p>
+                        <p className="mt-1 text-xs text-tertiary">Réessayez dans un instant.</p>
+                        <button
+                            type="button"
+                            onClick={() => merchant?.id && loadData(merchant.id)}
+                            className="mt-4 rounded-xl border border-secondary px-4 py-2.5 min-h-[44px] text-sm font-medium text-secondary transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            Réessayer
+                        </button>
+                    </div>
+                ) : connectionView?.kind === "disconnected" ? (
                     <div className="rounded-2xl border border-secondary bg-primary p-8 text-center">
                         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-secondary">
                             <svg aria-hidden="true" className="h-7 w-7 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor">
@@ -163,12 +255,10 @@ export default function GooglePage() {
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                             </svg>
                         </div>
-                        <h2 className="text-lg font-semibold text-primary">
-                            Connectez-vous à Google
-                        </h2>
+                        <h2 className="text-lg font-semibold text-primary">Connectez-vous à Google</h2>
                         <p className="mt-2 text-sm text-tertiary">
-                            {stats && stats.eligible_google > 0
-                                ? `${stats.eligible_google} produits seront visibles immédiatement sur Google Shopping et Google Maps.`
+                            {statsView?.kind === "stats" && statsView.eligible > 0
+                                ? `${statsView.eligible} produits seront visibles immédiatement sur Google Shopping et Google Maps.`
                                 : "Vos produits apparaîtront gratuitement sur Google Shopping et Google Maps quand un client cherche un produit près de chez vous."}
                         </p>
                         <button
@@ -178,8 +268,11 @@ export default function GooglePage() {
                         >
                             Connecter à Google
                         </button>
+                        {actionError && (
+                            <p className="mt-3 text-xs font-medium text-error-primary" role="alert">{actionError}</p>
+                        )}
                     </div>
-                ) : (
+                ) : connectionView?.kind === "connected" ? (
                     <div className="rounded-2xl border border-secondary bg-primary p-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-secondary">
@@ -190,7 +283,7 @@ export default function GooglePage() {
                             <div>
                                 <p className="font-semibold text-primary">Connecté à Google</p>
                                 <p className="text-xs text-tertiary">
-                                    Merchant ID : {connection.google_merchant_id}
+                                    Merchant ID : {connectionView.connection.google_merchant_id}
                                 </p>
                             </div>
                         </div>
@@ -198,23 +291,23 @@ export default function GooglePage() {
                         <div className="mt-4 space-y-2">
                             <div className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
                                 <span className="text-xs text-tertiary">Produits envoyés</span>
-                                <span className="text-sm font-semibold text-primary">{connection.products_pushed}</span>
+                                <span className="text-sm font-semibold text-primary">{connectionView.connection.products_pushed}</span>
                             </div>
                             <div className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
                                 <span className="text-xs text-tertiary">Dernière sync</span>
                                 <span className="text-sm font-semibold text-primary">
-                                    {connection.last_feed_at ? formatTimeAgo(connection.last_feed_at) : "En attente"}
+                                    {connectionView.connection.last_feed_at ? formatTimeAgo(connectionView.connection.last_feed_at) : "En attente"}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
                                 <span className="text-xs text-tertiary">Statut</span>
                                 <span className={`text-sm font-semibold ${
-                                    connection.last_feed_status === "success" ? "text-success-primary"
-                                        : connection.last_feed_status === "error" ? "text-error-primary"
+                                    connectionView.connection.last_feed_status === "success" ? "text-success-primary"
+                                        : connectionView.connection.last_feed_status === "error" ? "text-error-primary"
                                             : "text-tertiary"
                                 }`}>
-                                    {connection.last_feed_status === "success" ? "Succès"
-                                        : connection.last_feed_status === "error" ? `Erreur : ${connection.last_feed_error ?? "inconnue"}`
+                                    {connectionView.connection.last_feed_status === "success" ? "Succès"
+                                        : connectionView.connection.last_feed_status === "error" ? `Erreur : ${connectionView.connection.last_feed_error ?? "inconnue"}`
                                             : "En attente"}
                                 </span>
                             </div>
@@ -227,7 +320,7 @@ export default function GooglePage() {
                                 disabled={disconnecting}
                                 className="mt-4 text-xs text-error-primary transition hover:text-error-primary disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none rounded"
                             >
-                                {disconnecting ? "Déconnexion..." : "Déconnecter de Google"}
+                                {disconnecting ? "Déconnexion…" : "Déconnecter de Google"}
                             </button>
                         ) : (
                             <div className="mt-4 flex items-center gap-2 rounded-lg bg-error-secondary px-4 py-2.5">
@@ -248,8 +341,11 @@ export default function GooglePage() {
                                 </button>
                             </div>
                         )}
+                        {actionError && (
+                            <p className="mt-3 text-xs font-medium text-error-primary" role="alert">{actionError}</p>
+                        )}
                     </div>
-                )}
+                ) : null}
             </div>
         </>
     );

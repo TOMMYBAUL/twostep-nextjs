@@ -5,6 +5,50 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-24 (run autonome) · PHASE E maillon 1 — UI honnête de l'écran Google (vue % publiable + connexion)
+
+**Pourquoi (sourcing §6)** : Thomas a ajouté **PHASE E** hier (commit `5319123`, 2026-06-24) = nouvelle mission
+IN-SCOPE [R] : matcher chaque maillon à une UI accessible/idiotproof/pro. Le 1er écran traité = `dashboard/google`
+(couvre **3 maillons** du cap §1bis : vue % publiable, shadow/preview, connexion Google) — il consomme déjà les
+APIs readiness qu'on a construites (D3 + readiness). **C'est l'écran qui rend Deerskin onboardable.**
+
+**Fait (vérifiable, code — pas de jugement visuel, cf. cap : le visuel reste à Thomas)** :
+- Helper PUR `src/lib/google/dashboard-view.ts` (`deriveStatsView`/`deriveConnectionView`) : mappe le résultat
+  BRUT de chaque chargement vers un modèle de vue discriminé `error|empty|data` / `error|disconnected|connected`.
+- Page `dashboard/google/page.tsx` refondue : gate `r.ok` sur `/api/google/stats`, garde l'`error` de la lecture
+  connexion, **états honnêtes** (erreur + Réessayer, vide + CTA « Importer mon stock » → zéro cul-de-sac), spinner
+  qui ne tourne plus à l'infini si le profil marchand échoue (consomme `useMerchant.loading/error`), **ARIA**
+  (`role="progressbar"` + `aria-valuenow/min/max/label` sur la barre de score ; `role="status"/aria-live` sur le
+  chargement ; `role="alert"` sur les erreurs ; `<ul>/<li>` sémantiques pour les suggestions).
+
+**Trouvé / corrigé (3 faux positifs d'AFFICHAGE réels, classe read-side maillon 5/8 côté front)** :
+- (1) statut HTTP ignoré → un 500 `{error}` faisait disparaître le score en silence (faux « tout va bien »).
+- (2) `error` de la lecture connexion jeté → blip DB = faux « pas connecté » → inviterait à re-connecter.
+- (3) 0 produit = cul-de-sac (aucun guidage import).
+- **+2 trouvés par la revue SF-hunter** (handlers d'action, même classe ré-introduite) : `handleConnect`/
+  `handleDisconnect` ne vérifiaient pas `res.ok` → bouton mort silencieux / faux « déconnecté » sur un 500.
+  Corrigés (gate `res.ok` + état `actionError` inline `role="alert"`).
+
+**Preuve** : `tests/lib/google/dashboard-view.test.ts` (+14) — chaque facette champ par champ : HTTP !ok→error
+(jamais faux vide), stats null→error, 0/négatif→empty, données→stats+score ; suggestions (ordre stable, ton
+error/warning, jamais « +0 ») ; connexion error→error (pas « disconnected »), vide→disconnected, ligne→connected.
+**Le RENDU visuel/responsive = Thomas** (la boucle n'a pas d'yeux ; `ui-journey.mjs` dispo pour la passe supervisée).
+
+**Testé** : `npm run test:run` **843→857** vert ; `tsc --noEmit` OK. Revue **silent-failure-hunter** : 3 bugs
+d'origine confirmés clos, 2 findings handlers corrigés ce run, helpers/tests SOUND. 0 migration, réversible.
+
+**Scorecard** : Preuve 7/10 (sortie d'état champ par champ sur données synthétiques ; pas de vrai marchand, et le
+rendu visuel reste non vu) · Sécu 8/10 (SF-hunter SOUND, 5 faux positifs d'affichage clos, 0 introduit) · Rev 10/10
+(0 migration, `git revert` propre) · Scope 9/10 (1 écran + 1 helper pur + tests = 3 fichiers) · Align 8/10 (1er maillon
+Phase E, écran qui rend le pilote onboardable). **tests 843→857 · 5 bugs réels (3+2) · 3 fichiers · CFR 10 runs ≈ 80 %
+(8/10 ; les 2 derniers ledger = échecs ENV exit=1, dont un startup 0-cost — probable rate-limit/Norton, à surveiller §7).**
+
+**Reste / questions** : Phase E maillons suivants (import/ingest stock, review enrichissement, onboarding) =
+prochains runs, même méthode. Surfacer `lfp_feed_ready`/`blocked_only_by_image` (déjà dans l'API) dans l'UI =
+candidat suivant. Passe VISUELLE (pro/responsive) de cet écran = Thomas + `ui-journey.mjs`.
+
+---
+
 ## 2026-06-23 (run autonome #7) · RE-IDLE HONNÊTE — **7e run même état, prod re-vérifiée (1 requête), 0 code, 0 re-notif**
 
 **Pourquoi pas de code** : directive §1bis + runs #1–#6 (*« Prochain run même état → RE-IDLE, ne pas dériver, ne pas

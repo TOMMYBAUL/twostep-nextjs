@@ -149,6 +149,32 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   chemins de sortie vers le même tiers doivent traiter `data:null`-sans-error IDENTIQUEMENT** (`if (!data) → captureError +
   500` partout, pas un `?? []` sur un seul). (MED-2, SF-hunter, 2026-06-23)
 
+## UI client — afficher honnêtement un échec de CHARGEMENT (Phase E, faux positif d'affichage)
+- ❌ **Un composant client qui ignore le statut HTTP d'un fetch + jette l'`error` d'une lecture
+  Supabase affiche un état faussement OK quand le chargement a ÉCHOUÉ.** `dashboard/google/page.tsx`
+  (vue % publiable + connexion Google, écran d'onboarding pilote) : (a) `fetch("/api/google/stats")
+  .then(r => r.json())` sans `r.ok` → un 500 `{error:"db_error"}` faisait DISPARAÎTRE le score en
+  silence (le marchand voyait « tout va bien, connecte Google ») ; (b) la lecture connexion
+  `.maybeSingle().then(({data}) => data)` jetait l'`error` → un blip DB affichait faussement « pas
+  connecté » et invitait à RE-connecter une boutique déjà connectée ; (c) 0 produit = cul-de-sac (aucun
+  guidage vers l'import). **Même classe que les gardes read-side du backend (maillon 5/8, KPI all-zeros) —
+  mais côté FRONT, le symptôme est un faux positif d'AFFICHAGE, pas une perte de données.** Fix : helper
+  pur `deriveStatsView`/`deriveConnectionView` (`src/lib/google/dashboard-view.ts`) qui mappe le résultat
+  BRUT de chaque chargement (`{ok}` du fetch, `{error}` de la lecture) vers un modèle de vue discriminé
+  `error|empty|data` → la page rend un état erreur honnête + état vide avec CTA import (zéro cul-de-sac).
+  **Testable SANS RTL** (absent du projet) : extraire la dérivation d'état en helper pur + tests unitaires
+  (`tests/lib/google/dashboard-view.test.ts`, +14) ; laisser le RENDU visuel à Thomas (la boucle n'a pas
+  d'yeux). **Règle : un fetch côté client doit gater sur `r.ok` (un corps `{error}` n'est pas une donnée) ;
+  une lecture qui aiguille l'affichage doit garder l'`error` (échec ≠ vide/absent) ; les états vides ont
+  une porte de sortie.** (Phase E, dashboard/google, 2026-06-24, revue SF-hunter)
+- ❌ **Les HANDLERS d'action (mutation) du même écran ré-introduisent le faux-OK que la vue corrige.**
+  (revue SF-hunter) `handleConnect` ne vérifiait pas `res.ok` de `/api/google/auth` → bouton mort
+  silencieux ; `handleDisconnect` ne vérifiait pas `res.ok` de `/api/google/disconnect` → un 500 affichait
+  « déconnecté » alors que la connexion existe toujours en base (faux-OK inverse). Fix : gater sur `res.ok`
+  + état `actionError` inline (`role="alert"`), ne pas muter la vue sur échec. **Règle : durcir la vue NE
+  suffit PAS — grep les `fetch` des handlers d'action du même composant, ils ont la même obligation `res.ok`.**
+  (Phase E, 2026-06-24)
+
 ## Silent-failure : rendre un write « non silencieux »
 - ❌ **read-modify-write dont la LECTURE avale `error` → écrasement silencieux par une valeur partielle.**
   `invoices/[id]/validate` (facture = marchandise reçue) : `const { data: currentStock } = …` puis
