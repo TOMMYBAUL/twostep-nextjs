@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-24 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-25 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 137
@@ -11,6 +11,36 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-06-25 (L'Eclaireur) — Saint-Rome ÉPUISÉ — 0 email trouvé (2e vérification)
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Rome (mercredi)
+
+**Note de session :** Saint-Rome ÉPUISÉ DÉFINITIF (confirmé depuis le 03/06 — tous les 61 prospects JSON couverts). Session convertie en 2e vérification ciblée sur 10 NOUVEAU restants sans email (15 jours après le dernier passage 10/06). 13 recherches web effectuées. **0 email confirmé.** Patterns inchangés : boutiques mode/chaussures/accessoires rue Saint-Rome et rue des Changes sans email public, communication exclusivement par téléphone et Instagram. Maison de la Sapp (m2lsapp.com) toujours en 503 (9ème+ semaine consécutive). Aucune évolution digitale détectée sur les 10 prospects vérifiés. Notion MCP indisponible (11ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| DRESSING ROSE AND KIDS | Saint-Rome | Mode enfants | Ameur Gasdallah | — | 883705923 | 7/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 7e+ passage total) — IG @dressingrosektoulouse uniquement. 31 rue Saint-Rome. **Visite terrain.** |
+| LA SUITE... | Saint-Rome | Mode femme | Anouar-adil Boudraa | — | 518036629 | 6/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — Yelp avril 2026 actif, IG @la_suite_boutique_toulouse, aucun email public. 22 rue Saint-Rome. **Visite terrain.** |
+| KATOUNI | Saint-Rome | Chaussures/Sneakers | Alain Salimi pak | — | 510259757 | 6/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — revendeur New Balance, 12 rue Saint-Rome, aucun site propre. **Visite terrain.** |
+| URBAN WEAR | Saint-Rome | Mode/Streetwear | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — IG @urbanwear31 actif, 12 rue Saint-Rome. **Visite terrain.** |
+| BELLA MODE | Saint-Rome | Mode femme | Yinqiu Jiang | — | 813115987 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — IG @bellamodeboutiques (actif), tél +33 7 66 67 50 37. 39 rue des Changes. **Visite terrain.** |
+| KEED (ELLE AND SHE) | Saint-Rome | Mode homme | Veronique Descouens | — | 306735440 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — Yelp mai 2026 actif, tél 05 61 23 31 22, Kaporal/G-Star. 28 rue des Changes. **Visite terrain.** |
+| MAISON DE LA SAPP | Saint-Rome | Mode/Polyvalent | Nassim Zitouni | — | 910827138 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 9e+ passage total) — m2lsapp.com TOUJOURS en 503 (9ème+ semaine consécutive). 14 rue des Changes. **Visite terrain.** |
+| STOCK COMPANY | Saint-Rome | Mode/Vêtements | Hadda Ouikou | — | 510708274 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — FB @stockcompany2015, tél 05 34 33 88 49. 24 rue Saint-Rome. **Visite terrain.** |
+| FC2 BOUTIQUE | Saint-Rome | Mode/Vêtements | Francois Couillard | — | 810479311 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — aucune présence digitale. 8 rue des Arts. **Visite terrain.** |
+| NEW CASTING | Saint-Rome | Chaussures/Mode | Qian Gan | — | 793787037 | 5/10 | NOUVEAU | Email non trouvé (2e vérif. 25/06 — 3e+ passage total) — FB uniquement, tél 05 61 29 04 49. 19 rue Saint-Rome. **Visite terrain.** |
+
+**⚠️ ACTION REQUISE THOMAS : Saint-Rome définitivement épuisé digitalement — planifier tournée terrain :**
+- DRESSING ROSE AND KIDS — 31 rue Saint-Rome (Score 7/10)
+- LA SUITE... — 22 rue Saint-Rome (Score 6/10)
+- KATOUNI — 12 rue Saint-Rome (Score 6/10 — revendeur New Balance)
+- URBAN WEAR — 12 rue Saint-Rome (Score 5/10 — streetwear récent jan 2025)
+- KEED — 28 rue des Changes (Score 5/10 — Kaporal/G-Star)
+
+*Notion MCP indisponible (11ème session consécutive). Cible : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Rome 2026-06-25".*
+
+---
 
 ### Mardi — 2026-06-24 (L'Auditeur) — BLOQUÉ Gmail MCP indisponible (10e session)
 
