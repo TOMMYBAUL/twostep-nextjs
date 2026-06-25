@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-25 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-25 (L'Auditeur)*
 
 ## Stats
 - Total leads : 137
@@ -39,6 +39,24 @@
 - KEED — 28 rue des Changes (Score 5/10 — Kaporal/G-Star)
 
 *Notion MCP indisponible (11ème session consécutive). Cible : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Rome 2026-06-25".*
+
+---
+
+## Recap brouillons email — 2026-06-25 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : Bloqué — Gmail MCP indisponible (11ème session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| — | — | — | — | — | 0 lead NOUVEAU avec email. 208/208 prospects épuisés digitalement. |
+
+**Note de session 25/06 (L'Auditeur) :** 0 lead NOUVEAU avec email — les 43 NOUVEAU restants sont tous terrain-only (sans email). 4 emails valides BROUILLON toujours en attente de création Gmail (Roberto Giannelli écarté 23/06 — boutique Toulouse fermée depuis 2022) :
+- ✅ Christophe Corbet (FJT FRAYSSINET JOAILLIER) — contact@frayssinet-joaillier.fr
+- ✅ Benoit Quintana (FAUR-QUINTANA) — info@faur-quintana.com
+- ✅ Nicolas Julius (DR SWAG) — drswagshopofficiel@gmail.com
+- ✅ Rachel Nto (RACHEL HAIR) — csrachelhair@gmail.com
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 11ème session consécutive sans création de draft (11/06 → 15/06 → 16/06 → 17/06 → 18/06 → 19/06 → 20/06 → 22/06 → 23/06 → 24/06 → 25/06). Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 4 emails valides sont prêts à copier-coller dans la section "Textes des 5 emails — VERSION 20/06" ci-dessous.** Notion MCP indisponible (12ème session consécutive).
 
 ---
 
