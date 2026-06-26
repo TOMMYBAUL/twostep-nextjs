@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { deriveReviewView, type ReviewBucket } from "@/lib/stock/review-view";
+import { captureError } from "@/lib/error";
 
 type ReviewProduct = {
     id: string;
@@ -17,7 +19,7 @@ type ReviewProduct = {
     pos_item_id: string | null;
     enrichment_source: string | null;
     enrichment_proposed_at: string | null;
-    review_status: "pending_review" | "validated" | "rejected";
+    review_status: ReviewBucket;
 };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -40,22 +42,52 @@ const POS_LABELS: Record<string, string> = {
 // the writeback silently — keep the UI honest and don't show the badge for them.
 const POS_WRITEBACK_SUPPORTED = new Set(["square"]);
 
-export function ReviewTable({ products, posProvider }: { products: ReviewProduct[]; posProvider: string | null }) {
-    const [bucket, setBucket] = useState<"pending_review" | "validated" | "rejected">("pending_review");
+export function ReviewTable({
+    products,
+    posProvider,
+    loadError = false,
+}: {
+    products: ReviewProduct[];
+    posProvider: string | null;
+    /** `true` si le SELECT products côté serveur a échoué (≠ « 0 produit à valider »). */
+    loadError?: boolean;
+}) {
+    const [bucket, setBucket] = useState<ReviewBucket>("pending_review");
     const [selected, setSelected] = useState<Set<string>>(new Set());
+    const [actionError, setActionError] = useState<string | null>(null);
     const [pending, startTransition] = useTransition();
     const router = useRouter();
 
-    const filtered = useMemo(
-        () => products.filter((p) => p.review_status === bucket),
-        [products, bucket],
+    // Source unique d'honnêteté de l'écran (erreur vs liste/vide + compteurs par bucket).
+    const view = useMemo(
+        () => deriveReviewView({ loadError, products, bucket }),
+        [loadError, products, bucket],
     );
 
-    const counts = useMemo(() => {
-        const c = { pending_review: 0, validated: 0, rejected: 0 };
-        for (const p of products) c[p.review_status]++;
-        return c;
-    }, [products]);
+    // Échec de chargement : afficher une erreur honnête + Réessayer, JAMAIS un faux
+    // « rien à valider » (les fiches pending resteraient invisibles en vitrine sans signal).
+    if (view.kind === "error") {
+        return (
+            <div className="card-ts p-8 text-center" role="alert">
+                <p className="text-primary text-sm font-medium">
+                    Impossible de charger vos produits à valider.
+                </p>
+                <p className="text-tertiary mt-1 text-sm">
+                    Une erreur est survenue. Vos fiches sont toujours là — réessayez.
+                </p>
+                <button
+                    type="button"
+                    onClick={() => startTransition(() => router.refresh())}
+                    disabled={pending}
+                    className="btn-ts mt-4 text-sm disabled:opacity-50"
+                >
+                    Réessayer
+                </button>
+            </div>
+        );
+    }
+
+    const { filtered, counts } = view;
 
     function toggleSelect(id: string) {
         setSelected((prev) => {
@@ -66,36 +98,55 @@ export function ReviewTable({ products, posProvider }: { products: ReviewProduct
         });
     }
 
-    async function bulkValidate() {
+    // Une mutation qui ÉCHOUE ne doit JAMAIS être affichée comme réussie : sans la garde
+    // `res.ok`, un 500 sur /validate laissait l'UI se rafraîchir comme si c'était passé, alors
+    // que la fiche reste `pending_review` = invisible en vitrine, sans aucun signal au marchand
+    // (même classe que l'écran Google E1 : durcir la vue ne suffit pas, les handlers d'action
+    // ont la même obligation `res.ok`). On NE rafraîchit QUE sur succès réel.
+    async function runAction(label: string, doFetch: () => Promise<Response>, onSuccess?: () => void) {
+        startTransition(async () => {
+            setActionError(null);
+            try {
+                const res = await doFetch();
+                if (!res.ok) {
+                    setActionError(`${label} : échec (code ${res.status}). Réessayez.`);
+                    return;
+                }
+                onSuccess?.();
+                router.refresh();
+            } catch (err) {
+                // Montrer l'erreur au marchand NE doit pas perdre le diagnostic : tracer
+                // l'exception (réseau OU bug inattendu du fetch) avant le message UI.
+                captureError(err, { route: "dashboard/stock/review", phase: "action", action: label });
+                setActionError(`${label} : connexion interrompue. Réessayez.`);
+            }
+        });
+    }
+
+    function bulkValidate() {
         if (selected.size === 0) return;
         const ids = Array.from(selected);
-        startTransition(async () => {
-            await fetch("/api/products/bulk-validate", {
+        void runAction(
+            "Validation de la sélection",
+            () => fetch("/api/products/bulk-validate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ids }),
-            });
-            setSelected(new Set());
-            router.refresh();
-        });
+            }),
+            () => setSelected(new Set()),
+        );
     }
 
-    async function validateOne(id: string) {
-        startTransition(async () => {
-            await fetch(`/api/products/${id}/validate`, { method: "POST" });
-            router.refresh();
-        });
+    function validateOne(id: string) {
+        void runAction("Validation", () => fetch(`/api/products/${id}/validate`, { method: "POST" }));
     }
 
-    async function rejectOne(id: string, restoreOriginal: boolean) {
-        startTransition(async () => {
-            await fetch(`/api/products/${id}/reject`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ restore_original: restoreOriginal }),
-            });
-            router.refresh();
-        });
+    function rejectOne(id: string, restoreOriginal: boolean) {
+        void runAction("Rejet", () => fetch(`/api/products/${id}/reject`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ restore_original: restoreOriginal }),
+        }));
     }
 
     return (
@@ -118,6 +169,13 @@ export function ReviewTable({ products, posProvider }: { products: ReviewProduct
                     </button>
                 ))}
             </div>
+
+            {/* Échec d'une action (validate/reject) — affiché honnêtement, jamais un faux succès */}
+            {actionError && (
+                <div className="rounded-lg border border-error bg-error-primary/10 px-4 py-2 text-sm text-error-primary" role="alert">
+                    {actionError}
+                </div>
+            )}
 
             {/* Writeback hint — only when POS supports updatePosProduct */}
             {posProvider && POS_WRITEBACK_SUPPORTED.has(posProvider) && bucket === "pending_review" && filtered.length > 0 && (
