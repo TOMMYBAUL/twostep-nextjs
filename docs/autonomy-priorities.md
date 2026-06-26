@@ -131,7 +131,24 @@ plus un mur Google externe.
 >      `error` (motif `useProducts`) + notice honnête « à compléter : impossible à charger ». Preuve `tests/lib/stock/
 >      stock-list-view.test.ts` (+8, **867→875**, dont la RÉGRESSION load-échoué→error≠empty). Revue SF-hunter **SOUND**
 >      (mapping cycle de vie correct, ferme le faux-OK principal + le secondaire, Réessayer sûr). 0 migration, réversible.
->      **Reste = rendu VISUEL/responsive (Thomas + `ui-journey.mjs`)** + maillons E suivants (review enrichissement, onboarding).
+>    - ✅ **E4 — écran « Validation du catalogue enrichi » (review enrichissement) honnête au CHARGEMENT + ACTIONS FAIT
+>      (2026-06-26, commit `1d950ec`)** : le Server Component `ReviewPage` faisait `const { data: products }` (l'`error` du
+>      SELECT JETÉ) → un blip/500 DB → `products=null` → `?? []` → `ReviewTable` rendait l'EmptyState « Rien à valider ».
+>      **Pire qu'un écran vide** : les fiches `pending_review` sont INVISIBLES en vitrine (gate 089/094) → un marchand à qui
+>      l'écran ment « rien à valider » ne validera JAMAIS → catalogue muet en silence. Helper PUR `deriveReviewView`
+>      (`src/lib/stock/review-view.ts`, vue `error|ready{counts,filtered}`) → la page distingue erreur du vide (captureError
+>      + `loadError`), `ReviewTable` rend une erreur honnête (`role="alert"` + Réessayer) au lieu de l'EmptyState. **+1 HIGH
+>      pré-existant fermé (revue SF-hunter, même écran/même classe = LESSON E1)** : `bulkValidate/validateOne/rejectOne` ne
+>      vérifiaient PAS `res.ok` + `router.refresh()` inconditionnel → **faux succès** (un 500 sur /validate → UI rafraîchie
+>      comme si validé, fiche reste `pending_review` = invisible, 0 signal) ; wrapper `runAction` ne rafraîchit QUE sur
+>      `res.ok`, sinon `actionError` (`role="alert"`) ; sélection conservée sur échec (retry), vidée sur succès ; catch →
+>      captureError + message. **+3 LOW/MED adjacents** : merchant SELECT error tracée (sauf PGRST116=0-ligne légitime),
+>      pos_connections error tracée (non bloquante), PostgrestError (≠ instance Error) → forward `code/message/details` en
+>      contexte Sentry (sinon `String()`=`"[object Object]"`). Preuve `tests/lib/stock/review-view.test.ts` (+6, **875→881**,
+>      dont RÉGRESSION load-échoué→error≠empty, compteurs stables au changement de bucket, statut hors-bucket→pas de NaN).
+>      **2 revues silent-failure-hunter SOUND** (chargement + delta actions). 0 migration, réversible. Pré-existant hors
+>      scope noté : `auth.getUser()` double-destructure non gardée (classe codebase-wide, séparée). **Reste = rendu
+>      VISUEL/responsive (Thomas + `ui-journey.mjs`)** + dernier maillon E (onboarding).
 >    - **LA BOUCLE FAIT (vérifiable, code)** : pour chaque maillon (import/ingest stock, vue % publiable,
 >      shadow/preview via `feed-preview`, review enrichissement, connexion Google, onboarding) → **états
 >      vides** (« aucun produit — connecte ta caisse »), **chargement**, **erreurs + validation claires**,

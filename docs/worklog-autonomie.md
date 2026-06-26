@@ -2977,3 +2977,38 @@ qu'une session Claude Code reste ouverte. « avance Claude fermé » = bloqué s
 
 **Prochaine sous-étape produit** : Collecte ② — sync catalogue initial (getCatalog des
 4 POS : pagination, gestion d'erreurs, mapping des champs, robustesse).
+
+---
+
+## 2026-06-26 — PHASE E E4 : écran « Validation du catalogue enrichi » honnête (load + actions)
+
+**Fait** (commit `1d950ec`, branche `feat/pipeline-v1-handoff-2026-06-12`)
+- Sourcing §6 : backlog → PHASE E (mission [R] in-scope de Thomas 2026-06-24). Maillon E non
+  couvert le plus prioritaire = `dashboard/stock/review` (review enrichissement). E1/E3 faits.
+- **Bug réel n°1 (faux-vide au chargement)** : `ReviewPage` (Server Component) faisait
+  `const { data: products }` (error JETÉ) → blip/500 DB → `products=null` → `?? []` →
+  EmptyState « Rien à valider ». Aggravé : `pending_review` invisible en vitrine (089/094) →
+  l'écran ment « rien à valider » → fiches jamais validées = catalogue muet en silence.
+  Fix : helper PUR `deriveReviewView` (`src/lib/stock/review-view.ts`, `error|ready{counts,filtered}`),
+  page distingue erreur/vide (captureError + `loadError`), `ReviewTable` rend erreur honnête
+  (`role="alert"` + Réessayer).
+- **Bug réel n°2 (faux succès d'action, HIGH SF-hunter, LESSON E1)** : `bulkValidate/validateOne/
+  rejectOne` ne vérifiaient pas `res.ok` + `router.refresh()` inconditionnel → un 500 sur /validate
+  rafraîchissait l'UI comme si validé (fiche reste pending = invisible, 0 signal). Fix : wrapper
+  `runAction` (refresh QUE sur `res.ok`, sinon `actionError` role=alert ; sélection conservée sur
+  échec/vidée sur succès ; catch → captureError).
+- **+3 adjacents** : merchant SELECT error tracée (sauf PGRST116) ; pos_connections error tracée ;
+  PostgrestError → forward `code/message/details` en contexte Sentry.
+
+**Testé** : `npx tsc --noEmit` OK ; `npm run test:run` → **881 passed** (875→881, +6 dont la
+RÉGRESSION load-échoué→error≠empty, compteurs stables au changement de bucket, statut hors-bucket→
+pas de NaN). 2 revues silent-failure-hunter **SOUND** (chargement + delta actions). 0 migration.
+
+**Pré-existant hors scope (noté, pas fait)** : `auth.getUser()` double-destructure non gardée
+(classe codebase-wide présente sur de nombreuses pages → pass dédié, pas ce run ciblé).
+
+**Scorecard** : Preuve 7/10 · Sécu north-star 8/10 · Réversibilité 10/10 · Scope 9/10 · Align 8/10.
+2 bugs réels (faux-vide + faux succès), 4 fichiers. CFR 10 runs ≈ 80 % OK (2 échecs = runs
+rate-limit/interrompus du 23/06, 0 revert).
+
+**Reste maillon E** : rendu VISUEL/responsive (Thomas + `ui-journey.mjs`) + dernier écran (onboarding).

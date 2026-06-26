@@ -190,6 +190,28 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   `useProducts`) + notice « à compléter : impossible à charger » au lieu d'un 0 silencieux. **Règle : grep les hooks
   de chargement JUMEAUX du même écran — celui qui `catch{}` sans exposer l'erreur est le trou.** (Phase E, my-stock-view, 2026-06-25, SF-hunter SOUND)
 
+## UI client — Server Component qui avale l'`error` d'un SELECT = faux vide (Phase E, écran Validation enrichi)
+- ❌ **Un Server Component qui fait `const { data: products }` (error JETÉ) rend un faux EmptyState
+  sur un blip DB.** `ReviewPage` (`dashboard/stock/review`) → `products=null` → `?? []` → `ReviewTable`
+  affichait « Rien à valider ». **Aggravé** : les `pending_review` sont INVISIBLES en vitrine (gate
+  089/094) → l'écran qui ment « rien à valider » → fiches jamais validées = catalogue muet en silence.
+  Fix : destructurer `error: productsError`, captureError, passer `loadError` au composant ; helper PUR
+  `deriveReviewView` (`error|ready{counts,filtered}`) → erreur honnête (`role="alert"`+Réessayer) jamais
+  l'EmptyState. **Règle (E1/E3 étendue au server) : un SELECT côté Server Component qui aiguille
+  l'affichage doit distinguer erreur de vide — `?? []` sur un read non gardé = faux « rien ».**
+- ❌ **Les handlers d'ACTION du même écran rejouent le faux-succès (HIGH, classe LESSON E1).**
+  `bulkValidate/validateOne/rejectOne` ne vérifiaient pas `res.ok` + `router.refresh()` inconditionnel →
+  un 500 sur /validate rafraîchissait l'UI comme si validé (fiche reste pending = invisible, 0 signal au
+  marchand). Fix : wrapper `runAction` (refresh QUE sur `res.ok`, sinon `actionError` role=alert ; sélection
+  conservée sur échec pour retry/vidée sur succès ; catch → captureError + message). **Règle (re-confirmée
+  E1) : durcir la VUE ne suffit pas — grep les `fetch` des handlers de mutation du même composant, ils ont
+  la même obligation `res.ok`, sinon faux succès.**
+- ⚠️ **`captureError(PostgrestError)` perd le diagnostic** : un PostgrestError n'est PAS une instance d'Error
+  → `captureError` tombe sur `Sentry.captureMessage(String(err))` = `"[object Object]"`. Forwarder
+  `code/message/details` dans le `context` (2ᵉ arg) au site d'appel pour garder le diagnostic DB. Guard
+  redirect : `.single()` renvoie `PGRST116` à 0 ligne (redirect légitime) ; tracer SEULEMENT les autres
+  codes. (Phase E, review-view, 2026-06-26, 2 revues SF-hunter SOUND)
+
 ## UI client — afficher un VERDICT serveur, ne pas le recalculer (Phase E, readiness LFP)
 - ✅ **Surfacer dans l'UI un verdict DÉJÀ calculé serveur = mapper, jamais recalculer.** `/api/google/stats`
   renvoyait `lfp_feed_ready` (readiness LFP : seuil ≥11 offres ATTEINT ET connecté, via `evaluateFeedReadiness`)
