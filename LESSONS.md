@@ -212,6 +212,20 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   redirect : `.single()` renvoie `PGRST116` à 0 ligne (redirect légitime) ; tracer SEULEMENT les autres
   codes. (Phase E, review-view, 2026-06-26, 2 revues SF-hunter SOUND)
 
+## UI client — Server Component : un read d'échec ne doit ni rediriger ni mentir (Phase E, connexion POS)
+- ❌ **Un read d'aiguillage qui avale `error` peut produire DEUX faux positifs : une redirection ET un faux état.**
+  `DashboardPosPage` (`dashboard/stock/pos`, moitié « connexion » de l'onboarding pilote) faisait
+  `const { data: merchant }` ET `const { data: connection }` (errors JETÉS). Blip DB → (1) `merchant=null` →
+  `redirect("/devenir-marchand")` **éjecte un marchand onboardé** ; (2) `connection=null` → « Aucune caisse
+  connectée » à un marchand **déjà connecté** → re-connexion/doublon (classe finding E1). Fix : helper PUR
+  `derivePosConnectionView` (`error|no-merchant|ready`) — `merchantFailed→error` (jamais redirect), `!hasMerchant
+  →no-merchant` (redirect légitime), `connectionFailed→error` (jamais « aucune caisse ») ; count en échec →
+  `productsCount:null` (« — », jamais un faux 0). **Règle : une lecture en échec ≠ « absent » → ni redirect
+  silencieux ni faux état rassurant ; un blip ne doit JAMAIS éjecter le marchand ni inverser l'état de connexion.**
+  Les handlers d'action de l'écran (`handleSync`/`handleDisconnect`) gataient DÉJÀ `res.ok` (rien à corriger).
+  ⚠️ Pré-existant hors scope (classe codebase-wide, cf. E4) : `auth.getUser()` error non gardée → redirect login
+  silencieux sur outage auth. (Phase E, pos-connection-view, 2026-06-26, revue SF-hunter SOUND)
+
 ## UI client — afficher un VERDICT serveur, ne pas le recalculer (Phase E, readiness LFP)
 - ✅ **Surfacer dans l'UI un verdict DÉJÀ calculé serveur = mapper, jamais recalculer.** `/api/google/stats`
   renvoyait `lfp_feed_ready` (readiness LFP : seuil ≥11 offres ATTEINT ET connecté, via `evaluateFeedReadiness`)

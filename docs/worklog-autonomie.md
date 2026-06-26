@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-26 (run autonome) · PHASE E maillon 5 — écran « Connexion POS » (onboarding, moitié connexion) honnête au chargement
+
+**Pourquoi (sourcing §6)** : maillon E restant explicitement nommé en fin de E4 (« dernier maillon E : onboarding »)
+et au cap §1bis item 2 (« Onboarding marchand PILOTE = wizard/UI d'import **+ connexion** »). E3 a couvert la moitié
+*import* (Mon stock) ; voici la moitié **connexion** : `dashboard/stock/pos` (le marchand pilote y branche sa caisse).
+En le lisant, MÊME classe d'honnêteté que E1/E3/E4, NON corrigée : le Server Component faisait `const { data: merchant }`
+ET `const { data: connection }` (les `error` des SELECT JETÉS) → **deux faux positifs d'affichage sur un blip DB**.
+
+**Fait (vérifiable, code — rendu visuel reste à Thomas, cap §1bis)** :
+- Helper PUR `derivePosConnectionView` (`src/lib/stock/pos-connection-view.ts`) : mappe les 3 lectures brutes
+  (marchand / connexion / count produits) → vue discriminée `error | no-merchant | ready`. Priorité :
+  `merchantFailed→error` (ne JAMAIS rediriger), `!hasMerchant→no-merchant` (redirect légitime),
+  `connectionFailed→error` (ne JAMAIS afficher « aucune caisse »), sinon `ready` avec `productsCount:null` si SON
+  count a échoué (« — », jamais un faux 0).
+- `pos/page.tsx` : destructure `error` des 3 reads + `captureError` (forward `code/message/details` du PostgrestError),
+  dérive la vue, rend un état erreur honnête (`role="alert"` + Réessayer = reload) au lieu d'un redirect/empty trompeur.
+  Sémantique des états « connecté » / « aucune caisse » préservée à l'identique (extraite dans `PageShell`).
+
+**Trouvé / corrigé (2 faux positifs d'affichage réels, classe read-side maillon 5/8 côté Server Component)** :
+- (1) lecture marchand en échec → `redirect("/devenir-marchand")` **éjectait un marchand onboardé** sur un hoquet DB.
+- (2) lecture connexion en échec → « Aucune caisse connectée » à un marchand **déjà connecté** → re-connexion/doublon
+  (exactement le finding E1 : faux « pas connecté » sur blip).
+- Les handlers d'action de l'écran (`PosConnectionActions` : `handleSync`/`handleDisconnect`) gataient DÉJÀ `res.ok`
+  + toast d'erreur → **rien à corriger** (vérifié, pas de faux-succès comme E1/E4).
+
+**Preuve** : `tests/lib/stock/pos-connection-view.test.ts` (+9, **881→890**) — vue champ par champ : **RÉGRESSION
+marchand-échoué→error (jamais redirect)**, échec marchand prime même si une ligne lue, marchand absent→no-merchant,
+**RÉGRESSION connexion-échouée→error (jamais « aucune caisse »)**, connexion-échouée prime sur ready, OK+connecté→
+ready hasConnection=true, OK+0-ligne→hasConnection=false, count-échoué→productsCount:null (« — »), ordre de priorité.
+
+**Testé** : `npm run test:run` **881→890** vert ; `tsc --noEmit` OK. Revue **silent-failure-hunter** : **SOUND**
+(core sain, 0 silent-failure introduit ; les 2 faux positifs fermés). Findings résiduels = pré-existants codebase-wide
+hors scope (E4-cohérent) : `auth.getUser()` error non gardée (redirect login silencieux sur outage auth) ;
+`captureError(PostgrestError)` titre `[object Object]` (champs structurés préservés en `context`). 0 migration, réversible.
+
+**Scorecard** : Preuve 7/10 (sortie d'état champ par champ sur données synthétiques ; rendu visuel non vu, pas de vrai
+marchand) · Sécu 8/10 (SF-hunter SOUND, 2 faux positifs d'affichage fermés, 0 introduit) · Rev 10/10 (0 migration,
+`git revert` propre) · Scope 9/10 (1 helper + 1 page + tests = 3 fichiers, 1 écran, 1 concern) · Align 9/10 (honnêteté
+de la moitié CONNEXION de l'onboarding pilote = rend Deerskin onboardable, north-star direct).
+**tests 881→890 · 2 bugs réels (faux redirect + faux « pas connecté ») · 3 fichiers · CFR 10 runs = 80 % (8/10 exit=0+commit, 0 revert ; 2 échecs ENV exit=1 le 23/06, dont un 0-cost = rate-limit/Norton).**
+
+**Reste / questions** : Phase E quasi complète (google E1/E2, mon-stock E3, review E4, connexion-POS E5). Reste éventuel =
+écran wizard d'import guidé si Thomas en veut un dédié, sinon passe VISUELLE/responsive de tous les écrans E (Thomas +
+`ui-journey.mjs`). Pré-existant codebase-wide noté : `auth.getUser()` error non gardée sur les pages dashboard (séparé).
+
+---
+
 ## 2026-06-25 (run autonome) · PHASE E maillon 3 — écran « Mon stock » (import/ingest, pilier 1) honnête au chargement
 
 **Pourquoi (sourcing §6)** : maillon E explicitement nommé en fin de l'entrée E2 (« écran import/ingest stock »

@@ -149,6 +149,21 @@ plus un mur Google externe.
 >      **2 revues silent-failure-hunter SOUND** (chargement + delta actions). 0 migration, réversible. Pré-existant hors
 >      scope noté : `auth.getUser()` double-destructure non gardée (classe codebase-wide, séparée). **Reste = rendu
 >      VISUEL/responsive (Thomas + `ui-journey.mjs`)** + dernier maillon E (onboarding).
+>    - ✅ **E5 — écran « Connexion POS » (onboarding, moitié CONNEXION) honnête au CHARGEMENT FAIT (2026-06-26)** :
+>      `dashboard/stock/pos` = là où le marchand pilote branche sa caisse (moitié *connexion* du cap item 2 ; E3 a
+>      couvert l'*import*). Même classe E1/E3/E4 : le Server Component faisait `const { data: merchant }` ET
+>      `const { data: connection }` (errors JETÉS) → **2 faux positifs sur un blip DB** : (1) marchand-null →
+>      `redirect("/devenir-marchand")` **éjecte un marchand onboardé** ; (2) connexion-null → « Aucune caisse
+>      connectée » à un marchand **déjà connecté** → re-connexion/doublon (finding E1). Helper PUR
+>      `derivePosConnectionView` (`src/lib/stock/pos-connection-view.ts`, vue `error|no-merchant|ready`) →
+>      `merchantFailed→error` (jamais redirect), `!hasMerchant→no-merchant` (redirect légitime), `connectionFailed
+>      →error` (jamais « aucune caisse »), count-échoué→`productsCount:null` (« — », jamais faux 0) ; page rend
+>      erreur honnête (`role="alert"`+Réessayer) + `captureError` (forward PostgrestError). Handlers d'action
+>      (`handleSync`/`handleDisconnect`) gataient DÉJÀ `res.ok` → rien à corriger. Preuve `tests/lib/stock/
+>      pos-connection-view.test.ts` (+9, **881→890**, 2 RÉGRESSIONS : marchand-échoué→error≠redirect, connexion-
+>      échouée→error≠« aucune caisse »). Revue SF-hunter **SOUND**. Résiduel pré-existant codebase-wide (E4-cohérent,
+>      séparé) : `auth.getUser()` error non gardée → redirect login silencieux. 0 migration, réversible. **Reste =
+>      rendu VISUEL/responsive de tous les écrans E (Thomas + `ui-journey.mjs`).**
 >    - **LA BOUCLE FAIT (vérifiable, code)** : pour chaque maillon (import/ingest stock, vue % publiable,
 >      shadow/preview via `feed-preview`, review enrichissement, connexion Google, onboarding) → **états
 >      vides** (« aucun produit — connecte ta caisse »), **chargement**, **erreurs + validation claires**,
