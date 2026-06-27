@@ -65,6 +65,43 @@ plus un mur Google externe.
 
 ## 1bis. ⭐ MISSION COURANTE — VALIDER LE WORKFLOW MAILLON PAR MAILLON
 
+### ⭐⭐ PRIORITÉ N°1 (2026-06-27, Thomas) — MAILLON 9 : ENRICHISSEMENT (photo / marque / catégorie)
+> **CE MAILLON N'A JAMAIS ÉTÉ PROUVÉ EN RÉEL et il est CASSÉ.** Les 8 maillons « prouvés » =
+> le TUYAU (transport data). L'enrichissement (EAN → photo/marque/catégorie) n'en a jamais fait
+> partie. **Premier test réel le 2026-06-27** (7 vrais codes-barres poussés + photos inspectées
+> VISUELLEMENT — cf `docs/workflow-ingestion-enrichment.md`) :
+> - **Photos : 6/7 FAUSSES** (Carhartt→colle Loctite, Bose→barbecue Moulinex, Ray-Ban→scanner
+>   Zebra, Nike→prise élec, LEGO→Funko, VTech→LEGO). Seule la Coca (EAN frais) correcte.
+> - **Vérif IA Claude Haiku ne bloque RIEN** (laisse passer une colle pour un pantalon) → **fail-open
+>   probable = silent-failure**. C'est la garde censée empêcher ça.
+> - **Marque null 7/7**. **Catégorie** : 2/7 mappés FR, 4/7 anglais, **1 faux** (Coca→home&garden).
+> - **Score 0,90 → tout en pending** : rien ne se publie. Pour « exactitude = la promesse » (north-star),
+>   c'est **rédhibitoire** : Google rejette un feed à photos fausses, et un marchand qui voit un barbecue
+>   sur son casque s'en va. **Donc priorité ABSOLUE, avant tout retour au polish UI.**
+>
+> **⚠️ LA BARRE DE PREUVE (adaptée au fait que la boucle N'A PAS D'YEUX) — NON négociable :**
+> Le bug a survécu car la boucle prouve par tests unitaires sur synthétique. Un test vert ≠ photo juste.
+> Donc :
+> 1. **Régression d'abord** : capturer le fail-open de la vérif IA dans un test — un FIXTURE de paires
+>    `(nom produit, image manifestement fausse)` connues que la vérif DOIT rejeter. Ça se teste SANS yeux.
+> 2. **Pas de vrai EAN = pas de preuve d'image.** La correctude d'une photo ne s'auto-certifie pas :
+>    après chaque run d'enrichissement réel, **produire un rapport** `EAN → nom/catégorie/marque/photo_url`
+>    que **Thomas** valide visuellement. La boucle NE coche PAS « photos OK » seule.
+> 3. **Sous-tâches** (ordre conseillé) : (a) régression fail-open de la vérif Haiku ; (b) corriger la
+>    stratégie de requête Serper (chercher le NUMÉRO EAN brut sur Google Images renvoie du bruit) ;
+>    (c) extraction **marque** (cassée, null 7/7) ; (d) **mapping catégorie** anglais→taxo FR.
+>
+> **🚦 CE QUE LA BOUCLE PEUT vs NE PEUT PAS (séparer, sinon on refait le piège) :**
+> - **PEUT seule (unit-testable, pas d'env live)** : la régression fail-open (1), la logique d'extraction
+>   marque (c), le mapping catégorie (d), la stratégie de requête Serper en pur (formatage requête).
+> - **EXIGE un env live (clés API Serper/EAN-Search/ANTHROPIC + serveur + Supabase)** : le test e2e photo
+>   sur vrais EAN (b prouvé). **La Routine cloud actuelle est « code+tests seulement » → elle ne peut PAS
+>   le faire.** Deux options pour Thomas : soit **upgrader l'env de la Routine** (secrets API + droit de
+>   lancer le pipeline), soit garder le e2e photo en **run supervisé** (Thomas + Claude en session). Tant
+>   que ce n'est pas tranché : la boucle fait (a)(c)(d) + la PRÉPARATION de (b), et **escalade le e2e**.
+> - Garde-fous habituels : 0 migration prod, bornes sur les fixtures (EAN-Search = 100 req/mois en essai),
+>   réversible.
+
 ### 🚧 FILTRE DE CAP (2026-06-23, Thomas) — À APPLIQUER AVANT DE CHOISIR TOUT TRAVAIL
 > Phase A (8 maillons) + Phase D (D1-D7) sont FAITES. La boucle a commencé à **dériver** : durcir
 > des chemins SECONDAIRES (pipeline factures, routes/crons déjà fonctionnels) = vrai travail mais
