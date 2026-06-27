@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-27 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-27 (L'Auditeur)*
 
 ## Stats
 - Total leads : 147
@@ -31,13 +31,15 @@
 | RAINBOW FACTORY | Victor-Hugo/Peyrolières | Mode | Corinne Nin (collin) | — | 484985288 | — | ECARTE | Établissement Toulouse FERMÉ — 2 établissements actifs à Paris uniquement (75004 + 75011). Hors cible. ÉCARTÉE DÉFINITIF. |
 | SOFAR (EQUIVALENZA) | Victor-Hugo/Rémusat | Cosmétique | Florian Renon | — | 849995881 | — | ECARTE | Franchise Equivalenza — produits de marque propre franchise (hors cible Two-Step = produits de marque tiers). IG @equivalenzatlse 4890 abonnés. 13 rue Rémusat. ÉCARTÉE DÉFINITIF. |
 
-**⚠️ 4 NOUVEAUX BROUILLONS À RÉDIGER (L'Auditeur) :**
-- ✅ Elisabeth Chambert (JOAILLERIE CHAMBERT) — contact@joailleriechambert.com — bijouterie/horlogerie prestige place Wilson depuis 1976
-- ✅ Antoinette Camps (BIJOUTERIE CAMPS) — campsrubio.antoinette@orange.fr — bijouterie traditionnelle 40+ ans place Dupuy
-- ✅ Sultana Larue (MA JOLIE MAMA) — majoliemama@gmail.com — concept store mode/maternité rue Rémusat
-- ✅ Philippe Jalby (ETHIC ET CHIC) — anbekele@ethicetchic.fr — mode équitable 2 boutiques depuis 2004
+**✅ 4 BROUILLONS RÉDIGÉS (L'Auditeur — 27/06) :**
+- ✅ Elisabeth Chambert (JOAILLERIE CHAMBERT) — contact@joailleriechambert.com — brouillon rédigé 27/06
+- ✅ Antoinette Camps (BIJOUTERIE CAMPS) — campsrubio.antoinette@orange.fr — brouillon rédigé 27/06
+- ✅ Sultana Larue (MA JOLIE MAMA) — majoliemama@gmail.com — brouillon rédigé 27/06
+- ✅ Philippe Jalby (ETHIC ET CHIC) — anbekele@ethicetchic.fr — brouillon rédigé 27/06 ⚠️ (email collaborateur Anbekele)
 
-*Note : Notion MCP indisponible (14ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-06-27". Zone explorée : 23 nouveaux candidats zone Rémusat/Wilson/Peyrolières issus de toulouse-merchants-full.json — 13 candidats restants non encore investigués pour prochaine session samedi.*
+**⚠️ GMAIL MCP INDISPONIBLE (15e session) — brouillons sauvegardés dans :** `docs/prospection/brouillons/brouillons-email-2026-06-27.md` — À copier manuellement dans Gmail avant envoi.
+
+*Note : Notion MCP indisponible (15ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-06-27". Zone explorée : 23 nouveaux candidats zone Rémusat/Wilson/Peyrolières issus de toulouse-merchants-full.json — 13 candidats restants non encore investigués pour prochaine session samedi.*
 
 ---
 
