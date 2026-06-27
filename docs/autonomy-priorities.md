@@ -90,6 +90,13 @@ plus un mur Google externe.
 > 3. **Sous-tâches** (ordre conseillé) : (a) régression fail-open de la vérif Haiku ; (b) corriger la
 >    stratégie de requête Serper (chercher le NUMÉRO EAN brut sur Google Images renvoie du bruit) ;
 >    (c) extraction **marque** (cassée, null 7/7) ; (d) **mapping catégorie** anglais→taxo FR.
+>    - ✅ **(a) FAIT (2026-06-27)** : la cause directe des 6/7 fausses = `verifyPhotoWithAI` clé `ANTHROPIC_API_KEY`
+>      absente → `return true` (vérif OFF en prod = 100 % images publiées sans contrôle). Durci en **fail-CLOSED par
+>      défaut** (clé absente → `false`, image écartée ; legacy derrière flag escaladé `PUBLISH_UNVERIFIED_IMAGES=1`).
+>      Régression SANS yeux : `tests/images-verify-photo.test.ts` (890→893) = fixture des 6 paires réelles (Carhartt→
+>      colle…) verdict Haiku « non » → écartées, + clé-absente→false, + réponse vide→false. Revue SF-hunter **SOUND**,
+>      0 migration, réversible. **Conséquence prod** : aucune image publiée tant que `ANTHROPIC_API_KEY` non posée
+>      (option A reco). **Reste (b)(c)(d) unit-testables** + e2e photo vrais EAN escaladé (env live). Détail : worklog 27/06.
 >
 > **🚦 CE QUE LA BOUCLE PEUT vs NE PEUT PAS (séparer, sinon on refait le piège) :**
 > - **PEUT seule (unit-testable, pas d'env live)** : la régression fail-open (1), la logique d'extraction

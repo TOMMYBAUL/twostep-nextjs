@@ -355,6 +355,16 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   (captureError 1×/process, flag module anti-flood) — jamais silencieux. Distinguer « pas pu vérifier » de
   « vérifié OK ». `verifyImageUrl` HEAD laissé en skip silencieux (URL morte = bénin/fréquent, captureError y
   flood). (`serper.ts`, D5, 2026-06-23, revue SF-hunter SOUND)
+- ❌ **« Laisser passer (fail-open) en mode dégradé » est un FAUX compromis quand le défaut publie une donnée
+  potentiellement fausse.** D5 avait gardé `verifyPhotoWithAI` clé-absente → `return true` (publier sans vérif,
+  « observable »). Le test RÉEL du 2026-06-27 a prouvé que ce défaut laissait passer **6/7 photos manifestement
+  fausses** (colle→pantalon, BBQ→casque) : « observable mais publié » ≠ sûr quand « exactitude = la promesse »
+  (Google rejette, le marchand fuit). Fix maillon 9 : défaut **fail-CLOSED** (clé absente → `false`, image écartée,
+  pas d'image > fausse image), legacy « publier non vérifié » derrière le flag escaladé `PUBLISH_UNVERIFIED_IMAGES=1`.
+  **Règle : pour une vérif dont le SUJET est la correctude d'une donnée publiée, le mode « pas pu vérifier » doit
+  fail-CLOSED par défaut ; le fail-open n'est légitime que pour une vérif dont l'échec ne corrompt rien.** Régression
+  sans yeux = fixture de paires `(produit, image fausse)` + verdict Haiku mocké « non » → écart prouvé. (maillon 9,
+  serper.ts, 2026-06-27, revue SF-hunter SOUND)
 
 ## Boucle d'écriture par item + RPC atomique (livraison reçue)
 - ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`

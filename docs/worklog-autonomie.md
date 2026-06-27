@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-27 (run autonome) · MAILLON 9 enrichissement — sous-tâche (a) : régression + durcissement du fail-open de la vérif photo IA
+
+**Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1 explicite Thomas 2026-06-27)** : le test réel du 27/06
+(7 vrais EAN poussés, photos inspectées VISUELLEMENT) a montré **6/7 photos FAUSSES publiées** alors que la vérif
+IA Haiku est censée bloquer ça. Sous-tâches conseillées : **(a) régression fail-open de la vérif Haiku** [PEUT seule,
+unit-testable] → (b) requête Serper → (c) marque → (d) catégorie. J'ai fait (a), la garde de sûreté centrale : tant
+qu'elle laisse passer, corriger (b/c/d) ne suffit pas (une mauvaise requête publierait quand même).
+
+**Diagnostic (vérifié dans le code réel, pas deviné)** : `verifyPhotoWithAI` (`src/lib/images/serper.ts`) est le SEUL
+gate d'image (appelé uniquement par `searchSerperImages`, qui fait `if(!aiMatch) continue` ; tous les callers de
+`searchProductImage` gardent `if(photoUrl)` avant d'écrire `photo_url`). D5 (23/06) avait fermé le fail-open sur
+erreur (HTTP !ok / throw → `false`), MAIS gardé **clé `ANTHROPIC_API_KEY` absente → `return true`** (« publier sans
+vérif, observable »). Or en prod la clé est ABSENTE → la vérif était OFF → **100 % des images publiées sans contrôle**
+= la cause directe des 6/7 fausses au test réel. « Observable mais publié » ≠ sûr quand « exactitude = la promesse ».
+
+**Fait (vérifiable, code — réversible, 0 migration)** :
+- `verifyPhotoWithAI` clé absente → **défaut fail-CLOSED** (`return false` = image écartée : « pas pu vérifier » ≠
+  « vérifié OK », leçon SIRET). Pas d'image > fausse image (north-star). Le legacy « publier non vérifié » reste
+  derrière le flag escaladé `PUBLISH_UNVERIFIED_IMAGES=1` (option C de D5, jamais le défaut). Le signalement dégradé
+  (captureError 1×/process) est conservé, message distinguant « bloqué » vs « publié ».
+- Impact analysé : `verifyPhotoWithAI` n'a qu'un appelant (`searchSerperImages`, même fichier) → blast radius LOW.
+
+**Preuve (barre 2026-06-27 — testable SANS yeux)** : `tests/images-verify-photo.test.ts` (5→8 tests, suite **890→893**) :
+- 🔴→🟢 clé absente + défaut → `false` (ancien code : `true` → publiait la fausse image), observable 1×/process.
+- clé absente + `PUBLISH_UNVERIFIED_IMAGES=1` → `true` (compat explicite derrière le flag).
+- 🔒 **FIXTURE** des 6 paires `(produit, image fausse)` réellement observées au test du 27/06 (Carhartt→colle,
+  Bose→BBQ, Ray-Ban→scanner, Nike→prise, LEGO→Funko, VTech→LEGO) : verdict Haiku mocké « non » → image écartée 6/6.
+- 🔒 réponse Haiku vide/malformée → `false` (fail-closed, pas de fail-open sur réponse vide).
+
+**Testé** : `npm run test:run` **893** vert ; `tsc --noEmit` OK (exit 0). Revue **silent-failure-hunter** : **SOUND**
+(aucun nouveau silent-failure ; mode dégradé toujours observable ; aucun caller ne traite `photo_url` null comme un
+succès muet). 2 résidus PRÉ-EXISTANTS hors scope notés (non régressions) : `verifyImageUrl` catch silencieux
+(URL morte = bénin) ; `resolveAndEnrich` outer catch `console.error` (Sentry-invisible) — séparés, non touchés.
+
+**Scorecard** : Preuve 7/10 (fixture des paires réelles + tous les modes, mais Haiku mocké, pas de vrai appel —
+le e2e photo sur vrais EAN reste ESCALADÉ, exige clés API + env live) · Sécu 9/10 (SF-hunter SOUND, fail-open central
+fermé, 0 introduit) · Rev 10/10 (1 flag + tests, 0 migration, `git revert` propre) · Scope 9/10 (2 fichiers, 1 concern)
+· Align 10/10 (north-star direct : la garde « zéro faux positif visuel » bloque enfin par défaut).
+
+**Reste / questions (maillon 9)** : (b) stratégie requête Serper (EAN brut → bruit), (c) marque null 7/7, (d) mapping
+catégorie anglais→FR = prochains runs (unit-testables). **ESCALADE** : décision A/B/C de D5 toujours ouverte —
+maintenant que le défaut est fail-CLOSED, en prod **aucune image ne sera publiée tant que `ANTHROPIC_API_KEY` n'est
+pas posée** (option A reco : ~0,001 $/img). Le **e2e photo sur vrais EAN** (preuve (b) que les images deviennent
+JUSTES) exige un env live (Serper/Anthropic/Supabase) → soit upgrader l'env de la Routine, soit run supervisé Thomas.
+
+---
+
 ## 2026-06-26 (run autonome) · PHASE E maillon 5 — écran « Connexion POS » (onboarding, moitié connexion) honnête au chargement
 
 **Pourquoi (sourcing §6)** : maillon E restant explicitement nommé en fin de E4 (« dernier maillon E : onboarding »)

@@ -17,20 +17,37 @@ const SERPER_API_URL = "https://google.serper.dev/images";
 let warnedVerifierDisabled = false;
 
 /**
+ * Quand la vérif IA est IMPOSSIBLE (clé `ANTHROPIC_API_KEY` absente), faut-il publier
+ * quand même l'image sourcée NON vérifiée ?
+ *  - **OFF (défaut, sûr)** : NON — on écarte le candidat. « Exactitude = la promesse » :
+ *    une image potentiellement fausse (le test réel 2026-06-27 a montré 6/7 photos
+ *    fausses publiées pendant que la vérif était OFF — colle→pantalon, BBQ→casque) tue
+ *    le marchand et fait rejeter le feed Google. Pas d'image > fausse image.
+ *  - **ON (`PUBLISH_UNVERIFIED_IMAGES=1`)** : compat legacy / option C escaladée
+ *    (« accepter les images non vérifiées en prod + tracer »). Réservé à un GO explicite.
+ * Réversible (un env flag), 0 migration. La décision A/B/C est escaladée (cf. D5).
+ */
+function publishUnverifiedImages(): boolean {
+    return process.env.PUBLISH_UNVERIFIED_IMAGES === "1";
+}
+
+/**
  * Ask Claude Haiku to verify if a sourced product photo actually matches the
  * expected product (anti visual false-positive — north-star « zéro faux positif »).
  *
- * Contract (corrigé 2026-06-23) :
+ * Contract (corrigé 2026-06-23, durci 2026-06-27) :
  *  - **Verification ON** (clé présente) et une ERREUR survient (HTTP !ok / timeout /
  *    throw) → on retourne **false** = « non vérifié » : le candidat est ÉCARTÉ (le
  *    caller passe au suivant). Une erreur de vérif n'est PAS une preuve de match —
  *    retourner true reviendrait à publier une image potentiellement fausse sans preuve
  *    (même anti-pattern fail-open que `verifySIRET valid:true`). Best-effort : si TOUS
  *    les candidats échouent, aucune image ce run, ré-essayée au prochain cycle d'enrich.
- *  - **Verification OFF** (clé ABSENTE, cas prod aujourd'hui) → on retourne true (on ne
- *    bloque pas), MAIS on le rend OBSERVABLE (captureError une fois) car des images
- *    sourcées sont alors publiées SANS vérification de contenu. Le choix « publier ou
- *    bloquer les images non vérifiées en prod » est une décision produit → escaladée.
+ *  - **Verification OFF** (clé ABSENTE, cas prod aujourd'hui) → on **ÉCARTE** le candidat
+ *    par défaut (`return false`) : « ne pas pouvoir vérifier » ≠ « vérifié OK » (leçon
+ *    SIRET). Le test réel du 2026-06-27 a prouvé le danger : la vérif OFF laissait passer
+ *    6/7 photos manifestement fausses. On le rend OBSERVABLE (captureError une fois). Le
+ *    legacy « publier sans vérif » reste possible derrière `PUBLISH_UNVERIFIED_IMAGES=1`
+ *    (option produit escaladée), jamais le défaut.
  * Cost: ~$0.001 per call.
  */
 export async function verifyPhotoWithAI(
@@ -41,18 +58,22 @@ export async function verifyPhotoWithAI(
 ): Promise<boolean> {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-        // Verification désactivée par config (clé absente). On NE bloque pas (compat),
-        // mais on le signale une fois — sinon « images publiées sans vérif » est muet.
+        // Verification désactivée par config (clé absente). Par défaut on ÉCARTE l'image
+        // (north-star « zéro faux positif » : pas d'image > fausse image). Le signaler une
+        // fois — sinon « images bloquées / publiées sans vérif » est muet.
+        const allowUnverified = publishUnverifiedImages();
         if (!warnedVerifierDisabled) {
             warnedVerifierDisabled = true;
             captureError(
                 new Error(
-                    "Image AI verification disabled: ANTHROPIC_API_KEY missing — sourced images are published WITHOUT content verification",
+                    allowUnverified
+                        ? "Image AI verification disabled: ANTHROPIC_API_KEY missing — sourced images are published WITHOUT content verification (PUBLISH_UNVERIFIED_IMAGES=1)"
+                        : "Image AI verification disabled: ANTHROPIC_API_KEY missing — sourced images are BLOCKED (set PUBLISH_UNVERIFIED_IMAGES=1 to publish unverified)",
                 ),
                 { module: "serper", phase: "verifyPhotoWithAI" },
             );
         }
-        return true;
+        return allowUnverified;
     }
 
     try {
