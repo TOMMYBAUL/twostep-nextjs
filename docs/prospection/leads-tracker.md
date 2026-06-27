@@ -1,16 +1,45 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-26 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-27 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 137
-- NOUVEAU : 43
+- Total leads : 147
+- NOUVEAU : 46
 - CONTACTE : 1
-- BROUILLON : 68
+- BROUILLON : 72
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Samedi — 2026-06-27 (L'Eclaireur) — Victor-Hugo épuisé → NOUVEAUX prospects zone Rémusat/Wilson, 4 emails trouvés
+
+**Agent** : L'Eclaireur | **Quartier** : Victor-Hugo (samedi) → pivot zone Rémusat/Wilson/Peyrolières
+
+**Note de session :** Samedi = Victor-Hugo dans la rotation. Victor-Hugo ÉPUISÉ DÉFINITIF (9/9 boutiques traitées — confirmé depuis 02/05). Session convertie en exploration de la zone étendue Victor-Hugo (rue de Rémusat, place Wilson, rue Peyrolières) via le fichier toulouse-merchants-full.json (1561 marchands) — 23 nouveaux candidats identifiés, 10 investigués. **4 emails confirmés : JEAN CHAMBERT (contact@joailleriechambert.com ✅), ANTOINETTE CAMPS/BIJOUTERIE CAMPS (campsrubio.antoinette@orange.fr ✅), MA JOLIE MAMA CONCEPT STORE (majoliemama@gmail.com ✅), ETHIC ET CHIC (anbekele@ethicetchic.fr ✅).** 3 nouvelles ÉCARTÉES : PEYROLIA (liquidation judiciaire avril 2018, radiée oct 2018), RAINBOW FACTORY (établissement Toulouse fermé — actif à Paris uniquement), SOFAR/EQUIVALENZA (franchise hors cible Two-Step). 3 NOUVEAU sans email : SAINT PAULIN (bijouterie récente fév 2023, tél uniquement), CASA AZUL (maroquinerie août 2025, IG @casa_azul_toulouse, s'est opposée à prospection Pappers), AD VINTAGE (vintage jan 2026, 7700 abonnés IG @ads.vintage.toulouse, s'est opposé à prospection Pappers). Notion MCP indisponible (14ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| JEAN CHAMBERT (JOAILLERIE CHAMBERT) | Victor-Hugo/Wilson | Bijouterie/Horlogerie | Elisabeth Chambert (polenne) | contact@joailleriechambert.com | 308159292 | 9/10 | BROUILLON | Email confirmé via joailleriechambert.com (contact page + site actif). Active depuis 1976, Facebook + IG @joailleriechambert. 9 place du Président Wilson. |
+| ANTOINETTE CAMPS (BIJOUTERIE CAMPS) | Victor-Hugo/Dupuy | Bijouterie/Horlogerie | Antoinette Camps (rubio) | campsrubio.antoinette@orange.fr | 411142458 | 7/10 | BROUILLON | Email personnel orange.fr confirmé via horairesdouverture24.fr + multiples snippets Google. Active 40+ ans, Mar-Sam 10h-20h, site bijouterie-camps-toulouse.fr, FB @bijouterie.camps.toulouse. 26 place Dupuy. |
+| MA JOLIE MAMA CONCEPT STORE | Victor-Hugo/Rémusat | Mode/Concept | Sultana Larue (cohen) | majoliemama@gmail.com | 888108172 | 7/10 | BROUILLON | Email confirmé via Facebook @majoliemama (snippets Google). Active Mar-Sam 10h-19h, IG @majoliemama_toulouse. 15 rue de Rémusat. |
+| ETHIC ET CHIC | Victor-Hugo/Peyrolières | Mode/Éthique équitable | Philippe Jalby | anbekele@ethicetchic.fr | 478423973 | 8/10 | BROUILLON | Email confirmé via ethicetchic.fr (page officielle). Active depuis 2004, 2 boutiques (39 rue Peyrolières + 29 rue Gambetta). ⚠️ email au nom d'un collaborateur (Anbekele) pas du gérant Jalby — contacter quand même. |
+| SAINT PAULIN | Victor-Hugo/Rémusat | Bijouterie | Catherine Jimenez | — | 948637442 | 6/10 | NOUVEAU | Email non trouvé (1er passage 27/06) — aucun site ni email public, tél 05 62 26 74 24. Ouverte fév 2023. 40 rue de Rémusat. Visite terrain. |
+| CASA AZUL | Victor-Hugo/Peyrolières | Maroquinerie | Emilie Devin | — | 990627598 | 7/10 | NOUVEAU | Email non trouvé (1er passage 27/06) — IG @casa_azul_toulouse, ouverte août 2025, Pappers: s'est opposée à prospection. Lun 14h-19h, Mar-Sam 11h-19h. 19 rue Peyrolières. Visite terrain. |
+| AD VINTAGE | Victor-Hugo/Wilson | Mode/Vintage | Adrien Ioualalen | — | 999934540 | 7/10 | NOUVEAU | Email non trouvé (1er passage 27/06) — IG @ads.vintage.toulouse (7700 abonnés), 4,9/5 Google, jan 2026, Pappers: s'est opposé à prospection. Vraie adresse: 4 rue Bouquières (pas place Wilson). Visite terrain ou DM Instagram. |
+| PEYROLIA | Victor-Hugo/Peyrolières | Mode femme | Coline Piechaud | — | 812898211 | — | ECARTE | Liquidation judiciaire avril 2018 (cessation paiements mars 2018), radiée oct 2018. ÉCARTÉE DÉFINITIF. |
+| RAINBOW FACTORY | Victor-Hugo/Peyrolières | Mode | Corinne Nin (collin) | — | 484985288 | — | ECARTE | Établissement Toulouse FERMÉ — 2 établissements actifs à Paris uniquement (75004 + 75011). Hors cible. ÉCARTÉE DÉFINITIF. |
+| SOFAR (EQUIVALENZA) | Victor-Hugo/Rémusat | Cosmétique | Florian Renon | — | 849995881 | — | ECARTE | Franchise Equivalenza — produits de marque propre franchise (hors cible Two-Step = produits de marque tiers). IG @equivalenzatlse 4890 abonnés. 13 rue Rémusat. ÉCARTÉE DÉFINITIF. |
+
+**⚠️ 4 NOUVEAUX BROUILLONS À RÉDIGER (L'Auditeur) :**
+- ✅ Elisabeth Chambert (JOAILLERIE CHAMBERT) — contact@joailleriechambert.com — bijouterie/horlogerie prestige place Wilson depuis 1976
+- ✅ Antoinette Camps (BIJOUTERIE CAMPS) — campsrubio.antoinette@orange.fr — bijouterie traditionnelle 40+ ans place Dupuy
+- ✅ Sultana Larue (MA JOLIE MAMA) — majoliemama@gmail.com — concept store mode/maternité rue Rémusat
+- ✅ Philippe Jalby (ETHIC ET CHIC) — anbekele@ethicetchic.fr — mode équitable 2 boutiques depuis 2004
+
+*Note : Notion MCP indisponible (14ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-06-27". Zone explorée : 23 nouveaux candidats zone Rémusat/Wilson/Peyrolières issus de toulouse-merchants-full.json — 13 candidats restants non encore investigués pour prochaine session samedi.*
+
+---
 
 ### Mercredi — 2026-06-25 (L'Eclaireur) — Saint-Rome ÉPUISÉ — 0 email trouvé (2e vérification)
 
