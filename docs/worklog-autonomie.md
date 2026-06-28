@@ -5,6 +5,52 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-28 (run autonome #2) · MAILLON 9 enrichissement — sous-tâche (c) : extraction MARQUE (null 7/7)
+
+**Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1)** : (a)+(b) faites. Ordre Thomas → (c) marque, explicitement
+listée « PEUT seule (unit-testable, pas d'env live) : la logique d'extraction marque (c) ».
+
+**Diagnostic (vérifié dans le code réel)** : `brand` null 7/7 au test réel du 27/06. Cause racine = **EAN-Search est la
+source PRIMAIRE** (`fetchEanData` l'essaie en premier, meilleure couverture EU 1,1 Md produits) et **renvoie TOUJOURS
+`brand: null`** (`fetchFromEanSearch`, commentaire « EAN-Search doesn't return brand separately »). Donc tout produit
+résolu par EAN-Search restait sans marque — alors que le **nom canonique autoritaire** qu'elle renvoie la porte presque
+toujours (« Nike Air Force 1… », « Bose QuietComfort… »). UPCitemdb/OBF/OPF renvoient bien une marque mais ne sont
+atteints que si EAN-Search échoue (rare). Aucun fallback de dérivation marque n'existait.
+
+**Fait** (commit à suivre, branche `feat/pipeline-v1-handoff-2026-06-12`)
+- **NOUVEAU** `src/lib/ean/brand.ts` — récupération par **ALLOW-LIST** (choix anti-faux-positif, north-star « exactitude
+  = la promesse ») : `KNOWN_BRANDS` (~140 marques FR/monde : sneakers, mode, maroquinerie, électronique, jouets, beauté,
+  food, électroménager), `extractKnownBrand(text)` (match **mot-entier** space-paddé, accent/tiret-insensible via NFD →
+  jamais de faux positif substring ; « technike »≠Nike), `resolveBrand(source, résolu, marchand)` (précédence). Une marque
+  inconnue → `null` (non-régression : c'était null avant), JAMAIS inventée.
+- **EDIT** `src/lib/ean/lookup.ts` `applyEnrichment` — fallback **APRÈS** la garde de cohérence UPC (donc ne touche PAS
+  `category`, qui a sa propre source) : `if (!data.brand) data.brand = extractKnownBrand(data.name) ?? extractKnownBrand(prod.name)`.
+  Récupère depuis le nom **résolu autoritaire** (clé = code-barres scanné) d'abord, puis le nom marchand.
+
+**Double gain** (pourquoi c'est north-star, pas cosmétique) :
+1. **Photos** : `searchProductImage(prod.name, data.brand ?? prod.brand, …)` reçoit enfin la marque → la requête de (b)
+   `buildImageSearchQueries` devient « Nike <nom> product » au lieu d'un nom nu → **attaque directement le n°1** (6/7
+   photos fausses). 2. **Google `g:brand`** (attribut recommandé Shopping).
+
+**Trouvé / décidé** : allow-list > heuristique « 1er mot capitalisé » (qui inventerait des marques = exactement le faux
+positif qui fait fuir un marchand + rejeter le feed). Récupération placée APRÈS la garde pour ne pas faire annuler la
+`category` par la garde sur une marque récupérée.
+
+**Testé** : `npx tsc --noEmit` OK ; `npm run test:run` → **923 passed** (903→923, +20). `tests/lib/ean/brand.test.ts` =
+fixture des **7 marques réelles du test 27/06** (preuve SANS yeux) + adversarial substring + accents/tirets + inconnue→null
++ précédence `resolveBrand`. Revue **silent-failure-hunter SOUND** (0 faux positif, ordre garde/récup correct, 0 régression
+photo) ; 1 LOW corrigé (alias « Bang Olufsen » dupliqué de « Bang & Olufsen » → retiré, collision de normalisation).
+
+**Reste** : (d) mapping catégorie anglais→taxo FR (unit-testable, prochain run) ; e2e photo vrais EAN = escaladé (env live).
+Blast LOW (signature inchangée, `applyEnrichment` privé → seul `lookupEan` l'appelle). 0 migration, réversible.
+
+**Scorecard** : Preuve 7/10 (fixture réelle des 7 marques inspectée, mais correctude finale = sur vraie data, plafond 8) ·
+Sécu north-star 8/10 (allow-list = 0 invention, revue SOUND) · Réversibilité 10/10 (0 migration, fichier neuf + 1 edit) ·
+Scope 9/10 (1 unité ciblée, 3 fichiers) · Align 9/10 (avance la marque ET les photos = le n°1). 1 bug racine corrigé,
+3 fichiers (1 neuf code + 1 edit + 1 test). CFR 10 runs : 100 % (les 12 derniers ledger exit=0 sauf 2 rate-limit 23/06).
+
+---
+
 ## 2026-06-28 (run autonome) · MAILLON 9 enrichissement — sous-tâche (b) : stratégie de requête image Serper (numéro EAN brut = bruit)
 
 **Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1)** : suite de (a) faite le 27/06. Ordre conseillé Thomas =

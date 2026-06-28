@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { extractKnownBrand } from "@/lib/ean/brand";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
@@ -844,6 +845,16 @@ async function applyEnrichment(
             data.brand = null;
             data.category = null;
         }
+    }
+
+    // Brand recovery (maillon 9 (c)): EAN-Search — the primary EAN source — never returns a
+    // brand, so most products kept brand=null even though the authoritative resolved name
+    // carries it. Recover a RECOGNISED brand (allow-list only → never invents) from the
+    // resolved name first (keyed by the scanned barcode), then the merchant name. Fills only
+    // when the source gave none, and never touches category (it has its own source above).
+    if (!data.brand) {
+        const recovered = extractKnownBrand(data.name) ?? extractKnownBrand(prod?.name);
+        if (recovered) data.brand = recovered;
     }
 
     if (data.brand) updateData.brand = data.brand;

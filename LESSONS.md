@@ -374,6 +374,17 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   être un terme de recherche d'IMAGE** (texte de page ≠ identité visuelle) ; le réserver aux lookups d'identité. Garde
   dégénérée : sans nom NI marque → `[]` (pas de query « product » orpheline = image random/crédit gaspillé). Correctude
   visuelle finale non auto-certifiable sans yeux → e2e photo escaladé. (maillon 9 (b), serper.ts, 2026-06-28, SF-hunter SOUND)
+- ❌ **`brand` null 7/7 = la SOURCE PRIMAIRE ne fournit pas le champ, et aucun fallback ne le récupère du nom.** EAN-Search
+  (essayée en 1er dans `fetchEanData`, meilleure couverture) hardcode `brand: null` → la plupart des produits restaient sans
+  marque alors que le **nom canonique autoritaire la porte** (« Nike Air Force 1… »). Fix maillon 9 (c) : récupération par
+  **ALLOW-LIST** (`src/lib/ean/brand.ts` `extractKnownBrand`, match mot-entier accent/tiret-insensible) câblée dans
+  `applyEnrichment` quand `!data.brand`. **Allow-list > heuristique « 1er mot capitalisé »** : une heuristique inventerait
+  des marques = le faux positif north-star (marchand fuit, Google rejette) ; une allow-list ne peut QU'émettre une marque
+  connue, inconnue→null = non-régression. **Règle : quand un champ est « null partout », vérifier d'abord si la source
+  PRIMAIRE le fournit (souvent non) AVANT de soupçonner un bug de parsing ; pour récupérer une donnée publiée, préférer un
+  allow-list (0 invention) à une heuristique générative.** Placer la récupération APRÈS une garde de cohérence qui null
+  brand+category, pour ne pas faire annuler la `category` (source distincte). La marque alimente AUSSI la requête image (b)
+  → double gain (photo + `g:brand`). (maillon 9 (c), ean/brand.ts, 2026-06-28, SF-hunter SOUND)
 
 ## Boucle d'écriture par item + RPC atomique (livraison reçue)
 - ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`

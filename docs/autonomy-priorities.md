@@ -106,6 +106,19 @@ plus un mur Google externe.
 >      Signature inchangée → 5 callers non impactés (blast LOW). `tests/images-search-query.test.ts` (+10, **893→903**).
 >      Revue SF-hunter **SOUND** (0 perte couverture, MEDIUM corrigé), 0 migration, réversible. **Reste e2e photo
 >      vrais EAN = escaladé** (env live). Détail : worklog 28/06.
+>    - ✅ **(c) FAIT (2026-06-28)** : **marque null 7/7** = cause racine **EAN-Search (source PRIMAIRE) renvoie
+>      TOUJOURS `brand: null`** (`fetchFromEanSearch`, « doesn't return brand separately ») → la plupart des produits
+>      restaient sans marque alors que le **nom canonique autoritaire la porte** (« Nike Air Force 1… »). Récupération
+>      par **ALLOW-LIST** (zéro faux positif = north-star : ne peut JAMAIS inventer une marque ; inconnue → null =
+>      non-régression) : `src/lib/ean/brand.ts` (`KNOWN_BRANDS` ~140 marques FR/monde, `extractKnownBrand` match
+>      mot-entier accent/tiret-insensible, `resolveBrand`). Câblée dans `applyEnrichment` APRÈS la garde de cohérence
+>      (ne touche PAS `category`) : `if (!data.brand) data.brand = extractKnownBrand(data.name) ?? extractKnownBrand(prod.name)`.
+>      **Double gain** : alimente la requête image (b) `data.brand ?? prod.brand` → photos « Nike <nom> » au lieu d'un
+>      nom nu (attaque le n°1 = 6/7 photos fausses) + `g:brand` Google. Preuve SANS yeux : `tests/lib/ean/brand.test.ts`
+>      (+20, **903→923**) = fixture des 7 marques réelles (Carhartt/Bose/Ray-Ban/Nike/LEGO/VTech/Coca) + adversarial
+>      substring (« technike »≠Nike, « vulgaris »≠LG) + inconnue→null. Revue SF-hunter **SOUND** (0 faux positif, 1 LOW
+>      alias dupliqué corrigé). Blast LOW (signature inchangée). 0 migration, réversible. **Reste (d) catégorie** +
+>      e2e photo vrais EAN escaladé. Détail : worklog 28/06.
 >
 > **🚦 CE QUE LA BOUCLE PEUT vs NE PEUT PAS (séparer, sinon on refait le piège) :**
 > - **PEUT seule (unit-testable, pas d'env live)** : la régression fail-open (1), la logique d'extraction
