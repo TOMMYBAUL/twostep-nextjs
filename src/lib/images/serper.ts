@@ -189,9 +189,68 @@ const ECOMMERCE_DOMAINS = new Set([
 ]);
 
 /**
+ * Build the ORDERED list of Google Images search queries for a product.
+ *
+ * PURE (no network) → la STRATÉGIE de requête est unit-testable (la correctude
+ * visuelle des images, elle, exige une clé Serper live = escaladé). Cascade,
+ * meilleur signal d'abord :
+ *  1. SKU/référence (+marque) — une référence modèle assignée par la marque
+ *     (ex "DD1391-100") est très discriminante sur Google Images.
+ *  2. marque + nom + coloris + "product" — visuels de catalogue e-commerce.
+ *  3. marque + nom + coloris + "fiche produit" — repli FR pour marques locales.
+ *
+ * ⚠️ Le NUMÉRO EAN brut n'est DÉLIBÉRÉMENT PAS une requête d'image.
+ * Raison (maillon 9, test réel 2026-06-27 : 6/7 photos FAUSSES) : Google Images
+ * matche un nombre à 13 chiffres contre le TEXTE des pages → renvoie du bruit
+ * (comparateurs de prix / marketplaces) au lieu du produit (colle→pantalon,
+ * BBQ→casque). Le rôle de l'EAN est l'IDENTITÉ (→ nom canonique), déjà fait en
+ * amont ; le nom résolu + la marque sont le seul signal image fiable.
+ */
+export function buildImageSearchQueries(
+    productName: string,
+    brand?: string | null,
+    sku?: string | null,
+    color?: string | null,
+): string[] {
+    // Normalise / et , → espace (séparateurs de coloris), collapse les espaces.
+    const colorClean = color ? color.replace(/[\/,]/g, " ").replace(/\s+/g, " ").trim() : "";
+    const join = (...parts: (string | null | undefined)[]) =>
+        parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+
+    const name = productName.trim();
+    const brandClean = brand?.trim() || "";
+    const queries: string[] = [];
+
+    // 1. SKU (le plus précis) — ≥4 chars pour éviter de matcher un code parasite.
+    //    Une référence SKU est auto-suffisante (discriminante seule), même sans nom/marque.
+    const skuClean = sku?.trim() ?? "";
+    if (skuClean.length >= 4) {
+        queries.push(join(brandClean ? `${skuClean} ${brandClean}` : `${skuClean} ${name}`, colorClean));
+    }
+
+    // 2 & 3 : marque + nom (+ coloris) → uniquement si on a une identité produit
+    //   (nom OU marque). Sans aucune des deux, ces requêtes se réduiraient à
+    //   "[coloris] product" / "fiche produit" = recherche vide de sens (image au
+    //   hasard, crédit Serper gaspillé, log trompeur). Mieux vaut 0 requête → le
+    //   caller renvoie null qu'une image random (north-star « zéro faux positif »).
+    if (name || brandClean) {
+        // 2. marque + nom + coloris + "product" (e-commerce)
+        queries.push(join(brandClean, name, colorClean, "product"));
+        // 3. marque + nom + coloris + "fiche produit" (repli FR)
+        queries.push(join(brandClean, name, colorClean, "fiche produit"));
+    }
+
+    // Dédup en préservant l'ordre + retire les vides.
+    return [...new Set(queries.filter(Boolean))].filter((q) => q.length > 0);
+}
+
+/**
  * Search Google Images for a product photo.
- * Strategy cascade: SKU (most precise) → EAN+name → name-only fallback.
+ * Cascade des requêtes via `buildImageSearchQueries` (cf. sa doc pour la stratégie).
  * Returns the best verified image URL or null.
+ *
+ * `ean` est conservé dans la signature (les appelants le passent) mais n'est PAS
+ * utilisé comme terme de recherche d'image (bruit — cf. buildImageSearchQueries).
  */
 export async function searchProductImage(
     productName: string,
@@ -201,51 +260,19 @@ export async function searchProductImage(
     /** Fix 30/04 — coloris attendu (ex "Noir/Blanc"). Étoffe la query + Haiku verify. */
     color?: string | null,
 ): Promise<string | null> {
+    void ean; // identité, jamais un terme de requête image (bruit Google Images).
     const apiKey = process.env.SERPER_API_KEY;
     if (!apiKey) {
         console.error("[serper] SERPER_API_KEY is not set!");
         return null;
     }
 
-    // Helper : suffixe coloris ajouté à chaque query si dispo (ex " Noir Blanc")
-    // Normalise / → espace pour la query Google
-    const colorSuffix = color
-        ? " " + color.replace(/[\/,]/g, " ").replace(/\s+/g, " ").trim()
-        : "";
-
-    // Strategy 1: SKU/reference → most precise (e.g. "DD1391-100" = one exact product)
-    if (sku && sku.length >= 4) {
-        const skuQuery = (brand ? `${sku} ${brand}` : `${sku} ${productName}`) + colorSuffix;
-        const skuResult = await searchSerperImages(apiKey, skuQuery, productName, brand, color);
-        if (skuResult) return skuResult;
+    for (const query of buildImageSearchQueries(productName, brand, sku, color)) {
+        const result = await searchSerperImages(apiKey, query, productName, brand, color);
+        if (result) return result;
     }
 
-    // Strategy 2: EAN + name → finds the EXACT product variant
-    if (ean) {
-        const eanQuery = `${ean} ${productName}${colorSuffix}`;
-        const eanResult = await searchSerperImages(apiKey, eanQuery, productName, brand, color);
-        if (eanResult) return eanResult;
-    }
-
-    // Strategy 3: brand + name + coloris + "product" → e-commerce catalog shots
-    const parts = [];
-    if (brand) parts.push(brand);
-    parts.push(productName);
-    if (color) parts.push(color.replace(/[\/,]/g, " ").trim());
-    parts.push("product");
-    const query = parts.join(" ");
-
-    const result = await searchSerperImages(apiKey, query, productName, brand, color);
-    if (result) return result;
-
-    // Strategy 4: French search fallback for local brands
-    const frParts = [];
-    if (brand) frParts.push(brand);
-    frParts.push(productName);
-    if (color) frParts.push(color.replace(/[\/,]/g, " ").trim());
-    frParts.push("fiche produit");
-
-    return searchSerperImages(apiKey, frParts.join(" "), productName, brand, color);
+    return null;
 }
 
 async function searchSerperImages(

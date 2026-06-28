@@ -365,6 +365,15 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   fail-CLOSED par défaut ; le fail-open n'est légitime que pour une vérif dont l'échec ne corrompt rien.** Régression
   sans yeux = fixture de paires `(produit, image fausse)` + verdict Haiku mocké « non » → écart prouvé. (maillon 9,
   serper.ts, 2026-06-27, revue SF-hunter SOUND)
+- ❌ **Le NUMÉRO EAN brut comme requête Google Images = bruit (mauvaises photos).** `searchProductImage` lançait
+  `` `${ean} ${productName}` `` : Google Images matche un nombre à 13 chiffres contre le TEXTE des pages → renvoie des
+  comparateurs/marketplaces qui listent ce code, pas le produit (cause directe des 6/7 photos fausses du 27/06). L'EAN
+  sert l'IDENTITÉ (→ nom canonique, déjà résolu en amont) ; le **nom + marque** est le seul signal image fiable. Fix
+  (b) : construction de requêtes extraite en fonction PURE `buildImageSearchQueries` (SKU≥4 → marque+nom+"product" →
+  +"fiche produit" FR), **EAN retiré des termes de recherche**. **Règle : un identifiant-code (EAN/UPC) ne doit jamais
+  être un terme de recherche d'IMAGE** (texte de page ≠ identité visuelle) ; le réserver aux lookups d'identité. Garde
+  dégénérée : sans nom NI marque → `[]` (pas de query « product » orpheline = image random/crédit gaspillé). Correctude
+  visuelle finale non auto-certifiable sans yeux → e2e photo escaladé. (maillon 9 (b), serper.ts, 2026-06-28, SF-hunter SOUND)
 
 ## Boucle d'écriture par item + RPC atomique (livraison reçue)
 - ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`

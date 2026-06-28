@@ -5,6 +5,50 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-28 (run autonome) · MAILLON 9 enrichissement — sous-tâche (b) : stratégie de requête image Serper (numéro EAN brut = bruit)
+
+**Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1)** : suite de (a) faite le 27/06. Ordre conseillé Thomas =
+(a) régression vérif → **(b) requête Serper** → (c) marque → (d) catégorie. (b) est la partie PURE explicitement
+listée comme « PEUT seule (unit-testable, pas d'env live) : la stratégie de requête Serper en pur (formatage requête) ».
+
+**Diagnostic (vérifié dans le code réel)** : `searchProductImage` (`src/lib/images/serper.ts`) lançait jusqu'à 4
+stratégies de requête Google Images, dont la **stratégie 2 = le NUMÉRO EAN BRUT** : `` `${ean} ${productName}` ``.
+Google Images matche un nombre à 13 chiffres contre le TEXTE des pages → renvoie du bruit (comparateurs de prix /
+marketplaces qui listent ce code) au lieu du produit → cause directe des photos fausses (avec la vérif OFF, ça
+publiait ; avec (a) fail-closed, Haiku rejette mais la requête gaspille quand même le 1er slot d'image). L'EAN a déjà
+servi son rôle d'IDENTITÉ en amont (→ nom canonique via `fetchEanData`/`searchEanByName`) ; le nom + marque est le
+seul signal image fiable.
+
+**Fait (vérifiable, code — réversible, 0 migration)** :
+- Extraction d'une fonction **PURE** `buildImageSearchQueries(productName, brand, sku, color): string[]` (testable
+  sans clé Serper) qui construit la cascade ordonnée : **(1) SKU/réf** (≥4 chars, auto-suffisant) → **(2) marque+nom
+  +coloris+"product"** → **(3) marque+nom+coloris+"fiche produit"** (repli FR). **Le numéro EAN brut n'est PLUS jamais
+  une requête image** (supprimé). `searchProductImage` itère sur ces queries ; signature inchangée (`ean` conservé
+  mais `void ean` + doc = identité, pas un terme de recherche) → **5 callers non impactés** (blast radius LOW vérifié).
+- Garde dégénérée (finding MEDIUM revue) : sans nom NI marque, les stratégies 2/3 se réduiraient à « product » /
+  « fiche produit » seuls (image au hasard, crédit Serper gaspillé) → on n'émet ces queries que si `name || brand` ;
+  le SKU reste auto-suffisant. Cas dégénéré → `[]` → caller renvoie `null` (pas d'image random).
+
+**Preuve (testable SANS yeux)** : `tests/images-search-query.test.ts` (+10, suite **893→903**) : aucune query ne
+contient l'EAN ni une suite de ≥8 chiffres ; ordre des 3 stratégies ; SKU ≥4 en tête / <4 ignoré ; coloris normalisé
+(/ , → espace, pas d'espaces doubles) ; sans marque → nom seul (pas de « product » orphelin) ; cas dégénéré (ni nom
+ni marque, ou coloris seul) → `[]` ; SKU seul auto-suffisant → `["DD1391-100"]` ; dédup. Chaque assertion échouerait
+sur l'ancien code (qui injectait l'EAN brut).
+
+**Testé** : `npm run test:run` **903** vert ; `tsc --noEmit` OK (exit 0). Revue **silent-failure-hunter** : refactor
+**SOUND** (0 perte de couverture — `productName` toujours cherché en stratégie 2/3 ; `searchSerperImages`/
+`verifyPhotoWithAI` non touchés, observabilité intacte) ; 1 finding **MEDIUM corrigé ce run** (queries dégénérées).
+
+**Reste maillon 9** : (c) extraction marque (null 7/7 — EAN-Search source primaire renvoie `brand:null`) ; (d) mapping
+catégorie anglais→taxo FR (raw EAN-Search/OBF stocké tel quel = anglais + faux comme Coca→home&garden). **e2e photo
+sur vrais EAN = ESCALADÉ** (exige clé Serper/ANTHROPIC + serveur live : la Routine cloud est « code+tests seulement »).
+
+**Scorecard** : Preuve 6/10 (sortie pure prouvée champ par champ + cause réelle, mais correctude VISUELLE non prouvable
+sans env live = plafonné) · Sécu 8/10 (SF-hunter SOUND, MEDIUM corrigé, 0 perte) · Rev 10/10 (0 migration, `git revert`)
+· Scope 9/10 (1 fichier prod + 1 test) · Align 9/10 (attaque la cause directe des 6/7 fausses photos, north-star exactitude).
+
+---
+
 ## 2026-06-27 (run autonome) · MAILLON 9 enrichissement — sous-tâche (a) : régression + durcissement du fail-open de la vérif photo IA
 
 **Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1 explicite Thomas 2026-06-27)** : le test réel du 27/06

@@ -97,6 +97,15 @@ plus un mur Google externe.
 >      colle…) verdict Haiku « non » → écartées, + clé-absente→false, + réponse vide→false. Revue SF-hunter **SOUND**,
 >      0 migration, réversible. **Conséquence prod** : aucune image publiée tant que `ANTHROPIC_API_KEY` non posée
 >      (option A reco). **Reste (b)(c)(d) unit-testables** + e2e photo vrais EAN escaladé (env live). Détail : worklog 27/06.
+>    - ✅ **(b) FAIT (2026-06-28, partie PURE)** : `searchProductImage` lançait une requête Google Images sur le
+>      **NUMÉRO EAN BRUT** (`` `${ean} ${productName}` ``) — Google matche 13 chiffres contre le texte des pages →
+>      bruit comparateurs/marketplaces = cause directe des photos fausses. Extrait en fonction PURE
+>      `buildImageSearchQueries(productName, brand, sku, color)` (cascade SKU≥4 → marque+nom+"product" → +"fiche
+>      produit" FR) ; **l'EAN n'est PLUS jamais un terme de requête image** (rôle = identité, déjà fait en amont).
+>      Garde dégénérée (finding MEDIUM revue) : ni nom ni marque → `[]` (pas d'image au hasard / crédit gaspillé).
+>      Signature inchangée → 5 callers non impactés (blast LOW). `tests/images-search-query.test.ts` (+10, **893→903**).
+>      Revue SF-hunter **SOUND** (0 perte couverture, MEDIUM corrigé), 0 migration, réversible. **Reste e2e photo
+>      vrais EAN = escaladé** (env live). Détail : worklog 28/06.
 >
 > **🚦 CE QUE LA BOUCLE PEUT vs NE PEUT PAS (séparer, sinon on refait le piège) :**
 > - **PEUT seule (unit-testable, pas d'env live)** : la régression fail-open (1), la logique d'extraction
