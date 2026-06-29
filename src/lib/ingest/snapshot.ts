@@ -7,6 +7,7 @@ import { selectProductsToZero, chunk, type ReconcileDecision } from "@/lib/inges
 import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
 import type { ColumnCoverage } from "@/lib/ingest/parse-stock";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 export type SnapshotResult = {
     products_created: number;
@@ -115,10 +116,23 @@ export async function ingestStockSnapshot(
     // silencieuse). Mieux vaut échouer fort (les 2 routes catch + captureError)
     // que dupliquer toute la boutique en aveugle. (north-star : « erreurs qui
     // lèvent, jamais [] masqué ».)
-    const { data: existingProducts, error: existingErr } = await admin
-        .from("products")
-        .select("id, ean, name, sku")
-        .eq("merchant_id", merchantId);
+    // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
+    // erreur) → sur un catalogue >1000, les produits au-delà du 1000ᵉ seraient
+    // absents de l'index → recréés en DOUBLON. `fetchAllRows` lit tout le
+    // catalogue. `.order("id")` garantit un ordre DÉTERMINISTE entre les pages
+    // (anti-gap/doublon de pagination) indépendamment du verrou d'ingestion.
+    const { data: existingProducts, error: existingErr } = await fetchAllRows<{
+        id: string;
+        ean: string | null;
+        name: string | null;
+        sku: string | null;
+    }>(() =>
+        admin
+            .from("products")
+            .select("id, ean, name, sku")
+            .eq("merchant_id", merchantId)
+            .order("id", { ascending: true }),
+    );
     if (existingErr) {
         throw new Error(`Lecture des produits existants échouée (matching impossible): ${existingErr.message}`);
     }
@@ -294,11 +308,21 @@ export async function ingestStockSnapshot(
         errors.push("Réconciliation annulée: aucune ligne exploitable dans le push");
     }
     if (opts.reconcile && accepted.length > 0) {
-        const { data: inStockRows, error: inStockErr } = await admin
-            .from("stock")
-            .select("product_id, quantity, products!inner(merchant_id)")
-            .eq("products.merchant_id", merchantId)
-            .gt("quantity", 0);
+        // PAGINÉ : même troncature silencieuse `max-rows` que l'index ci-dessus.
+        // Un catalogue >1000 produits en stock verrait sa lecture coupée à 1000 →
+        // les produits VENDUS au-delà (absents du push) ne seraient jamais candidats
+        // au passage à 0 → resteraient « en stock » = faux positif n°1. On lit tout.
+        const { data: inStockRows, error: inStockErr } = await fetchAllRows<{
+            product_id: string;
+            quantity: number;
+        }>(() =>
+            admin
+                .from("stock")
+                .select("product_id, quantity, products!inner(merchant_id)")
+                .eq("products.merchant_id", merchantId)
+                .gt("quantity", 0)
+                .order("product_id", { ascending: true }),
+        );
 
         // Si la lecture du stock en cours échoue, on NE PEUT PAS décider quels
         // produits passer à 0. Un `inStockRows ?? []` silencieux ferait croire que

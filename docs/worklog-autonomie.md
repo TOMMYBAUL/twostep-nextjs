@@ -3296,3 +3296,49 @@ pas de clés AI/env live) · Sécu north-star 8/10 (SF-hunter SOUND, 0 faux posi
 Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (1 lib + 2 wirings + 1 test, 4 fichiers) ·
 Align 9/10 (catégorie exacte FR = data exacte, cœur enrichissement priorité n°1). 1 bug réel (anglais
 verbatim) + 1 jumeau (validate). 4 fichiers. tests 923→933.
+
+## 2026-06-30 — SCALE/VOLUME : anti-troncature `max-rows` PostgREST sur l'ingestion
+
+**Sourcing (§6)** : maillon 9 (a)(b)(c)(d) + images OBF/OPF COMPLETS (loop-doable épuisé ; reste e2e
+photo + clés AI = escaladé X). Prochain [R] in-scope = FILTRE DE CAP #4 **SCALE/VOLUME** (« prochain [R] »,
+Deerskin = milliers de SKU). Premise vérifiée dans le code réel AVANT (LESSONS ~70% findings faux).
+
+**Signal/premise vérifié (pas devinette)** : `grep .range(` → AUCUNE pagination dans google/ingest. Les 2
+lectures de `ingestStockSnapshot` (`snapshot.ts:118` index produits existants + `:297` lecture stock-en-cours
+réconciliation) sont `.select().eq()` non bornées. PostgREST tronque SILENCIEUSEMENT à 1000 lignes (défaut
+Supabase `max-rows`), sans erreur. Vérifié : **0 contrainte UNIQUE sur `products(merchant_id, ean)`** (seul
+`slug` unique, migration 012) → la troncature de l'index → produits >1000ᵉ vus « nouveaux » → **DOUBLONS**.
+Lecture stock tronquée → vendu au-delà du 1000ᵉ (absent du push) jamais remis à 0 = **faux « en stock »** (n°1).
+Invisible sur petites fixtures (tous les maillons prouvés <100 produits), mord à l'échelle pilote.
+
+**Fait** (branche `feat/pipeline-v1-handoff-2026-06-12`)
+- Helper `fetchAllRows(makeQuery, pageSize=1000)` (`src/lib/supabase/paginate.ts`) : pagine `.range()` jusqu'à
+  une page < pageSize, contrat retour identique `{data,error}`. Erreur 1re page→propagée ; **fail-loud** sur
+  `data=null` sans erreur (anomalie SDK → erreur synthétique, jamais index vide masqué / set partiel en succès).
+- Câblé sur les 2 lectures de `snapshot.ts` avec `.order("id")`/`.order("product_id")` = ordre DÉTERMINISTE
+  entre pages (anti-gap concurrent, indépendant du verrou). Sémantique d'erreur préservée (existingErr→throw,
+  inStockErr→captureError+skip).
+
+**Preuve (méthode §1bis, field-level)** : `tests/lib/supabase/paginate.test.ts` (+10 : complétude 2500 lignes/
+3 pages, multiple exact, page unique, vide, erreur page 1 ET page N, null-page→erreur, pageSize invalide).
+`tests/ingest-snapshot-pagination.test.ts` (+4) : 1500 produits, faux client stateful qui PLAFONNE à 1000 sans
+`.range` (simule PostgREST) → push 1499/1500 → **0 doublon** (`products_created=0`, table reste 1500) + **#1200
+vendu (ligne >1000ᵉ) remis à 0** (`stock_zeroed=1`), produits poussés gardent leur qté. Régression réelle :
+sur l'ancien code non borné, le faux client renverrait 1000 → ~499 doublons + #1200 jamais zéro → tests rouges.
+
+**Revue silent-failure-hunter** : 4 findings. **HIGH** (sync_lock faux pour `/api/catalog/import`) → déjà
+préempté en ajoutant `.order()` (le reviewer le recommande comme « seule garantie sûre vu 2 call sites »).
+**MED** (null-page N>0 = set partiel en succès) + **LOW** (`?? []` no-op silencieux) → corrigés par le fail-loud
+(null→erreur → les 2 appelants lèvent/skip). **LOW** couverture failure-path → test null-page ajouté. 0 silent-
+failure introduit ; au contraire CLÔT la perte silencieuse n°1 à l'échelle.
+
+**Métrique** : `tsc` OK, `test:run` **945→959** (+14). 1 unité [R] in-scope avancée (scale-ingest). **Reste (prochain
+[R], même helper, mécanique)** : 4 lectures produits des sorties Google (Voie A/B/preview/inventory) = même
+troncature non bornée (un feed >1000 omet silencieusement le reste, parité à préserver) ; puis mémoire `lfp-xml`
+50k en RAM + timeouts Vercel. 0 migration, réversible.
+
+**Scorecard** : Preuve 8/10 (intégration field-level à l'échelle sur faux client fidèle, mais synthétique — 0
+marchand réel >1000) · Sécu north-star 8/10 (SF-hunter, 4 findings traités, clôt la perte n°1) · Réversibilité
+10/10 (0 migration, `git revert`) · Scope 9/10 (1 prod + 1 helper + 4 fakes + 2 tests = 8 fichiers, 1 unité) ·
+Align 9/10 (pilier 1 « ne rien oublier » à l'échelle, dé-risque le pilote Deerskin). 2 bugs réels (index→doublons,
+réconciliation→vendu-non-zéro). 8 fichiers. tests 945→959. CFR 10 runs = 100% (0 revert).

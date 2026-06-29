@@ -24,7 +24,7 @@ function makeAdmin(results: { products?: QueryResult; stock?: QueryResult }) {
     function builder(table: string) {
         const b: Record<string, unknown> = {};
         const passthrough = () => b;
-        for (const m of ["select", "eq", "gt", "or", "insert", "update", "upsert", "in"]) {
+        for (const m of ["select", "eq", "gt", "or", "insert", "update", "upsert", "in", "range", "order"]) {
             b[m] = passthrough;
         }
         b.then = (resolve: (v: QueryResult) => unknown, reject: (e: unknown) => unknown) => {

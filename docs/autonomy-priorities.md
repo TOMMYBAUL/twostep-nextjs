@@ -173,6 +173,20 @@ plus un mur Google externe.
 >    des routes/crons (Vercel ~max), réconciliation qui lit tout le catalogue. **Preuve** : ingest +
 >    feed + réconciliation sur N milliers, **0 perte, 0 timeout**, mesure du temps/mémoire. Pilote-
 >    pertinent : une boutique multimarque = des **milliers** de SKU (Deerskin). C'est le prochain [R].
+>    - ✅ **(scale-ingest) FAIT (2026-06-30, run autonome)** : **troncature silencieuse `max-rows` PostgREST
+>      (défaut 1000) sur les 2 lectures de `ingestStockSnapshot`** = perte silencieuse n°1 invisible sur petites
+>      fixtures, qui MORD à l'échelle pilote. Index produits existants + lecture stock-en-cours de la réconciliation
+>      lisaient `.select().eq()` sans `.range()` → catalogue >1000 : produits au-delà du 1000ᵉ (a) absents de l'index
+>      → **DOUBLONS** (0 contrainte UNIQUE sur `ean`) ; (b) absents du set « en stock » → vendu jamais remis à 0 =
+>      faux « en stock ». Fix : helper `fetchAllRows` (`src/lib/supabase/paginate.ts`) qui pagine `.range()` jusqu'à
+>      page < pageSize, ordre déterministe `.order("id")` (anti-gap concurrent : `/api/catalog/import` n'a PAS de
+>      sync_lock), **fail-loud** sur `data=null` sans erreur. Preuve : `tests/lib/supabase/paginate.test.ts` (+10) +
+>      `tests/ingest-snapshot-pagination.test.ts` (+4 : 1500 produits, faux client plafonnant à 1000 → 0 doublon +
+>      #1200 vendu au-delà de 1000 remis à 0). Revue SF-hunter : 4 findings, HIGH `.order`/MED fail-loud corrigés,
+>      2 LOW couverts. 945→959. 0 migration, réversible. **Reste (prochain [R], même helper, mécanique) : les 4
+>      lectures produits des SORTIES Google (Voie A cron `google-feed`, Voie B XML `feed/lfp/[merchantId]`,
+>      `feed-preview`, `google/inventory`) ont la MÊME troncature → un feed >1000 produits omet silencieusement le
+>      reste ; parité à préserver entre les 4. PUIS : mémoire `lfp-xml` (TOUT en RAM sur 50k), timeouts crons/routes Vercel.**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

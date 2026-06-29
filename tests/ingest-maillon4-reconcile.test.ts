@@ -112,6 +112,8 @@ function makeStatefulAdmin(seed: Partial<Store> = {}) {
             return b;
         };
         b.gt = () => b; // quantity>0 : déjà appliqué dans le SELECT stock
+        b.order = () => b; // ordre déterministe pagination : insertion = ordre stable
+        b.range = () => b; // pagination fetchAllRows : petit dataset = 1 page, no-op
         b.insert = (payload: unknown) => {
             st.op = "insert";
             st.payload = payload;
