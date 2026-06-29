@@ -119,6 +119,22 @@ plus un mur Google externe.
 >      substring (« technike »≠Nike, « vulgaris »≠LG) + inconnue→null. Revue SF-hunter **SOUND** (0 faux positif, 1 LOW
 >      alias dupliqué corrigé). Blast LOW (signature inchangée). 0 migration, réversible. **Reste (d) catégorie** +
 >      e2e photo vrais EAN escaladé. Détail : worklog 28/06.
+>    - ✅ **(d) FAIT (2026-06-29, commit `9bea56d`)** : **catégorie stockée en ANGLAIS** (vérifié en PROD : "clothing and
+>      fashion" ×2, "toys" ×2, "home and garden" ×1) — les sources EAN renvoient leur propre taxo anglaise et
+>      `applyEnrichment` l'écrivait VERBATIM dans `products.category` (ne matche pas les 15 slugs FR L1 migration 041).
+>      Traducteur PUR `mapEanCategoryToFr` (`src/lib/ean/category.ts`) par **allow-list** (même zéro-faux-positif que
+>      brand.ts (c)) : label reconnu → slug FR ("toys"→enfants, "clothing and fashion"→mode, "home and garden"→maison-deco),
+>      inconnu/ambigu → **null** (jamais inventer ; passthrough idempotent si déjà un slug FR). La catégorie EAN est un
+>      FALLBACK ; le chemin **AI categorize** (lit le nom, confidence-gated) reste AUTORITAIRE et corrige les mislabels
+>      source (Coca→home&garden ; AI inerte en prod = clés GROQ/GEMINI absentes, escaladé X). Câblé `applyEnrichment`
+>      (caller unique lookupEan, blast LOW). Revue SF-hunter **SOUND** + strict non-régression (inconnu : avant=anglais
+>      verbatim, après=null→AI remplit). **Finding CRITIQUE corrigé** = chemin JUMEAU `invoices/[id]/validate` écrivait
+>      aussi la catégorie EAN brute à l'INSERT → mappé là aussi (classe « garde incohérente sur chemins jumeaux »).
+>      Finding LATENT noté (multi-source `canonical_category`, aucun writer DB actif = suggestion admin). Preuve
+>      `tests/lib/ean/category.test.ts` (+10, **923→933**) = fixture des 3 labels prod réels + variantes orthographe +
+>      ambigus→null + idempotence FR + invariant « n'émet jamais un slug hors taxo ». 0 migration, réversible.
+>      **→ MAILLON 9 (a)(b)(c)(d) unit-testables COMPLETS. Reste = e2e photo vrais EAN (env live, escaladé) + clés AI
+>      categorize (env X). Détail : worklog 29/06.**
 >
 > **🚦 CE QUE LA BOUCLE PEUT vs NE PEUT PAS (séparer, sinon on refait le piège) :**
 > - **PEUT seule (unit-testable, pas d'env live)** : la régression fail-open (1), la logique d'extraction

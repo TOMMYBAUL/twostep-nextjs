@@ -3196,3 +3196,48 @@ pas de NaN). 2 revues silent-failure-hunter **SOUND** (chargement + delta action
 rate-limit/interrompus du 23/06, 0 revert).
 
 **Reste maillon E** : rendu VISUEL/responsive (Thomas + `ui-journey.mjs`) + dernier écran (onboarding).
+
+## 2026-06-29 — MAILLON 9 (d) : mapping catégorie EAN anglais → taxo FR (allow-list)
+
+**Sourcing (§6)** : backlog → PRIORITÉ N°1 maillon 9 enrichissement. (a)(b)(c) faits ; prochaine
+sous-tâche [R] in-scope unit-testable = (d) mapping catégorie anglais→taxo FR.
+
+**Signal réel (pas devinette)** : requête PROD sur `products.category` non-slug-FR →
+`"clothing and fashion"` ×2, `"toys"` ×2, `"home and garden"` ×1. Les 7 produits du test 27/06
+inspectés : 2/7 ont `category_id` (AI : Bose→tech-electronique, Carhartt→mode) ; 5/7 portent la
+catégorie EAN anglaise brute. Cause : `applyEnrichment` (lookup.ts:862) écrivait `data.category`
+VERBATIM — les sources EAN renvoient leur propre taxo anglaise, pas nos 15 slugs FR L1 (migration 041).
+
+**Fait** (commit `9bea56d`)
+- Fonction PURE `mapEanCategoryToFr` (`src/lib/ean/category.ts`) : allow-list label EN/FR → slug FR L1,
+  inconnu/ambigu → null (zéro invention = north-star, même principe que brand.ts (c)). Passthrough
+  idempotent si déjà un slug FR (categorize.ts en écrit). Normalise & vs and, virgules, casse, `\p{Mn}`.
+  `FR_L1_SLUGS` = source unique des 15 slugs ; test verrouille « n'émet jamais un slug hors taxo ».
+- Câblé dans `applyEnrichment` (caller unique `lookupEan`, blast LOW) : map d'abord, n'écrit que si
+  non-null ET `!prod.category_id` (l'AI categorize reste autoritaire ; EAN = fallback).
+- **Finding CRITIQUE revue corrigé** : chemin JUMEAU `invoices/[id]/validate` (route.ts:347) prenait
+  `eanData.category` brut → INSERT verbatim → produits facture en anglais alors que les enrichis-EAN en
+  FR (même champ, incohérent). Mappé là aussi (classe LESSON « garde incohérente sur chemins jumeaux »).
+
+**Preuve (sans yeux)** : `tests/lib/ean/category.test.ts` (+10, **923→933**) = fixture des 3 labels
+PROD réels + variantes d'orthographe (& vs and, virgules, casse) + ambigus (games/office/personal
+care)→null + inconnu→null + idempotence des 15 slugs FR + invariant taxo. `npx tsc` OK.
+
+**Revue silent-failure-hunter SOUND** : core sound, strict non-régression vs ancien comportement
+(inconnu : avant=anglais verbatim, après=null→AI categorize remplit ; rien ne lit `products.category`
+en exigeant l'anglais ou un always-set). Slugs vérifiés vs migration 041 (15/15 exacts). Finding LATENT
+noté hors scope : `multi-source.ts canonical_category` brut — AUCUN writer DB actif (cascade-suggest =
+suggestion admin retournée, cascade-engine n'écrit pas la catégorie) → pas durci (zéro busywork).
+
+**Limite assumée (honnêteté)** : le mislabel SOURCE (Coca→home&garden) n'est PAS un bug de mapping —
+on traduit fidèlement. Le vrai fix d'un label source faux = le chemin AI (lit le nom « Coca-Cola
+Original Taste » → alimentation), inerte en prod faute de clés GROQ/GEMINI (escaladé X).
+
+**Métrique** : maillon 9 (a)(b)(c)(d) unit-testables COMPLETS. Reste maillon 9 = e2e photo vrais EAN
+(env live, escaladé) + clés AI categorize (env X). 1 item [R] in-scope fermé.
+
+**Scorecard** : Preuve 7/10 (signal prod réel + fixture, mais sortie finale non re-vérifiée en réel —
+pas de clés AI/env live) · Sécu north-star 8/10 (SF-hunter SOUND, 0 faux positif, non-régression) ·
+Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (1 lib + 2 wirings + 1 test, 4 fichiers) ·
+Align 9/10 (catégorie exacte FR = data exacte, cœur enrichissement priorité n°1). 1 bug réel (anglais
+verbatim) + 1 jumeau (validate). 4 fichiers. tests 923→933.

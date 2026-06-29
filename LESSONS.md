@@ -385,6 +385,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   allow-list (0 invention) à une heuristique générative.** Placer la récupération APRÈS une garde de cohérence qui null
   brand+category, pour ne pas faire annuler la `category` (source distincte). La marque alimente AUSSI la requête image (b)
   → double gain (photo + `g:brand`). (maillon 9 (c), ean/brand.ts, 2026-06-28, SF-hunter SOUND)
+- ❌ **Catégorie stockée en ANGLAIS après enrichissement EAN** (vérifié en prod : "clothing and fashion",
+  "toys", "home and garden"). Les sources EAN renvoient leur PROPRE taxo anglaise ; `applyEnrichment`
+  l'écrivait VERBATIM dans `products.category` (ne matche pas les 15 slugs FR L1 de la migration 041). Fix
+  maillon 9 (d) : traducteur PUR `mapEanCategoryToFr` (`src/lib/ean/category.ts`) par **allow-list** (même
+  zéro-faux-positif que brand.ts) → label reconnu → slug FR, inconnu/ambigu → **null** (l'AI categorize, gated
+  sur keys, remplit correctement ; la catégorie EAN n'est qu'un FALLBACK). **Règle : ne JAMAIS écrire une donnée
+  de taxo externe verbatim — la traduire vers la taxo interne par allow-list, null sur inconnu (non-régression).**
+  ⚠️ **Le mislabel SOURCE (Coca→home&garden) n'est PAS un bug de mapping** : on traduit fidèlement ; le vrai fix
+  d'un label source faux = le chemin AI (lit le nom). Un traducteur ne corrige pas sa source. **Chemin JUMEAU**
+  (`invoices/[id]/validate`, INSERT) écrivait aussi la catégorie EAN brute → mappé là aussi (classe « garde
+  appliquée de façon incohérente sur chemins jumeaux » : grep tous les writers du même champ).
+  (maillon 9 (d), ean/category.ts, 2026-06-29, SF-hunter SOUND)
 
 ## Boucle d'écriture par item + RPC atomique (livraison reçue)
 - ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`
