@@ -4,6 +4,7 @@ import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
+import { extractOpenFactsImage } from "@/lib/ean/open-facts-image";
 import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
 import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
 
@@ -586,14 +587,23 @@ export async function fetchFromOpenBeautyFacts(ean: string): Promise<EanResult |
     );
     if (!res) return null;
 
-    const data = await res.json();
+    // Un 200 avec un corps non-JSON (page de maintenance / captcha) ferait throw res.json() →
+    // dans le chemin séquentiel fetchEanData→lookupEan ça remonterait ; on dégrade en null (la
+    // source disparaît proprement, comme un produit non trouvé). (revue SF-hunter)
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        return null;
+    }
     if (!data?.product || data.status === 0) return null;
 
     const product = data.product;
     return {
         name: product.product_name ?? "Unknown",
         brand: product.brands ?? null,
-        photo_url: null, // Serper handles photos
+        // GTIN-keyée → fiable par construction (maillon 9). Voir open-facts-image.ts.
+        photo_url: extractOpenFactsImage(product),
         category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
         source: "open_beauty_facts",
     };
@@ -643,14 +653,21 @@ export async function fetchFromOpenProductsFacts(ean: string): Promise<EanResult
     );
     if (!res) return null;
 
-    const data = await res.json();
+    // Cf. fetchFromOpenBeautyFacts : 200 non-JSON → res.json() throw → dégrade en null. (revue SF-hunter)
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        return null;
+    }
     if (!data?.product || data.status === 0) return null;
 
     const product = data.product;
     return {
         name: product.product_name ?? "Unknown",
         brand: product.brands ?? null,
-        photo_url: null,
+        // GTIN-keyée → fiable par construction (maillon 9). Voir open-facts-image.ts.
+        photo_url: extractOpenFactsImage(product),
         category: product.categories ? String(product.categories).split(",")[0]?.trim().toLowerCase() : null,
         source: "open_products_facts",
     };
@@ -867,7 +884,9 @@ async function applyEnrichment(
     if (mappedCategory && prod && !prod.category_id) updateData.category = mappedCategory;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
 
-    // Photo: prefer Serper (better e-commerce quality)
+    // Photo: prefer the EAN-source image when present. An Open Facts image is GTIN-keyée (liée
+    // au code-barres exact) → fiable et n'a pas besoin de la vérif texte→image que Serper exige
+    // (maillon 9). Serper (recherche par nom) reste le REPLI quand la source n'a pas d'image.
     let photoUrl = data.photo_url;
     let photoSource: "ean" | "serper" = "ean";
 

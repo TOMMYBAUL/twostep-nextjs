@@ -552,6 +552,17 @@ Maintenir à jour ; ne pas régresser vers le « grossier ».
 >   « Serper handles photos ») alors que OBF/OPF exposent une image GTIN-keyée gratuite → trou « images
 >   anti-rejet » (cf intro Phase D + `blocked_only_by_image` de D3). **Décision SOURCE-image = ambiguë** (le
 >   commentaire dit Serper préféré pour la qualité) → à arbitrer avec D5 (gate CLIP) plutôt qu'en solo.
+>   - ✅ **FAIT (2026-06-29)** : arbitrage **résolu par les FAITS** (la prémisse « Serper préféré pour la qualité »
+>     est réfutée par le test réel 27/06 = 6/7 photos Serper FAUSSES). Une image OBF/OPF est **GTIN-keyée** (liée au
+>     code-barres exact) → même frontière de confiance que le nom/marque déjà acceptés, et catégoriquement plus fiable
+>     qu'une recherche Serper par TEXTE ; elle n'a PAS besoin de la vérif texte→image. CONTEXTE AGGRAVANT vérifié :
+>     toutes les sources hardcodent `photo_url:null`, et depuis (a) fail-closed + clé ANTHROPIC absente en prod, Serper
+>     est OFF → les produits OBF/OPF n'avaient **AUCUNE image** en prod. Fix : helper PUR `extractOpenFactsImage`
+>     (`src/lib/ean/open-facts-image.ts`, précédence `image_front_url`→`image_url`→`selected_images.front.display`,
+>     URL http(s) non vide sinon null) câblé dans les 2 fonctions ; `applyEnrichment` préférait déjà l'image source EAN
+>     (Serper = repli). Preuve `tests/lib/ean/open-facts-image.test.ts` (+12, **933→945**). Revue SF-hunter **SOUND**
+>     (0 faux positif image, frontière de confiance correcte) + 2 durcissements (`res.json()` gardé, dédup helper).
+>     0 migration, réversible. **Reste = e2e photo vrais EAN (escaladé, env live = seule CERTIFICATION visuelle).**
 > - 🔶 **D5 `[R]` Gate de match image — DURCI + ESCALADÉ (2026-06-23)**. Prémisse « pas de gate / utiliser
 >   CLIP » **partiellement fausse** (vérifié) : un gate existe déjà via `verifyPhotoWithAI` (Haiku vision,
 >   `serper.ts`) ; le CLIP `clip-pipeline.ts` est un matching produit↔produit (Tier 4 identité), inadapté à

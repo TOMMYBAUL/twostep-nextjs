@@ -397,6 +397,18 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   (`invoices/[id]/validate`, INSERT) écrivait aussi la catégorie EAN brute → mappé là aussi (classe « garde
   appliquée de façon incohérente sur chemins jumeaux » : grep tous les writers du même champ).
   (maillon 9 (d), ean/category.ts, 2026-06-29, SF-hunter SOUND)
+- ❌ **Toutes les sources EAN jetaient l'image (`photo_url:null`) → l'UNIQUE chemin photo = recherche Serper par
+  TEXTE** (qui renvoie 6/7 faux, cf. 27/06). Pire : depuis le fail-CLOSED (a) + clé ANTHROPIC absente en prod, Serper
+  est OFF → les produits OBF/OPF n'avaient **AUCUNE** image. Or OBF/OPF exposent une image **GTIN-keyée** (clé = code-barres
+  exact, contributeur l'a scanné) = MÊME confiance que le nom/marque déjà acceptés, **catégoriquement plus fiable** qu'une
+  recherche texte → on l'utilise SANS vérif texte→image (qu'elle ne requiert pas). Fix : helper PUR `extractOpenFactsImage`
+  (précédence `image_front_url`→`image_url`→`selected_images.front.display`, URL http(s) non vide sinon null = jamais
+  d'`image_link` vide). **Règle : distinguer une image GTIN-keyée (lookup direct code→image = fiable, pas de vérif) d'une
+  image issue d'une recherche par TEXTE (Serper = à vérifier/écarter) ; quand un champ est null partout, vérifier d'abord
+  si la SOURCE le fournit (ici oui, jeté par un commentaire stale « Serper handles photos ») avant de chercher ailleurs.**
+  ⚠️ Un arbitrage « ambigu » noté dans le backlog peut être tranché par les FAITS (un test réel réfute la prémisse) → ne pas
+  le laisser gated par défaut. Garder `res.json()` gardé (200 non-JSON → throw remonte dans `fetchEanData→lookupEan`).
+  (maillon 9 image OBF/OPF, ean/open-facts-image.ts + lookup.ts, 2026-06-29, SF-hunter SOUND)
 
 ## Boucle d'écriture par item + RPC atomique (livraison reçue)
 - ❌ **Un `await admin.rpc(...)` dans une boucle SANS destructurer `error`, suivi de `counter++`

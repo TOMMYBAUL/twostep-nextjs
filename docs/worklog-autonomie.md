@@ -5,6 +5,61 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-29 (run autonome #2) · MAILLON 9 enrichissement — images GTIN-keyées Open Facts (anti faux positif photo)
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : MAILLON 9 (a)(b)(c)(d) unit-testables COMPLETS (commits `470965a`→`b3eb031`),
+reste = e2e photo vrais EAN (escaladé, env live) + clés AI (escaladé X). Prochain `[R]` IN-SCOPE = le « trou image
+anti-rejet GRATUITE » noté en D4-suite : `fetchFromOpenBeautyFacts`/`fetchFromOpenProductsFacts` JETAIENT l'image
+(`photo_url: null, // Serper handles photos`). C'est la SUITE DIRECTE du n°1 de MAILLON 9 (« des photos justes »).
+
+**Diagnostic (vérifié dans le code réel, pas deviné)** : **TOUTES** les sources EAN hardcodent `photo_url: null`
+(EAN-Search L380, UPCitemdb L334, OBF L596, OPF L653) → l'UNIQUE chemin image = recherche **Serper par TEXTE**, gardée
+par `verifyPhotoWithAI`. Or (a, 27/06) a rendu cette vérif **fail-CLOSED** et la clé ANTHROPIC est absente en prod →
+**les images Serper sont désormais toutes écartées** → un produit résolu par OBF/OPF n'a **AUCUNE image** en prod.
+`applyEnrichment` (L870-892) **préfère DÉJÀ** l'image source EAN (Serper = repli) → il suffisait de remplir le champ.
+
+**Arbitrage résolu par les FAITS** : priorities.md notait la SOURCE-image « ambiguë (Serper préféré pour la qualité) ».
+Cette prémisse est **empiriquement réfutée** par le test réel du 27/06 (6/7 photos Serper FAUSSES). Une image Open Facts
+est **GTIN-keyée** (liée au code-barres exact par le contributeur qui l'a scanné) → MÊME frontière de confiance que le
+nom/marque/catégorie qu'on accepte déjà de cette source ; elle n'a PAS besoin de la vérif texte→image que Serper exige.
+Réversible (code pur derrière la précédence existante) → décidé seul (verifiability §2), pas un gated.
+
+**Fait (réversible, 0 migration)** :
+- **NOUVEAU** `src/lib/ean/open-facts-image.ts` — fonction PURE `extractOpenFactsImage(product)` : précédence
+  `image_front_url` → `image_url` → `selected_images.front.display.{fr|en|autre}` ; `normalizeImageUrl` n'accepte qu'une
+  URL **http(s) absolue non vide** (rejette `""`, espaces, chemins relatifs, `data:`/`ftp:`) → jamais d'`image_link` vide
+  (Google le rejette, leçon `hasImage !== ""`). Ne throw JAMAIS sur une forme inattendue (gardes `typeof === "object"`).
+- **EDIT** `lookup.ts` : `fetchFromOpenBeautyFacts`/`fetchFromOpenProductsFacts` → `photo_url: extractOpenFactsImage(product)`.
+  Commentaire stale « prefer Serper » d'`applyEnrichment` corrigé (le code préfère en fait l'image source EAN).
+
+**Trouvé / blast radius** : 2 consommateurs de la photo OBF/OPF, tracés un par un — (1) `applyEnrichment` (écrit
+`products.photo_url`, `photo_source:"ean"`, crée l'image job) ; (2) `cascade-suggest` (route admin → SUGGESTION pré-remplie,
+humain dans la boucle). `cascade-engine` ne lit QUE `canonical_name`/`tiers_matched` (pas la photo). Aucune divergence.
+
+**Testé** : `tsc --noEmit` exit 0 ; `npm run test:run` **945** (933→945, **+12**) — `tests/lib/ean/open-facts-image.test.ts`
+= fixtures OBF/OPF v2 réalistes (image_front_url > image_url > selected_images FR>EN>autre), rejet vide/relatif/data:/ftp:,
+repli sur primaire vide, robustesse non-objet/mal typé (jamais de throw). Revue **silent-failure-hunter** : changement
+**ARCHITECTURALEMENT SOUND, 0 risque de faux positif d'image** (frontière de confiance GTIN-keyée correcte, validation URL
+correcte, précédence correcte, helper throw-safe). 2 findings réels durcis ce run : (#2 MED) `res.json()` non gardé dans les
+2 fonctions OBF/OPF (un 200 non-JSON throwerait et remonterait dans le chemin séquentiel `fetchEanData→lookupEan`) → `try/catch
+→ null` ; (#1 LOW) dédup des candidats `selected_images` dans le helper. (#3 LOW `uploadPhotoToR2` unhandled) **réfuté** par
+lecture du code (déjà `try/catch → null`, ne throw jamais ; ~70 % findings non vérifiés faux). (#4 MED catch vide dans
+`cascade-suggest`) = pré-existant, route séparée, **rien de faux écrit** → noté follow-up non bloquant, hors unité.
+
+**Reste** : e2e photo vrais EAN (escaladé, env live — seul moyen de CERTIFIER visuellement que les images OBF/OPF sont
+justes ; la boucle n'a pas d'yeux). Risque résiduel honnête : OBF/OPF crowd-sourcé → une image MAL attachée à un code-barres
+est possible (rare, = même confiance que le nom/marque déjà acceptés ; `photo_source:"ean"` la rend traçable/auditable).
+Follow-up non bloquant : log les `catch{}` vides de `cascade-suggest` (canonical_photo_url devenu signifiant).
+
+**Scorecard** : Preuve 6/10 (sortie pure prouvée champ par champ + cause réelle vérifiée, mais correctude VISUELLE de
+l'image non prouvable sans env live = plafonné) · Sécu north-star 8/10 (SF-hunter SOUND, 0 faux positif image introduit,
+2 durcissements) · Rév 10/10 (0 migration, fichier neuf + edits, `git revert`) · Scope 9/10 (1 unité ciblée, 3 fichiers) ·
+Align 9/10 (donne enfin une image FIABLE aux produits OBF/OPF qui n'en avaient AUCUNE en prod = attaque le n°1 photos +
+`blocked_only_by_image`). tests 933→945 (+12). 1 trou réel comblé + 2 findings durcis. 3 fichiers (1 neuf code + 1 edit
++ 1 test). CFR 10 runs : 100 % (ledger exit=0).
+
+---
+
 ## 2026-06-28 (run autonome #2) · MAILLON 9 enrichissement — sous-tâche (c) : extraction MARQUE (null 7/7)
 
 **Pourquoi (sourcing §6 — backlog priorisé, PRIORITÉ N°1)** : (a)+(b) faites. Ordre Thomas → (c) marque, explicitement
