@@ -1,16 +1,48 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-27 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-29 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 147
+- Total leads : 161
 - NOUVEAU : 46
 - CONTACTE : 1
-- BROUILLON : 72
+- BROUILLON : 82
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-06-29 (L'Eclaireur) — Capitole ÉPUISÉ (JSON) → pivot toulouse-merchants-full.json zone Capitole/Optique, 10 emails trouvés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) → pivot zone étendue Capitole (optique + mode inédits)
+
+**Note de session :** Lundi = Capitole dans la rotation. Capitole ÉPUISÉ DÉFINITIF depuis le 22/06 (75/75 prospects top-prospects-centre.json traités). Suivant le précédent du 27/06 (Victor-Hugo épuisé → pivot toulouse-merchants-full.json), session convertie en exploration du fichier full (1561 marchands) pour la zone Capitole (rues : Pomme, Alsace-Lorraine, Metz, Tourneurs, Bayard, Capitole, Esquirol, Perchepinte, Astorg, Languedoc, Filatiers, Pharaon, Changes). **26 nouveaux candidats identifiés dans les segments cible (Mode, Bijouterie, Optique)**, 10 investigués. **10 emails confirmés.** Découverte majeure : le segment Optique (totalement absent des 75 prospects Capitole JSON) recèle 21 opticiens indépendants en zone centre — vierges de toute prospection Two-Step. Résultat record pour une session Capitole. **4 nouvelles ÉCARTÉES** : JOLAN 31 (liquidation judiciaire clôturée juillet 2021), MASCULINE/APARTE (fermée), LEROY BRINGER (franchise KRYS réseau national), MARTHA FILLIPSON (dépôt-vente vêtements second-main — hors cible Two-Step). Notion MCP indisponible (17ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| OPTIQUE MEDAR | Capitole/Place du Capitole | Optique | Pierre Gassier | optique.medar@orange.fr | 710802950 | 8/10 | BROUILLON | Email confirmé via optiquemedar.fr (footer). Actif depuis 1966, 1 place du Capitole, Yves + Sébastien + Pierre, lun après-midi → sam non-stop. 2 établissements. |
+| L'OPTICIEN | Capitole/Tourneurs | Optique | Maud Heran | lopticien.toulouse@gmail.com | 789195575 | 8/10 | BROUILLON | Email confirmé via lopticien-toulouse.fr (section contact). Opticienne créatrice, 16 rue des Tourneurs, ouvert depuis 2012. Revendeuse Izipizi. IG + Facebook actifs. |
+| OPTIQUE DES ARTS | Capitole/Arts | Optique | Dorothée Escudie | optiquedesarts@gmail.com | 822873964 | 8/10 | BROUILLON | Email confirmé via optiquedesarts.fr. 4 opticiens, 9 rue des Arts, créée 2016, Yelp mis à jour juin 2026 ✅. |
+| POM'OPTIQUE | Capitole/Pomme | Optique | Virginie Poitevin | contact@pomoptique.com | 451265615 | 7/10 | BROUILLON | Email confirmé via pomoptique-toulouse.monopticien.com. Virginie + Stéphane, 5 rue de la Pomme, Yelp août 2024 actif, sélection de montures créateurs + grandes marques lunettes soleil. |
+| LE COMPTOIR DE L'OPTIQUE | Capitole/Tourneurs | Optique | Lucas Guillermin | contact@lecomptoir-deloptique.fr | 813489507 | 7/10 | BROUILLON | Email confirmé via lecomptoir-deloptique.fr (page contact). 44 rue des Tourneurs, créé 2015, mar-sam 10h30-13h/14h15-19h, tél 05 31 98 79 91. Site actif. |
+| LOUIS MANVER LUNETIER | Capitole/Filatiers | Optique | Louis Mantecon vernalte | louismanver.opticien@gmail.com | 513309153 | 7/10 | BROUILLON | Email confirmé via louislelunetier.com (page contact). 29 rue des Filatiers, créé 2009, tél 05 61 53 92 02. Yelp mis à jour juillet 2025 actif. Membre "Opticiens par Conviction". |
+| ORIGINE | Capitole/Bayard | Optique | Marcus Ali | opticienorigine@gmail.com | 908447600 | 7/10 | BROUILLON | Email confirmé via origineopticien.com (footer + contact). 12 rue de Bayard, créé janv 2022, opticien éco-responsable. Soc. BAYARD OPTIQUE. |
+| LAOULA | Capitole/Astorg | Bijouterie/Horlogerie | Mansouria Belmere (el bouchikhi) | contact@laoula-bijoux.com | 487514879 | 6/10 | BROUILLON | Email confirmé via laoula-bijoux.com. 6 rue d'Astorg, créée 2006, mar-sam 10h-19h. ⚠️ VÉRIFIER : se présente comme "créatrice de bijoux ethniques en argent" — si artisan exclusivement (création propre), hors cible Two-Step. À confirmer terrain. |
+| OPTICAL FACTORY | Capitole/Changes | Optique | Pascal Manchec | contact@opticalfactory.fr | 921992616 | 6/10 | BROUILLON | Email confirmé via Google + LinkedIn. 1 rue des Changes, créé déc 2022, tél 05 34 61 25 72, lun-sam 10h-19h. ⚠️ Posts LinkedIn mentionnent "#franchise" — vérifier si chaîne nationale en développement (actuellement 1 seul établissement Toulouse). |
+| GRANDIR A VUE D'OEIL | Capitole/Metz | Optique | Arnaud Dessalle | contact@grandiravuedoeil.com | 453993172 | 6/10 | BROUILLON | Email confirmé via grandiravuedoeil.com. 26 rue de Metz, spécialiste lunettes bébés/enfants/ados/adultes visage fin, 2 établissements (Toulouse + Bordeaux). Arnaud Dessalle interviewé SILMO. |
+
+**Nouvelles ÉCARTÉES (session 29/06) :**
+
+| Boutique | Quartier | SIREN | Motif |
+|---|---|---|---|
+| JOLAN 31 | Capitole/Astorg | 817786874 | Liquidation judiciaire clôturée 29/07/2021 (SOCIETE.COM confirmé 29/06). **ÉCARTÉE DÉFINITIF.** |
+| MASCULINE (APARTE) | Capitole/Astorg | 523714384 | Établissement fermé (Mappy : "Aparté Conseils — Décorateur" renseigne la même adresse, mode ne correspond plus). **ÉCARTÉE DÉFINITIF.** |
+| LEROY BRINGER | Capitole/Metz | 333953917 | Franchise KRYS (réseau national) — opticien non indépendant. **ÉCARTÉE DÉFINITIF.** |
+| MARTHA FILLIPSON | Capitole/Astorg | 381431667 | Dépôt-vente vêtements second-main (type "vestiaire") — hors cible Two-Step (pas de stock produits marque neuf). **ÉCARTÉE DÉFINITIF.** |
+
+*Note : Notion MCP indisponible (17ème session consécutive). Titre Notion prévu : "Leads Capitole 2026-06-29". Cible : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Statut : À valider. Agent : Éclaireur. Résultats consignés dans tracker uniquement.*
+
+---
 
 ### Samedi — 2026-06-27 (L'Eclaireur) — Victor-Hugo épuisé → NOUVEAUX prospects zone Rémusat/Wilson, 4 emails trouvés
 
