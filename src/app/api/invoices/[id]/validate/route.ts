@@ -2,6 +2,7 @@ import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData } from "@/lib/ean/lookup";
+import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
@@ -344,7 +345,11 @@ export async function POST(
                     if (eanData) {
                         if (eanData.name && eanData.name !== "Unknown") enrichedName = eanData.name;
                         enrichedBrand = eanData.brand;
-                        enrichedCategory = eanData.category;
+                        // Twin write-path of applyEnrichment (maillon 9 (d)): the EAN source
+                        // category is raw English ("clothing and fashion"…). Translate it to a
+                        // French L1 slug here too, else invoice-created products would show English
+                        // labels while EAN-enriched ones show French — the same field, inconsistent.
+                        enrichedCategory = mapEanCategoryToFr(eanData.category);
                     }
                 } catch (err) {
                     console.error("[validate] EAN pre-enrichment failed:", err);

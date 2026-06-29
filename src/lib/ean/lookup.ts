@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { extractKnownBrand } from "@/lib/ean/brand";
+import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
 import { searchProductImage } from "@/lib/images/serper";
@@ -858,8 +859,12 @@ async function applyEnrichment(
     }
 
     if (data.brand) updateData.brand = data.brand;
-    // Only set category from EAN data if AI hasn't already categorized the product
-    if (data.category && prod && !prod.category_id) updateData.category = data.category;
+    // Category (maillon 9 (d)): EAN sources return their category in their OWN English taxonomy
+    // ("clothing and fashion", "toys", "home and garden"). Translate it to a French L1 slug via
+    // the allow-list — unrecognised/ambiguous → null (don't write; the AI path fills it). Only set
+    // it if the AI categoriser hasn't already (it is authoritative; this EAN value is a fallback).
+    const mappedCategory = mapEanCategoryToFr(data.category);
+    if (mappedCategory && prod && !prod.category_id) updateData.category = mappedCategory;
     if (data.name && data.name !== "Unknown") updateData.canonical_name = data.name;
 
     // Photo: prefer Serper (better e-commerce quality)
