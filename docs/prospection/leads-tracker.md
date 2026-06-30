@@ -1,16 +1,46 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-27 (L'Auditeur)*
+*Derniere mise a jour : 2026-06-30 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 147
+- Total leads : 157
 - NOUVEAU : 46
 - CONTACTE : 1
-- BROUILLON : 72
+- BROUILLON : 82
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-06-30 (L'Eclaireur) — Capitole épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
+
+**Note de session :** Capitole ÉPUISÉ dans top-prospects-centre.json (75/75 — confirmé 22/06). Session convertie en exploration de toulouse-merchants-full.json (1 561 marchands) sur la zone Capitole (rues Pomme/Metz/Alsace/Tourneurs/Capitole/Bayard/Taur/Astorg/Arts). 31 nouveaux candidats identifiés (gérant nommé + segment éligible + non dans top-prospects-centre.json). 10 investigués. **10 emails confirmés via sites officiels et annuaires.** Segment dominant : optique indépendante (6/10 opticiens) + déco/concept store (3/10) + bijouterie créatrice (1/10). ÉCARTÉS : LEROY BRINGER (franchise Krys = chaîne), OPTIQUE REBECCA EYES (en liquidation/fermeture), EVAIN OPTIC (siège Barbizon 77 — établissement Toulouse introuvable). Notion MCP indisponible (16ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| OPTIQUE MEDAR | Capitole/Capitole | Optique | Pierre Gassier | optique.medar@orange.fr | 710802950 | 9/10 | BROUILLON | Email confirmé via optiquemedar.fr. 4 générations, 1 place du Capitole depuis 1966. Opticien par conviction, équipe Yves+Sébastien+Pierre. IG @optiquemedar. |
+| LE COMPTOIR DE L'OPTIQUE | Capitole/Tourneurs | Optique | Lucas Guillermin | contact@lecomptoir-deloptique.fr | 813489507 | 9/10 | BROUILLON | Email confirmé via lecomptoir-deloptique.fr (site officiel). 44 rue des Tourneurs — ouvert 2015 — concept créateurs de lunettes (article ToulÉco). Cofondé avec Julien Panicali. |
+| GRANDIR À VUE D'OEIL | Capitole/Metz | Optique enfants | Arnaud Dessalle | contact@grandiravuedoeil.com | 453993172 | 8/10 | BROUILLON | Email confirmé via grandiravuedoeil.com (email principal Bordeaux+Toulouse). 26 rue de Metz. Fondateur Arnaud Dessalle — 3 boutiques (Bordeaux, Cenon, Toulouse). Spécialiste lunettes bébés/enfants/ados depuis 2008. |
+| OPTIQUE DES ARTS | Capitole/Arts | Optique | Dorothée Escudié | optiquedesarts@gmail.com | 822873964 | 8/10 | BROUILLON | Email confirmé via optiquedesarts.fr (footer). 9 rue des Arts. Opticien par conviction (réseau). Créé 2016. |
+| POM'OPTIQUE | Capitole/Pomme | Optique | Virginie Poitevin | pom.optique@wanadoo.fr | 451265615 | 8/10 | BROUILLON | Email confirmé via pomoptique-toulouse.monopticien.com. 5 rue de la Pomme. Virginie + Stéphane, opticiens visagistes, expert Essilor. Créé 2003. |
+| CHEZ ZEL | Capitole/Pomme | Mode/Déco concept | Elodie Fontoura | contact@chez-zel.com | 877643056 | 8/10 | BROUILLON | Email confirmé via chez-zel.com/contact (email presse Toulouse = Elodie Fontoura). 25 rue de la Pomme. Concept store mode+déco, 2 boutiques (Toulouse + Biarritz). Créé 2019. |
+| ORIGINE (BAYARD OPTIQUE) | Capitole/Bayard | Optique éco | Marcus Ali | opticienorigine@gmail.com | 908447600 | 8/10 | BROUILLON | Email confirmé via origineopticien.com. 12 rue de Bayard. Opticien éco-responsable, lunettes Made in France. Créé 2022. |
+| MALAURE (La Maison de Malaure) | Capitole/Metz | Déco/Maison | Anne-Laure Carette | e.lamaisondemalaure@gmail.com | 802893503 | 7/10 | BROUILLON | Email confirmé via search (Kompass + annuaires). 37 rue de Metz (siège 28 rue d'Astorg). Mobilier Riviera Maison + déco sélection. Créé 2014. IG @lamaisondemalaure. |
+| LAOULA BIJOUX | Capitole/Astorg | Bijouterie créatrice | Mansouria Belmere | contact@laoula-bijoux.com | 487514879 | 7/10 | BROUILLON | Email confirmé via laoula-bijoux.com. 6 rue d'Astorg. Créatrice bijoux argent ethniques naturels (artisans Tuareg). IG @laoulabijoux. ⚠️ créatrice propre marque — pertinence Two-Step à confirmer terrain. |
+| MAMZEL ZAZA | Capitole/Tourneurs | Déco/Design | Sylvie Puig | contact@mamzel-zaza.fr | 495022105 | 7/10 | BROUILLON | Email confirmé via Yelp snippet + annuaire. 38 rue des Tourneurs. Objets déco design sélection. Yelp actif oct 2025. Créé 2007. |
+
+**Écartées session 30/06 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| LEROY BRINGER | 333953917 | Franchise Krys (réseau national). ÉCARTÉE DÉFINITIF. |
+| OPTIQUE REBECCA EYES | 513071910 | En liquidation / fermeture confirmée. ÉCARTÉE DÉFINITIF. |
+| EVAIN OPTIC | 449954882 | Siège social Barbizon (77630) — aucun établissement Toulouse actif trouvé. ÉCARTÉE. |
+
+*Note : Notion MCP indisponible (16ème session consécutive). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-06-30".*
+
+---
 
 ### Samedi — 2026-06-27 (L'Eclaireur) — Victor-Hugo épuisé → NOUVEAUX prospects zone Rémusat/Wilson, 4 emails trouvés
 
