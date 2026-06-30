@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-30 (L'Eclaireur)*
+*Derniere mise a jour : 2026-06-30 (L'Eclaireur + L'Auditeur)*
 
 ## Stats
 - Total leads : 157
@@ -39,6 +39,24 @@
 | EVAIN OPTIC | 449954882 | Siège social Barbizon (77630) — aucun établissement Toulouse actif trouvé. ÉCARTÉE. |
 
 *Note : Notion MCP indisponible (16ème session consécutive). Résultat enregistré dans tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-06-30".*
+
+---
+
+## Recap brouillons email — 2026-06-30 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (17e session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Pierre Gassier (OPTIQUE MEDAR) | optique.medar@orange.fr | Optique Medar sur Google "en stock près de chez moi" | ⚠️ NON CRÉÉ | ACA — Dior, Prada, Gucci, Cartier, Saint Laurent. 4 générations place du Capitole depuis 1966. |
+| 2 | Lucas Guillermin (LE COMPTOIR DE L'OPTIQUE) | contact@lecomptoir-deloptique.fr | Le Comptoir de l'Optique sur Google "en stock près de chez moi" | ⚠️ NON CRÉÉ | ACA — Andy Wolf, Paname, Nao Ned, Kyme, De Stijl. Concept créateurs indépendants rue des Tourneurs depuis 2015. |
+| 3 | Arnaud Dessalle (GRANDIR À VUE D'OEIL) | contact@grandiravuedoeil.com | Grandir à Vue d'Œil sur Google "en stock près de chez moi" | ⚠️ NON CRÉÉ | ACA — Little Paul Joe, Tête à Lunette, Very French Gangster. Spécialiste bébés/enfants/ados depuis 2008. |
+| 4 | Elodie Fontoura (CHEZ ZEL) | contact@chez-zel.com | Chez Zel sur Google "en stock près de chez moi" | ⚠️ NON CRÉÉ | ACA — Créateurs artisanaux, concept store mode+déco, 2 boutiques Toulouse+Biarritz depuis 2019. |
+| 5 | Marcus Ali (ORIGINE BAYARD OPTIQUE) | opticienorigine@gmail.com | Origine Opticien sur Google "en stock près de chez moi" | ⚠️ NON CRÉÉ | ACA — Bio-acétate, plastique marin, Enercoop, lunettes Made in France. Rue de Bayard depuis 2022. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 17e session consécutive sans création de draft (11/06 → ... → 30/06). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-06-30.md`**
+
+*Note session 30/06 (L'Auditeur) : 5 leads BROUILLON traités parmi les 10 nouveaux de la session Eclaireur 30/06 (scores 9/9/8/8/8). Emails personnalisés avec marques spécifiques (web search confirmé). Notion MCP indisponible (17e session consécutive).*
 
 ---
 
