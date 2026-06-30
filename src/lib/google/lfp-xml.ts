@@ -119,7 +119,54 @@ function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): strin
 }
 
 /**
- * Construit le feed XML LFP complet pour un marchand.
+ * En-tête du feed (jusqu'à `<description>` inclus, saut de ligne final compris).
+ *
+ * Découpé en head/item/tail pour permettre la génération en STREAMING (cf. route
+ * `feed/lfp/[merchantId]`) : sur un gros catalogue (pilote multimarque = des
+ * milliers de SKU, cible 50k), matérialiser TOUT le XML en RAM via `.map().join()`
+ * tient le tableau de produits + le tableau d'items + la chaîne jointe simultanément.
+ * Émettre head → items page par page → tail borne la mémoire à une page.
+ * `buildLfpXml` recompose ces 3 pièces → format IDENTIQUE (source unique).
+ */
+export function lfpXmlHead(merchant: LfpMerchant): string {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>Two-Step LFP Feed — ${escapeXml(merchant.name)}</title>
+    <link>https://www.twostep.fr</link>
+    <description>Local product inventory for Google Merchant Center LFP</description>
+`;
+}
+
+/** Pied du feed (ferme `<channel>` + `<rss>`). */
+export function lfpXmlTail(): string {
+    return `  </channel>
+</rss>
+`;
+}
+
+/**
+ * Bloc `<item>` d'UN produit (saut de ligne final compris), ou `null` si le produit
+ * n'est pas éligible. L'éligibilité est évaluée ICI (même `isFeedEligible` que la
+ * Voie A → parité de gate) afin que le chemin streaming filtre exactement comme
+ * `buildLfpXml`/`filterFeedEligible`.
+ */
+export function lfpXmlItem(
+    p: LfpProductRow,
+    storeCode: string,
+    nowMs: number = Date.now(),
+    allowMissingImage: boolean = gtinOnlyTierEnabled(),
+): string | null {
+    if (!isFeedEligible(p, { allowMissingImage })) return null;
+    return buildItemXml(p, storeCode, nowMs) + "\n";
+}
+
+/**
+ * Construit le feed XML LFP complet pour un marchand (matérialisé en RAM).
+ *
+ * Pour les gros catalogues, préférer le chemin STREAMING de la route (head/item/tail
+ * + `streamRows`) qui ne matérialise jamais tout le feed. Cette fonction reste utile
+ * pour les tests et les petits feeds ; elle DÉLÈGUE aux mêmes pièces → format identique.
  *
  * @param merchant — must have id, name
  * @param products — must already be filtered (visible=true + review_status=validated)
@@ -135,17 +182,10 @@ export function buildLfpXml(
     // Tier GTIN-only (D2) : lu via le flag par défaut (parité Voie A). Override pour les tests.
     allowMissingImage: boolean = gtinOnlyTierEnabled(),
 ): string {
-    const eligible = filterFeedEligible(products, allowMissingImage);
-    const items = eligible.map((p) => buildItemXml(p, storeCode, nowMs)).join("\n");
-
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
-  <channel>
-    <title>Two-Step LFP Feed — ${escapeXml(merchant.name)}</title>
-    <link>https://www.twostep.fr</link>
-    <description>Local product inventory for Google Merchant Center LFP</description>
-${items}
-  </channel>
-</rss>
-`;
+    let out = lfpXmlHead(merchant);
+    for (const p of products) {
+        const item = lfpXmlItem(p, storeCode, nowMs, allowMissingImage);
+        if (item) out += item;
+    }
+    return out + lfpXmlTail();
 }

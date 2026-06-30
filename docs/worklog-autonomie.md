@@ -3387,3 +3387,55 @@ marchand réel >1000) · Sécu north-star 8/10 (SF-hunter, 4 findings traités, 
 10/10 (0 migration, `git revert`) · Scope 9/10 (1 prod + 1 helper + 4 fakes + 2 tests = 8 fichiers, 1 unité) ·
 Align 9/10 (pilier 1 « ne rien oublier » à l'échelle, dé-risque le pilote Deerskin). 2 bugs réels (index→doublons,
 réconciliation→vendu-non-zéro). 8 fichiers. tests 945→959. CFR 10 runs = 100% (0 revert).
+
+## 2026-06-30 (run #2) — SCALE/VOLUME : feed XML LFP (Voie B) en STREAMING (mémoire bornée)
+
+**Sourcing (§6)** : backlog → FILTRE DE CAP #4 SCALE, item explicitement nommé « prochain [R] » après
+scale-ingest + scale-google-out : **mémoire `lfp-xml` (TOUT le XML construit en RAM sur 50k items)**.
+Premise vérifiée dans le code réel AVANT (LESSONS ~70% findings faux) : la route `feed/lfp/[merchantId]`
+faisait `fetchAllRows` (matérialise tout le tableau produits) **puis** `buildLfpXml` = `.map().join("")`
+(matérialise la chaîne XML entière) → sur 50k items, tableau produits + tableau d'items + chaîne jointe
+résidents simultanément.
+
+**Fait** (branche `feat/pipeline-v1-handoff-2026-06-12`)
+- `lfp-xml.ts` : `buildLfpXml` scindé en pièces pures `lfpXmlHead`/`lfpXmlItem`/`lfpXmlTail` (source UNIQUE
+  du format) ; `buildLfpXml` les recompose → **byte-identique sur feed non vide** (vérifié : le `\n` qui
+  séparait les items via `join` devient le suffixe de chaque `lfpXmlItem`). Filtrage d'éligibilité déplacé
+  DANS `lfpXmlItem` (même `isFeedEligible`/`gtinOnlyTierEnabled` → parité de gate avec Voie A préservée).
+- `paginate.ts` : nouveau `streamRows` (async generator) — pagination LAZY (`.range()` page par page,
+  mémoire = 1 page), **fail-loud par THROW** (≠ `fetchAllRows` qui rend `{data,error}`) car un consommateur
+  streaming a déjà émis des octets → il doit AVORTER, jamais finir « complet ». Erreur page → throw
+  (`.cause` = PostgrestError, diagnostic préservé) ; `data=null` sans erreur → throw.
+- route `feed/lfp/[merchantId]` : ÉMET en flux. Peek de la 1re page dans un try/catch AVANT la Response
+  (erreur 1re page → vrai **500** propre, rien émis) ; puis `ReadableStream` enqueue head → items page par
+  page → tail. Erreur sur une page ULTÉRIEURE → `captureError` + `controller.error` → **transfert HTTP
+  avorté** (Google voit une réponse interrompue, re-crawle) au lieu d'un 200 « complet » silencieusement
+  tronqué = **l'invariant north-star** (un feed partiel crawlé = perte silencieuse n°1). `revalidate=900`
+  + `Cache-Control s-maxage=900` inchangés → cache CDN par URL préservé (le streaming borne la RAM origine,
+  pas la cacheabilité).
+
+**Preuve (méthode §1bis, field-level)** : `tests/lib/supabase/paginate.test.ts` (+8 streamRows : pages lazy
+[1 page lue par `.next()`], 2500/3 pages, multiple exact→page vide finale, vide→[[]], throw sur erreur page
+N, `.cause` préservé, throw sur null-page, pageSize invalide). `tests/feed-lfp-stream.test.ts` (+4, drive le
+VRAI GET) : 2500 produits → **2500 `<item>` en flux** + 3 `.range()` [0..999][1000..1999][2000..2999] ;
+catalogue vide → feed valide sans `<item>` ; **erreur 1re page → 500 propre** ; **erreur page ultérieure →
+`res.text()` REJETTE** (corps avorté, jamais 200 tronqué complet) + captureError step `stream-products`.
+
+**Revue silent-failure-hunter** : north-star **SOUND** (peek-500, abort mid-stream, parité gate, pagination,
+format non-vide byte-identique tous vérifiés). 1 finding actionnable (**LOW**) corrigé : si `captureError`
+lève (service report HS), `controller.error` n'était pas atteint → flux pendant ; enveloppé en `try/finally`
+→ l'abort s'exécute toujours. Finding cosmétique (feed VIDE : une ligne blanche en moins) sans impact
+(XML ignore le whitespace inter-éléments ; `buildLfpXml` n'est plus appelé par la route).
+
+**Métrique** : `tsc` OK, `test:run` **963→975** (+12). 1 unité [R] in-scope avancée (scale-feed-xml-stream).
+Blast LOW (seul consommateur prod de `buildLfpXml` = cette route ; cron = Content-API JSON). 0 migration,
+réversible. **Reste SCALE (prochain [R])** : timeouts crons/routes Vercel sur gros catalogues (la Voie A cron
+`google-feed` + l'ingestion bouclent N produits ⇒ durée ~max Vercel) ; batch upserts stock de l'ingestion
+(upserts par produit en boucle). Voie A cron pourrait aussi streamer/chunker via `streamRows`.
+
+**Scorecard** : Preuve 8/10 (route réelle drivée field-level + abort mid-stream prouvé sur faux client fidèle,
+mais synthétique — 0 feed réel 50k) · Sécu north-star 9/10 (SF-hunter SOUND + finding corrigé ; invariant
+anti-troncature renforcé, pas affaibli, par le streaming) · Réversibilité 10/10 (0 migration, `git revert`) ·
+Scope 9/10 (2 prod + 1 helper + 2 tests = 5 fichiers, 1 unité) · Align 9/10 (pilier 1 « ne rien oublier » à
+l'échelle, dé-risque le pilote Deerskin = milliers de SKU). 1 bug (finally abort). 5 fichiers. tests 963→975.
+CFR 10 runs = 100% (0 revert).

@@ -14,10 +14,15 @@
 import type { NextRequest } from "next/server";
 
 import { captureError } from "@/lib/error";
-import { buildLfpXml, type LfpProductRow } from "@/lib/google/lfp-xml";
+import {
+    lfpXmlHead,
+    lfpXmlItem,
+    lfpXmlTail,
+    type LfpProductRow,
+} from "@/lib/google/lfp-xml";
 import { resolveStoreCode } from "@/lib/google/store-code";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { fetchAllRows } from "@/lib/supabase/paginate";
+import { streamRows } from "@/lib/supabase/paginate";
 
 const UUID_REGEX =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -79,12 +84,14 @@ export async function GET(
     // (poussée individuellement = produit non identifié sur Google Shopping).
     // Les deux canaux de sortie Google émettent ainsi le MÊME ensemble de
     // produits — fin de la divergence (cf. store_code Voie A/B, maillon 7).
-    // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
-    // erreur) → un catalogue >1000 produirait un XML PARTIEL crawlé par Google (le
-    // reste omis silencieusement). `fetchAllRows` lit tout ; `.order("id")` = ordre
-    // déterministe entre pages. Parité avec les 3 autres sorties Google (Voie A cron,
-    // feed-preview, inventory).
-    const { data: products, error: productsErr } = await fetchAllRows(() =>
+    //
+    // STREAMING + PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST
+    // (sans erreur) → un catalogue >1000 produirait un XML PARTIEL crawlé par Google.
+    // `streamRows` lit page par page (`.order("id")` = ordre déterministe entre pages)
+    // et le feed est ÉMIS en flux (head → items page par page → tail) : la mémoire est
+    // bornée à UNE page, jamais tout le XML 50k en RAM. Parité de gate avec les 3 autres
+    // sorties Google (Voie A cron, feed-preview, inventory) via `lfpXmlItem`/`isFeedEligible`.
+    const makeProductsQuery = () =>
         admin
             .from("products")
             .select(
@@ -95,32 +102,61 @@ export async function GET(
             .eq("review_status", "validated")
             .is("archived_at", null)
             .is("variant_of", null)
-            .order("id", { ascending: true }),
-    );
+            .order("id", { ascending: true });
 
-    if (productsErr) {
-        return new Response(`db_error: ${productsErr.message}`, { status: 500 });
-    }
-    // data null SANS error = état SDK inattendu (un SELECT liste renvoie [] sur 0 ligne, jamais
-    // null). Le `products ?? []` d'origine le convertissait SILENCIEUSEMENT en feed XML vide (200) =
-    // faux « aucun produit » crawlé par Google, là où la Voie A (cron) et le preview lèvent un 500.
-    // Garde de parité anti-silence (même raisonnement que cron/google-feed + google/feed-preview).
-    if (!products) {
-        captureError(new Error("products null without error — unexpected SDK state"), {
-            route: "lfp-feed",
-            merchantId,
-            step: "load-products",
-        });
+    const pages = streamRows<LfpProductRow>(makeProductsQuery);
+
+    // On consomme la PREMIÈRE page AVANT de construire la Response : une erreur de lecture
+    // ici (ou `data=null` masqué) peut encore se traduire par un vrai 500 (rien n'a été
+    // émis). Une fois le flux démarré, un échec sur une page ULTÉRIEURE ne peut plus changer
+    // le statut → on AVORTE le flux (`controller.error`) plutôt que de servir un feed tronqué
+    // passé pour complet (north-star : « jamais tronqué en silence »).
+    let firstPage: Awaited<ReturnType<typeof pages.next>>;
+    try {
+        firstPage = await pages.next();
+    } catch (err) {
+        captureError(err, { route: "lfp-feed", merchantId, step: "load-products" });
         return new Response("db_error", { status: 500 });
     }
 
-    const xml = buildLfpXml(
-        { id: merchant.id, name: merchant.name },
-        products as LfpProductRow[],
-        storeCode,
-    );
+    const nowMs = Date.now();
+    const encoder = new TextEncoder();
 
-    return new Response(xml, {
+    const stream = new ReadableStream<Uint8Array>({
+        async start(controller) {
+            try {
+                controller.enqueue(encoder.encode(lfpXmlHead({ id: merchant.id, name: merchant.name })));
+
+                const emitPage = (rows: LfpProductRow[]) => {
+                    for (const p of rows) {
+                        const item = lfpXmlItem(p, storeCode, nowMs);
+                        if (item) controller.enqueue(encoder.encode(item));
+                    }
+                };
+
+                // `firstPage.done` est false : streamRows yield ≥ 1 page ([] si 0 ligne).
+                if (firstPage.value) emitPage(firstPage.value);
+                for await (const rows of pages) emitPage(rows);
+
+                controller.enqueue(encoder.encode(lfpXmlTail()));
+                controller.close();
+            } catch (err) {
+                // Lecture incomplète après le 1er chunk : on TRACE et on avorte le transfert.
+                // Google verra une réponse HTTP interrompue (≠ feed complet) et re-crawlera —
+                // jamais un 200 « complet » silencieusement tronqué.
+                // `finally` : si `captureError` lève (service de report HS), `controller.error`
+                // DOIT quand même s'exécuter — sinon le flux reste ouvert et la connexion pend
+                // au lieu d'avorter immédiatement (Finding SF-hunter).
+                try {
+                    captureError(err, { route: "lfp-feed", merchantId, step: "stream-products" });
+                } finally {
+                    controller.error(err);
+                }
+            }
+        },
+    });
+
+    return new Response(stream, {
         status: 200,
         headers: {
             "Content-Type": "application/xml; charset=utf-8",

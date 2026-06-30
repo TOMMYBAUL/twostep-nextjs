@@ -97,3 +97,59 @@ export async function fetchAllRows<T>(
 
     return { data: all, error: null };
 }
+
+/**
+ * Variante STREAMING de `fetchAllRows` : émet (`yield`) chaque page lazily au lieu de
+ * tout matérialiser. Mémoire bornée à UNE page — pour les SORTIES volumineuses (feed
+ * XML Google LFP d'un pilote multimarque = des milliers de SKU, cible 50k) où garder
+ * tout le résultat ET la chaîne de sortie en RAM est inutile.
+ *
+ * **Contrat fail-loud par THROW** (pas `{data,error}`, contrairement à `fetchAllRows`) :
+ * un consommateur en streaming a déjà commencé à émettre des octets → il ne peut plus
+ * changer le statut HTTP. Il DOIT donc AVORTER le flux (`controller.error`) sur une
+ * lecture incomplète, jamais émettre une sortie partielle passée pour complète. On
+ * lève donc :
+ *  - une erreur de lecture à n'importe quelle page (`error`) ;
+ *  - `data` null sans erreur à n'importe quelle page (anomalie SDK : un SELECT liste
+ *    renvoie `[]` sur 0 ligne, jamais null) → troncature potentielle masquée.
+ * L'erreur portée par `.cause` préserve le diagnostic PostgREST. (north-star : « jamais
+ * tronqué en silence » — un feed Google partiel crawlé = perte silencieuse n°1.)
+ *
+ * Ordre de balayage stable obligatoire (`.order(...)` dans la factory), comme `fetchAllRows`.
+ */
+export async function* streamRows<T>(
+    makeQuery: () => RangeableQuery<T>,
+    pageSize: number = SUPABASE_MAX_ROWS,
+): AsyncGenerator<T[]> {
+    if (pageSize < 1) {
+        throw new Error(`streamRows: pageSize doit être >= 1 (reçu ${pageSize})`);
+    }
+
+    let from = 0;
+
+    for (;;) {
+        const { data, error } = await makeQuery().range(from, from + pageSize - 1);
+
+        if (error) {
+            throw new Error(
+                `streamRows: lecture échouée à l'offset ${from}: ${error.message}`,
+                { cause: error },
+            );
+        }
+
+        if (data == null) {
+            throw new Error(
+                `streamRows: data=null sans erreur à l'offset ${from} (anomalie SDK/transport) — flux refusé pour ne pas masquer une troncature`,
+            );
+        }
+
+        yield data;
+
+        // Page incomplète = dernière page (cf. fetchAllRows). Une page pleine peut être
+        // suivie d'une page vide (catalogue multiple exact de pageSize) → on refait un tour.
+        if (data.length < pageSize) {
+            break;
+        }
+        from += pageSize;
+    }
+}

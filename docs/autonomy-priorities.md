@@ -194,8 +194,21 @@ plus un mur Google externe.
 >      → `.range()` couvre 2 pages [0..999]+[1000..1999] sur les 4 + compteurs aval 1500 ; non vacant) + 2 faux clients
 >      existants mis à jour (`.order`/`.range`). 959→963. Revue SF-hunter **SOUND, 0 finding** (5 axes). Blast LOW
 >      (`pushInventoryToGoogle` signature inchangée, callers best-effort ; 3 reads inline). 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : mémoire `lfp-xml` (TOUT le XML construit en RAM sur 50k items), timeouts
->      crons/routes Vercel (~max) sur gros catalogues, batch upserts stock.**
+>    - ✅ **(scale-feed-xml-stream) FAIT (2026-06-30, run #2)** : **la Voie B XML `feed/lfp/[merchantId]` matérialisait
+>      TOUT le feed en RAM** (`fetchAllRows` → tableau produits complet, puis `buildLfpXml` = `.map().join("")` → chaîne
+>      XML entière) → sur 50k items, 3 copies du catalogue résidentes. Rendu **STREAMING** : `buildLfpXml` scindé en pièces
+>      pures `lfpXmlHead`/`lfpXmlItem`/`lfpXmlTail` (source unique du format, recomposition byte-identique sur feed non
+>      vide) + nouveau `streamRows` (async generator, pagination LAZY `.range()` page par page, mémoire = 1 page) ; la route
+>      émet head → items page par page → tail via `ReadableStream`. **Invariant north-star renforcé, PAS affaibli** : peek
+>      de la 1re page AVANT la Response (erreur 1re page → vrai 500) ; erreur sur page ultérieure → `controller.error` AVORTE
+>      le transfert HTTP (Google re-crawle) au lieu d'un 200 « complet » silencieusement tronqué = perte silencieuse n°1.
+>      `streamRows` est **fail-loud par THROW** (≠ `fetchAllRows` `{data,error}` : un consommateur streaming a déjà émis →
+>      doit avorter). Preuve `tests/feed-lfp-stream.test.ts` (+4 : 2500 items/3 pages en flux, vide, erreur 1re page→500,
+>      **erreur mid-stream→`res.text()` rejette**) + `paginate.test.ts` (+8 streamRows). Revue SF-hunter **SOUND** + 1 LOW
+>      corrigé (`try/finally` : `controller.error` toujours atteint même si `captureError` lève). Blast LOW (seul
+>      consommateur prod de `buildLfpXml` = cette route). 963→975. 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : timeouts crons/routes Vercel (~max) sur gros catalogues (Voie A cron
+>      `google-feed` boucle N produits — pourrait streamer/chunker via `streamRows`), batch upserts stock de l'ingestion.**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles
