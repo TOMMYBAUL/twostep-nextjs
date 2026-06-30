@@ -207,8 +207,27 @@ plus un mur Google externe.
 >      **erreur mid-stream→`res.text()` rejette**) + `paginate.test.ts` (+8 streamRows). Revue SF-hunter **SOUND** + 1 LOW
 >      corrigé (`try/finally` : `controller.error` toujours atteint même si `captureError` lève). Blast LOW (seul
 >      consommateur prod de `buildLfpXml` = cette route). 963→975. 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : timeouts crons/routes Vercel (~max) sur gros catalogues (Voie A cron
->      `google-feed` boucle N produits — pourrait streamer/chunker via `streamRows`), batch upserts stock de l'ingestion.**
+>    - ✅ **(scale-google-feed-timeout) FAIT (2026-07-01, run autonome)** : **le cron `google-feed` (Voie A) poussait TOUS
+>      les produits de TOUS les marchands en UNE invocation via N appels `googleMerchantFetch` SÉQUENTIELS, SANS `maxDuration`
+>      ni borne de temps** → sur un catalogue pilote multimarque (Deerskin = milliers de SKU), N×~100-300 ms peut dépasser le
+>      budget Vercel → fonction TUÉE en plein vol : produits restants OMIS **+ l'écriture de `last_feed_status` (fin de boucle)
+>      JAMAIS atteinte** → le marchand reste sur le « success » du run précédent = **troncature SILENCIEUSE** (perte n°1). Fix :
+>      `export const maxDuration = 300` (budget Fluid max, comme `enrich-products`) + **budget temps auto-imposé** `TIME_BUDGET_MS
+>      = 270_000` (30 s de marge) via helper PUR `processWithinTimeBudget` (`src/lib/google/feed-push.ts`, horloge+action
+>      injectées → déterministe sans réseau) : la boucle s'arrête PROPREMENT avant le kill et écrit un statut HONNÊTE
+>      (« partial — interrompu : X/Y poussés ») ; jamais un faux « success ». Garde en tête de boucle marchand (ne démarre pas
+>      un marchand qu'on ne finira pas) + Sentry `step:"time-budget"` sur TOUTE interruption (« catalogue trop gros → chunking
+>      requis »). **Revue SF-hunter : 3 findings, 2 corrigés** — (1 MED) les 3 `.update` de statut avalaient leur `error` →
+>      helper `writeMerchantStatus` (captureError sur échec d'écriture = le faux-success ré-introduit par le chemin write est
+>      fermé) ; (3 LOW-MED) Sentry ne tirait pas sur le pilote MONO-marchand interrompu (`merchantsAttempted===length`) →
+>      condition élargie à tout `budgetExhausted`. Finding 2 (sortir le write de statut de `getGoogleAccessToken`, multi-caller)
+>      SKIP scope (rated Low, DB correcte). Preuve `tests/lib/google/feed-push.test.ts` (+6, sémantique interruption : boundary
+>      `>=`, item entamé mené à terme, vide≠interruption, attempted<total) + `tests/google-feed-time-budget.test.ts` (+3, drive
+>      le VRAI POST horloge contrôlée : interrompu→statut "partial"≠"success", Sentry mono-marchand, marchand suivant non démarré
+>      +signalé). 975→984. Blast LOW (cron = entry-point sans caller interne ; helper = 1 caller). 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : batch upserts stock de l'ingestion (upserts par produit en boucle dans le
+>      snapshot) ; éventuellement chunker/streamer la boucle produits du cron `google-feed` via `streamRows` pour finir un
+>      catalogue > budget en un run (aujourd'hui : honnête mais la queue tail ne se publie qu'au prochain run).**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

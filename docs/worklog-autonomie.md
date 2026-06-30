@@ -3439,3 +3439,54 @@ anti-troncature renforcé, pas affaibli, par le streaming) · Réversibilité 10
 Scope 9/10 (2 prod + 1 helper + 2 tests = 5 fichiers, 1 unité) · Align 9/10 (pilier 1 « ne rien oublier » à
 l'échelle, dé-risque le pilote Deerskin = milliers de SKU). 1 bug (finally abort). 5 fichiers. tests 963→975.
 CFR 10 runs = 100% (0 revert).
+
+## 2026-07-01 (run autonome) — SCALE/VOLUME : cron `google-feed` (Voie A) borné au budget temps Vercel (anti-troncature silencieuse)
+
+**Sourcing (§6)** : backlog → FILTRE DE CAP #4 SCALE, item explicitement nomme « prochain [R] » apres
+scale-feed-xml-stream : **timeouts crons/routes Vercel sur gros catalogues (Voie A cron `google-feed` boucle
+N produits)**. Premisse verifiee dans le code reel AVANT (LESSONS ~70% findings faux) : le cron pousse TOUS
+les produits de TOUS les marchands en UNE invocation via N `await googleMerchantFetch` SEQUENTIELS, sans
+`maxDuration` ni borne de temps (contraste avec `enrich-products` qui pose maxDuration=300 + draine un BATCH).
+
+**Le silent-failure ciblé** : sur un catalogue pilote multimarque (Deerskin = milliers de SKU), N x ~100-300 ms
+peut depasser le budget Vercel -> fonction TUEE en plein vol. Les produits deja pousses le sont, le reste OMIS,
+**et l'ecriture `last_feed_status` (fin de boucle) JAMAIS atteinte** -> le marchand reste sur le « success » du
+run precedent = troncature SILENCIEUSE, aucun statut « partial », aucun Sentry = perte n1.
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12)
+- NOUVEAU helper PUR `src/lib/google/feed-push.ts` : `processWithinTimeBudget(items, action, {now, deadlineMs})`
+  -> `{succeeded, attempted, interrupted}`. Horloge + action INJECTEES (zero dep reseau/DB) -> deterministe.
+  Verifie l'horloge AVANT chaque item (un item entame est mene a terme, jamais coupe en plein appel reseau).
+- `cron/google-feed/route.ts` : `export const maxDuration = 300` (budget Fluid max) + `TIME_BUDGET_MS = 270_000`
+  (30 s de marge sous maxDuration pour ecrire les statuts + repondre). `deadlineMs = Date.now()+budget`. Garde en
+  tete de boucle marchand (ne demarre pas un marchand qu'on ne finira pas). Push borne via le helper. Statut
+  HONNETE distinguant interrompu (budget) vs partial (echecs push) vs success. Reponse expose `merchants_attempted`
+  + `time_budget_exhausted`. Sentry `step:"time-budget"` sur toute interruption (« catalogue trop gros -> chunking »).
+
+**Preuve (methode §1bis)** : `tests/lib/google/feed-push.test.ts` (+6 : succes complet, vide!=interruption,
+succes/echecs comptes a part, STOP au deadline `>=` boundary attempted<total, deadline deja passe avant 1er item,
+item entame mene a terme). `tests/google-feed-time-budget.test.ts` (+3, drive le VRAI POST avec `Date.now` spie
+qui avance a chaque push) : budget non atteint->success ; budget depasse en plein marchand->statut "partial"
+HONNETE (PAS "success") + `time_budget_exhausted:true` + 3 appels reseau seulement (pas 5) ; marchand suivant
+NON demarre + signale Sentry.
+
+**Revue silent-failure-hunter** : 3 findings, **2 corriges** : (1 MED) les 3 `.update` de statut avalaient leur
+`error` -> helper `writeMerchantStatus` (captureError sur echec d'ecriture = le faux-success re-introduit PAR LE
+CHEMIN WRITE est ferme) ; (3 LOW-MED) Sentry ne tirait pas sur le pilote MONO-marchand interrompu
+(`merchantsAttempted===length`) -> condition elargie a tout `budgetExhausted`. (2 LOW : sortir le write de statut
+de `getGoogleAccessToken` multi-caller) = SKIP scope (rate Low, DB correcte, hors-cap). Paths SOUND verifies :
+faux-success sous interruption impossible (interrupted=>attempted<length=>partial), boundary `>=` correct,
+productsErr/null-products throw intacts, per-product captureError visible.
+
+**Metrique** : `tsc` OK, `test:run` **975->984** (+9). 1 unite [R] in-scope avancee (scale-google-feed-timeout).
+Blast LOW (cron = entry-point sans caller interne ; helper = 1 caller ; aucune signature existante changee).
+0 migration, reversible. **Reste SCALE (prochain [R])** : batch upserts stock de l'ingestion (upserts par produit
+en boucle dans le snapshot) ; chunker la boucle produits du cron via `streamRows` pour finir un catalogue > budget
+en un run (auj. : honnete mais la queue tail ne se publie qu'au prochain run).
+
+**Scorecard** : Preuve 8/10 (route reelle drivee field-level + interruption prouvee sur faux client fidele, mais
+synthetique — 0 catalogue reel) · Secu north-star 9/10 (SF-hunter 2 findings corriges, clot la troncature
+silencieuse + le faux-success du chemin write) · Reversibilite 10/10 (0 migration, `git revert`) · Scope 9/10
+(1 prod route + 1 helper + 2 tests = 4 fichiers, 1 unite) · Align 9/10 (pilier 1 « ne rien oublier » a l'echelle,
+de-risque le pilote Deerskin). 2 bugs (faux-success write-path, Sentry mono-marchand). 4 fichiers. tests 975->984.
+CFR 10 runs = 100% (0 revert).

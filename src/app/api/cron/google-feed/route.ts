@@ -4,6 +4,17 @@ import { getGoogleAccessToken, googleMerchantFetch } from "@/lib/google/merchant
 import { transformProductToGoogle, filterEligibleProducts } from "@/lib/google/feed";
 import { captureError } from "@/lib/error";
 import { fetchAllRows } from "@/lib/supabase/paginate";
+import { processWithinTimeBudget } from "@/lib/google/feed-push";
+
+// Catalogue pilote multimarque = des MILLIERS de SKU poussés un par un (appel réseau
+// séquentiel) → on réserve le budget maximal Fluid pour ce cron.
+export const maxDuration = 300;
+
+// Budget temps que la route s'impose, SOUS `maxDuration` : elle s'arrête PROPREMENT avant
+// le kill brutal de Vercel (~30 s de marge pour écrire les statuts + répondre). Sans ça, un
+// gros catalogue tue la fonction en plein vol → feed partiel + statut JAMAIS écrit = troncature
+// SILENCIEUSE (le marchand reste sur le « success » du run précédent). Cf. feed-push.ts.
+const TIME_BUDGET_MS = 270_000;
 
 export async function POST(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
@@ -12,6 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createAdminClient();
+    const deadlineMs = Date.now() + TIME_BUDGET_MS;
 
     const { data: connections, error: connectionsErr } = await supabase
         .from("google_merchant_connections")
@@ -29,20 +41,45 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ processed: 0, message: "No Google-connected merchants" });
     }
 
+    // Écriture de statut RENDUE NON SILENCIEUSE : un échec du `.update` (blip DB / RLS)
+    // laissait sinon le marchand sur le statut du run PRÉCÉDENT (p. ex. "success") alors
+    // que ce run a été partiel/interrompu = exactement le faux "success" que ce fix vise
+    // à fermer, ré-introduit par le chemin d'écriture. On le rend visible (Sentry).
+    const writeMerchantStatus = async (merchantId: string, payload: Record<string, unknown>) => {
+        const { error: writeErr } = await supabase
+            .from("google_merchant_connections")
+            .update(payload)
+            .eq("merchant_id", merchantId);
+        if (writeErr) {
+            captureError(writeErr, { cron: "google-feed", step: "write-status", merchantId });
+        }
+    };
+
     let totalPushed = 0;
     let errors = 0;
+    let merchantsAttempted = 0;
+    let budgetExhausted = false;
 
     for (const conn of connections) {
+        // Plus de budget temps → on ne DÉMARRE pas un marchand qu'on ne pourra pas finir.
+        // Les marchands non traités gardent leur statut du run précédent (non altéré) ; on
+        // signale plus bas (Sentry) qu'ils n'ont pas été rafraîchis = jamais un faux « à jour ».
+        if (Date.now() >= deadlineMs) {
+            budgetExhausted = true;
+            break;
+        }
+        merchantsAttempted++;
+
         try {
             const auth = await getGoogleAccessToken(conn.merchant_id);
             if (!auth) {
                 // Token Google expiré/révoqué = feed mort SILENCIEUX pour le marchand.
                 // On le rend visible (statut + Sentry) au lieu d'incrémenter un compteur.
                 errors++;
-                await supabase
-                    .from("google_merchant_connections")
-                    .update({ last_feed_status: "error", last_feed_error: "Google token expired or revoked — reconnect required" })
-                    .eq("merchant_id", conn.merchant_id);
+                await writeMerchantStatus(conn.merchant_id, {
+                    last_feed_status: "error",
+                    last_feed_error: "Google token expired or revoked — reconnect required",
+                });
                 captureError(new Error("Google token unavailable"), { cron: "google-feed", merchantId: conn.merchant_id });
                 continue;
             }
@@ -83,59 +120,99 @@ export async function POST(req: NextRequest) {
             // pour les 1ers produits et pas les derniers (incohérence intra-feed).
             const nowMs = Date.now();
 
-            let pushed = 0;
-            for (const product of eligible) {
-                try {
-                    const googleProduct = transformProductToGoogle(product as any, conn.store_code, nowMs);
-                    await googleMerchantFetch(
-                        `/products/v1beta/${parent}/productInputs:insert`,
-                        auth.accessToken,
-                        {
-                            method: "POST",
-                            body: JSON.stringify(googleProduct),
-                        },
-                    );
-                    pushed++;
-                } catch (err) {
-                    captureError(err, {
-                        merchantId: conn.merchant_id,
-                        productId: product.id,
-                        cron: "google-feed",
-                    });
-                }
+            // Push borné au budget temps : on s'arrête PROPREMENT avant le kill Vercel.
+            // `processWithinTimeBudget` capture chaque échec par produit (Sentry) et signale
+            // `interrupted` si le deadline a coupé la boucle avant la fin → statut honnête.
+            const pushResult = await processWithinTimeBudget(
+                eligible,
+                async (product) => {
+                    try {
+                        const googleProduct = transformProductToGoogle(product as any, conn.store_code, nowMs);
+                        await googleMerchantFetch(
+                            `/products/v1beta/${parent}/productInputs:insert`,
+                            auth.accessToken,
+                            {
+                                method: "POST",
+                                body: JSON.stringify(googleProduct),
+                            },
+                        );
+                        return true;
+                    } catch (err) {
+                        captureError(err, {
+                            merchantId: conn.merchant_id,
+                            productId: product.id,
+                            cron: "google-feed",
+                        });
+                        return false;
+                    }
+                },
+                { now: Date.now, deadlineMs },
+            );
+
+            const pushed = pushResult.succeeded;
+
+            // Statut honnête. Distinguer DEUX causes de "partial" (jamais un faux "success") :
+            //  - interrompu par le budget temps (catalogue trop gros pour un run) ;
+            //  - échecs de push API Google sur certains produits.
+            let feedStatus: "success" | "partial";
+            let feedError: string | null;
+            if (pushResult.interrupted) {
+                feedStatus = "partial";
+                feedError = `interrompu (budget temps Vercel) : ${pushed}/${eligible.length} poussés, ${eligible.length - pushResult.attempted} non tentés`;
+                budgetExhausted = true;
+            } else if (pushed < eligible.length) {
+                feedStatus = "partial";
+                feedError = `${eligible.length - pushed}/${eligible.length} produits non poussés`;
+            } else {
+                feedStatus = "success";
+                feedError = null;
             }
 
-            // Statut honnête : "partial" si des produits éligibles ont échoué au push.
-            const feedStatus = pushed === eligible.length ? "success" : "partial";
-            await supabase
-                .from("google_merchant_connections")
-                .update({
-                    products_pushed: pushed,
-                    last_feed_at: new Date().toISOString(),
-                    last_feed_status: feedStatus,
-                    last_feed_error: feedStatus === "partial" ? `${eligible.length - pushed}/${eligible.length} produits non poussés` : null,
-                })
-                .eq("merchant_id", conn.merchant_id);
+            await writeMerchantStatus(conn.merchant_id, {
+                products_pushed: pushed,
+                last_feed_at: new Date().toISOString(),
+                last_feed_status: feedStatus,
+                last_feed_error: feedError,
+            });
 
             totalPushed += pushed;
+
+            // Budget épuisé en plein marchand → on ne démarre pas le suivant (il serait coupé
+            // de la même façon). La garde en tête de boucle le rattraperait, mais on coupe ici
+            // pour ne pas re-lire un catalogue qu'on ne pourra pas pousser.
+            if (pushResult.interrupted) break;
         } catch (err) {
             errors++;
             captureError(err, { merchantId: conn.merchant_id, cron: "google-feed" });
 
-            await supabase
-                .from("google_merchant_connections")
-                .update({
-                    last_feed_status: "error",
-                    last_feed_error: err instanceof Error ? err.message : String(err),
-                })
-                .eq("merchant_id", conn.merchant_id);
+            await writeMerchantStatus(conn.merchant_id, {
+                last_feed_status: "error",
+                last_feed_error: err instanceof Error ? err.message : String(err),
+            });
         }
+    }
+
+    // Rendre VISIBLE (Sentry) TOUTE épuisement du budget temps — pas seulement quand des
+    // marchands sont entièrement sautés. Le pilote cible est MONO-marchand (Deerskin) : une
+    // interruption en plein push y laisse `merchantsAttempted === connections.length`, donc
+    // l'ancien garde `< length` ne tirait AUCUN signal Sentry (seul le statut "partial" en DB).
+    // Un budget épuisé = « catalogue trop gros pour un run → chunking requis » → toujours alerter.
+    if (budgetExhausted) {
+        const skipped = connections.length - merchantsAttempted;
+        captureError(
+            new Error(
+                `google-feed: budget temps épuisé — feed potentiellement incomplet ce run (marchands traités ${merchantsAttempted}/${connections.length}, ${skipped} non démarré(s)) — catalogue trop gros pour un run, chunking requis`,
+            ),
+            { cron: "google-feed", step: "time-budget", merchantsAttempted, merchantsTotal: connections.length, merchantsSkipped: skipped },
+        );
     }
 
     return NextResponse.json({
         merchants: connections.length,
+        merchants_attempted: merchantsAttempted,
         products_pushed: totalPushed,
         errors,
+        time_budget_exhausted: budgetExhausted,
     });
 }
 
