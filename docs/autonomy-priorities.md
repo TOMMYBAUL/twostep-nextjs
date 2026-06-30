@@ -183,10 +183,19 @@ plus un mur Google externe.
 >      sync_lock), **fail-loud** sur `data=null` sans erreur. Preuve : `tests/lib/supabase/paginate.test.ts` (+10) +
 >      `tests/ingest-snapshot-pagination.test.ts` (+4 : 1500 produits, faux client plafonnant à 1000 → 0 doublon +
 >      #1200 vendu au-delà de 1000 remis à 0). Revue SF-hunter : 4 findings, HIGH `.order`/MED fail-loud corrigés,
->      2 LOW couverts. 945→959. 0 migration, réversible. **Reste (prochain [R], même helper, mécanique) : les 4
->      lectures produits des SORTIES Google (Voie A cron `google-feed`, Voie B XML `feed/lfp/[merchantId]`,
->      `feed-preview`, `google/inventory`) ont la MÊME troncature → un feed >1000 produits omet silencieusement le
->      reste ; parité à préserver entre les 4. PUIS : mémoire `lfp-xml` (TOUT en RAM sur 50k), timeouts crons/routes Vercel.**
+>      2 LOW couverts. 945→959. 0 migration, réversible.
+>    - ✅ **(scale-google-out) FAIT (2026-06-30, run autonome)** : **même troncature `max-rows` sur les 4 lectures produits
+>      des SORTIES Google** (Voie A cron `google-feed`, Voie B XML `feed/lfp/[merchantId]`, `google/feed-preview`,
+>      `google/inventory` `pushInventoryToGoogle`) — sur >1000 produits chaque sortie publiait un feed PARTIEL silencieux
+>      (inventory : un vendu au-delà du 1000ᵉ resté « in stock » sur Google = **faux positif n°1**). Fix : chaque lecture
+>      enveloppée dans `fetchAllRows(() => …select(…).order("id",{ascending:true}))` (même helper que scale-ingest), contrat
+>      `{data,error}` préservé → gardes callers inchangées ; inventory garde `.in("id",productIds)` (push ciblé) dans la
+>      factory ; parité population/gate des 4 préservée. Preuve `tests/google-feed-output-pagination.test.ts` (catalogue 1500
+>      → `.range()` couvre 2 pages [0..999]+[1000..1999] sur les 4 + compteurs aval 1500 ; non vacant) + 2 faux clients
+>      existants mis à jour (`.order`/`.range`). 959→963. Revue SF-hunter **SOUND, 0 finding** (5 axes). Blast LOW
+>      (`pushInventoryToGoogle` signature inchangée, callers best-effort ; 3 reads inline). 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : mémoire `lfp-xml` (TOUT le XML construit en RAM sur 50k items), timeouts
+>      crons/routes Vercel (~max) sur gros catalogues, batch upserts stock.**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

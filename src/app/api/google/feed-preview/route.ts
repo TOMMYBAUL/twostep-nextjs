@@ -27,6 +27,7 @@ import {
 } from "@/lib/google/feed-eligibility";
 import { resolveStoreCode } from "@/lib/google/store-code";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 /** Un produit qui NE serait PAS publié, avec ses causes (mode preview, par produit). */
 interface BlockedProduct {
@@ -66,16 +67,22 @@ export async function GET() {
         // Population EXACTEMENT celle des 2 feeds live (cron/google-feed + feed/lfp) : sinon le
         // preview montrerait un ensemble différent de ce qui publie = mensonge. Le SELECT reprend
         // les colonnes du transform (stock + promotions incluses) pour produire la ligne Google réelle.
-        const { data: products, error: productsErr } = await supabase
-            .from("products")
-            .select(
-                "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)",
-            )
-            .eq("merchant_id", merchant.id)
-            .eq("visible", true)
-            .eq("review_status", "validated")
-            .is("archived_at", null)
-            .is("variant_of", null);
+        // PAGINÉ comme les 2 feeds live (parité) : un SELECT non borné est tronqué à 1000 lignes par
+        // PostgREST (sans erreur) → un preview d'un catalogue >1000 mentirait par OMISSION (le marchand
+        // croirait son catalogue tronqué). `fetchAllRows` lit tout ; `.order("id")` = ordre déterministe.
+        const { data: products, error: productsErr } = await fetchAllRows(() =>
+            supabase
+                .from("products")
+                .select(
+                    "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)",
+                )
+                .eq("merchant_id", merchant.id)
+                .eq("visible", true)
+                .eq("review_status", "validated")
+                .is("archived_at", null)
+                .is("variant_of", null)
+                .order("id", { ascending: true }),
+        );
 
         // Échec de lecture ≠ « 0 produit » : sans cette garde, un blip DB renvoyait un preview VIDE
         // (faux « rien à publier ») en silence — le marchand croirait son catalogue non publiable.

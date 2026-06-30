@@ -109,6 +109,15 @@ function makeServerClient(opts: {
                 filters.push({ col, val });
                 return api;
             },
+            not: () => api,
+            // `.order("id")` (anti-troncature pagination) : dataset déterministe → no-op.
+            order: () => api,
+            // `.range(from,to)` : `fetchAllRows` pagine le SELECT products du preview.
+            // Fenêtre demandée + propagation d'une erreur DB injectée.
+            range: (from: number, to: number) => {
+                const { data, error } = resolve();
+                return Promise.resolve({ data: data ? data.slice(from, to + 1) : data, error });
+            },
             single: () => {
                 const { data, error } = resolve();
                 if (error) return Promise.resolve({ data: null, error });

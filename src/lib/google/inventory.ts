@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getGoogleAccessToken, googleMerchantFetch } from "@/lib/google/merchant";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 /**
  * Pur (testable) : normalise l'embed PostgREST `stock(quantity)` en une quantité.
@@ -65,18 +66,28 @@ export async function pushInventoryToGoogle(
 
         const supabase = createAdminClient();
 
-        let query = supabase
-            .from("products")
-            .select("id, ean, stock(quantity)")
-            .eq("merchant_id", merchantId)
-            .eq("visible", true)
-            .not("ean", "is", null);
+        // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
+        // erreur) → un marchand >1000 produits visibles aurait son inventaire Google
+        // mis à jour PARTIELLEMENT (les produits au-delà du 1000ᵉ restent périmés =
+        // un vendu affiché « in stock » sur Google Shopping = faux positif n°1).
+        // `fetchAllRows` lit tout ; `.order("id")` = ordre déterministe entre pages.
+        // Parité avec les 3 autres sorties Google (Voie A cron, Voie B XML, feed-preview).
+        // NB : le filtre `.in("id", productIds)` (push ciblé post-sync) reste appliqué —
+        // la pagination ne change que le cas non borné (push catalogue complet).
+        const { data: products, error: readError } = await fetchAllRows(() => {
+            let query = supabase
+                .from("products")
+                .select("id, ean, stock(quantity)")
+                .eq("merchant_id", merchantId)
+                .eq("visible", true)
+                .not("ean", "is", null);
 
-        if (productIds && productIds.length > 0) {
-            query = query.in("id", productIds);
-        }
+            if (productIds && productIds.length > 0) {
+                query = query.in("id", productIds);
+            }
 
-        const { data: products, error: readError } = await query;
+            return query.order("id", { ascending: true });
+        });
         // Une erreur de lecture NE DOIT PAS être confondue avec « aucun produit » :
         // un échec DB silencieux laisserait l'inventaire Google PÉRIMÉ (un vendu
         // resté « in stock ») sans aucune trace. On la rend visible (Sentry) avant

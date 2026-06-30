@@ -65,6 +65,15 @@ function makeReadClient(tables: Record<string, TableData>) {
                 filters.push({ col, val });
                 return api;
             },
+            not: () => api,
+            // `.order("id")` (anti-troncature pagination) : dataset déjà déterministe → no-op.
+            order: () => api,
+            // `.range(from,to)` : `fetchAllRows` pagine les SELECT products des sorties Google.
+            // On renvoie la fenêtre demandée (et on propage une erreur DB injectée).
+            range: (from: number, to: number) => {
+                const { data, error } = resolve();
+                return Promise.resolve({ data: data ? data.slice(from, to + 1) : data, error });
+            },
             // update(payload).eq(...) → enregistre l'écriture de statut (Voie A cron)
             update: (payload: Row) => ({
                 eq: () => {

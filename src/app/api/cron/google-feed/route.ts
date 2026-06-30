@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getGoogleAccessToken, googleMerchantFetch } from "@/lib/google/merchant";
 import { transformProductToGoogle, filterEligibleProducts } from "@/lib/google/feed";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 export async function POST(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
@@ -49,14 +50,22 @@ export async function POST(req: NextRequest) {
             // GATE : ne pousser à Google QUE les produits réellement publiables
             // (validés, visibles, non archivés, non variantes). Sinon on expose des
             // produits non identifiés sur Google Shopping (faux positif public).
-            const { data: products, error: productsErr } = await supabase
-                .from("products")
-                .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
-                .eq("merchant_id", conn.merchant_id)
-                .eq("visible", true)
-                .eq("review_status", "validated")
-                .is("archived_at", null)
-                .is("variant_of", null);
+            // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST
+            // (sans erreur) → un catalogue >1000 publierait silencieusement un feed
+            // PARTIEL à Google (le reste omis = catalogue fantôme inverse). `fetchAllRows`
+            // lit tout ; `.order("id")` = ordre déterministe entre pages. Parité avec les
+            // 3 autres sorties Google (Voie B XML, feed-preview, inventory).
+            const { data: products, error: productsErr } = await fetchAllRows(() =>
+                supabase
+                    .from("products")
+                    .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
+                    .eq("merchant_id", conn.merchant_id)
+                    .eq("visible", true)
+                    .eq("review_status", "validated")
+                    .is("archived_at", null)
+                    .is("variant_of", null)
+                    .order("id", { ascending: true }),
+            );
 
             // Échec de lecture DB ≠ « marchand sans produit » : un `continue` muet ici
             // laissait le feed du marchand SILENCIEUSEMENT périmé (aucun statut, aucun

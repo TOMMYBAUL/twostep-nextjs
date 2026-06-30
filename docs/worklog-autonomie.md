@@ -5,6 +5,51 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-06-30 (run autonome) · SCALE — pagination anti-troncature `max-rows` PostgREST sur les 4 SORTIES Google
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : suite DIRECTE du fix ingestion du run précédent (commit `632f5e3`,
+`fetchAllRows` sur les 2 lectures de `ingestStockSnapshot`). Le « reste prochain [R] » nommé explicitement dans
+priorities.md §1bis item #4 ET LESSONS : **les 4 lectures produits qui ALIMENTENT Google ont la MÊME troncature
+silencieuse `max-rows` (1000) que je venais de corriger côté ingest.** In-scope (SCALE/VOLUME, pilier 1 north-star
+« ne rien oublier »), réversible, vérifiable, mécanique. Filtre de cap : Align 10/10 (chemin critique stock→feed Google).
+
+**Diagnostic (vérifié dans le code réel)** : un SELECT non borné est tronqué SILENCIEUSEMENT à 1000 lignes par PostgREST
+(sans erreur). Les 4 sorties Google lisaient `products` sans `.range()` → sur un catalogue >1000 (pilote multimarque type
+Deerskin = milliers de SKU) chacune publierait un feed PARTIEL sans alerte :
+- `src/app/api/cron/google-feed/route.ts` (Voie A Content API) L52 — seuls 1000 premiers poussés.
+- `src/app/api/feed/lfp/[merchantId]/route.ts` (Voie B XML crawlé) L81 — XML tronqué à 1000.
+- `src/app/api/google/feed-preview/route.ts` (preview pilote) L69 — mensonge par omission au marchand.
+- `src/lib/google/inventory.ts` `pushInventoryToGoogle` L68 — un vendu au-delà du 1000ᵉ reste « in stock » sur Google
+  Shopping = **faux positif n°1** (l'ennemi du north-star).
+
+**Fait (réversible, 0 migration)** : chaque lecture enveloppée dans `fetchAllRows(() => …select(…)….order("id",{ascending:true}))`
+(helper du run précédent, `src/lib/supabase/paginate.ts`). `.order("id")` = ordre déterministe entre pages (PK immuable).
+Contrat `{data,error}` préservé → les gardes existantes (`if (productsErr)` → 500/captureError, `if (!products)` → 500)
+fonctionnent à l'identique ; `fetchAllRows` synthétise une erreur (fail-loud) sur une page `data=null`. inventory.ts :
+le filtre conditionnel `.in("id", productIds)` (push ciblé post-sync) est CONSERVÉ dans la factory + `.order` ; la
+pagination ne change que le cas non borné (push catalogue complet). Parité des 4 sorties préservée (population/gate inchangés).
+
+**Trouvé / blast radius** : `pushInventoryToGoogle` (gitnexus impact) = appelé par `syncMerchantPOS` + 4 routes webhook,
+tous best-effort (`.catch()`), signature inchangée, contrat préservé → blast LOW. Les 3 reads de routes sont inline
+(pas de symbole exporté) → blast LOW. Aucun risque HIGH/CRITICAL.
+
+**Testé** : `tsc --noEmit` exit 0 ; `npm run test:run` **963** (959→963, **+4**). NOUVEAU `tests/google-feed-output-pagination.test.ts`
+= faux client fidèle à PostgREST (lecture sans `.range()` plafonnée à 1000) sur catalogue de 1500 → preuve UNIVERSELLE
+(indépendante de l'éligibilité) : chaque chemin enregistre `.range()` couvrant DEUX pages [0..999]+[1000..1999] ; + preuves
+aval bon marché (inventory pousse 1500, cron pousse 1500, preview voit 1500). Non vacant : sans le wrap, le plafond 1000 +
+absence de range feraient échouer les 4. 2 tests existants mis à jour (faux clients `feed-preview.test.ts` +
+`ingest-maillon7-google-feed-gate.test.ts` → support `.order()`/`.range()`).
+
+**Revue silent-failure-hunter (OBLIGATOIRE pipeline, §11.3)** : **SOUND, 0 finding réel** sur les 5 axes vérifiés —
+(1) toute erreur de page remonte sans set partiel masqué (contrat `{data,error}` + gardes callers préservés à l'identique) ;
+(2) `.in("id",productIds)` conservé dans la factory sur chaque page ; (3) risque de saut concurrent sous écriture active =
+inhérent à toute pagination sans snapshot, **amélioration nette** vs troncature systématique, documenté dans le helper ;
+(4) population gate identique sur les 4 (le `.not("ean",…)` d'inventory est fonctionnellement correct : pas d'EAN = impossible
+à pousser à Google) ; (5) test non vacant (plafond max-rows réaliste + assertions 1500 qui échoueraient sur du code non paginé).
+
+**Reste (priorities §1bis item #4)** : mémoire `lfp-xml` (TOUT le XML construit en RAM sur 50k items) ; timeouts crons/routes
+Vercel (~max) sur gros catalogues ; batch upserts stock. e2e photo vrais EAN reste escaladé (env live).
+
 ## 2026-06-29 (run autonome #2) · MAILLON 9 enrichissement — images GTIN-keyées Open Facts (anti faux positif photo)
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : MAILLON 9 (a)(b)(c)(d) unit-testables COMPLETS (commits `470965a`→`b3eb031`),

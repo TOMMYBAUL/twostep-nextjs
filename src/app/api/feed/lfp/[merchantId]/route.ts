@@ -17,6 +17,7 @@ import { captureError } from "@/lib/error";
 import { buildLfpXml, type LfpProductRow } from "@/lib/google/lfp-xml";
 import { resolveStoreCode } from "@/lib/google/store-code";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 const UUID_REGEX =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -78,16 +79,24 @@ export async function GET(
     // (poussée individuellement = produit non identifié sur Google Shopping).
     // Les deux canaux de sortie Google émettent ainsi le MÊME ensemble de
     // produits — fin de la divergence (cf. store_code Voie A/B, maillon 7).
-    const { data: products, error: productsErr } = await admin
-        .from("products")
-        .select(
-            "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity), promotions(sale_price, starts_at, ends_at)",
-        )
-        .eq("merchant_id", merchantId)
-        .eq("visible", true)
-        .eq("review_status", "validated")
-        .is("archived_at", null)
-        .is("variant_of", null);
+    // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
+    // erreur) → un catalogue >1000 produirait un XML PARTIEL crawlé par Google (le
+    // reste omis silencieusement). `fetchAllRows` lit tout ; `.order("id")` = ordre
+    // déterministe entre pages. Parité avec les 3 autres sorties Google (Voie A cron,
+    // feed-preview, inventory).
+    const { data: products, error: productsErr } = await fetchAllRows(() =>
+        admin
+            .from("products")
+            .select(
+                "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity), promotions(sale_price, starts_at, ends_at)",
+            )
+            .eq("merchant_id", merchantId)
+            .eq("visible", true)
+            .eq("review_status", "validated")
+            .is("archived_at", null)
+            .is("variant_of", null)
+            .order("id", { ascending: true }),
+    );
 
     if (productsErr) {
         return new Response(`db_error: ${productsErr.message}`, { status: 500 });
