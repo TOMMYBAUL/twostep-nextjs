@@ -237,9 +237,23 @@ plus un mur Google externe.
 >      SF-hunter **design SOUND (5 invariants)**, 2 findings observabilité fermés (F1 `captureError` objet PostgREST →
 >      « [object Object] » Sentry, fix systémique `src/lib/error.ts` ~250 sites ; F2 échec MAJ métadonnée → réconciliation
 >      zéroïse le produit). Blast LOW (2 callers POST, signature/retour inchangés). 984→997 (+13). 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : batching des UPDATE de produits pré-existants (re-push massif = N
->      `products.update` sériés ; stock déjà batché) — prudence : un batch écraserait un prix inchangé par null. Éventuellement
->      chunker/streamer la boucle produits du cron `google-feed` via `streamRows` pour finir un catalogue > budget en un run.**
+>    - ✅ **(scale-ingest-update-batch) FAIT (2026-07-01, run #3)** : **TROU SYMÉTRIQUE aux créations** — le run batch
+>      précédent laissait les produits PRÉ-EXISTANTS en `.update()` PAR PRODUIT. Or NearSt = snapshot POUSSÉ QUOTIDIENNEMENT
+>      → au 2ᵉ push et suivants TOUS les SKU sont pré-existants → voie UPDATE 100 % séquentielle = O(N) aller-retours
+>      (Deerskin milliers de SKU) → budget temps Vercel dépassé → fonction TUÉE → ingestion tronquée SILENCIEUSEMENT (même
+>      classe n°1, et c'est le cas COMMUN : re-push > 1er push). Fix : MAJ DIFFÉRÉES au flush, **GROUPÉES PAR FORME de
+>      colonnes** (`price`/`available_sizes`/les deux) → `upsert(onConflict:"id")` par lots de 500. Le groupage évite le
+>      piège du batch naïf (upsert PostgREST NULLE une colonne absente du corps → mélanger les formes nullerait un prix
+>      inchangé ; groupe = colonnes uniformes → jamais de null injecté). SÛRETÉ ligne supprimée : `products.merchant_id`+`name`
+>      NOT NULL (001) → INSERT partiel impossible (jamais de résurrection) → lot échoue → repli mono-ligne `.update().eq(id)`
+>      sûr. STOCK + `touched` restent dans la boucle (F2 préservé : échec MAJ ne zéroïse jamais). Preuve `ingest-snapshot-
+>      batching.test.ts` (9→11) : re-push 1200 → `products_upsert===3` PAS 1200 `.update()` + **test null-overwrite** (faux
+>      client modèle la null-fill union-de-colonnes PostgREST). Revue SF-hunter **diff SOUND** (F4-F9) ; **F1 (MED) adjacent
+>      CORRIGÉ** = write stock=0 réconciliation faisait `errors.push` SANS `captureError` (seul angle mort Sentry ; vendu
+>      resté « en stock » invisible ops) → `captureError` phase "reconcile-stock-zero" + regression. F2/F3 (LOW) = décisions
+>      produit, suivi. Blast LOW. 997→999 (+2). 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : chunker/streamer la boucle produits du cron `google-feed` via `streamRows`
+>      pour finir un catalogue > budget en UN run (auj. la queue tail ne se publie qu'au prochain run).**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

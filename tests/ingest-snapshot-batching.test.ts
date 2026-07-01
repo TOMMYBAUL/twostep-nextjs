@@ -28,6 +28,7 @@ type Store = { products: Row[]; stock: Row[]; feed_events: Row[]; enrichment_job
 type Calls = {
     products_insert: number;
     products_update: number;
+    products_upsert: number;
     stock_upsert: number;
     feed_events_insert: number;
     enrichment_jobs_insert: number;
@@ -51,7 +52,7 @@ const MAX_ROWS = 1000;
  * INSERT de LOT contenant une ligne « POISON » (simule une collision de slug unique) tout
  * en laissant passer les autres lignes en repli mono-ligne — pour prouver l'isolation d'échec.
  */
-function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; failUpdateFor?: string } = {}) {
+function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; failUpdateFor?: string; failZero?: boolean } = {}) {
     const db: Store = {
         products: (seed.products ?? []).map((r) => ({ ...r })),
         stock: (seed.stock ?? []).map((r) => ({ ...r })),
@@ -61,6 +62,7 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
     const calls: Calls = {
         products_insert: 0,
         products_update: 0,
+        products_upsert: 0,
         stock_upsert: 0,
         feed_events_insert: 0,
         enrichment_jobs_insert: 0,
@@ -83,8 +85,30 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
             return { data: null, error: null };
         }
         if (st.op === "upsert") {
-            if (table === "stock") calls.stock_upsert++;
             const rows = Array.isArray(st.payload) ? (st.payload as Row[]) : [st.payload as Row];
+            if (table === "products") {
+                calls.products_upsert++;
+                // Simule un échec de contrainte : un LOT contenant le produit ciblé
+                // échoue EN BLOC → déclenche le repli mono-ligne (comme les créations).
+                if (opts.failUpdateFor && rows.some((r) => db.products.find((p) => p.id === r.id)?.name === opts.failUpdateFor)) {
+                    return { data: null, error: { message: `upsert denied (${opts.failUpdateFor})` } };
+                }
+                // FIDÉLITÉ PostgREST upsert (defaultToNull) : l'UNION des colonnes du
+                // LOT est écrite ; une colonne absente d'une ligne est mise à NULL. C'est
+                // EXACTEMENT le piège que le groupage par forme (côté prod) doit éviter :
+                // si ce faux client null-fille, un test qui mélange des formes échouera.
+                const cols = new Set<string>();
+                for (const r of rows) for (const k of Object.keys(r)) cols.add(k);
+                for (const r of rows) {
+                    const idx = db.products.findIndex((x) => x.id === r.id);
+                    if (idx < 0) continue; // ligne absente → INSERT partiel (hors scope des tests normaux)
+                    const merged: Row = { ...db.products[idx] };
+                    for (const c of cols) merged[c] = c in r ? r[c] : null;
+                    db.products[idx] = merged;
+                }
+                return { data: null, error: null };
+            }
+            if (table === "stock") calls.stock_upsert++;
             for (const r of rows) {
                 const idx = db[table].findIndex((x) => x.product_id === r.product_id);
                 if (idx >= 0) db[table][idx] = { ...db[table][idx], ...r };
@@ -105,6 +129,10 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
             return { data: null, error: null };
         }
         if (st.op === "update_in") {
+            // Simule un échec du write le plus critique de la réconciliation (stock=0).
+            if (opts.failZero && table === "stock" && st.inCol === "product_id") {
+                return { data: null, error: { message: "zero batch denied" } };
+            }
             for (const row of db[table]) {
                 if (st.inVals!.includes(row[st.inCol!] as string)) Object.assign(row, st.payload);
             }
@@ -216,8 +244,9 @@ describe("MAILLON SCALE — premier push de 1200 produits NEUFS écrit par LOTS 
         expect(calls.feed_events_insert).toBe(3);
         expect(calls.enrichment_jobs_insert).toBe(3);
         // Aucun produit NEUF ne déclenche d'UPDATE par-produit (available_sizes plié
-        // dans l'insert, pas de re-write séparé).
+        // dans l'insert, pas de re-write séparé) ni d'upsert de MAJ (0 pré-existant).
         expect(calls.products_update).toBe(0);
+        expect(calls.products_upsert).toBe(0);
     });
 
     it("les quantités sont exactes (aucune perte à l'échelle) : produit #777 → qty (777%9)+1", () => {
@@ -252,6 +281,55 @@ describe("MAILLON SCALE — re-push : 1200 updates par lots, 0 doublon (idempote
         // Stock ré-écrit par lots (borne), pas 1200 upserts.
         expect(calls.stock_upsert).toBe(3);
         expect(calls.products_insert).toBe(0);
+        // BORNE SCALE des MAJ métadonnée : les 1200 updates (tous de forme « price »)
+        // partent en ceil(1200/500)=3 upserts groupés, JAMAIS 1200 `.update()` sériés.
+        // Non-vacant : l'ancien code par-produit ferait 1200 appels `.update()`.
+        expect(calls.products_upsert).toBe(3);
+        expect(calls.products_update).toBe(0);
+    });
+});
+
+describe("MAILLON SCALE — groupage par forme : un batch d'update ne NULLE jamais une colonne absente", () => {
+    it("re-push mixte {prix seul} + {tailles seules} → prix inchangé JAMAIS écrasé par null", async () => {
+        // Deux produits pré-existants (petit catalogue < 10 → garde couverture off).
+        const seed: Partial<Store> = {
+            products: [
+                { id: "p-price", merchant_id: M, ean: "3017620422003", name: "Prix Only", sku: null, visible: true, price: 5, available_sizes: [] },
+                { id: "p-size", merchant_id: M, ean: "0036000291452", name: "Taille Only", sku: null, visible: true, price: 8, available_sizes: [] },
+            ],
+            stock: [
+                { product_id: "p-price", quantity: 5, source: "file_push", source_ts: "2026-06-20T08:00:00.000Z" },
+                { product_id: "p-size", quantity: 5, source: "file_push", source_ts: "2026-06-20T08:00:00.000Z" },
+            ],
+        };
+        const { admin, db, calls } = makeCountingAdmin(seed);
+        // p-price : nouveau PRIX, pas de taille → forme « price ».
+        // p-size  : une TAILLE, colonne prix VIDE → forme « available_sizes » (price=null).
+        const csv = [
+            "Code-barres;Désignation;Taille;Quantité;Prix",
+            "3017620422003;Prix Only;;4;9,50",
+            "0036000291452;Taille Only;42;3;",
+        ].join("\n");
+        const { items, coverage } = parseStockFile(Buffer.from(csv, "utf-8"));
+
+        const r = await ingestStockSnapshot(M, items, admin, { reconcile: true, coverage });
+        expect(r.products_created).toBe(0);
+        expect(r.products_updated).toBe(2);
+
+        // Les deux formes sont dans des GROUPES SÉPARÉS → 2 upserts, 0 repli mono-ligne.
+        expect(calls.products_upsert).toBe(2);
+        expect(calls.products_update).toBe(0);
+
+        const pPrice = db.products.find((p) => p.id === "p-price")!;
+        const pSize = db.products.find((p) => p.id === "p-size")!;
+        // p-price : prix mis à jour, tailles NON nullées (available_sizes hors de son groupe).
+        expect(pPrice.price).toBe(9.5);
+        expect(pPrice.available_sizes).toEqual([]);
+        // p-size : PIÈGE — son fichier n'a PAS de prix. Sans groupage, un upsert mixte
+        // aurait mis `price:null` (union des colonnes) → prix 8 ÉCRASÉ. Avec groupage,
+        // son lot ne porte que `available_sizes` → prix 8 PRÉSERVÉ.
+        expect(pSize.price).toBe(8);
+        expect((pSize.available_sizes as { size: string }[]).map((s) => s.size)).toEqual(["42"]);
     });
 });
 
@@ -316,6 +394,33 @@ describe("MAILLON SCALE — échec de MAJ métadonnée ne doit JAMAIS faire zér
         expect(captureError).toHaveBeenCalledWith(
             expect.objectContaining({ message: expect.stringContaining("update denied") }),
             expect.objectContaining({ phase: "update-product", merchantId: M }),
+        );
+    });
+});
+
+describe("MAILLON SCALE — échec du write stock=0 (réconciliation) : SIGNALÉ + Sentry, jamais avalé (F1 revue SF)", () => {
+    it("un lot stock=0 en échec → produit PAS zéroïsé (préservé), errors + captureError phase reconcile-stock-zero", async () => {
+        vi.mocked(captureError).mockClear();
+        // 1 produit pré-existant en stock, ABSENT du push → candidat au passage à 0.
+        const seed: Partial<Store> = {
+            products: [{ id: "p-old", merchant_id: M, ean: "3017620422003", name: "Ancien", sku: null, visible: true, available_sizes: [] }],
+            stock: [{ product_id: "p-old", quantity: 5, source: "file_push", source_ts: "2026-06-20T08:00:00.000Z" }],
+        };
+        const { admin, db } = makeCountingAdmin(seed, { failZero: true });
+        // Le push ne contient QUE p-new → p-old doit être réconcilié à 0, mais le write échoue.
+        const csv = ["Code-barres;Désignation;Quantité;Prix", "0036000291452;Nouveau;3;1,00"].join("\n");
+        const { items, coverage } = parseStockFile(Buffer.from(csv, "utf-8"));
+
+        const r = await ingestStockSnapshot(M, items, admin, { reconcile: true, coverage });
+
+        // Write en échec → produit NON zéroïsé (sa qté réelle est préservée, pas un faux 0).
+        expect(db.stock.find((s) => s.product_id === "p-old")!.quantity).toBe(5);
+        expect(r.stock_zeroed).toBe(0);
+        // SIGNALÉ (statut partial) ET envoyé à Sentry (plus d'angle mort) — jamais avalé.
+        expect(r.errors.some((e) => /Réconciliation stock=0/.test(e))).toBe(true);
+        expect(captureError).toHaveBeenCalledWith(
+            expect.objectContaining({ message: expect.stringContaining("zero batch denied") }),
+            expect.objectContaining({ phase: "reconcile-stock-zero", merchantId: M }),
         );
     });
 });

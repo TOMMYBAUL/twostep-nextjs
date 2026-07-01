@@ -80,6 +80,21 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   insert-échoué exclu du flush stock (FK) + enfilage + comptage. Updates de produits PRÉ-EXISTANTS restent par-ligne (batch
   écraserait un prix inchangé par null). Preuve : faux client qui COMPTE les writes (1200 créations → 3 lots chacun, non-vacant).
   `tests/ingest-snapshot-batching.test.ts`. (SCALE/VOLUME, snapshot batching, 2026-07-01)
+- ❌ **Batcher des UPDATE à valeurs HÉTÉROGÈNES via `upsert` sans grouper par forme de colonnes = NULLE une colonne
+  inchangée.** PostgREST `upsert` écrit l'UNION des colonnes du corps (defaultToNull) → un lot mélangeant `{id,price}` et
+  `{id,available_sizes}` met `price:null` sur la 2ᵉ ligne (prix inchangé ÉCRASÉ). C'est pourquoi les UPDATE pré-existants de
+  `ingestStockSnapshot` (re-push QUOTIDIEN = cas commun, tous SKU pré-existants → voie O(N) séquentielle = même troncature
+  n°1 que les créations) sont GROUPÉS par forme (`price`/`available_sizes`/les deux) avant `upsert(onConflict:"id")` par lots
+  de 500 → un groupe = colonnes uniformes → jamais de null injecté. **Repli mono-ligne `.update().eq(id)` sur lot en échec**
+  (isole la faute + no-op sûr sur ligne concurremment supprimée : `products.merchant_id`+`name` NOT NULL → l'INSERT partiel
+  d'un upsert sans conflit VIOLE NOT NULL = jamais de résurrection en ligne partielle). STOCK + `touched` posés dans la boucle,
+  DÉCOUPLÉS du flush → échec MAJ ne zéroïse jamais (F2). `tests/ingest-snapshot-batching.test.ts` (test null-overwrite : faux
+  client modèle la null-fill union-de-colonnes). (SCALE/VOLUME, snapshot update-batch, 2026-07-01)
+- ❌ **Angle mort Sentry : un write critique qui `errors.push` SANS `captureError`.** Le write stock=0 de la réconciliation
+  `ingestStockSnapshot` (LE plus critique : passage à « épuisé ») signalait dans `errors[]` (→ statut partial) mais n'appelait
+  PAS `captureError`, alors que TOUS les autres writes de la fonction le font → un produit vendu resté « en stock » (faux
+  positif n°1) était invisible à l'ops. **Règle : sur un chemin déjà instrumenté, grep les writes qui `errors.push` seul — le
+  seul sans `captureError` est l'angle mort.** Fix : `captureError` phase "reconcile-stock-zero". (revue SF-hunter, 2026-07-01)
 - ❌ **`captureError(objet Supabase/PostgREST)` → « [object Object] » en Sentry** : un PostgrestError n'est pas `instanceof
   Error` → `String(err)`, diagnostic DB (message/code/details) PERDU sur TOUT site passant une erreur Supabase (~250, leçon E4).
   Fix systémique `src/lib/error.ts` : un objet plat avec `message:string` promu en `Error` (message réel + code/details/hint en

@@ -3553,3 +3553,66 @@ silencieuse + le faux-success du chemin write) · Reversibilite 10/10 (0 migrati
 (1 prod route + 1 helper + 2 tests = 4 fichiers, 1 unite) · Align 9/10 (pilier 1 « ne rien oublier » a l'echelle,
 de-risque le pilote Deerskin). 2 bugs (faux-success write-path, Sentry mono-marchand). 4 fichiers. tests 975->984.
 CFR 10 runs = 100% (0 revert).
+
+---
+
+## 2026-07-01 (run autonome #3) — SCALE : batch des UPDATE de produits PRE-EXISTANTS (re-push quotidien)
+
+**Contexte / signal** : suite directe du "Reste (prochain [R], meme theme SCALE)" note par le run batch
+precedent. La refonte batchee de `ingestStockSnapshot` (run #2, 984->997) avait batche les CREATIONS mais
+laisse les produits PRE-EXISTANTS en `.update()` PAR PRODUIT dans la boucle. Or le modele NearSt = snapshot
+POUSSE PERIODIQUEMENT (quotidien) -> au 2e push et suivants, TOUS les SKU sont pre-existants -> la voie
+d'UPDATE etait 100% sequentielle = O(N) aller-retours reseau sur un catalogue pilote (Deerskin = milliers de
+SKU) -> budget temps Vercel depasse -> fonction TUEE -> ingestion tronquee SILENCIEUSEMENT (meme classe de
+perte n1 que les creations, deja fermee). C'etait le TROU SYMETRIQUE, et le cas COMMUN (re-push > premier push).
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12)
+- Les MAJ metadonnee (prix/tailles) des produits pre-existants sont DIFFEREES : la boucle pousse
+  `{id, name, updates}` dans `productUpdates` (ne planifie QUE les colonnes reellement presentes -> jamais
+  `price:null` qui ecraserait un prix inchange). Le STOCK (donnee critique) + `touched` restent poses dans la
+  boucle, INDEPENDAMMENT -> un echec de MAJ au flush ne peut jamais exclure le produit de `touched`
+  (invariant F2 : reconciliation ne le zeroise jamais -> pas de faux "rupture").
+- Flush (nouvelle etape 2, avant stock) : GROUPAGE PAR FORME de colonnes (`price` / `available_sizes` / les
+  deux) puis `upsert(payload, {onConflict:"id"})` par lots de 500 par groupe. Le groupage par forme EST ce
+  qui evite le piege du batch naif : dans un upsert PostgREST une colonne absente d'une ligne est mise a NULL
+  (union des colonnes du corps) -> melanger `{price}` et `{available_sizes}` NULLERAIT le prix du 2e. Un
+  groupe = colonnes uniformes -> jamais de null injecte. L'upsert ne touche QUE ses colonnes (DO UPDATE SET)
+  -> name/visible/review_status/ean/sku intacts.
+- SURETE ligne concurremment supprimee : `products.merchant_id` ET `name` sont NOT NULL (migration 001) -> un
+  INSERT partiel (pas de conflit) violerait NOT NULL -> le lot ECHOUE (jamais de resurrection en ligne
+  partielle) -> REPLI mono-ligne `.update().eq(id)` (no-op sur ligne absente), isolant la faute comme les
+  creations ; captureError phase "update-product" preserve.
+- Borne : O(N/500) upserts au lieu de O(N) `.update()` sequentiels -> un re-push de 50k SKU passe de ~50k
+  round-trips a ~100 lots -> tient sous les 300 s Vercel.
+
+**Preuve (methode 1bis)** : `tests/ingest-snapshot-batching.test.ts` (9->11 tests). (a) re-push 1200 produits ->
+`products_upsert===3` (ceil(1200/500)) et `products_update===0`, JAMAIS 1200 `.update()` (non-vacant : l'ancien
+code par-produit ferait 1200 appels). (b) NOUVEAU test null-overwrite : faux client etendu pour modeler
+FIDELEMENT la null-fill union-de-colonnes de PostgREST ; re-push mixte {prix seul}+{tailles seules} -> les 2
+formes dans des groupes SEPARES (2 upserts) -> le produit dont le fichier n'a PAS de prix garde son prix (8,
+JAMAIS nulle) et le produit sans taille garde ses tailles. Sans groupage le test echouerait. (c) F2 preserve
+(echec MAJ -> stock ecrit + pas zeroise).
+
+**Revue silent-failure-hunter** : diff **SOUND** sur tous les invariants coeurs (F4-F9 confirmes : decouplage
+F2, garde null-fill reelle+testee, dedup intra-push preserve, phase Sentry preservee, ordre FK sur). 3 findings
+tous PRE-EXISTANTS (non introduits par ce diff) : **F1 (MED) CORRIGE dans ce commit** = le write stock=0 de la
+reconciliation (LE plus critique : passage a "epuise") faisait `errors.push` SANS `captureError` -> seul angle
+mort Sentry de la fonction (un produit vendu reste affiche "en stock" et l'ops ne le voit jamais) ; ajout
+`captureError` phase "reconcile-stock-zero" + test de regression (faux client `failZero` -> produit NON
+zeroise, errors + Sentry). F2 (LOW, `products_updated` gonfle par alias intra-push) = encode comme attendu
+dans les tests -> decision produit, laisse en suivi. F3 (LOW, echec `groupVariantsByEAN` non ajoute a errors[])
+= post-pass non bloquant delibere, laisse en suivi.
+
+**Metrique** : `tsc` OK, `test:run` **997->999** (+2 : null-overwrite guard + regression F1). 1 unite [R]
+in-scope avancee (scale-ingest-update-batch) + 1 silent-failure MED adjacent ferme. Blast LOW
+(`ingestStockSnapshot` = 2 callers POST, signature/retour inchanges). 0 migration, reversible. Fichiers : 2
+(snapshot.ts + le test). **Reste SCALE (prochain [R])** : chunker/streamer la boucle produits du cron
+`google-feed` via `streamRows` pour finir un catalogue > budget en UN run (auj. la queue tail ne se publie
+qu'au prochain run). Suivis non bloquants : F2 (metric alias) + F3 (errors groupVariants) = decisions produit.
+
+**Scorecard** : Preuve 8/10 (faux client fidele a la null-fill PostgREST + borne O(N/500) non-vacante + F2
+preserve, mais synthetique - 0 catalogue reel) · Secu north-star 9/10 (SF-hunter SOUND sur le diff + F1 MED
+adjacent ferme = angle mort Sentry du write le plus critique comble ; 0 faux positif introduit) · Reversibilite
+10/10 (0 migration, `git revert`) · Scope 9/10 (1 prod + 1 test = 2 fichiers, 1 unite) · Align 9/10 (pilier 1
+"ne rien oublier" a l'echelle sur le cas COMMUN = re-push quotidien, de-risque le pilote Deerskin). 1 bug reel
+adjacent (F1 Sentry blind spot). 2 fichiers. tests 997->999. CFR 10 runs = 100% (0 revert).

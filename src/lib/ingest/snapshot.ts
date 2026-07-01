@@ -197,6 +197,12 @@ export async function ingestStockSnapshot(
     const stockByProduct = new Map<string, Record<string, unknown>>();
     // feed_events new_product des créations, écrits par lots.
     const newProductFeedEvents: Array<Record<string, unknown>> = [];
+    // MAJ métadonnée (prix/tailles) des produits PRÉ-EXISTANTS, écrites par lots au
+    // flush. Un re-push d'onboarding/quotidien d'un GROS catalogue (Deerskin =
+    // milliers de SKU, TOUS pré-existants au 2ᵉ push) ferait sinon O(N) `.update()`
+    // SÉQUENTIELS → budget temps Vercel dépassé → fonction tuée → ingestion tronquée
+    // SILENCIEUSEMENT (même classe de perte n°1 que les créations, déjà batchées).
+    const productUpdates: Array<{ id: string; name: string; updates: Record<string, unknown> }> = [];
     // ids des produits NEUFS (ordre du push) : le comptage + l'enfilage enrichissement
     // se font APRÈS le flush (on ne compte/enfile qu'un produit RÉELLEMENT inséré).
     const plannedNewIds: string[] = [];
@@ -248,25 +254,17 @@ export async function ingestStockSnapshot(
                 if (price != null) pendingRow.price = price;
                 if (availableSizes.length > 0) pendingRow.available_sizes = availableSizes;
             } else if (!dryRun) {
-                // Produit PRÉ-EXISTANT : UPDATE ciblé (prix/tailles). Reste par-produit
-                // (valeurs distinctes par ligne → non batchable sans risquer d'écraser
-                // un prix inchangé par null). Le re-push massif = suivi SCALE séparé.
+                // Produit PRÉ-EXISTANT : MAJ métadonnée (prix/tailles) DIFFÉRÉE au flush
+                // batché (cf. `productUpdates`). On ne planifie QUE les colonnes réellement
+                // présentes (jamais `price:null` qui écraserait un prix inchangé). Le STOCK
+                // (donnée critique) et `touched` sont posés ci-dessous INDÉPENDAMMENT — un
+                // échec de MAJ métadonnée au flush ne peut donc jamais exclure le produit de
+                // `touched` (réconciliation → 0 = faux « rupture », perte n°1). (F2, revue SF)
                 const updates: Record<string, unknown> = {};
                 if (price != null) updates.price = price;
                 if (availableSizes.length > 0) updates.available_sizes = availableSizes;
                 if (Object.keys(updates).length > 0) {
-                    const { error: updateErr } = await admin.from("products").update(updates).eq("id", productId);
-                    if (updateErr) {
-                        // La MAJ métadonnée (prix/tailles) a échoué, mais on NE `continue`
-                        // PAS : (1) le STOCK (donnée critique) doit quand même être posé ;
-                        // (2) le produit DOIT être marqué `touched` pour que la
-                        // réconciliation ne le passe JAMAIS à 0 sur un simple échec de prix
-                        // (= faux « rupture », perte n°1). Erreur SIGNALÉE (statut partial)
-                        // + Sentry (diagnostic DB préservé), jamais avalée. (durci — revue
-                        // silent-failure-hunter, maillon SCALE)
-                        errors.push(`Update ${cleanName}: ${updateErr.message}`);
-                        captureError(updateErr, { lib: "ingest/snapshot", phase: "update-product", merchantId });
-                    }
+                    productUpdates.push({ id: productId, name: cleanName, updates });
                 }
             }
             // REPLACE le stock (dédup par product_id, dernier gagne).
@@ -334,7 +332,45 @@ export async function ingestStockSnapshot(
         productsCreated = createdOkIds.size;
         for (const id of plannedNewIds) if (createdOkIds.has(id)) createdProductIds.push(id);
 
-        // 2) Stock (REPLACE) — créations OK + updates, par lots (onConflict product_id).
+        // 2) Produits PRÉ-EXISTANTS — MAJ métadonnée (prix/tailles) par LOTS. PostgREST
+        //    n'a pas d'UPDATE multi-valeurs → on GROUPE par FORME de colonnes présentes
+        //    (`price` seul / `available_sizes` seul / les deux) et on `upsert` chaque
+        //    groupe (onConflict id). Le groupage par forme est CE QUI ÉVITE LE PIÈGE du
+        //    batch naïf : dans un upsert PostgREST, une colonne absente d'une ligne est
+        //    mise à NULL (union des colonnes du corps) → mélanger `{price}` et
+        //    `{available_sizes}` NULLERAIT le prix du 2ᵉ. Un groupe = colonnes uniformes
+        //    → jamais de null injecté (un prix inchangé n'est jamais écrasé). L'upsert ne
+        //    touche QUE ses colonnes (DO UPDATE SET price/available_sizes) — name/visible/
+        //    review_status/ean/sku intacts. SÛRETÉ ligne concurremment supprimée : products
+        //    a merchant_id ET name NOT NULL → un INSERT partiel (pas de conflit) violerait
+        //    NOT NULL → le lot ÉCHOUE (jamais de résurrection en ligne partielle) → REPLI
+        //    mono-ligne `.update().eq(id)` (no-op sûr sur ligne absente), isolant la faute
+        //    comme les créations. captureError phase "update-product" (jamais avalé).
+        const updateGroups = new Map<string, typeof productUpdates>();
+        for (const u of productUpdates) {
+            const shape = Object.keys(u.updates).sort().join(",");
+            const g = updateGroups.get(shape) ?? [];
+            g.push(u);
+            updateGroups.set(shape, g);
+        }
+        for (const group of updateGroups.values()) {
+            for (const batch of chunk(group, 500)) {
+                const payload = batch.map((u) => ({ id: u.id, ...u.updates }));
+                const { error: upErr } = await admin.from("products").upsert(payload, { onConflict: "id" });
+                if (!upErr) continue;
+                // Lot en échec → repli mono-ligne (isole la faute ; `.update` no-ope sûrement
+                // sur une ligne absente, sans risque d'INSERT partiel de l'upsert).
+                for (const u of batch) {
+                    const { error: rowErr } = await admin.from("products").update(u.updates).eq("id", u.id);
+                    if (rowErr) {
+                        errors.push(`Update ${u.name}: ${rowErr.message}`);
+                        captureError(rowErr, { lib: "ingest/snapshot", phase: "update-product", merchantId });
+                    }
+                }
+            }
+        }
+
+        // 3) Stock (REPLACE) — créations OK + updates, par lots (onConflict product_id).
         //    Un produit dont l'insert a ÉCHOUÉ est EXCLU (sa ligne stock violerait la
         //    FK). Un lot en échec est SIGNALÉ + Sentry, non compté (perte VISIBLE, pas
         //    avalée = enjeu n°1) ; le re-push le rejoue (auto-guérison). stock_replaced
@@ -353,7 +389,7 @@ export async function ingestStockSnapshot(
             stockReplaced += batch.length;
         }
 
-        // 3) feed_events new_product des créations RÉELLEMENT insérées — lots, non
+        // 4) feed_events new_product des créations RÉELLEMENT insérées — lots, non
         //    bloquant (canal notification favoris) mais plus jamais avalé.
         const feedRows = newProductFeedEvents.filter((e) => createdOkIds.has(e.product_id as string));
         for (const batch of chunk(feedRows, 500)) {
@@ -437,7 +473,13 @@ export async function ingestStockSnapshot(
                         .update({ quantity: 0, updated_at: nowIso, source: "file_push", source_ts: nowIso })
                         .in("product_id", batch);
                     if (zeroErr) {
+                        // C'est LE write le plus critique de la réconciliation (passage à 0
+                        // = « épuisé »). Un échec laisse les produits VENDUS affichés « en
+                        // stock » = faux positif n°1. Il était SIGNALÉ (errors → statut
+                        // partial) mais PAS envoyé à Sentry, alors que tous les autres writes
+                        // de la fonction le sont → seul angle mort Sentry, comblé. (revue SF)
                         errors.push(`Réconciliation stock=0 (lot de ${batch.length}): ${zeroErr.message}`);
+                        captureError(zeroErr, { lib: "ingest/snapshot", phase: "reconcile-stock-zero", merchantId });
                         continue;
                     }
                     stockZeroed += batch.length;
