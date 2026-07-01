@@ -43,21 +43,68 @@ export interface TimeBudgetResult {
  * interruption). Deadline déjà passé sur une liste non vide → `attempted: 0,
  * interrupted: true` (l'appelant doit signaler le marchand non traité, jamais « success »).
  */
-export async function processWithinTimeBudget<T>(
+export function processWithinTimeBudget<T>(
     items: readonly T[],
+    action: (item: T) => Promise<boolean>,
+    opts: { now: () => number; deadlineMs: number },
+): Promise<TimeBudgetResult> {
+    // Un tableau matérialisé = une seule « page ». On délègue au moteur streaming pour
+    // n'avoir QU'UNE implémentation de la sémantique budget/deadline (parité garantie).
+    return processStreamWithinTimeBudget(singlePage(items), action, opts);
+}
+
+async function* singlePage<T>(items: readonly T[]): AsyncGenerator<readonly T[]> {
+    yield items;
+}
+
+/**
+ * Variante STREAMING de `processWithinTimeBudget` : consomme des PAGES (un `AsyncIterable`,
+ * p. ex. `streamRows`) au lieu d'un tableau matérialisé → mémoire BORNÉE à UNE page.
+ *
+ * Pourquoi : le cron `google-feed` (Voie A) matérialisait TOUT le catalogue du marchand ET
+ * son sous-ensemble éligible en RAM, gardés pendant les ~270 s de push. Un pilote multimarque
+ * (Deerskin = des milliers de SKU, cible 50k) n'a pas besoin de ça : on lit, filtre et pousse
+ * page par page → une seule page réside à la fois (parité mémoire avec la Voie B XML `streamRows`).
+ *
+ * Sémantique par-item IDENTIQUE à `processWithinTimeBudget`, à travers toutes les pages :
+ * l'horloge est vérifiée AVANT chaque item (un item entamé — un push réseau — est toujours mené
+ * à terme), et on rend la main dès le deadline dépassé.
+ *
+ * ⚠️ HONNÊTETÉ (le streaming borne la MÉMOIRE, PAS le TEMPS) : un catalogue dont le PUSH (N appels
+ * réseau séquentiels) dépasse le budget reste `interrupted` → la queue se pousse au run suivant.
+ * En interruption, le TOTAL éligible est INCONNU (on cesse de lire les pages restantes) → `attempted`
+ * ne compte que les items des pages DÉJÀ lues. BONUS : les pages qu'on ne pourra pas pousser ne sont
+ * même pas LUES (on cesse de tirer le générateur dès `interrupted`).
+ *
+ * ⚠️ FAIL-LOUD : `pages` (p. ex. `streamRows`) LÈVE sur lecture incomplète (erreur / data=null). On
+ * ne l'attrape PAS ici → l'exception traverse jusqu'à l'appelant (dans son try/catch), qui écrit un
+ * statut "error" (jamais un faux "success" sur un catalogue partiellement lu). Les items DÉJÀ poussés
+ * à Google persistent (insert idempotent) et sont re-complétés au run suivant.
+ */
+export async function processStreamWithinTimeBudget<T>(
+    pages: AsyncIterable<readonly T[]>,
     action: (item: T) => Promise<boolean>,
     opts: { now: () => number; deadlineMs: number },
 ): Promise<TimeBudgetResult> {
     let succeeded = 0;
     let attempted = 0;
 
-    for (const item of items) {
-        if (opts.now() >= opts.deadlineMs) {
-            return { succeeded, attempted, interrupted: true };
+    for await (const page of pages) {
+        for (const item of page) {
+            if (opts.now() >= opts.deadlineMs) {
+                return { succeeded, attempted, interrupted: true };
+            }
+            attempted++;
+            if (await action(item)) succeeded++;
         }
-        attempted++;
-        if (await action(item)) succeeded++;
     }
 
     return { succeeded, attempted, interrupted: false };
 }
+// RÉSIDU DE BUDGET DOCUMENTÉ (F2 revue) : la garde de deadline est PAR-ITEM. Une page qui filtre
+// à 0 éligible ne la déclenche pas → son temps de LECTURE DB n'est pas décompté. C'est borné par
+// la marge de 30 s entre TIME_BUDGET_MS (270 s) et maxDuration (300 s) = des MILLIERS de fetches de
+// page → sûr TANT QUE le nombre de lignes filtrées-SQL par marchand reste sous ~quelques 10k
+// (échelle pilote/50k cible OK ; à REVOIR si le catalogue par marchand dépasse ~100k). Une garde
+// par-page ne peut pas distinguer « dernière page (fini) » de « pages restantes » sans lire la
+// suivante (coût qu'on veut justement borner) → on documente le résidu au lieu d'un check bancal.

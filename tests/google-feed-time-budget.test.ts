@@ -20,6 +20,12 @@ const h = {
     catalogSize: 0,
     // delta de temps virtuel ajouté à chaque push Google (simule la latence réseau)
     msPerPush: 0,
+    // Bornes `.range(from, to)` réellement demandées à `products` (prouve la pagination
+    // STREAMING : on lit page par page, et on cesse de lire dès l'interruption budget).
+    rangeCalls: [] as Array<{ from: number; to: number }>,
+    // Si posé, la lecture products à cet offset ÉCHOUE (simule un blip DB sur une page N>0
+    // APRÈS que des pages antérieures ont déjà été poussées).
+    errorAtOffset: null as number | null,
 };
 
 let virtualNow = 0;
@@ -76,7 +82,13 @@ function makeClient() {
         const resolve = () => {
             if (table === "products") {
                 let rows = products;
-                if (st.rangeFrom != null) rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
+                if (st.rangeFrom != null) {
+                    h.rangeCalls.push({ from: st.rangeFrom, to: st.rangeTo! });
+                    if (h.errorAtOffset === st.rangeFrom) {
+                        return { data: null, error: { message: "db blip", code: "XX000", details: "", hint: "", name: "PostgrestError" } };
+                    }
+                    rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
+                }
                 return { data: rows, error: null };
             }
             if (table === "google_merchant_connections") {
@@ -121,6 +133,8 @@ beforeEach(() => {
     h.connections = [];
     h.catalogSize = 0;
     h.msPerPush = 0;
+    h.rangeCalls = [];
+    h.errorAtOffset = null;
     virtualNow = 1_000_000;
     captureErrorMock.mockClear();
     process.env.CRON_SECRET = "secret";
@@ -184,8 +198,10 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
         expect(upd.payload.last_feed_status).toBe("partial"); // PAS "success"
         expect(upd.payload.products_pushed).toBe(3);
         expect(String(upd.payload.last_feed_error)).toContain("budget temps");
-        expect(String(upd.payload.last_feed_error)).toContain("3/5");
-        expect(String(upd.payload.last_feed_error)).toContain("2 non tentés");
+        // En streaming interrompu le TOTAL éligible est inconnu (pages restantes non lues) →
+        // le message dit ce qui a été poussé + qu'il a été interrompu, jamais un faux "X/Y".
+        expect(String(upd.payload.last_feed_error)).toContain("3 produit");
+        expect(String(upd.payload.last_feed_error)).toContain("catalogue trop gros");
 
         // Pilote MONO-marchand : l'interruption en plein push DOIT quand même alerter Sentry
         // (regression finding #3 : l'ancien garde `< length` ne tirait rien ici).
@@ -223,5 +239,81 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
         expect(String((sentryCalls[0][0] as Error).message)).toContain("1/2");
         expect(String((sentryCalls[0][0] as Error).message)).toContain("1 non démarré");
         expect((sentryCalls[0][1] as Record<string, unknown>).merchantsSkipped).toBe(1);
+    });
+
+    it("catalogue >1000 → lu et poussé en STREAMING page par page (mémoire bornée, 0 troncature)", async () => {
+        // 2500 produits = 3 pages PostgREST (1000+1000+500). Sans interruption, tout est poussé
+        // et la lecture passe par `.range()` page par page (jamais un SELECT unique non borné,
+        // tronqué à 1000, ni tout le catalogue matérialisé en RAM).
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
+        h.catalogSize = 2500;
+        h.msPerPush = 0; // le temps ne passe pas → jamais d'interruption
+
+        const json = await callCron();
+
+        // Les 2500 produits sont poussés à Google (0 troncature silencieuse à 1000).
+        expect(h.googleFetchCount).toBe(2500);
+        expect(json.products_pushed).toBe(2500);
+        expect(json.time_budget_exhausted).toBe(false);
+
+        // La lecture a été PAGINÉE (streaming) : 3 pages exactement, aux bonnes bornes.
+        expect(h.rangeCalls).toEqual([
+            { from: 0, to: 999 },
+            { from: 1000, to: 1999 },
+            { from: 2000, to: 2999 },
+        ]);
+
+        const upd = h.updates.find((u) => u.id === "m-1")!;
+        expect(upd.payload.last_feed_status).toBe("success");
+        expect(upd.payload.products_pushed).toBe(2500);
+    });
+
+    it("interruption à mi-catalogue → les pages non poussées ne sont même PAS lues (bonus streaming)", async () => {
+        // 2500 produits, ~200 ms/push → deadline (270 000 ms) atteint après ~1350 pushes, en
+        // pleine 2e page. La 3e page (range 2000-2999) ne doit JAMAIS être lue : on cesse de
+        // tirer le générateur `streamRows` dès l'interruption → 0 lecture superflue.
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
+        h.catalogSize = 2500;
+        h.msPerPush = 200;
+
+        const json = await callCron();
+
+        // 1350 poussés (1_000_000 + 200×1350 = 1_270_000 = deadline → stop au 1351e).
+        expect(h.googleFetchCount).toBe(1350);
+        expect(json.products_pushed).toBe(1350);
+        expect(json.time_budget_exhausted).toBe(true);
+
+        // Pages 0 et 1 lues (items 0..1349 traversent la page 1) ; page 2 JAMAIS demandée.
+        expect(h.rangeCalls).toEqual([
+            { from: 0, to: 999 },
+            { from: 1000, to: 1999 },
+        ]);
+        expect(h.rangeCalls.some((r) => r.from === 2000)).toBe(false);
+
+        const upd = h.updates.find((u) => u.id === "m-1")!;
+        expect(upd.payload.last_feed_status).toBe("partial");
+        expect(upd.payload.products_pushed).toBe(1350);
+    });
+
+    it("échec de lecture d'une page ULTÉRIEURE → statut 'error' + products_pushed = poussés AVANT l'échec (jamais stale)", async () => {
+        // streamRows lève (fail-loud) sur une erreur DB à la page 1 (offset 1000), APRÈS que la
+        // page 0 (1000 produits) a déjà été poussée à Google. Le catch doit écrire "error" ET le
+        // nombre RÉELLEMENT poussé ce run (1000), pas le products_pushed périmé du run précédent.
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
+        h.catalogSize = 2500;
+        h.msPerPush = 0;
+        h.errorAtOffset = 1000; // 2e page échoue
+
+        const json = await callCron();
+
+        expect(h.googleFetchCount).toBe(1000); // page 0 poussée, puis lecture page 1 échoue
+        const upd = h.updates.find((u) => u.id === "m-1")!;
+        expect(upd.payload.last_feed_status).toBe("error"); // fail-loud, jamais faux "success"
+        expect(upd.payload.products_pushed).toBe(1000); // honnête : poussés avant l'échec
+        expect(json.products_pushed).toBe(1000); // résumé reflète les push réels
+        expect(json.errors).toBe(1);
+
+        // La lecture incomplète est rendue VISIBLE (Sentry), jamais un feed silencieusement périmé.
+        expect(captureErrorMock).toHaveBeenCalled();
     });
 });

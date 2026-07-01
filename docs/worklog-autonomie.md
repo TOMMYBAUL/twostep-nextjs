@@ -5,6 +5,87 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-02 (run autonome) · SCALE — cron google-feed (Voie A) : lecture produits en STREAMING (mémoire bornée)
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : le « reste prochain [R], même thème SCALE » nommé
+EXPLICITEMENT en fin de priorities.md §1bis #4 ET dans le worklog du run précédent : **« chunker/streamer
+la boucle produits du cron google-feed via `streamRows` »**. In-scope (SCALE/VOLUME, pilier 1 north-star),
+réversible, vérifiable. Dernier trou SCALE de parité : la Voie B XML streame déjà (`scale-feed-xml-stream`,
+commit `7a648a0`) mais la Voie A matérialisait TOUT le catalogue en RAM.
+
+**Diagnostic (vérifié dans le code réel)** : le cron `google-feed` lisait tout le catalogue éligible du
+marchand via `fetchAllRows` (tableau matérialisé) + `filterEligibleProducts` (2e tableau), gardés en RAM
+pendant les ~270 s du push séquentiel. Sur la cible 50k SKU = ~50-100 MB résidents inutilement.
+
+**Correction d'un piège de départ (honnêteté §5)** : la note du backlog disait « streamer pour FINIR un
+catalogue > budget en UN run ». C'est **FAUX** — le streaming borne la MÉMOIRE, pas le TEMPS (le budget est
+borné par N appels réseau séquentiels à Google, pas par la lecture DB). Un catalogue dont le push dépasse le
+budget reste "partial" et se termine au run suivant, streaming ou pas. Ce qui est réellement gagné : mémoire
+bornée à 1 page + les pages qu'on ne pourra pas pousser (interruption budget) ne sont **même pas lues**.
+
+**Fait (réversible, 0 migration)** :
+- `src/lib/google/feed-push.ts` : nouveau `processStreamWithinTimeBudget<T>(pages: AsyncIterable<readonly T[]>,
+  action, {now, deadlineMs})` — sémantique par-item IDENTIQUE à `processWithinTimeBudget`, à travers les pages.
+  `processWithinTimeBudget` (tableau) DÉLÈGUE désormais au moteur streaming via `singlePage()` (une seule
+  implémentation de la sémantique budget/deadline → parité garantie, 0 dead-code).
+- `src/app/api/cron/google-feed/route.ts` : lecture via `streamRows` enveloppé dans un générateur
+  `eligiblePages` (filtre chaque page à la volée) ; push via `processStreamWithinTimeBudget`. `nowMs` +
+  `gtinOnlyTierEnabled()` capturés UNE fois avant le stream (cohérence promo/éligibilité inter-pages,
+  parité avec l'ancien filtre unique). streamRows fail-loud par THROW → catch externe → statut "error"
+  (jamais un feed silencieusement périmé). Message "partial" interrompu : le TOTAL éligible étant inconnu
+  en streaming (pages restantes non lues), on n'affiche plus un faux "X/Y".
+
+**Revue silent-failure-hunter (OBLIGATOIRE pipeline, §11.3)** : cœur (délégation array→stream, propagation
+fail-loud, interruption→jamais faux "success", hoisting nowMs/allowMissingImage, échecs par-produit) **SOUND**.
+3 findings, traités :
+- **(F3 LOW, corrigé)** : sur un THROW de lecture d'une page ULTÉRIEURE (après des push réussis), le catch
+  écrivait un statut "error" SANS `products_pushed` → le champ restait sur le stale du run précédent. Fix :
+  compteur `pushedThisMerchant` incrémenté DANS l'action → catch écrit le nombre réellement poussé + résumé
+  `totalPushed` honnête. Régression : streamRows erreur à l'offset 1000 après 1000 poussés → "error",
+  products_pushed=1000.
+- **(F1 MED/HIGH, DOCUMENTÉ — pas code-fixé, décision assumée ; re-revue SF-hunter d'accord « non-bloquant »)** :
+  la pagination OFFSET (`.range()`) de `streamRows`, désormais étalée sur ~270 s (lecture interleavée avec le
+  push lent), est exposée à la DÉRIVE sous écriture concurrente → un produit à une frontière de page peut être
+  sauté (ou dupliqué) ce run. **Analyse (le hunter avait sous-pondéré l'auto-guérison)** : le cron re-pousse le
+  catalogue COMPLET à CHAQUE run (insert idempotent) → un produit sauté réapparaît au run suivant = **résidu
+  TRANSIENT, PAS de perte permanente** (≠ ingest-snapshot où un skip → doublon PERMANENT faute d'UNIQUE).
+  Sévérité réelle Voie A = LOW-MED. **2 réserves honnêtes gardées de la re-revue** : (1) l'auto-guérison suppose
+  la dérive NON structurellement récurrente (un job d'archivage périodique corrélé sur la même zone `id` pourrait
+  sauter le même produit à répétition) ; (2) un skip de dérive produit ce run un **faux "success"** (ni "partial"
+  ni Sentry, car `attempted` paraît complet) = violation NARROW du « jamais un faux success », le temps d'un run
+  — documenté explicitement, pas minimisé. **Correctif propre = pagination KEYSET** (`WHERE id > dernier ORDER BY
+  id`, immunisée), à appliquer de façon COHÉRENTE aux 4 sorties Google → **prochain [R] SCALE** (pas bolt-on ici :
+  blast radius du helper partagé + les 4 sorties = un changement focalisé séparé).
+- **(F2 LOW, DÉFÉRÉ + DOCUMENTÉ comme borne — re-revue « fine to defer »)** : la garde de deadline est par-ITEM ;
+  une page qui filtre à 0 éligible ne la déclenche pas → son temps de LECTURE n'est pas compté. J'ai PROTOTYPÉ
+  une garde par-page `page.length>0` (safe pour les contrats « vide ≠ interruption » / « fini ≠ interrompu ») mais
+  elle ajoute une lecture d'horloge → casse les tests tick-model de `feed-push.test` (qui pinnent le nombre de
+  `now()` par la sémantique PURE par-item). Décision : **la retirer** (garder la sémantique par-item propre que
+  documentent ces tests) et **documenter le résidu + un trip-wire d'échelle** (`feed-push.ts` : sûr tant que <
+  ~quelques 10k lignes filtrées-SQL/marchand ; revoir > ~100k). Non-bloquant : F2 est IMPOSSIBLE à l'échelle
+  pilote (marge 30 s ≫ milliers de fetches). Le vrai correctif = KEYSET (même [R] que F1).
+
+**Testé** : `tsc --noEmit` exit 0 ; `npm run test:run` **1002** (999→1002, **+3**). `tests/google-feed-time-budget.test.ts`
++2 streaming (catalogue 2500 → lu/poussé en 3 pages `.range()` `[0..999][1000..1999][2000..2999]`, 2500 poussés ;
+interruption mi-catalogue → page 3 JAMAIS lue = bonus « pages non poussées non lues ») +1 F3 (erreur page 2 →
+"error" + products_pushed=1000 honnête). 2 assertions du message interrompu mises à jour (total inconnu en stream).
+`tests/google-feed-output-pagination.test.ts` (Voie A) reste vert (streamRows utilise toujours `.range()`).
+
+**Trouvé / blast radius** : `processWithinTimeBudget` = 1 caller (le cron) ; le cron = entry-point sans caller
+interne. Signature/retour du helper inchangés (délégation). Blast LOW.
+
+**Reste (même thème SCALE, prochain [R])** : **pagination KEYSET drift-immune** sur les lectures produits
+paginées (les 4 sorties Google + éventuellement l'ingest), pour fermer le résidu F1 partout d'un coup. e2e
+sur vrai gros catalogue = escaladé (env live).
+
+**Scorecard** : Preuve 8/10 (borne mémoire + interruption + F3 prouvés non-vacants sur faux client à 2500 items ;
+plafond synthétique) · Sécu north-star 8/10 (SF-hunter core SOUND, F3 fermé ; F1 résidu transient DOCUMENTÉ +
+backlogué, honnêteté assumée plutôt que caché) · Rév 10/10 (0 migration, `git revert`) · Scope 8/10 (2 fichiers
+code + 1 test, 1 unité SCALE) · Align 8/10 (parité mémoire Voie A/B ; marginal à l'échelle pilote mais ferme le
+dernier trou SCALE nommé + prépare le [R] keyset). tests 999→1002 (+3). CFR : 100 %.
+
+---
+
 ## 2026-07-01 (run autonome #2) · SCALE — ingestion snapshot : écritures par produit → FLUSH BATCHÉ (borne O(N/500))
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : suite DIRECTE du run précédent (commit `ed2f49f`, cron

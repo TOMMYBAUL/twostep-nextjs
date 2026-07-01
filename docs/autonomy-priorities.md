@@ -252,8 +252,25 @@ plus un mur Google externe.
 >      CORRIGÉ** = write stock=0 réconciliation faisait `errors.push` SANS `captureError` (seul angle mort Sentry ; vendu
 >      resté « en stock » invisible ops) → `captureError` phase "reconcile-stock-zero" + regression. F2/F3 (LOW) = décisions
 >      produit, suivi. Blast LOW. 997→999 (+2). 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : chunker/streamer la boucle produits du cron `google-feed` via `streamRows`
->      pour finir un catalogue > budget en UN run (auj. la queue tail ne se publie qu'au prochain run).**
+>    - ✅ **(scale-google-feed-stream) FAIT (2026-07-02, run autonome)** : **la lecture produits du cron `google-feed`
+>      (Voie A) matérialisait TOUT le catalogue en RAM** (`fetchAllRows` + `filterEligibleProducts` = 2 tableaux gardés
+>      pendant les ~270 s du push) — dernier trou de parité SCALE (la Voie B XML streame déjà). Rendu en STREAMING :
+>      `streamRows` enveloppé dans un générateur `eligiblePages` (filtre chaque page à la volée) + nouveau
+>      `processStreamWithinTimeBudget` (`processWithinTimeBudget` array DÉLÈGUE via `singlePage` → 1 seule sémantique
+>      budget) → **mémoire bornée à 1 page** + les pages non poussables (interruption budget) ne sont **même pas lues**.
+>      **Piège de départ corrigé (honnêteté)** : la note « finir un catalogue > budget en UN run » était FAUSSE — le
+>      streaming borne la MÉMOIRE, pas le TEMPS (borné par N appels réseau Google) ; un catalogue trop gros reste
+>      "partial" + tail au run suivant, streaming ou pas. Preuve `tests/google-feed-time-budget.test.ts` (+3 : 2500 →
+>      3 pages `.range()` `[0..999][1000..1999][2000..2999]` + interruption mi-catalogue → page 3 non lue + F3 erreur
+>      page 2 → "error"+products_pushed=1000 honnête). Revue SF-hunter **core SOUND** (délégation, fail-loud→"error",
+>      interruption≠faux-success, hoisting nowMs/allowMissingImage) ; **F3 corrigé** (products_pushed stale sur error-path
+>      → compteur `pushedThisMerchant`). **F1 (dérive OFFSET sur ~270 s) DOCUMENTÉ comme résidu TRANSIENT** : re-push
+>      catalogue COMPLET idempotent chaque run → produit sauté réapparaît au run suivant = **pas de perte permanente**
+>      (≠ ingest-snapshot où skip→doublon permanent). **F2 (temps de lecture des pages 0-éligible)** = borne acceptée
+>      (marge 30 s ≫ milliers de pages). Blast LOW (1 caller). 999→1002 (+3). 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : pagination KEYSET drift-immune** (`WHERE id > dernier ORDER BY id`)
+>      sur les lectures produits paginées (les 4 sorties Google + éventuellement l'ingest) → ferme le résidu F1 dérive
+>      PARTOUT d'un coup, de façon COHÉRENTE (plutôt qu'un bolt-on sur la seule Voie A). Réversible, vérifiable.
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

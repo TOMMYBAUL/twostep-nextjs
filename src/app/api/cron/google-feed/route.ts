@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getGoogleAccessToken, googleMerchantFetch } from "@/lib/google/merchant";
 import { transformProductToGoogle, filterEligibleProducts } from "@/lib/google/feed";
+import { gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
 import { captureError } from "@/lib/error";
-import { fetchAllRows } from "@/lib/supabase/paginate";
-import { processWithinTimeBudget } from "@/lib/google/feed-push";
+import { streamRows } from "@/lib/supabase/paginate";
+import { processStreamWithinTimeBudget } from "@/lib/google/feed-push";
 
 // Catalogue pilote multimarque = des MILLIERS de SKU poussés un par un (appel réseau
 // séquentiel) → on réserve le budget maximal Fluid pour ce cron.
@@ -70,6 +71,11 @@ export async function POST(req: NextRequest) {
         }
         merchantsAttempted++;
 
+        // Compté DANS l'action → survit à un THROW de lecture au milieu du flux (streamRows
+        // fail-loud sur une page ultérieure) : le catch peut alors écrire le nombre RÉELLEMENT
+        // poussé ce run, jamais le `products_pushed` périmé du run précédent (diagnostic honnête).
+        let pushedThisMerchant = 0;
+
         try {
             const auth = await getGoogleAccessToken(conn.merchant_id);
             if (!auth) {
@@ -87,47 +93,67 @@ export async function POST(req: NextRequest) {
             // GATE : ne pousser à Google QUE les produits réellement publiables
             // (validés, visibles, non archivés, non variantes). Sinon on expose des
             // produits non identifiés sur Google Shopping (faux positif public).
-            // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST
-            // (sans erreur) → un catalogue >1000 publierait silencieusement un feed
-            // PARTIEL à Google (le reste omis = catalogue fantôme inverse). `fetchAllRows`
-            // lit tout ; `.order("id")` = ordre déterministe entre pages. Parité avec les
-            // 3 autres sorties Google (Voie B XML, feed-preview, inventory).
-            const { data: products, error: productsErr } = await fetchAllRows(() =>
-                supabase
-                    .from("products")
-                    .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
-                    .eq("merchant_id", conn.merchant_id)
-                    .eq("visible", true)
-                    .eq("review_status", "validated")
-                    .is("archived_at", null)
-                    .is("variant_of", null)
-                    .order("id", { ascending: true }),
-            );
-
-            // Échec de lecture DB ≠ « marchand sans produit » : un `continue` muet ici
-            // laissait le feed du marchand SILENCIEUSEMENT périmé (aucun statut, aucun
-            // Sentry). On route vers le catch externe (captureError + statut "error").
-            if (productsErr) throw new Error(`products read failed: ${productsErr.message}`);
-            // data null SANS error = état SDK inattendu : lever plutôt que skip muet
-            // (sinon ce cas re-silencerait le feed du marchand si le SDK évoluait).
-            if (!products) throw new Error("products null without error — unexpected SDK state");
-
-            const eligible = filterEligibleProducts(products as any);
+            //
+            // STREAMING + PAGINÉ (parité mémoire avec la Voie B XML) : un SELECT non borné
+            // est tronqué à 1000 lignes par PostgREST (sans erreur) → un catalogue >1000
+            // publierait un feed PARTIEL silencieux. `streamRows` lit page par page
+            // (`.order("id")` = ordre déterministe entre pages) et on filtre + pousse chaque
+            // page À LA VOLÉE → UNE seule page réside en RAM à la fois, jamais tout le
+            // catalogue (Deerskin = milliers de SKU) ni son sous-ensemble éligible.
+            // NB : le streaming borne la MÉMOIRE, pas le TEMPS — un catalogue dont le push
+            // dépasse le budget reste "partial" et se termine au run suivant (les pages
+            // non poussées ne sont alors même pas lues).
+            //
+            // RÉSIDU CONNU (dérive de la pagination OFFSET) : `streamRows` pagine par `.range()`.
+            // Comme la lecture s'étale sur toute la durée du push (~270 s), une écriture
+            // concurrente (archivage / dé-publication) sur une page DÉJÀ lue peut décaler les
+            // suivantes → un produit à la frontière peut être sauté (ou dupliqué) ce run.
+            // Sévérité pour la Voie A = LOW-MED, PAS une perte permanente : le cron re-pousse le
+            // catalogue COMPLET à chaque run (insert idempotent) → le produit sauté réapparaît au
+            // run suivant (≠ ingest-snapshot où un skip → doublon PERMANENT faute d'UNIQUE).
+            // ⚠️ DEUX RÉSERVES honnêtes (revue SF-hunter) : (1) l'auto-guérison suppose la dérive
+            // NON structurellement récurrente — si l'écriture concurrente touche la même zone `id`
+            // à chaque run (job d'archivage périodique corrélé), le même produit-frontière pourrait
+            // être sauté de façon répétée ; (2) un skip de dérive produit ce run un faux "success"
+            // (ni "partial" ni Sentry) — `attempted` paraît complet car la ligne a disparu du scan
+            // sans erreur : violation NARROW du « jamais un faux success », le temps d'un run.
+            // Correctif propre = pagination KEYSET (`WHERE id > dernier ORDER BY id`), immunisée à
+            // la dérive, à appliquer de façon COHÉRENTE aux 4 sorties Google → suivi SCALE séparé.
             const parent = `accounts/${auth.connection.google_merchant_id}`;
 
             // `nowMs` capturé UNE fois pour tout le marchand (parité avec la Voie B qui capture
             // au niveau buildLfpXml) : sinon une promo expirant pendant la boucle serait émise
             // pour les 1ers produits et pas les derniers (incohérence intra-feed).
             const nowMs = Date.now();
+            // Tier GTIN-only (flag) lu UNE fois → éligibilité cohérente sur toutes les pages.
+            const allowMissingImage = gtinOnlyTierEnabled();
+
+            const eligiblePages = (async function* () {
+                for await (const page of streamRows(() =>
+                    supabase
+                        .from("products")
+                        .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
+                        .eq("merchant_id", conn.merchant_id)
+                        .eq("visible", true)
+                        .eq("review_status", "validated")
+                        .is("archived_at", null)
+                        .is("variant_of", null)
+                        .order("id", { ascending: true }),
+                )) {
+                    yield filterEligibleProducts(page as any, allowMissingImage);
+                }
+            })();
 
             // Push borné au budget temps : on s'arrête PROPREMENT avant le kill Vercel.
-            // `processWithinTimeBudget` capture chaque échec par produit (Sentry) et signale
-            // `interrupted` si le deadline a coupé la boucle avant la fin → statut honnête.
-            const pushResult = await processWithinTimeBudget(
-                eligible,
-                async (product) => {
+            // `processStreamWithinTimeBudget` capture chaque échec par produit (Sentry) et
+            // signale `interrupted` si le deadline a coupé avant la fin → statut honnête.
+            // Une erreur de lecture DB à n'importe quelle page LÈVE (streamRows fail-loud) →
+            // catch externe → statut "error" (jamais un feed silencieusement périmé).
+            const pushResult = await processStreamWithinTimeBudget(
+                eligiblePages,
+                async (product: any) => {
                     try {
-                        const googleProduct = transformProductToGoogle(product as any, conn.store_code, nowMs);
+                        const googleProduct = transformProductToGoogle(product, conn.store_code, nowMs);
                         await googleMerchantFetch(
                             `/products/v1beta/${parent}/productInputs:insert`,
                             auth.accessToken,
@@ -136,6 +162,7 @@ export async function POST(req: NextRequest) {
                                 body: JSON.stringify(googleProduct),
                             },
                         );
+                        pushedThisMerchant++;
                         return true;
                     } catch (err) {
                         captureError(err, {
@@ -153,16 +180,19 @@ export async function POST(req: NextRequest) {
 
             // Statut honnête. Distinguer DEUX causes de "partial" (jamais un faux "success") :
             //  - interrompu par le budget temps (catalogue trop gros pour un run) ;
-            //  - échecs de push API Google sur certains produits.
+            //  - échecs de push API Google sur certains produits (pushed < attempted).
+            // En streaming interrompu, le TOTAL éligible est INCONNU (pages restantes non lues)
+            // → le message ne l'affiche pas. Quand NON interrompu, `attempted` == total éligible
+            // (toutes les pages ont été lues) → `pushed < attempted` = échecs d'API Google.
             let feedStatus: "success" | "partial";
             let feedError: string | null;
             if (pushResult.interrupted) {
                 feedStatus = "partial";
-                feedError = `interrompu (budget temps Vercel) : ${pushed}/${eligible.length} poussés, ${eligible.length - pushResult.attempted} non tentés`;
+                feedError = `interrompu (budget temps Vercel) : ${pushed} produit(s) poussé(s) avant interruption — catalogue trop gros pour un run`;
                 budgetExhausted = true;
-            } else if (pushed < eligible.length) {
+            } else if (pushed < pushResult.attempted) {
                 feedStatus = "partial";
-                feedError = `${eligible.length - pushed}/${eligible.length} produits non poussés`;
+                feedError = `${pushResult.attempted - pushed}/${pushResult.attempted} produits non poussés (échec API Google)`;
             } else {
                 feedStatus = "success";
                 feedError = null;
@@ -185,10 +215,18 @@ export async function POST(req: NextRequest) {
             errors++;
             captureError(err, { merchantId: conn.merchant_id, cron: "google-feed" });
 
+            // Une lecture de page ULTÉRIEURE qui échoue (streamRows lève) peut arriver APRÈS que
+            // des produits ont déjà été poussés à Google ce run (insert idempotent → re-complétés
+            // au prochain run). On reporte le nombre réellement poussé, pas le stale du run passé.
             await writeMerchantStatus(conn.merchant_id, {
+                products_pushed: pushedThisMerchant,
                 last_feed_status: "error",
                 last_feed_error: err instanceof Error ? err.message : String(err),
             });
+
+            // Le résumé de réponse reflète les produits RÉELLEMENT poussés avant l'échec
+            // (chemin succès et catch mutuellement exclusifs par marchand → jamais compté 2×).
+            totalPushed += pushedThisMerchant;
         }
     }
 
