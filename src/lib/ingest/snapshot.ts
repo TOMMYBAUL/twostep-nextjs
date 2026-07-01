@@ -173,6 +173,34 @@ export async function ingestStockSnapshot(
     let stockReplaced = 0;
     const createdProductIds: string[] = [];
 
+    // ── PLAN BATCHÉ (SCALE / VOLUME — pilier 1 north-star « ne rien oublier ») ────
+    // Un premier push d'onboarding pilote (boutique multimarque type Deerskin =
+    // MILLIERS de SKU NEUFS) faisait, PAR PRODUIT, jusqu'à 4 aller-retours réseau
+    // SÉQUENTIELS (products.insert + stock.upsert + available_sizes.update +
+    // feed_events.insert). Sur des milliers de produits, ces O(N) appels sériés
+    // DÉPASSENT le budget temps Vercel → fonction TUÉE en plein vol → ingestion
+    // tronquée SILENCIEUSEMENT (même classe de perte n°1 que le cron google-feed).
+    // On ACCUMULE ici (boucle quasi-pure pour les créations) puis on FLUSH par LOTS
+    // de 500 (comme la réconciliation `chunk()`), ce qui borne les aller-retours.
+    const nowIso = new Date().toISOString();
+    // Lignes d'insert des produits NEUFS (id pré-assigné ; available_sizes plié dans
+    // l'insert → 1 write de moins que l'ancien insert+update séparé).
+    const productInserts: Array<Record<string, unknown>> = [];
+    // Index id → ligne d'insert PENDING : un groupe ULTÉRIEUR du MÊME push qui matche
+    // un produit créé plus tôt (même EAN, libellé différent = dédoublonnage intra-push)
+    // applique son prix/tailles à la ligne pending, PAS un UPDATE sur une ligne pas
+    // encore écrite (sinon la mise à jour serait perdue). Cf. tests maillon 3.
+    const insertRowById = new Map<string, Record<string, unknown>>();
+    // Stock à écrire, DÉDUPLIQUÉ par product_id (dernier gagne = sémantique REPLACE ;
+    // évite aussi l'erreur Postgres « ON CONFLICT ne peut affecter 2× la même ligne »
+    // quand un même produit apparaît en create PUIS update dans le même push).
+    const stockByProduct = new Map<string, Record<string, unknown>>();
+    // feed_events new_product des créations, écrits par lots.
+    const newProductFeedEvents: Array<Record<string, unknown>> = [];
+    // ids des produits NEUFS (ordre du push) : le comptage + l'enfilage enrichissement
+    // se font APRÈS le flush (on ne compte/enfile qu'un produit RÉELLEMENT inséré).
+    const plannedNewIds: string[] = [];
+
     for (const [, groupItems] of groups) {
         const firstItem = groupItems[0];
         const cleanName = firstItem._cleanName;
@@ -206,93 +234,140 @@ export async function ingestStockSnapshot(
             .filter((g) => g._size)
             .map((g) => ({ size: g._size!, quantity: g.quantity, source: g._sizeSource ?? "name_regex" }));
         const totalStock = validItems.reduce((sum, g) => sum + g.quantity, 0);
+        const price = firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null;
 
         if (productId) {
-            // UPDATE — REPLACE le stock. On ne touche PAS à `visible` : la
-            // visibilité est gouvernée par le gate cascade/validation, et un
-            // push de stock ne doit jamais ressusciter un produit masqué
-            // (soft-delete marchand, score < 0,95, signalements...).
-            if (!dryRun) {
+            // On ne touche PAS à `visible` : la visibilité est gouvernée par le gate
+            // cascade/validation ; un push de stock ne doit jamais ressusciter un
+            // produit masqué (soft-delete, score < 0,95, signalements…).
+            const pendingRow = insertRowById.get(productId);
+            if (pendingRow) {
+                // Match sur un produit CRÉÉ plus tôt dans CE push (dédoublonnage
+                // intra-push) → fusionne dans la ligne d'insert pending. Un UPDATE
+                // DB ici viserait une ligne pas encore écrite (perdu).
+                if (price != null) pendingRow.price = price;
+                if (availableSizes.length > 0) pendingRow.available_sizes = availableSizes;
+            } else if (!dryRun) {
+                // Produit PRÉ-EXISTANT : UPDATE ciblé (prix/tailles). Reste par-produit
+                // (valeurs distinctes par ligne → non batchable sans risquer d'écraser
+                // un prix inchangé par null). Le re-push massif = suivi SCALE séparé.
                 const updates: Record<string, unknown> = {};
-                if (firstItem.unit_price && firstItem.unit_price > 0) updates.price = firstItem.unit_price;
+                if (price != null) updates.price = price;
                 if (availableSizes.length > 0) updates.available_sizes = availableSizes;
-
                 if (Object.keys(updates).length > 0) {
                     const { error: updateErr } = await admin.from("products").update(updates).eq("id", productId);
-                    if (updateErr) { errors.push(`Update ${cleanName}: ${updateErr.message}`); continue; }
-                }
-
-                const nowIso = new Date().toISOString();
-                const { error: stockErr } = await admin.from("stock").upsert(
-                    { product_id: productId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso },
-                    { onConflict: "product_id" },
-                );
-                if (stockErr) { errors.push(`Stock ${cleanName}: ${stockErr.message}`); continue; }
-            }
-
-            touched.add(productId);
-            productsUpdated++;
-            stockReplaced++;
-        } else {
-            // CREATE — invisible jusqu'à validation cascade ≥ 0.95
-            const newId = crypto.randomUUID();
-            // En simulation (dryRun), le replace est compté tel qu'il SE FERAIT.
-            let stockOk = true;
-            if (!dryRun) {
-                const { error: createErr } = await admin.from("products").insert({
-                    id: newId,
-                    merchant_id: merchantId,
-                    name: cleanName,
-                    price: firstItem.unit_price && firstItem.unit_price > 0 ? firstItem.unit_price : null,
-                    ean: firstItem.ean || null,
-                    sku: firstItem.sku || null,
-                    visible: false,
-                    review_status: "pending",
-                });
-                if (createErr) { errors.push(`Create ${cleanName}: ${createErr.message}`); continue; }
-
-                // Stock du produit fraîchement créé : SYMÉTRIQUE de la branche UPDATE
-                // (qui vérifie déjà `stockErr`). Sans cette garde, un échec d'upsert
-                // laissait un produit SANS ligne stock — lu « 0 » en aval = perte
-                // silencieuse de la quantité. On le rend visible (statut « partial »
-                // + Sentry) ; pas de throw : le produit existe, le prochain push
-                // complet le matchera en UPDATE et ré-écrira le stock (auto-guérison).
-                const nowIsoNew = new Date().toISOString();
-                const { error: stockErr } = await admin.from("stock").upsert(
-                    { product_id: newId, quantity: totalStock, updated_at: nowIsoNew, source: "file_push", source_ts: nowIsoNew },
-                    { onConflict: "product_id" },
-                );
-                if (stockErr) {
-                    stockOk = false;
-                    errors.push(`Stock (création) ${cleanName}: ${stockErr.message}`);
-                    captureError(stockErr, { lib: "ingest/snapshot", phase: "create-stock-upsert", merchantId });
-                }
-                if (availableSizes.length > 0) {
-                    const { error: sizesErr } = await admin.from("products").update({ available_sizes: availableSizes }).eq("id", newId);
-                    if (sizesErr) {
-                        // Secondaire (groupVariantsByEAN re-calcule les tailles) → visible sans bloquer.
-                        captureError(sizesErr, { lib: "ingest/snapshot", phase: "create-available-sizes", merchantId });
+                    if (updateErr) {
+                        // La MAJ métadonnée (prix/tailles) a échoué, mais on NE `continue`
+                        // PAS : (1) le STOCK (donnée critique) doit quand même être posé ;
+                        // (2) le produit DOIT être marqué `touched` pour que la
+                        // réconciliation ne le passe JAMAIS à 0 sur un simple échec de prix
+                        // (= faux « rupture », perte n°1). Erreur SIGNALÉE (statut partial)
+                        // + Sentry (diagnostic DB préservé), jamais avalée. (durci — revue
+                        // silent-failure-hunter, maillon SCALE)
+                        errors.push(`Update ${cleanName}: ${updateErr.message}`);
+                        captureError(updateErr, { lib: "ingest/snapshot", phase: "update-product", merchantId });
                     }
                 }
-                const { error: feedErr } = await admin.from("feed_events").insert({
-                    merchant_id: merchantId,
-                    product_id: newId,
-                    event_type: "new_product",
-                });
-                if (feedErr) {
-                    // Canal notification (favoris) — non bloquant mais plus jamais avalé.
-                    captureError(feedErr, { lib: "ingest/snapshot", phase: "create-feed-event", merchantId });
-                }
-                createdProductIds.push(newId);
             }
+            // REPLACE le stock (dédup par product_id, dernier gagne).
+            stockByProduct.set(productId, { product_id: productId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso });
+            touched.add(productId);
+            productsUpdated++;
+        } else {
+            // CREATE — invisible jusqu'à validation cascade ≥ 0.95. Écriture DIFFÉRÉE
+            // au flush batché. On enregistre l'identité dans les index MAINTENANT pour
+            // que les groupes suivants du même push la MATCHENT (dédoublonnage intra-push).
+            const newId = crypto.randomUUID();
+            const insertRow: Record<string, unknown> = {
+                id: newId,
+                merchant_id: merchantId,
+                name: cleanName,
+                price,
+                ean: firstItem.ean || null,
+                sku: firstItem.sku || null,
+                visible: false,
+                review_status: "pending",
+            };
+            if (availableSizes.length > 0) insertRow.available_sizes = availableSizes;
+            productInserts.push(insertRow);
+            insertRowById.set(newId, insertRow);
+            stockByProduct.set(newId, { product_id: newId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso });
+            newProductFeedEvents.push({ merchant_id: merchantId, product_id: newId, event_type: "new_product" });
+            plannedNewIds.push(newId);
 
             if (firstItem.ean) byEan.set(firstItem.ean, newId);
             if (firstItem.sku) bySku.set(firstItem.sku.toLowerCase(), newId);
             byName.set(cleanName.toLowerCase().trim(), newId);
             touched.add(newId);
-            productsCreated++;
-            if (stockOk) stockReplaced++;
         }
+    }
+
+    // ── FLUSH BATCHÉ ─────────────────────────────────────────────────────────────
+    // Écritures groupées par lots de 500 (products → stock → feed_events), dans cet
+    // ordre (FK product_id → products doit exister avant stock/feed_events).
+    if (!dryRun) {
+        const plannedNewIdSet = new Set(plannedNewIds);
+        const createdOkIds = new Set<string>();
+
+        // 1) Produits NEUFS — lots de 500, avec REPLI ISOLANT par ligne sur échec de
+        //    lot : un INSERT PostgREST est transactionnel → une seule ligne fautive
+        //    (ex. collision de slug FR « café »/« cafe » → même slug unique généré par
+        //    trigger) ferait échouer les 499 saines. On réinsère alors ligne par ligne
+        //    pour ne perdre QUE la fautive (SIGNALÉE + Sentry, jamais avalée) —
+        //    préserve l'isolation d'échec de l'ancien insert par-produit.
+        for (const batch of chunk(productInserts, 500)) {
+            const { error: insErr } = await admin.from("products").insert(batch);
+            if (!insErr) {
+                for (const r of batch) createdOkIds.add(r.id as string);
+                continue;
+            }
+            for (const r of batch) {
+                const { error: rowErr } = await admin.from("products").insert(r);
+                if (rowErr) {
+                    errors.push(`Create ${(r.name as string) || (r.id as string)}: ${rowErr.message}`);
+                    captureError(rowErr, { lib: "ingest/snapshot", phase: "create-product-insert", merchantId });
+                } else {
+                    createdOkIds.add(r.id as string);
+                }
+            }
+        }
+        productsCreated = createdOkIds.size;
+        for (const id of plannedNewIds) if (createdOkIds.has(id)) createdProductIds.push(id);
+
+        // 2) Stock (REPLACE) — créations OK + updates, par lots (onConflict product_id).
+        //    Un produit dont l'insert a ÉCHOUÉ est EXCLU (sa ligne stock violerait la
+        //    FK). Un lot en échec est SIGNALÉ + Sentry, non compté (perte VISIBLE, pas
+        //    avalée = enjeu n°1) ; le re-push le rejoue (auto-guérison). stock_replaced
+        //    compte les lignes réellement écrites (jamais un mensonge).
+        const stockRows = [...stockByProduct.values()].filter((r) => {
+            const pid = r.product_id as string;
+            return plannedNewIdSet.has(pid) ? createdOkIds.has(pid) : true;
+        });
+        for (const batch of chunk(stockRows, 500)) {
+            const { error: stockErr } = await admin.from("stock").upsert(batch, { onConflict: "product_id" });
+            if (stockErr) {
+                errors.push(`Stock (lot de ${batch.length}): ${stockErr.message}`);
+                captureError(stockErr, { lib: "ingest/snapshot", phase: "stock-upsert-batch", merchantId });
+                continue;
+            }
+            stockReplaced += batch.length;
+        }
+
+        // 3) feed_events new_product des créations RÉELLEMENT insérées — lots, non
+        //    bloquant (canal notification favoris) mais plus jamais avalé.
+        const feedRows = newProductFeedEvents.filter((e) => createdOkIds.has(e.product_id as string));
+        for (const batch of chunk(feedRows, 500)) {
+            const { error: feedErr } = await admin.from("feed_events").insert(batch);
+            if (feedErr) {
+                errors.push(`feed_events création (lot de ${batch.length}): ${feedErr.message}`);
+                captureError(feedErr, { lib: "ingest/snapshot", phase: "create-feed-events", merchantId });
+            }
+        }
+    } else {
+        // dryRun (preview wizard) : COMPTE ce qui SE FERAIT, parité avec l'ancien
+        // comptage inline, AUCUNE écriture. stock_replaced = produits distincts touchés.
+        productsCreated = productInserts.length;
+        stockReplaced = stockByProduct.size;
     }
 
     // ── Réconciliation de décrémentation ──────────────────────────────────────
@@ -431,13 +506,19 @@ export async function ingestStockSnapshot(
     // — le faire ici ferait timeout la requête HTTP dès ~100 produits. Les
     // produits restent invisibles (visible=false/pending) jusqu'au passage du worker.
     if (createdProductIds.length > 0) {
-        const { error: enqueueErr } = await admin
-            .from("enrichment_jobs")
-            .insert(createdProductIds.map((pid) => ({ product_id: pid, merchant_id: merchantId })));
-        if (enqueueErr) {
-            // Ne bloque pas l'ingestion : le stock est déjà à jour. On loggue.
-            errors.push(`Enqueue enrichment: ${enqueueErr.message}`);
-            captureError(enqueueErr, { lib: "ingest/snapshot", phase: "enqueue-enrichment", merchantId });
+        // Lots de 500 : un enfilage de plusieurs milliers de nouveaux produits en un
+        // seul insert construirait un corps de requête énorme (risque de rejet) → on
+        // borne comme le reste du flush. Ne bloque pas l'ingestion : le stock est déjà
+        // à jour ; un lot en échec est SIGNALÉ + Sentry (le worker enrich ne le verra
+        // pas → produit invisible, mais jamais silencieux).
+        for (const batch of chunk(createdProductIds, 500)) {
+            const { error: enqueueErr } = await admin
+                .from("enrichment_jobs")
+                .insert(batch.map((pid) => ({ product_id: pid, merchant_id: merchantId })));
+            if (enqueueErr) {
+                errors.push(`Enqueue enrichment (lot de ${batch.length}): ${enqueueErr.message}`);
+                captureError(enqueueErr, { lib: "ingest/snapshot", phase: "enqueue-enrichment", merchantId });
+            }
         }
     }
 

@@ -5,6 +5,69 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-01 (run autonome #2) · SCALE — ingestion snapshot : écritures par produit → FLUSH BATCHÉ (borne O(N/500))
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : suite DIRECTE du run précédent (commit `ed2f49f`, cron
+google-feed borné au budget temps). Le « reste prochain [R], même thème SCALE » nommé EXPLICITEMENT dans
+priorities.md §1bis #4 ET le worklog : **« batch upserts stock de l'ingestion (upserts par produit en boucle
+dans le snapshot) »**. In-scope (SCALE/VOLUME, pilier 1 north-star « ne rien oublier »), réversible, vérifiable.
+Filtre de cap : Align 10/10 (chemin critique onboarding pilote : Deerskin = milliers de SKU → premier push).
+
+**Diagnostic (vérifié dans le code réel)** : la boucle par-groupe de `ingestStockSnapshot` faisait, PAR PRODUIT,
+jusqu'à 4 aller-retours réseau SÉQUENTIELS — `products.insert` + `stock.upsert` + `products.update`
+(available_sizes) + `feed_events.insert`. Sur un premier push d'onboarding de MILLIERS de SKU neufs, ces O(N)
+appels sériés DÉPASSENT le budget temps Vercel → fonction TUÉE en plein vol → produits restants OMIS + la
+réconciliation et l'enfilage enrichissement (fin de fonction) JAMAIS atteints = **ingestion tronquée
+SILENCIEUSEMENT** (même classe de perte n°1 que le cron google-feed du run précédent).
+
+**Fait (réversible, 0 migration)** : `ingestStockSnapshot` refondu en **DEUX PHASES** —
+- **Phase 1 (plan)** : la boucle devient quasi-PURE pour les créations (accumule `productInserts` id pré-assigné,
+  `stockByProduct` Map dédup par product_id, `newProductFeedEvents`) ; les UPDATE de produits PRÉ-EXISTANTS restent
+  inline par-ligne (valeurs distinctes → non batchables sans risquer d'écraser un prix par null ; re-push massif =
+  suivi SCALE séparé). Dédoublonnage INTRA-push préservé : un groupe qui matche un produit créé PLUS TÔT dans le
+  même push fusionne prix/tailles dans la ligne d'insert PENDING (`insertRowById`), au lieu d'un UPDATE sur une
+  ligne pas encore écrite (qui serait un no-op silencieux). `available_sizes` PLIÉ dans l'insert (1 write de moins).
+- **Phase 2 (flush)** : écritures par LOTS de 500 (helper `chunk()` existant), ordre products → stock → feed_events
+  → enrichissement (FK product_id respectée). **Repli ISOLANT par ligne** sur un lot d'insert en échec (un INSERT
+  PostgREST est transactionnel → une collision de slug FR « café »/« cafe » ne doit pas tuer 499 saines). Stock
+  dédup par product_id (Map, dernier gagne = REPLACE ; évite l'erreur Postgres « ON CONFLICT ne peut affecter 2× la
+  même ligne »). `stock_replaced` compte les lignes RÉELLEMENT écrites ; un produit dont l'insert a échoué est exclu
+  du flush stock (FK) + de l'enfilage + non compté. Enfilage enrichissement AUSSI chunké (corps de requête borné).
+
+**Trouvé / blast radius** : `ingestStockSnapshot` (gitnexus) = 2 callers, tous deux POST (`/api/catalog/import`,
+`/api/ingest/stock` via `ingest-stock-file`), signature + forme de retour (`SnapshotResult`) INCHANGÉES → blast LOW.
+
+**Testé** : `tsc --noEmit` exit 0 ; `npm run test:run` **997** (984→997, **+13**). NOUVEAU
+`tests/ingest-snapshot-batching.test.ts` (+9) = faux client STATEFUL qui COMPTE les aller-retours par table+op :
+prouve la BORNE (1200 créations → `products.insert`/`stock.upsert`/`feed`/`enrich` = **3 lots chacun, PAS 1200** ;
+non-vacant : l'ancien code ferait 1200) + quantités exactes à l'échelle (0 perte) + re-push 1200 updates (stock en 3
+lots, 0 doublon) + **repli mono-ligne** (ligne POISON → seule elle perdue+signalée, 499 saines passent) + dédup
+intra-push à l'échelle + **F2 : échec MAJ prix ne zéroïse PAS** le produit. NOUVEAU `tests/lib/error.test.ts` (+4).
+4 faux clients existants (maillon2/3/4, pagination) mis à jour pour l'upsert par TABLEAU.
+
+**Revue silent-failure-hunter (OBLIGATOIRE pipeline, §11.3)** : **design SOUND sur les 5 invariants** (isolation
+d'échec de lot, dédup intra-push, ordering flush→reconcile, dryRun, delta sémantique UPDATE = CONFIRMÉ plus sûr, pas
+un silent-failure). **2 findings observabilité corrigés** :
+- **(F1 MED)** `captureError(objet PostgREST)` → `String(err)` = « [object Object] » en Sentry (message/code/details
+  perdus) sur les 4 nouveaux sites de lot — précisément là où on en a besoin à l'échelle. Systémique (leçon E4, ~250
+  sites). Fix dans `src/lib/error.ts` : un objet plat avec `message:string` est promu en `Error` (message réel +
+  code/details/hint en `extra`). Corrige mes sites + les ~250 pré-existants. Verrou `tests/lib/error.test.ts`.
+- **(F2 LOW-MED)** l'échec de MAJ métadonnée d'un produit PRÉ-EXISTANT faisait `errors.push` + `continue` SANS
+  captureError ET sortait le produit de `touched` → la réconciliation le passait à 0 dans le MÊME run (faux
+  « rupture » = perte n°1). Fix : plus de `continue` → stock (donnée critique) quand même écrit + `touched` + Sentry.
+
+**Reste (même thème SCALE)** : re-push massif = les UPDATE de produits pré-existants restent par-ligne (stock
+batché, mais N `products.update` sériés) — batching des updates distincts partiels = suivi séparé (risque
+d'écraser un prix inchangé par null). Chunker/streamer la boucle produits du cron google-feed pour finir un
+catalogue > budget en UN run reste noté. e2e sur vrai gros catalogue = escaladé (env live).
+
+**Scorecard** : Preuve 9/10 (borne O(N/500) prouvée non-vacante + 0 perte/0 doublon à 1200 items + repli isolant +
+F2 régression) · Sécu north-star 9/10 (SF-hunter SOUND, 2 findings observabilité fermés, 0 silent introduit) ·
+Rév 10/10 (0 migration, `git revert`) · Scope 8/10 (2 fichiers code + 6 tests, 1 unité SCALE + 2 durcissements liés) ·
+Align 10/10 (débloque l'onboarding pilote gros catalogue = le vrai prochain pas). tests 984→997 (+13). CFR : 100 %.
+
+---
+
 ## 2026-06-30 (run autonome) · SCALE — pagination anti-troncature `max-rows` PostgREST sur les 4 SORTIES Google
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : suite DIRECTE du fix ingestion du run précédent (commit `632f5e3`,

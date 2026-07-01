@@ -65,10 +65,13 @@ function makeStatefulAdmin() {
             return { data: null, error: null };
         }
         if (st.op === "upsert") {
-            const r = st.payload as Row;
-            const idx = db[table].findIndex((x) => x.product_id === r.product_id);
-            if (idx >= 0) db[table][idx] = { ...db[table][idx], ...r };
-            else db[table].push({ ...r });
+            // Flush batché (SCALE) : upsert d'un TABLEAU de lignes stock → itérer.
+            const rows = Array.isArray(st.payload) ? (st.payload as Row[]) : [st.payload as Row];
+            for (const r of rows) {
+                const idx = db[table].findIndex((x) => x.product_id === r.product_id);
+                if (idx >= 0) db[table][idx] = { ...db[table][idx], ...r };
+                else db[table].push({ ...r });
+            }
             return { data: null, error: null };
         }
         if (st.op === "update") {

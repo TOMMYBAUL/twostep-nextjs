@@ -214,12 +214,14 @@ describe("MAILLON 2 — création produit : un échec d'upsert stock n'est JAMAI
             reconcile: false, // isole le signal create-stock du chemin réconciliation
             dryRun: false,
         });
-        expect(r.products_created).toBe(1); // le produit a bien été créé
-        expect(r.stock_replaced).toBe(0); // mais le stock n'a PAS été écrit → non compté (pas de mensonge)
-        expect(r.errors.some((e) => /stock \(création\)/i.test(e))).toBe(true);
+        expect(r.products_created).toBe(1); // le produit a bien été créé (insert OK)
+        expect(r.stock_replaced).toBe(0); // mais le lot stock a ÉCHOUÉ → non compté (pas de mensonge)
+        // Le flush écrit le stock par LOT (SCALE) : l'échec est signalé au niveau lot,
+        // jamais avalé (même invariant north-star, message/phase adaptés au batch).
+        expect(r.errors.some((e) => /stock \(lot de/i.test(e))).toBe(true);
         expect(captureError).toHaveBeenCalledWith(
             expect.objectContaining({ message: "boom-stock-create" }),
-            expect.objectContaining({ phase: "create-stock-upsert", merchantId: "m1" }),
+            expect.objectContaining({ phase: "stock-upsert-batch", merchantId: "m1" }),
         );
     });
 });

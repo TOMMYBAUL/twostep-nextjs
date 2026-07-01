@@ -47,10 +47,13 @@ function makeStatefulAdmin(seed: Partial<Store> = {}) {
         }
         if (st.op === "upsert") {
             // stock : onConflict product_id → REPLACE la ligne existante, sinon insert.
-            const r = st.payload as Row;
-            const idx = db[table].findIndex((x) => x.product_id === r.product_id);
-            if (idx >= 0) db[table][idx] = { ...db[table][idx], ...r };
-            else db[table].push({ ...r });
+            // Le flush batché (SCALE) upsert un TABLEAU → itérer chaque ligne.
+            const rows = Array.isArray(st.payload) ? (st.payload as Row[]) : [st.payload as Row];
+            for (const r of rows) {
+                const idx = db[table].findIndex((x) => x.product_id === r.product_id);
+                if (idx >= 0) db[table][idx] = { ...db[table][idx], ...r };
+                else db[table].push({ ...r });
+            }
             return { data: null, error: null };
         }
         if (st.op === "update") {

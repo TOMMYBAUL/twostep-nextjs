@@ -225,9 +225,21 @@ plus un mur Google externe.
 >      `>=`, item entamé mené à terme, vide≠interruption, attempted<total) + `tests/google-feed-time-budget.test.ts` (+3, drive
 >      le VRAI POST horloge contrôlée : interrompu→statut "partial"≠"success", Sentry mono-marchand, marchand suivant non démarré
 >      +signalé). 975→984. Blast LOW (cron = entry-point sans caller interne ; helper = 1 caller). 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : batch upserts stock de l'ingestion (upserts par produit en boucle dans le
->      snapshot) ; éventuellement chunker/streamer la boucle produits du cron `google-feed` via `streamRows` pour finir un
->      catalogue > budget en un run (aujourd'hui : honnête mais la queue tail ne se publie qu'au prochain run).**
+>    - ✅ **(scale-ingest-batch) FAIT (2026-07-01, run autonome #2)** : **la boucle par-produit de `ingestStockSnapshot`
+>      faisait ~4 aller-retours réseau SÉQUENTIELS par produit** (products.insert + stock.upsert + available_sizes.update +
+>      feed_events.insert) → un premier push d'onboarding pilote de MILLIERS de SKU neufs dépasse le budget temps Vercel →
+>      kill en plein vol → produits restants OMIS + réconciliation/enfilage (fin de fonction) JAMAIS atteints = troncature
+>      SILENCIEUSE (même classe que le cron google-feed). Refonte en DEUX PHASES : boucle de PLAN (pure pour les créations,
+>      dédup intra-push via `insertRowById` + stock dédup par product_id Map) → FLUSH par LOTS de 500 (`chunk()`, ordre
+>      products→stock→feed→enrich, FK) avec repli ISOLANT mono-ligne sur lot en échec (slug FR « café »/« cafe » ne tue pas
+>      499 saines). Preuve `tests/ingest-snapshot-batching.test.ts` (faux client qui COMPTE : 1200 créations → 3 lots chacun,
+>      PAS 1200 ; non-vacant) + 0 perte/0 doublon à l'échelle + repli isolant + F2 (échec MAJ prix ne zéroïse pas). Revue
+>      SF-hunter **design SOUND (5 invariants)**, 2 findings observabilité fermés (F1 `captureError` objet PostgREST →
+>      « [object Object] » Sentry, fix systémique `src/lib/error.ts` ~250 sites ; F2 échec MAJ métadonnée → réconciliation
+>      zéroïse le produit). Blast LOW (2 callers POST, signature/retour inchangés). 984→997 (+13). 0 migration, réversible.
+>      **Reste (prochain [R], même thème SCALE) : batching des UPDATE de produits pré-existants (re-push massif = N
+>      `products.update` sériés ; stock déjà batché) — prudence : un batch écraserait un prix inchangé par null. Éventuellement
+>      chunker/streamer la boucle produits du cron `google-feed` via `streamRows` pour finir un catalogue > budget en un run.**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles
