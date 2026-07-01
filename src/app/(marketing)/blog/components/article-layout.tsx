@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Tu as une boutique sport à Toulouse ? 4 leviers pour attirer plus de clients en 2026",
+        slug: "boutique-sport-toulouse",
+        category: "marchands",
+    },
 ];
 
 export function ArticleLayout({
