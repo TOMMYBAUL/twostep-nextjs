@@ -1,16 +1,54 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-06-30 (L'Eclaireur + L'Auditeur)*
+*Derniere mise a jour : 2026-07-01 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 157
-- NOUVEAU : 46
+- Total leads : 167
+- NOUVEAU : 48
 - CONTACTE : 1
-- BROUILLON : 82
+- BROUILLON : 92
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Mardi — 2026-07-01 (L'Eclaireur) — Saint-Etienne épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi)
+
+**Note de session :** Saint-Etienne ÉPUISÉ dans top-prospects-centre.json (27/27 — confirmé 23/06). Session convertie en exploration de toulouse-merchants-full.json (1 561 marchands) sur la zone Saint-Etienne (rue Croix Baragnon + rues adjacentes : Sainte-Ursule, Cujas). 20+ candidats identifiés (gérant nommé + segment éligible + non dans tracker). 10 investigués. **10 emails confirmés via sites officiels, annuaires et contact pages.** Segments : bijouterie/horlogerie (3), mode (3), concept store/déco (2), chaussures (1), produits dérivés (1). ÉCARTÉES : BAOBAB (fermé 2020), NITYA/DUKAN DE NITYA (liquidation 2020), E.MATHIEU (articles religieux), MAC DOUGLAS (franchise monomarque), SON ET IMAGE (concessionnaire Bang & Olufsen), MADE IN (disquaire), SALVANNE (liquidateur), GALERIE SCHANEWALD + SAKAH GALERIE (galeries d'art). Notion MCP indisponible (18ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| JOAILLERIE PIQUEMAL-BARON | Saint-Etienne/Croix Baragnon | Bijouterie/Horlogerie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | 488302654 | 9/10 | BROUILLON | Email confirmé via joailleriepiquemalbaron.com (page contact). 27 rue Croix Baragnon. Vente montres luxe d'occasion + créations joaillerie depuis 1981. Site actif + présence Chrono24. IG @joailleriepiquemalbaron. |
+| RIEUNIER (L.R.B.J) | Saint-Etienne/Croix Baragnon | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com | 483989182 | 9/10 | BROUILLON | Email confirmé via rieunier-joailliers-horlogers.com (contact page). 22 rue Croix Baragnon. Joaillier créateur 30 ans d'expérience, atelier in-situ, bijoux pierres exceptionnelles + montres. |
+| DANYBERD | Saint-Etienne/Croix Baragnon | Mode homme élégante | Jean-luc Gales | toulouse@dnbstores.com | 480974716 | 8/10 | BROUILLON | Email confirmé via dnbstores.com. 19 rue Croix Baragnon (Hôtel de Bonnefoy). Mode homme toutes occasions, Mar-Ven 10h30-13h/14h30-19h, Sam 10h30-19h. FB @Dnbtoulouse. |
+| LILYAKE (LILITH/MADDY 31) | Saint-Etienne/Croix Baragnon | Mode femme | Gilles Andre | contact@lilyake.com | 831401260 | 8/10 | BROUILLON | Email confirmé via lilyake.com/contact. 15 rue Croix Baragnon. Mode femme élégante + accessoires, 3 boutiques (Biarritz + Bordeaux + Toulouse). Lun-Sam 11h-19h. |
+| UPPER (LE BOUIF) | Saint-Etienne/Croix Baragnon | Chaussures homme | Didier Foissard | upper.toulouse@gmail.com | 501490395 | 8/10 | BROUILLON | Email confirmé via toulouseboutiques.com + annuaires. 22 rue Croix Baragnon. Chaussures haut de gamme homme, Mar-Sam 10h-12h30/14h-19h. Site upper-shoes.com. |
+| IMAGIN'ERES | Saint-Etienne/Sainte-Ursule | Produits dérivés/Loisirs | Raphael Oved | imagineres@hotmail.fr | 432402063 | 7/10 | BROUILLON | Email confirmé via cylex-locale + annuaires. 17 rue Sainte-Ursule. Funko Pop, manga, cinéma, comics — produits de marque avec EAN. Site imagineres.fr actif. IG actif. |
+| SLOW CONCEPT | Saint-Etienne/Sainte-Ursule | Déco/Concept éco | Audrey Iakob-teran | contact@slowconcept.fr | 799045927 | 7/10 | BROUILLON | Email confirmé via slowconcept.fr. 10 rue Sainte-Ursule. Concept store éco-responsable déco+mode durable, Mar-Sam 10h30-19h. Yelp actif nov 2025. |
+| FIFI JOLIPOIS | Saint-Etienne/Cujas | Bijouterie fantaisie | Lea Dunogue | lea@fifijolipois.com | 523883262 | 6/10 | BROUILLON | Email confirmé via fifijolipois.com. 11 rue Cujas. Bijouterie fantaisie + perlerie, créations sur place. Mar-Sam 11h-13h30/14h30-19h. |
+| COMPTOIR DE L'OR ET DU BIJOU | Saint-Etienne/Sainte-Ursule | Bijouterie/Or occasion | Maxime Villefayot | comptoir.or.bijou@gmail.com | 813742533 | 6/10 | BROUILLON | Email confirmé via comptoirorbijou.com (footer). 23 rue Sainte-Ursule. Achat-vente bijoux or + bijoux anciens. ⚠️ stock tournant (occasion) → pertinence Two-Step à valider terrain. |
+| LE MAITRE MESURE | Saint-Etienne/Croix Baragnon | Mode sur-mesure | Gregory Baron | contact@maitremesure.com | 890241078 | 5/10 | BROUILLON | Email confirmé via maitremesure.com (contact page). 10 rue Croix Baragnon. Tailleur sur-mesure costumes/chemises/accessoires. ⚠️ pas de stock produits de marque standard → pertinence Two-Step limitée. |
+
+**Écartées session 01/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| BAOBAB (B.R.1) | 811166578 | Boutique Toulouse fermée depuis juillet 2020. ÉCARTÉE DÉFINITIF. |
+| NITYA (DUKAN DE NITYA) | 394862114 | Liquidation judiciaire décembre 2020. ÉCARTÉE DÉFINITIF. |
+| E.MATHIEU | 421115817 | Vend articles religieux — hors cible Two-Step. ÉCARTÉE DÉFINITIF. |
+| MAC DOUGLAS (ART EXPANSION) | 308874601 | Franchise monomarque (Mac Douglas). ÉCARTÉE DÉFINITIF. |
+| SON ET IMAGE TOULOUSE | 902211184 | Concessionnaire Bang & Olufsen — franchise monomarque. ÉCARTÉE DÉFINITIF. |
+| MADE IN (AINSI DE SUITE) | 833552136 | Disquaire (records) — hors cible Two-Step. ÉCARTÉE DÉFINITIF. |
+| SALVANNE TOULOUSE | 518051917 | Rôle dirigeant = Liquidateur → en liquidation. ÉCARTÉE DÉFINITIF. |
+| GALERIE SCHANEWALD | 833402118 | Galerie d'art contemporain — hors cible Two-Step. ÉCARTÉE. |
+| SAKAH GALERIE | 510802770 | Galerie d'art — hors cible Two-Step. ÉCARTÉE. |
+| APOSTROPHE RJC | 331258384 | Aucun email trouvé (3 recherches). Tél 05 61 25 94 95. NOUVEAU — terrain. |
+| ATYPIQUE (LA FAIENCERIE) | 453643884 | Aucun email trouvé (tél 05 61 53 12 54 uniquement). NOUVEAU — terrain. |
+
+*Note : Notion MCP indisponible (18ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-01".*
+
+---
 
 ### Lundi — 2026-06-30 (L'Eclaireur) — Capitole épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
 
