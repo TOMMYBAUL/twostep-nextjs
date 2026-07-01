@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-01 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-01 (L'Auditeur)*
 
 ## Stats
 - Total leads : 167
@@ -47,6 +47,24 @@
 | ATYPIQUE (LA FAIENCERIE) | 453643884 | Aucun email trouvé (tél 05 61 53 12 54 uniquement). NOUVEAU — terrain. |
 
 *Note : Notion MCP indisponible (18ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-01".*
+
+---
+
+## Recap brouillons email — 2026-07-01 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (18e session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Catherine Piquemal-baron (JOAILLERIE PIQUEMAL-BARON) | contact@joailleriepiquemalbaron.com | Joaillerie Piquemal Baron sur Two-Step — tes Rolex et Patek Philippe trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Rolex, Patek Philippe, Vacheron Constantin, montres de collection occasion depuis 1981. Score 9/10. |
+| 2 | Laurent Rieunier (RIEUNIER L.R.B.J) | rieunier.joailliers.horlogers@gmail.com | Rieunier Joailliers sur Two-Step — tes montres de collection trouvées par les Toulousains | ⚠️ NON CRÉÉ | ACA — Rolex, Cartier, Omega d'occasion + créations atelier in-situ, 30 ans expérience. Score 9/10. |
+| 3 | Jean-Luc Gales (DANYBERD) | toulouse@dnbstores.com | Danyberd sur Two-Step — ton prêt-à-porter homme trouvé par les Toulousains | ⚠️ NON CRÉÉ | ACA — Prêt-à-porter luxe homme depuis 1976, Hôtel de Bonnefoy 19 rue Croix Baragnon. Score 8/10. |
+| 4 | Gilles Andre (LILYAKE) | contact@lilyake.com | Lilyaké sur Two-Step — tes Moyuru et Rundholz trouvés par les Toulousaines | ⚠️ NON CRÉÉ | ACA — Moyuru, Rundholz, Lurdes Bergada, Trippen. Multi-marques 3 boutiques (Biarritz/Bordeaux/Toulouse). Score 8/10. |
+| 5 | Didier Foissard (UPPER) | upper.toulouse@gmail.com | Upper sur Two-Step — tes Church's et Paraboot trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Church's, Paraboot, Santoni, Crockett & Jones. Chaussures haut de gamme 22 rue Croix Baragnon. Score 8/10. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 18e session consécutive sans création de draft (11/06 → 01/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-01.md`**
+
+*Note session 01/07 (L'Auditeur) : 5 leads BROUILLON traités parmi les 10 nouveaux de la session Eclaireur 01/07 (scores 9/9/8/8/8). Emails personnalisés avec marques spécifiques (web search confirmé : Rolex/Patek/Vacheron, Rolex/Cartier/Omega, mode homme 1976, Moyuru/Rundholz/Lurdes Bergada, Church's/Paraboot/Santoni). Notion MCP indisponible (18e session consécutive).*
 
 ---
 
