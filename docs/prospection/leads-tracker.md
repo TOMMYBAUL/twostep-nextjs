@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-01 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-02 (L'Auditeur)*
 
 ## Stats
 - Total leads : 167
@@ -65,6 +65,30 @@
 **⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 18e session consécutive sans création de draft (11/06 → 01/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-01.md`**
 
 *Note session 01/07 (L'Auditeur) : 5 leads BROUILLON traités parmi les 10 nouveaux de la session Eclaireur 01/07 (scores 9/9/8/8/8). Emails personnalisés avec marques spécifiques (web search confirmé : Rolex/Patek/Vacheron, Rolex/Cartier/Omega, mode homme 1976, Moyuru/Rundholz/Lurdes Bergada, Church's/Paraboot/Santoni). Notion MCP indisponible (18e session consécutive).*
+
+---
+
+## Recap brouillons email — 2026-07-02 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (19e session consécutive)
+
+**Source** : 5 leads restants de la session Eclaireur 01/07 (scores 7/7/6/6/5). 4 emails rédigés, 1 écarté (LE MAITRE MESURE — sur-mesure pur, hors cible Two-Step).
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Raphael Oved (IMAGIN'ERES) | imagineres@hotmail.fr | Imagin'ères sur Two-Step — tes Funko Pop Marvel et Dragon Ball trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Funko Pop 100% licences officielles (Marvel, Dragon Ball, Naruto, Jujutsu Kaisen). 17 rue Sainte-Ursule. Score 7/10. |
+| 2 | Audrey Iakob-teran (SLOW CONCEPT) | contact@slowconcept.fr | Slow Concept sur Two-Step — tes créateurs éco trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Demisel, Muskhane, Clémence et Vivien, made in France/Occitanie. 11 ans de curation. 10 rue Sainte-Ursule. Score 7/10. |
+| 3 | Léa Dunogue (FIFI JOLIPOIS) | lea@fifijolipois.com | Fifi Jolipois sur Two-Step — tes créations bijoux trouvées par les Toulousaines | ⚠️ NON CRÉÉ | ACA — 120 m² perlerie/bijouterie fantaisie, créations maison (boucles, colliers, gourmettes). 11 rue Cujas. Score 6/10. |
+| 4 | Maxime Villefayot (COMPTOIR DE L'OR ET DU BIJOU) | comptoir.or.bijou@gmail.com | Comptoir de l'Or sur Two-Step — tes bijoux anciens or 18K trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Bijoux anciens or 18K restaurés + conseil investissement or. 23 rue Sainte-Ursule. Score 6/10. ⚠️ stock occasion tournant. |
+
+**Non traité — écarté :**
+| Boutique | Email | Motif |
+|---|---|---|
+| LE MAITRE MESURE (Gregory Baron) | contact@maitremesure.com | Tailleur sur-mesure pur (costumes/chemises/manteaux) — pas de produits de marque standard en stock. Drapiers (Loro Piana, Zegna, Dormeuil) = fournisseurs, pas produits revendus. Hors cible Two-Step. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 19e session consécutive sans création de draft (11/06 → 02/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-02.md`**
+
+*Note session 02/07 (L'Auditeur) : 4 leads traités (5 restants session Eclaireur 01/07, 1 écarté). Web search confirmé : licences officielles Funko Pop, marques éco Slow Concept, perlerie Fifi Jolipois, bijoux anciens or Comptoir. Notion MCP indisponible (19e session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-07-02".*
 
 ---
 
