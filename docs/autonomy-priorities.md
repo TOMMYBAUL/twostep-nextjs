@@ -165,6 +165,16 @@ plus un mur Google externe.
 >      transform/store_code ; verrou `classifyFeedRow` ⟸ `isFeedEligible`). 2 silent-failures corrigés (MED-1 faux
 >      positif `google_connected` sur blip ; MED-2 feed live Voie B `(products ?? [])` → XML vide silencieux). +11
 >      tests (832→843), revue SF-hunter SOUND. **Reste = rendu VISUEL** (consommer l'endpoint dans l'UI) → Thomas.
+>    - ✅ **UI shadow/preview FAITE (2026-07-03, run autonome)** : l'endpoint est enfin CONSOMMÉ dans l'UI (écran
+>      `/dashboard/google/preview` + lien depuis l'écran Google). Construite façon E-phase (la boucle n'a pas d'yeux) :
+>      deriver PUR `deriveFeedPreviewView` (`src/lib/google/feed-preview-view.ts`) qui trie l'état de chargement en
+>      `error|empty|preview` et NE recalcule RIEN d'éligibilité (l'API a déjà tranché → il présente, anti-divergence) ;
+>      la page ne fait que fetch (gate `r.ok`) + rendu (états honnêtes `role=alert/status`, Réessayer, zéro cul-de-sac,
+>      ARIA progressbar, libellés FR des causes de blocage par produit). **Honnêteté north-star** : un 500 `{error}` ne
+>      peut JAMAIS passer pour un preview vide (« rien à publier » trompeur) ; `empty` exige total=0 ET les 2 listes vides
+>      (jamais masquer un feed réel). Preuve `tests/lib/google/feed-preview-view.test.ts` (+10, **1017→1027**). Revue
+>      SF-hunter **SOUND** (0 finding : gate `r.ok`, error≠empty, pass-through par référence). 0 migration, réversible.
+>      **Reste = passe VISUELLE/responsive** (jugement pixel « pro vs moyen ») → Thomas + `ui-journey.mjs`/Playwright.
 > 3. **Préparer** les items GATED en attente de Thomas (D2 tier GTIN-only, D5 vérif image) — rien de plus.
 > 4. **SCALE / VOLUME (Thomas 2026-06-23 — IN-SCOPE, prioritaire)** : les 8 maillons sont prouvés
 >    sur de PETITES fixtures. Valider tout le chemin sur de GROS catalogues **synthétiques (10k→50k

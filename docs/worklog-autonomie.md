@@ -5,6 +5,57 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-03 (run autonome) · Onboarding pilote — UI shadow/preview du feed Google (finir un WIP en scope)
+
+**Pourquoi (sourcing §6)** : le thème SCALE est COMPLET (ingest + 4 sorties Google : pagination keyset +
+streaming + budget temps + batching, tous prouvés + le watchdog quality-check). Check signaux prod : rien de
+nouveau (état idle des 11 runs de juin persiste, 0 marchand réel). MAIS l'arbre de travail contenait un **WIP
+non committé, non testé** : l'UI shadow/preview (`feed-preview-view.ts` + `preview/page.tsx` + un lien depuis
+l'écran Google). C'est exactement le « **Reste = rendu VISUEL (consommer l'endpoint dans l'UI) → Thomas** » du
+cap item 2 (onboarding pilote = LE prochain [R] principal ; M9). Le backing data (`GET /api/google/feed-preview`)
+était déjà committé (2026-06-23, parité garantie avec les 2 feeds live). Finir ce WIP proprement = plus de valeur
+in-scope qu'un re-idle. Le WIP suit la doctrine E-phase (la boucle n'a pas d'yeux) : deriver PUR + états honnêtes
++ ARIA, le jugement pixel reste à Thomas.
+
+**Vérifié avant d'investir** (LESSONS : ~70 % des findings Explore sont faux — j'ai confronté au code réel) :
+- Parité de forme endpoint→vue : la route renvoie `{merchant_id, store_code, google_connected, gtin_only_tier,
+  summary, would_publish, blocked}` = EXACTEMENT `FeedPreviewData`. `would_publish[]` = sortie de
+  `transformProductToGoogle` (`offerId/gtin/title/brand?/price/salePrice?/imageLink?/availability`, camelCase) =
+  `FeedPreviewItem`. `summary` = `PublishabilitySummary` (`total/publishable/score`). Aucun mismatch de nom de
+  champ (qui aurait rendu la page blanche). `FeedBlockReason` = 3 valeurs, toutes couvertes par le label-map FR.
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12) : ajouté le SEUL maillon manquant = les **tests** du
+deriver pur + finalisation. `deriveFeedPreviewView({ok,data})` trie en `error|empty|preview` :
+- `!ok || !data` → **error** (un 500 `{error}` ne peut JAMAIS passer pour un preview vide « rien à publier »).
+- `empty` exige **les 3** : `total=0` ET `would_publish=[]` ET `blocked=[]` (jamais masquer un feed réel sur un
+  drift ; guide vers l'import seulement si le catalogue est vraiment vide).
+- `preview` : passe `summary/would_publish/blocked` PAR RÉFÉRENCE — ne recalcule RIEN d'éligibilité (l'API a déjà
+  tranché → anti-divergence, classe « source unique »). `feedBlockReasonLabel` retombe sur le code brut si inconnu
+  (jamais d'écran vide). La page cliente ne fait que fetch (gate `r.ok` strict) + rendu (états `role=alert/status`,
+  Réessayer, CTA import, ARIA progressbar).
+
+**Testé (méthode 1bis)** : `tests/lib/google/feed-preview-view.test.ts` (+10) — !ok→error, ok+data null→error,
+ok=false avec data présente (incohérence)→error, catalogue vide→empty, **2 régressions drift** (total=0 mais une
+liste non vide → preview PAS empty, dans les 2 sens), mapping complet, pass-through par référence (anti-recalcul),
+label FR + fallback code inconnu. `tsc` OK. `npm run test:run` **1017→1027** (102 fichiers verts).
+
+**Revue silent-failure-hunter** : **SOUND, 0 finding** (5 axes : gate `r.ok`, error≠empty, aucun catch avalé en
+faux-OK, pas de spinner infini / cul-de-sac, backing route déjà fail-loud). Confirmé que l'édit de `page.tsx` est
+purement additif (un `<Link>`, aucune logique fetch/erreur touchée).
+
+**Reste** : la passe VISUELLE/responsive (« pro vs moyen », beauté, mobile) = SUPERVISÉ Thomas + Playwright (la
+boucle n'a pas d'yeux). NB : `docs/SPEC/` (référentiel Thomas+Opus du 2026-07-01) est présent NON suivi dans
+l'arbre — **je ne l'ai PAS committé** (artefact de Thomas, pas mon feature ; à lui de décider). Signalé ici.
+
+**Scorecard** : Preuve 8/10 (deriver pur testé champ par champ + parité endpoint vérifiée au code réel ; le RENDU
+visuel reste non prouvé = pas d'yeux, honnêtement borné) · Sécu north-star 9/10 (SF-hunter SOUND ; un faux « rien à
+publier » sur un blip = pile le faux-positif interdit, et il est fermé) · Réversibilité 10/10 (0 migration, `git
+revert`, additif) · Scope 8/10 (4 fichiers : 1 helper + 1 page + 1 lien + 1 test = 1 unité cohérente in-scope) ·
+Align 9/10 (onboarding pilote = LE prochain [R] principal ; rend Deerskin inspectable avant publication). 0 bug (WIP
+sain). tests 1017→1027. CFR = 100 % (0 revert).
+
+---
+
 ## 2026-07-02 (run autonome) · SCALE — durcir l'ALARME de complétude (cron `quality-check`)
 
 **Pourquoi (sourcing §6 — SIGNAL RÉEL, pas devinette)** : le thème SCALE (ingest + 4 sorties Google) étant

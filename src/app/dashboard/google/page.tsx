@@ -255,6 +255,20 @@ export default function GooglePage() {
                             </div>
                         </div>
 
+                        {/* Aperçu avant publication : voir EXACTEMENT ce qui partirait sur Google (démo pilote 6a.2). */}
+                        <Link
+                            href="/dashboard/google/preview"
+                            className="flex items-center justify-between rounded-2xl border border-secondary bg-primary p-6 transition hover:bg-secondary focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            <div>
+                                <p className="text-sm font-semibold text-primary">Voir l'aperçu Google</p>
+                                <p className="mt-0.5 text-xs text-tertiary">
+                                    Exactement ce qui serait publié sur Google, produit par produit — avant d'envoyer.
+                                </p>
+                            </div>
+                            <span aria-hidden="true" className="text-tertiary">→</span>
+                        </Link>
+
                         {/* Suggestions actionnables */}
                         {statsView.suggestions.length > 0 && (
                             <div className="rounded-2xl border border-secondary bg-primary p-6">
