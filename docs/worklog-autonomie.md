@@ -65,7 +65,16 @@ recours est muette 24 h sur un blip). Décision status-code inchangée (200+degr
 ONT été écrites, un 500 les masquerait en échec ; la visibilité passe par Sentry+`degraded`.
 
 **Reste / escalade** : e2e sur vrai gros catalogue = env live (escaladé, comme le reste SCALE). THÈME SCALE
-désormais étendu à l'alarme de complétude. Blast LOW (cron = entry-point HTTP sans caller interne). 2 fichiers.
+désormais étendu à l'alarme de complétude. Blast LOW (cron = entry-point HTTP sans caller interne). 2 fichiers
+code+test (+3 docs). Suivi non bloquant (worklog) : confirmer le paging Sentry sur `route:"cron/quality-check"`
+(cron quotidien → un run `degraded` 200 n'est re-tenté par personne, recovery = J+1 + Sentry).
+
+**Scorecard** : Preuve 8/10 (faux client KEYSET + détecteurs purs + `fetchAllRows`/`chunk` réels = non vacant ;
+1500→2 pages + dédup 1200→produit >1000ᵉ non ré-inséré prouvés ; synthétique, 0 catalogue réel) · Sécu north-star
+9/10 (ferme la troncature silencieuse + l'insert-aveugle sur l'ALARME même = méta-garde du pilier 1 ; SF-hunter core
+SOUND + 2 MED adjacents fermés) · Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (2 fichiers code/test,
+1 unité, sourcée par signal réel) · Align 9/10 (in-scope pilier 1, pas de couverture-pour-la-couverture : 3 défauts
+réels vérifiés). 2 bugs réels adjacents fermés (findings MED revue). 5 fichiers. tests 1005→1017. CFR = 100% (0 revert).
 
 ---
 
