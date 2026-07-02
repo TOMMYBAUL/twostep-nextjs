@@ -135,7 +135,8 @@ function makeAdmin(results: { products?: QueryResult; stock?: QueryResult } = {}
     function builder(table: string) {
         const b: Record<string, unknown> = {};
         const passthrough = () => b;
-        for (const m of ["select", "eq", "gt", "or", "insert", "update", "upsert", "in", "range", "order"]) b[m] = passthrough;
+        // `limit` = pagination keyset fetchAllRows (petit dataset = 1 page → passthrough).
+        for (const m of ["select", "eq", "gt", "or", "insert", "update", "upsert", "in", "limit", "order"]) b[m] = passthrough;
         b.then = (resolve: (v: QueryResult) => unknown, reject: (e: unknown) => unknown) => {
             let res: QueryResult = { data: [], error: null };
             if (table === "products") res = results.products ?? { data: [], error: null };

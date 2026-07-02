@@ -5,6 +5,52 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-02 (run autonome) · SCALE — pagination KEYSET drift-immune (`fetchAllRows`/`streamRows`)
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : le « reste prochain [R], même thème SCALE » nommé
+EXPLICITEMENT en fin de priorities.md §1bis #4 ET dans LESSONS.md (entrée google-feed streaming, 2026-07-02) :
+**« pagination KEYSET drift-immune (`WHERE id > dernier ORDER BY id`) sur les lectures produits paginées, de
+façon COHÉRENTE (pas un bolt-on sur la seule Voie A) »**. In-scope (SCALE/VOLUME, pilier 1 north-star « ne rien
+oublier »), réversible, vérifiable. Item [R] le plus haut non terminé.
+
+**Trouvé (le trou)** : les 2 helpers `src/lib/supabase/paginate.ts` paginaient par OFFSET (`.range(from, from+size-1)`).
+L'OFFSET n'est PAS immunisé à l'écriture concurrente : si une ligne est insérée/supprimée AVANT l'offset courant
+pendant un balayage étalé dans le temps (Voie A push ~270 s ; `/api/catalog/import` ingest SANS `sync_lock`), toutes
+les lignes suivantes se DÉCALENT d'un cran → une ligne tombe dans le trou entre 2 pages (SAUTÉE) ou est lue 2× (DOUBLON).
+Impact : **doublon PERMANENT à l'ingestion** (aucune contrainte UNIQUE sur `products(merchant_id, ean)`) ; transient sur
+les 4 sorties Google (re-push idempotent → réapparaît au run suivant). C'était le résidu F1 documenté (SF-hunter) du run
+streaming, laissé « prochain [R] ».
+
+**Fait (réversible, 0 migration)** : refonte SYSTÉMIQUE de `fetchAllRows` ET `streamRows` en pagination KEYSET —
+`makeQuery().gt(column, curseur).limit(pageSize)` (curseur = dernière valeur de `column` de la page précédente, page 1
+sans borne). Curseur = VALEUR ancrée sur une colonne stable, pas une position → un insert/delete ailleurs ne le décale
+plus. Nouvelle option `{ pageSize?, column? }` (défaut `column="id"`). **Fail-loud renforcé** : curseur `null`/absent
+(colonne non lue / NULL) sur une page PLEINE → `{data:null,error}` (fetchAllRows) / THROW (streamRows) — jamais boucler
+ni tronquer. Contrat de retour INCHANGÉ (`{data,error}` / async generator THROW) → remplacement transparent.
+- **Call sites (6, blast LOW)** : 5 des 6 factories `.order("id", {ascending:true})` déjà → défaut `column="id"`, AUCUN
+  changement de code (inventory, snapshot-index, feed-preview, google-feed cron, feed-lfp XML). SEULE la réconciliation
+  stock (`snapshot.ts`, ordonnée par `product_id`) passe `{ column: "product_id" }`. Comments OFFSET→KEYSET mis à jour
+  (google-feed cron : bloc « RÉSIDU CONNU dérive OFFSET » → « DÉRIVE OFFSET FERMÉE »).
+
+**Testé (méthode §1bis, preuve sans yeux)** : `tests/lib/supabase/paginate.test.ts` réécrit (21 tests) — les fakes
+modèlent le keyset (`.gt(col, curseur)` borne basse exclusive, `.limit(n)` plafonné à max-rows) et **prouvent la
+pagination par CURSEUR** (`pageCursors = [null, id999, id1999]`, pas d'offset décalable) + colonne configurable
+(product_id) + fail-loud (erreur page N, data=null, curseur absent page pleine). Les 4 fakes de CHARGE réécrits en
+keyset : `ingest-snapshot-pagination` (1500 → 0 doublon + #1200 vendu remis à 0), `google-feed-output-pagination`
+(2 pages sur les 4 sorties), `feed-lfp-stream` (2500 en flux, abort mid-stream), `google-feed-time-budget` (2500 + budget
++ interruption + erreur page ultérieure). 6 petits fakes (maillon 2/3/4/7, ingest-snapshot, feed-preview) : `.range`→
+`.limit`/`.gt`. **tsc OK, 1005 tests verts (100 fichiers), 0 rouge.** Revue **silent-failure-hunter : SOUND, 0 fix**
+(product_id = PK ref `products(id)` confirmé unique+NOT NULL ; exact-multiple → page vide finale OK ; `nextCursor`
+n'écrase pas `0`/`""` légitimes ; `.gt` métier `quantity>0` sans collision — PostgREST `append`=AND ; les 6 contrats
+callers intacts).
+
+**Reste / escalade** : THÈME SCALE (ingest + 4 sorties Google) = COMPLET côté code (pagination anti-troncature +
+streaming mémoire + budget temps + batching + KEYSET). Reste la **preuve de CHARGE réelle 10k→50k** (mesure temps/
+mémoire sur un vrai déploiement Vercel + Supabase) = **env live escaladé** (la Routine cloud est code+tests seulement).
+15 fichiers touchés (3 src + 12 tests), sous le garde-fou 20-fichiers.
+
+---
+
 ## 2026-07-02 (run autonome) · SCALE — cron google-feed (Voie A) : lecture produits en STREAMING (mémoire bornée)
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : le « reste prochain [R], même thème SCALE » nommé

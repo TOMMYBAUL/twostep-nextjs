@@ -68,11 +68,13 @@ function makeReadClient(tables: Record<string, TableData>) {
             not: () => api,
             // `.order("id")` (anti-troncature pagination) : dataset déjà déterministe → no-op.
             order: () => api,
-            // `.range(from,to)` : `fetchAllRows` pagine les SELECT products des sorties Google.
-            // On renvoie la fenêtre demandée (et on propage une erreur DB injectée).
-            range: (from: number, to: number) => {
+            // Pagination KEYSET `fetchAllRows` : `.gt("id", curseur)` puis `.limit(n)`.
+            // Dataset de test petit (< pageSize) → 1 seule page : le curseur n'est jamais
+            // posé, `.limit()` renvoie tout (et propage une erreur DB injectée).
+            gt: () => api,
+            limit: () => {
                 const { data, error } = resolve();
-                return Promise.resolve({ data: data ? data.slice(from, to + 1) : data, error });
+                return Promise.resolve({ data, error });
             },
             // update(payload).eq(...) → enregistre l'écriture de statut (Voie A cron)
             update: (payload: Row) => ({

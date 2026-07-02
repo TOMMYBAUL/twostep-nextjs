@@ -268,9 +268,23 @@ plus un mur Google externe.
 >      catalogue COMPLET idempotent chaque run → produit sauté réapparaît au run suivant = **pas de perte permanente**
 >      (≠ ingest-snapshot où skip→doublon permanent). **F2 (temps de lecture des pages 0-éligible)** = borne acceptée
 >      (marge 30 s ≫ milliers de pages). Blast LOW (1 caller). 999→1002 (+3). 0 migration, réversible.
->      **Reste (prochain [R], même thème SCALE) : pagination KEYSET drift-immune** (`WHERE id > dernier ORDER BY id`)
->      sur les lectures produits paginées (les 4 sorties Google + éventuellement l'ingest) → ferme le résidu F1 dérive
->      PARTOUT d'un coup, de façon COHÉRENTE (plutôt qu'un bolt-on sur la seule Voie A). Réversible, vérifiable.
+>    - ✅ **(scale-keyset-pagination) FAIT (2026-07-02, run autonome)** : **pagination KEYSET drift-immune** — les
+>      helpers `fetchAllRows`/`streamRows` (`src/lib/supabase/paginate.ts`) paginaient par OFFSET (`.range(from,to)`),
+>      NON immunisé à l'écriture concurrente : une ligne insérée/supprimée avant l'offset courant pendant un balayage
+>      étalé (~270 s pour la Voie A ; `/api/catalog/import` sans `sync_lock` pour l'ingest) DÉCALE les suivantes → ligne
+>      sautée (trou entre 2 pages) ou lue 2× = **doublon PERMANENT à l'ingestion** (faute d'UNIQUE `ean`), transient sur
+>      les sorties Google. Fix SYSTÉMIQUE (ferme le résidu F1 PARTOUT d'un coup, pas un bolt-on Voie A) : les 2 helpers
+>      paginent `WHERE column > curseur ORDER BY column LIMIT pageSize` (curseur = VALEUR ancrée, pas position →
+>      dérive-immune). Option `{column}` (défaut `"id"` ; réconciliation stock → `"product_id"`). Fail-loud renforcé :
+>      curseur `null`/absent sur page PLEINE → erreur/THROW (jamais boucler ni tronquer). Contrat inchangé
+>      `{data,error}`/THROW → 6 callers (2 ingest + 4 sorties Google) intacts, 0 changement de signature (5 factories
+>      ordonnent déjà par `id`, seule la réconciliation passe le `column`). Preuve : `paginate.test.ts` réécrit (curseurs
+>      `[null, "…999", "…1999"]` prouvent le keyset) + les 4 fakes de charge (snapshot-pagination/output/stream/budget)
+>      modèlent `.gt`/`.limit` en keyset. **Revue SF-hunter SOUND, 0 fix** (product_id = PK ref confirmé unique+NOT NULL,
+>      exact-multiple OK, `.gt` métier `quantity>0` sans collision). tsc OK, 1005 tests verts (100 fichiers). 0 migration,
+>      réversible. **→ THÈME SCALE (ingest + 4 sorties Google) COMPLET : pagination anti-troncature + mémoire bornée
+>      (streaming) + budget temps + batching + KEYSET drift-immune tous prouvés. Reste = preuve de CHARGE réelle 10k→50k
+>      (mesure temps/mémoire, env live escaladé) + pilote (Thomas).**
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

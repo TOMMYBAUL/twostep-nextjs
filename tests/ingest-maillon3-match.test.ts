@@ -103,9 +103,9 @@ function makeStatefulAdmin(seed: Partial<Store> = {}) {
             st.filters[col] = val;
             return b;
         };
-        b.gt = () => b; // quantity>0 : déjà appliqué dans le SELECT stock
+        b.gt = () => b; // quantity>0 (SELECT stock) + curseur keyset fetchAllRows : no-op
         b.order = () => b; // ordre déterministe pagination : insertion = ordre stable
-        b.range = () => b; // pagination fetchAllRows : petit dataset = 1 page, no-op
+        b.limit = () => b; // pagination keyset fetchAllRows : petit dataset = 1 page, no-op
         b.insert = (payload: unknown) => {
             st.op = "insert";
             st.payload = payload;

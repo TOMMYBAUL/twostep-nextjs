@@ -112,11 +112,13 @@ function makeServerClient(opts: {
             not: () => api,
             // `.order("id")` (anti-troncature pagination) : dataset déterministe → no-op.
             order: () => api,
-            // `.range(from,to)` : `fetchAllRows` pagine le SELECT products du preview.
-            // Fenêtre demandée + propagation d'une erreur DB injectée.
-            range: (from: number, to: number) => {
+            // Pagination KEYSET `fetchAllRows` : `.gt("id", curseur)` puis `.limit(n)`.
+            // Dataset de test petit (< pageSize) → 1 page : `.limit()` renvoie tout et
+            // propage une erreur DB injectée ; le curseur n'est jamais posé.
+            gt: () => api,
+            limit: () => {
                 const { data, error } = resolve();
-                return Promise.resolve({ data: data ? data.slice(from, to + 1) : data, error });
+                return Promise.resolve({ data, error });
             },
             single: () => {
                 const { data, error } = resolve();

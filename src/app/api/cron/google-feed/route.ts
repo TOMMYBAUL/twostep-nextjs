@@ -94,31 +94,22 @@ export async function POST(req: NextRequest) {
             // (validés, visibles, non archivés, non variantes). Sinon on expose des
             // produits non identifiés sur Google Shopping (faux positif public).
             //
-            // STREAMING + PAGINÉ (parité mémoire avec la Voie B XML) : un SELECT non borné
+            // STREAMING + PAGINÉ KEYSET (parité mémoire avec la Voie B XML) : un SELECT non borné
             // est tronqué à 1000 lignes par PostgREST (sans erreur) → un catalogue >1000
             // publierait un feed PARTIEL silencieux. `streamRows` lit page par page
-            // (`.order("id")` = ordre déterministe entre pages) et on filtre + pousse chaque
-            // page À LA VOLÉE → UNE seule page réside en RAM à la fois, jamais tout le
-            // catalogue (Deerskin = milliers de SKU) ni son sous-ensemble éligible.
+            // (`.order("id")` + `.gt("id", curseur)` = pagination KEYSET, dérive-immune) et on
+            // filtre + pousse chaque page À LA VOLÉE → UNE seule page réside en RAM à la fois,
+            // jamais tout le catalogue (Deerskin = milliers de SKU) ni son sous-ensemble éligible.
             // NB : le streaming borne la MÉMOIRE, pas le TEMPS — un catalogue dont le push
             // dépasse le budget reste "partial" et se termine au run suivant (les pages
             // non poussées ne sont alors même pas lues).
             //
-            // RÉSIDU CONNU (dérive de la pagination OFFSET) : `streamRows` pagine par `.range()`.
-            // Comme la lecture s'étale sur toute la durée du push (~270 s), une écriture
-            // concurrente (archivage / dé-publication) sur une page DÉJÀ lue peut décaler les
-            // suivantes → un produit à la frontière peut être sauté (ou dupliqué) ce run.
-            // Sévérité pour la Voie A = LOW-MED, PAS une perte permanente : le cron re-pousse le
-            // catalogue COMPLET à chaque run (insert idempotent) → le produit sauté réapparaît au
-            // run suivant (≠ ingest-snapshot où un skip → doublon PERMANENT faute d'UNIQUE).
-            // ⚠️ DEUX RÉSERVES honnêtes (revue SF-hunter) : (1) l'auto-guérison suppose la dérive
-            // NON structurellement récurrente — si l'écriture concurrente touche la même zone `id`
-            // à chaque run (job d'archivage périodique corrélé), le même produit-frontière pourrait
-            // être sauté de façon répétée ; (2) un skip de dérive produit ce run un faux "success"
-            // (ni "partial" ni Sentry) — `attempted` paraît complet car la ligne a disparu du scan
-            // sans erreur : violation NARROW du « jamais un faux success », le temps d'un run.
-            // Correctif propre = pagination KEYSET (`WHERE id > dernier ORDER BY id`), immunisée à
-            // la dérive, à appliquer de façon COHÉRENTE aux 4 sorties Google → suivi SCALE séparé.
+            // DÉRIVE OFFSET FERMÉE (keyset) : la lecture s'étale sur toute la durée du push
+            // (~270 s) ; l'ancienne pagination OFFSET (`.range()`) laissait une écriture concurrente
+            // (archivage / dé-publication) DÉCALER les pages suivantes → un produit-frontière sauté
+            // (ou dupliqué). Le curseur keyset est une VALEUR d'`id` ancrée, pas une position → un
+            // insert/delete ailleurs ne le décale plus. Fini le résidu LOW-MED de faux "success" par
+            // saut de dérive ; appliqué de façon COHÉRENTE aux lectures produits (cf. `paginate.ts`).
             const parent = `accounts/${auth.connection.google_merchant_id}`;
 
             // `nowMs` capturé UNE fois pour tout le marchand (parité avec la Voie B qui capture

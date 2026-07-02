@@ -40,8 +40,9 @@ type ApplyState = {
     payload: unknown;
     inCol: string | null;
     inVals: string[] | null;
-    rangeFrom: number | null;
-    rangeTo: number | null;
+    gtFilters: Array<{ col: string; val: unknown }>; // KEYSET : `.gt(col, curseur)` (+ quantity>0)
+    orderCol: string | null; // colonne de balayage keyset
+    limitN: number | null; // taille de page demandée
 };
 
 const MAX_ROWS = 1000;
@@ -152,8 +153,19 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
         } else {
             rows = [];
         }
-        if (st.rangeFrom != null) rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
-        if (rows.length > MAX_ROWS) rows = rows.slice(0, MAX_ROWS);
+        // KEYSET : `.gt(col, curseur)` = borne basse EXCLUSIVE par valeur (dérive-immune).
+        // (quantity>0 déjà baked → redondant, inoffensif.) Tri par `orderCol`, cap min(limit, 1000).
+        for (const g of st.gtFilters) {
+            rows = rows.filter((r) => (r[g.col] as string | number) > (g.val as string | number));
+        }
+        if (st.orderCol) {
+            const col = st.orderCol;
+            rows = [...rows].sort((a, b) =>
+                (a[col] as string) > (b[col] as string) ? 1 : (a[col] as string) < (b[col] as string) ? -1 : 0,
+            );
+        }
+        const cap = Math.min(st.limitN ?? MAX_ROWS, MAX_ROWS);
+        if (rows.length > cap) rows = rows.slice(0, cap);
         return { data: rows, error: null };
     }
 
@@ -164,8 +176,9 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
             payload: null,
             inCol: null,
             inVals: null,
-            rangeFrom: null,
-            rangeTo: null,
+            gtFilters: [],
+            orderCol: null,
+            limitN: null,
         };
         const b: Record<string, unknown> = {};
         b.select = () => b;
@@ -173,11 +186,17 @@ function makeCountingAdmin(seed: Partial<Store> = {}, opts: { poison?: string; f
             st.filters[col] = val;
             return b;
         };
-        b.gt = () => b;
-        b.order = () => b;
-        b.range = (f: number, t: number) => {
-            st.rangeFrom = f;
-            st.rangeTo = t;
+        // `.gt` porte quantity>0 (SELECT stock) ET le curseur keyset `.gt(id|product_id, curseur)`.
+        b.gt = (col: string, val: unknown) => {
+            st.gtFilters.push({ col, val });
+            return b;
+        };
+        b.order = (col: string) => {
+            st.orderCol = col;
+            return b;
+        };
+        b.limit = (n: number) => {
+            st.limitN = n;
             return b;
         };
         b.insert = (payload: unknown) => {

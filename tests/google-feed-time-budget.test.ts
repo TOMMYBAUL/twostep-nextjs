@@ -20,12 +20,12 @@ const h = {
     catalogSize: 0,
     // delta de temps virtuel ajouté à chaque push Google (simule la latence réseau)
     msPerPush: 0,
-    // Bornes `.range(from, to)` réellement demandées à `products` (prouve la pagination
-    // STREAMING : on lit page par page, et on cesse de lire dès l'interruption budget).
-    rangeCalls: [] as Array<{ from: number; to: number }>,
-    // Si posé, la lecture products à cet offset ÉCHOUE (simule un blip DB sur une page N>0
-    // APRÈS que des pages antérieures ont déjà été poussées).
-    errorAtOffset: null as number | null,
+    // Curseur keyset d'entrée de chaque page `products` lue (prouve la pagination STREAMING
+    // KEYSET : on lit page par page par VALEUR d'id, et on cesse de lire dès l'interruption).
+    pageCursors: [] as Array<string | null>,
+    // Si posé (curseur non-null), la lecture products à ce curseur ÉCHOUE (simule un blip DB
+    // sur une page N>0 APRÈS que des pages antérieures ont déjà été poussées).
+    errorAtCursor: null as string | null,
 };
 
 let virtualNow = 0;
@@ -65,15 +65,15 @@ function makeProducts(): Array<Record<string, unknown>> {
     }));
 }
 
-/** Faux client : products paginé via `.range`, et update connections enregistré dans h.updates. */
+/** Faux client : products paginé via KEYSET (`.gt`/`.limit`), update connections dans h.updates. */
 function makeClient() {
-    const products = makeProducts();
+    const products = makeProducts(); // triés par id (padStart → ordre lexical = numérique)
 
     function builder(table: string) {
         const st = {
             single: false,
-            rangeFrom: null as number | null,
-            rangeTo: null as number | null,
+            cursor: null as string | null,
+            limitN: null as number | null,
             op: "select" as "select" | "update",
             payload: null as Record<string, unknown> | null,
             eqId: null as string | null,
@@ -81,14 +81,16 @@ function makeClient() {
 
         const resolve = () => {
             if (table === "products") {
-                let rows = products;
-                if (st.rangeFrom != null) {
-                    h.rangeCalls.push({ from: st.rangeFrom, to: st.rangeTo! });
-                    if (h.errorAtOffset === st.rangeFrom) {
-                        return { data: null, error: { message: "db blip", code: "XX000", details: "", hint: "", name: "PostgrestError" } };
-                    }
-                    rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
+                h.pageCursors.push(st.cursor);
+                // Blip DB sur une page ULTÉRIEURE (curseur non-null) → fail-loud (streamRows lève).
+                if (h.errorAtCursor !== null && st.cursor === h.errorAtCursor) {
+                    return { data: null, error: { message: "db blip", code: "XX000", details: "", hint: "", name: "PostgrestError" } };
                 }
+                let rows = products;
+                // KEYSET : borne basse EXCLUSIVE par valeur d'id (dérive-immune), cap min(limit, 1000).
+                if (st.cursor != null) rows = rows.filter((r) => (r.id as string) > st.cursor!);
+                const cap = Math.min(st.limitN ?? 1000, 1000);
+                if (rows.length > cap) rows = rows.slice(0, cap);
                 return { data: rows, error: null };
             }
             if (table === "google_merchant_connections") {
@@ -114,9 +116,12 @@ function makeClient() {
             st.payload = payload;
             return b;
         };
-        b.range = (f: number, t: number) => {
-            st.rangeFrom = f;
-            st.rangeTo = t;
+        b.gt = (col: string, val: unknown) => {
+            if (col === "id") st.cursor = val as string;
+            return b;
+        };
+        b.limit = (n: number) => {
+            st.limitN = n;
             return b;
         };
         b.then = (ok: (v: unknown) => unknown, err: (e: unknown) => unknown) =>
@@ -133,8 +138,8 @@ beforeEach(() => {
     h.connections = [];
     h.catalogSize = 0;
     h.msPerPush = 0;
-    h.rangeCalls = [];
-    h.errorAtOffset = null;
+    h.pageCursors = [];
+    h.errorAtCursor = null;
     virtualNow = 1_000_000;
     captureErrorMock.mockClear();
     process.env.CRON_SECRET = "secret";
@@ -243,7 +248,7 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
 
     it("catalogue >1000 → lu et poussé en STREAMING page par page (mémoire bornée, 0 troncature)", async () => {
         // 2500 produits = 3 pages PostgREST (1000+1000+500). Sans interruption, tout est poussé
-        // et la lecture passe par `.range()` page par page (jamais un SELECT unique non borné,
+        // et la lecture passe par KEYSET page par page (jamais un SELECT unique non borné,
         // tronqué à 1000, ni tout le catalogue matérialisé en RAM).
         h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
         h.catalogSize = 2500;
@@ -256,12 +261,8 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
         expect(json.products_pushed).toBe(2500);
         expect(json.time_budget_exhausted).toBe(false);
 
-        // La lecture a été PAGINÉE (streaming) : 3 pages exactement, aux bonnes bornes.
-        expect(h.rangeCalls).toEqual([
-            { from: 0, to: 999 },
-            { from: 1000, to: 1999 },
-            { from: 2000, to: 2999 },
-        ]);
+        // La lecture a été PAGINÉE en KEYSET (streaming) : 3 pages, curseurs dérive-immunes.
+        expect(h.pageCursors).toEqual([null, "p00999", "p01999"]);
 
         const upd = h.updates.find((u) => u.id === "m-1")!;
         expect(upd.payload.last_feed_status).toBe("success");
@@ -270,7 +271,7 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
 
     it("interruption à mi-catalogue → les pages non poussées ne sont même PAS lues (bonus streaming)", async () => {
         // 2500 produits, ~200 ms/push → deadline (270 000 ms) atteint après ~1350 pushes, en
-        // pleine 2e page. La 3e page (range 2000-2999) ne doit JAMAIS être lue : on cesse de
+        // pleine 2e page. La 3e page (curseur "p01999") ne doit JAMAIS être lue : on cesse de
         // tirer le générateur `streamRows` dès l'interruption → 0 lecture superflue.
         h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
         h.catalogSize = 2500;
@@ -284,11 +285,8 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
         expect(json.time_budget_exhausted).toBe(true);
 
         // Pages 0 et 1 lues (items 0..1349 traversent la page 1) ; page 2 JAMAIS demandée.
-        expect(h.rangeCalls).toEqual([
-            { from: 0, to: 999 },
-            { from: 1000, to: 1999 },
-        ]);
-        expect(h.rangeCalls.some((r) => r.from === 2000)).toBe(false);
+        expect(h.pageCursors).toEqual([null, "p00999"]);
+        expect(h.pageCursors.some((c) => c === "p01999")).toBe(false);
 
         const upd = h.updates.find((u) => u.id === "m-1")!;
         expect(upd.payload.last_feed_status).toBe("partial");
@@ -296,13 +294,13 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
     });
 
     it("échec de lecture d'une page ULTÉRIEURE → statut 'error' + products_pushed = poussés AVANT l'échec (jamais stale)", async () => {
-        // streamRows lève (fail-loud) sur une erreur DB à la page 1 (offset 1000), APRÈS que la
-        // page 0 (1000 produits) a déjà été poussée à Google. Le catch doit écrire "error" ET le
+        // streamRows lève (fail-loud) sur une erreur DB à la 2e page (curseur "p00999"), APRÈS que
+        // la page 0 (1000 produits) a déjà été poussée à Google. Le catch doit écrire "error" ET le
         // nombre RÉELLEMENT poussé ce run (1000), pas le products_pushed périmé du run précédent.
         h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
         h.catalogSize = 2500;
         h.msPerPush = 0;
-        h.errorAtOffset = 1000; // 2e page échoue
+        h.errorAtCursor = "p00999"; // 2e page (curseur du dernier id de la page 0 pleine) échoue
 
         const json = await callCron();
 

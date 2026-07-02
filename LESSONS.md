@@ -85,6 +85,20 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   par-PAGE sans casser « fini ≠ interrompu » (le générateur ne sait pas si une page est la dernière). Correctif
   KEYSET cohérent sur les 4 sorties Google = prochain [R] SCALE. `src/lib/google/feed-push.ts`,
   `tests/google-feed-time-budget.test.ts`. Revue SF-hunter core SOUND, F3 corrigé, F1/F2 documentés. (SCALE/VOLUME, google-feed streaming, 2026-07-02)
+- ✅ **DÉRIVE OFFSET FERMÉE — `fetchAllRows`/`streamRows` passés en pagination KEYSET.** La pagination OFFSET
+  (`.range(from,to)`) n'est PAS immunisée à l'écriture concurrente : une ligne insérée/supprimée AVANT l'offset
+  courant pendant un balayage étalé dans le temps DÉCALE les suivantes → ligne sautée (trou entre 2 pages) ou lue
+  2× — permanent à l'ingestion (`/api/catalog/import` sans `sync_lock` → doublon faute d'UNIQUE `ean`), transient
+  sur les sorties Google (re-push idempotent). Fix systémique dans `src/lib/supabase/paginate.ts` : les DEUX helpers
+  paginent désormais `WHERE column > curseur ORDER BY column LIMIT pageSize` (curseur = VALEUR ancrée, pas position →
+  dérive-immune). Option `{column}` (défaut `"id"` ; la réconciliation stock passe `"product_id"`). **Règles keyset** :
+  (1) la colonne-curseur DOIT être UNIQUE + NOT NULL + = la colonne du `.order(...,{ascending:true})` de la factory ;
+  (2) curseur `null`/absent sur une page PLEINE → **fail-loud** (jamais boucler/tronquer) ; (3) `.gt(col,cursor)` de
+  pagination coexiste avec un `.gt` métier (ex. `quantity>0`) — colonnes ≠, PostgREST `append` (AND, pas overwrite) ;
+  (4) contrat inchangé `{data,error}`/THROW → 6 callers (2 ingest + 4 sorties Google) intacts. Preuve : `paginate.test.ts`
+  réécrit (curseurs `[null, id999, id1999]` prouvent le keyset, pas d'offset) + les 4 fakes de charge (snapshot/output/
+  stream/budget) modèlent `.gt`/`.limit`. Revue SF-hunter **SOUND, 0 fix** (product_id = PK ref confirmé unique).
+  0 migration, réversible. `src/lib/supabase/paginate.ts`. (SCALE/VOLUME, keyset pagination, 2026-07-02)
 - ❌ **Une boucle d'écriture PAR PRODUIT (N aller-retours réseau sériés) = troncature silencieuse à l'échelle.**
   `ingestStockSnapshot` faisait ~4 writes séquentiels par produit (products.insert + stock.upsert + available_sizes.update
   + feed_events.insert) → un premier push d'onboarding de milliers de SKU dépasse le budget temps Vercel → kill en plein vol

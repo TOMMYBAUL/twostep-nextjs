@@ -116,11 +116,12 @@ export async function ingestStockSnapshot(
     // silencieuse). Mieux vaut échouer fort (les 2 routes catch + captureError)
     // que dupliquer toute la boutique en aveugle. (north-star : « erreurs qui
     // lèvent, jamais [] masqué ».)
-    // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
-    // erreur) → sur un catalogue >1000, les produits au-delà du 1000ᵉ seraient
-    // absents de l'index → recréés en DOUBLON. `fetchAllRows` lit tout le
-    // catalogue. `.order("id")` garantit un ordre DÉTERMINISTE entre les pages
-    // (anti-gap/doublon de pagination) indépendamment du verrou d'ingestion.
+    // PAGINÉ (KEYSET) : un SELECT non borné est tronqué à 1000 lignes par PostgREST
+    // (sans erreur) → sur un catalogue >1000, les produits au-delà du 1000ᵉ seraient
+    // absents de l'index → recréés en DOUBLON. `fetchAllRows` lit tout le catalogue
+    // en paginant par KEYSET (`.order("id")` + `.gt("id", curseur)`) → dérive-immune :
+    // même sous écriture concurrente (`/api/catalog/import` n'a PAS de `sync_lock`),
+    // aucune ligne ne tombe dans le trou entre deux pages (≠ OFFSET `.range()`).
     const { data: existingProducts, error: existingErr } = await fetchAllRows<{
         id: string;
         ean: string | null;
@@ -419,20 +420,25 @@ export async function ingestStockSnapshot(
         errors.push("Réconciliation annulée: aucune ligne exploitable dans le push");
     }
     if (opts.reconcile && accepted.length > 0) {
-        // PAGINÉ : même troncature silencieuse `max-rows` que l'index ci-dessus.
+        // PAGINÉ (KEYSET) : même troncature silencieuse `max-rows` que l'index ci-dessus.
         // Un catalogue >1000 produits en stock verrait sa lecture coupée à 1000 →
         // les produits VENDUS au-delà (absents du push) ne seraient jamais candidats
         // au passage à 0 → resteraient « en stock » = faux positif n°1. On lit tout.
+        // Curseur = `product_id` (colonne d'ordre de cette lecture, ≠ `id` par défaut) :
+        // le helper applique `.gt("product_id", curseur)` → keyset dérive-immune même si
+        // le call site (`/api/catalog/import`) n'a pas de `sync_lock`.
         const { data: inStockRows, error: inStockErr } = await fetchAllRows<{
             product_id: string;
             quantity: number;
-        }>(() =>
-            admin
-                .from("stock")
-                .select("product_id, quantity, products!inner(merchant_id)")
-                .eq("products.merchant_id", merchantId)
-                .gt("quantity", 0)
-                .order("product_id", { ascending: true }),
+        }>(
+            () =>
+                admin
+                    .from("stock")
+                    .select("product_id, quantity, products!inner(merchant_id)")
+                    .eq("products.merchant_id", merchantId)
+                    .gt("quantity", 0)
+                    .order("product_id", { ascending: true }),
+            { column: "product_id" },
         );
 
         // Si la lecture du stock en cours échoue, on NE PEUT PAS décider quels

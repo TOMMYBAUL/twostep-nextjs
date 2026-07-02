@@ -13,11 +13,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  *  - `google/feed-preview`            → le marchand croit son catalogue tronqué (mensonge par omission)
  *  - `google/inventory` (temps réel)  → un vendu au-delà du 1000ᵉ reste « in stock » sur Google (faux positif n°1)
  *
- * Chaque chemin enveloppe désormais sa lecture dans `fetchAllRows(() => ….order("id"))`.
- * Preuve UNIVERSELLE (indépendante de l'éligibilité) : le faux client enregistre chaque
- * `.range(from,to)` → un catalogue de 1500 doit produire DEUX pages [0..999] puis [1000..1999]
- * (le code d'origine, sans `.range`, n'en ferait AUCUNE et serait plafonné à 1000). Preuves aval
- * (compteurs) là où elles sont bon marché : inventory pousse 1500, cron pousse 1500, preview voit 1500.
+ * Chaque chemin enveloppe désormais sa lecture dans `fetchAllRows`/`streamRows(() => ….order("id"))`,
+ * en pagination KEYSET (`.gt("id", curseur)` = borne basse par VALEUR, dérive-immune).
+ * Preuve UNIVERSELLE (indépendante de l'éligibilité) : le faux client enregistre le curseur de
+ * chaque page → un catalogue de 1500 doit produire DEUX pages (curseur `null` puis `"p00999"`)
+ * (le code d'origine, non paginé, serait plafonné à 1000). Preuves aval (compteurs) là où elles
+ * sont bon marché : inventory pousse 1500, cron pousse 1500, preview voit 1500.
  */
 
 const CATALOG = 1500; // > max-rows (1000)
@@ -25,7 +26,7 @@ const MAX_ROWS = 1000;
 
 // ── Holders mutables référencés par les mocks hoistés (réinitialisés par test). ──
 const h = {
-    rangeCalls: [] as Array<[number, number]>,
+    pageCursors: [] as Array<string | null>, // curseur keyset de chaque page products lue
     googleFetchCount: 0,
     connections: [] as Array<Record<string, unknown>>,
 };
@@ -67,30 +68,30 @@ function makeProducts(): Array<Record<string, unknown>> {
 }
 
 /**
- * Faux client Supabase minimal, fidèle à PostgREST : une lecture products SANS `.range()` est
- * plafonnée à 1000 ; une lecture paginée renvoie sa fenêtre et l'enregistre dans `h.rangeCalls`.
+ * Faux client Supabase minimal, fidèle à PostgREST en KEYSET : `.limit(n)` est plafonné à 1000
+ * (max-rows), `.gt("id", curseur)` borne la page suivante par VALEUR. Chaque page products lue
+ * enregistre son curseur d'entrée dans `h.pageCursors`.
  */
 function makeClient() {
-    const products = makeProducts();
+    const products = makeProducts(); // déjà triés par id (padStart → ordre lexical = numérique)
 
     function builder(table: string) {
         const st = {
             single: false,
-            rangeFrom: null as number | null,
-            rangeTo: null as number | null,
+            cursor: null as string | null,
+            limitN: null as number | null,
             op: "select" as "select" | "update",
         };
 
         const resolve = () => {
             if (table === "products") {
+                h.pageCursors.push(st.cursor);
                 let rows = products;
-                if (st.rangeFrom != null) {
-                    h.rangeCalls.push([st.rangeFrom, st.rangeTo!]);
-                    rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
-                }
-                // Plafond max-rows (PostgREST tronque même sans erreur) → le code d'origine,
-                // non paginé, ne verrait JAMAIS plus de 1000 lignes.
-                if (rows.length > MAX_ROWS) rows = rows.slice(0, MAX_ROWS);
+                // KEYSET : borne basse EXCLUSIVE par valeur d'id (dérive-immune).
+                if (st.cursor != null) rows = rows.filter((r) => (r.id as string) > st.cursor!);
+                // Plafond min(limit demandé, max-rows) — PostgREST tronque même une limite plus large.
+                const cap = Math.min(st.limitN ?? MAX_ROWS, MAX_ROWS);
+                if (rows.length > cap) rows = rows.slice(0, cap);
                 return { data: rows, error: null };
             }
             if (table === "merchants") {
@@ -110,15 +111,18 @@ function makeClient() {
         b.is = () => b;
         b.not = () => b;
         b.in = () => b;
-        b.gt = () => b;
+        // Curseur keyset : seul `.gt("id", curseur)` de fetchAllRows/streamRows nous intéresse.
+        b.gt = (col: string, val: unknown) => {
+            if (col === "id") st.cursor = val as string;
+            return b;
+        };
         b.order = () => b;
         b.update = () => {
             st.op = "update";
             return b;
         };
-        b.range = (f: number, t: number) => {
-            st.rangeFrom = f;
-            st.rangeTo = t;
+        b.limit = (n: number) => {
+            st.limitN = n;
             return b;
         };
         b.maybeSingle = () => {
@@ -141,15 +145,17 @@ function makeClient() {
 }
 
 beforeEach(() => {
-    h.rangeCalls = [];
+    h.pageCursors = [];
     h.googleFetchCount = 0;
     h.connections = [];
 });
 
-/** Le balayage doit couvrir DEUX pages pleines : [0..999] puis [1000..1999]. */
+/**
+ * Le balayage doit couvrir DEUX pages en KEYSET : 1re page sans curseur (null), 2e page
+ * bornée par le dernier id de la 1re page pleine (`"p00999"`) → dérive-immune, pas d'offset.
+ */
 function expectTwoPages() {
-    expect(h.rangeCalls).toContainEqual([0, MAX_ROWS - 1]);
-    expect(h.rangeCalls).toContainEqual([MAX_ROWS, 2 * MAX_ROWS - 1]);
+    expect(h.pageCursors).toEqual([null, `p${String(MAX_ROWS - 1).padStart(5, "0")}`]);
 }
 
 describe("SORTIES Google — pagination anti-troncature sur catalogue > max-rows (1500)", () => {

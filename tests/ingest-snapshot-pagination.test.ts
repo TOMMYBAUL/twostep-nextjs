@@ -19,8 +19,9 @@ vi.mock("@/lib/error", () => ({ captureError: vi.fn() }));
  *    push) jamais remis à 0 → reste « en stock » = faux positif n°1.
  *
  * Ce test prouve les DEUX corrections en un seul push réaliste. Le faux client simule
- * fidèlement PostgREST : une lecture SANS `.range()` est plafonnée à 1000 (→ le code
- * d'origine échouerait ici), une lecture paginée renvoie sa fenêtre.
+ * fidèlement PostgREST en pagination KEYSET : `.limit(n)` est plafonné à 1000 (max-rows),
+ * `.gt(colonne, curseur)` borne la page suivante par VALEUR (pas par offset → dérive-immune),
+ * `.order(colonne)` fixe l'ordre de balayage. `fetchAllRows` récupère les 1500 lignes.
  */
 
 const M = "merchant-scale";
@@ -54,8 +55,9 @@ function makeStatefulAdmin() {
         payload: unknown;
         inCol: string | null;
         inVals: string[] | null;
-        rangeFrom: number | null;
-        rangeTo: number | null;
+        gtFilters: Array<{ col: string; val: unknown }>; // KEYSET : `.gt(col, curseur)` (+ quantity>0)
+        orderCol: string | null; // colonne de balayage keyset
+        limitN: number | null; // taille de page demandée
     };
 
     function apply(table: keyof Store, st: ApplyState): { data: unknown; error: null } {
@@ -102,10 +104,21 @@ function makeStatefulAdmin() {
         } else {
             rows = [];
         }
-        // Fenêtre `.range()` si demandée, PUIS plafond max-rows (PostgREST tronque même
-        // une fenêtre non bornée → un SELECT sans `.range()` est coupé à 1000).
-        if (st.rangeFrom != null) rows = rows.slice(st.rangeFrom, st.rangeTo! + 1);
-        if (rows.length > MAX_ROWS) rows = rows.slice(0, MAX_ROWS);
+        // KEYSET : `.gt(col, curseur)` = borne basse EXCLUSIVE (dérive-immune), appliquée
+        // par VALEUR sur la colonne d'ordre. (quantity>0 est déjà baked ci-dessus → ce
+        // filtre-là est redondant, inoffensif.) Tri par `orderCol`, PUIS plafond max-rows
+        // min(limit, 1000) — PostgREST tronque même une limite plus large.
+        for (const g of st.gtFilters) {
+            rows = rows.filter((r) => (r[g.col] as string | number) > (g.val as string | number));
+        }
+        if (st.orderCol) {
+            const col = st.orderCol;
+            rows = [...rows].sort((a, b) =>
+                (a[col] as string) > (b[col] as string) ? 1 : (a[col] as string) < (b[col] as string) ? -1 : 0,
+            );
+        }
+        const cap = Math.min(st.limitN ?? MAX_ROWS, MAX_ROWS);
+        if (rows.length > cap) rows = rows.slice(0, cap);
         return { data: rows, error: null };
     }
 
@@ -116,8 +129,9 @@ function makeStatefulAdmin() {
             payload: null,
             inCol: null,
             inVals: null,
-            rangeFrom: null,
-            rangeTo: null,
+            gtFilters: [],
+            orderCol: null,
+            limitN: null,
         };
         const b: Record<string, unknown> = {};
         b.select = () => b;
@@ -125,12 +139,18 @@ function makeStatefulAdmin() {
             st.filters[col] = val;
             return b;
         };
-        b.gt = () => b;
-        // no-op : le store est déjà inséré dans l'ordre des id (p0..p1499) = ordre stable.
-        b.order = () => b;
-        b.range = (f: number, t: number) => {
-            st.rangeFrom = f;
-            st.rangeTo = t;
+        // `.gt` porte À LA FOIS le filtre métier `quantity>0` ET le curseur keyset
+        // `.gt(id|product_id, curseur)` de fetchAllRows → on les enregistre tous.
+        b.gt = (col: string, val: unknown) => {
+            st.gtFilters.push({ col, val });
+            return b;
+        };
+        b.order = (col: string) => {
+            st.orderCol = col;
+            return b;
+        };
+        b.limit = (n: number) => {
+            st.limitN = n;
             return b;
         };
         b.insert = (payload: unknown) => {

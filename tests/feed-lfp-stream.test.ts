@@ -22,9 +22,9 @@ vi.mock("@/lib/error", () => ({ captureError: (...a: unknown[]) => captureError(
 // Config mutable du faux client products (réinitialisée par test).
 const cfg = {
     total: 0,
-    /** index de page (0-based) sur laquelle `.range()` renvoie une erreur, ou null. */
+    /** index de page (0-based) sur laquelle la lecture renvoie une erreur, ou null. */
     errorOnPage: null as number | null,
-    rangeCalls: [] as Array<[number, number]>,
+    pageCursors: [] as Array<string | null>, // curseur keyset d'entrée de chaque page lue
 };
 
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => makeClient() }));
@@ -33,22 +33,22 @@ const MAX_ROWS = 1000;
 
 function makeClient() {
     function builder(table: string) {
-        const st = { rangeFrom: null as number | null, rangeTo: null as number | null };
+        const st = { cursor: null as string | null, limitN: null as number | null };
 
         const resolveProducts = () => {
-            const from = st.rangeFrom!;
-            const to = st.rangeTo!;
-            const pageIndex = Math.floor(from / MAX_ROWS);
-            cfg.rangeCalls.push([from, to]);
+            // KEYSET : borne basse EXCLUSIVE par valeur d'id (`.gt("id", curseur)`), pas d'offset.
+            const pageIndex = cfg.pageCursors.length;
+            cfg.pageCursors.push(st.cursor);
             if (cfg.errorOnPage === pageIndex) {
                 return {
                     data: null,
                     error: { message: `boom-page-${pageIndex}`, code: "X", details: "", hint: "" },
                 };
             }
+            const startNum = st.cursor == null ? 0 : parseInt(st.cursor.slice(1), 10) + 1;
+            const cap = Math.min(st.limitN ?? MAX_ROWS, MAX_ROWS);
             const rows = [];
-            const end = Math.min(to, cfg.total - 1);
-            for (let i = from; i <= end && rows.length < MAX_ROWS; i++) {
+            for (let i = startNum; i < cfg.total && rows.length < cap; i++) {
                 rows.push({
                     id: `p${String(i).padStart(6, "0")}`,
                     name: `Produit ${i}`,
@@ -71,9 +71,12 @@ function makeClient() {
         b.eq = () => b;
         b.is = () => b;
         b.order = () => b;
-        b.range = (f: number, t: number) => {
-            st.rangeFrom = f;
-            st.rangeTo = t;
+        b.gt = (col: string, val: unknown) => {
+            if (col === "id") st.cursor = val as string;
+            return b;
+        };
+        b.limit = (n: number) => {
+            st.limitN = n;
             return b;
         };
         b.maybeSingle = () => {
@@ -104,7 +107,7 @@ beforeEach(() => {
     captureError.mockClear();
     cfg.total = 0;
     cfg.errorOnPage = null;
-    cfg.rangeCalls = [];
+    cfg.pageCursors = [];
 });
 
 describe("feed/lfp/[merchantId] — streaming", () => {
@@ -115,7 +118,8 @@ describe("feed/lfp/[merchantId] — streaming", () => {
         const xml = await res.text();
         const items = (xml.match(/<item>/g) || []).length;
         expect(items).toBe(2500); // 0 perte (sans pagination : ≤ 1000)
-        expect(cfg.rangeCalls).toEqual([[0, 999], [1000, 1999], [2000, 2999]]);
+        // KEYSET : 3 pages, 1re sans curseur puis bornées par le dernier id vu (dérive-immune).
+        expect(cfg.pageCursors).toEqual([null, "p000999", "p001999"]);
         // XML bien formé : header + footer présents.
         expect(xml).toContain('<rss version="2.0"');
         expect(xml.trimEnd().endsWith("</rss>")).toBe(true);
