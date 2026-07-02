@@ -99,6 +99,28 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   réécrit (curseurs `[null, id999, id1999]` prouvent le keyset, pas d'offset) + les 4 fakes de charge (snapshot/output/
   stream/budget) modèlent `.gt`/`.limit`. Revue SF-hunter **SOUND, 0 fix** (product_id = PK ref confirmé unique).
   0 migration, réversible. `src/lib/supabase/paginate.ts`. (SCALE/VOLUME, keyset pagination, 2026-07-02)
+- ❌ **L'ALARME de complétude elle-même peut échouer en silence à l'échelle — le sweep SCALE l'avait oubliée.**
+  `cron/quality-check` (watchdog stock figé / prix aberrant / ingestion arrêtée / caisse morte = la garantie
+  « ne rien perdre silencieusement ») portait 3 défauts de la MÊME classe que tout le thème SCALE, sur l'alarme :
+  (1) lecture produit `.limit(50000)` plafonnée par `max-rows` (1000) → le watchdog n'inspectait QUE les 1000
+  premiers produits par id → stock figé au-delà JAMAIS alerté ; (2) dédup `alreadyOpen` plafonnée à 1000 →
+  set PARTIEL avec >1000 alertes ouvertes (catalogue périmé de milliers = routine) → un produit déjà-ouvert
+  hors des 1000 premiers repassait dans `toInsert` → **INSERT en violation du partial-unique `uq_quality_alerts_open`
+  → tout le batch `.insert()` (erreur non vérifiée) rejeté → 0 alerte insérée ce run** (alarme morte pile à
+  l'échelle) ; (3) TOUTES les lectures watchdog avalaient `error` → blip DB = alarme aveugle sous un faux `ok:true`.
+  Fix : `fetchAllRows` (KEYSET) sur produits + dédup ; **dédup fail-visible = si sa lecture échoue, NE PAS insérer
+  à l'aveugle** (sinon doublon→unique-violation→perte du lot) ; watchdogs INDÉPENDANTS (une lecture ratée dégrade
+  SON bloc, pas tout le cron) + `degraded`/`errors[]` honnête, jamais faux `ok:true` ; insert par lots de 500
+  (`chunk`) + erreur vérifiée par lot → `new_alerts`=écrites réelles. **Règle : quand tu clôtures une classe de bug
+  (ici silent-truncation) sur les chemins « produit », grep AUSSI les crons de MONITORING/alerting — l'alarme qui
+  garantit l'invariant partage la même faille de lecture, et si ELLE tronque/aveugle, l'invariant est nul.** Trouvé
+  via un signal réel (alerte `ingest_silent` fraîche en prod menant au cron). Preuve `tests/cron-quality-check-route.test.ts`
+  (+12 : faux client KEYSET, 1500→2 pages, dédup 1200→produit >1000ᵉ non ré-inséré, fail-loud/degraded, +2 régressions
+  `data=null` sans erreur → dégradé). **Revue SF-hunter : 2 MED corrigés** — les watchdogs ingest/pos avaient laissé la
+  même faille `data=null` SANS `error` (`else if (x && …)` skip muet / dédup vide → insert aveugle) ; gardés `err || !data`.
+  **Règle bis : traiter `data=null` sans `error` comme un ÉCHEC sur TOUTE lecture d'aiguillage (pas seulement produits) —
+  `?? []` le mue en faux vide/skip muet.** Résidus bornés documentés (4 lectures marchand-scoped non paginées → trip-wire
+  ~1000 marchands). (SCALE/VOLUME, quality-check watchdog, 2026-07-02)
 - ❌ **Une boucle d'écriture PAR PRODUIT (N aller-retours réseau sériés) = troncature silencieuse à l'échelle.**
   `ingestStockSnapshot` faisait ~4 writes séquentiels par produit (products.insert + stock.upsert + available_sizes.update
   + feed_events.insert) → un premier push d'onboarding de milliers de SKU dépasse le budget temps Vercel → kill en plein vol

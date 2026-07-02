@@ -5,6 +5,70 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-02 (run autonome) · SCALE — durcir l'ALARME de complétude (cron `quality-check`)
+
+**Pourquoi (sourcing §6 — SIGNAL RÉEL, pas devinette)** : le thème SCALE (ingest + 4 sorties Google) étant
+COMPLET côté code, j'ai fait le check signaux prod. Nouveauté vs les 11 runs idle de juin : une alerte
+`quality_alerts` de type **`ingest_silent`** (fraîche, first-seen 2026-06-30) — jamais vue dans les
+signatures idle précédentes. Investigation : le watchdog d'ingestion (migration 102) a CORRECTEMENT tiré
+sur une donnée de test (le marchand 547e786d a poussé via jeton le 27/06 pendant les tests enrichissement,
+puis silence → alerte à 48 h). Bénin (pas un défaut prod). MAIS il m'a mené au cron `cron/quality-check`
+= **l'ALARME de complétude** (détecte stock figé / prix aberrant / ingestion arrêtée / caisse morte), restée
+HORS du sweep SCALE. Revue du code réel → 3 défauts de la MÊME classe silent-truncation/silent-failure que
+tout le thème (vérifiés, pas supposés). C'est in-scope (pilier 1 north-star « ne rien perdre silencieusement »
+sur l'alarme même), pas de la couverture-pour-la-couverture.
+
+**Trouvé (3 défauts réels, vérifiés dans le code)** :
+1. **Lecture produit `.limit(50000)` plafonnée par `max-rows` PostgREST (1000 sur ce projet)** → à l'échelle
+   pilote (Deerskin = milliers de SKU) le watchdog ne contrôlait QUE les 1000 premiers produits par id →
+   stock figé/prix aberrant AU-DELÀ jamais alerté = perte silencieuse de la garantie même.
+2. **Dédup `alreadyOpen` plafonnée à 1000** : avec >1000 alertes ouvertes (catalogue périmé de milliers de
+   lignes = routine), le set était PARTIEL → un produit déjà alerté hors des 1000 premiers repassait dans
+   `toInsert` → l'INSERT violait le partial-unique `uq_quality_alerts_open` → **tout le batch `.insert()` (erreur
+   non vérifiée) échouait → ZÉRO alerte insérée ce run**. L'alarme meurt en silence pile à l'échelle.
+3. **Toutes les lectures des watchdogs avalaient `error`** (produits, dédup, silentCreds, deadConns, dédups
+   ingest/pos) → un blip DB rendait l'alarme AVEUGLE (no-op muet) sous un faux `ok:true`.
+
+**Fait (réversible, 0 migration)** : `src/app/api/cron/quality-check/route.ts` —
+- lecture produit + dédup `openAlerts` via `fetchAllRows` (pagination KEYSET, `.order("id")`, colonne `id` au
+  SELECT) → plus de troncature ; `productsErr`→throw (500), `data=null`→throw (parité feed-preview/google-feed).
+- dédup fail-loud/fail-visible : si sa lecture échoue → `degraded` + captureError + **on n'insère PAS à l'aveugle**
+  (jamais de doublon → unique-violation → perte du lot). Chaque watchdog est INDÉPENDANT (une lecture qui échoue
+  dégrade SON bloc, pas tout le cron).
+- insert par LOTS de 500 (`chunk`) + erreur vérifiée par lot → `new_alerts` = alertes RÉELLEMENT écrites (jamais
+  un faux succès). Watchdogs ingest/pos : lecture creds/conns + dédup en erreur → captureError + `degraded`, jamais
+  d'insert aveugle ; insert vérifié.
+- réponse HONNÊTE : `ok:false`+`degraded`+`errors[]` dès qu'un watchdog échoue (surfacé Sentry), jamais un faux
+  « tout va bien ». `export const maxDuration = 300` (lecture full-catalog paginée, marge). Capture-and-continue
+  re-converge : les alertes non écrites ce run le seront au prochain (dédup complète les exclut si déjà ouvertes).
+
+**Testé (méthode §1bis, preuve sans yeux)** : `tests/cron-quality-check-route.test.ts` (+10). Faux client Supabase
+fidèle KEYSET (`.limit` plafonné 1000, `.gt("id")` borne par valeur) ; `fetchAllRows`/`chunk` + détecteurs purs
+`isStockStale`/`isPriceAberrant` tournent POUR DE VRAI (non mockés → non vacant). Preuves : catalogue 1500 → lu en
+**2 pages** (`productsPageCursors===[null,"p00999"]`) + `products_checked===1500` + 1500 alertes (pas 1000) ; dédup
+1200 ouvertes → **2 pages** + un produit déjà-ouvert au-delà du 1000ᵉ **non ré-inséré** (300 neufs, pas 500) ;
+produits-err→500+Sentry ; dédup-err→dégradé+0 insert aveugle ; insert-err→dégradé+compteur honnête ; watchdog
+ingest/pos happy + read-err→dégradé ; catalogue sain→ok:true non dégradé. **tsc OK, `test:run` 1005→1017 (+12).**
+
+**Revue silent-failure-hunter (OBLIGATOIRE §11.3)** : cœur **SOUND** (keyset wiring correct, dédup produit
+fail-loud + re-convergence sans double-insert, core produits→500 confirmés). **2 findings MED CORRIGÉS** dans
+ce commit — les watchdogs ingest/pos avaient laissé la MÊME faille que le fix produit sur le cas `data=null` SANS
+`error` : (a) `openIngest`/`openPos` dédup null → set vide → insert aveugle → violation `uq_quality_alerts_merchant_open`
+→ lot perdu ; (b) `silentCreds`/`deadConns` null → `else if (x && …)` sautait le bloc EN SILENCE sous un faux
+`ok:true`. Fix : garde `err || !data` sur les 4 (captureError + `degraded`, jamais insert aveugle) + 2 régressions
+(null-sans-erreur → dégradé, pas skip muet). **Résidus DOCUMENTÉS (bornés, non corrigés — trip-wire ajouté)** :
+les 4 lectures MARCHAND-scoped restent non paginées (cardinalité = nb de marchands ≪ 1000 aujourd'hui) → à paginer
+si on approche ~1000 marchands ; inserts ingest/pos non chunkés (même borne). **Design note revue** : cron quotidien
+(`0 5 * * *`) → un run `degraded` renvoie 200 (Vercel ne re-tente pas) ; recovery = run du lendemain + Sentry sur
+`route:"cron/quality-check"`. → **escalade** : confirmer que Sentry PAGE sur ces events (sinon l'alarme de dernier
+recours est muette 24 h sur un blip). Décision status-code inchangée (200+degraded) : les alertes produit du run
+ONT été écrites, un 500 les masquerait en échec ; la visibilité passe par Sentry+`degraded`.
+
+**Reste / escalade** : e2e sur vrai gros catalogue = env live (escaladé, comme le reste SCALE). THÈME SCALE
+désormais étendu à l'alarme de complétude. Blast LOW (cron = entry-point HTTP sans caller interne). 2 fichiers.
+
+---
+
 ## 2026-07-02 (run autonome) · SCALE — pagination KEYSET drift-immune (`fetchAllRows`/`streamRows`)
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : le « reste prochain [R], même thème SCALE » nommé

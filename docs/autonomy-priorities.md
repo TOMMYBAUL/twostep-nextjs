@@ -285,6 +285,20 @@ plus un mur Google externe.
 >      réversible. **→ THÈME SCALE (ingest + 4 sorties Google) COMPLET : pagination anti-troncature + mémoire bornée
 >      (streaming) + budget temps + batching + KEYSET drift-immune tous prouvés. Reste = preuve de CHARGE réelle 10k→50k
 >      (mesure temps/mémoire, env live escaladé) + pilote (Thomas).**
+>    - ✅ **(scale-quality-watchdog) FAIT (2026-07-02, run autonome)** : SCALE étendu à **l'ALARME de complétude**
+>      (`cron/quality-check`), oubliée du sweep. Trouvé via un SIGNAL RÉEL (§6) : alerte `ingest_silent` fraîche en
+>      prod (30/06) — bénigne (watchdog migration 102 tirant sur donnée de test) mais menant au cron. 3 défauts MÊME
+>      classe silent-truncation vérifiés : (1) lecture produit `.limit(50000)` plafonnée `max-rows` (1000) → watchdog
+>      n'inspectait que les 1000 premiers produits → stock figé au-delà jamais alerté ; (2) dédup `alreadyOpen`
+>      plafonnée 1000 → set PARTIEL avec >1000 alertes ouvertes → doublon dans `toInsert` → INSERT viole partial-unique
+>      `uq_quality_alerts_open` → **batch entier rejeté (erreur avalée) → 0 alerte ce run** (alarme morte pile à
+>      l'échelle) ; (3) toutes lectures watchdog avalaient `error` → alarme aveugle sous faux `ok:true`. Fix :
+>      `fetchAllRows` KEYSET (produits+dédup) ; dédup fail-visible (jamais insert aveugle) ; watchdogs indépendants +
+>      `degraded`/`errors[]` honnête ; insert `chunk(500)` + erreur par lot. Preuve `tests/cron-quality-check-route.test.ts`
+>      (+12 : 1500→2 pages, dédup 1200→produit >1000ᵉ non ré-inséré, fail-loud/degraded ; `fetchAllRows`/`chunk`/détecteurs
+>      purs réels = non vacant). **Revue SF-hunter : 2 MED corrigés** (watchdogs ingest/pos : même faille `data=null` sans
+>      error → garde `err || !data`). Résidus bornés documentés (4 lectures marchand-scoped → trip-wire ~1000 marchands ;
+>      Sentry-paging à confirmer, worklog). 1005→1017. Blast LOW (cron entry-point). 0 migration, réversible. Détail : worklog 02/07.
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles
