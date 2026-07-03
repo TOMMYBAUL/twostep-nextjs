@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Two-Step — Carte des maillons du pipeline</title>
+<style>
+  :root {
+    --brand: #4268FF;            /* Minuit Électrique */
+    --brand-dark: #1e2a63;
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #e2e8f0;
+    --canvas: #eef1f6;
+    --card: #ffffff;
+    /* statuts */
+    --done: #16a34a;
+    --done-bg: #ecfdf3;
+    --env: #d97706;
+    --env-bg: #fffaeb;
+    --eyes: #7c3aed;
+    --eyes-bg: #f5f0ff;
+    --build: #2563eb;
+    --build-bg: #eff4ff;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 8px 24px -12px rgba(15,23,42,.18);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--canvas); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header.hero {
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+    color: #fff; padding: 34px 28px 30px; box-shadow: var(--shadow);
+  }
+  .hero h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.01em; }
+  .hero p { margin: 0; opacity: .9; max-width: 900px; }
+  .hero .northstar {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+    font-size: 13.5px; max-width: 900px;
+  }
+  .hero .northstar b { color: #fff; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* résumé compteurs */
+  .summary { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 8px; }
+  .kpi { flex: 1 1 200px; background: var(--card); border-radius: 12px; padding: 14px 16px;
+         box-shadow: var(--shadow); border-left: 4px solid var(--line); }
+  .kpi .n { font-size: 22px; font-weight: 700; }
+  .kpi .l { font-size: 12.5px; color: var(--muted); }
+  .kpi.done { border-left-color: var(--done); } .kpi.done .n { color: var(--done); }
+  .kpi.env { border-left-color: var(--env); } .kpi.env .n { color: var(--env); }
+  .kpi.eyes { border-left-color: var(--eyes); } .kpi.eyes .n { color: var(--eyes); }
+  .kpi.build { border-left-color: var(--build); } .kpi.build .n { color: var(--build); }
+
+  /* légende */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 18px 0 26px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.done { background: var(--done); } .dot.env { background: var(--env); }
+  .dot.eyes { background: var(--eyes); } .dot.build { background: var(--build); }
+
+  h2.section { font-size: 18px; margin: 34px 0 14px; display: flex; align-items: center; gap: 10px; }
+  h2.section:before { content: ""; width: 4px; height: 20px; background: var(--brand); border-radius: 3px; }
+  .section-note { color: var(--muted); font-size: 13.5px; margin: -8px 0 16px; }
+
+  /* flux horizontal */
+  .flow { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: 6px 2px 18px; }
+  .stage { min-width: 244px; max-width: 244px; background: var(--card); border-radius: 14px;
+           box-shadow: var(--shadow); border-top: 4px solid var(--done); display: flex; flex-direction: column; }
+  .stage.gated { border-top-color: var(--env); }
+  .stage .head { padding: 13px 14px 10px; border-bottom: 1px solid var(--line); }
+  .stage .badge { display: inline-block; font-size: 11px; font-weight: 700; color: var(--brand);
+                  background: var(--build-bg); border-radius: 999px; padding: 2px 9px; letter-spacing: .03em; }
+  .stage h3 { margin: 8px 0 4px; font-size: 15.5px; }
+  .stage .role { font-size: 12.5px; color: var(--muted); margin: 0; }
+  .stage .body { padding: 11px 14px 14px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .pill { align-self: flex-start; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; }
+  .pill.done { color: var(--done); background: var(--done-bg); }
+  .pill.env { color: var(--env); background: var(--env-bg); }
+  .pill.eyes { color: var(--eyes); background: var(--eyes-bg); }
+  .pill.build { color: var(--build); background: var(--build-bg); }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  ul.mini { margin: 0; padding-left: 16px; font-size: 12.5px; color: #334155; }
+  ul.mini li { margin-bottom: 3px; }
+  details.deep { font-size: 12.5px; }
+  details.deep > summary { cursor: pointer; color: var(--brand); font-weight: 600; list-style: none; padding: 4px 0; }
+  details.deep > summary::-webkit-details-marker { display: none; }
+  details.deep > summary:before { content: "▸ "; }
+  details.deep[open] > summary:before { content: "▾ "; }
+  details.deep .inner { padding: 6px 0 2px; color: #334155; }
+  details.deep .inner b { color: var(--ink); }
+  .arrow { display: flex; align-items: center; justify-content: center; min-width: 34px; color: #94a3b8; font-size: 22px; }
+
+  .sub { margin-top: 8px; }
+  .sub .chip { display: inline-block; font-size: 11px; background: #f1f5f9; border: 1px solid var(--line);
+               border-radius: 7px; padding: 2px 7px; margin: 2px 3px 0 0; color: #334155; }
+  .chip.warn { background: var(--env-bg); border-color: #fde68a; color: var(--env); }
+
+  /* endpoints entrée/sortie */
+  .io { min-width: 150px; max-width: 170px; background: linear-gradient(160deg,#f8fafc,#eef2ff);
+        border: 1px dashed #c7d2fe; border-radius: 14px; padding: 12px; display: flex; flex-direction: column;
+        justify-content: center; gap: 6px; }
+  .io h4 { margin: 0; font-size: 13px; color: var(--brand-dark); }
+  .io p { margin: 0; font-size: 11.5px; color: var(--muted); }
+
+  /* couches transverses */
+  .band { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); margin-bottom: 16px;
+          border-left: 5px solid var(--build); overflow: hidden; }
+  .band.done { border-left-color: var(--done); }
+  .band.eyes { border-left-color: var(--eyes); }
+  .band .bhead { padding: 14px 18px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .band .bhead .badge { background: var(--build-bg); color: var(--brand); font-size: 11px; font-weight: 700;
+                        border-radius: 999px; padding: 2px 9px; }
+  .band .bhead h3 { margin: 0; font-size: 16px; }
+  .band .bhead .role { color: var(--muted); font-size: 13px; }
+  .band .bbody { padding: 0 18px 16px; display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; }
+  .cell { background: #fafbfc; border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; }
+  .cell h5 { margin: 0 0 6px; font-size: 12.5px; }
+  .cell ul { margin: 0; padding-left: 15px; font-size: 12px; color: #334155; }
+  .cell ul li { margin-bottom: 2px; }
+  .cell .st { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 8px; float: right; }
+
+  /* seuils score (M3) */
+  .score { display: flex; height: 26px; border-radius: 7px; overflow: hidden; font-size: 10.5px; font-weight: 700;
+           color: #fff; text-align: center; margin-top: 2px; }
+  .score div { display: flex; align-items: center; justify-content: center; }
+  .score .masked { background: #94a3b8; flex: 70; }
+  .score .pending { background: var(--env); flex: 25; }
+  .score .valid { background: var(--done); flex: 25; }
+  .score-legend { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+
+  footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 20px; }
+  @media print { .flow { overflow: visible; flex-wrap: wrap; } body { background:#fff; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Two-Step — Carte des maillons du pipeline stock</h1>
+  <p>De la caisse du marchand jusqu'au feed Google LFP. Le cœur du produit = la <b>qualité de la donnée stock</b> : propre, traçable, enrichie, affichée honnêtement. Chaque maillon a un contrat auditable dans <code>docs/SPEC/</code>.</p>
+  <div class="northstar">
+    <b>North-star :</b> « feed Google LFP as a service » — l'<b>exactitude EST la promesse</b>.
+    Trois invariants transverses gravés dans le code : <b>ne rien perdre en silence</b> · <b>zéro faux positif</b> (mieux vaut <code>null</code> qu'une valeur fausse) · <b>afficher honnêtement</b> (jamais un faux « disponible » / « complet »).
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="summary">
+    <div class="kpi done"><div class="n">7 / 9</div><div class="l">maillons construits + testés (cœur pipeline)</div></div>
+    <div class="kpi env"><div class="n">2</div><div class="l">bloqués <b>env live</b> (e2e photo, push Google réel) — Thomas</div></div>
+    <div class="kpi eyes"><div class="n">2</div><div class="l">en attente de <b>rendu visuel</b> (écrans E, wizard) — Thomas + Playwright</div></div>
+    <div class="kpi build"><div class="n">~6</div><div class="l">chantiers <b>code pur</b> restants — pour Fable 5</div></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot done"></i> Construit + testé (unit)</span>
+    <span><i class="dot env"></i> Bloqué env live (clés API / serveur) — Thomas tranche</span>
+    <span><i class="dot eyes"></i> Rendu visuel — Thomas + Playwright (la boucle n'a pas d'yeux)</span>
+    <span><i class="dot build"></i> Reste à construire — Fable 5 (code pur)</span>
+  </div>
+
+  <!-- ================= FLUX DE LA DONNÉE ================= -->
+  <h2 class="section">Le flux de la donnée — du stock au feed</h2>
+  <p class="section-note">Lecture de gauche à droite. Chaque étape transforme la donnée et la passe à la suivante. Déplie « ⓘ détail » pour les invariants testés et les modes d'échec.</p>
+
+  <div class="flow">
+
+    <!-- ENTRÉE -->
+    <div class="io">
+      <h4>🏬 Le marchand</h4>
+      <p>Caisse (API), export planifié, fichier, facture. « N'importe quelle caisse » — modèle NearSt, POS-agnostique.</p>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M1 -->
+    <div class="stage">
+      <div class="head">
+        <span class="badge">M1</span>
+        <h3>Collecte</h3>
+        <p class="role">Capter le stock de n'importe quelle source, sans perte silencieuse.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Construit + testé</span></div>
+        <div class="sub">
+          <span class="chip">POS pull (Square·Shopify·Lightspeed·Zettle·Clictill·Fastmag)</span>
+          <span class="chip">Webhooks temps réel</span>
+          <span class="chip">Push fichier CSV/XLSX (snapshot)</span>
+          <span class="chip warn">Factures/scan — hors-cap</span>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Invariants :</b>
+          <ul class="mini">
+            <li>Catalogue fantôme bloqué (POS vide = blip → ne masque rien)</li>
+            <li>Source explicite + <code>source_ts</code> réel sur chaque écriture</li>
+            <li>Pagination complète (pas de troncature 1000 → doublons)</li>
+            <li>Nom seul jamais une identité</li>
+          </ul>
+          <b>Dette :</b> fuzzy nom à durcir hors POS · ambiguïté webhook (null) à trancher.
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M2 -->
+    <div class="stage">
+      <div class="head">
+        <span class="badge">M2</span>
+        <h3>Identité</h3>
+        <p class="role">Décider qui est quoi : GTIN fort vs SKU interne vs rejet.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Construit + testé</span></div>
+        <div class="sub">
+          <span class="chip">Checksum GTIN 8/12/13/14</span>
+          <span class="chip">UPC-12 → EAN-13</span>
+          <span class="chip">ISBN / CIP (médicaments FR)</span>
+          <span class="chip">Match : posItem › EAN › SKU › nom</span>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Invariants :</b>
+          <ul class="mini">
+            <li>EAN faux checksum → traité en SKU, jamais en lookup GTIN</li>
+            <li>Nom seul jamais une identité (rejet motivé, listé)</li>
+            <li>Compteurs exacts : acceptés + rejetés = total</li>
+            <li>Index produits complet et paginé (anti-doublon)</li>
+          </ul>
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M3 -->
+    <div class="stage gated">
+      <div class="head">
+        <span class="badge">M3</span>
+        <h3>Enrichissement</h3>
+        <p class="role">EAN → photo / marque / catégorie / nom, avec score de confiance.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Unit testé</span><span class="pill env">🔑 e2e photo (env live)</span></div>
+        <div class="sub">
+          <span class="chip">Cascade : GS1 › KicksDB › OFF/OBF › Google PC › CLIP › BERT › EAN-Search</span>
+          <span class="chip">Photo (vérif IA fail-closed)</span>
+          <span class="chip">Marque (allow-list)</span>
+          <span class="chip">Catégorie FR (allow-list)</span>
+        </div>
+        <div>
+          <div class="score">
+            <div class="masked">masqué &lt; 0.70</div>
+            <div class="pending">pending ≥ 0.70</div>
+            <div class="valid">validé ≥ 0.95</div>
+          </div>
+          <div class="score-legend">Le score décide de la visibilité feed. Garde de concordance D7 : EAN discordant → downgrade validé→pending.</div>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Le maillon cassé au 1er test réel (27/06), corrigé (a→d) :</b>
+          <ul class="mini">
+            <li>Vérif photo IA <b>fail-closed</b> (clé absente → image écartée, pas publiée)</li>
+            <li>Requête image n'utilise jamais l'EAN brut (= cause des 6/7 photos fausses)</li>
+            <li>Marque & catégorie : allow-list, inconnu → <code>null</code> (jamais inventer)</li>
+          </ul>
+          <b>Trou de preuve :</b> correctude photo sur vrais EAN = rapport validé par Thomas (env live requis).
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M4 -->
+    <div class="stage">
+      <div class="head">
+        <span class="badge">M4</span>
+        <h3>Stockage</h3>
+        <p class="role">Écrire la quantité de façon atomique + réconcilier le snapshot.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Construit + testé</span></div>
+        <div class="sub">
+          <span class="chip">updateStockAtomic (FOR UPDATE, ≥0)</span>
+          <span class="chip">Anti-régression source_ts</span>
+          <span class="chip">Réconciliation : disparu → 0</span>
+          <span class="chip">7 sources tracées</span>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Invariants :</b>
+          <ul class="mini">
+            <li>Atomicité (race TOCTOU éliminée, jamais de négatif)</li>
+            <li>Garde anti-push-partiel : couverture &lt; 50% → skip + erreur visible</li>
+            <li>Write stock=0 toujours sous captureError (vendu non masqué = faux positif n°1)</li>
+          </ul>
+          <b>Dette :</b> seuil 50% codé en dur (à paramétrer) · pas de ledger multi-source.
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M5 -->
+    <div class="stage">
+      <div class="head">
+        <span class="badge">M5</span>
+        <h3>Confiance</h3>
+        <p class="role">Traduire l'état DB en affichage honnête pour le consommateur.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Construit + testé</span></div>
+        <div class="sub">
+          <span class="chip">États : disponible · probable · épuisé</span>
+          <span class="chip">Fraîcheur = source_ts (pas updated_at)</span>
+          <span class="chip">24h realtime / 12h snapshot</span>
+          <span class="chip">Signalements clients (≥1 probable, ≥3 out)</span>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Invariant clé :</b> un webhook traité avec 30h de retard dit « probable » (vérité),
+          jamais « Disponible » (le mensonge d'<code>updated_at</code>). Source <code>manual</code> plafonnée à « probable » ; qty ≤ 2 → « probable ».
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- M6 -->
+    <div class="stage gated">
+      <div class="head">
+        <span class="badge">M6</span>
+        <h3>Sortie Google LFP</h3>
+        <p class="role">Émettre les produits éligibles vers Google, 2 canaux complémentaires.</p>
+      </div>
+      <div class="body">
+        <div class="pill-row"><span class="pill done">✅ Code testé</span><span class="pill env">🔑 pilote live</span></div>
+        <div class="sub">
+          <span class="chip">Voie A — cron Merchant API</span>
+          <span class="chip">Voie B — feed XML streamé</span>
+          <span class="chip">Inventory push temps réel</span>
+          <span class="chip">Readiness lfp_feed_ready</span>
+        </div>
+        <details class="deep"><summary>ⓘ détail</summary><div class="inner">
+          <b>Invariants :</b>
+          <ul class="mini">
+            <li>Gate d'éligibilité <b>unique</b> (GTIN + prix + image) partagé par les 3 sorties → 0 divergence</li>
+            <li>Promo honnête (émise ssi active & sale &lt; base)</li>
+            <li>Dispo = chaîne exacte « in stock » (jamais « in_stock » = rejet silencieux)</li>
+            <li>Statut produit async (200 insert ≠ acceptation → quality_alerts)</li>
+          </ul>
+          <b>Vrai blocage = 1 marchand pilote live</b>, pas le code (Google a tout débloqué avril 2026).
+        </div></details>
+      </div>
+    </div>
+    <div class="arrow">▸</div>
+
+    <!-- SORTIE -->
+    <div class="io">
+      <h4>🎯 Sorties</h4>
+      <p><b>Google Merchant Center</b> (feed LFP) → visibilité locale « en stock près de chez vous ».<br><br><b>App Two-Step</b> (Discover) → stock affiché honnêtement au consommateur.</p>
+    </div>
+
+  </div>
+
+  <!-- ================= COUCHES TRANSVERSES ================= -->
+  <h2 class="section">Les couches transverses — elles traversent tout le flux</h2>
+  <p class="section-note">Ces trois maillons ne sont pas une étape du flux : ils s'appliquent à plusieurs maillons à la fois (le scale, l'interface, l'entrée du marchand).</p>
+
+  <!-- M7 -->
+  <div class="band done">
+    <div class="bhead">
+      <span class="badge">M7</span>
+      <h3>Scale / volume</h3>
+      <span class="role">Tenir sur un catalogue pilote réel (Deerskin = milliers de SKU) sans troncature silencieuse. Traverse M1 (ingest), M4 (stockage), M6 (sorties).</span>
+    </div>
+    <div class="bbody">
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ testé</span><h5>Pagination</h5>
+        <ul><li><code>fetchAllRows</code> sur les 4 sorties Google + les 2 lectures d'ingest</li><li>1500 produits → 2 pages, 0 omis</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ testé</span><h5>Streaming (Voie B)</h5>
+        <ul><li><code>streamRows</code> : mémoire = 1 page (50k SKU OK)</li><li>Erreur mid-stream → avorte le HTTP (jamais 200 tronqué)</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ testé</span><h5>Budget temps</h5>
+        <ul><li><code>maxDuration=300</code> + coupure à 270s</li><li>Interrompu → statut « partial » <b>honnête</b>, jamais faux « success »</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--build);background:var(--build-bg)">🔨 reste</span><h5>À construire (Fable 5)</h5>
+        <ul><li>Chunker le cron <code>google-feed</code> via streamRows (finir &gt; budget en 1 run)</li><li>Preuve de charge synthétique 10k→50k (temps + mémoire)</li></ul></div>
+    </div>
+  </div>
+
+  <!-- M8 -->
+  <div class="band eyes">
+    <div class="bhead">
+      <span class="badge">M8</span>
+      <h3>UI Phase E — écrans marchand honnêtes</h3>
+      <span class="role">Chaque maillon = un écran utilisable par un commerçant non-technicien. Logique d'état testée ; rendu visuel = Thomas + Playwright.</span>
+    </div>
+    <div class="bbody">
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ logique</span><h5>E1 · Visibilité Google</h5>
+        <ul><li>stats + connexion : erreur ≠ « catalogue vide »</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ logique</span><h5>E2 · Readiness LFP</h5>
+        <ul><li>verdict serveur « prêt / bientôt prêt » + freins ordonnés</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ logique</span><h5>E3 · Mon stock</h5>
+        <ul><li>load KO → erreur, jamais EmptyState (anti-réimport panique)</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ logique</span><h5>E4 · Validation enrichi</h5>
+        <ul><li>load KO → erreur, jamais « rien à valider » trompeur</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ logique</span><h5>E5 · Connexion POS</h5>
+        <ul><li>blip → erreur, jamais un redirect qui éjecte le marchand</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--eyes);background:var(--eyes-bg)">👁 reste</span><h5>Rendu visuel</h5>
+        <ul><li>« pro vs moyen », responsive, focus/aria-live — <b>exige des yeux</b></li></ul></div>
+    </div>
+  </div>
+
+  <!-- M9 -->
+  <div class="band">
+    <div class="bhead">
+      <span class="badge">M9</span>
+      <h3>Onboarding pilote</h3>
+      <span class="role">Rendre Deerskin onboardable : brancher la caisse OU pousser un fichier, voir ce qui serait publié AVANT de publier. Point d'entrée du flux.</span>
+    </div>
+    <div class="bbody">
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ data</span><h5>Shadow / Preview</h5>
+        <ul><li><code>feed-preview</code> : parité 100% avec le feed live, lecture-seule</li><li>Causes de blocage exactes par produit (ean › prix › image)</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--done);background:var(--done-bg)">✅ data</span><h5>Import 2 temps</h5>
+        <ul><li>Étape 1 preview (n'écrit rien) → Étape 2 apply</li><li>Token ingest (rotation + historique fraîcheur)</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--eyes);background:var(--eyes-bg)">👁 reste</span><h5>Wizard UI</h5>
+        <ul><li>États intermédiaires, spinners, illustrations — rendu visuel</li></ul></div>
+      <div class="cell"><span class="st" style="color:var(--build);background:var(--build-bg)">🔨 reste</span><h5>À construire (Fable 5)</h5>
+        <ul><li>Tests manquants (token, import-wizard, pos-wizard)</li><li>Auditer le flux OAuth POS (boîte noire)</li></ul></div>
+    </div>
+  </div>
+
+  <!-- ================= PLAN FABLE 5 ================= -->
+  <h2 class="section">Ce que fera Fable 5</h2>
+  <p class="section-note">Le dossier <code>docs/SPEC/</code> est son référentiel : un contrat par maillon.</p>
+  <div class="band" style="border-left-color:var(--brand)">
+    <div class="bbody" style="grid-template-columns:1fr 1fr;">
+      <div class="cell"><h5>Phase 1 — AUDIT (les 7 maillons faits)</h5>
+        <ul>
+          <li>Pour chaque invariant du contrat : trouver le code, vérifier le test, <b>tenter de le réfuter</b></li>
+          <li>Sortie par maillon : CONFORME / ÉCART (cas qui casse) / NON PROUVÉ</li>
+          <li>Chercher les chemins jumeaux qui contournent une garde (classe de bug déjà vue)</li>
+        </ul>
+      </div>
+      <div class="cell"><h5>Phase 2 — BUILD (le code pur restant)</h5>
+        <ul>
+          <li>Chunk cron google-feed · preuve charge 10k→50k (M7)</li>
+          <li>Tests manquants + audit OAuth (M9) · fuzzy nom (M1/M2) · <code>auth.getUser()</code> (M8) · seuil couverture (M4)</li>
+          <li>Barre de preuve : test + preuve réelle inspectée ; 0 migration prod sans GO</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Two-Step · carte générée le 2026-07-01 · source : <code>docs/SPEC/</code> + <code>docs/CODEMAPS/01-data-pipeline.md</code>.<br>
+    ✅ ne signifie pas « prouvé en réel » : un test vert ≠ une vérité réelle. Les axes 🔑 (env live) et 👁 (yeux) ne sont jamais cochés par la boucle seule.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -2,33 +2,40 @@
 # FIL CONDUCTEUR de la boucle autonome — source de vérité sur « où on en est ».
 # La boucle lit CE fichier EN PREMIER (compact) avant les gros docs, et le met à jour
 # EN DERNIER à chaque run. Schéma + enum documentés dans docs/os-architecture.md.
-pipeline: maillon-9-enrichissement
-step: 9
+pipeline: ui-finition
+step: E
 step_total: 9
-step_name: "enrichissement (photo/marque/catégorie) — CASSÉ, priorité n°1"
-status: todo              # todo|in_progress|testing|pushed|blocked_human|blocked_external|done
-blocked_on: "thomas:trancher env Routine (clés API live) vs run supervisé pour le e2e photo"
-next_action: "(a) régression fail-open de la vérif IA Haiku sur fixtures (sans yeux) ; puis (c) marque, (d) mapping catégorie FR ; e2e photo = escaladé"
+step_name: "UI finition pro + responsive (dashboard + site), DA respectée"
+status: in_progress
+blocked_on: "thomas:jugement visuel pro/moyen (M6) + M1 pilote+caisse (débloque 6a.3)"
+next_action: "UI: grounding DA (brand-guidelines/theme) + skill impeccable + captures état réel → fixes priorisés page par page avec revue visuelle Thomas"
 branch: feat/pipeline-v1-handoff-2026-06-12
 gate: green               # green|red|unknown  (test:run + tsc au dernier commit)
-last_run: 2026-06-27
-last_commit: 0acc5b8
+last_run: 2026-07-03
+last_commit: HEAD
 ---
 
-# État resumable — MAILLON 9 : ENRICHISSEMENT (priorité n°1, 2026-06-27)
+# État resumable — 2026-07-03 : audit 9 maillons FAIT + cluster A corrigé → UI finition
 
-**Reprise rapide (lire d'abord ceci, puis `autonomy-priorities.md` §1bis ⭐⭐).**
+**Reprise rapide (lire ceci, puis `docs/SPEC/audit-maillons-2026-07-03.md`).**
 
-- **Nouvelle priorité absolue** : le maillon ENRICHISSEMENT (photo/marque/catégorie) est
-  **cassé**, révélé par le 1er test réel du 27/06 (cf `docs/workflow-ingestion-enrichment.md`) :
-  photos 6/7 fausses, vérif IA Haiku fail-open, marque null 7/7, catégorie 2/7 FR.
-- **Ce que la boucle fait SEULE** (unit-testable) : (a) régression du fail-open de la vérif IA
-  sur fixtures de paires (produit, image fausse) ; (c) extraction marque ; (d) mapping catégorie FR.
-- **Escaladé à Thomas** : le test e2e photo sur vrais EAN exige un env live (clés API + serveur) —
-  la Routine cloud est « code+tests seulement ». Thomas tranche : upgrade env Routine OU run supervisé.
-- Phase E (UI) : maillons google/mon-stock/review/connexion-POS faits+poussés (tests 890). Reste =
-  rendu VISUEL (Thomas + `ui-journey.mjs`) — **déprioritisé derrière le maillon 9**.
+- **Audit Fable 5 des 9 maillons FAIT** (chaque maillon : code lu + tests exécutés). Le socle est
+  solide et testé. Complétude vs NearSt : **aucun maillon ne manque**.
+- **M3 enrichissement N'EST PLUS « cassé priorité n°1 »** : les 4 casses du 27/06 sont **corrigées en
+  code + testées** (vérif photo fail-CLOSED, marque, catégorie FR ; 73/73 tests). Reste : preuve e2e
+  photo LIVE (env/pilote) + `categorize.ts` inerte sans clé API.
+- **Cluster A pilote-critique CORRIGÉ + VÉRIFIÉ** (2026-07-03) : le feed Google ne publie plus de faux
+  « en stock » — M5 (feed↔confiance, helper `feed-availability.ts`, 4 sorties unifiées), M6
+  (population/éligibilité `inventory.ts`), M2 (`buildProductIndex` paginé+fail-loud). tsc 0 err,
+  tests verts. Détail + décisions produit : `docs/SPEC/audit-maillons-2026-07-03.md`.
+- **M4 stockage (file-push → RPC temporel)** : DIFFÉRÉ — *non* pilote-critique, plus risqué, fix
+  design-sensible → passe dédiée à froid.
 
-**Nouvelle étape de run** : VEILLE R&D 1×/jour (routine-prompt §2bis → `docs/veille-rd.md`).
+**Chantier ACTIF = UI finition pro + responsive (dashboard + site)**, DA respectée (`docs/brand-guidelines.md`
++ `src/styles/theme.css`, base Untitled UI). Le rendu « pro vs moyen » = **jugement visuel de Thomas**
+(la boucle ne coche pas « UI OK » seule) → boucle captures/revue nécessaire. Gaps M8/M9 à traiter dans
+la foulée : token d'ingestion + adresse `stock-{slug}@` non exposés dans l'UI (self-serve).
+
+**L'unlock ultime reste le PILOTE** (M1 = Deerskin + caisse, Thomas) — cf `docs/SPEC/00-roadmap-nearst.md`.
 
 **Pré-existant hors-scope** : `auth.getUser()` double-destructure non gardée (classe codebase-wide).
