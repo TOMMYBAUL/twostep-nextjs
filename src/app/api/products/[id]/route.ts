@@ -6,6 +6,7 @@ import { resolveProductId } from "@/lib/slug";
 import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
 import { honestSalePrice } from "@/lib/products/sale-price";
+import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
 import { captureError } from "@/lib/error";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -212,10 +213,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
         }
 
-        // Verify ownership: product must belong to a merchant owned by this user
+        // Verify ownership: product must belong to a merchant owned by this user.
+        // `ean` + `variant_of` sont lus pour détecter un changement d'identité (correction
+        // manuelle d'EAN) qui rend le regroupement variantes périmé (cf. post-update ci-dessous).
         const { data: product } = await supabase
             .from("products")
-            .select("merchant_id, price, merchants!inner(user_id)")
+            .select("merchant_id, price, ean, variant_of, merchants!inner(user_id)")
             .eq("id", id)
             .single();
 
@@ -237,6 +240,49 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                 product_id: id,
                 event_type: "price_drop",
             });
+        }
+
+        // Une correction MANUELLE d'EAN change l'IDENTITÉ du produit → son regroupement par
+        // EAN devient périmé. `groupVariantsByEAN` ne relit QUE les produits `variant_of IS
+        // NULL` (il ne DÉ-groupe jamais) : sans réamorçage, un produit devenu variante
+        // resterait masqué à jamais (produit silencieusement PERDU = north-star §1 « ne rien
+        // oublier »), et un principal dont on change l'EAN garderait ses enfants orphelins +
+        // un stock cumulé faux (faux « en stock » = faux positif n°1). On relâche donc le
+        // produit édité ET ses éventuelles variantes-enfants (`variant_of` → null), puis on
+        // re-dérive le regroupement. Post-pass DÉRIVÉ, non fatal : l'édition est déjà committée
+        // et le prochain ingest/sync re-groupe → capture-and-continue (comme snapshot.ts).
+        // RÉSIDU CONNU (revue SF-hunter, MED) : si le regroup LÈVE APRÈS la relâche, un produit
+        // qui était une variante masquée peut rester `variant_of=null, visible=false` (invisible)
+        // jusqu'au prochain regroup ; pour un marchand SANS caisse ni facture, aucun re-trigger
+        // périodique n'existe → couvert par un watchdog de dérive (quality-check) = prochain [R].
+        // Le cas COMMUN (édition d'un principal visible) reste visible → auto-guérison.
+        if (updates.ean !== undefined && (updates.ean ?? null) !== ((product as any).ean ?? null)) {
+            const adminSupabase = createAdminClient();
+            const merchantId = (product as any).merchant_id as string;
+            try {
+                const { error: relSelfErr } = await adminSupabase
+                    .from("products")
+                    .update({ variant_of: null })
+                    .eq("id", id)
+                    .eq("merchant_id", merchantId);
+                if (relSelfErr) throw new Error(`release self grouping failed: ${relSelfErr.message}`);
+
+                const { error: relChildErr } = await adminSupabase
+                    .from("products")
+                    .update({ variant_of: null })
+                    .eq("variant_of", id)
+                    .eq("merchant_id", merchantId);
+                if (relChildErr) throw new Error(`release child grouping failed: ${relChildErr.message}`);
+
+                await groupVariantsByEAN(adminSupabase, merchantId);
+            } catch (err) {
+                captureError(err, {
+                    route: "products/[id]",
+                    phase: "regroup-after-ean-change",
+                    productId: id,
+                    merchantId,
+                });
+            }
         }
 
         return NextResponse.json({ product: data });

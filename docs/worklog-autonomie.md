@@ -3867,3 +3867,58 @@ adjacent ferme = angle mort Sentry du write le plus critique comble ; 0 faux pos
 10/10 (0 migration, `git revert`) · Scope 9/10 (1 prod + 1 test = 2 fichiers, 1 unite) · Align 9/10 (pilier 1
 "ne rien oublier" a l'echelle sur le cas COMMUN = re-push quotidien, de-risque le pilote Deerskin). 1 bug reel
 adjacent (F1 Sentry blind spot). 2 fichiers. tests 997->999. CFR 10 runs = 100% (0 revert).
+
+## 2026-07-03 (run autonome) — IDENTITE : re-groupage apres correction MANUELLE d'EAN (variantes orphelines)
+
+**Sourcing (par signaux, §6)** : SCALE = theme CLOS (07-02), Phase E (E1-E5) + UI shadow/preview (07-03) faites.
+DB prod re-verifiee ce run : merchants=9 (tous seed/test, latest 25/04), google_conns=0, quality_alerts 0 frais
+sur 24h (latest 30/06 = deja traite par le watchdog), pos error=1 (test avril) -> **0 signal reel frais**. Seul
+[R] in-scope restant NON visuel / NON hors-cap (Factur-X factures = INTERDIT par le FILTRE DE CAP) / NON gated-env :
+le Rang-3 « **Variantes orphelines sur correction EAN manuelle (re-groupage) — si design clair** ». Verifie dans
+le code reel -> le design EST clair, vrai bug latent north-star. Fait ce run.
+
+**Le bug (verifie, pas suppose)** : `PATCH /api/products/[id]` laisse un marchand corriger l'`ean` (ecran
+/dashboard/products/[id]/edit) mais NE re-groupe PAS ensuite — contrairement aux 3 autres appelants de
+`groupVariantsByEAN` (snapshot, invoice validate, sync-engine). Or `groupVariantsByEAN` (sync-engine.ts:606) lit
+UNIQUEMENT `WHERE variant_of IS NULL` -> il ne DE-groupe JAMAIS (regroupement « collant »). Sur une correction
+d'EAN : (a) un produit devenu variante masquee (`visible=false, variant_of=Q`) reste invisible A JAMAIS = produit
+silencieusement PERDU (north-star §1) ; (b) un PRINCIPAL dont on change l'EAN laisse ses enfants orphelins + garde
+un stock cumule FAUX = faux « en stock » (faux positif n°1, north-star §2). Exposition NULLE aujourd'hui (0 marchand
+reel) mais un pilote POS multimarque (Deerskin, groupes variantes-tailles) le touche directement.
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12)
+- `PATCH` : ownership select recupere desormais `ean, variant_of`. Sur CHANGEMENT REEL d'EAN
+  (`(updates.ean ?? null) !== (product.ean ?? null)` ; validation amont = valeur normalisee 8/13 chiffres ou null),
+  via le client ADMIN : (1) relache le produit edite `variant_of=null` (`.eq(id).eq(merchant_id)`), (2) relache ses
+  variantes-enfants (`.eq("variant_of",id).eq(merchant_id)`), (3) re-derive `groupVariantsByEAN(admin, merchantId)`.
+  -> produit + enfants RE-RENTRENT dans la lecture `variant_of IS NULL` -> re-groupes par le NOUVEL EAN.
+- **Non fatal (capture-and-continue, motif snapshot.ts)** : l'edition est deja committee (client RLS) ; le regroup
+  est un post-pass DERIVE -> echec = `captureError(phase:"regroup-after-ean-change")` sans 500. Les erreurs de
+  relache LEVENT -> catch -> visible.
+- **Blast LOW** : route HTTP (entry-point, 0 caller code) + appel a une fonction EXISTANTE INCHANGEE (semantique de
+  `groupVariantsByEAN` intacte -> 3 autres appelants non impactes). 0 migration.
+
+**Preuve (methode 1bis)** : `tests/products-id-patch-regroup.test.ts` (+8, **1027->1035**) drive le VRAI handler
+PATCH (faux clients user RLS / admin) : (1) EAN change -> regroup 1x avec merchantId + relache self ET enfants
+scopees marchand + main update SANS `variant_of` ; (2) autre champ -> pas de regroup ; (3) ean identique -> pas de
+regroup ; (4) null->valeur (5) valeur->null -> regroup ; (6) regroup LEVE -> 200 + captureError ; (7) relache
+echoue -> 200 + captureError + pas de regroup ; (8) EAN mal forme -> 400. Non-vacants (l'ancien code ne rappelait
+jamais groupVariantsByEAN).
+
+**Revue silent-failure-hunter : SOUND** (0 nouveau silent-loss/faux-stock ; capture-and-continue conforme ; garde
+de changement correcte ; ordre commit->relache->regroup sain). **1 residu MED design-inherited** : si le regroup
+LEVE APRES la relache, un produit qui etait une variante masquee peut rester `variant_of=null, visible=false`
+(invisible) jusqu'au prochain regroup ; un marchand SANS caisse ni facture n'a aucun re-trigger periodique.
+**Strictement plus etroit que le bug corrige** (cas COMMUN = principal visible reste visible -> auto-guerison ;
+jamais faux « en stock »). Documente dans le code + **prochain [R]** : watchdog de derive
+`variant_of IS NULL AND visible=false AND stock>0` dans quality-check (= §7 « invariants de completude testes »).
+
+**Metrique** : `tsc` OK, `test:run` **1027->1035** (+8). 1 unite [R] in-scope fermee (variantes orphelines,
+Rang 3). Blast LOW. 0 migration, reversible. Fichiers : 2 (route + test).
+
+**Scorecard** : Preuve 7/10 (faux clients fideles user/admin + 8 cas dont les 2 sens null<->valeur + 2 modes
+d'echec non fatals, mais synthetique — 0 catalogue reel) · Secu north-star 8/10 (SF-hunter SOUND, ferme un vrai
+silent-loss du chemin de correction ; 1 residu MED documente+planifie, strictement plus etroit) · Reversibilite
+10/10 (0 migration, `git revert`) · Scope 9/10 (2 fichiers, 1 unite) · Align 9/10 (identite/concordance = cœur
+« data exacte » §1+§2, de-risque le pilote POS multimarque). 1 bug reel latent ferme. 2 fichiers. tests
+1027->1035. CFR 10 runs = 100% (0 revert).

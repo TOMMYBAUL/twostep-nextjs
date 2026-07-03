@@ -956,7 +956,21 @@ software qui débloque sa moitié à lui.
 - ✅ **FAIT (run 5, commit `12e08cc`)** — `pushInventoryToGoogle().catch()` (MEDIUM, divergence
   Google MC) + `notifyProductFavorites().catch()` (LOW) des 4 webhooks remontent désormais via
   `captureError` (contexte route/phase/merchantId). Observabilité seule, 0 flux. (Finding revue.)
-- `[R]` **Variantes orphelines** sur correction EAN manuelle (re-groupage) — si design clair.
+- ✅ **FAIT (2026-07-03, run autonome)** — **Variantes orphelines sur correction EAN manuelle (re-groupage)** :
+  `PATCH /api/products/[id]` laissait corriger l'`ean` SANS re-grouper (les 3 autres appelants de `groupVariantsByEAN`
+  le font). Comme `groupVariantsByEAN` lit UNIQUEMENT `variant_of IS NULL` (jamais de dé-groupage), une variante
+  devenue distincte restait invisible À JAMAIS (produit PERDU, §1) et un principal dont l'EAN change gardait ses
+  enfants orphelins + un stock cumulé faux (faux « en stock », §2). Fix : sur changement RÉEL d'EAN, relâcher via
+  admin le produit édité + ses enfants (`variant_of=null`) puis re-dériver `groupVariantsByEAN` ; non fatal
+  (capture-and-continue, motif snapshot). `tests/products-id-patch-regroup.test.ts` (+8, **1027→1035**). Revue
+  SF-hunter **SOUND**. Blast LOW (route entry-point ; groupVariantsByEAN inchangé). 0 migration, réversible.
+- `[R]` **NOUVEAU 2026-07-03 — watchdog de dérive de regroupement (quality-check)** : ferme le résidu MED
+  design-inherited du fix ci-dessus (revue SF-hunter). `groupVariantsByEAN` étant « collant » (ne dé-groupe
+  jamais) et n'ayant AUCUN re-trigger périodique pour un marchand sans caisse ni facture, un produit peut rester
+  `variant_of IS NULL AND visible=false AND stock>0` (orphelin invisible) après un échec de regroup. Ajouter au
+  cron `quality-check` un détecteur de cette dérive (alerte `regroup_drift` ou re-invocation `groupVariantsByEAN`
+  par marchand concerné) = **§7 « invariants de complétude testés »**. Vérifiable, réversible, in-scope (identité).
+  ⚠️ lecture produits paginée KEYSET (`fetchAllRows`, cf. leçon quality-check 07-02).
 - `[R]` **Câblage `parseCiiXml` dans `parseInvoice`** (Factur-X, oblig. sept. 2026) — le
   parseur est durci+testé, prêt ; le câblage extraction PDF/A-3 reste. Évaluer la valeur.
 

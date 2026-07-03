@@ -391,6 +391,28 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Un check qui avale l'erreur → `existing=null` → re-traitement → **double-décrément delta**. Fix :
   `captureError` + 500 (retry → dedup). Un insert avalé idem. (Finding 3a/3b, 2026-06-21)
 
+## Identité / re-groupage variantes — une correction d'EAN doit RE-DÉRIVER le groupage
+- ❌ **Un regroupage « collant » (qui ne DÉ-groupe jamais) + un chemin de mutation d'identité qui ne le
+  re-déclenche pas = produit silencieusement PERDU.** `groupVariantsByEAN` (sync-engine.ts:606) groupe les
+  produits d'un marchand partageant un EAN en 1 principal visible + variantes masquées (`visible=false,
+  variant_of=principal`), mais lit UNIQUEMENT `WHERE variant_of IS NULL` → il ne relit jamais une variante
+  existante = groupage jamais re-dérivé. `PATCH /api/products/[id]` laissait corriger l'`ean` SANS re-grouper
+  (les 3 autres appelants — snapshot, invoice validate, sync — le font). Résultat : (a) un produit devenu
+  variante masquée reste invisible À JAMAIS (perdu, north-star §1) ; (b) changer l'EAN d'un PRINCIPAL orpheline
+  ses enfants + garde un stock cumulé faux (faux « en stock », §2). **Fix : sur un CHANGEMENT RÉEL d'EAN, relâcher
+  via admin le produit édité (`variant_of=null`) ET ses enfants (`.eq("variant_of",id)`) — pour qu'ils RE-RENTRENT
+  dans la lecture `variant_of IS NULL` — puis re-dériver `groupVariantsByEAN`.** Non fatal (l'édition est déjà
+  committée = post-pass dérivé → capture-and-continue, motif snapshot.ts) ; erreurs de relâche LÈVENT → catch →
+  captureError visible. **Règle : quand une fonction de regroupage/dérivation est « collante » (exclut ses propres
+  sorties de sa relecture), TOUT chemin qui mute la clé de regroupement (ici l'EAN) doit relâcher explicitement les
+  lignes concernées avant de re-dériver — sinon l'état est figé et une ligne peut disparaître en silence.**
+  Blast LOW (route entry-point ; `groupVariantsByEAN` inchangé). Preuve : `tests/products-id-patch-regroup.test.ts`
+  (+8 : regroup SSI ean change vraiment, relâche self+enfants scopée marchand, les 2 modes d'échec non fatals).
+  Revue SF-hunter SOUND. **Résidu MED design-inherited** (documenté, prochain [R]) : regroup qui LÈVE après la
+  relâche peut laisser une ex-variante `variant_of=null, visible=false` invisible ; aucun re-trigger périodique
+  pour un marchand sans caisse/facture → watchdog de dérive `variant_of IS NULL AND visible=false AND stock>0`
+  dans quality-check. (identité/EAN, 2026-07-03)
+
 - ❌ **Garde write-side d'affichage non rejouée au READ quand sa dépendance peut changer** : `POST
   /promotions` valide `sale_price < product.price` à la CRÉATION, mais le prix produit peut BAISSER ensuite
   (re-ingest fichier / sync POS) sous une promo encore active → promo périmée `sale_price ≥ prix courant`.
