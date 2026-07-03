@@ -61,6 +61,22 @@
 
 ---
 
+## Recap brouillons email — 2026-07-03 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (21e session consécutive)
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Hervé Daudon (GLORIEUX LUNETIERS) | optic.glorieux@gmail.com | Glorieux Lunetiers sur Two-Step — tes Lindberg et Etnia trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — opticien depuis 1975, Lindberg/Etnia Barcelona/Caroline Abram/Paul & Joe. 34 rue du Languedoc. Score 8/10. |
+| 2 | Louis Mantecon (LOUIS MANVER LUNETIER) | louismanver.opticien@gmail.com | Louis Manver Lunetier sur Two-Step — tes montures créateurs trouvées par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — opticien-créateur, collection maison acétate depuis 2017, marques FR/JP/DE. 29 rue des Filatiers. Score 8/10. |
+| 3 | Jérôme Biaggi (MR. SUNBELL STORE) | mr.sunbellstore.france@gmail.com | Mr. Sunbell Store sur Two-Step — ton Buzz Ricksons trouvé par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — stockiste officiel Buzz Ricksons, workwear vintage américain, 8 000 abonnés IG. 17 rue Cujas. Score 8/10. |
+| 4 | Marie Mignonac (COMBO — CARPE DIEM 31) | combo31@hotmail.fr | Combo sur Two-Step — tes sacs urbains trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — bagagerie urbaine durable, réparation cuir. 13 rue Cujas. Score 7/10. |
+| 5 | Jean-Michel Carrade (LES DESSOUS CHICS) | ph@lingerie-carrade.com | Lingerie Carrade sur Two-Step — tes Aubade et Simone Pérèle trouvés par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — lingerie de marque (Aubade, Simone Pérèle, Lise Charmel, Valéry). 29 rue du Languedoc. Score 7/10. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 21e session consécutive sans création de draft. Gmail MCP serveur non connecté. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Les 5 emails sont prêts à copier-coller dans : `docs/prospection/brouillons/brouillons-email-2026-07-03.md`** Notion MCP indisponible (21e session consécutive).
+
+---
+
 ### Mardi — 2026-07-01 (L'Eclaireur) — Saint-Etienne épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
 
 **Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi)
