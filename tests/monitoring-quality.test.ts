@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
     isStockStale,
+    isInvisibleOrphan,
     computeCategoryPriceBounds,
     isPriceAberrant,
 } from "@/lib/monitoring/quality";
@@ -20,6 +21,55 @@ describe("isStockStale — détection stock figé", () => {
     });
     it("jamais mis à jour + en stock → suspect", () => {
         expect(isStockStale(null, 5, now)).toBe(true);
+    });
+});
+
+describe("isInvisibleOrphan — dérive de complétude « produit vendable rendu invisible »", () => {
+    // Le cas DÉRIVE : principal (variant_of=null), non-pending, nommé, en stock, mais masqué.
+    const orphan = {
+        variantOf: null,
+        visible: false,
+        quantity: 3,
+        reviewStatus: "validated" as string | null,
+        name: "Nike Air Force 1 blanche 42",
+    };
+
+    it("principal validé, nommé, en stock mais visible=false → DÉRIVE (perdu du feed + vitrine)", () => {
+        expect(isInvisibleOrphan(orphan)).toBe(true);
+    });
+    it("review_status null (legacy/DEFAULT validated) → traité comme validé → DÉRIVE", () => {
+        expect(isInvisibleOrphan({ ...orphan, reviewStatus: null })).toBe(true);
+    });
+
+    // Les EXCLUSIONS légitimes (« zéro faux positif ») — chacune doit rendre false.
+    it("visible=true → PAS une dérive (publié normalement)", () => {
+        expect(isInvisibleOrphan({ ...orphan, visible: true })).toBe(false);
+    });
+    it("vraie variante (variant_of non-null) → masquée à dessein → PAS une dérive", () => {
+        expect(isInvisibleOrphan({ ...orphan, variantOf: "principal-id" })).toBe(false);
+    });
+    it("pending_review (non validé) → invisible LÉGITIME (attend validation marchand)", () => {
+        expect(isInvisibleOrphan({ ...orphan, reviewStatus: "pending_review" })).toBe(false);
+        expect(isInvisibleOrphan({ ...orphan, reviewStatus: "pending" })).toBe(false);
+        expect(isInvisibleOrphan({ ...orphan, reviewStatus: "masked" })).toBe(false);
+    });
+    it("masquage DÉLIBÉRÉ (review_status='rejected' via reject/DELETE soft-delete/PATCH) → PAS un orphelin (anti faux positif HIGH)", () => {
+        // Un produit POS soft-delete OU rejeté OU masqué à la main porte review_status='rejected'
+        // (marqueur d'intention) → même s'il garde nom + stock + variant_of=null, ce n'est PAS une
+        // dérive : le marchand l'a masqué EXPRÈS. Sans ce marqueur, l'alarme crierait au loup chaque jour.
+        expect(isInvisibleOrphan({ ...orphan, reviewStatus: "rejected" })).toBe(false);
+    });
+    it("stock ≤ 0 → rupture légitime, rien à perdre → PAS une dérive", () => {
+        expect(isInvisibleOrphan({ ...orphan, quantity: 0 })).toBe(false);
+        expect(isInvisibleOrphan({ ...orphan, quantity: -1 })).toBe(false);
+    });
+    it("fiche sans nom (ou nom espaces) → incomplète, invisible LÉGITIME", () => {
+        expect(isInvisibleOrphan({ ...orphan, name: null })).toBe(false);
+        expect(isInvisibleOrphan({ ...orphan, name: "   " })).toBe(false);
+    });
+    it("visible null/undefined (donnée absente) → pas une dérive PROUVÉE → PAS flag (col DEFAULT true)", () => {
+        expect(isInvisibleOrphan({ ...orphan, visible: null })).toBe(false);
+        expect(isInvisibleOrphan({ ...orphan, visible: undefined })).toBe(false);
     });
 });
 

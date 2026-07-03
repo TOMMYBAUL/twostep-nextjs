@@ -309,6 +309,21 @@ plus un mur Google externe.
 >      purs réels = non vacant). **Revue SF-hunter : 2 MED corrigés** (watchdogs ingest/pos : même faille `data=null` sans
 >      error → garde `err || !data`). Résidus bornés documentés (4 lectures marchand-scoped → trip-wire ~1000 marchands ;
 >      Sentry-paging à confirmer, worklog). 1005→1017. Blast LOW (cron entry-point). 0 migration, réversible. Détail : worklog 02/07.
+>    - ✅ **(complétude-invisible-orphan) FAIT (2026-07-03, run autonome)** : watchdog de COMPLÉTUDE « produit
+>      vendable rendu INVISIBLE » (`isInvisibleOrphan` pur + cron quality-check) = le [R] NOMMÉ par le run
+>      précédent (résidu du chemin correction manuelle d'EAN : un regroup échoué laisse `variant_of=null,
+>      visible=false, stock>0` = perdu du feed+vitrine, sans re-trigger périodique pour un marchand sans caisse/
+>      facture). Détecte la VIOLATION de la règle de visibilité de `groupVariantsByEAN` (source unique). Signal
+>      Sentry INCONDITIONNEL (garantie « impossible sans alerte » dès maintenant) ; persistance quality_alerts
+>      GATED (migration 107 non appliquée + flag `INVISIBLE_ORPHAN_ALERTS=1`) sur chemin d'insert SÉPARÉ (anti
+>      batch-poisoning). **Prémisse vérifiée en PROD** : 0 dérive réelle aujourd'hui (préventif) mais 7 invisibles-
+>      en-stock tous `pending` → correctement EXCLUS (la condition naïve du résidu aurait fait 7 faux positifs).
+>      **Revue SF-hunter : mécaniques SOUND + 1 HIGH réel corrigé** = `DELETE` soft-delete POS posait `visible=false`
+>      NU (review_status restait 'validated' → l'alarme aurait crié au loup chaque jour sur un masquage voulu) →
+>      soft-delete + PATCH `visible=false` posent désormais `review_status='rejected'` (marqueur d'intention, déjà la
+>      convention de `reject`) → détecteur silencieux + masquage sticky. 1035→1053 (+18). Blast LOW. Migration 107
+>      GATED escaladée. Détail : worklog 03/07. **Résidu étroit assumé** : une fiche EAN SANS nom coincée invisible
+>      n'est pas signalée (les produits POS portent un nom en pratique).
 > 5. **DÉMOS via le VRAI workflow (Thomas 2026-06-23) — IN-SCOPE** : remplacer les boutiques démo
 >    hand-fakées (`demo-data.ts`, images « à tout va ») par des **marchands démo générés EN PASSANT
 >    PAR LE PIPELINE RÉEL** (catalogue réaliste → ingest → enrichissement cascade → **images réelles

@@ -28,6 +28,49 @@ export function isStockStale(
     return ageDays >= staleDays;
 }
 
+/**
+ * Dérive de complétude « produit vendable rendu INVISIBLE » (perte silencieuse n°1, north-star §1).
+ *
+ * Un PRINCIPAL (`variant_of IS NULL`) NON-pending, avec un nom et du stock > 0, DEVRAIT être
+ * visible — c'est la règle de `groupVariantsByEAN`, dont on détecte la VIOLATION (source unique :
+ * on ne re-dérive pas une 2ᵉ logique de visibilité). S'il est `visible=false`, un chemin l'a laissé
+ * masqué/orphelin SANS re-groupage (ex. correction manuelle d'EAN → relâche `variant_of` puis regroup
+ * échoué ; un marchand sans caisse ni facture n'a AUCUN re-trigger périodique) → le produit est
+ * vendable mais ABSENT du feed Google ET de la vitrine = silencieusement PERDU.
+ *
+ * ⚠️ Parité VOLONTAIREMENT CONSERVATRICE : `groupVariantsByEAN` n'exige un nom que sur sa branche
+ * sans-EAN ; ses branches solo/groupe-EAN rendent visible sur `stock>0` SEUL. Ici on exige TOUJOURS
+ * un nom (`!name` → non flag) : un produit sans nom ne devrait de toute façon pas être au feed, et
+ * flag l'absence de nom serait du bruit. Conséquence assumée : une fiche EAN SANS nom coincée
+ * `visible=false` n'est PAS signalée (angle mort étroit — les produits POS portent un nom en
+ * pratique). Le masquage DÉLIBÉRÉ (route `reject`/`DELETE` soft-delete/PATCH `visible=false`) pose
+ * `review_status='rejected'` → exclu par la garde pending → JAMAIS un faux positif.
+ *
+ * EXCLUT les invisibilités LÉGITIMES (« zéro faux positif ») :
+ *  - pending/masked/pending_review (`review_status` ∉ {null,'validated'}) : le marchand n'a pas
+ *    encore validé l'enrichissement → invisible VOULU jusqu'à validation ;
+ *  - fiche sans nom : incomplète → invisible VOULU ;
+ *  - une VRAIE variante (`variant_of` non-null) : masquée à dessein, son stock roule vers le principal ;
+ *  - stock ≤ 0 : rupture légitime, rien à perdre.
+ *
+ * `visible` doit être EXPLICITEMENT `false` (colonne `DEFAULT true`, migration 027) : null/undefined
+ * (donnée absente) n'est PAS une dérive prouvée → on ne flag pas au hasard.
+ */
+export function isInvisibleOrphan(input: {
+    variantOf: string | null | undefined;
+    visible: boolean | null | undefined;
+    quantity: number;
+    reviewStatus: string | null | undefined;
+    name: string | null | undefined;
+}): boolean {
+    if (input.variantOf != null) return false; // vraie variante masquée = légitime
+    if (input.visible !== false) return false; // seul `false` explicite = masqué à tort
+    if (!(input.quantity > 0)) return false; // pas de stock = rien à perdre
+    if (input.reviewStatus != null && input.reviewStatus !== "validated") return false; // pending = légitime
+    if (!input.name || input.name.trim().length === 0) return false; // fiche incomplète = légitime
+    return true;
+}
+
 export type PriceBounds = {
     lower: number;
     upper: number;

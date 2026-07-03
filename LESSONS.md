@@ -779,3 +779,25 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ Annoncer "quotas tenus" quand on est à 10-20% du volume promis → marquer explicitement "[ESTIMATION]" sur les chiffres non-sourcés et écrire un META-REPORT honnête en fin de boucle (2026-04-23)
 - ❌ Faire une boucle de recherche sans **clôture brain Nexus** → les insights restent dans `research/loop-XXX/` et s'évaporent. Règle : tout insight à impact MAJEUR doit être poussé en fiche brain dans la même session que la boucle, sinon il n'existe pas dans 3 mois (2026-04-23)
 - ❌ Créer une nouvelle fiche brain alors qu'une fiche existe déjà → toujours grep `04-Partenariats/`, `09-Veille/` etc. avant de créer. Si contradiction avec fiche existante, **expliciter la contradiction dans la fiche** (Update YYYY-MM-DD), ne jamais écraser silencieusement (2026-04-23 cas Fédé Toulouse)
+
+## Watchdog de complétude — un détecteur d'invariant doit exclure les états DÉLIBÉRÉS (sinon alarm fatigue)
+- ✅ **Watchdog `invisible_orphan` (cron quality-check)** : détecte un PRINCIPAL (`variant_of=null`) non-pending,
+  nommé, `stock>0` mais `visible=false` = produit vendable perdu du feed+vitrine (ferme le résidu du chemin
+  correction manuelle d'EAN où un regroup échoué laisse un orphelin invisible). Détecteur PUR `isInvisibleOrphan`
+  (`src/lib/monitoring/quality.ts`) = détecte la VIOLATION de la règle de visibilité de `groupVariantsByEAN`
+  (source unique, pas de 2ᵉ logique). Signal Sentry INCONDITIONNEL (garantie « impossible sans alerte » sans
+  migration) ; persistance quality_alerts GATED (flag `INVISIBLE_ORPHAN_ALERTS=1` + migration 107) sur un chemin
+  d'insert SÉPARÉ du batch stock/prix (le type gated ne peut pas empoisonner le lot sur la contrainte CHECK).
+- ❌ **Un watchdog d'invariant d'état FLAG les masquages DÉLIBÉRÉS si l'intention n'est pas marquée** (finding HIGH
+  SF-hunter). `DELETE /api/products/[id]` (soft-delete POS) posait `visible=false` SEUL → `review_status` restait
+  'validated' → signature EXACTE d'un orphelin → l'alarme aurait crié au loup CHAQUE JOUR sur un masquage voulu par
+  le marchand (jusqu'à ce qu'il retire l'article de sa caisse). **Règle : tout writer d'un masquage délibéré doit
+  poser un MARQUEUR d'intention** (ici `review_status='rejected'`, déjà la convention de la route `reject`), que le
+  détecteur exclut → sinon l'invariant confond « perdu par bug » et « masqué exprès ». Grep TOUS les writers de
+  `visible=false` (reject ✓, mais DELETE soft-delete ✗ et le champ `visible` de PATCH ✗ posaient un `false` nu).
+  Bonus du marqueur : masquage STICKY (le prochain `groupVariantsByEAN` ne ré-affiche plus le produit masqué).
+- ⚠️ **Vérifier la PRÉMISSE du détecteur sur données PROD avant de le truster** : la condition naïve du résidu
+  (`variant_of IS NULL AND visible=false AND stock>0`) aurait produit **7 faux positifs dès aujourd'hui** (7 produits
+  `review_status='pending'` légitimement invisibles). La garde pending du détecteur les supprime = « zéro faux
+  positif » prouvé sur réel. **Un détecteur qui reproduit une règle de visibilité doit exclure EXACTEMENT ses états
+  légitimement-invisibles** (pending/masked, sans nom), pas juste l'état nominal. (complétude, quality-check, 2026-07-03)

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
     computeCategoryPriceBounds,
+    isInvisibleOrphan,
     isPriceAberrant,
     isStockStale,
     type PriceBounds,
@@ -11,9 +12,16 @@ import { fetchAllRows } from "@/lib/supabase/paginate";
 import { chunk } from "@/lib/ingest/reconcile";
 
 /**
- * Cron monitoring qualité : détecte stock figé + prix aberrant + flux d'ingestion
- * arrêté + caisse déconnectée, et crée des quality_alerts (dédupliquées par index
- * partiel `uq_quality_alerts_open`). Lu par le dashboard marchand.
+ * Cron monitoring qualité : détecte stock figé + prix aberrant + PRODUIT VENDABLE RENDU
+ * INVISIBLE (dérive de complétude) + flux d'ingestion arrêté + caisse déconnectée, et crée
+ * des quality_alerts (dédupliquées par index partiel `uq_quality_alerts_open`). Lu par le
+ * dashboard marchand.
+ *
+ * Le watchdog `invisible_orphan` (helper pur `isInvisibleOrphan`) ferme le résidu du chemin
+ * de correction manuelle d'EAN (`PATCH /api/products/[id]` → regroup échoué laisse un produit
+ * `variant_of=null, visible=false, stock>0` invisible sans re-trigger). Son SIGNAL Sentry est
+ * INCONDITIONNEL ; la persistance en quality_alerts est GATED (migration 107 + flag
+ * INVISIBLE_ORPHAN_ALERTS=1) et sur un chemin d'insert SÉPARÉ (anti batch-poisoning).
  *
  * ⚠️ C'est l'ALARME de complétude (north-star : « ne rien perdre silencieusement »).
  * Une alarme qui échoue en silence = la garantie entière est nulle. Donc TOUTES ses
@@ -43,6 +51,12 @@ type ProductRow = {
     merchant_id: string;
     category: string | null;
     price: number | null;
+    // Dérive de complétude « produit vendable rendu invisible » (isInvisibleOrphan) :
+    // un principal non-pending nommé avec du stock DEVRAIT être visible.
+    visible: boolean | null;
+    variant_of: string | null;
+    review_status: string | null;
+    name: string | null;
     stock: { quantity: number; updated_at: string | null } | { quantity: number; updated_at: string | null }[] | null;
 };
 
@@ -70,7 +84,7 @@ export async function GET(request: Request) {
         const { data: products, error: productsErr } = await fetchAllRows<ProductRow>(() =>
             admin
                 .from("products")
-                .select("id, merchant_id, category, price, stock(quantity, updated_at)")
+                .select("id, merchant_id, category, price, visible, variant_of, review_status, name, stock(quantity, updated_at)")
                 .is("archived_at", null)
                 .order("id", { ascending: true }),
         );
@@ -129,11 +143,47 @@ export async function GET(request: Request) {
             type: string;
             detail: Record<string, unknown>;
         }[] = [];
+        // Alertes « produit vendable rendu invisible » : chemin d'insert SÉPARÉ du batch
+        // stock_stale/price_aberrant. Raison : le type `invisible_orphan` n'existe dans la
+        // contrainte CHECK `quality_alerts_type_check` qu'APRÈS la migration 107 (gated, GO
+        // Thomas). Le mélanger au batch produit ferait échouer TOUT le lot sur la contrainte
+        // (batch-poisoning → perte des alertes stock/prix — piège LESSONS 081/089). L'INSERT
+        // n'est tenté QUE si le flag INVISIBLE_ORPHAN_ALERTS=1 (posé une fois la migration en
+        // prod). SANS le flag : le compte + le signal Sentry (ci-dessous) restent actifs →
+        // l'invariant « impossible sans alerte » tient dès maintenant, sans DB write.
+        const orphanToInsert: {
+            merchant_id: string;
+            product_id: string;
+            type: string;
+            detail: Record<string, unknown>;
+        }[] = [];
+        const orphanAlertsEnabled = process.env.INVISIBLE_ORPHAN_ALERTS === "1";
         let staleCount = 0;
         let aberrantCount = 0;
+        let invisibleOrphanCount = 0;
 
         for (const r of rows) {
             const st = stockOf(r);
+
+            if (
+                isInvisibleOrphan({
+                    variantOf: r.variant_of,
+                    visible: r.visible,
+                    quantity: st?.quantity ?? 0,
+                    reviewStatus: r.review_status,
+                    name: r.name,
+                })
+            ) {
+                invisibleOrphanCount++;
+                if (!alreadyOpen.has(`${r.id}:invisible_orphan`)) {
+                    orphanToInsert.push({
+                        merchant_id: r.merchant_id,
+                        product_id: r.id,
+                        type: "invisible_orphan",
+                        detail: { quantity: st?.quantity ?? 0, review_status: r.review_status },
+                    });
+                }
+            }
 
             if (st && isStockStale(st.updated_at, st.quantity, now)) {
                 staleCount++;
@@ -173,6 +223,35 @@ export async function GET(request: Request) {
                     errors.push("insert-product-alerts-failed");
                 } else {
                     productAlertsNew += batch.length;
+                }
+            }
+        }
+
+        // ── Watchdog complétude : produits vendables rendus INVISIBLES (perte n°1) ──
+        // SIGNAL Sentry INCONDITIONNEL dès qu'il y a une dérive : c'est la garantie
+        // « impossible sans alerte » (north-star §1), active AVANT même la migration 107.
+        // Sentry dédup par fingerprint → un événement/run pour une condition persistante
+        // = ops normal (« il reste des produits perdus, corrige-les »), pas du spam.
+        let invisibleOrphanNew = 0;
+        if (invisibleOrphanCount > 0) {
+            captureError(
+                new Error(
+                    `Complétude : ${invisibleOrphanCount} produit(s) vendable(s) INVISIBLE(s) (variant_of=null, visible=false, stock>0, non-pending) — perdus du feed + vitrine`,
+                ),
+                { route: "cron/quality-check", phase: "invisible-orphan-watchdog" },
+            );
+        }
+        // Persistance dashboard : GATED (migration 107 + flag). Chemin d'insert SÉPARÉ +
+        // dédup fiable (jamais d'insert aveugle → unique-violation). Sans flag : compte +
+        // Sentry seulement (aucun write d'un type que la contrainte CHECK rejette encore).
+        if (orphanAlertsEnabled && dedupAvailable && orphanToInsert.length > 0) {
+            for (const batch of chunk(orphanToInsert, 500)) {
+                const { error: insErr } = await admin.from("quality_alerts").insert(batch);
+                if (insErr) {
+                    captureError(insErr, { route: "cron/quality-check", phase: "insert-invisible-orphan" });
+                    errors.push("insert-invisible-orphan-failed");
+                } else {
+                    invisibleOrphanNew += batch.length;
                 }
             }
         }
@@ -307,7 +386,9 @@ export async function GET(request: Request) {
             products_checked: rows.length,
             stock_stale: staleCount,
             price_aberrant: aberrantCount,
+            invisible_orphan: invisibleOrphanCount,
             new_alerts: productAlertsNew,
+            invisible_orphan_new: invisibleOrphanNew,
             ingest_silent_new: ingestSilentNew,
             pos_disconnected_new: posDisconnectedNew,
             ...(errors.length > 0 ? { errors } : {}),

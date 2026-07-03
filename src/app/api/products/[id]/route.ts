@@ -207,7 +207,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             updates.photo_url = photo_url;
         }
         if (available_sizes !== undefined) updates.available_sizes = available_sizes;
-        if (visible !== undefined) updates.visible = visible;
+        if (visible !== undefined) {
+            updates.visible = visible;
+            // Masquer un produit via cette API = acte DÉLIBÉRÉ → poser le même marqueur que
+            // `reject`/`DELETE` (`review_status='rejected'`) pour que l'invariant du watchdog
+            // de complétude reste vrai PARTOUT où `visible=false` est écrit (sinon un
+            // `visible=false` nu depuis un futur outil admin/support relancerait le faux
+            // positif « produit vendable invisible »). On ne touche PAS `review_status` sur
+            // une publication (`visible=true`) : le detector n'observe que les invisibles.
+            if (visible === false) updates.review_status = "rejected";
+        }
 
         if (Object.keys(updates).length === 0) {
             return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
@@ -320,9 +329,17 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
         // POS-sourced products: soft delete only (POS is source of truth)
         // To permanently remove, merchant must delete from their POS
         if ((product as any).pos_item_id) {
+            // `review_status: "rejected"` = MARQUEUR de masquage DÉLIBÉRÉ (même convention que la
+            // route `reject`). SANS lui, un soft-delete ne pose que `visible=false` et laisse
+            // `review_status='validated'`, `variant_of=null`, un nom et du stock → signature
+            // EXACTE d'un « produit vendable rendu invisible » → le watchdog de complétude
+            // (cron quality-check `isInvisibleOrphan`) crierait au loup chaque jour sur une
+            // action VOULUE par le marchand (faux positif = érosion de l'alarme). Bonus : rend
+            // le masquage STICKY — sinon le prochain `groupVariantsByEAN` (stock>0, validé) le
+            // repasserait `visible=true`, ré-affichant un produit que le marchand a masqué.
             const { error } = await supabase
                 .from("products")
-                .update({ visible: false })
+                .update({ visible: false, review_status: "rejected" })
                 .eq("id", id);
 
             if (error) {

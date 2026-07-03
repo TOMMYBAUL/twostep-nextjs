@@ -188,6 +188,21 @@ describe("PATCH /api/products/[id] — re-groupage après correction manuelle d'
         expect(captureMock.mock.calls[0][1]).toMatchObject({ phase: "regroup-after-ean-change" });
     });
 
+    it("visible=false → pose AUSSI review_status='rejected' (masquage délibéré, invariant watchdog)", async () => {
+        // Sans ce marqueur, un `visible=false` nu laisserait la signature d'un « produit vendable
+        // invisible » → faux positif quotidien du watchdog de complétude (finding MED SF-hunter).
+        const res = await patch({ visible: false });
+        expect(res.status).toBe(200);
+        expect(mainUpdatePayloads[0]).toMatchObject({ visible: false, review_status: "rejected" });
+    });
+
+    it("visible=true → NE touche PAS review_status (republication ≠ masquage)", async () => {
+        const res = await patch({ visible: true });
+        expect(res.status).toBe(200);
+        expect(mainUpdatePayloads[0]).toHaveProperty("visible", true);
+        expect(mainUpdatePayloads[0]).not.toHaveProperty("review_status");
+    });
+
     it("rejette un EAN mal formé sans toucher au regroupage (validation amont)", async () => {
         const res = await patch({ ean: "abc" });
         expect(res.status).toBe(400);

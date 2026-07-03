@@ -160,6 +160,24 @@ function staleProduct(i: number): Row {
     };
 }
 
+/** Produit en DÉRIVE de complétude : principal (variant_of=null), validé, nommé, EN STOCK,
+ *  mais `visible=false` → vendable mais absent du feed + vitrine (perte silencieuse n°1).
+ *  updated_at RÉCENT + prix valide + catégorie null → ne déclenche NI stock_stale NI
+ *  price_aberrant (isole l'assertion invisible_orphan). */
+function orphanProduct(i: number): Row {
+    return {
+        id: `o${String(i).padStart(5, "0")}`,
+        merchant_id: "m-1",
+        category: null,
+        price: 20,
+        visible: false,
+        variant_of: null,
+        review_status: "validated",
+        name: `Produit orphelin ${i}`,
+        stock: [{ quantity: 4, updated_at: "2099-01-01T00:00:00.000Z" }],
+    };
+}
+
 async function run() {
     const { GET } = await import("@/app/api/cron/quality-check/route");
     const res = await GET(authedReq());
@@ -187,6 +205,7 @@ describe("cron/quality-check — l'alarme de complétude (route handler)", () =>
         });
         mockAdmin.current = makeClient();
         process.env.CRON_SECRET = "test-secret";
+        delete process.env.INVISIBLE_ORPHAN_ALERTS; // watchdog persistance GATED : off par défaut
         vi.clearAllMocks();
     });
 
@@ -312,6 +331,64 @@ describe("cron/quality-check — l'alarme de complétude (route handler)", () =>
         const { body } = await run();
         expect(body.pos_disconnected_new).toBe(1);
         expect(insertedTypes("pos_disconnected")).toHaveLength(1);
+    });
+
+    it("COMPLÉTUDE — orphelin détecté : compté + Sentry INCONDITIONNEL, mais SANS flag → 0 insert (type gated)", async () => {
+        h.products = [orphanProduct(0), orphanProduct(1)];
+        const { status, body } = await run();
+        expect(status).toBe(200);
+        // Le compte + le signal Sentry tiennent l'invariant « impossible sans alerte » SANS migration.
+        expect(body.invisible_orphan).toBe(2);
+        expect(mockCapture).toHaveBeenCalled();
+        // Sans INVISIBLE_ORPHAN_ALERTS=1 : aucune écriture d'un type que la contrainte CHECK rejette.
+        expect(body.invisible_orphan_new).toBe(0);
+        expect(insertedTypes("invisible_orphan")).toHaveLength(0);
+        // Pas d'échec → non dégradé (le signal Sentry n'est pas une erreur de run).
+        expect(body.ok).toBe(true);
+    });
+
+    it("COMPLÉTUDE — flag ON : orphelin PERSISTÉ en quality_alerts (chemin d'insert séparé)", async () => {
+        process.env.INVISIBLE_ORPHAN_ALERTS = "1";
+        h.products = [orphanProduct(0), orphanProduct(1)];
+        const { body } = await run();
+        expect(body.invisible_orphan).toBe(2);
+        expect(body.invisible_orphan_new).toBe(2);
+        const inserted = insertedTypes("invisible_orphan");
+        expect(inserted).toHaveLength(2);
+        expect(inserted.every((r) => r.product_id != null && (r.product_id as string).startsWith("o"))).toBe(true);
+    });
+
+    it("COMPLÉTUDE — flag ON + dédup : un orphelin déjà alerté n'est PAS ré-inséré", async () => {
+        process.env.INVISIBLE_ORPHAN_ALERTS = "1";
+        h.products = [orphanProduct(0), orphanProduct(1)];
+        h.openAlerts = [{ id: "a1", product_id: "o00000", type: "invisible_orphan" }];
+        const { body } = await run();
+        expect(body.invisible_orphan).toBe(2); // compte = TOUS les orphelins présents
+        const inserted = insertedTypes("invisible_orphan");
+        expect(inserted).toHaveLength(1); // seul le nouveau (o00001)
+        expect(inserted[0].product_id).toBe("o00001");
+        expect(body.invisible_orphan_new).toBe(1);
+    });
+
+    it("ANTI BATCH-POISONING — orphelin + stale mélangés, flag OFF : le lot stock_stale s'insère quand même", async () => {
+        // L'orphelin (type gated) ne DOIT PAS empoisonner le batch produit stock_stale/price_aberrant.
+        h.products = [orphanProduct(0), staleProduct(1)];
+        const { body } = await run();
+        expect(body.invisible_orphan).toBe(1);
+        expect(body.invisible_orphan_new).toBe(0);
+        // Le stock_stale est bien inséré (chemin séparé intact).
+        expect(body.stock_stale).toBe(1);
+        expect(insertedTypes("stock_stale")).toHaveLength(1);
+        expect(body.new_alerts).toBe(1);
+        expect(body.ok).toBe(true);
+    });
+
+    it("ZÉRO FAUX POSITIF — un pending_review invisible en stock n'est PAS un orphelin", async () => {
+        process.env.INVISIBLE_ORPHAN_ALERTS = "1";
+        h.products = [{ ...orphanProduct(0), review_status: "pending_review" }];
+        const { body } = await run();
+        expect(body.invisible_orphan).toBe(0);
+        expect(insertedTypes("invisible_orphan")).toHaveLength(0);
     });
 
     it("catalogue sain (0 produit, 0 watchdog) → ok:true, 0 alerte, non dégradé", async () => {

@@ -3922,3 +3922,70 @@ silent-loss du chemin de correction ; 1 residu MED documente+planifie, stricteme
 10/10 (0 migration, `git revert`) · Scope 9/10 (2 fichiers, 1 unite) · Align 9/10 (identite/concordance = cœur
 « data exacte » §1+§2, de-risque le pilote POS multimarque). 1 bug reel latent ferme. 2 fichiers. tests
 1027->1035. CFR 10 runs = 100% (0 revert).
+
+## 2026-07-03 (run autonome) — COMPLÉTUDE : watchdog « produit vendable rendu INVISIBLE » (quality-check)
+
+**Sourcing (§6, backlog-nominé)** : le run précédent (identité/regroupage EAN, commit `e82cef7`) a laissé un
+résidu MED documenté + a NOMMÉ le prochain [R] : « watchdog de dérive `variant_of IS NULL AND visible=false AND
+stock>0` dans quality-check (= §7 invariants de complétude testés) ». C'est IN-SCOPE (invariant de complétude =
+item n°1 §7, north-star §1 « ne rien perdre silencieusement »), réversible, unit-testable sans yeux. DB prod
+re-vérifiée ce run : 0 alerte fraîche 24 h (dernière il y a 3 j, déjà traitée) → 0 signal plus prioritaire.
+
+**Le bug fermé (latent, préventif)** : après une correction manuelle d'EAN, `PATCH /api/products/[id]` relâche
+`variant_of` puis re-dérive `groupVariantsByEAN` ; si le regroup LÈVE après la relâche, un produit reste
+`variant_of=null, visible=false, stock>0` — vendable mais ABSENT du feed Google ET de la vitrine = silencieusement
+PERDU. Un marchand sans caisse ni facture n'a AUCUN re-trigger périodique → seul un watchdog le rattrape.
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12)
+- Détecteur PUR `isInvisibleOrphan` (`src/lib/monitoring/quality.ts`) : flag un PRINCIPAL (`variant_of=null`),
+  non-pending (`review_status` null/'validated'), NOMMÉ, `stock>0` mais `visible=false`. Détecte la VIOLATION de
+  la règle de visibilité de `groupVariantsByEAN` (source unique, pas de 2ᵉ logique). EXCLUT les invisibilités
+  LÉGITIMES (zéro faux positif) : pending/masked, vraie variante, rupture, fiche sans nom, `visible` non-explicitement-false.
+- Câblé dans le cron `quality-check` : **SIGNAL Sentry INCONDITIONNEL** dès `count>0` (garantie « impossible sans
+  alerte » active AVANT la migration) + **persistance quality_alerts GATED** (flag `INVISIBLE_ORPHAN_ALERTS=1` +
+  migration 107) sur un chemin d'insert SÉPARÉ du batch stock/prix (anti batch-poisoning : le type gated ne peut
+  pas faire échouer tout le lot sur la contrainte CHECK — piège LESSONS 081/089).
+- Migration `107_quality_alerts_invisible_orphan.sql` (idempotente, transaction-wrappée, rollback en tête, **NON
+  APPLIQUÉE** — GATED §4). Ajoute 'invisible_orphan' à la contrainte CHECK type (strict superset).
+
+**Preuve DB prod (méthode 1bis, vérif de la prémisse)** : détecteur exact = **0 ligne** aujourd'hui (préventif, 0
+marchand réel) ; MAIS 7 « invisibles-en-stock » existent — **tous `review_status='pending'`**, correctement EXCLUS.
+La condition naïve du résidu (`variant_of IS NULL AND visible=false AND stock>0`) aurait produit **7 faux positifs
+dès aujourd'hui** ; la garde pending du détecteur les supprime tous = « zéro faux positif » PROUVÉ sur données réelles.
+
+**Preuve tests** : `tests/monitoring-quality.test.ts` (+9 : matrice détecteur, exclusions légitimes, 'rejected') +
+`tests/cron-quality-check-route.test.ts` (+5 : compte+Sentry inconditionnels, insert gated par flag, dédup,
+anti batch-poisoning, faux-positif pending) + les 2 tests writer ci-dessous. Faux clients non-mockés (détecteur réel).
+
+**Revues spécialistes OBLIGATOIRES**
+- **database-reviewer (migration 107) : SOUND** — idempotente, superset strict (aucune valeur perdue), gating app
+  correct, chemin d'insert séparé = 2ᵉ garde même si le flag est posé avant la migration. 0 changement requis.
+- **silent-failure-hunter (watchdog) : mécaniques SOUND** (Sentry inconditionnel, gating/persistance séparée,
+  anti batch-poisoning confirmés) MAIS **1 HIGH réel + 1 MED sémantiques** dans le détecteur, CORRIGÉS :
+  - **HIGH** : `DELETE /api/products/[id]` (soft-delete POS) posait `visible=false` SEUL → `review_status` restait
+    'validated' → signature EXACTE d'un orphelin → l'alarme aurait crié au loup CHAQUE JOUR sur un masquage VOULU
+    par le marchand (alarm fatigue = érosion de l'alarme). **Fix** : le soft-delete pose aussi `review_status='rejected'`
+    (même convention que la route `reject`, déjà exclue par le détecteur) → détecteur silencieux + masquage STICKY
+    (bonus : le prochain `groupVariantsByEAN` ne ré-affiche plus un produit masqué). Régression : `tests/products-id-delete-soft.test.ts` (+2).
+  - **MED (latent)** : le champ `visible` de `PATCH` acceptait `visible=false` nu (aucun caller frontend aujourd'hui,
+    surface API ouverte). **Fix** : PATCH pose aussi `review_status='rejected'` sur `visible=false` (invariant à TOUS
+    les writers). Régression : `tests/products-id-patch-regroup.test.ts` (+2, dont visible=true ne touche pas review_status).
+  - **LOW/MED** : le docstring claimait une parité EXACTE avec `groupVariantsByEAN` — corrigé : le détecteur est
+    VOLONTAIREMENT plus conservateur (exige TOUJOURS un nom ; angle mort étroit sur une fiche EAN sans nom, assumé).
+
+**Métrique** : `tsc` OK, `test:run` **1035→1053** (+18). 1 unité [R] in-scope fermée (watchdog complétude, Rang 3
+nominé) + 2 faux positifs writer fermés (HIGH+MED). Blast LOW (cron entry-point + 2 routes entry-point ; nouveau
+helper pur). 1 migration GATED (non appliquée). Réversible (`git revert`).
+
+**⚠️ ANOMALIE ESCALADÉE (working tree)** : 2 fichiers modifiés PENDANT ce run mais **PAS par moi** —
+`src/lib/enrichment/match-product.ts` (pagination `fetchAllRows` de `buildProductIndex`) + `src/lib/google/inventory.ts`
+(parité population feed sur `pushInventoryToGoogle`). Legit et in-theme, mais mtimes 16:37 (après mes edits + après les
+reviewers) = probablement un run concurrent/interrompu partageant le working tree. **NON committés par ce run** (honnêteté :
+je ne committe pas ce que je n'ai pas fait/testé/revu). Laissés intacts pour Thomas / leur auteur. Voir notify-extra.
+
+**Scorecard** : Preuve 8/10 (détecteur validé sur données PROD réelles — 7 faux positifs évités prouvés ; faux clients
+non-vacants ; mais 0 dérive réelle aujourd'hui = préventif) · Sécu north-star 9/10 (2 revues ; HIGH+MED faux positifs
+fermés AVANT enable ; ferme un silent-loss du chemin correction EAN ; 0 faux positif introduit) · Réversibilité 10/10
+(1 migration gated non appliquée, `git revert`) · Scope 8/10 (5 fichiers code+tests de MON unité + 1 migration ; anomalie
+working-tree escaladée, non mélangée) · Align 9/10 (invariant de complétude §7 item n°1 = cœur « ne rien perdre »).
+1 bug HIGH réel fermé (soft-delete false positive). tests 1035→1053. CFR 10 runs = 100% (0 revert).
