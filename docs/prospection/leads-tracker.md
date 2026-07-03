@@ -1,16 +1,65 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-02 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-03 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 167
-- NOUVEAU : 48
+- Total leads : 184
+- NOUVEAU : 55
 - CONTACTE : 1
-- BROUILLON : 92
+- BROUILLON : 102
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-03 (L'Eclaireur) — Carmes épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi)
+
+**Note de session :** Carmes ÉPUISÉ dans top-prospects-centre.json (26/26 — confirmé 19/06). Session convertie en exploration de toulouse-merchants-full.json (1 561 marchands) sur la zone Carmes (rue du Languedoc, rue des Filatiers, rue Cujas, rue Pharaon, rue Pargaminières, place des Carmes, rue Rempart Villeneuve, rue Pierre de Fermat). 85 candidats NAF 47.* avec gérant nommé et non dans le tracker. **10 emails confirmés via sites officiels, annuaires, répertoires de marques et pages de contact.** Segments : optique (2), mode femme (3), mode homme (1), maroquinerie/bagagerie (1), déco (1), cosmétique (1), concept store (1). MR. SUNBELL STORE email trouvé via répertoire stockistes Buzz Ricksons (source non-évidente). MORRAY BEAUTY : NAF 47.* confirmé mais à vérifier terrain (retail cosmétiques vs salon). Notion MCP indisponible (20ème session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| GLORIEUX LUNETIERS | Carmes/Languedoc | Optique | Herve Daudon | optic.glorieux@gmail.com | 847599420 | 8/10 | BROUILLON | Email confirmé via Google Maps/opticien Glorieux. 34 rue du Languedoc. Opticien indépendant, montures de marque (Ray-Ban, etc.). |
+| LOUIS MANVER LUNETIER | Carmes/Filatiers | Optique | Louis Mantecon vernalte | louismanver.opticien@gmail.com | 513309153 | 8/10 | BROUILLON | Email confirmé via annuaires. 29 rue des Filatiers. Opticien créateur de lunettes sur-mesure + marques. |
+| MR. SUNBELL STORE | Carmes/Cujas | Mode homme | Jerome Biaggi | mr.sunbellstore.france@gmail.com | 821109709 | 8/10 | BROUILLON | Email confirmé via répertoire stockistes buzzricksons.com. 17 rue Cujas. Mode homme vintage-inspired (Buzz Ricksons, etc.). Site 503 mais boutique active. |
+| COMBO (CARPE DIEM 31) | Carmes/Cujas | Maroquinerie/Bagagerie | Marie Mignonac (degeilh) | combo31@hotmail.fr | 514886829 | 7/10 | BROUILLON | Email confirmé via annuaires. 13 rue Cujas. Bagagerie, maroquinerie, accessoires voyage de marque. |
+| LES DESSOUS CHICS (CARRADE ET FILS) | Carmes/Languedoc | Mode femme/Lingerie | Jean-Michel Carrade | ph@lingerie-carrade.com | 310239041 | 7/10 | BROUILLON | Email confirmé via lingerie-carrade.com. 29 rue du Languedoc. Lingerie de marque (Aubade, Simone Pérèle…) depuis plusieurs décennies. |
+| EURL GREELOO CONCEPT | Carmes/Pharaon | Mode/Concept store | Dominique Teillac (borsoni) | contactgrelooconcept@gmail.com | 501325831 | 7/10 | BROUILLON | Email confirmé via annuaires. 43 rue Pharaon. Concept store mode femme + accessoires déco. |
+| MJ CONCEPT STORE - VERSION CAMELEON | Carmes/Languedoc | Mode/Concept store | Marie-laure Servidio (crabos) | contact@mjconceptstore.com | 814518205 | 7/10 | BROUILLON | Email confirmé via mjconceptstore.com. 46 rue du Languedoc. Concept store mode multi-univers. |
+| COULEURS D'ORIENT | Carmes/Pargaminières | Déco/Tapis | Mustapha Ben lahbib | contact@couleursdorient.com | 538509183 | 7/10 | BROUILLON | Email confirmé via couleursdorient.com. 12 rue Pargaminières. Tapis et décoration orientale, produits référencés avec EAN potentiel. |
+| LES FEES DE LA CREATION | Carmes/Cujas | Mode femme | Evane Friederich | lesfeesdelacreation@voila.fr | 493678122 | 6/10 | BROUILLON | Email confirmé via blog/annuaires (voila.fr — adresse ancienne, à vérifier). 12 rue Cujas. Mode femme créateurs depuis 2007. |
+| MORRAY BEAUTY | Carmes/Fermat | Cosmétique | Ndeye Thiam | morraybeauty@gmail.com | 890482235 | 6/10 | BROUILLON | Email confirmé via morraybeauty.com. 10 rue Pierre de Fermat. ⚠️ NAF 47.* mais Planity/Fresha présents → à vérifier terrain : retail cosmétiques ou salon de beauté ? |
+
+**Écartées session 03/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| HERVE MARIAGE | 523860542 | Liquidation judiciaire juillet 2021. ÉCARTÉE DÉFINITIF. |
+| VINTAGE PARADISE | 797408788 | Dépôt-vente seconde main — hors cible Two-Step. ÉCARTÉE. |
+| MASKOTTE | 948385398 | Animalerie (pet shop) — hors cible Two-Step. ÉCARTÉE. |
+| SARL LES OREADES | 327004503 | Galerie d'art (peintures) — hors cible Two-Step. ÉCARTÉE. |
+| ISABELLE KLEIN | 438338550 | Galerie décoration/art — hors cible Two-Step. ÉCARTÉE. |
+| ART - ARTICLES RARES | 832399612 | Dépôt-vente occasion — hors cible Two-Step. ÉCARTÉE. |
+| EIGHT BALL STORE | 479553620 | Bombes peinture graffiti — hors cible Two-Step. ÉCARTÉE. |
+| MAISON ET CHIFFONS | 452171556 | Droguerie/quincaillerie — hors cible Two-Step. ÉCARTÉE. |
+| MATSAI MARA | 504776931 | Créatrice propre marque bijoux (Bordeaux) — hors cible Two-Step. ÉCARTÉE. |
+| TOULOUSE TIME ART | 478971336 | Ventes aux enchères — hors cible Two-Step. ÉCARTÉE. |
+| JOUPI (JOUETS ET CIE) | 524535986 | Franchise King Jouet. ÉCARTÉE DÉFINITIF. |
+| CONTACT'O | 819580259 | Dirigeante démissionnée, probablement fermé. ÉCARTÉE. |
+| DREAM DOLLS | 924902935 | Dépôt-vente jouets anciens — hors cible Two-Step. ÉCARTÉE. |
+| EURL MARIE CLAUDE BEAUCHET | 381978485 | Inactive depuis 2017. ÉCARTÉE DÉFINITIF. |
+| LA CHEMISERIE TOULOUSAINE (LCT) | 403309891 | Aucun email public (tél 05 34 32 61 16). NOUVEAU — terrain. |
+| BROCK'NROLL | 494671316 | Aucun email public. NOUVEAU — terrain. |
+| LE VICTORY | 852451061 | Aucun email public (IG @victorytoulouse, tél 05 61 21 92 06). NOUVEAU — terrain. |
+| BY LILOU | 913874947 | Contact via DM Instagram @by.lilou.toulouse uniquement. NOUVEAU — terrain. |
+| LOJO (LES BELLES BRANCHES) | 982720153 | Opticien récent, tél uniquement. NOUVEAU — terrain. |
+| MERIC BOUTIQUE | 424777449 | Site web hors ligne, aucun email public. NOUVEAU — terrain. |
+| LE BOUDOIR DE PAULETTE | 818418311 | Bijouterie fantaisie, tél uniquement. NOUVEAU — terrain. |
+| MINIMA | 989365747 | Déco espagnole récente 2025, aucun email public (IG @minimatoulouse). NOUVEAU — terrain. |
+
+*Note : Notion MCP indisponible (20ème session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-03".*
+
+---
 
 ### Mardi — 2026-07-01 (L'Eclaireur) — Saint-Etienne épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
 
