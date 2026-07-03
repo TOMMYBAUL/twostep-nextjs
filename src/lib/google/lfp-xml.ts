@@ -19,6 +19,7 @@
  *   2026-04-22 pre-fix)
  */
 
+import { feedAvailability, type FeedStockRow } from "@/lib/google/feed-availability";
 import { gtinOnlyTierEnabled, isFeedEligible } from "@/lib/google/feed-eligibility";
 import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
 
@@ -39,7 +40,12 @@ export interface LfpProductRow {
     price: number | null;
     photo_url: string | null;
     photo_processed_url: string | null;
-    stock: Array<{ quantity: number }> | { quantity: number } | null;
+    /**
+     * Embed `stock(quantity, source, source_ts, updated_at)` — objet OU tableau (PostgREST).
+     * `source`/`source_ts` requis par la disponibilité honnête (M5) ; sans eux,
+     * `feedAvailability` retombe sur « out of stock » (conservateur).
+     */
+    stock: FeedStockRow[] | FeedStockRow | null;
     /** Promos actives jointes par la route — optionnel. */
     promotions?: FeedPromoRow[] | null;
 }
@@ -68,16 +74,7 @@ export function escapeXml(s: string): string {
         .replace(/'/g, "&apos;");
 }
 
-function getStockQty(
-    s: LfpProductRow["stock"],
-): number {
-    if (!s) return 0;
-    if (Array.isArray(s)) return s[0]?.quantity ?? 0;
-    return s.quantity ?? 0;
-}
-
 function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): string {
-    const qty = getStockQty(p.stock);
     const rawTitle = p.canonical_name ?? p.name;
     const title =
         rawTitle.length <= TITLE_MAX
@@ -109,7 +106,7 @@ function buildItemXml(p: LfpProductRow, storeCode: string, nowMs: number): strin
       <g:gtin>${escapeXml(p.ean!)}</g:gtin>
       <g:title>${escapeXml(title)}</g:title>${optDescription}${optBrand}
       <g:price>${p.price!.toFixed(2)} EUR</g:price>${optSalePrice}${optImageLink}
-      <g:availability>${qty > 0 ? "in stock" : "out of stock"}</g:availability>
+      <g:availability>${feedAvailability(p.stock, nowMs)}</g:availability>
       <g:condition>new</g:condition>
       <g:store_code>${escapeXml(storeCode)}</g:store_code>
       <g:content_language>fr</g:content_language>

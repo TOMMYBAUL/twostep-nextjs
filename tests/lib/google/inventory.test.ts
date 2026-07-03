@@ -57,26 +57,36 @@ describe("resolveStockQuantity", () => {
 });
 
 describe("buildLocalInventoryPayload", () => {
-    it("maps quantity > 0 to 'in stock' (avec ESPACE, jamais l'underscore)", () => {
-        const payload = buildLocalInventoryPayload("store-1", "prod-42", 3);
+    // `availability` est désormais CALCULÉE par le caller via `feedAvailability` (M5 :
+    // fraîcheur source_ts + force de source) — plus jamais `quantity > 0` brut. Le
+    // helper reste le verrou du CONTRAT Google (espace, string quantity, cohérence).
+
+    it("émet l'availability calculée telle quelle, AVEC ESPACE (jamais l'underscore)", () => {
+        const payload = buildLocalInventoryPayload("store-1", "prod-42", 3, "in stock");
         expect(payload.availability).toBe("in stock");
         // Verrou explicite anti-régression : l'underscore = rejet silencieux Google.
         expect(payload.availability).not.toContain("_");
-    });
 
-    it("maps quantity 0 to 'out of stock' (avec ESPACE)", () => {
-        const payload = buildLocalInventoryPayload("store-1", "prod-42", 0);
-        expect(payload.availability).toBe("out of stock");
-        expect(payload.availability).not.toContain("_");
+        const oos = buildLocalInventoryPayload("store-1", "prod-42", 0, "out of stock");
+        expect(oos.availability).toBe("out of stock");
+        expect(oos.availability).not.toContain("_");
     });
 
     it("serialises quantity to a string (attendu par l'API Merchant)", () => {
-        expect(buildLocalInventoryPayload("s", "p", 7).quantity).toBe("7");
-        expect(buildLocalInventoryPayload("s", "p", 0).quantity).toBe("0");
+        expect(buildLocalInventoryPayload("s", "p", 7, "in stock").quantity).toBe("7");
+        expect(buildLocalInventoryPayload("s", "p", 0, "out of stock").quantity).toBe("0");
+    });
+
+    it("plafonne quantity à 0 quand 'out of stock' (stock périmé/manuel : qty>0 mais non promise)", () => {
+        // Cohérence du payload : un `quantity: "5"` accolé à « out of stock » laisserait
+        // Google inférer une dispo qu'on ne peut pas promettre (faux positif n°1).
+        const payload = buildLocalInventoryPayload("store-1", "prod-42", 5, "out of stock");
+        expect(payload.availability).toBe("out of stock");
+        expect(payload.quantity).toBe("0");
     });
 
     it("passes storeCode and productId through verbatim (clé de jointure Google)", () => {
-        const payload = buildLocalInventoryPayload("twostep-abc12345", "prod-99", 1);
+        const payload = buildLocalInventoryPayload("twostep-abc12345", "prod-99", 1, "in stock");
         expect(payload.storeCode).toBe("twostep-abc12345");
         expect(payload.productId).toBe("prod-99");
     });

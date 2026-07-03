@@ -2,6 +2,15 @@ import { describe, expect, it } from "vitest";
 import { transformProductToGoogle, filterEligibleProducts } from "@/lib/google/feed";
 
 describe("Google feed generation", () => {
+    // Stock « in stock » honnête (M5) : source FIABLE (webhook) + source_ts FRAIS + qty > 2.
+    // Un stock sans source/périmé part désormais « out of stock » (cf. feed-availability.test.ts).
+    const freshStock = {
+        quantity: 3,
+        source: "webhook",
+        source_ts: new Date(Date.now() - 60_000).toISOString(),
+        updated_at: new Date().toISOString(),
+    };
+
     const baseProduct = {
         id: "prod-123",
         name: "NB 574 gris 42",
@@ -11,7 +20,7 @@ describe("Google feed generation", () => {
         photo_processed_url: "https://r2.dev/products/abc/prod-123.webp",
         photo_url: "https://square.com/img/574.jpg",
         visible: true,
-        stock: [{ quantity: 3 }],
+        stock: [freshStock],
     };
 
     it("transforms product to Google format", () => {
@@ -43,9 +52,28 @@ describe("Google feed generation", () => {
     });
 
     it("marks out of stock when quantity is 0", () => {
-        const product = { ...baseProduct, stock: [{ quantity: 0 }] };
+        const product = { ...baseProduct, stock: [{ ...freshStock, quantity: 0 }] };
         const result = transformProductToGoogle(product, "store-001");
         expect(result.availability).toBe("out of stock");
+    });
+
+    // ─── Disponibilité HONNÊTE (M5) : jamais un faux « in stock » sur Google ───
+    it("stock PÉRIMÉ (webhook > 24 h) → out of stock malgré qty > 0, mais l'offre RESTE émise", () => {
+        const staleTs = new Date(Date.now() - 30 * 3_600_000).toISOString();
+        const product = { ...baseProduct, stock: [{ ...freshStock, source_ts: staleTs, updated_at: staleTs }] };
+        const result = transformProductToGoogle(product, "store-001");
+        expect(result.availability).toBe("out of stock");
+        expect(result.offerId).toBe("prod-123"); // pas exclu du feed
+    });
+
+    it("source MANUELLE (saisie sans caisse) → out of stock même fraîche", () => {
+        const product = { ...baseProduct, stock: [{ ...freshStock, source: "manual" }] };
+        expect(transformProductToGoogle(product, "store-001").availability).toBe("out of stock");
+    });
+
+    it("stock sans colonnes M5 (source/source_ts absents) → out of stock (défaut conservateur)", () => {
+        const product = { ...baseProduct, stock: [{ quantity: 3 }] };
+        expect(transformProductToGoogle(product, "store-001").availability).toBe("out of stock");
     });
 
     it("filters eligible products (has EAN, visible, has price, has photo)", () => {

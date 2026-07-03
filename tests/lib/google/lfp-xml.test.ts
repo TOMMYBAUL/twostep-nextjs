@@ -14,6 +14,15 @@ const MERCHANT = {
 
 const STORE_CODE = "twostep-11111111";
 
+// Stock « in stock » honnête (M5) : source FIABLE (webhook) + source_ts FRAIS + qty > 2.
+// Un stock sans source/périmé part désormais « out of stock » (cf. feed-availability.test.ts).
+const freshStock = {
+    quantity: 5,
+    source: "webhook",
+    source_ts: new Date(Date.now() - 60_000).toISOString(),
+    updated_at: new Date().toISOString(),
+};
+
 const baseProduct: LfpProductRow = {
     id: "22222222-2222-2222-2222-222222222222",
     name: "Nike Air Max 90",
@@ -24,7 +33,7 @@ const baseProduct: LfpProductRow = {
     price: 129.99,
     photo_url: "https://nike.com/airmax90.jpg",
     photo_processed_url: null,
-    stock: [{ quantity: 5 }],
+    stock: [freshStock],
 };
 
 describe("escapeXml", () => {
@@ -134,14 +143,14 @@ describe("buildLfpXml", () => {
 
     it("availability=out of stock quand quantity=0", () => {
         const xml = buildLfpXml(MERCHANT, [
-            { ...baseProduct, stock: [{ quantity: 0 }] },
+            { ...baseProduct, stock: [{ ...freshStock, quantity: 0 }] },
         ], STORE_CODE);
         expect(xml).toContain("<g:availability>out of stock</g:availability>");
     });
 
     it("availability=in stock quand stock object (pas array)", () => {
         const xml = buildLfpXml(MERCHANT, [
-            { ...baseProduct, stock: { quantity: 3 } },
+            { ...baseProduct, stock: { ...freshStock, quantity: 3 } },
         ], STORE_CODE);
         expect(xml).toContain("<g:availability>in stock</g:availability>");
     });
@@ -149,6 +158,23 @@ describe("buildLfpXml", () => {
     it("availability=out of stock quand stock null", () => {
         const xml = buildLfpXml(MERCHANT, [
             { ...baseProduct, stock: null },
+        ], STORE_CODE);
+        expect(xml).toContain("<g:availability>out of stock</g:availability>");
+    });
+
+    // ─── Disponibilité HONNÊTE (M5) — parité avec la Voie A (feed.ts) ───
+    it("availability=out of stock quand le stock est PÉRIMÉ (webhook > 24 h), item toujours émis", () => {
+        const staleTs = new Date(Date.now() - 30 * 3_600_000).toISOString();
+        const xml = buildLfpXml(MERCHANT, [
+            { ...baseProduct, stock: [{ ...freshStock, source_ts: staleTs, updated_at: staleTs }] },
+        ], STORE_CODE);
+        expect(xml).toContain("<g:availability>out of stock</g:availability>");
+        expect((xml.match(/<item>/g) ?? []).length).toBe(1); // l'offre RESTE dans le feed
+    });
+
+    it("availability=out of stock quand la source est MANUELLE, même fraîche", () => {
+        const xml = buildLfpXml(MERCHANT, [
+            { ...baseProduct, stock: [{ ...freshStock, source: "manual" }] },
         ], STORE_CODE);
         expect(xml).toContain("<g:availability>out of stock</g:availability>");
     });

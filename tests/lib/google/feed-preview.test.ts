@@ -155,6 +155,15 @@ vi.mock("@/lib/error", () => ({ captureError: (...a: unknown[]) => captureErrorM
 const USER_ID = "user-1";
 const MERCHANT_ID = "11111111-2222-3333-4444-555555555555";
 
+// Stock « in stock » honnête (M5) : source FIABLE (webhook) + source_ts FRAIS + qty > 2.
+// Un stock sans source/périmé part désormais « out of stock » (cf. feed-availability.test.ts).
+const freshStock = {
+    quantity: 5,
+    source: "webhook",
+    source_ts: new Date(Date.now() - 60_000).toISOString(),
+    updated_at: new Date().toISOString(),
+};
+
 function product(p: Partial<Row>): Row {
     return {
         id: "p-default",
@@ -171,7 +180,7 @@ function product(p: Partial<Row>): Row {
         price: 129.99,
         photo_url: "https://cdn/x.jpg",
         photo_processed_url: null,
-        stock: [{ quantity: 5 }],
+        stock: [freshStock],
         promotions: [],
         ...p,
     };
@@ -190,8 +199,16 @@ describe("GET /api/google/feed-preview (chemin réel : parité transform + garde
                 merchants: { rows: [{ id: MERCHANT_ID, name: "Deerskin", user_id: USER_ID }], error: null },
                 products: {
                     rows: [
-                        product({ id: "ok-1", name: "Sérum vitamine C", ean: "3601234567890", price: 39.9, stock: [{ quantity: 3 }] }),
-                        product({ id: "ok-2-oos", name: "Masque", ean: "5012345678900", price: 12, stock: [{ quantity: 0 }] }), // rupture → out of stock mais PUBLIÉ
+                        product({ id: "ok-1", name: "Sérum vitamine C", ean: "3601234567890", price: 39.9, stock: [{ ...freshStock, quantity: 3 }] }),
+                        product({ id: "ok-2-oos", name: "Masque", ean: "5012345678900", price: 12, stock: [{ ...freshStock, quantity: 0 }] }), // rupture → out of stock mais PUBLIÉ
+                        // stock PÉRIMÉ (M5) → out of stock mais PUBLIÉ — le preview doit montrer la même
+                        // disponibilité honnête que les 2 feeds live (parité feedAvailability).
+                        product({
+                            id: "ok-3-stale",
+                            name: "Huile",
+                            ean: "4012345678901",
+                            stock: [{ ...freshStock, source_ts: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z" }],
+                        }),
                         product({ id: "blk-img", name: "Lotion", photo_url: null, photo_processed_url: null }), // bloqué image
                         product({ id: "blk-ean", name: "Baume", ean: null }), // bloqué EAN
                         product({ id: "blk-2", name: "Gel", ean: "12", price: 0 }), // bloqué EAN + prix
@@ -211,8 +228,8 @@ describe("GET /api/google/feed-preview (chemin réel : parité transform + garde
         expect(body.google_connected).toBe(false);
         expect(body.gtin_only_tier).toBe(false);
 
-        // ── would_publish : 2 produits, payload Google champ par champ ──
-        expect(body.would_publish).toHaveLength(2);
+        // ── would_publish : 3 produits, payload Google champ par champ ──
+        expect(body.would_publish).toHaveLength(3);
         const pub1 = body.would_publish.find((x: Row) => x.offerId === "ok-1");
         expect(pub1).toMatchObject({
             offerId: "ok-1",
@@ -229,6 +246,8 @@ describe("GET /api/google/feed-preview (chemin réel : parité transform + garde
         });
         const pub2 = body.would_publish.find((x: Row) => x.offerId === "ok-2-oos");
         expect(pub2.availability).toBe("out of stock"); // qty 0 → honnête, mais reste dans le feed
+        const pub3 = body.would_publish.find((x: Row) => x.offerId === "ok-3-stale");
+        expect(pub3.availability).toBe("out of stock"); // stock PÉRIMÉ (M5) → honnête, mais reste dans le feed
 
         // ── blocked : 3 produits, causes exactes ──
         expect(body.blocked).toHaveLength(3);
@@ -238,8 +257,8 @@ describe("GET /api/google/feed-preview (chemin réel : parité transform + garde
         expect(byId["blk-2"].reasons).toEqual(["missing_ean", "missing_price"]);
 
         // ── summary cohérent avec /api/google/stats (même vocabulaire) ──
-        expect(body.summary.total).toBe(5);
-        expect(body.summary.publishable).toBe(2);
+        expect(body.summary.total).toBe(6);
+        expect(body.summary.publishable).toBe(3);
         expect(body.summary.blocked_only_by_image).toBe(1);
     });
 

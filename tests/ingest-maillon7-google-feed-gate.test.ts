@@ -123,7 +123,13 @@ const validProduct: Row = {
     price: 129.99,
     photo_url: "https://nike.com/airmax90.jpg",
     photo_processed_url: null,
-    stock: [{ quantity: 5 }],
+    // Stock « in stock » honnête (M5) : source fiable + source_ts frais + qty > 2.
+    stock: [{
+        quantity: 5,
+        source: "webhook",
+        source_ts: new Date(Date.now() - 60_000).toISOString(),
+        updated_at: new Date().toISOString(),
+    }],
     // colonnes du gate
     merchant_id: MERCHANT_ID,
     visible: true,

@@ -1,4 +1,5 @@
 import { activeFeedSalePrice, type FeedPromoRow } from "@/lib/products/sale-price";
+import { feedAvailability, type FeedStockRow } from "@/lib/google/feed-availability";
 import { gtinOnlyTierEnabled, isFeedEligible } from "@/lib/google/feed-eligibility";
 
 type ProductRow = {
@@ -12,7 +13,12 @@ type ProductRow = {
     photo_processed_url: string | null;
     photo_url: string | null;
     visible: boolean;
-    stock: Array<{ quantity: number }>;
+    /**
+     * Embed `stock(quantity, source, source_ts, updated_at)` — PostgREST renvoie objet OU
+     * tableau. `source`/`source_ts` sont REQUIS par la disponibilité honnête (M5) : un SELECT
+     * qui ne les apporte pas fait retomber `feedAvailability` sur « out of stock » (conservateur).
+     */
+    stock: FeedStockRow[] | FeedStockRow | null;
     /** Promos actives jointes par la route (cf. cron/google-feed) — optionnel. */
     promotions?: FeedPromoRow[] | null;
 };
@@ -62,9 +68,6 @@ export function transformProductToGoogle(
     storeCode: string,
     nowMs: number = Date.now(),
 ): GoogleProduct {
-    const s = (product as any).stock;
-    const quantity = !s ? 0 : Array.isArray(s) ? (s[0]?.quantity ?? 0) : (s.quantity ?? 0);
-
     const out: GoogleProduct = {
         offerId: product.id,
         gtin: product.ean!,
@@ -73,7 +76,9 @@ export function transformProductToGoogle(
             value: product.price!.toFixed(2),
             currency: "EUR",
         },
-        availability: quantity > 0 ? "in stock" : "out of stock",
+        // Disponibilité HONNÊTE (M5) — plus jamais le `quantity > 0` brut : source unique
+        // `feedAvailability` (fraîcheur source_ts + force de source), parité Voie B/preview.
+        availability: feedAvailability(product.stock, nowMs),
         channel: "local",
         contentLanguage: "fr",
         targetCountry: "FR",

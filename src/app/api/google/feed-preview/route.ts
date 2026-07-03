@@ -74,7 +74,10 @@ export async function GET() {
             supabase
                 .from("products")
                 .select(
-                    "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)",
+                    // `stock(quantity, source, source_ts, updated_at)` : colonnes REQUISES par la
+                    // disponibilité honnête M5 (`feedAvailability` dans le transform) — parité
+                    // STRICTE avec les 2 feeds live (un preview qui divergerait mentirait).
+                    "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, visible, stock(quantity, source, source_ts, updated_at), promotions(sale_price, starts_at, ends_at)",
                 )
                 .eq("merchant_id", merchant.id)
                 .eq("visible", true)

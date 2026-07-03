@@ -95,7 +95,9 @@ export async function GET(
         admin
             .from("products")
             .select(
-                "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity), promotions(sale_price, starts_at, ends_at)",
+                // `stock(quantity, source, source_ts, updated_at)` : colonnes REQUISES par la
+                // disponibilité honnête M5 (`feedAvailability`) — parité Voie A + feed-preview.
+                "id, name, canonical_name, description, brand, ean, price, photo_url, photo_processed_url, stock(quantity, source, source_ts, updated_at), promotions(sale_price, starts_at, ends_at)",
             )
             .eq("merchant_id", merchantId)
             .eq("visible", true)

@@ -123,7 +123,10 @@ export async function POST(req: NextRequest) {
                 for await (const page of streamRows(() =>
                     supabase
                         .from("products")
-                        .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity), promotions(sale_price, starts_at, ends_at)")
+                        // `stock(quantity, source, source_ts, updated_at)` : colonnes REQUISES par la
+                        // disponibilité honnête M5 (`feedAvailability`) — sans elles, tout partirait
+                        // « out of stock » (défaut conservateur). Parité Voie B + feed-preview.
+                        .select("id, name, canonical_name, description, brand, ean, price, photo_processed_url, photo_url, visible, stock(quantity, source, source_ts, updated_at), promotions(sale_price, starts_at, ends_at)")
                         .eq("merchant_id", conn.merchant_id)
                         .eq("visible", true)
                         .eq("review_status", "validated")

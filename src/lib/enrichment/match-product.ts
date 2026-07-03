@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { levenshtein } from "@/lib/ean/lookup";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 /**
  * Existing product row used by the matching index.
@@ -68,10 +69,25 @@ export async function buildProductIndex(
     fields = "id, pos_item_id, ean, sku, name, photo_url, photo_processed_url",
 ): Promise<ProductIndex> {
     const supabase = createAdminClient();
-    const { data: rows } = await supabase
-        .from("products")
-        .select(fields)
-        .eq("merchant_id", merchantId);
+    // PAGINÉ + FAIL-LOUD (invariant 9, parité avec snapshot.ts) : un SELECT non borné est
+    // tronqué à 1000 lignes par PostgREST SANS erreur → l'index des produits existants serait
+    // PARTIEL → les produits au-delà du 1000ᵉ vus comme « nouveaux » → DOUBLONS catalogue (aucune
+    // contrainte UNIQUE sur ean). Pire : une erreur DB AVALÉE (`{ data: rows }`) laissait un index
+    // VIDE en silence → recréation de TOUT le catalogue en doublon. `fetchAllRows` lit tout par
+    // keyset sur `id` (les 2 appelants — sync-engine + invoices/validate — incluent `id` dans `fields`).
+    const { data: rows, error } = await fetchAllRows(() =>
+        supabase
+            .from("products")
+            .select(fields)
+            .eq("merchant_id", merchantId)
+            .order("id", { ascending: true }),
+    );
+    if (error) {
+        throw new Error(
+            `buildProductIndex: lecture products échouée (merchant ${merchantId}) — index refusé ` +
+                `pour ne pas recréer le catalogue en doublon: ${error.message}`,
+        );
+    }
 
     const all = (rows ?? []) as unknown as ExistingProduct[];
     const byPosItemId = new Map<string, ExistingProduct>();
