@@ -4038,3 +4038,61 @@ self-serve, cap item 2 / roadmap 6a.3). CFR 10 runs = 100 %.
 **RESTE M9 (trié)** : (C-visuel) surfacer jeton + adresse `stock-{slug}@` dans l'UI = chantier à yeux (Thomas) ;
 tests `import-wizard`/`pos-wizard` (autres trous de preuve M9, `[R]` si signal) ; M3 e2e photo live (gated env) ;
 M4 file-push→RPC temporel (passe dédiée à froid, audit).
+
+---
+
+## 2026-07-04 (run autonome) — P0-3 : `GET /api/products` (E3 « Mon stock ») paginé anti-troncature
+
+**Sourcing (§6)** : backlog frais = `docs/SPEC/audit-optimisation-2026-07-04.md` (session supervisée
+11:49, commit `6641034`). La session a balayé la classe troncature-1000 (pos-resync / google-status /
+stats / listes marchands) MAIS a laissé `GET /api/products` hors du sweep. C'est le **plus haut-rang
+fully-`[R]`** (réversible, sans migration, sans yeux, vérifiable) non terminé : `[CONFIRMÉ]` par
+l'orchestrateur, **pilote-bloquant** (écran E3 du marchand pilote), in-scope (cap item 2 onboarding /
+M8). Prémisse re-vérifiée dans le code réel (LESSONS ~70 % findings faux) : `route.ts:43-56` faisait
+`.select("*,stock(quantity)").eq(...).order("name")` **sans `.range()`** → confirmé.
+
+**Le bug** : PostgREST tronque SILENCIEUSEMENT tout SELECT non borné à 1000 lignes (sans erreur). Sur un
+catalogue > 1000 (pilote multimarque type Deerskin = milliers de SKU), l'écran « Mon stock » paraissait
+AMPUTÉ et les compteurs total/ruptures/dispo étaient FAUX → le marchand croit avoir perdu du stock et
+ré-importe en panique (perte de confiance = anti-north-star).
+
+**Fait** (branche feat/pipeline-v1-handoff-2026-06-12)
+- `GET /api/products` : lecture enveloppée dans `fetchAllRows(() => …order("id",{ascending:true}))`
+  (KEYSET, dérive-immune ; `id` = PK unique NOT NULL, inclus par `select("*")`). **Filtres/population
+  INCHANGÉS** (`incomplete` → visible=false ; sinon visible=true ; variant_of null) répétés dans la
+  factory par page. Tri par NOM **rétabli côté serveur** (`localeCompare "fr"`, idiome codebase) → contrat
+  d'affichage identique à l'ancien `.order("name")`, sans re-troncature.
+- **Observabilité (revue SF-hunter)** : `captureError` sur l'erreur de page/`data=null`/curseur absent
+  (le diagnostic riche de `fetchAllRows` ne devient plus un 500 muet) + sur le `catch` (un `maxPagesError`
+  levé porte curseur+colonne) + `export const maxDuration = 300` (parité avec les crons paginés voisins :
+  le GET enchaîne ⌈catalogue/1000⌉ allers-retours séquentiels).
+
+**Preuve** : `tests/products-route-pagination.test.ts` (+3, faux client KEYSET plafonné à 1000, catalogue
+1500) — (1) 2 pages keyset lues (`[null, "p00999"]`) + **1500 produits rendus** (non paginé : ≤ 1000) ;
+(2) ordre de sortie par NOM rétabli (noms en ordre inverse des id → tri prouvé ≠ ordre pagination) ;
+(3) échec de lecture de page → **500** (jamais un catalogue tronqué présenté comme complet). Faux client
+non-vacant (applique vraiment `.gt`/`.limit`).
+
+**Revue silent-failure-hunter : core SOUND** — parité de statut d'erreur byte-for-byte avec l'avant,
+choix de curseur `id` valide (PK unique/NOT NULL vérifié migration 001), contrat de réponse `{products}`
++ champs consommés inchangés (`use-products`/`use-incomplete-products`/`shop-profile` lisent `products ?? []`),
+parité population/filtres par page confirmée. **2 findings corrigés** : (MED) erreur `fetchAllRows` jetée
+sans `captureError` → ajouté (comme google-feed) ; (LOW/MED) pas de `maxDuration` → `= 300`. (LOW collation
+Postgres→JS = cosmétique, `name` NOT NULL → null-guard = garde morte inoffensive, laissée).
+
+**Métrique** : `tsc` OK, `test:run` **1177→1180** (+3, 115 fichiers). 1 bug réel `[CONFIRMÉ]` (troncature
+silencieuse E3). Blast LOW (route entry-point ; réponse/ordre inchangés). 0 migration, réversible (`git revert`).
+Fichiers : 2 (route + test) + 2 docs (audit marqué fait, ce worklog).
+
+**Scorecard** : Preuve 7/10 (contrat route prouvé sur faux client KEYSET non-vacant 1500 lignes + régression
+troncature réelle ; mais synthétique, pas d'onboarding pilote réel) · Sécu north-star 8/10 (revue SF-hunter
+SOUND + 2 findings observabilité fermés ; ferme une troncature silencieuse = « ne rien perdre » ; 0 perte
+introduite) · Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (2 fichiers code+test, 1 unité
+ciblée + 2 docs) · Align 8/10 (classe troncature-1000 fermée sur l'écran pilote E3, cap item 2). CFR 10 runs
+= 100 % (0 revert).
+
+**RESTE audit (trié, fully-`[R]` sans yeux/env, prochains candidats)** : P0-8 (GTIN-14 rejeté par un des 2
+validateurs → perte d'identité cross-canal, effort S, pur, M2) ; Cluster B garde `maxPages` déjà posée
+(commit 6641034) — sweep grep des SELECT non bornés restants à confirmer ; P0-10/11 (enrichissement, effort M).
+GATED (migration) : P0-5/6 (109 écrite). YEUX (Thomas) : P0-1 visuel wizard, P0-4 surfaces conso (composants),
+Cluster D1 UI token.

@@ -5,6 +5,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { productBody, parseBody } from "@/lib/validation";
 import { resolveMerchantId } from "@/lib/slug";
 import { rateLimit } from "@/lib/rate-limit";
+import { fetchAllRows } from "@/lib/supabase/paginate";
+import { captureError } from "@/lib/error";
+
+// Lecture PAGINÉE (keyset) du catalogue : à l'échelle pilote (milliers de SKU) le GET
+// enchaîne ⌈catalogue/1000⌉ allers-retours séquentiels — même budget que les lecteurs
+// paginés voisins (crons google-feed/pos-resync/quality-check) pour ne pas être tué avant
+// la borne `DEFAULT_MAX_PAGES` de fetchAllRows.
+export const maxDuration = 300;
 
 export async function GET(request: Request) {
     try {
@@ -40,29 +48,53 @@ export async function GET(request: Request) {
             }
         }
 
-        let query = supabase
-            .from("products")
-            .select("*, stock(quantity)")
-            .eq("merchant_id", merchantId);
+        // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué SILENCIEUSEMENT
+        // à 1000 lignes par PostgREST → sur l'écran « Mon stock » (E3), un catalogue > 1000
+        // (pilote multimarque type Deerskin = des milliers de SKU) paraîtrait amputé et les
+        // compteurs total/ruptures/dispo seraient FAUX → le marchand ré-importe en panique
+        // (perte de confiance, faux « catalogue tronqué »). Curseur = `id` (PK, `*` l'inclut).
+        // Population/filtres INCHANGÉS ; on rétablit l'ordre d'affichage par nom ensuite.
+        const { data, error } = await fetchAllRows<{ id: string; name: string | null; [k: string]: unknown }>(
+            () => {
+                let query = supabase
+                    .from("products")
+                    .select("*, stock(quantity)")
+                    .eq("merchant_id", merchantId);
 
-        if (incomplete) {
-            // Products not yet visible — need completion. Exclude variants (grouped under parent).
-            query = query.eq("visible", false).is("variant_of", null);
-        } else {
-            // Public listing: only visible products, exclude variants
-            query = query.eq("visible", true).is("variant_of", null);
-        }
+                if (incomplete) {
+                    // Products not yet visible — need completion. Exclude variants (grouped under parent).
+                    query = query.eq("visible", false).is("variant_of", null);
+                } else {
+                    // Public listing: only visible products, exclude variants
+                    query = query.eq("visible", true).is("variant_of", null);
+                }
 
-        const { data, error } = await query.order("name");
+                return query.order("id", { ascending: true });
+            },
+        );
 
         if (error) {
+            // fetchAllRows fournit un diagnostic riche (erreur PostgREST de page, `data=null`
+            // sans erreur, curseur absent) ; on le remonte (comme les crons paginés voisins)
+            // sinon la troncature/anomalie devient un 500 muet sans piste pour l'ops.
+            captureError(error, { route: "products", merchantId, step: "list-products" });
             return NextResponse.json({ error: "Operation failed" }, { status: 500 });
         }
 
-        return NextResponse.json({ products: data ?? [] }, {
+        // La pagination keyset impose l'ordre par `id` ; on restaure le contrat d'affichage
+        // (tri par nom, comme l'ancien `.order("name")`) côté serveur — sans re-troncature.
+        const products = [...(data ?? [])].sort((a, b) =>
+            String(a.name ?? "").localeCompare(String(b.name ?? ""), "fr"),
+        );
+
+        return NextResponse.json({ products }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
         });
-    } catch {
+    } catch (err) {
+        // fetchAllRows LÈVE au dépassement de `maxPages` (curseur non strictement croissant =
+        // colonne corrompue, ou volume > 200k) — sans capture, ce diagnostic (curseur+colonne)
+        // serait perdu derrière un 500 opaque.
+        captureError(err, { route: "products", step: "list-products-unhandled" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
