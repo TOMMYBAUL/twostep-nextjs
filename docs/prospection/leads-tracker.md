@@ -1,16 +1,56 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-03 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-04 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 184
-- NOUVEAU : 55
+- Total leads : 196
+- NOUVEAU : 61
 - CONTACTE : 1
-- BROUILLON : 102
+- BROUILLON : 108
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Samedi — 2026-07-04 (L'Eclaireur) — Zone étendue Victor-Hugo suite 27/06 — Gambetta/Bouquières/Rémusat — 5 emails confirmés + 1 probable
+
+**Agent** : L'Eclaireur | **Quartier** : Victor-Hugo (samedi) → zone étendue Gambetta/Bouquières/Rémusat (suite session 27/06)
+
+**Note de session :** Victor-Hugo JSON épuisé définitivement. Session = suite directe du 27/06 : investigation des **13 candidats restants non encore traités** (zone Gambetta/Bouquières/Rémusat, issus de toulouse-merchants-full.json). **5 emails confirmés : TOUK TOUK 2 (toukbijoux@free.fr ✅), OPTIQUE REMUSAT (optiqueremusat@orange.fr ✅), MA ROBE (contact.ma.robe@gmail.com ✅), MR BLUE (mr.blue.france@gmail.com ✅), RENDEZ-VOUS STORE (eshop@rendez-vous-store.com ✅ — email eshop).** 1 email probable : GUIMON JOAILLERIE (contact@gjoaillerie.com, inféré via domaine gjoaillerie.com). 6 NOUVEAU terrain sans email public. 8 ÉCARTÉES définitives. **Zone étendue Victor-Hugo ÉPUISÉE DÉFINITIVEMENT** — tous les candidats investigués.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| TOUK TOUK 2 (SASU TOUK TOUK 2) | Victor-Hugo/Rémusat | Bijouterie | Myriam Beraud | toukbijoux@free.fr ✅ | — | 8/10 | BROUILLON | Email confirmé via annuaires. 31 rue de Rémusat. Bijouterie/créateurs. |
+| OPTIQUE REMUSAT (PAUL ET CHLOE VISION) | Victor-Hugo/Rémusat | Optique | Géraldine Freynet | optiqueremusat@orange.fr ✅ | — | 8/10 | BROUILLON | Email orange.fr confirmé via annuaires. 7 rue de Rémusat. Opticien indépendant. |
+| MA ROBE (LES TROIS SOEURS) | Victor-Hugo/Bouquières | Mode/Mariages | Julie Monferran | contact.ma.robe@gmail.com ✅ | — | 6/10 | BROUILLON | Email confirmé via site ma-robe.fr. 25 rue Bouquières. ⚠️ Robes de mariée — pertinence Two-Step limitée (sur RDV). À valider Thomas. |
+| MR BLUE (MR. BLUE) | Victor-Hugo/Bouquières | Mode homme | Jerome Biaggi | mr.blue.france@gmail.com ✅ | — | 9/10 | BROUILLON | Email confirmé via site/annuaires. 7 rue Bouquières. Multi-marques (Edwin, Autry, Birkenstock, Veja). Très qualifié Two-Step. |
+| RENDEZ-VOUS STORE (ANONYME SAS) | Victor-Hugo/Bouquières | Mode multi-marques | Marc Llorens | eshop@rendez-vous-store.com ✅ | 811236637 | 8/10 | BROUILLON | Email eshop confirmé via rendez-vous-store.com/about-us. ⚠️ Email service eshop, pas adresse directe gérant. 2 boutiques (6 rue Bouquières hommes + 2 rue Bouquières femmes). Multi-marques qualifié Two-Step. |
+| GUIMON JOAILLERIE | Victor-Hugo/Gambetta | Bijouterie créateur | Julien Guimon | contact@gjoaillerie.com ❓ | — | 8/10 | BROUILLON | Email PROBABLE via domaine gjoaillerie.com (non confirmé en texte ouvert — Kompass 403). 12 rue Léon Gambetta. Bijouterie créateur indépendant. |
+| FOOTCONNECT (C2M) | Victor-Hugo/Gambetta | Sport/Sneakers | Marc Nortier | — | 822056974 | 8/10 | NOUVEAU | Email non trouvé — Instagram @footconnect.off uniquement. 32 rue Gambetta. Nike/Adidas/Puma revendeur. Visite terrain. |
+| ALICE ET LES GARCONS (KIDS STORE) | Victor-Hugo/Bouquières | Mode enfant | Benoit Mabille de poncheville | — | 819294117 | 7/10 | NOUVEAU | Email non trouvé — site 503 lors de la recherche. 15 rue Bouquières. Mode enfant multi-marques. Visite terrain. |
+| MINI JU (FEELING) | Victor-Hugo/Gambetta | Mode | Sophie Chakri | — | 813670197 | 6/10 | NOUVEAU | Email non trouvé — aucune présence digitale publique avec email. 8 rue Gambetta. Visite terrain. |
+| QUE FAS ? (SAS QUE FAS) | Victor-Hugo/Gambetta | Déco/Concept store | Mathias Marty-Palomar | — | 901585646 | 7/10 | NOUVEAU | Email non trouvé — site quefas.fr sans email visible, IG @quefas.concept. 20 rue Gambetta. Concept store déco mère-fils. Visite terrain. |
+| DORYANN (MATIERE NOBLE) | Victor-Hugo/Bouquières | Chaussures | Stéphanie Dah-okimba | — | 981803620 | 7/10 | NOUVEAU | Email non trouvé — IG @doryannstore uniquement. 19 rue Bouquières. Créée 2024. Visite terrain. |
+| THEIA | Victor-Hugo/Rémusat | Mode | Shan Huang | — | — | 5/10 | NOUVEAU | Email non trouvé — aucune présence digitale identifiable (très récente 2024). 7 rue Rémusat. Visite terrain si active. |
+
+**Écartées session 04/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| OPTIQUE DE LA HALLE AUX GRAINS (MATTIM) | 792329195 | Joël Bourlet = Liquidateur judiciaire. ÉCARTÉE DÉFINITIF. |
+| DRESS 31 | 878656396 | Liquidateur judiciaire. ÉCARTÉE DÉFINITIF. |
+| NATURAL EFFECT (GAZON BENI) | 892973561 | CBD Shop — hors cible Two-Step. ÉCARTÉE. |
+| LBDV TOULOUSE | 897659397 | "La Boutique du Vapoteur Toulouse" — hors cible Two-Step. ÉCARTÉE. |
+| PTITE SEMELLE (INFINIE CONCEPT) | 832782742 | Redressement judiciaire depuis mars 2025 — prospect trop risqué. ÉCARTÉE. |
+| GAASTRA / A PLEINES VOILES | — | Mono-brand nautique (Gaastra = marque propre franchise) — hors cible Two-Step. ÉCARTÉE. |
+| ETYO (YOKAYA) | 503402497 | Siège social transféré à Gragnague (31380) le 14/02/2023. Boutique Toulouse fermée. ÉCARTÉE DÉFINITIF. |
+| NUDE BY EMI (EMILIE MORENO) | 789744380 | Établissement secondaire Gambetta fermé. Liquidation simplifiée 2018. ÉCARTÉE DÉFINITIF. |
+
+**⚠️ Notion MCP indisponible (22e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (21e session consécutive) — aucun brouillon créé. Brouillons à rédiger manuellement.**
+
+*Note session 04/07 (L'Eclaireur) : Suite des 13 candidats restants de la zone étendue Victor-Hugo (27/06). Zone ÉPUISÉE DÉFINITIVEMENT — tous les candidats de toulouse-merchants-full.json sur les rues Rémusat/Wilson/Peyrolières/Gambetta/Dupuy/Bouquières ont été investigués. 5 emails confirmés (4 certains + 1 probable GUIMON JOAILLERIE). 6 NOUVEAU terrain (Instagram uniquement ou aucune présence digitale). 8 ÉCARTÉES définitives (liquidations, CBD, vapoteur, hors cible). MR BLUE (Jerome Biaggi) = score 9/10 — priorité envoi. RENDEZ-VOUS STORE = email eshop uniquement, possibilité visite terrain pour contacter Marc Llorens directement. FOOTCONNECT = très qualifié Two-Step (Nike/Adidas/Puma stock en temps réel = cas d'usage parfait) — visite terrain prioritaire. QUE FAS = déco sans EAN probable → Two-Step utile mais cas borderline. NOTE : MCP Notion indisponible (22e session consécutive). Titre Notion prévu : "Leads Victor-Hugo zone étendue 2026-07-04".*
+
+---
 
 ### Jeudi — 2026-07-03 (L'Eclaireur) — Carmes épuisé JSON → PIVOT toulouse-merchants-full.json — 10 emails trouvés
 
