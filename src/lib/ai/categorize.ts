@@ -1,9 +1,22 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCachedTaxonomy, cacheTaxonomy } from "@/lib/enrichment/cache-taxonomy";
+import { captureError } from "@/lib/error";
+import { chunk } from "@/lib/ingest/reconcile";
 
 // En dessous de ce seuil, la catégorie IA est jugée trop incertaine pour être
 // appliquée (le prompt calibre : 95+ explicite, 70-94 deviné, <70 incertain).
 const CATEGORY_CONFIDENCE_MIN = 70;
+
+/**
+ * Taille de LOT par appel IA (P0-9, 2026-07-04). Avant : jusqu'à 200 produits dans
+ * UN appel avec max_tokens 4096 → la réponse JSON (~80 tokens/produit) était TRONQUÉE
+ * dès ~50 produits → parse en échec → `failed` sans poser `ai_categorized_at` → les
+ * MÊMES produits repartaient au cron suivant (toutes les 5 min via enrich-products) → tokens
+ * re-brûlés en boucle infinie pour tout marchand > ~50 produits. À 30 produits/appel,
+ * la réponse tient largement (~2 400 tokens < 4 096), et un échec résiduel ne coûte
+ * que son lot (marqué, cf. CategorizeParseError).
+ */
+export const AI_CATEGORIZE_BATCH_SIZE = 30;
 
 type ProductInput = {
     id: string;
@@ -168,12 +181,29 @@ export function parseCategorizationResponse(raw: string): CategorizedProduct[] {
     try {
         parsed = JSON.parse(jsonStr);
     } catch {
-        throw new Error(`categorize: réponse IA non-JSON: ${raw.slice(0, 200)}`);
+        throw new CategorizeParseError(`categorize: réponse IA non-JSON: ${raw.slice(0, 200)}`);
     }
     if (!Array.isArray(parsed)) {
-        throw new Error(`categorize: réponse IA non-tableau: ${raw.slice(0, 200)}`);
+        throw new CategorizeParseError(`categorize: réponse IA non-tableau: ${raw.slice(0, 200)}`);
     }
     return parsed as CategorizedProduct[];
+}
+
+/**
+ * Échec de PARSING d'une réponse IA (JSON tronqué/invalide/non-tableau) — à
+ * distinguer d'un échec de DISPONIBILITÉ (aucun provider). Discriminateur P0-9 :
+ *  - parse en échec = des tokens ONT été consommés et la même entrée reproduira
+ *    très probablement le même échec (température 0.1) → on MARQUE le lot
+ *    (`ai_categorized_at`) pour casser la boucle de re-brûlage du cron 5-min ;
+ *  - provider indisponible = AUCUN token consommé (clé absente / HTTP !ok) → on
+ *    ne marque PAS (le retry au run suivant est gratuit côté tokens et la
+ *    catégorisation légitime n'est pas perdue sur un blip).
+ */
+export class CategorizeParseError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "CategorizeParseError";
+    }
 }
 
 type TagInsert = { product_id: string; tag_type: string; tag_value: string; source: string; confidence: number };
@@ -263,16 +293,37 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
         } catch { failed++; }
     }
 
-    // ─── Phase 3: AI for remaining products + cache results ───
-    let results: CategorizedProduct[] = [];
-    if (needAI.length > 0) {
+    // ─── Phase 3: AI for remaining products (par LOTS de 30, cf. AI_CATEGORIZE_BATCH_SIZE)
+    //     + cache results. Les résultats d'un lot sont appliqués AVANT le lot suivant :
+    //     un échec du lot N ne perd pas la catégorisation des lots 1..N-1. ───
+    for (const batch of chunk(needAI, AI_CATEGORIZE_BATCH_SIZE)) {
+        let results: CategorizedProduct[] = [];
         try {
-            results = await categorizeProducts(needAI, tree);
+            results = await categorizeProducts(batch, tree);
         } catch (err) {
             console.error("[categorize] AI call failed:", err);
-            failed += needAI.length;
+            failed += batch.length;
+
+            if (err instanceof CategorizeParseError) {
+                // Tokens déjà brûlés + même entrée ⇒ même échec probable : on marque le
+                // LOT (ai_categorized_at, confidence 0 = « tentative, rien d'appliqué »)
+                // pour que le sélecteur (ai_categorized_at IS NULL) ne le re-présente
+                // pas au cron */5 indéfiniment. Aucune catégorie n'est écrite (zéro
+                // faux positif) ; un re-run manuel reste possible via l'admin.
+                const { error: markErr } = await supabase
+                    .from("products")
+                    .update({ ai_categorized_at: new Date().toISOString(), ai_confidence: 0 })
+                    .in("id", batch.map((p) => p.id));
+                if (markErr) {
+                    // Marquage raté = la boucle de re-brûlage persiste pour ce lot → visible.
+                    captureError(markErr, { module: "categorize", phase: "mark-parse-failure", merchantId });
+                }
+                captureError(err, { module: "categorize", phase: "ai-parse", merchantId, batchSize: batch.length });
+            }
+            // Échec de DISPONIBILITÉ (aucun provider / HTTP !ok) : ne PAS marquer —
+            // aucun token consommé, le retry du prochain run est légitime.
+            continue;
         }
-    }
 
     for (const result of results) {
         try {
@@ -345,6 +396,7 @@ export async function categorizeMerchantProducts(merchantId: string): Promise<{
             categorized++;
         } catch { failed++; }
     }
+    } // fin du lot (chunk AI_CATEGORIZE_BATCH_SIZE)
 
     // Set merchant primary category based on most frequent category
     const { data: catCounts } = await supabase

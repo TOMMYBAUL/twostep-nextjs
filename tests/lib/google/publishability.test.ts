@@ -143,13 +143,23 @@ function makeServerClient(opts: {
         const filters: Array<{ col: string; val: unknown }> = [];
         const td = opts.tables[table] ?? { rows: [], error: null };
 
+        const gts: Array<{ col: string; val: unknown }> = [];
+        let orderCol: string | null = null;
+        let limitN: number | null = null;
+
         function resolve(): { data: Row[] | null; error: TableData["error"] } {
             if (td.error) return { data: null, error: td.error };
-            const rows = td.rows.filter((r) =>
+            let rows = td.rows.filter((r) =>
                 filters.every((f) =>
                     f.val === null ? r[f.col] === null || r[f.col] === undefined : r[f.col] === f.val,
                 ),
             );
+            // KEYSET fetchAllRows : `.gt(col, curseur)` = borne basse EXCLUSIVE par valeur.
+            rows = rows.filter((r) => gts.every((g) => String(r[g.col]) > String(g.val)));
+            if (orderCol) rows = [...rows].sort((a, b) => String(a[orderCol!]).localeCompare(String(b[orderCol!])));
+            // Fidèle à PostgREST : plafond `max-rows` (1000) SANS erreur, même sans .limit().
+            const cap = Math.min(limitN ?? 1000, 1000);
+            if (rows.length > cap) rows = rows.slice(0, cap);
             return { data: rows, error: null };
         }
 
@@ -161,6 +171,18 @@ function makeServerClient(opts: {
             },
             is: (col: string, val: unknown) => {
                 filters.push({ col, val });
+                return api;
+            },
+            gt: (col: string, val: unknown) => {
+                gts.push({ col, val });
+                return api;
+            },
+            order: (col: string) => {
+                orderCol = col;
+                return api;
+            },
+            limit: (n: number) => {
+                limitN = n;
                 return api;
             },
             single: () => {
@@ -383,5 +405,33 @@ describe("D3 — GET /api/google/stats (chemin réel : parité feed + garde sile
         expect(res.status).toBe(500);
         expect(body.error).toBe("db_error");
         expect(captureErrorMock).toHaveBeenCalledTimes(1);
+    });
+
+    // ── SCALE >1000 (P0-13) : anti-troncature `max-rows` sur le SELECT produits du KPI ──
+    it("SCALE : 1500 produits validés → KPI calculé sur les 1500 (SELECT PAGINÉ keyset, pas plafonné à 1000)", async () => {
+        // Sans fetchAllRows, PostgREST rend 1000 lignes SANS erreur → total_visible/eligible
+        // /score et la readiness LFP étaient calculés sur un sous-ensemble silencieux.
+        // Le faux client plafonne à 1000 par requête (fidèle à max-rows) : 1500 exige 2 pages.
+        const rows = Array.from({ length: 1500 }, (_, i) =>
+            product({ id: `p${String(i).padStart(5, "0")}` }), // id = colonne-curseur keyset
+        );
+        mockClient.current = makeServerClient({
+            user: { id: USER_ID },
+            tables: {
+                merchants: { rows: [{ id: MERCHANT_ID, user_id: USER_ID }], error: null },
+                products: { rows, error: null },
+                google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+            },
+        });
+
+        const { GET } = await import("@/app/api/google/stats/route");
+        const res = await GET();
+        const body = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(body.total_visible).toBe(1500); // pas 1000
+        expect(body.eligible_google).toBe(1500); // tous publiables (ean+prix+image)
+        expect(body.score).toBe(100);
+        expect(body.lfp_feed_ready).toBe(true);
     });
 });

@@ -75,14 +75,50 @@ export async function pushInventoryToGoogle(
 
         const supabase = createAdminClient();
 
+        // ── Push CIBLÉ (A1) : étendre les produits touchés à leur PRINCIPAL de groupe ──
+        // Les webhooks passent désormais les ids RÉELLEMENT touchés par l'événement
+        // (fini le re-push du catalogue entier à chaque vente = gaspillage quota API).
+        // Subtilité : quand le produit touché est une VARIANTE de taille, son stock est
+        // roulé sur le PRINCIPAL du groupe (recalculateGroupSizesAdmin) et la requête
+        // ci-dessous filtre `variant_of IS NULL` → cibler la variante seule ne pousserait
+        // RIEN alors que l'état Google du principal vient de changer. On étend donc
+        // chaque id touché à son principal (`variant_of ?? id`). Liste BORNÉE (les
+        // updates d'un seul webhook) → `.in()` sans chunk() est sûr ici.
+        let targetIds: string[] | undefined;
+        if (productIds && productIds.length > 0) {
+            const { data: touchedRows, error: expandErr } = await supabase
+                .from("products")
+                .select("id, variant_of")
+                .in("id", productIds);
+            if (expandErr || !touchedRows) {
+                // Un blip de lecture ne doit PAS laisser Google périmé en silence (un
+                // vendu resté « in stock » = faux positif n°1) : repli CONSERVATEUR sur
+                // le push complet (comportement pré-A1), rendu visible via Sentry.
+                // `data=null` sans error = anomalie SDK, traité pareil (leçon quality-check).
+                captureError(expandErr ?? new Error("expand-touched: data=null sans error"), {
+                    merchantId,
+                    productIds,
+                    context: "google-inventory-expand-touched",
+                });
+                targetIds = undefined;
+            } else {
+                targetIds = [...new Set(touchedRows.map((t) => (t.variant_of as string | null) ?? (t.id as string)))];
+                // Produits touchés introuvables (supprimés entre l'événement et le push)
+                // → rien à pousser. Surtout ne PAS retomber sur un push complet : une
+                // liste vide passée à `.in()` sauterait le filtre ci-dessous.
+                if (targetIds.length === 0) return;
+            }
+        }
+
         // PAGINÉ : un SELECT non borné est tronqué à 1000 lignes par PostgREST (sans
         // erreur) → un marchand >1000 produits visibles aurait son inventaire Google
         // mis à jour PARTIELLEMENT (les produits au-delà du 1000ᵉ restent périmés =
         // un vendu affiché « in stock » sur Google Shopping = faux positif n°1).
         // `fetchAllRows` lit tout ; `.order("id")` = ordre déterministe entre pages.
         // Parité avec les 3 autres sorties Google (Voie A cron, Voie B XML, feed-preview).
-        // NB : le filtre `.in("id", productIds)` (push ciblé post-sync) reste appliqué —
-        // la pagination ne change que le cas non borné (push catalogue complet).
+        // NB : le filtre `.in("id", targetIds)` (push ciblé webhook, principaux résolus
+        // ci-dessus) reste appliqué — la pagination ne change que le cas non borné
+        // (push catalogue complet, ex. post-sync).
         const { data: products, error: readError } = await fetchAllRows(() => {
             let query = supabase
                 .from("products")
@@ -102,8 +138,8 @@ export async function pushInventoryToGoogle(
                 .is("variant_of", null)
                 .not("ean", "is", null);
 
-            if (productIds && productIds.length > 0) {
-                query = query.in("id", productIds);
+            if (targetIds && targetIds.length > 0) {
+                query = query.in("id", targetIds);
             }
 
             return query.order("id", { ascending: true });

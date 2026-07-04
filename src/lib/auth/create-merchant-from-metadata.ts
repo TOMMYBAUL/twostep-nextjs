@@ -1,6 +1,7 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 
 import { captureError } from "@/lib/error";
+import { ensureInboundEmailSlug } from "@/lib/merchants/inbound-email-slug";
 
 /**
  * After a newly-confirmed user lands on /auth/callback or /auth/confirm,
@@ -48,22 +49,32 @@ export async function createMerchantFromMetadata(
         }
     }
 
-    const { error } = await supabase.from("merchants").insert({
-        user_id: user.id,
-        name: meta.merchant_name,
-        address,
-        city,
-        location: `SRID=4326;POINT(${lng} ${lat})`,
-        siret: (meta.merchant_siret as string) ?? null,
-        phone: (meta.merchant_phone as string) ?? null,
-        status: meta.merchant_siret_pending ? "pending" : "active",
-    });
+    // `.select("id, slug")` : le trigger DB (012) pose `slug` à l'INSERT et le
+    // RETURNING le renvoie — nécessaire pour dériver l'adresse email-in (P0-2).
+    const { data: inserted, error } = await supabase
+        .from("merchants")
+        .insert({
+            user_id: user.id,
+            name: meta.merchant_name,
+            address,
+            city,
+            location: `SRID=4326;POINT(${lng} ${lat})`,
+            siret: (meta.merchant_siret as string) ?? null,
+            phone: (meta.merchant_phone as string) ?? null,
+            status: meta.merchant_siret_pending ? "pending" : "active",
+        })
+        .select("id, slug")
+        .single();
 
     if (error) {
         // L'insertion du marchand a échoué mais le caller (callback/confirm/finalize)
         // redirige quand même vers /dashboard → sans ce signal, le marchand inscrit se
         // retrouve SANS ligne `merchants` et personne ne le sait (perte silencieuse n°1).
         captureError(error, { phase: "createMerchantFromMetadata", userId: user.id });
+    } else if (inserted) {
+        // P0-2 : sans ce pas, tout nouveau marchand a inbound_email_slug=NULL →
+        // aucune adresse email-in, jamais. Non-fatal (échec capturé dans le helper).
+        await ensureInboundEmailSlug(supabase, inserted.id, inserted.slug);
     }
 
     return { created: !error };

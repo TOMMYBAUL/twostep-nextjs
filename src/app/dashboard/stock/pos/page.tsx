@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { captureError } from "@/lib/error";
 import { derivePosConnectionView, type PosConnectionRow } from "@/lib/stock/pos-connection-view";
 
-import { PosConnectionActions } from "./actions";
+import { PosConnectCard, PosConnectionActions } from "./actions";
 
 const POS_CATALOG = [
     { id: "square", label: "Square", blurb: "iOS + Android, gratuit, dispo partout" },
@@ -177,7 +177,7 @@ export default async function DashboardPosPage() {
                             {connection!.last_sync_error}
                         </p>
                     )}
-                    <PosConnectionActions provider={connection!.provider} merchantId={merchant!.id} />
+                    <PosConnectionActions provider={connection!.provider} />
                 </div>
             ) : (
                 <div className="mb-6 rounded-2xl border-2 border-dashed border-secondary bg-secondary p-6 text-center">
@@ -195,14 +195,7 @@ export default async function DashboardPosPage() {
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {POS_CATALOG.map((pos) => (
-                    <Link
-                        key={pos.id}
-                        href={`/api/pos/${pos.id}/connect`}
-                        className="rounded-2xl border border-secondary bg-primary p-4 no-underline transition hover:border-brand"
-                    >
-                        <p className="text-sm font-semibold text-primary">{pos.label}</p>
-                        <p className="mt-0.5 text-xs text-tertiary">{pos.blurb}</p>
-                    </Link>
+                    <PosConnectCard key={pos.id} id={pos.id} label={pos.label} blurb={pos.blurb} />
                 ))}
             </div>
 

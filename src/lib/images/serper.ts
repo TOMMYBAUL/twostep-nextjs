@@ -267,6 +267,26 @@ export async function searchProductImage(
         return null;
     }
 
+    // C2 (2026-07-04) — court-circuit COÛT : sans clé de vérification
+    // (`ANTHROPIC_API_KEY` absente, état prod) et sans opt-in explicite
+    // `PUBLISH_UNVERIFIED_IMAGES=1`, `verifyPhotoWithAI` écarte fail-closed CHAQUE
+    // candidat → 100 % des crédits Serper (+ HEAD checks) achetés pour 0 image
+    // publiée. Dans cet état, on n'achète AUCUNE recherche : return null AVANT tout
+    // appel réseau. Même logique de détection que verifyPhotoWithAI (clé env +
+    // publishUnverifiedImages), signalé une fois par process (même guard).
+    if (!process.env.ANTHROPIC_API_KEY && !publishUnverifiedImages()) {
+        if (!warnedVerifierDisabled) {
+            warnedVerifierDisabled = true;
+            captureError(
+                new Error(
+                    "Image sourcing skipped: ANTHROPIC_API_KEY missing — Serper credits NOT spent (every candidate would be rejected unverified; set PUBLISH_UNVERIFIED_IMAGES=1 to publish unverified)",
+                ),
+                { module: "serper", phase: "searchProductImage" },
+            );
+        }
+        return null;
+    }
+
     for (const query of buildImageSearchQueries(productName, brand, sku, color)) {
         const result = await searchSerperImages(apiKey, query, productName, brand, color);
         if (result) return result;

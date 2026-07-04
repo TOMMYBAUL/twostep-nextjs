@@ -4,7 +4,7 @@ import { getGoogleAccessToken, googleMerchantFetch } from "@/lib/google/merchant
 import { transformProductToGoogle, filterEligibleProducts } from "@/lib/google/feed";
 import { gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
 import { captureError } from "@/lib/error";
-import { streamRows } from "@/lib/supabase/paginate";
+import { fetchAllRows, streamRows } from "@/lib/supabase/paginate";
 import { processStreamWithinTimeBudget } from "@/lib/google/feed-push";
 
 // Catalogue pilote multimarque = des MILLIERS de SKU poussés un par un (appel réseau
@@ -26,9 +26,19 @@ export async function POST(req: NextRequest) {
     const supabase = createAdminClient();
     const deadlineMs = Date.now() + TIME_BUDGET_MS;
 
-    const { data: connections, error: connectionsErr } = await supabase
-        .from("google_merchant_connections")
-        .select("merchant_id, store_code");
+    // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000 lignes
+    // par PostgREST SANS erreur → au-delà de 1000 marchands connectés, les feeds des
+    // suivants ne seraient plus JAMAIS poussés, en silence. Curseur = `merchant_id`
+    // (UNIQUE NOT NULL dans google_merchant_connections, migration 037).
+    // (`store_code` : text NOT NULL, migration 037.)
+    const { data: connections, error: connectionsErr } = await fetchAllRows<{ merchant_id: string; store_code: string }>(
+        () =>
+            supabase
+                .from("google_merchant_connections")
+                .select("merchant_id, store_code")
+                .order("merchant_id", { ascending: true }),
+        { column: "merchant_id" },
+    );
 
     // Échec de lecture DB ≠ « aucun marchand connecté » : sans cette garde, un blip
     // DB faisait no-op SILENCIEUX pour TOUS les marchands (HTTP 200, aucun Sentry,

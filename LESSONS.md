@@ -7,7 +7,14 @@ Ce fichier est la mémoire long-terme de Claude Code sur ce projet.
 Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 
 ## Supabase
-(vide — à remplir au fil de l'eau)
+- ❌ **Une colonne posée par un backfill one-shot (057 `inbound_email_slug=slug`) SANS trigger/défaut = NULL pour
+  toute ligne future** → email-in mort pour tout marchand créé après (P0-2 : `inbound-address` → `{address:null}`,
+  routage inbound impossible). **Règle : toute migration qui backfill une colonne dérivée doit AUSSI couvrir les
+  inserts futurs (trigger ou code app sur TOUS les chemins d'insert — grep `.from("table").insert`).** Fix applicatif
+  `ensureInboundEmailSlug` (2 chemins : `POST /api/merchants` + `createMerchantFromMetadata`) + migration 108 écrite
+  (trigger dédié merchants + backfill, NON appliquée). ⚠️ Ne PAS étendre `set_slug_on_insert` (012) : partagé avec
+  `products` (pas de colonne inbound) ; et l'ordre des triggers BEFORE INSERT est ALPHABÉTIQUE → ne pas supposer
+  `NEW.slug` déjà posé. (2026-07-04)
 
 ## Sécurité
 - ❌ `decrypt()` fail-open silencieux (`if (!ciphertext.includes(":")) return ciphertext;`) acceptait n'importe quel token non-chiffré sans erreur. Risque : fuite Vercel env = fuite TOUS tokens POS marchands. Fix : versioning format `v1:iv:tag:ciphertext` + flag `STRICT_DECRYPT=true` qui throw au lieu de fail-open. Migration tokens DB obligatoire AVANT activation strict via `scripts/migrate-encrypt-tokens.mjs`. Rollout 5 phases : déploy fix transitoire → migrate DB → audit Sentry → set STRICT → redeploy. Branche `fix/encryption-fail-open` (2026-04-25)
@@ -811,3 +818,61 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   `review_status='pending'` légitimement invisibles). La garde pending du détecteur les supprime = « zéro faux
   positif » prouvé sur réel. **Un détecteur qui reproduit une règle de visibilité doit exclure EXACTEMENT ses états
   légitimement-invisibles** (pending/masked, sans nom), pas juste l'état nominal. (complétude, quality-check, 2026-07-03)
+
+## UI — le routing App Router est un contrat FICHIER, invisible pour tsc (P0-1 wizard POS)
+- ❌ **3 URLs `/api/pos/...` du wizard « Choisir une caisse » pointaient vers des routes INEXISTANTES** (`[provider]/connect`,
+  `[provider]/sync`, `[provider]/disconnect`) → 404 sur les 3 actions, 0 erreur build/type : l'URL d'un `fetch`/`<Link>` est
+  une chaîne, le contrat de routing vit sur le DISQUE (`route.ts`). Aggravant : `<Link href="/api/...">` PREFETCH → peut
+  EXÉCUTER un handler (OAuth) sans clic — jamais de `<Link>` vers une route API, toujours bouton client + fetch (pattern
+  `use-pos.ts` : GET `[provider]/auth` → `{auth_url}` → redirect). **Règle : toute URL API référencée par l'UI doit être
+  verrouillée par un test route-contract** qui résout chaque URL extraite des sources contre `src/app/api/**/route.ts`
+  (segment `${...}` ↔ dossier `[param]`) — `tests/pos-ui-route-contract.test.ts`. (P0-1, 2026-07-04)
+
+## Push sortant ciblé — cibler « le produit touché » exige de résoudre son PRINCIPAL (A1 + P0-5)
+- ❌ **Passer les ids touchés à un push sortant qui filtre `variant_of IS NULL` ne pousse RIEN pour une VARIANTE** :
+  le stock d'une variante est roulé sur le PRINCIPAL (`recalculateGroupSizesAdmin`) → cibler la variante seule =
+  principal jamais rafraîchi sur Google (vendu resté « in stock »). Fix A1 : expansion `variant_of ?? id` DANS
+  `pushInventoryToGoogle` (aucun autre caller ne passait `productIds` → chemin sync intact). Pièges : liste
+  d'expansion VIDE (produits supprimés) → return, jamais un push complet via `.in([])` sauté ; échec de lecture
+  d'expansion → repli CONSERVATEUR sur le push complet + Sentry. `tests/google-inventory-targeted-push.test.ts`.
+- ❌ **P0-5 (symétrique de la leçon « garde inerte » 104)** : en mode delta, `update_stock_atomic` écrivait
+  `source_ts = p_source_ts` inconditionnellement → un delta RETARDÉ reculait la fraîcheur → un REPLACE périmé
+  repassait la garde absolue. Migration 109 (écrite, NON appliquée) : delta → `GREATEST(v_prev_ts, p_source_ts)`
+  (le delta s'applique toujours, la fraîcheur ne recule jamais). Signature/RETURNS int IDENTIQUES (pas de DROP →
+  pas d'overload PGRST203). `tests/migration-109-delta-source-ts.test.ts`. (A1+P0-5, 2026-07-04)
+
+## Classe max-rows — clôture (résiduels resync/status/feed/stats + borne anti-boucle)
+- ❌ **Classe max-rows : TOUTE lecture `products`/`connections`/`alerts` sans `fetchAllRows` = troncature à 1000
+  SILENCIEUSE** (PostgREST `max-rows`, 0 erreur — même un `.limit(5000)` est plafonné). Résiduels fermés : `resync-stock`
+  (produits POS >1000 jamais guéris + liste pos_connections, curseur `id` car merchant_id NON unique), `cron/google-status`
+  (dédup alertes ouvertes >1000 → violation `uq_quality_alerts_open` → lot entier perdu ; + liste marchands), `cron/google-feed`
+  (liste marchands, curseur `merchant_id` UNIQUE 037), `google/stats` (KPI faux >1000 ; `id` ajouté au SELECT pour le keyset).
+  Bonus : upserts stock resync par LOTS de 500 + repli mono-ligne (pattern snapshot) ; `maxDuration=300` sur cron pos-resync.
+- ⚠️ **Boucle keyset sans borne = boucle INFINIE si la colonne-curseur ne croît pas strictement** (colonne non unique/répétée)
+  → option `maxPages` (défaut 200 = ~200k lignes, ~4× l'échelle pilote) sur `fetchAllRows`/`streamRows`, THROW au dépassement
+  (esprit `fetchProcessedProducts`) ; lecture légitimement plus grosse = relever `maxPages` EXPLICITEMENT. (SCALE, 2026-07-04)
+
+## Fuites de coût API — enrichissement M3 (C1/C2/P0-9, 2026-07-04)
+- ❌ **Un « introuvable » qui n'écrit RIEN dans le cache = re-achat infini** : un EAN sans résultat sur les 4 sources
+  restait `canonical_name=null` → re-sélectionné par le cron 2 h → 4 lookups + Serper + vision re-payés à CHAQUE run.
+  Fix : marqueur NÉGATIF `ean_lookups.source='not_found'` (name='' car NOT NULL ; `canonical_name_normalized` null →
+  invisible de la fuzzy 083 qui filtre IS NOT NULL ; 0 CHECK sur `source` → 0 migration) + TTL 30 j (`isFreshNotFound`) :
+  guard dans `lookupEan`/`fetchEanData`/`collectAllEanSources` (sinon la ligne négative fabriquait un FAUX tier6 dans
+  multi-source = score gonflé) + EXCLUSION dans `selectProductsToEnrich`. **Pièges** : (1) exclusion AVANT le LIMIT
+  (sinon 50 récents bloqués masquent les anciens = starvation → pagination pages de 500) ; (2) fail-OPEN si la lecture
+  du cache négatif blip (le guard lookupEan bloque quand même le spend) ; (3) marqueur écrit AVANT la tentative Serper
+  du même run (spend-safe même si applyEnrichment lève) ; (4) un marqueur ne PUBLIE jamais rien (zéro faux positif) —
+  il ne bloque que les re-achats ; un succès ultérieur l'écrase (upsert PK ean). `tests/ean-negative-cache.test.ts`.
+- ❌ **Acheter une recherche dont chaque résultat sera rejeté fail-closed = 100 % du budget pour 0 publication** : sans
+  `ANTHROPIC_API_KEY` (état prod), `searchProductImage` payait Serper + HEAD checks puis `verifyPhotoWithAI` écartait
+  CHAQUE candidat. Fix : short-circuit EN TÊTE (même détection clé/`PUBLISH_UNVERIFIED_IMAGES` que la vérif) → null
+  AVANT tout réseau. **Règle : quand un gate aval rejette à 100 % dans une config donnée, le remonter EN AMONT de
+  l'achat.** `tests/serper-cost-gate.test.ts`.
+- ❌ **Lot IA > max_tokens = JSON tronqué = boucle de retry infinie** : catégorisation lot de 200 avec max_tokens 4096
+  → parse KO → `failed` SANS `ai_categorized_at` → mêmes produits rejoués au cron 5 min pour tout marchand >~50 produits.
+  Fix : chunk 30/appel (`AI_CATEGORIZE_BATCH_SIZE`, résultats appliqués lot par lot) + **discriminateur d'échec** :
+  parse KO (`CategorizeParseError`, tokens déjà consommés, même entrée = même échec) → MARQUER le lot
+  (`ai_categorized_at`+confidence 0, AUCUNE catégorie écrite) ; provider indisponible (0 token) → ne PAS marquer (retry
+  légitime, 0 perte de couverture sur blip). **Règle : casser une boucle de retry payante exige de distinguer « échec
+  qui a coûté et se reproduira » d'« échec gratuit et transitoire ».** `tests/categorize-batching.test.ts`.
+

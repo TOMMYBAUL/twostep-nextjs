@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { ensureInboundEmailSlug } from "@/lib/merchants/inbound-email-slug";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "merchants", 30);
@@ -143,6 +144,11 @@ export async function POST(request: NextRequest) {
         if (error) {
             return NextResponse.json({ error: "Failed to create merchant" }, { status: 500 });
         }
+
+        // P0-2 : le trigger DB (012) ne pose que `slug` — on dérive l'adresse
+        // email-in ici (inbound_email_slug = slug, format 057). Non-fatal :
+        // la création du marchand prime ; un échec est capturé dans le helper.
+        await ensureInboundEmailSlug(supabase, data.id, data.slug);
 
         return NextResponse.json({ merchant: data }, { status: 201 });
     } catch {

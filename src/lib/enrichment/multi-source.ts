@@ -21,6 +21,8 @@ import {
     fetchFromOpenBeautyFacts,
     fetchFromOpenProductsFacts,
     fetchFromUpcDatabase,
+    isFreshNotFound,
+    isNotFoundMarker,
     type EanResult,
 } from "@/lib/ean/lookup";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -129,11 +131,17 @@ export async function collectAllEanSources(
     if (!skipCache) {
         const { data: cached } = await supabase
             .from("ean_lookups")
-            .select("name, brand, photo_url, photo_url_r2, category, source")
+            .select("name, brand, photo_url, photo_url_r2, category, source, fetched_at")
             .eq("ean", ean)
             .single();
 
-        if (cached) {
+        // Marqueur négatif (C1) : « introuvable partout » n'est PAS un hit — sans ce
+        // garde, la ligne not_found fabriquerait un faux tier6 (name vide) qui gonflerait
+        // le score d'identification (faux positif). Frais → 0 appel externe (économie) ;
+        // périmé → on retombe sur les 4 sources parallèles ci-dessous.
+        if (cached && isNotFoundMarker(cached)) {
+            if (isFreshNotFound(cached)) return empty;
+        } else if (cached) {
             const tier = sourceToTier(cached.source ?? "") ?? "tier6_eansearch";
             // Cache hit : on remonte tier originel + on tente quand même les autres sources
             // pour boost de convergence (mais on accepte que le cache nous suffise si un seul tier).

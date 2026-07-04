@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { summarizePublishability, gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
 import { evaluateFeedReadiness } from "@/lib/google/pilot-readiness";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 export async function GET() {
     try {
@@ -34,14 +35,29 @@ export async function GET() {
         // non variante. Sinon le KPI « % publiable » surévalue en comptant des produits
         // que le feed exclut en silence (notamment un produit archivé reste visible=true,
         // cf. maillon 7 — même classe de faux positif).
-        const { data: products, error: productsErr } = await supabase
-            .from("products")
-            .select("ean, price, photo_url, photo_processed_url")
-            .eq("merchant_id", merchant.id)
-            .eq("visible", true)
-            .eq("review_status", "validated")
-            .is("archived_at", null)
-            .is("variant_of", null);
+        // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000
+        // lignes par PostgREST SANS erreur → au-delà de 1000 produits validés, le KPI
+        // « % publiable » et la readiness LFP étaient calculés sur un sous-ensemble
+        // silencieux (faux compteurs sur l'écran pilote). `id` ajouté au SELECT :
+        // colonne-curseur du keyset. Population INCHANGÉE (parité feed : visible +
+        // validated + non archivé + non variante).
+        const { data: products, error: productsErr } = await fetchAllRows<{
+            id: string;
+            ean: string | null;
+            price: number | null;
+            photo_url: string | null;
+            photo_processed_url: string | null;
+        }>(() =>
+            supabase
+                .from("products")
+                .select("id, ean, price, photo_url, photo_processed_url")
+                .eq("merchant_id", merchant.id)
+                .eq("visible", true)
+                .eq("review_status", "validated")
+                .is("archived_at", null)
+                .is("variant_of", null)
+                .order("id", { ascending: true }),
+        );
 
         // Échec de lecture ≠ « 0 produit » : sans cette garde, un blip DB renvoyait un KPI
         // all-zeros (faux « catalogue vide / 0 % publiable ») en silence sur la page Google.

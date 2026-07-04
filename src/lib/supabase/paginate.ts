@@ -17,15 +17,41 @@ import type { PostgrestError } from "@supabase/supabase-js";
 export const SUPABASE_MAX_ROWS = 1000;
 
 /**
+ * Borne de sécurité par défaut sur le NOMBRE DE PAGES lues. La boucle keyset ne
+ * termine que si la colonne-curseur est STRICTEMENT croissante d'une page à l'autre ;
+ * une colonne mal choisie (non unique, valeur répétée) ferait boucler la MÊME page à
+ * l'infini — sur un cron Vercel, ça finit en kill à `maxDuration` sans diagnostic.
+ * 200 pages × pageSize 1000 = 200 000 lignes : ~4× l'échelle cible pilote (50k SKU),
+ * donc aucune lecture légitime actuelle ne l'approche. Fail-loud (throw) au-delà,
+ * même esprit que `fetchProcessedProducts` (product-status.ts) : une lecture qui
+ * dépasse la borne est soit une boucle, soit un volume qui exige un `maxPages`
+ * EXPLICITE de l'appelant — jamais une troncature silencieuse.
+ */
+export const DEFAULT_MAX_PAGES = 200;
+
+/**
  * Options de pagination KEYSET.
  *  - `pageSize` : taille de page (défaut = limite PostgREST). >= 1.
  *  - `column`   : colonne-curseur, **UNIQUE et totalement ordonnée**, par laquelle
  *    la factory `.order(column, {ascending:true})`. Défaut `"id"` (clé primaire).
  *    Cas particulier : la réconciliation lit `stock` ordonné par `product_id`.
+ *  - `maxPages` : borne de sécurité anti-boucle (défaut `DEFAULT_MAX_PAGES` = 200).
+ *    Dépassée → THROW (jamais un résultat partiel). Une lecture légitimement plus
+ *    volumineuse (≥ maxPages × pageSize lignes) doit la relever EXPLICITEMENT.
  */
 export interface KeysetOptions {
     pageSize?: number;
     column?: string;
+    maxPages?: number;
+}
+
+/** Message d'erreur commun au dépassement de `maxPages` (fetchAllRows/streamRows). */
+function maxPagesError(where: string, maxPages: number, pageSize: number, column: string, cursor: string | number | null): Error {
+    return new Error(
+        `${where}: limite de ${maxPages} pages atteinte (curseur "${column}"=${String(cursor)}) — ` +
+            `boucle de pagination probable (colonne-curseur non strictement croissante ?) ; ` +
+            `si la lecture est légitimement ≥ ${maxPages * pageSize} lignes, passer options.maxPages explicitement`,
+    );
 }
 
 /**
@@ -97,15 +123,26 @@ export async function fetchAllRows<T>(
     makeQuery: () => KeysetQuery<T>,
     options: KeysetOptions = {},
 ): Promise<{ data: T[] | null; error: PostgrestError | null }> {
-    const { pageSize = SUPABASE_MAX_ROWS, column = "id" } = options;
+    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES } = options;
     if (pageSize < 1) {
         throw new Error(`fetchAllRows: pageSize doit être >= 1 (reçu ${pageSize})`);
+    }
+    if (maxPages < 1) {
+        throw new Error(`fetchAllRows: maxPages doit être >= 1 (reçu ${maxPages})`);
     }
 
     const all: T[] = [];
     let cursor: string | number | null = null;
+    let pages = 0;
 
     for (;;) {
+        // Borne anti-boucle : un curseur qui ne CROÎT pas strictement (colonne non
+        // unique / répétée) relirait la même fenêtre pour toujours. THROW, jamais
+        // un résultat partiel présenté comme complet (cf. DEFAULT_MAX_PAGES).
+        if (pages >= maxPages) {
+            throw maxPagesError("fetchAllRows", maxPages, pageSize, column, cursor);
+        }
+        pages++;
         let query = makeQuery();
         if (cursor !== null) query = query.gt(column, cursor);
         const { data, error } = await query.limit(pageSize);
@@ -166,14 +203,24 @@ export async function* streamRows<T>(
     makeQuery: () => KeysetQuery<T>,
     options: KeysetOptions = {},
 ): AsyncGenerator<T[]> {
-    const { pageSize = SUPABASE_MAX_ROWS, column = "id" } = options;
+    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES } = options;
     if (pageSize < 1) {
         throw new Error(`streamRows: pageSize doit être >= 1 (reçu ${pageSize})`);
     }
+    if (maxPages < 1) {
+        throw new Error(`streamRows: maxPages doit être >= 1 (reçu ${maxPages})`);
+    }
 
     let cursor: string | number | null = null;
+    let pages = 0;
 
     for (;;) {
+        // Borne anti-boucle (cf. fetchAllRows) : le consommateur streaming AVORTE
+        // (contrat fail-loud par THROW), jamais un flux qui tourne sans fin.
+        if (pages >= maxPages) {
+            throw maxPagesError("streamRows", maxPages, pageSize, column, cursor);
+        }
+        pages++;
         let query = makeQuery();
         if (cursor !== null) query = query.gt(column, cursor);
         const { data, error } = await query.limit(pageSize);

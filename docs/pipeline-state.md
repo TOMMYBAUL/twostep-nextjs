@@ -2,20 +2,41 @@
 # FIL CONDUCTEUR de la boucle autonome — source de vérité sur « où on en est ».
 # La boucle lit CE fichier EN PREMIER (compact) avant les gros docs, et le met à jour
 # EN DERNIER à chaque run. Schéma + enum documentés dans docs/os-architecture.md.
-pipeline: ui-finition
-step: E
+pipeline: audit-optimisation
+step: F
 step_total: 9
-step_name: "UI finition pro + responsive (dashboard + site), DA respectée"
+step_name: "Audit d'optimisation 9 maillons + re-challenge complétude + carte NearSt FAIT → exécution P0/clusters"
 status: in_progress
-blocked_on: "thomas:jugement visuel pro/moyen (M6) + M1 pilote+caisse (débloque 6a.3)"
-next_action: "UI: grounding DA (brand-guidelines/theme) + skill impeccable + captures état réel → fixes priorisés page par page avec revue visuelle Thomas"
-branch: feat/pipeline-v1-handoff-2026-06-12
-gate: green               # green|red|unknown  (test:run + tsc au dernier commit)
-last_run: 2026-07-03
+blocked_on: "thomas:arbitrage M10 plateforme/transactionnel (hors-wedge?) + GO fixes P0 pilote-bloquants + jugement visuel UI + M1 pilote+caisse"
+next_action: "P0-1 (wizard POS 404) + P0-2 (inbound_email_slug NULL) CORRIGÉS+PROUVÉS (tsc 0, 40 tests verts, non commités, migration 108 écrite NON appliquée — GO Thomas requis). PROCHAIN : valider ces 2 fixes, puis exécuter Cluster A1 (webhook push Google ciblé) + C1/C2 (fuite coût enrichissement). Arbitrage Thomas en attente : scope M10 plateforme/transactionnel."
+branch: feat/twostep-phase1
+gate: green               # green|red|unknown  (test:run + tsc au dernier commit — inchangé, aucun code modifié cette session)
+last_run: 2026-07-04
 last_commit: HEAD
 ---
 
-# État resumable — 2026-07-03 : audit 9 maillons FAIT + cluster A corrigé → UI finition
+# État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)
+
+**Reprise rapide (lire ceci, puis `docs/SPEC/audit-optimisation-2026-07-04.md`).**
+
+- **Audit d'optimisation FAIT** (9 agents Fable 5, 1/maillon, code+tests lus ; + recherche NearSt à jour ;
+  8 bugs relus adversarialement par l'orchestrateur, 8 confirmés). Plus profond que l'audit correctness du 03-07.
+- **Complétude re-challengée → « aucun maillon ne manque » PÉRIMÉ** : NearSt a 2 capacités structurelles non
+  cartographiées — **plateforme/API partenaires** (moat B2B2B, `developers.near.st` vérifié) et **couche
+  transactionnelle** (réservations + Local Checkout). ⚠️ possiblement hors-wedge → **arbitrage Thomas**.
+- **13 bugs correctness manqués** dont **6 pilote-bloquants** (wizard POS 404, `inbound_email_slug` NULL,
+  `/api/products` tronqué 1000, surfaces conso court-circuitent M5, delta `source_ts` recule, feed_events fantômes).
+- **Classe systémique confirmée** : troncature silencieuse à 1000 (≥4 lectures non paginées).
+- **~110 optimisations** priorisées en 7 clusters cross-maillon (A fiabilité/coût publication Google,
+  B sweep troncature, C fuite coût enrichissement, D self-serve, E intégrité, F perf sync POS, G valeur produit NearSt).
+- **Aucun code modifié cette session** (audit + livrable seulement) → gate reste green au dernier commit.
+
+**Chantier PRÉCÉDENT (UI finition E)** : toujours ouvert (jugement visuel Thomas, DA bleue #4268FF confirmée
+correctement câblée — rien à re-skinner). À reprendre après/avec les P0.
+
+---
+
+# (archive) État — 2026-07-03 : audit 9 maillons FAIT + cluster A corrigé → UI finition
 
 **Reprise rapide (lire ceci, puis `docs/SPEC/audit-maillons-2026-07-03.md`).**
 

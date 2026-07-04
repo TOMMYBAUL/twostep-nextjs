@@ -7,6 +7,49 @@ import { searchProductImage } from "@/lib/images/serper";
 import { extractOpenFactsImage } from "@/lib/ean/open-facts-image";
 import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
 import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
+import { captureError } from "@/lib/error";
+
+// ── Cache NÉGATIF (C1, 2026-07-04) ──
+//
+// Problème : un EAN introuvable partout n'écrivait RIEN dans `ean_lookups` →
+// le sélecteur d'enrichissement (canonical_name null) le re-présentait à CHAQUE
+// run du cron (toutes les 2 h) → 4 lookups externes + Serper + vision re-payés
+// indéfiniment pour le même échec. On écrit désormais un MARQUEUR négatif
+// (`source='not_found'`, name='' — NOT NULL oblige) avec TTL : tant qu'il est
+// frais, aucune re-tentative externe ; expiré, on re-tente (les bases EAN
+// s'enrichissent avec le temps).
+//
+// Zéro faux positif : le marqueur ne publie RIEN (name vide, jamais appliqué à
+// un produit, `canonical_name_normalized` reste null → invisible de la recherche
+// fuzzy 083 qui filtre IS NOT NULL). Il ne fait que bloquer les re-achats.
+// Un succès ultérieur (cascade, reverse-search) l'écrase via l'upsert (PK ean).
+//
+// ⚠️ Limite assumée (documentée) : les fetchFromX ne distinguent pas « répondu
+// introuvable » d'« erreur réseau/quota » → une panne totale des 4 sources peut
+// poser un marqueur. Borné par le TTL, et visible (le run est loggé failed).
+export const EAN_NOT_FOUND_SOURCE = "not_found";
+export const EAN_NOT_FOUND_TTL_MS = 30 * 24 * 60 * 60 * 1000; // ~30 jours
+
+/** Une ligne `ean_lookups` est-elle un marqueur négatif (peu importe sa fraîcheur) ? */
+export function isNotFoundMarker(row: { source?: string | null } | null | undefined): boolean {
+    return row?.source === EAN_NOT_FOUND_SOURCE;
+}
+
+/**
+ * Marqueur négatif encore FRAIS (< TTL) → bloque les re-tentatives externes.
+ * `fetched_at` absent/illisible → considéré PÉRIMÉ (on re-tente : la re-tentative
+ * ré-écrit une date valide, donc pas de boucle ; coverage > économie sur ce cas limite).
+ */
+export function isFreshNotFound(
+    row: { source?: string | null; fetched_at?: string | null } | null | undefined,
+    nowMs: number = Date.now(),
+): boolean {
+    if (!row || !isNotFoundMarker(row)) return false;
+    if (!row.fetched_at) return false;
+    const fetchedMs = Date.parse(row.fetched_at);
+    if (Number.isNaN(fetchedMs)) return false;
+    return nowMs - fetchedMs < EAN_NOT_FOUND_TTL_MS;
+}
 
 // ── Name similarity scoring for reverse EAN search ──
 
@@ -727,7 +770,12 @@ export async function fetchEanData(ean: string, skipCache = false): Promise<EanR
             .eq("ean", ean)
             .single();
 
-        if (cached) {
+        // Marqueur négatif : « déjà cherché partout, introuvable ». Frais → on
+        // répond null SANS re-payer les 4 sources externes ; périmé → on retombe
+        // dans la cascade ci-dessous (re-tentative légitime, les bases évoluent).
+        if (cached && isNotFoundMarker(cached)) {
+            if (isFreshNotFound(cached)) return null;
+        } else if (cached) {
             return {
                 name: cached.name ?? "Unknown",
                 brand: cached.brand ?? null,
@@ -810,7 +858,16 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         .eq("ean", ean)
         .single();
 
-    if (cached) {
+    if (cached && isNotFoundMarker(cached)) {
+        if (isFreshNotFound(cached)) {
+            // Cache NÉGATIF frais : EAN déjà cherché sur toutes les sources récemment,
+            // introuvable. On ne re-paye RIEN (ni les 4 lookups, ni Serper, ni vision).
+            // Le hit négatif compte comme hit cache (il économise exactement ces appels).
+            void logCacheHit(ean);
+            return false;
+        }
+        // Marqueur périmé (> TTL) → re-tentative complète ci-dessous.
+    } else if (cached) {
         // Cache hit: bump telemetry (fire-and-forget) then apply enrichment.
         // Prefer R2-rehosted photo over original Serper/EAN-Search URL.
         void logCacheHit(ean);
@@ -833,9 +890,42 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
         return true;
     }
 
-    // No source found anything — still try Serper for the photo
+    // Introuvable partout → poser/rafraîchir le marqueur négatif AVANT la tentative
+    // Serper : si applyEnrichment lève après coup, le marqueur est déjà là et le
+    // prochain run ne re-brûle pas la cascade (spend-safe même sur crash).
+    await writeNotFoundMarker(supabase, ean);
+
+    // No source found anything — still try Serper for the photo (UNE tentative par
+    // fenêtre TTL, plus « à chaque run » : les runs suivants sortent au guard négatif).
     await applyEnrichment(supabase, productId, { name: null, brand: null, photo_url: null, category: null }, ean);
     return false;
+}
+
+/**
+ * Écrit le marqueur négatif `source='not_found'` pour un EAN (upsert sur PK ean).
+ * `name=''` (colonne NOT NULL) et `canonical_name_normalized=null` → jamais servi
+ * comme donnée produit, jamais matché par la recherche fuzzy (083 filtre IS NOT NULL).
+ * Les colonnes taxonomie (category_id…) ne sont PAS dans le payload → préservées si
+ * un marqueur périmé est rafraîchi. Échec d'écriture = la fuite de coût persiste en
+ * silence pour cet EAN → captureError (sans lever : le lookup lui-même a fini).
+ */
+async function writeNotFoundMarker(
+    supabase: ReturnType<typeof createAdminClient>,
+    ean: string,
+): Promise<void> {
+    const { error } = await supabase.from("ean_lookups").upsert({
+        ean,
+        name: "",
+        canonical_name_normalized: null,
+        brand: null,
+        photo_url: null,
+        category: null,
+        source: EAN_NOT_FOUND_SOURCE,
+        fetched_at: new Date().toISOString(),
+    });
+    if (error) {
+        captureError(error, { module: "ean-lookup", phase: "write-not-found-marker", ean });
+    }
 }
 
 async function applyEnrichment(

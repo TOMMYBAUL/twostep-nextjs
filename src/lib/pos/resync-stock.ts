@@ -2,6 +2,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { POSStockUpdate } from "@/lib/pos/types";
 import { getActivePosAccessToken } from "@/lib/pos/access-token";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
+import { chunk } from "@/lib/ingest/reconcile";
 
 /**
  * Re-sync STOCK-ONLY d'un marchand POS, en contexte service_role (cron).
@@ -52,11 +54,18 @@ export async function resyncMerchantStock(
         return { merchant_id: merchantId, ok: false, updated: 0, fetched: 0, reason: "no_connection_or_token_expired" };
     }
 
-    const { data: products, error: productsErr } = await admin
-        .from("products")
-        .select("id, pos_item_id")
-        .eq("merchant_id", merchantId)
-        .not("pos_item_id", "is", null);
+    // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000 lignes
+    // par PostgREST SANS erreur → sur un catalogue >1000 (Deerskin = milliers de SKU),
+    // les produits au-delà du 1000ᵉ sortaient de l'index pos_item_id → leur dérive de
+    // stock n'était JAMAIS guérie par ce chemin d'auto-guérison (l'enjeu n°1), en silence.
+    const { data: products, error: productsErr } = await fetchAllRows<{ id: string; pos_item_id: string | null }>(() =>
+        admin
+            .from("products")
+            .select("id, pos_item_id")
+            .eq("merchant_id", merchantId)
+            .not("pos_item_id", "is", null)
+            .order("id", { ascending: true }),
+    );
 
     // Un échec de lecture NE DOIT PAS être confondu avec « 0 produit suivi » :
     // sinon resync retourne `ok:true, fetched:0` (voyant vert) alors que la dérive
@@ -83,21 +92,44 @@ export async function resyncMerchantStock(
     }
 
     const mapped = mapStockUpdatesToProducts(rows, stockUpdates);
+    // DÉDUP par product_id (dernier gagne) : deux updates POS sur le même produit dans
+    // un même lot feraient échouer l'upsert Postgres (« ON CONFLICT ... cannot affect
+    // row a second time ») — même motif que le flush stock de ingest/snapshot.
+    const nowIso = new Date().toISOString();
+    const stockByProduct = new Map<string, { product_id: string; quantity: number; updated_at: string; source: string; source_ts: string }>();
+    for (const m of mapped) {
+        stockByProduct.set(m.productId, {
+            product_id: m.productId,
+            quantity: m.quantity,
+            updated_at: nowIso,
+            source: "pos_sync",
+            source_ts: nowIso,
+        });
+    }
+
+    // Écriture PAR LOTS de 500 (pattern snapshot.ts) : l'ancienne boucle faisait UN
+    // aller-retour réseau par produit → sur des milliers de SKU, le cron dépassait son
+    // budget temps Vercel → kill en plein vol = produits restants jamais guéris (même
+    // classe de troncature silencieuse que la lecture non paginée ci-dessus).
     let updated = 0;
     let writeErrors = 0;
-    for (const m of mapped) {
-        const nowIso = new Date().toISOString();
-        const { error } = await admin.from("stock").upsert(
-            { product_id: m.productId, quantity: m.quantity, updated_at: nowIso, source: "pos_sync", source_ts: nowIso },
-            { onConflict: "product_id" },
-        );
-        if (error) {
-            // Un échec d'écriture stock = dérive silencieuse (l'enjeu n°1 du produit).
-            // On ne le masque plus derrière un statut "ok".
-            writeErrors++;
-            captureError(error, { lib: "resync-stock", merchantId, productId: m.productId });
-        } else {
-            updated++;
+    for (const batch of chunk([...stockByProduct.values()], 500)) {
+        const { error: batchErr } = await admin.from("stock").upsert(batch, { onConflict: "product_id" });
+        if (!batchErr) {
+            updated += batch.length;
+            continue;
+        }
+        // Lot en échec → repli MONO-LIGNE : isole la faute (1 ligne toxique ne doit pas
+        // faire perdre 499 écritures saines), et chaque échec reste VISIBLE (Sentry),
+        // jamais masqué derrière un statut "ok" (dérive de stock = enjeu n°1).
+        for (const row of batch) {
+            const { error } = await admin.from("stock").upsert(row, { onConflict: "product_id" });
+            if (error) {
+                writeErrors++;
+                captureError(error, { lib: "resync-stock", merchantId, productId: row.product_id });
+            } else {
+                updated++;
+            }
         }
     }
 
@@ -122,10 +154,16 @@ export async function resyncMerchantStock(
 
 /** Re-sync stock de TOUS les marchands ayant une connexion POS. */
 export async function resyncAllMerchantsStock(admin: SupabaseClient): Promise<StockResyncResult[]> {
-    const { data: conns, error: connsErr } = await admin
-        .from("pos_connections")
-        .select("merchant_id")
-        .limit(5000);
+    // PAGINÉ (KEYSET) : l'ancien `.limit(5000)` était PLAFONNÉ à 1000 par `max-rows`
+    // PostgREST (sans erreur) → au-delà de 1000 connexions POS, les marchands suivants
+    // n'étaient JAMAIS resynchronisés, en silence. Curseur = `id` (PK) : `merchant_id`
+    // n'est PAS unique dans pos_connections (UNIQUE(merchant_id, provider)).
+    const { data: conns, error: connsErr } = await fetchAllRows<{ id: string; merchant_id: string }>(() =>
+        admin
+            .from("pos_connections")
+            .select("id, merchant_id")
+            .order("id", { ascending: true }),
+    );
 
     // Si la liste des connexions n'est pas lisible, on LÈVE : un `?? []` silencieux
     // ferait que le cron « ne guérit personne » en se rapportant ok — le cron

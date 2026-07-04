@@ -4,6 +4,7 @@ import { getGoogleAccessToken } from "@/lib/google/merchant";
 import { fetchProcessedProducts, summarizeProductStatuses, buildDisapprovalAlerts } from "@/lib/google/product-status";
 import { chunk } from "@/lib/ingest/reconcile";
 import { captureError } from "@/lib/error";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 /**
  * Cron de RELECTURE du statut Google (read-back du canal LFP Voie A).
@@ -25,9 +26,18 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
 
-    const { data: connections, error: connectionsErr } = await supabase
-        .from("google_merchant_connections")
-        .select("merchant_id");
+    // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000 lignes
+    // par PostgREST SANS erreur → au-delà de 1000 marchands connectés, le read-back des
+    // suivants serait silencieusement abandonné. Curseur = `merchant_id` (UNIQUE NOT NULL
+    // dans google_merchant_connections, migration 037).
+    const { data: connections, error: connectionsErr } = await fetchAllRows<{ merchant_id: string }>(
+        () =>
+            supabase
+                .from("google_merchant_connections")
+                .select("merchant_id")
+                .order("merchant_id", { ascending: true }),
+        { column: "merchant_id" },
+    );
 
     // Échec de lecture DB ≠ « aucun marchand connecté » : sans cette garde, un blip
     // DB faisait no-op SILENCIEUX pour TOUS les marchands (HTTP 200, aucun Sentry,
@@ -107,19 +117,34 @@ export async function POST(req: NextRequest) {
                 // Sentry ci-dessus reste, lui, toujours actif.
                 if (process.env.GOOGLE_DISAPPROVAL_ALERTS === "1") {
                     const alerts = buildDisapprovalAlerts(products, conn.merchant_id);
-                    const { data: open, error: openErr } = await supabase
-                        .from("quality_alerts")
-                        .select("product_id")
-                        .eq("merchant_id", conn.merchant_id)
-                        .eq("type", "google_disapproved")
-                        .eq("status", "open");
+                    // Dédup PAGINÉE (KEYSET, comme cron/quality-check) : plafonnée à 1000
+                    // par `max-rows`, le set d'alertes ouvertes était PARTIEL au-delà →
+                    // une alerte déjà ouverte hors des 1000 premières repassait dans
+                    // `fresh` → INSERT en violation du partial-unique `uq_quality_alerts_open`
+                    // → TOUT le lot rejeté = 0 alerte persistée ce run, en silence.
+                    // `id` ajouté au SELECT : colonne-curseur du keyset.
+                    const { data: open, error: openErr } = await fetchAllRows<{ id: string; product_id: string | null }>(() =>
+                        supabase
+                            .from("quality_alerts")
+                            .select("id, product_id")
+                            .eq("merchant_id", conn.merchant_id)
+                            .eq("type", "google_disapproved")
+                            .eq("status", "open")
+                            .order("id", { ascending: true }),
+                    );
                     // Lecture de dédup en erreur ≠ « aucune alerte ouverte » : `open ?? []`
                     // sur un blip DB traiterait TOUT comme neuf → ré-insertion en double à
                     // chaque cron. On rend l'erreur visible et on SKIP la persistance ce
                     // cycle (le signal Sentry au-dessus reste émis ; la persistance retente
                     // au prochain cron sans polluer la table). (revue SF-hunter, finding A)
-                    if (openErr) {
-                        captureError(openErr, { cron: "google-status", merchantId: conn.merchant_id, step: "load-open-alerts" });
+                    // `!open` couvert : data=null sans error = anomalie SDK → même skip
+                    // fail-visible (jamais d'insert aveugle sans dédup fiable).
+                    if (openErr || !open) {
+                        captureError(openErr ?? new Error("open alerts null without error — unexpected SDK state"), {
+                            cron: "google-status",
+                            merchantId: conn.merchant_id,
+                            step: "load-open-alerts",
+                        });
                     } else {
                         const openSet = new Set((open ?? []).map((a: { product_id: string | null }) => a.product_id));
                         const fresh = alerts.filter((a) => !openSet.has(a.product_id));

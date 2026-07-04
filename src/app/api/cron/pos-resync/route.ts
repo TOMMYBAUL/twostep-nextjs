@@ -8,6 +8,12 @@ import { captureError } from "@/lib/error";
  * Auto-guérit la dérive (retours non captés par les webhooks Shopify/Lightspeed).
  * À planifier toutes les ~6 h dans vercel.json.
  */
+
+// Boucle N marchands × (getStock POS réseau + upserts par lots) : sans maxDuration,
+// le timeout Vercel par défaut coupe la fonction en plein vol → marchands restants
+// jamais guéris ce run, sans signal (même classe que cron/google-feed/quality-check).
+export const maxDuration = 300;
+
 export async function GET(request: Request) {
     const authHeader = request.headers.get("authorization");
     if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

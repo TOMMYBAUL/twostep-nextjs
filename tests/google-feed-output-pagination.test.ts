@@ -27,6 +27,7 @@ const MAX_ROWS = 1000;
 // ── Holders mutables référencés par les mocks hoistés (réinitialisés par test). ──
 const h = {
     pageCursors: [] as Array<string | null>, // curseur keyset de chaque page products lue
+    connPageCursors: [] as Array<string | null>, // curseur keyset de chaque page connexions lue
     googleFetchCount: 0,
     connections: [] as Array<Record<string, unknown>>,
 };
@@ -79,6 +80,7 @@ function makeClient() {
         const st = {
             single: false,
             cursor: null as string | null,
+            connCursor: null as string | null,
             limitN: null as number | null,
             op: "select" as "select" | "update",
         };
@@ -100,7 +102,17 @@ function makeClient() {
             if (table === "google_merchant_connections") {
                 if (st.op === "update") return { data: null, error: null };
                 if (st.single) return { data: { store_code: "twostep-abcd1234" }, error: null };
-                return { data: h.connections, error: null }; // liste (cron)
+                // Liste (cron) — PAGINÉE keyset sur merchant_id, plafonnée à max-rows comme
+                // PostgREST : la lecture « liste des marchands » est elle aussi tronquée à
+                // 1000 sans fetchAllRows (item « listes marchands non paginées »).
+                h.connPageCursors.push(st.connCursor);
+                let conns = [...h.connections].sort((a, b2) =>
+                    String(a.merchant_id).localeCompare(String(b2.merchant_id)),
+                );
+                if (st.connCursor != null) conns = conns.filter((c) => (c.merchant_id as string) > st.connCursor!);
+                const connCap = Math.min(st.limitN ?? MAX_ROWS, MAX_ROWS);
+                if (conns.length > connCap) conns = conns.slice(0, connCap);
+                return { data: conns, error: null };
             }
             return { data: null, error: null };
         };
@@ -111,9 +123,10 @@ function makeClient() {
         b.is = () => b;
         b.not = () => b;
         b.in = () => b;
-        // Curseur keyset : seul `.gt("id", curseur)` de fetchAllRows/streamRows nous intéresse.
+        // Curseur keyset : `.gt("id", ...)` (products) et `.gt("merchant_id", ...)` (connexions).
         b.gt = (col: string, val: unknown) => {
             if (col === "id") st.cursor = val as string;
+            if (col === "merchant_id") st.connCursor = val as string;
             return b;
         };
         b.order = () => b;
@@ -146,6 +159,7 @@ function makeClient() {
 
 beforeEach(() => {
     h.pageCursors = [];
+    h.connPageCursors = [];
     h.googleFetchCount = 0;
     h.connections = [];
 });
@@ -204,5 +218,39 @@ describe("SORTIES Google — pagination anti-troncature sur catalogue > max-rows
 
         expectTwoPages();
         expect(h.googleFetchCount).toBe(CATALOG); // un localInventories:insert par produit
+    });
+
+    it("Voie A cron : la LISTE DES MARCHANDS elle-même est paginée — 1500 connexions → 1500 marchands vus (2 pages keyset)", async () => {
+        // Item « listes marchands non paginées » : sans fetchAllRows, PostgREST tronque la
+        // liste à 1000 SANS erreur → les feeds des 500 marchands suivants ne seraient plus
+        // JAMAIS poussés. Token indisponible pour tous → chaque marchand sort tôt (errors++) :
+        // on ne prouve ICI que la COMPLÉTUDE de la liste, sans pousser 1500 catalogues.
+        process.env.CRON_SECRET = "secret";
+        h.connections = Array.from({ length: 1500 }, (_, i) => ({
+            merchant_id: `m${String(i).padStart(5, "0")}`,
+            store_code: `twostep-${i}`,
+        }));
+        const { getGoogleAccessToken } = await import("@/lib/google/merchant");
+        vi.mocked(getGoogleAccessToken).mockResolvedValue(null as never);
+        try {
+            const { POST } = await import("@/app/api/cron/google-feed/route");
+            const req = new Request("http://x/api/cron/google-feed", {
+                method: "POST",
+                headers: { authorization: "Bearer secret" },
+            }) as never;
+            const res = await POST(req);
+            const json = await (res as Response).json();
+
+            // Liste lue en 2 pages KEYSET (curseur merchant_id) : 1500 marchands, pas 1000.
+            expect(h.connPageCursors).toEqual([null, "m00999"]);
+            expect(json.merchants).toBe(1500);
+            expect(json.errors).toBe(1500); // token null → chaque marchand signalé, aucun sauté
+        } finally {
+            // Restaure l'implémentation du mock module (les autres tests s'appuient dessus).
+            vi.mocked(getGoogleAccessToken).mockImplementation(async () => ({
+                connection: { google_merchant_id: "acc-1" },
+                accessToken: "tok",
+            }));
+        }
     });
 });

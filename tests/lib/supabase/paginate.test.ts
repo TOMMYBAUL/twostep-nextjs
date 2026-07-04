@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { PostgrestError } from "@supabase/supabase-js";
-import { fetchAllRows, streamRows, SUPABASE_MAX_ROWS } from "@/lib/supabase/paginate";
+import { fetchAllRows, streamRows, SUPABASE_MAX_ROWS, DEFAULT_MAX_PAGES } from "@/lib/supabase/paginate";
 
 /**
  * Preuve de la garde anti-troncature `max-rows` de PostgREST (défaut Supabase 1000),
@@ -238,6 +238,91 @@ describe("fetchAllRows — anti-troncature max-rows PostgREST (KEYSET)", () => {
 
     it("constante exportée = défaut PostgREST Supabase", () => {
         expect(SUPABASE_MAX_ROWS).toBe(1000);
+    });
+});
+
+/**
+ * Fabrique une requête PATHOLOGIQUE : chaque page est PLEINE et le curseur ne CROÎT
+ * jamais (toutes les lignes portent la même valeur — colonne non unique / répétée).
+ * Sans borne `maxPages`, la boucle keyset relirait la même fenêtre POUR TOUJOURS
+ * (sur un cron Vercel : kill brutal à maxDuration, sans diagnostic).
+ */
+function makeRepeatingCursorFactory(pageSize: number) {
+    const calls = { n: 0 };
+    const make = () => ({
+        gt() {
+            return make();
+        },
+        limit: () => {
+            calls.n++;
+            const rows = Array.from({ length: pageSize }, () => ({ id: 42 }));
+            return Promise.resolve({ data: rows as Row[] | null, error: null as PostgrestError | null });
+        },
+    });
+    return { make, calls };
+}
+
+describe("maxPages — borne anti boucle infinie (curseur non strictement croissant)", () => {
+    it("fetchAllRows : curseur qui se répète → LÈVE au dépassement de maxPages (jamais une boucle sans fin)", async () => {
+        const { make, calls } = makeRepeatingCursorFactory(10);
+        await expect(fetchAllRows<Row>(make, { pageSize: 10, maxPages: 3 })).rejects.toThrow(
+            /limite de 3 pages/,
+        );
+        expect(calls.n).toBe(3); // exactement maxPages requêtes, pas une de plus
+    });
+
+    it("fetchAllRows : le DÉFAUT (200 pages) borne aussi la boucle sans option explicite", async () => {
+        const { make, calls } = makeRepeatingCursorFactory(5);
+        await expect(fetchAllRows<Row>(make, { pageSize: 5 })).rejects.toThrow(/limite de 200 pages/);
+        expect(calls.n).toBe(DEFAULT_MAX_PAGES);
+    });
+
+    it("fetchAllRows : une lecture légitime SOUS la borne est INCHANGÉE (rétro-compat)", async () => {
+        // 2500 lignes / pageSize 1000 = 3 pages, maxPages 3 → passe exactement à la borne.
+        const { make } = makeQueryFactory(2500, 1000);
+        const { data, error } = await fetchAllRows<Row>(make, { pageSize: 1000, maxPages: 3 });
+        expect(error).toBeNull();
+        expect(data!).toHaveLength(2500);
+    });
+
+    it("fetchAllRows : le message oriente le diagnostic (colonne-curseur / relever maxPages)", async () => {
+        const { make } = makeRepeatingCursorFactory(10);
+        await expect(fetchAllRows<Row>(make, { pageSize: 10, maxPages: 2 })).rejects.toThrow(
+            /colonne-curseur non strictement croissante|maxPages/,
+        );
+    });
+
+    it("fetchAllRows : maxPages invalide (< 1) → lève", async () => {
+        const { make } = makeQueryFactory(10, 1000);
+        await expect(fetchAllRows<Row>(make, { pageSize: 1000, maxPages: 0 })).rejects.toThrow(/maxPages/);
+    });
+
+    it("streamRows : curseur qui se répète → le flux AVORTE (throw) au dépassement, jamais un générateur infini", async () => {
+        const { make, calls } = makeRepeatingCursorFactory(10);
+        const gen = streamRows<Row>(make, { pageSize: 10, maxPages: 3 });
+        await gen.next(); // pages 1..3 émises (pleines)
+        await gen.next();
+        await gen.next();
+        await expect(gen.next()).rejects.toThrow(/limite de 3 pages/);
+        expect(calls.n).toBe(3);
+    });
+
+    it("streamRows : lecture légitime sous la borne inchangée (rétro-compat)", async () => {
+        const { make } = makeQueryFactory(2500, 1000);
+        const seen: number[] = [];
+        for await (const page of streamRows<Row>(make, { pageSize: 1000, maxPages: 3 })) {
+            for (const r of page) seen.push(r.id);
+        }
+        expect(seen).toHaveLength(2500);
+    });
+
+    it("streamRows : maxPages invalide (< 1) → lève", async () => {
+        const { make } = makeQueryFactory(10, 1000);
+        await expect(streamRows<Row>(make, { pageSize: 1000, maxPages: 0 }).next()).rejects.toThrow(/maxPages/);
+    });
+
+    it("défaut exporté = 200 pages (~200k lignes à pageSize 1000, ~4× l'échelle cible pilote)", () => {
+        expect(DEFAULT_MAX_PAGES).toBe(200);
     });
 });
 

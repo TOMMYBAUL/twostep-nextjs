@@ -35,9 +35,13 @@ export async function POST(request: Request) {
         // Webhooks bypass RLS — use admin client
         const supabase = createAdminClient();
 
+        // Produits RÉELLEMENT touchés par l'événement — pour le push Google CIBLÉ (A1).
+        const touched: Array<{ id: string; merchant_id: string }> = [];
+
         for (const update of updates) {
             const product = await resolveWebhookProduct(supabase, update.pos_item_id, "square");
             if (!product) continue;
+            touched.push(product);
 
             // Atomic stock update — eliminates TOCTOU race condition.
             // On transmet l'horodatage RÉEL de l'événement (calculated_at Square) comme
@@ -81,17 +85,19 @@ export async function POST(request: Request) {
             }
         }
 
-        // Push updated inventory to Google
-        if (updates.length > 0) {
-            const { data: firstProduct, error: merchantErr } = await supabase
-                .from("products")
-                .select("merchant_id")
-                .eq("pos_item_id", updates[0].pos_item_id)
-                .maybeSingle();
-            if (merchantErr) captureError(merchantErr, { route: "webhooks/square", phase: "merchant-lookup-google" });
-            if (firstProduct) {
-                pushInventoryToGoogle(firstProduct.merchant_id).catch((e) =>
-                    captureError(e, { route: "webhooks/square", phase: "google-inventory", merchantId: firstProduct.merchant_id }),
+        // Push CIBLÉ de l'inventaire Google (A1) : seuls les produits réellement touchés
+        // par l'événement partent vers Google — plus jamais le catalogue entier à chaque
+        // vente (gaspillage quota + latence). Le merchant_id vient de resolveWebhookProduct
+        // (le re-lookup par pos_item_id est supprimé). Groupé par marchand par sûreté.
+        // Aucun produit résolu = aucun stock modifié → rien à pousser.
+        if (touched.length > 0) {
+            const byMerchant = new Map<string, string[]>();
+            for (const t of touched) {
+                byMerchant.set(t.merchant_id, [...(byMerchant.get(t.merchant_id) ?? []), t.id]);
+            }
+            for (const [merchantId, productIds] of byMerchant) {
+                pushInventoryToGoogle(merchantId, productIds).catch((e) =>
+                    captureError(e, { route: "webhooks/square", phase: "google-inventory", merchantId }),
                 );
             }
         }

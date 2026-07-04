@@ -22,21 +22,33 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 type Row = Record<string, unknown>;
 type TableData = { rows: Row[]; error: { message: string } | null; insertError?: { message: string } | null };
 
+/** Plafond `max-rows` PostgREST simulé : un SELECT rend AU PLUS 1000 lignes, sans erreur. */
+const MAX_ROWS = 1000;
+
 function makeReadClient(tables: Record<string, TableData>) {
     const writes: Array<{ table: string; payload: Row }> = [];
 
     function builder(table: string) {
         const filters: Array<{ col: string; val: unknown }> = [];
+        const gts: Array<{ col: string; val: unknown }> = [];
+        let orderCol: string | null = null;
+        let limitN: number | null = null;
         const td = tables[table] ?? { rows: [], error: null };
 
         function resolve(): { data: Row[] | null; error: { message: string } | null } {
             if (td.error) return { data: null, error: td.error };
-            const rows = td.rows.filter((r) =>
+            let rows = td.rows.filter((r) =>
                 filters.every((f) => {
                     if (f.val === null) return r[f.col] === null || r[f.col] === undefined;
                     return r[f.col] === f.val;
                 }),
             );
+            // KEYSET fetchAllRows : borne basse EXCLUSIVE par valeur (`.gt(col, curseur)`).
+            rows = rows.filter((r) => gts.every((g) => (r[g.col] as string) > (g.val as string)));
+            if (orderCol) rows = [...rows].sort((a, b) => String(a[orderCol!]).localeCompare(String(b[orderCol!])));
+            // Fidèle à PostgREST : plafond min(limit demandé, max-rows), SANS erreur.
+            const cap = Math.min(limitN ?? MAX_ROWS, MAX_ROWS);
+            if (rows.length > cap) rows = rows.slice(0, cap);
             return { data: rows, error: null };
         }
 
@@ -48,6 +60,18 @@ function makeReadClient(tables: Record<string, TableData>) {
             },
             is: (col: string, val: unknown) => {
                 filters.push({ col, val });
+                return api;
+            },
+            gt: (col: string, val: unknown) => {
+                gts.push({ col, val });
+                return api;
+            },
+            order: (col: string) => {
+                orderCol = col;
+                return api;
+            },
+            limit: (n: number) => {
+                limitN = n;
                 return api;
             },
             insert: (payload: Row) => {
@@ -282,5 +306,63 @@ describe("cron/google-status — read-back du statut Google (route handler)", ()
         // le 2e marchand a bien été traité malgré l'échec du 1er
         expect(body.per_merchant).toHaveLength(1);
         expect(vi.mocked(captureError)).toHaveBeenCalled();
+    });
+
+    // ── SCALE >1000 : anti-troncature `max-rows` (classe LESSONS silent-truncation) ──
+
+    it("SCALE : 1500 connexions → les 1500 marchands relus (liste PAGINÉE keyset, pas plafonnée à 1000)", async () => {
+        // Sans fetchAllRows, PostgREST rend 1000 lignes SANS erreur → le read-back des
+        // 500 marchands suivants serait silencieusement abandonné à chaque cron.
+        const conns = Array.from({ length: 1500 }, (_, i) => ({
+            merchant_id: `m${String(i).padStart(5, "0")}`,
+        }));
+        mockAdmin.current = makeReadClient({
+            google_merchant_connections: { rows: conns, error: null },
+        });
+        summarizeProductStatuses.mockReturnValue(emptySummary({ total: 1 }));
+
+        const { POST } = await import("@/app/api/cron/google-status/route");
+        const res = await POST(authedReq());
+        const body = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(body.merchants).toBe(1500); // pas 1000
+        expect(body.per_merchant).toHaveLength(1500);
+        expect(body.errors).toBe(0);
+    });
+
+    it("SCALE flag ON : dédup >1000 alertes ouvertes PAGINÉE — une alerte déjà ouverte au-delà de la 1000ᵉ n'est PAS ré-insérée", async () => {
+        // P0-12 : la dédup plafonnée à 1000 rendait le set PARTIEL → un produit déjà alerté
+        // hors des 1000 premiers repassait dans `fresh` → INSERT en violation du partial-unique
+        // `uq_quality_alerts_open` → tout le lot rejeté = 0 alerte persistée ce run, en silence.
+        process.env.GOOGLE_DISAPPROVAL_ALERTS = "1";
+        summarizeProductStatuses.mockReturnValue(
+            emptySummary({ total: 5, disapproved: 1, issues: [{ code: "x", count: 1, severity: "DISAPPROVED" }] }),
+        );
+        fetchProcessedProducts.mockResolvedValue([{ id: "p" }]);
+        // Le produit re-signalé par Google est DÉJÀ ouvert, à la position 1150 (> 1000).
+        const beyond = `prod-${String(1150).padStart(5, "0")}`;
+        buildDisapprovalAlerts.mockReturnValue([
+            { merchant_id: MERCHANT_ID, product_id: beyond, type: "google_disapproved", status: "open", detail: "x" },
+        ]);
+        const openAlerts = Array.from({ length: 1200 }, (_, i) => ({
+            id: `a${String(i).padStart(5, "0")}`, // colonne-curseur keyset
+            product_id: `prod-${String(i).padStart(5, "0")}`,
+            merchant_id: MERCHANT_ID,
+            type: "google_disapproved",
+            status: "open",
+        }));
+        mockAdmin.current = makeReadClient({
+            google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+            quality_alerts: { rows: openAlerts, error: null },
+        });
+
+        const { POST } = await import("@/app/api/cron/google-status/route");
+        const res = await POST(authedReq());
+
+        expect(res.status).toBe(200);
+        // Dédup COMPLÈTE (2 pages keyset) → l'alerte déjà ouverte n'est jamais ré-insérée
+        // (une dédup tronquée à 1000 l'aurait crue « neuve » → violation d'unique → lot perdu).
+        expect(mockAdmin.current!.__writes).toHaveLength(0);
     });
 });
