@@ -47,5 +47,7 @@ exposés dans l'UI → un marchand ne peut pas s'onboarder seul. **Contournable 
 1. **M4 file-push → RPC temporel** — *non pilote-critique*, plus risqué (chemin d'écriture ingestion), fix design-sensible → **passe dédiée à froid**, pas en fin de session.
 2. **M3 preuve e2e photo live** + `categorize.ts` inerte sans clé API — gated env/pilote.
 3. **C. Token UI + adresse stock email** — pour le self-serve (contournable en pilote supervisé).
+   - ✅ **(C-données/route) FAIT (2026-07-04)** : route `GET/POST /api/ingest/token` COUVERTE (`tests/ingest-token-route.test.ts`, +12, trou de preuve M9 nommé) + **1 faux positif E5 fermé** (`getMerchantId` jetait l'`error` du lookup marchand → un blip DB servait 401 « Unauthorized » à un marchand onboardé) + historique fail-visible. Revue SF-hunter SOUND (+1 LOW-MED corrigé : préserver `code/details/hint` PostgREST en Sentry). 0 migration, réversible.
+   - **RESTE (C-visuel)** : afficher jeton + adresse `stock-{slug}@` dans l'UI = chantier à yeux (Thomas).
 4. **UI finition pro + responsive** (dashboard + site) — chantier actif ouvert le 2026-07-03.
 5. **B. Le pilote** (M1 = Deerskin + caisse, Thomas) — l'unlock ultime, tout le reste le sert.

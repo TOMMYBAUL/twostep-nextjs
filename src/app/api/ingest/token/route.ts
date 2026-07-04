@@ -14,11 +14,22 @@ async function getMerchantId(): Promise<string | null> {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    const { data: merchant } = await supabase
+    const { data: merchant, error } = await supabase
         .from("merchants")
         .select("id")
         .eq("user_id", user.id)
         .single();
+    // `.single()` renvoie `PGRST116` sur 0 ligne (= l'utilisateur n'est pas marchand →
+    // null → 401 légitime ; `merchants(user_id)` est UNIQUE (001) donc PGRST116 ne peut
+    // structurellement signifier que 0 ligne, jamais >1). Toute AUTRE erreur est un vrai
+    // blip DB : LÈVE plutôt que de la confondre avec « pas marchand » — sinon un marchand
+    // onboardé se voit éjecté par un 401 « Unauthorized » sur son propre écran de jeton
+    // (faux positif classe E5). On LÈVE l'objet PostgREST BRUT (pas un `new Error` qui
+    // écraserait le diagnostic) → `captureError` (branche objet, leçon E4) préserve
+    // `code/details/hint` en Sentry, comme les routes sœurs (google/stats, stock/receive).
+    if (error && error.code !== "PGRST116") {
+        throw error;
+    }
     return merchant?.id ?? null;
 }
 
@@ -41,13 +52,17 @@ export async function GET() {
         const admin = createAdminClient();
         const token = await getOrCreateIngestToken(merchantId, admin);
 
-        const { data: cred } = await admin
+        const { data: cred, error: credErr } = await admin
             .from("ingest_credentials")
             .select("last_used_at, last_rows, last_status")
             .eq("merchant_id", merchantId)
             .maybeSingle();
+        // L'historique (fraîcheur du dernier push) est SECONDAIRE : un blip ne doit pas
+        // priver le marchand de son jeton (payload primaire). Mais l'échec ne doit pas non
+        // plus être muet (afficher « jamais poussé » à tort) → captureError-et-continue.
+        if (credErr) captureError(credErr, { route: "ingest/token", method: "GET", step: "history" });
 
-        return NextResponse.json({ ...pushInfo(token), ...cred });
+        return NextResponse.json({ ...pushInfo(token), ...(cred ?? {}) });
     } catch (e) {
         captureError(e, { route: "ingest/token", method: "GET" });
         return NextResponse.json({ error: "Failed to get token" }, { status: 500 });

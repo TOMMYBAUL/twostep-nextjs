@@ -3989,3 +3989,52 @@ fermés AVANT enable ; ferme un silent-loss du chemin correction EAN ; 0 faux po
 (1 migration gated non appliquée, `git revert`) · Scope 8/10 (5 fichiers code+tests de MON unité + 1 migration ; anomalie
 working-tree escaladée, non mélangée) · Align 9/10 (invariant de complétude §7 item n°1 = cœur « ne rien perdre »).
 1 bug HIGH réel fermé (soft-delete false positive). tests 1035→1053. CFR 10 runs = 100% (0 revert).
+
+---
+
+## 2026-07-04 (run autonome) — M9 onboarding : couverture ROUTE `ingest/token` + faux positif E5 fermé
+
+**Item choisi (sourcing §6)** : signal = audit Fable 5 du 2026-07-03 (`docs/SPEC/audit-maillons-2026-07-03.md`,
+point C « Token UI + adresse stock email ») croisé avec la SPEC M9 qui nomme `ingest/token` comme **TROU DE
+PREUVE explicite** (« aucun test dédié »). C'est un maillon du **chemin pilote self-serve** (cap item 2 ;
+roadmap 6a.3 « dé-risquer l'onboarding technique — token ingest »). `[R]` réversible, vérifiable, in-scope.
+Choisi la moitié FULLY-VÉRIFIABLE (données + contrat du jeton corrects et PROUVÉS) ; la surface VISUELLE
+(afficher le jeton + l'adresse `stock-{slug}@` dans l'UI) reste un chantier à yeux = Thomas.
+
+**Ce que fait la boucle** : `tests/ingest-token-route.test.ts` (+12) drive les VRAIS handlers `GET/POST
+/api/ingest/token`. Contrat verrouillé : jeton existant renvoyé + `push_url`/`example_curl`/historique ;
+création à la volée si absent ; `NEXT_PUBLIC_SITE_URL` honoré ; rotation (POST) = nouveau secret ; pas de
+session → 401 ; création/rotation en échec → 500 + captureError.
+
+**1 bug réel fermé (faux positif classe E5)** : `getMerchantId()` faisait `const { data: merchant } =
+…single()` en **jetant l'`error`** → un blip DB (≠ 0-ligne) rendait `merchant=null` → **401 « Unauthorized »
+servi à un marchand DÉJÀ onboardé sur son propre écran de jeton** = éjection silencieuse. Fix : distinguer
+`PGRST116` (0-ligne de `.single()` = vraiment pas marchand → 401 légitime ; `merchants(user_id)` UNIQUE (001)
+→ PGRST116 ne peut structurellement dire que « 0 ligne ») de tout autre code (vrai blip → LÈVE → 500 +
+captureError → l'écran affiche une erreur honnête au lieu d'éjecter). **+1 angle mort fermé** : la lecture
+d'historique (`last_used_at/rows/status`) jetait aussi son `error` (faux « jamais poussé » sur blip) →
+captureError-et-continue (non fatal : le jeton, payload PRIMAIRE, sort ; `...(cred ?? {})`).
+
+**Revue silent-failure-hunter : SOUND + 1 LOW-MED corrigé.**
+- Vérifié : throw sur non-PGRST116 correct (contrainte UNIQUE(user_id) 001 → >1 ligne inatteignable ; RLS
+  `merchants_select_public` a une branche owner status-indépendante → jamais de faux PGRST116). `auth.getUser()`
+  inchangé (gap pré-existant codebase-wide, hors scope, PAS une régression nouvelle).
+- **LOW-MED corrigé** : mon 1er jet enveloppait l'erreur PostgREST brute dans `new Error(...)` → `captureError`
+  tombait sur la branche `Error` (leçon E4) qui NE surface PAS `code/details/hint` → diagnostic DB perdu en
+  Sentry (là où le concern est le plus fort : canal sans-caisse pilote). Fix : `throw error` (objet brut) →
+  `captureError` branche objet préserve `code/details/hint`, comme les routes sœurs google/stats & stock/receive.
+
+**Métrique** : `tsc` OK, `test:run` **1083→1095** (+12, 106 fichiers). 1 bug réel (E5). Blast LOW
+(`getMerchantId` route-local ; 2 handlers entry-point). 0 migration, réversible (`git revert`). Fichiers : 2
+(route + test) — les 8 fichiers marketing + globals.css + reveal/layout du working tree = **chantier UI ACTIF
+de Thomas (2026-07-03), out-of-scope blind CSS, NON touchés/committés**.
+
+**Scorecard** : Preuve 7/10 (contrat route prouvé sur faux clients non-vacants + régression E5 réelle ; mais
+synthétique, pas d'onboarding pilote réel) · Sécu north-star 8/10 (revue SF-hunter SOUND + finding corrigé ;
+ferme un faux positif d'éjection sur le chemin pilote ; 0 perte introduite) · Réversibilité 10/10 (0 migration,
+`git revert`) · Scope 9/10 (2 fichiers, 1 unité ciblée ; UI Thomas non mélangée) · Align 8/10 (chemin pilote
+self-serve, cap item 2 / roadmap 6a.3). CFR 10 runs = 100 %.
+
+**RESTE M9 (trié)** : (C-visuel) surfacer jeton + adresse `stock-{slug}@` dans l'UI = chantier à yeux (Thomas) ;
+tests `import-wizard`/`pos-wizard` (autres trous de preuve M9, `[R]` si signal) ; M3 e2e photo live (gated env) ;
+M4 file-push→RPC temporel (passe dédiée à froid, audit).
