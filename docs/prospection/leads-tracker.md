@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-04 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-04 (L'Auditeur)*
 
 ## Stats
 - Total leads : 196
@@ -49,6 +49,125 @@
 **⚠️ Gmail MCP indisponible (21e session consécutive) — aucun brouillon créé. Brouillons à rédiger manuellement.**
 
 *Note session 04/07 (L'Eclaireur) : Suite des 13 candidats restants de la zone étendue Victor-Hugo (27/06). Zone ÉPUISÉE DÉFINITIVEMENT — tous les candidats de toulouse-merchants-full.json sur les rues Rémusat/Wilson/Peyrolières/Gambetta/Dupuy/Bouquières ont été investigués. 5 emails confirmés (4 certains + 1 probable GUIMON JOAILLERIE). 6 NOUVEAU terrain (Instagram uniquement ou aucune présence digitale). 8 ÉCARTÉES définitives (liquidations, CBD, vapoteur, hors cible). MR BLUE (Jerome Biaggi) = score 9/10 — priorité envoi. RENDEZ-VOUS STORE = email eshop uniquement, possibilité visite terrain pour contacter Marc Llorens directement. FOOTCONNECT = très qualifié Two-Step (Nike/Adidas/Puma stock en temps réel = cas d'usage parfait) — visite terrain prioritaire. QUE FAS = déco sans EAN probable → Two-Step utile mais cas borderline. NOTE : MCP Notion indisponible (22e session consécutive). Titre Notion prévu : "Leads Victor-Hugo zone étendue 2026-07-04".*
+
+---
+
+### Samedi — 2026-07-04 (L'Auditeur) — Victor-Hugo zone étendue — 5 emails rédigés
+
+**Agent** : L'Auditeur | **Quartier** : Victor-Hugo (zone étendue Bouquières/Rémusat/Gambetta)
+
+**⚠️ BROUILLONS NON CRÉÉS — Gmail MCP indisponible (22e session consécutive). Emails prêts à copier-coller ci-dessous.**
+**⚠️ Notion MCP indisponible (23e session consécutive) — récap consigné dans le tracker uniquement.**
+
+| # | Destinataire (boutique) | Email | Objet | Statut Gmail | Notes |
+|---|---|---|---|---|---|
+| 1 | Jérôme Biaggi (MR BLUE) | mr.blue.france@gmail.com | Mr Blue sur Two-Step — tes Edwin et Veja trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Edwin, Autry, Birkenstock, Veja, Taion. 7 rue Bouquières. Score 9/10. |
+| 2 | Myriam Beraud (TOUK TOUK 2) | toukbijoux@free.fr | Touk Touk sur Two-Step — tes bijoux du monde trouvés par les Toulousaines | ⚠️ NON CRÉÉ | ACA — ambre, turquoises Tibet/Arizona, Rajasthan, bracelets Turkmen. 31 rue Rémusat. Score 8/10. |
+| 3 | Géraldine Freynet (OPTIQUE REMUSAT) | optiqueremusat@orange.fr | Optique Rémusat sur Two-Step — tes Chanel et YSL trouvés par les Toulousains | ⚠️ NON CRÉÉ | ACA — Chanel, Yves Saint-Laurent. Opticien indépendant. 7 rue Rémusat. Score 8/10. |
+| 4 | Marc Llorens (RENDEZ-VOUS STORE) | eshop@rendez-vous-store.com | Rendez-Vous Store sur Two-Step — ta sélection trouvée par les Toulousains | ⚠️ NON CRÉÉ | ACA — 3 boutiques rue Bouquières, ligne RDV maison, co-fondé 2014. ⚠️ Email eshop (pas direct gérant). Score 8/10. |
+| 5 | Julien Guimon (GUIMON JOAILLERIE) | contact@gjoaillerie.com | G Joaillerie sur Two-Step — tes créations sur-mesure trouvées par les Toulousains | ⚠️ NON CRÉÉ | ACA — Haute École de la Joaillerie, bagues fiançailles sur-mesure, pierres certifiées, modélisation 3D. 12 rue Gambetta. Score 8/10. ⚠️ email probable. |
+
+*Note session 04/07 (L'Auditeur) : 5 leads BROUILLON traités parmi les 5 nouveaux de la session Eclaireur 04/07 (scores 9/8/8/8/8). MA ROBE (Julie Monferran) écarté — pertinence Two-Step limitée (boutique robes de mariée sur RDV). Emails personnalisés avec marques/spécificités confirmées via web search 04/07 (Edwin/Autry/Birkenstock/Veja/Taion pour MR BLUE ; ambre/turquoises Tibet-Arizona/Rajasthan/Turkmen pour TOUK TOUK ; Chanel/YSL pour OPTIQUE REMUSAT ; 3 boutiques/ligne RDV maison pour RENDEZ-VOUS STORE ; Haute École Joaillerie/sur-mesure/3D pour GUIMON). Gmail MCP indisponible (22e session consécutive). Notion MCP indisponible (23e session consécutive). ⚠️ GUIMON JOAILLERIE : email probable (contact@gjoaillerie.com inféré via domaine gjoaillerie.com) — à confirmer terrain si bounce. ⚠️ RENDEZ-VOUS STORE : email eshop service, possibilité visite terrain pour contacter Marc Llorens directement.*
+
+### TEXTES DES 5 EMAILS (prêts à copier-coller) — VERSION 04/07
+
+**1. Jérôme Biaggi (MR BLUE) — mr.blue.france@gmail.com**
+Objet : Mr Blue sur Two-Step — tes Edwin et Veja trouvés par les Toulousains
+
+> Bonjour Jérôme,
+>
+> Mr Blue 7 rue Bouquières — Edwin, Autry, Birkenstock, Veja, Taion. Une sélection mode homme pointue que peu de boutiques toulousaines peuvent s'offrir.
+>
+> Le problème : un homme qui cherche "Edwin Toulouse" ou "Autry homme Toulouse" depuis son téléphone tombe sur des sites bien avant de trouver ta boutique.
+>
+> Je suis Thomas, je développe Two-Step : quand quelqu'un cherche une marque de ta sélection, il voit que tu l'as en stock — aujourd'hui. Sans commission, sans livraison. Il vient rue Bouquières.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**2. Myriam Beraud (TOUK TOUK 2) — toukbijoux@free.fr**
+Objet : Touk Touk sur Two-Step — tes bijoux du monde trouvés par les Toulousaines
+
+> Bonjour Myriam,
+>
+> Touk Touk rue Rémusat — ambre, turquoises du Tibet et d'Arizona, pièces du Rajasthan, bracelets Turkmen. Un univers de bijoux du monde impossible à trouver ailleurs dans Toulouse.
+>
+> Le problème : une cliente qui cherche "bijoux ambre Toulouse" ou "bijoux ethniques Toulouse" ne sait pas encore que tu as exactement ça.
+>
+> Je suis Thomas, je développe Two-Step : ton stock visible en temps réel en ligne. Elle trouve ta boutique avant d'aller chercher ailleurs. Sans commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**3. Géraldine Freynet (OPTIQUE REMUSAT) — optiqueremusat@orange.fr**
+Objet : Optique Rémusat sur Two-Step — tes Chanel et YSL trouvés par les Toulousains
+
+> Bonjour Géraldine,
+>
+> Optique Rémusat rue Rémusat — lunettes Chanel, Yves Saint-Laurent, et une approche opticien indépendant qui tranche avec les chaînes. Le type de boutique que les Toulousains cherchent sans toujours savoir où la trouver.
+>
+> Quand quelqu'un cherche "lunettes Chanel Toulouse" depuis son téléphone, il mérite de tomber sur ta boutique en premier.
+>
+> Je suis Thomas, je développe Two-Step : tes montures visibles en temps réel. Le client voit que tu les as en stock — il vient directement chez toi. Sans commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**4. Marc Llorens (RENDEZ-VOUS STORE) — eshop@rendez-vous-store.com**
+Objet : Rendez-Vous Store sur Two-Step — ta sélection trouvée par les Toulousains
+
+> Bonjour Marc,
+>
+> Rendez-Vous Store — 3 boutiques rue Bouquières depuis 2014, sélection mode homme et femme de marques du monde entier, plus la ligne RDV maison. Un concept éditorial fort, rare dans Toulouse.
+>
+> Le problème : un client qui cherche une pièce de ta sélection en ligne ne voit pas encore que tu l'as en boutique.
+>
+> Je suis Thomas, je développe Two-Step : ton stock visible en temps réel. Il voit que tu l'as disponible — il vient rue Bouquières. Sans commission, sans livraison.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
+
+---
+
+**5. Julien Guimon (GUIMON JOAILLERIE) — contact@gjoaillerie.com**
+Objet : G Joaillerie sur Two-Step — tes créations sur-mesure trouvées par les Toulousains
+
+> Bonjour Julien,
+>
+> G Joaillerie 12 rue Gambetta — bagues, bagues de fiançailles, pendentifs sur-mesure, pierres certifiées, modélisation 3D. Un joaillier artisan formé à la Haute École de la Joaillerie, c'est une expertise rare en centre-ville.
+>
+> Les clients qui cherchent une bague de fiançailles à Toulouse font leur recherche en ligne avant de pousser une porte. Tu mérites d'être la première réponse.
+>
+> Je suis Thomas, je développe Two-Step : tes créations visibles en ligne en temps réel. Il vient directement chez toi. Sans commission.
+>
+> 1 mois offert, sans engagement → twostep.fr/marchands?utm_source=email&utm_medium=cold&utm_campaign=audit
+>
+> Thomas Bauland — Two-Step
+> contact@twostep.fr | twostep.fr
+>
+> PS Réponds STOP si tu ne souhaites plus recevoir de messages.
 
 ---
 
