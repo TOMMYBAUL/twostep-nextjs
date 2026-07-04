@@ -5,6 +5,7 @@ import {
     isValidCip13,
     isValidEan13,
     isValidEan8,
+    isValidGtin14,
     isValidIsbn13,
     isValidUpc12,
     normalizeIdentifier,
@@ -60,6 +61,23 @@ describe("isValidUpc12", () => {
     });
     it("rejects bad checksum UPC-12", () => {
         expect(isValidUpc12("036000291453")).toBe(false);
+    });
+});
+
+describe("isValidGtin14 (checksum GS1 sur 14 chiffres)", () => {
+    it("accepte un GTIN-14 à indicateur 0 (EAN-13 zéro-préfixé — checksum invariant)", () => {
+        // 5449000000996 (Coca) zéro-préfixé → 05449000000996, même chiffre de contrôle.
+        expect(isValidGtin14("05449000000996")).toBe(true);
+        // UPC-12 doublement zéro-préfixé.
+        expect(isValidGtin14("00036000291452")).toBe(true);
+    });
+    it("accepte un GTIN-14 à indicateur 1 (unité logistique, checksum réel GS1)", () => {
+        // 10614141000415 = exemple GS1 GTIN-14 indicateur 1 (carton), checksum valide.
+        expect(isValidGtin14("10614141000415")).toBe(true);
+    });
+    it("rejette un checksum faux et une mauvaise longueur", () => {
+        expect(isValidGtin14("05449000000997")).toBe(false);
+        expect(isValidGtin14("5449000000996")).toBe(false); // 13 chiffres
     });
 });
 
@@ -132,6 +150,18 @@ describe("detectIdentifierType", () => {
         expect(detectIdentifierType(null)).toBe("invalid");
         expect(detectIdentifierType(undefined)).toBe("invalid");
     });
+    it("GTIN-14 indicateur 0 → ramené à son type EAN-13 interne (même unité conso)", () => {
+        expect(detectIdentifierType("05449000000996")).toBe("ean13");
+        // GTIN-14 indicateur 0 dont l'interne porte un préfixe ISBN/CIP → type sectoriel.
+        expect(detectIdentifierType("09782070612758")).toBe("isbn13");
+        expect(detectIdentifierType("03400933264963")).toBe("cip13");
+    });
+    it("GTIN-14 indicateur 1-9 (unité logistique distincte) → 'invalid' comme identité conso", () => {
+        expect(detectIdentifierType("10614141000415")).toBe("invalid");
+    });
+    it("GTIN-14 à checksum faux → 'invalid'", () => {
+        expect(detectIdentifierType("05449000000997")).toBe("invalid");
+    });
 });
 
 describe("canonicalizeEan", () => {
@@ -158,5 +188,28 @@ describe("canonicalizeEan", () => {
     });
     it("normalizes apostrophe Excel + valid EAN", () => {
         expect(canonicalizeEan("'5449000000996")).toBe("5449000000996");
+    });
+
+    // ── P0-8 : GTIN-14 indicateur 0 ≡ EAN-13 (ferme le doublon e-invoice vs POS) ──
+    it("GTIN-14 indicateur 0 → EAN-13 interne (retire le zéro logistique)", () => {
+        expect(canonicalizeEan("05449000000996")).toBe("5449000000996");
+    });
+    it("MÊME forme canonique qu'un EAN-13 nu (cross-canal : e-invoice GTIN-14 == fichier EAN-13)", () => {
+        expect(canonicalizeEan("05449000000996")).toBe(canonicalizeEan("5449000000996"));
+    });
+    it("MÊME forme canonique que le chemin POS UPC-12 (e-invoice GTIN-14-de-UPC == caisse UPC)", () => {
+        // 00036000291452 = UPC-12 (036000291452) en GTIN-14 → doit matcher le POS.
+        expect(canonicalizeEan("00036000291452")).toBe(canonicalizeEan("036000291452"));
+        expect(canonicalizeEan("00036000291452")).toBe("0036000291452");
+    });
+    it("préserve l'identité ISBN/CIP interne d'un GTIN-14 indicateur 0", () => {
+        expect(canonicalizeEan("09782070612758")).toBe("9782070612758");
+        expect(canonicalizeEan("03400933264963")).toBe("3400933264963");
+    });
+    it("GTIN-14 indicateur 1-9 (unité logistique) → null (jamais fusionné à tort à l'unité conso)", () => {
+        expect(canonicalizeEan("10614141000415")).toBeNull();
+    });
+    it("GTIN-14 à checksum faux → null", () => {
+        expect(canonicalizeEan("05449000000997")).toBeNull();
     });
 });

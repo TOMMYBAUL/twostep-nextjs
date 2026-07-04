@@ -195,7 +195,13 @@ export async function runCascade(input: CascadeInput): Promise<CascadeOutcome> {
         });
         if (kicks) {
             tiersMatched.push("tier_kicksdb");
-            if (kicks.gtin && !canonicalEan) canonicalEan = kicks.gtin;
+            // kicks.gtin vient de validEanOrNull (validate.ts) — NON canonicalisé :
+            // un UPC-12 y reste sur 12 chiffres et un GTIN-14 indicateur 0 sur 14.
+            // Le repasser par canonicalizeEan → même forme que le POS/triage
+            // ("0"+upc / EAN-13 interne), sinon on stocke une identité qui ne matche
+            // pas son jumeau caisse = doublon (classe P0-8). Non canonicalisable
+            // (ex. GTIN-14 carton indicateur 1-9) → null, jamais une fausse identité.
+            if (kicks.gtin && !canonicalEan) canonicalEan = canonicalizeEan(kicks.gtin);
             if (kicks.name && !canonicalName) canonicalName = kicks.name;
         }
     }

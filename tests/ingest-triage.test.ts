@@ -36,6 +36,31 @@ describe("triageStockItems — règle d'identité GTIN/SKU (jamais le nom seul)"
         expect(r.accepted[0].ean).toBe("0036000291452");
     });
 
+    it("GTIN-14 indicateur 0 (e-invoice) → EAN-13 fort, MÊME identité que le POS (P0-8, ferme le doublon)", () => {
+        // Un e-invoice CII émet souvent le GTIN sur 14 chiffres (EAN-13 zéro-préfixé).
+        // Avant le fix il retombait en SKU faible → doublon/masqué vs le même produit
+        // poussé par la caisse en EAN-13. Doit désormais être GTIN fort, ean == EAN-13 interne.
+        const einvoice = triageStockItems([line({ name: "Nutella 750g", ean: "03017620422003" })]);
+        expect(einvoice.gtin_lines).toBe(1);
+        expect(einvoice.accepted[0].identity).toBe("gtin");
+        expect(einvoice.accepted[0].ean).toBe("3017620422003");
+
+        // Concordance cross-canal : le même produit via POS en EAN-13 nu → même clé d'identité.
+        const pos = triageStockItems([line({ name: "Nutella 750g", ean: "3017620422003" })]);
+        expect(einvoice.accepted[0].ean).toBe(pos.accepted[0].ean);
+    });
+
+    it("GTIN-14 indicateur 1-9 (unité logistique) → suivi en SKU faible, jamais fusionné à l'unité conso", () => {
+        // 10614141000415 = GTIN-14 carton (indicateur 1) au checksum valide : ce n'est PAS
+        // l'unité conso → on le suit sans le publier comme un produit unitaire (identité prudente).
+        const r = triageStockItems([line({ name: "Carton x24", ean: "10614141000415" })]);
+        expect(r.gtin_lines).toBe(0);
+        expect(r.sku_lines).toBe(1);
+        expect(r.accepted[0].identity).toBe("sku");
+        expect(r.accepted[0].ean).toBeNull();
+        expect(r.accepted[0].sku).toBe("10614141000415");
+    });
+
     it("EAN au checksum faux (faute de frappe) → suivi comme SKU, jamais envoyé aux lookups GTIN", () => {
         const r = triageStockItems([line({ name: "Produit", ean: "3017620422004" })]);
         expect(r.gtin_lines).toBe(0);

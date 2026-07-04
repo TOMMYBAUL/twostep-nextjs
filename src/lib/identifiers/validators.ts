@@ -19,6 +19,10 @@ export type IdentifierType =
     | "cip13"
     | "invalid";
 
+// NB : un GTIN-14 à indicateur logistique 0 est ramené à sa forme EAN-13 canonique
+// (cf. collapseGtin14) — il n'a donc PAS de type propre : il est classé "ean13"
+// (ou "isbn13"/"cip13" selon son préfixe interne), exactement comme le chemin POS.
+
 const DIGITS_ONLY = /^\d+$/;
 const ISBN13_PREFIX = /^97[89]/;
 const CIP13_PREFIX = /^340/;
@@ -76,6 +80,35 @@ export function isValidUpc12(input: string): boolean {
     return input.length === 12 && isValidGtinChecksum(input);
 }
 
+/**
+ * GTIN-14 = format « maître » GS1 (1 chiffre indicateur + 13 chiffres). Un
+ * GTIN-14 à indicateur 0 est un EAN-13/UPC zéro-préfixé (même unité conso) ;
+ * un indicateur 1-9 désigne une unité logistique distincte (carton/palette/lot).
+ * Ici on valide seulement le checksum sur 14 chiffres — la distinction
+ * d'indicateur est faite par collapseGtin14/canonicalizeEan.
+ */
+export function isValidGtin14(input: string): boolean {
+    return input.length === 14 && isValidGtinChecksum(input);
+}
+
+/**
+ * Ramène un GTIN-14 à indicateur logistique 0 à sa forme EAN-13 canonique :
+ * un zéro de tête ne change PAS le chiffre de contrôle GS1 (poids alterné 1/3),
+ * donc les 13 chiffres internes forment un EAN-13 valide désignant la MÊME unité
+ * conso. On les retourne pour matcher le chemin POS (UPC-12 → "0"+upc = EAN-13)
+ * et fermer le doublon « e-invoice GTIN-14 vs POS UPC/EAN » (P0-8, 2026-07-05).
+ *
+ * Un GTIN-14 à indicateur 1-9 = unité logistique DISTINCTE (carton, palette) ≠
+ * unité conso → on ne le collapse PAS : il reste non reconnu comme identité conso
+ * (suivi en SKU faible plutôt que fusionné à tort à un produit unitaire).
+ */
+function collapseGtin14(normalized: string): string {
+    if (normalized.length === 14 && normalized[0] === "0" && isValidGtin14(normalized)) {
+        return normalized.slice(1);
+    }
+    return normalized;
+}
+
 export function isValidIsbn13(input: string): boolean {
     return isValidEan13(input) && ISBN13_PREFIX.test(input);
 }
@@ -103,7 +136,7 @@ export function upc12ToEan13(input: string): string | null {
  * NB : "ean13" inclut les codes qui ne sont ni ISBN ni CIP (ex retail générique).
  */
 export function detectIdentifierType(input: unknown): IdentifierType {
-    const normalized = normalizeIdentifier(input);
+    const normalized = collapseGtin14(normalizeIdentifier(input));
     if (!normalized) return "invalid";
 
     if (normalized.length === 13 && isValidEan13(normalized)) {
@@ -125,7 +158,9 @@ export function detectIdentifierType(input: unknown): IdentifierType {
  * avant de le stocker en DB ou de l'envoyer en lookup.
  */
 export function canonicalizeEan(input: unknown): string | null {
-    const normalized = normalizeIdentifier(input);
+    // collapseGtin14 : un GTIN-14 à indicateur 0 devient son EAN-13 interne AVANT
+    // classification → même forme canonique que le POS (fin du doublon P0-8).
+    const normalized = collapseGtin14(normalizeIdentifier(input));
     if (!normalized) return null;
     const type = detectIdentifierType(normalized);
     switch (type) {

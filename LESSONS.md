@@ -64,6 +64,20 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ groupVariantsByEAN réécrivait `available_sizes` depuis `products.size` (NULL pour les produits-fichier, dont les tailles sont groupées en mémoire par le snapshot) → écrasait les tailles par `[]`. Deux mécanismes de groupage concurrents. Rendu non-destructif : n'écrit available_sizes que si des tailles sont calculées. Trouvé par e2e (available_sizes vide après push). (2026-06-14)
 - ❌ categorize appliquait la catégorie IA sans seuil de confiance → fausses catégories. Seuil 70 ; en dessous, pas appliquée mais tentative marquée (sélection sur ai_categorized_at null = anti-reboucle). (2026-06-14)
 - ⚠️ Rappel : l'EAN donne l'IDENTITÉ (nom/marque/photo/catégorie brute), JAMAIS la taille ni la quantité (données de la source marchand). KicksDB (sneakers, exploite le SKU) est inerte sans KICKSDB_API_KEY (gratuite).
+- ❌ **Deux validateurs GTIN divergents = doublon d'identité silencieux (P0-8).** `identifiers/validators.ts`
+  (`canonicalizeEan`/`detectIdentifierType`, utilisé par POS + `triage` + `cascade-engine`) rejetait le GTIN-14
+  (→ "invalid" → SKU faible masqué) alors que `ean/validate.ts` (`validEanOrNull`, utilisé par e-invoice/gs1/kicksdb)
+  l'acceptait BRUT (14 chiffres, non canonicalisés). Résultat : un e-invoice GTIN-14 retombait en SKU et ne matchait
+  PAS le même produit poussé par la caisse en UPC-12/EAN-13 → **doublon/masqué**. Fix : `collapseGtin14` — un GTIN-14 à
+  **indicateur 0** est un EAN-13/UPC zéro-préfixé (le zéro de tête NE change PAS le checksum GS1, poids alterné 1/3 →
+  les 13 chiffres internes forment un EAN-13 valide, MÊME unité conso) → collapsé en EAN-13 AVANT classification →
+  même forme canonique que le POS. Indicateur **1-9** = unité logistique DISTINCTE (carton/palette) → **non** collapsé,
+  reste SKU faible (jamais fusionné à tort). **Règle : ne jamais stocker une identité GTIN issue d'une source (kicks.gtin
+  via `validEanOrNull`) sans la repasser par `canonicalizeEan`** — sinon un UPC-12 (12 ch.) ou GTIN-14 source ne matche pas
+  son jumeau canonicalisé (finding SF-hunter HIGH `cascade-engine.ts:198`, corrigé). Root cause NON fermé : les deux
+  validateurs coexistent (`validate.ts` accepte 14 non-collapsé) — sûr TANT QUE tout finit par `canonicalizeEan` (triage
+  re-canonicalise), fragile si un consommateur compare/stocke un `validEanOrNull` brut. `collapseGtin14` = source unique
+  de la règle. Preuve : `validators.test.ts`/`ingest-triage.test.ts`/`cascade-engine.test.ts`. (M2 identité, 2026-07-05, revue SF-hunter SOUND)
 
 ## Modèle de données stock (cœur "data propre", 2026-06-17)
 - ❌ La table stock ne traçait PAS la source ({quantity, updated_at} seulement) → la confidence DÉDUISAIT la force de source du pos_item_id (mensonge possible : un produit POS ajusté à la main restait "temps réel/Disponible"). Fix 104 : colonnes `stock.source` + `source_ts`, chaque writer déclare sa source (webhook/pos_sync/file_push/scan/invoice/cloture/manual), confidence lit `sourceStrengthFromStored(stock.source)`. Fallback legacy resolveSourceStrength conservé.

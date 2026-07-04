@@ -4096,3 +4096,61 @@ validateurs → perte d'identité cross-canal, effort S, pur, M2) ; Cluster B ga
 (commit 6641034) — sweep grep des SELECT non bornés restants à confirmer ; P0-10/11 (enrichissement, effort M).
 GATED (migration) : P0-5/6 (109 écrite). YEUX (Thomas) : P0-1 visuel wizard, P0-4 surfaces conso (composants),
 Cluster D1 UI token.
+
+---
+
+## 2026-07-05 (run autonome) — P0-8 : GTIN-14 rejeté par un des 2 validateurs → doublon d'identité cross-canal
+
+**Sourcing (§6)** : backlog priorisé = worklog 2026-07-04 « RESTE audit », qui nommait **P0-8** comme le plus
+haut-rang fully-`[R]` (réversible, sans migration, sans yeux, sans env, pur, unit-testable) non terminé. In-scope
+(cap item 1 : identité/concordance, cœur north-star « exactitude = la promesse »). Item marqué `[Fable]`
+(non relu par l'orchestrateur) → **prémisse re-vérifiée dans le code réel** (LESSONS : ~70 % findings Explore faux) :
+CONFIRMÉE de bout en bout — `validators.ts` `detectIdentifierType`/`canonicalizeEan` (utilisé par les 4 adapters POS,
+`triage.ts:83`, `cascade-engine.ts`) rejetait le GTIN-14 → "invalid", tandis que `validate.ts` `validEanOrNull`
+(utilisé par `einvoice-cii.ts:68`) l'acceptait BRUT. Un e-invoice GTIN-14 → `triage.canonicalizeEan(14)` → null →
+branche SKU (14 chiffres matchent `SKU_RE`) = faible/masqué ; le jumeau caisse en UPC-12 → `"0"+upc` = EAN-13 fort →
+jamais de match → **doublon/masqué**. Le commentaire de `triage.ts` liste pourtant GTIN-14 comme identité forte
+intentionnelle → vraie divergence.
+
+**Le fix** (branche feat/pipeline-v1-handoff-2026-06-12)
+- `src/lib/identifiers/validators.ts` : `isValidGtin14` + helper `collapseGtin14`. Un GTIN-14 à **indicateur 0** est
+  un EAN-13/UPC zéro-préfixé — **le zéro de tête ne change PAS le chiffre de contrôle GS1** (poids alterné 1/3 : la
+  position-depuis-la-droite des chiffres existants est inchangée, le 0 ajouté pèse 3×0=0) → les 13 chiffres internes
+  forment un EAN-13 valide désignant la MÊME unité conso. Collapsé AVANT classification dans `detectIdentifierType`
+  ET `canonicalizeEan` → forme canonique identique au POS/triage (ferme le doublon). **Indicateur 1-9** (carton/palette
+  = unité logistique DISTINCTE ≠ unité conso) → **non** collapsé → reste "invalid"/null → suivi en SKU faible, jamais
+  fusionné à tort à un produit unitaire (choix prudent : zéro fausse identité, pas de décision produit à l'aveugle).
+- **Finding SF-hunter HIGH in-scope corrigé** : `cascade-engine.ts:198` stockait `kicks.gtin` (issu de `validEanOrNull`,
+  NON canonicalisé — un UPC-12 y reste 12 chiffres, un GTIN-14 14) directement dans `canonical_ean` → même classe P0-8
+  dans le tier enrichissement sneakers. Repassé par `canonicalizeEan` (non canonicalisable → null, jamais une fausse
+  identité).
+
+**Preuve** (SANS yeux/env, pur) : `tests/lib/identifiers/validators.test.ts` (+GTIN-14 : `isValidGtin14`, collapse
+indicateur 0→EAN-13, **assertions cross-canal `canonicalizeEan(GTIN-14) === canonicalizeEan(EAN-13 nu)` et `=== POS UPC`**,
+ISBN/CIP interne préservé, indicateur 1-9→null, checksum faux→null) ; `tests/ingest-triage.test.ts` (+régression :
+e-invoice GTIN-14 → GTIN fort ean==EAN-13 == jumeau POS ; carton indicateur 1-9 → SKU faible) ; `tests/lib/enrichment/
+cascade-engine.test.ts` (+kicks GTIN-14→collapsé, +kicks carton→null, +`preflightEan` GTIN-14).
+
+**Revue silent-failure-hunter : core SOUND** — invariance checksum prouvée math + empirique ; exclusion indicateur 1-9
+correcte (jamais de fusion carton→unité) ; wiring triage/cascade correct. 1 finding HIGH in-scope corrigé (kicksdb).
+Résidus DORMANTS notés (hors périmètre live, pas production-reachable aujourd'hui, suivi) : (#2) `gs1.ts` `.gtin` non
+lu dans `canonical_ean` ; (#3) `einvoice-cii.ts` seulement appelé par tests, pas câblé à une route ; (#4) `scan/session.ts`
+classe GTIN-14 indic. 0 en `gtin14_case` (politique opposée, seulement testé) ; (#5 root cause) `validate.ts` non fusionné
+avec `validators.ts` — sûr tant que tout finit par `canonicalizeEan`. À traiter si l'un de ces chemins est câblé.
+
+**Métrique** : `tsc` OK, `test:run` **1180→1198** (+18, 115 fichiers). 1 bug réel `[CONFIRMÉ]` (doublon identité) +
+1 finding HIGH adjacent fermé. Blast LOW (change ADDITIF : n'accepte que du GTIN-14 indic.0 auparavant rejeté ;
+comportement 8/12/13 inchangé ; aucune signature modifiée ; callers énumérés par grep = complet). 0 migration,
+réversible (`git revert`). Fichiers : 2 code (validators + cascade-engine) + 3 tests + 3 docs.
+
+**Scorecard** : Preuve 8/10 (invariance prouvée math+empirique + cross-canal match + régression triage réelle ; mais
+synthétique, pas d'e-invoice/POS réel simultané) · Sécu north-star 9/10 (ferme un doublon d'identité silencieux = cœur
+« exactitude »/« ne rien perdre » ; revue SF-hunter SOUND + finding HIGH fermé ; 0 fausse identité introduite ; indic.1-9
+prudent) · Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (2 fichiers code très ciblés + tests + docs ;
+résidus dormants documentés, pas chassés hors-scope) · Align 9/10 (identité/concordance = cap item 1, M2). CFR : 0 revert.
+
+**RESTE audit (trié, fully-`[R]` sans yeux/env)** : Cluster B (sweep grep des `.select()` non bornés restants +
+`maxPages` fail-loud à `paginate.ts`) ; P0-9 (categorize lot 200 > max_tokens → retry infini brûle-tokens, effort S) ;
+P0-10/11 (enrichissement, effort M) ; A1 (webhook pousse TOUT l'inventaire à chaque vente, H×S, avant pilote). GATED
+(migration) : P0-2 (slug trigger 108 écrite), P0-5/6 (RPC 104/109). YEUX (Thomas) : P0-1 wizard visuel, P0-4 surfaces
+conso, D1 UI token.

@@ -22,18 +22,26 @@ vi.mock("@/lib/enrichment/tier1-sectoriels", () => ({
     lookupIsbnDilicom: vi.fn().mockResolvedValue(null),
 }));
 
+vi.mock("@/lib/enrichment/kicksdb", () => ({
+    lookupKicksDb: vi.fn().mockResolvedValue(null),
+}));
+
 import { searchEanByName } from "@/lib/ean/lookup";
 import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupCipBdpm } from "@/lib/enrichment/tier1-sectoriels";
+import { lookupKicksDb } from "@/lib/enrichment/kicksdb";
 
 const mockCollectAll = vi.mocked(collectAllEanSources);
 const mockSearchEanByName = vi.mocked(searchEanByName);
 const mockLookupCipBdpm = vi.mocked(lookupCipBdpm);
+const mockLookupKicksDb = vi.mocked(lookupKicksDb);
 
 beforeEach(() => {
     mockCollectAll.mockReset();
     mockSearchEanByName.mockReset();
     mockLookupCipBdpm.mockReset();
+    mockLookupKicksDb.mockReset();
+    mockLookupKicksDb.mockResolvedValue(null);
 });
 
 /** Helper pour construire un MultiSourceResult mock. */
@@ -99,6 +107,21 @@ describe("preflightEan", () => {
         expect(preflightEan(null)).toEqual({ valid: false, canonical: null, type: "invalid" });
         expect(preflightEan(undefined)).toEqual({ valid: false, canonical: null, type: "invalid" });
         expect(preflightEan("")).toEqual({ valid: false, canonical: null, type: "invalid" });
+    });
+    it("collapses GTIN-14 indicateur 0 → EAN-13 (P0-8)", () => {
+        // 05449000000996 = Coca EAN-13 zéro-préfixé → doit devenir 5449000000996, type ean13.
+        expect(preflightEan("05449000000996")).toEqual({
+            valid: true,
+            canonical: "5449000000996",
+            type: "ean13",
+        });
+    });
+    it("rejects GTIN-14 indicateur 1-9 (unité logistique) comme identité conso", () => {
+        expect(preflightEan("10614141000415")).toEqual({
+            valid: false,
+            canonical: null,
+            type: "invalid",
+        });
     });
 });
 
@@ -386,5 +409,40 @@ describe("runCascade — garde de concordance EAN↔nom-marchand (D7, zéro faux
         });
         expect(out.score).toBe(0.9);
         expect(out.review_status).toBe("pending");
+    });
+});
+
+describe("runCascade — tier KicksDB : le GTIN source est canonicalisé (P0-8, anti-doublon)", () => {
+    it("KicksDB renvoie un GTIN-14 indicateur 0 → canonical_ean = EAN-13 collapsé (matche le POS)", async () => {
+        // Reproduit le finding SF-hunter : kicks.gtin vient de validEanOrNull (non
+        // canonicalisé). Un GTIN-14 indicateur 0 doit être ramené à son EAN-13 interne,
+        // sinon on stocke une identité 14 chiffres qui ne matche pas le jumeau caisse.
+        mockCollectAll.mockResolvedValue(multi([]));
+        mockLookupKicksDb.mockResolvedValueOnce({
+            sku: "AF1-WHITE",
+            gtin: "05449000000996", // GTIN-14 (EAN-13 5449000000996 zéro-préfixé)
+            name: null,
+            brand: null,
+            imageUrl: null,
+            sizes: [],
+        });
+        const out = await runCascade({ sku: "AF1-WHITE", name: "Nike Air Force 1" });
+        expect(out.tiers_matched).toContain("tier_kicksdb");
+        expect(out.canonical_ean).toBe("5449000000996");
+    });
+
+    it("KicksDB renvoie un GTIN-14 indicateur 1-9 (carton) → canonical_ean null (jamais une fausse identité conso)", async () => {
+        mockCollectAll.mockResolvedValue(multi([]));
+        mockLookupKicksDb.mockResolvedValueOnce({
+            sku: "CASE-24",
+            gtin: "10614141000415", // GTIN-14 indicateur 1 = unité logistique
+            name: null,
+            brand: null,
+            imageUrl: null,
+            sizes: [],
+        });
+        const out = await runCascade({ sku: "CASE-24", name: "Carton x24" });
+        expect(out.tiers_matched).toContain("tier_kicksdb");
+        expect(out.canonical_ean).toBeNull();
     });
 });
