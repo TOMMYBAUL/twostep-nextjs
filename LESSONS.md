@@ -319,6 +319,16 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   Les handlers d'action de l'écran (`handleSync`/`handleDisconnect`) gataient DÉJÀ `res.ok` (rien à corriger).
   ⚠️ Pré-existant hors scope (classe codebase-wide, cf. E4) : `auth.getUser()` error non gardée → redirect login
   silencieux sur outage auth. (Phase E, pos-connection-view, 2026-06-26, revue SF-hunter SOUND)
+- ❌ **La classe E5 vit AUSSI dans les ROUTES API (résolution marchand `getMerchantId`), pas seulement l'UI.**
+  `GET/POST /api/ingest/token` (jeton de push stock, canal SANS-caisse pilote) faisait `const { data: merchant } =
+  …single()` en jetant l'`error` → un blip DB → `merchant=null` → **401 « Unauthorized » servi à un marchand
+  onboardé** sur son propre écran de jeton (même faux positif que l'UI, mais le symptôme est un refus HTTP).
+  Discriminateur pour un lookup `.single()` : `PGRST116` = 0-ligne = vraiment pas marchand → 401 légitime
+  (`merchants(user_id)` UNIQUE 001 → PGRST116 ne peut structurellement dire que « 0 ligne ») ; tout autre code =
+  vrai blip → **LÈVE l'objet PostgREST BRUT** (pas `new Error` qui écrase `code/details/hint` pour `captureError`
+  branche objet) → 500 + retry. **Règle : grep les `getMerchantId`/résolutions d'ownership `.single()` qui
+  destructurent seulement `data` — chacune est un site E5 (blip → 401/redirect au lieu de 500).**
+  (M9, ingest/token, 2026-07-04, revue SF-hunter SOUND + finding diagnostic corrigé)
 
 ## UI client — afficher un VERDICT serveur, ne pas le recalculer (Phase E, readiness LFP)
 - ✅ **Surfacer dans l'UI un verdict DÉJÀ calculé serveur = mapper, jamais recalculer.** `/api/google/stats`
