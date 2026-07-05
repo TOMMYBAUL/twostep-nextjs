@@ -818,12 +818,12 @@ export async function fetchEanData(ean: string, skipCache = false): Promise<EanR
     return null;
 }
 
-async function cacheResult(
+export async function cacheResult(
     supabase: ReturnType<typeof createAdminClient>,
     ean: string,
     result: EanResult,
 ): Promise<void> {
-    await supabase.from("ean_lookups").upsert({
+    const { error } = await supabase.from("ean_lookups").upsert({
         ean,
         name: result.name,
         // Populate normalized name so the pg_trgm index can serve future reverse-search queries.
@@ -835,6 +835,14 @@ async function cacheResult(
         source: result.source,
         fetched_at: new Date().toISOString(),
     });
+    // supabase-js résout les échecs d'écriture (contrainte, RLS, payload) dans `{ error }`
+    // — pas en rejet de promesse. Sans ce garde, un échec d'upsert cache était AVALÉ : la
+    // donnée résolue n'était pas persistée → le prochain lookup re-payait les sources
+    // externes en silence (même fail-loud que writeNotFoundMarker, revue SF-hunter). On
+    // NE lève PAS : le lookup courant a déjà sa donnée en main, seule la persistance rate.
+    if (error) {
+        captureError(error, { module: "ean-lookup", phase: "cache-result", ean, source: result.source });
+    }
 
     // Re-host photo on R2 for durability (fire-and-forget, updates ean_lookups.photo_url_r2)
     if (result.photo_url) {

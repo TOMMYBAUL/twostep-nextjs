@@ -4270,3 +4270,73 @@ M3). CFR : 0 revert.
 au 1er succès, `collectAllEanSources` court-circuite → 1 seul tier → sous-publication, effort M) ; Cluster C (fuites
 coût enrichissement : C6 KicksDB/GPC cache, C9 vision cap+fallback) ; Cluster E2 (UNIQUE partiel `(merchant_id,ean)` =
 migration, GATED). YEUX (Thomas) : P0-1 wizard visuel, P0-4 surfaces conso, D1 UI token. GATED (migration) : P0-2/5/6.
+
+---
+
+## 2026-07-06 (run autonome) — P0-10 : convergence multi-source ressuscitée (sous-publication du stock identifiable)
+
+**Sourcing (§6)** : backlog = audit `docs/SPEC/audit-optimisation-2026-07-04.md`. Vérif §6 step-2 (signaux réels prod)
+faite ce run : `merchants`=9 (tous seed/test, dernier 25/04), `google_conns`=0, `quality_alerts` open=107 mais **dernière
+30/06** (0 frais 24h) → aucun signal frais → retour au backlog. **La table d'audit est PÉRIMÉE** (LESSON ~70% findings
+Explore faux) : vérifiés dans le code réel, **C2 / P0-1 / P0-13 sont DÉJÀ FAITS** (short-circuit Serper présent ;
+wizard pointe les vraies routes ; stats en `fetchAllRows` keyset) mais non cochés. Prochain fully-`[R]` réel non
+terminé = **P0-10** (in-scope cap item 1 : identité/publication honnête = cœur north-star « afficher le stock…
+honnêtement »/« ne rien oublier »). Item `[Fable]` → **prémisse re-vérifiée dans le code réel : CONFIRMÉE, y compris
+empiriquement** (cf. ci-dessous).
+
+**Le bug** : `enrichOneProduct` (worker cron) appelle `lookupEan(ean)` PUIS `runCascade`. `lookupEan` casque
+séquentiellement (EAN-Search en TÊTE → tier6=0.90) et écrit `ean_lookups` avec **UNE seule source**. Puis
+`runCascade` → `collectAllEanSources` **court-circuitait sur ce cache mono-source** → retournait `[tier6]` → score
+0.90 → **`pending`**, même si le même EAN existait aussi dans OBF/OPF (tier2=0.97) où la convergence l'aurait porté à
+0.985 → `validated`. La convergence multi-source (Cycle 4) était donc **structurellement MORTE** dans le chemin
+d'enrichissement principal. **Preuve empirique prod** : `ean_lookups` = **13/13 lignes tier6** (EAN-Search/UPC), zéro
+tier2 — parce qu'EAN-Search gagne toujours le cache en 1er. Les 7 produits `pending` portent tous un EAN → exactement
+la population sous-publiée décrite. = perte de visibilité du stock RÉEL et identifiable du marchand (violation
+north-star « afficher honnêtement », non un faux positif).
+
+**Le fix** (branche feat/pipeline-v1-handoff-2026-06-12) — localisé à `collectAllEanSources`, MONOTONE :
+- **Cache FORT** (tier suffit seul à auto-publier, tier2 ≥ 0.95) → court-circuit inchangé (économie, déjà validated).
+- **Cache FAIBLE** (tier6 = 0.90 < 0.95) → il ne peut PAS trancher seul : on CONSERVE le tier caché (`cachedRaw`, semé
+  en tête de la fusion) PUIS on lance quand même les 4 sources parallèles → **convergence détectée**. Le tier caché
+  restant dans la fusion, le score ne peut **jamais RÉGRESSER** si le parallèle échoue transitoirement.
+- **Write-back UPGRADE** (revue SF-hunter HIGH) : si le parallèle découvre un tier FORT que le cache ignorait, on
+  RÉ-ÉCRIT `ean_lookups` (via `cacheResult`, source unique d'écriture) → les appels suivants pour ce MÊME EAN
+  court-circuitent fort au lieu de re-brûler les 4 sources + rate-limiters. **Sans ça la convergence n'était jamais
+  persistée = fuite de coût en boucle.** On persiste les champs **FUSIONNÉS** (pas la source brute) sous la source
+  forte → jamais un downgrade du nom (`pickCanonical*` écarte "Unknown", prend le plus riche) même si le tier2 matché
+  a `name:"Unknown"` (SF-hunter #2). `cacheResult` durci : capture désormais le `{error}` supabase-js (échec d'upsert
+  n'est plus AVALÉ → fail-loud comme `writeNotFoundMarker`, ferme un silent-swallow pré-existant sur TOUS les writes cache).
+- **LOW** (SF-hunter) : le `catch{}` vide de `cascade-suggest` (qui appelle aussi `collectAllEanSources`) → `captureError`
+  (depuis P0-10 ce chemin lance jusqu'à 4 fetch → une panne systémique doit être visible).
+
+**Preuve** (SANS yeux/env, pur) : `tests/lib/enrichment/multi-source-convergence.test.ts` (+10, **1232→1242**) — faux
+`createAdminClient` (cache) + 4 fetchers mockés : (1) **cœur** cache tier6 + OBF présent → convergence tier6+tier2 →
+score>0.95 + write-back du tier2 ; (2) cache tier2 → court-circuit, 0 fetch, 0 write-back ; (3) cache faible + parallèle
+vide/(4) en ERREUR → NON-RÉGRESSION [tier6], 0.90 conservé ; (5) parallèle re-trouve tier6 seul → pas de write-back
+(monotone) ; (6) **tier2 name="Unknown" → persiste le VRAI nom cache, jamais "Unknown"** ; (7) échec écriture cache →
+score/retour préservés + captureError ; (8) not_found frais → empty 0 fetch ; (9) cache miss inchangé ; (10) skipCache
+ignore le cache fort.
+
+**Revue silent-failure-hunter : 2 passes.** Pass 1 = core **SOUND** (monotonicité, not_found/skipCache, faux positif,
+dédup tous corrects) + 1 HIGH (write-back manquant) + 1 LOW (catch vide) → corrigés. Pass 2 sur le delta write-back =
+2 findings réels **corrigés** : #1 (MED-HIGH) le write-back écrivait `upgrade.result` brut → un tier2 `name:"Unknown"`
+écrasait un vrai nom cache → **persiste les champs fusionnés** ; #2 (MED) `cacheResult` avalait le `{error}` supabase-js
+→ **capture ajoutée**. D7 (concordance identité) intact en aval (`buildCascadeOutcome`) → 0 faux positif introduit.
+
+**Métrique** : `tsc` OK, `test:run` **1232→1242** (+10, 118 fichiers). 1 bug réel `[Fable]→vérifié+empirique` (convergence
+morte → sous-publication) fermé. Blast LOW (`collectAllEanSources` = 2 callers `cascade-engine`/`cascade-suggest`,
+signature+contrat de retour inchangés ; `cacheResult` export additif, +captureError non-levant → 4 callers `fetchEanData`
+intacts). 0 migration, réversible (`git revert`). Fichiers : 3 code (multi-source + lookup + cascade-suggest) + 1 test + docs.
+NB : GitNexus MCP non connecté ce run → `detect_changes` non joué ; scope vérifié par `git diff` (4 fichiers, tous voulus)
++ suite verte + tsc + 2 revues SF-hunter.
+
+**Scorecard** : Preuve 8/10 (convergence prouvée sur faux client non-vacant + non-régression + empirique 13/13 tier6 prod ;
+mais synthétique, pas de vrai OBF/OPF simultané) · Sécu north-star 9/10 (ferme une sous-publication du stock identifiable
+= « afficher honnêtement » ; write-back ferme la fuite de coût ; 0 faux positif, D7 intact ; +1 silent-swallow cache fermé) ·
+Réversibilité 10/10 (0 migration, `git revert`) · Scope 9/10 (3 fichiers code ciblés + test + docs) · Align 9/10
+(identité/publication = cap item 1). CFR : 0 revert.
+
+**RESTE audit (trié, fully-`[R]` sans yeux/env)** : C3 (dédup double-cascade `lookupEan` séq + `collectAllEanSources` //
+dans `enrich-product` → ÷2 appels ; P0-10 fixé la CORRECTUDE, C3 = l'OPTIM coût restante, effort M) ; Cluster C (C6
+KicksDB/GPC cache, C9 vision cap 15→3) ; P0-9-résidus si besoin. GATED (migration) : E2 UNIQUE partiel `(merchant_id,ean)`,
+P0-2/5/6. YEUX (Thomas) : P0-1 wizard visuel, P0-4 surfaces conso M5, D1 UI token.

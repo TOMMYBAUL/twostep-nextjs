@@ -24,6 +24,7 @@ import { collectAllEanSources } from "@/lib/enrichment/multi-source";
 import { lookupGoogleShopping } from "@/lib/enrichment/tier3-google-shopping";
 import { searchProductImage } from "@/lib/images/serper";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { captureError } from "@/lib/error";
 
 interface SuggestBody {
     stagingId?: unknown;
@@ -143,8 +144,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             canonicalBrand = multi.canonical_brand ?? canonicalBrand;
             canonicalCategory = multi.canonical_category ?? canonicalCategory;
             canonicalPhoto = multi.canonical_photo_url;
-        } catch {
-            // Non bloquant — on garde les valeurs déjà extraites
+        } catch (err) {
+            // Non bloquant — on garde les valeurs déjà extraites. Mais on TRACE : depuis
+            // le fix P0-10, ce chemin lance jusqu'à 4 fetch réseau (plus une seule lecture
+            // cache) → une panne systémique (outage Supabase/sources) doit être visible,
+            // pas avalée en silence (revue SF-hunter LOW).
+            captureError(err, { route: "admin/onboarding/cascade-suggest", phase: "collect-ean-sources", ean: outcome.canonical_ean });
         }
     }
 

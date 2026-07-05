@@ -922,3 +922,12 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   légitime, 0 perte de couverture sur blip). **Règle : casser une boucle de retry payante exige de distinguer « échec
   qui a coûté et se reproduira » d'« échec gratuit et transitoire ».** `tests/categorize-batching.test.ts`.
 
+- ❌ **Un cache MONO-source écrit en amont TUE une agrégation MULTI-source en aval** : `lookupEan` casque
+  séquentiellement (EAN-Search en tête → tier6) et écrit `ean_lookups` avec UNE source ; puis `collectAllEanSources`
+  court-circuitait sur ce cache → 1 seul tier → convergence multi-source jamais déclenchée → EAN aussi présent en
+  OBF/OPF (tier2=0.97) restait figé 0.90/`pending` (sous-publication). Confirmé empiriquement : 13/13 lignes cache prod
+  = tier6. Fix : court-circuit SEULEMENT si le tier caché suffit à trancher (≥ auto_publish) ; sinon garder le tier
+  caché (non-régression) + relancer le parallèle + **write-back UPGRADE** de la convergence (sinon re-fetch en boucle
+  = fuite de coût, revue SF-hunter). **Règle : un cache qui ne stocke qu'UNE valeur ne peut pas servir une décision qui
+  a besoin de PLUSIEURS ; ne court-circuite dessus que s'il tranche seul, et persiste la valeur enrichie (monotone,
+  champs fusionnés jamais dégradés).** `tests/lib/enrichment/multi-source-convergence.test.ts`.
