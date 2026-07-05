@@ -5,6 +5,7 @@ import { createImageJob } from "@/lib/images/jobs";
 import { runCascade } from "@/lib/enrichment/cascade-engine";
 import { SCORE_THRESHOLDS } from "@/lib/enrichment/score-cascade";
 import { isPlaceholderName } from "@/lib/ingest/triage";
+import { findSharedSkuEan } from "@/lib/enrichment/sku-identity";
 
 export type EnrichableProduct = {
     id: string;
@@ -41,18 +42,11 @@ export async function enrichOneProduct(product: EnrichableProduct, admin: Supaba
     if (product.ean) {
         await lookupEan(product.ean, product.id);
     } else if (!isValidated) {
-        let foundEan: string | null = null;
-        if (product.sku) {
-            const { data: skuMatch } = await admin
-                .from("products")
-                .select("ean")
-                .eq("sku", product.sku)
-                .not("ean", "is", null)
-                .neq("id", product.id)
-                .limit(1)
-                .single();
-            if (skuMatch?.ean) foundEan = skuMatch.ean;
-        }
+        // SKU match SCOPÉ AU MARCHAND (P0-11) : un SKU est un code interne — sans le
+        // filtre merchant_id, le marchand B héritait l'EAN d'un produit du marchand A
+        // partageant le même SKU = fausse identité cross-marchand. Source unique de la
+        // règle (partagée avec resolve-ean.ts) → plus de divergence entre les 2 sites.
+        let foundEan: string | null = await findSharedSkuEan(admin, product.merchant_id, product.sku, product.id);
         if (!foundEan && !isPlaceholderName(product.name)) {
             const found = await searchEanByName(product.name, product.brand);
             if (found) foundEan = found.ean;

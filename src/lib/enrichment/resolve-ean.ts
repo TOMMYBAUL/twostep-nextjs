@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { lookupEan, searchEanByName, verifyEanMatchWithAI } from "@/lib/ean/lookup";
 import { searchProductImage } from "@/lib/images/serper";
 import { createImageJob } from "@/lib/images/jobs";
+import { findSharedSkuEan } from "@/lib/enrichment/sku-identity";
 
 /**
  * Outcome of a single resolveAndEnrich call.
@@ -67,20 +68,14 @@ export async function resolveAndEnrich(params: {
         let foundEan: string | null = null;
         let resolvedFrom: ResolveAndEnrichResult["source"] = "none";
 
-        // 2. SKU match in the local product table
-        if (sku) {
-            const { data: skuMatch } = await supabase
-                .from("products")
-                .select("ean")
-                .eq("sku", sku)
-                .not("ean", "is", null)
-                .neq("id", productId)
-                .limit(1)
-                .single();
-            if (skuMatch?.ean) {
-                foundEan = skuMatch.ean;
-                resolvedFrom = "sku_match";
-            }
+        // 2. SKU match SCOPÉ AU MARCHAND (P0-11) : un SKU est un code interne au
+        //    marchand — sans le filtre merchant_id, ce produit héritait l'EAN d'un
+        //    produit d'un AUTRE marchand partageant le même SKU = fausse identité
+        //    cross-marchand. Source unique de la règle (partagée avec enrich-product.ts).
+        const sharedSkuEan = await findSharedSkuEan(supabase, merchantId, sku, productId);
+        if (sharedSkuEan) {
+            foundEan = sharedSkuEan;
+            resolvedFrom = "sku_match";
         }
 
         // 3. Reverse search by name (cache → external)

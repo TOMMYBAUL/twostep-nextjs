@@ -64,6 +64,19 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 - ❌ groupVariantsByEAN réécrivait `available_sizes` depuis `products.size` (NULL pour les produits-fichier, dont les tailles sont groupées en mémoire par le snapshot) → écrasait les tailles par `[]`. Deux mécanismes de groupage concurrents. Rendu non-destructif : n'écrit available_sizes que si des tailles sont calculées. Trouvé par e2e (available_sizes vide après push). (2026-06-14)
 - ❌ categorize appliquait la catégorie IA sans seuil de confiance → fausses catégories. Seuil 70 ; en dessous, pas appliquée mais tentative marquée (sélection sur ai_categorized_at null = anti-reboucle). (2026-06-14)
 - ⚠️ Rappel : l'EAN donne l'IDENTITÉ (nom/marque/photo/catégorie brute), JAMAIS la taille ni la quantité (données de la source marchand). KicksDB (sneakers, exploite le SKU) est inerte sans KICKSDB_API_KEY (gratuite).
+- ❌ **SKU match d'enrichissement NON scopé par marchand = fausse identité cross-marchand (P0-11).** La stratégie
+  « produit sans EAN → réutiliser l'EAN d'un autre produit au même SKU » faisait `.eq("sku", sku)` SANS
+  `.eq("merchant_id", …)`. Or un SKU est un code INTERNE au marchand ("TS-0042", "REF123") → le marchand B héritait
+  l'EAN (donc photo/marque/catégorie) d'un produit du marchand A au même SKU = fausse identité (famille du bug 6/7
+  photos). Plafonnée `pending`, mais 1 tap la publie. **DEUX instances DUPLIQUÉES** (`enrich-product.ts` +
+  `resolve-ean.ts`) = la duplication EST la cause du double bug. Fix : source UNIQUE `src/lib/enrichment/sku-identity.ts`
+  (`findSharedSkuEan`) que les 2 sites appellent → (1) scope `merchant_id`, (2) garde longueur ≥4 (même seuil que
+  `serper.ts` : un SKU trivial n'ancre pas une identité). Blip DB discriminé (PGRST116 0-ligne = nominal silencieux ;
+  autre code = captureError, leçon E5). **Règle : tout match d'IDENTITÉ par un identifiant LOCAL au marchand (SKU,
+  référence interne, PLU) DOIT être scopé `merchant_id` ; et quand un même bug d'identité existe en 2 exemplaires,
+  fusionner en source unique (sinon un seul des deux est corrigé et le jumeau ré-introduit).** Preuve
+  `tests/lib/enrichment/sku-identity.test.ts` (cross-marchand→null + verrou `.eq(merchant_id)`, même-marchand OK,
+  <4→0 requête). Revue SF-hunter SOUND. (M3 enrichissement, 2026-07-05)
 - ❌ **Deux validateurs GTIN divergents = doublon d'identité silencieux (P0-8).** `identifiers/validators.ts`
   (`canonicalizeEan`/`detectIdentifierType`, utilisé par POS + `triage` + `cascade-engine`) rejetait le GTIN-14
   (→ "invalid" → SKU faible masqué) alors que `ean/validate.ts` (`validEanOrNull`, utilisé par e-invoice/gs1/kicksdb)

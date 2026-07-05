@@ -4154,3 +4154,60 @@ résidus dormants documentés, pas chassés hors-scope) · Align 9/10 (identité
 P0-10/11 (enrichissement, effort M) ; A1 (webhook pousse TOUT l'inventaire à chaque vente, H×S, avant pilote). GATED
 (migration) : P0-2 (slug trigger 108 écrite), P0-5/6 (RPC 104/109). YEUX (Thomas) : P0-1 wizard visuel, P0-4 surfaces
 conso, D1 UI token.
+
+---
+
+## 2026-07-05 (run autonome) — P0-11 : SKU match cross-marchand → fausse identité (EAN/photo/marque héritée d'un autre marchand)
+
+**Sourcing (§6)** : backlog priorisé = audit `docs/SPEC/audit-optimisation-2026-07-04.md` §2 (P0). Les items
+« RESTE » du worklog précédent (A1, P0-9, P0-7) se sont révélés **DÉJÀ FAITS** au commit 6641034 (vérifiés dans
+le code réel — A1 push ciblé présent + tests ; P0-9 batching 30 + CategorizeParseError ; P0-7 resync KEYSET+batch).
+Prochain fully-`[R]` réel non terminé = **P0-11** (in-scope cap item 1 : identité/concordance = cœur north-star
+« exactitude = la promesse » / « zéro faux positif »). Item `[Fable]` → **prémisse re-vérifiée dans le code réel**
+(LESSONS : ~70 % findings Explore faux) : **CONFIRMÉE**.
+
+**Le bug** : la stratégie « SKU match » de l'enrichissement (produit sans EAN déclaré → réutiliser l'EAN d'un
+AUTRE produit partageant le même SKU) n'était **PAS scopée par marchand**. Or un SKU est un code INTERNE au
+marchand ("TS-0042", "REF123") → sans filtre `merchant_id`, le marchand B héritait l'EAN — donc photo/marque/
+catégorie — d'un produit du marchand A au même SKU = **fausse identité cross-marchand** (famille du bug « 6/7
+photos fausses »). Plafonnée `pending`, mais **1 tap la publie**. **DEUX instances DUPLIQUÉES** du même bug :
+`enrich-product.ts:45-54` (`enrichOneProduct`, worker cron) ET `resolve-ean.ts:71-84` (`resolveAndEnrich` :
+validation facture + bootstrap sync POS + futurs ingestors) — la duplication EST la cause des deux instances.
+
+**Le fix** (branche feat/pipeline-v1-handoff-2026-06-12)
+- **Source UNIQUE** `src/lib/enrichment/sku-identity.ts` (`findSharedSkuEan` + `isSpecificSku`,
+  `MIN_SKU_IDENTITY_LENGTH=4`) → les 2 sites délèguent → plus jamais de divergence entre jumeaux. Deux gardes :
+  (1) `.eq("merchant_id", merchantId)` — un SKU n'a aucun sens global ; (2) longueur **≥ 4** (même seuil que la
+  recherche image `serper.ts:224` : un SKU trivial ne peut pas ancrer une identité).
+- **Observabilité (revue SF-hunter, MED)** : la lecture SKU-match discrimine `PGRST116` (0 jumeau = cas nominal,
+  silencieux) de tout autre code (vrai blip DB → `captureError`) — leçon E5 : un outage ne doit pas se lire
+  « pas de SKU partagé » en silence. Conservateur : `null` dans tous les cas (jamais un EAN deviné sur lecture douteuse).
+
+**Preuve** (SANS yeux/env, pur) : `tests/lib/enrichment/sku-identity.test.ts` (+10, **1198→1208**) — faux client
+Supabase **non vacant** (applique vraiment `.eq/.neq/.not` sur un jeu de lignes) : (1) **cross-marchand → null**
+(marchand A possède SKU+EAN, marchand B enrichit son produit au même SKU → n'hérite PAS) + **verrou de régression**
+`.eq("merchant_id","MB")` asserté dans les calls ; (2) même-marchand jumeau → EAN bien récupéré (feature intacte) ;
+(3) SKU <4 → **0 requête DB** ; (4) SKU null → null, 0 requête ; (5) 0 jumeau PGRST116 → null, **0 Sentry** ;
+(6) vrai blip (57014) → null + **1 Sentry**. `isSpecificSku` : bornes 3/4, trim, null.
+
+**Revue silent-failure-hunter : SOUND** — 0 CRITICAL/HIGH ; merchant scope correct sur les 2 sites (aucun `.eq("sku")`
+non scopé restant dans le codebase) ; les 3 callers de `resolveAndEnrich` passent un `merchantId` réellement
+propriétaire du produit (sync : son scope ; route admin : pré-filtrée `merchant_id` ; facture : `merchant.id`) ;
+sémantique falsy/`?? null` identique à l'avant ; garde ≥4 ne casse aucune adoption légitime. **MED (blip avalé)
+adressé** (captureError discriminé). LOW (guard trim vs `.eq` untrimmed) laissé = comportement pré-existant préservé.
+
+**Métrique** : `tsc` OK, `test:run` **1198→1208** (+10, 116 fichiers). 1 bug réel `[Fable]→vérifié` (fausse identité
+cross-marchand) fermé sur ses 2 instances. Blast LOW (`enrichOneProduct` 1 caller ; `resolveAndEnrich` 3 callers
+tous audités SF-hunter, signatures inchangées). 0 migration, réversible (`git revert`). Fichiers : 3 code (helper +
+2 callers) + 1 test + 3 docs.
+
+**Scorecard** : Preuve 8/10 (scope prouvé sur faux client non-vacant + régression cross-marchand réelle ; synthétique,
+pas 2 marchands réels au même SKU) · Sécu north-star 9/10 (ferme une injection de fausse identité = cœur « zéro faux
+positif » ; SF-hunter SOUND + MED fermé ; source unique tue la ré-apparition du jumeau) · Réversibilité 10/10 (0
+migration) · Scope 9/10 (3 fichiers code très ciblés + test + docs) · Align 9/10 (identité/concordance = cap item 1,
+M3). CFR : 0 revert.
+
+**RESTE audit (trié, fully-`[R]` sans yeux/env)** : P0-10 (convergence multi-source morte : `lookupEan` écrit le cache
+au 1er succès, `collectAllEanSources` court-circuite → 1 seul tier → sous-publication, effort M) ; Cluster C (fuites
+coût enrichissement : C6 KicksDB/GPC cache, C9 vision cap+fallback) ; Cluster E2 (UNIQUE partiel `(merchant_id,ean)` =
+migration, GATED). YEUX (Thomas) : P0-1 wizard visuel, P0-4 surfaces conso, D1 UI token. GATED (migration) : P0-2/5/6.
