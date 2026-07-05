@@ -12,7 +12,7 @@ next_action: "Cluster A publication Google avancé : A1 FAIT (6641034) ; A2/A6/A
 branch: feat/pipeline-v1-handoff-2026-06-12
 gate: green               # green|red|unknown  (tsc 0 + 1232/1232 tests verts, vérifiés par l'orchestrateur au run 2026-07-05)
 last_run: 2026-07-05
-last_commit: 6641034      # MAJ au prochain commit (run 2026-07-05 = A2/A6/A7 merchant.ts, voir worklog 05/07)
+last_commit: 81b8d7e      # feat(google/publication): A2/A6/A7 — durcir le layer HTTP Google (run 2026-07-05)
 ---
 
 # État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)
