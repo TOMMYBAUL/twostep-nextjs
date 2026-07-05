@@ -192,6 +192,25 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   de `touched` → la réconciliation du MÊME run le passait à 0 (faux « rupture »). **Règle : un échec de write SECONDAIRE ne doit
   ni bloquer le write CRITIQUE (stock), ni sortir le produit de `touched`.** Fix : plus de `continue` → stock écrit + `touched` +
   captureError. (revue SF-hunter, 2026-07-01)
+- ❌ **Ajouter retry/backoff à un appel réseau SITUÉ dans une boucle à budget-temps DUR sans le rendre
+  deadline-aware RÉ-OUVRE la troncature silencieuse qu'on venait de fermer.** Durci le layer HTTP Google
+  (Cluster A audit 07-04, `merchant.ts` : `googleMerchantFetch` retry 429/5xx + timeout A6 ; `refreshGoogleToken`
+  révoqué-vs-blip A7). **Piège trouvé par SF-hunter (HIGH)** : worst-case d'UN produit = 4 essais × 30 s timeout +
+  3 backoffs × 60 s cap ≈ 300 s → dépasse `maxDuration=300` / la marge de kill de `processWithinTimeBudget` (qui ne
+  teste le deadline qu'ENTRE les items, « un item entamé est mené à terme ») → Vercel tue la fonction EN PLEIN item,
+  AVANT l'écriture de `last_feed_status` → marchand sur le « success » périmé du run précédent = perte n°1, ré-ouverte
+  de l'INTÉRIEUR d'un seul appel. Fix : passer le `deadlineMs` du cron dans les deps du fetch → ne PAS dormir ni
+  entamer un essai qui déborderait le budget (throw → produit compté « non poussé » → statut "partial" honnête) +
+  timeout par essai = `min(30 s, budget restant)`. **Règle : tout retry/backoff ajouté à un chemin déjà borné par un
+  budget-temps DOIT recevoir ce budget et échouer VITE plutôt que déborder ; sinon la résilience ajoutée casse
+  l'invariant anti-troncature.** Autres findings SF-hunter fermés : `refreshGoogleToken` `catch {}` jetait la cause
+  réseau (→ `catch(e)` + `cause` forwardée à `captureError` : diagnostic ECONNRESET/TLS préservé) ; double-Sentry sur
+  `!auth` (→ `getGoogleAccessToken` = émetteur UNIQUE : blip=capturé avec cause, révocation=silencieuse car statut DB
+  actionnable, pas d'alerte à CHAQUE run) ; write du token rafraîchi non gardé (→ `captureError`). A7 = fin d'un faux
+  positif : un blip réseau au refresh affichait « reconnexion requise » (400 `invalid_grant` SEUL = vraie révocation).
+  `tests/google-merchant-http.test.ts` (+25, deps `fetchImpl`/`sleep`/`now` injectés = déterministe sans réseau).
+  Blast LOW (`refreshGoogleToken` 1 caller ; `googleMerchantFetch` throw-contract inchangé). 0 migration, réversible.
+  (SCALE + Cluster A, merchant.ts, 2026-07-05, revue SF-hunter 1 HIGH + 3 corrigés)
 - ❌ Garde INERTE faute de câblage : la garde anti-régression absolue de `update_stock_atomic` (source_ts entrant < base → no-op) ne servait à RIEN car les 4 routes webhook appelaient `updateStockAtomic(...,"webhook")` sans passer `sourceTs` → défaut `now()` (réception serveur), jamais l'heure réelle. Out-of-order Square/Zettle (absolu) = le périmé écrasait le frais. Fix : router `update.updated_at` (déjà calculé par parseWebhookEvent) en `sourceTs`. **Règle : un param de sécurité optionnel d'une RPC doit être vérifié comme RÉELLEMENT passé par tous les appelants — sinon la garde est cosmétique.** (Collecte ③, 2026-06-19)
 
 - ❌ `const { data } = await supabase.from(...).select(...)` qui **jette le `error`** : un échec DB devient indistinct d'« empty ». BUG seulement quand empty→corruption/no-op masqué en succès (≠ auth/lookup où `null→401` est correct → ~250 sites, NE PAS tous chasser). Trois cas réels corrigés : ingest snapshot (read produits échoué → tout le catalogue recréé en doublon ; read stock échoué → réconciliation no-op → vendus restent « en stock ») → lève / réconcil. annulée+visible ; resync (`ok:true,fetched:0` alors que rien guéri) → `ok:false`/lève. **Discriminateur : destructurer `error` est requis SSI l'appelant ne sait pas distinguer erreur de vide ET que vide cause une perte silencieuse.** (2026-06-20)

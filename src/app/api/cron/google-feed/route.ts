@@ -87,16 +87,17 @@ export async function POST(req: NextRequest) {
         let pushedThisMerchant = 0;
 
         try {
-            const auth = await getGoogleAccessToken(conn.merchant_id);
+            const auth = await getGoogleAccessToken(conn.merchant_id, { deadlineMs });
             if (!auth) {
-                // Token Google expiré/révoqué = feed mort SILENCIEUX pour le marchand.
-                // On le rend visible (statut + Sentry) au lieu d'incrémenter un compteur.
+                // Token Google indisponible = feed mort pour ce marchand ce run. `getGoogleAccessToken`
+                // a DÉJÀ écrit un statut HONNÊTE sur la connexion (révoqué → « reconnexion requise » ;
+                // blip transitoire → « réessai auto », A7) — on ne l'ÉCRASE PLUS par un message générique
+                // « reconnect required » (c'était le faux positif : un simple blip réseau affichait
+                // « reconnexion requise » au marchand). Il a AUSSI émis le SEUL signal Sentry approprié
+                // (blip = capturé avec la cause réseau ; révocation = état attendu, statut DB = signal →
+                // pas d'alerte à chaque run) → on ne DOUBLE plus l'alerte ici. On compte l'échec et on
+                // passe au marchand suivant.
                 errors++;
-                await writeMerchantStatus(conn.merchant_id, {
-                    last_feed_status: "error",
-                    last_feed_error: "Google token expired or revoked — reconnect required",
-                });
-                captureError(new Error("Google token unavailable"), { cron: "google-feed", merchantId: conn.merchant_id });
                 continue;
             }
 
@@ -165,6 +166,10 @@ export async function POST(req: NextRequest) {
                                 method: "POST",
                                 body: JSON.stringify(googleProduct),
                             },
+                            // Budget dur partagé : le retry ne doit jamais déborder le kill Vercel
+                            // avant l'écriture du statut (Finding 1). Un produit dont les essais
+                            // épuisent le budget → throw → compté "non poussé" → statut "partial" honnête.
+                            { deadlineMs },
                         );
                         pushedThisMerchant++;
                         return true;

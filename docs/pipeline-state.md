@@ -8,11 +8,11 @@ step_total: 9
 step_name: "Audit d'optimisation 9 maillons + re-challenge complétude + carte NearSt FAIT → exécution P0/clusters"
 status: in_progress
 blocked_on: "thomas:arbitrage M10 plateforme/transactionnel (hors-wedge?) + GO fixes P0 pilote-bloquants + jugement visuel UI + M1 pilote+caisse"
-next_action: "P0-1 (wizard POS 404) + P0-2 (inbound_email_slug NULL) CORRIGÉS+PROUVÉS (tsc 0, 40 tests verts, non commités, migration 108 écrite NON appliquée — GO Thomas requis). PROCHAIN : valider ces 2 fixes, puis exécuter Cluster A1 (webhook push Google ciblé) + C1/C2 (fuite coût enrichissement). Arbitrage Thomas en attente : scope M10 plateforme/transactionnel."
+next_action: "Cluster A publication Google avancé : A1 FAIT (6641034) ; A2/A6/A7 FAITS (run 2026-07-05, merchant.ts, layer HTTP durci retry+timeout+révoqué-vs-blip, revue SF-hunter 1 HIGH anti-troncature + 3 corrigés). PROCHAIN [R] in-scope : A3 (pool concurrence push) / A4 (diff incrémental) / A5 (checkpoint reprise) ou P0-10+C3 (convergence multi-source morte + double cascade coût). GATED/EXTERNE : migrations 108/109 non appliquées (GO Thomas) ; preuve charge 10k→50k + e2e Google live (env live) ; arbitrage M10 plateforme/transactionnel."
 branch: feat/pipeline-v1-handoff-2026-06-12
-gate: green               # green|red|unknown  (tsc 0 + 1177/1177 tests verts, vérifiés par l'orchestrateur au commit 6641034)
-last_run: 2026-07-04
-last_commit: 6641034      # fix(maillons): audit optim + P0 pilote-bloquants (self-serve, feed, coût, troncature)
+gate: green               # green|red|unknown  (tsc 0 + 1232/1232 tests verts, vérifiés par l'orchestrateur au run 2026-07-05)
+last_run: 2026-07-05
+last_commit: 6641034      # MAJ au prochain commit (run 2026-07-05 = A2/A6/A7 merchant.ts, voir worklog 05/07)
 ---
 
 # État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)

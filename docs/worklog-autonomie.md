@@ -5,6 +5,65 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-05 (run autonome) · Cluster A — durcir le layer HTTP de PUBLICATION Google (A2 retry / A6 timeout / A7 révoqué-vs-blip)
+
+**Pourquoi (sourcing §6 — backlog priorisé frais)** : l'audit d'optimisation du 2026-07-04
+(`docs/SPEC/audit-optimisation-2026-07-04.md`) est le signal-source. Son Top-3 (A1 webhook ciblé, P0-1+P0-2
+self-serve, C1+C2 coût enrichissement) est FAIT (commit `6641034` + P0-3/8/11). Le cluster suivant le plus
+rentable = **Cluster A « Fiabilité + coût du chemin de PUBLICATION Google (prérequis pilote live) »**, tout
+réversible backend, sur le chemin critique du pilote (in-scope §1 filtre de cap). J'ai pris les 3 items
+concentrés dans le layer HTTP Google = **1 unité cohérente, 1 fichier, blast LOW** : A2 (retry 429/5xx),
+A6 (timeout fetch), A7 (`refreshGoogleToken` confond blip et révocation → faux « reconnexion requise »).
+
+**Vérifié avant d'investir** (LESSONS : ~70 % des findings audit à re-confronter au code réel) : les 3 défauts
+sont RÉELS dans `src/lib/google/merchant.ts` — `googleMerchantFetch:148` jette au 1er `!res.ok` (0 retry) ;
+`:139` aucun `signal`/timeout ; `refreshGoogleToken:80` `if(!res.ok) return null` → `getGoogleAccessToken:112`
+écrit « Token expired » + le cron `google-feed:97` écrit « reconnect required » sur un simple blip. Blast : 3
+callers de `getGoogleAccessToken` tous gardés `if(!auth)`, callers de `googleMerchantFetch` gèrent un throw →
+contrat throw-on-failure préservé par le retry interne → 0 changement de signature caller.
+
+**Fait** (branche, 0 migration) : `merchant.ts` — helpers PURS `isRetryableStatus` / `computeBackoffMs`
+(full-jitter borné, honore `Retry-After`) ; `googleMerchantFetch` boucle retry (429/5xx + erreur réseau) +
+`AbortSignal.timeout` ; `refreshGoogleToken` → union `{ok:true,tokens}|{ok:false,revoked,cause?}` distinguant
+la révocation EXPLICITE (400 `invalid_grant`) du blip transitoire (réseau/5xx/config) ; `getGoogleAccessToken`
+= source UNIQUE du message honnête (`tokenRefreshFailureStatus`) + garde E5 sur le SELECT connexion ;
+`exchangeGoogleCode` timeout. Cron `google-feed` : ne réécrit plus le « reconnect required » générique dans la
+branche `!auth`.
+
+**Testé (méthode §1bis, preuve sans réseau)** : `tests/google-merchant-http.test.ts` (+25) — helpers purs,
+retry (503→200, 429+Retry-After honoré, 400 no-retry, 500/réseau persistants → throw après 4), révoqué-vs-blip,
++ **budget-temps** (Finding 1). Deps `fetchImpl`/`sleep`/`now` injectés → déterministe. `tsc` OK.
+`npm run test:run` **1229→1232** (117 fichiers verts ; +3 vs le run précédent, +25 nouveaux moins les 22 déjà
+comptés — total suite 1232).
+
+**Revue silent-failure-hunter (OBLIGATOIRE §11.3)** : **1 HIGH + 3 findings, TOUS corrigés dans ce commit** —
+- **HIGH (Finding 1)** : le retry n'était pas conscient du budget-temps du cron → worst-case ~300 s pour UN
+  produit → kill Vercel AVANT l'écriture du statut = troncature silencieuse n°1 ré-ouverte de l'intérieur d'un
+  appel. Fix : `deadlineMs` threadé (cron → deps du fetch) → ne dort/entame pas un essai qui déborderait ;
+  timeout par essai = `min(30 s, restant)`. Testé (`deadlineMs`/`now` injectés).
+- **MED (Finding 2)** : `catch {}` de `refreshGoogleToken` jetait la cause réseau → `catch(e)` + `cause`
+  forwardée à `captureError` (diagnostic ECONNRESET/TLS préservé).
+- **LOW/MED (Finding 3)** : double-Sentry sur `!auth` → `getGoogleAccessToken` émetteur UNIQUE (blip capturé
+  avec cause ; révocation silencieuse = statut DB actionnable, plus d'alerte à chaque run) ; le cron ne double
+  plus.
+- **LOW (Finding 4)** : write du token rafraîchi non gardé → `captureError`.
+SF-hunter a CONFIRMÉ sound : retry vs writes idempotents (upsert offerId), pas de faux « success » (chemin
+partial/interrupted intact), classification révoqué/transitoire correcte, garde E5 alignée sur ~15 autres sites.
+
+**Reste / escalade** : A3 (pool concurrence), A4 (diff incrémental), A5 (checkpoint/reprise = potentielle
+persistance curseur, à cadrer), A6 restants nil. **Preuve de CHARGE réelle 10k→50k + e2e Google live = env
+live (escaladé, comme tout SCALE).** Rien de gated ici (0 migration). Prochain [R] in-scope probable : A3/A4/A5
+ou P0-10/C3 (convergence multi-source morte + double cascade coût).
+
+**Scorecard** : Preuve 9/10 (helpers purs + boucle retry + révoqué/blip + budget-temps tous testés deps-injectés ;
+seul le comportement réseau réel reste non prouvé = pas d'env live, borné honnêtement) · Sécu north-star 9/10
+(SF-hunter 1 HIGH anti-troncature + 3 fermés ; A7 ferme un faux positif marchand ; A2/A6 rendent la publication
+pilote fiable) · Réversibilité 10/10 (0 migration, additif, `git revert`) · Scope 9/10 (2 fichiers source + 1 test,
+1 unité cohérente sur le chemin pilote) · Align 9/10 (Cluster A = prérequis pilote live nommé par l'audit). 0 bug
+laissé. tests 1229→1232. CFR run = 100 % (0 revert).
+
+---
+
 ## 2026-07-03 (run autonome) · Onboarding pilote — UI shadow/preview du feed Google (finir un WIP en scope)
 
 **Pourquoi (sourcing §6)** : le thème SCALE est COMPLET (ingest + 4 sorties Google : pagination keyset +
