@@ -26,6 +26,17 @@ export async function POST(req: NextRequest) {
     const supabase = createAdminClient();
     const deadlineMs = Date.now() + TIME_BUDGET_MS;
 
+    // A5 — CHECKPOINT/REPRISE (GATED, flag `FEED_RESUME_CURSOR=1` + migration 111).
+    // Sans reprise, un catalogue dont le push complet dépasse le budget temps (270 s)
+    // redémarre à `id=0` À CHAQUE run → il re-pousse ÉTERNELLEMENT la même TÊTE et
+    // n'atteint JAMAIS la QUEUE = famine silencieuse (produits jamais publiés sur Google,
+    // perte n°1 north-star ; l'ancien commentaire « se termine au run suivant » était FAUX).
+    // Avec reprise : on démarre le stream au-delà du dernier produit traité (`last_feed_cursor`),
+    // on persiste le curseur sur interruption, et on le REMET À NULL quand un cycle complet
+    // est bouclé → la queue avance toujours, puis le feed est ré-affirmé depuis la tête.
+    // Flag OFF (défaut) → curseur jamais lu/écrit → comportement ACTUEL, sûr AVANT migration 111.
+    const resumeEnabled = process.env.FEED_RESUME_CURSOR === "1";
+
     // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000 lignes
     // par PostgREST SANS erreur → au-delà de 1000 marchands connectés, les feeds des
     // suivants ne seraient plus JAMAIS poussés, en silence. Curseur = `merchant_id`
@@ -66,6 +77,26 @@ export async function POST(req: NextRequest) {
         }
     };
 
+    // A5 — écrit le curseur de reprise dans un UPDATE SÉPARÉ, best-effort. ISOLÉ du write de
+    // statut (writeMerchantStatus) EXPRÈS : si le flag était posé AVANT la migration 111 (colonne
+    // `last_feed_cursor` absente), inclure la colonne dans le write de statut ferait échouer TOUT
+    // l'UPDATE → on perdrait products_pushed/last_feed_status/last_feed_error (toute l'observabilité
+    // du run), pas juste le curseur (finding SF-hunter MED). Ici, un échec du curseur reste local,
+    // visible (captureError), et n'altère pas le statut déjà écrit. `as any` : colonne hors types
+    // générés tant que la migration n'est pas appliquée. Flag OFF → aucun write (colonne jamais touchée).
+    //  - `value` non-null (interruption/erreur) = reprendre là au prochain run ;
+    //  - `value` null (cycle complet) = repartir de la tête (ré-affirmation du feed).
+    const persistResumeCursor = async (merchantId: string, value: string | null) => {
+        if (!resumeEnabled) return;
+        const { error: curErr } = await (supabase as unknown as { from: (t: string) => any })
+            .from("google_merchant_connections")
+            .update({ last_feed_cursor: value })
+            .eq("merchant_id", merchantId);
+        if (curErr) {
+            captureError(curErr, { cron: "google-feed", step: "write-cursor", merchantId });
+        }
+    };
+
     let totalPushed = 0;
     let errors = 0;
     let merchantsAttempted = 0;
@@ -85,6 +116,33 @@ export async function POST(req: NextRequest) {
         // fail-loud sur une page ultérieure) : le catch peut alors écrire le nombre RÉELLEMENT
         // poussé ce run, jamais le `products_pushed` périmé du run précédent (diagnostic honnête).
         let pushedThisMerchant = 0;
+
+        // A5 — curseur de départ (reprise) et repère de progression :
+        //  - `startCursor` = dernier produit traité au run précédent (null = début) ;
+        //  - `lastProcessedId` = dernier produit traité CE run (succès OU échec) → repère
+        //    monotone : un produit qui échoue en boucle n'empêche JAMAIS la queue d'avancer
+        //    (il sera re-tenté au prochain CYCLE complet, pas re-bloquant chaque run).
+        let startCursor: string | null = null;
+        let lastProcessedId: string | null = null;
+        if (resumeEnabled) {
+            // Lecture ISOLÉE + castée : `last_feed_cursor` (migration 111) n'est pas dans les
+            // types générés tant que la migration n'est pas appliquée → `as any` sur ce SEUL read
+            // (jamais sur la lecture connexions partagée). Flag OFF → cette lecture n'a pas lieu.
+            const { data: cur, error: curErr } = await (supabase as unknown as {
+                from: (t: string) => any;
+            })
+                .from("google_merchant_connections")
+                .select("last_feed_cursor")
+                .eq("merchant_id", conn.merchant_id)
+                .maybeSingle();
+            if (curErr) {
+                // Échec de lecture du curseur ≠ perte : on repart de la TÊTE (sûr, se corrige au
+                // run suivant) et on le rend VISIBLE. Ne JAMAIS abandonner le marchand pour ça.
+                captureError(curErr, { cron: "google-feed", step: "load-cursor", merchantId: conn.merchant_id });
+            } else {
+                startCursor = (cur?.last_feed_cursor as string | null) ?? null;
+            }
+        }
 
         try {
             const auth = await getGoogleAccessToken(conn.merchant_id, { deadlineMs });
@@ -112,8 +170,10 @@ export async function POST(req: NextRequest) {
             // filtre + pousse chaque page À LA VOLÉE → UNE seule page réside en RAM à la fois,
             // jamais tout le catalogue (Deerskin = milliers de SKU) ni son sous-ensemble éligible.
             // NB : le streaming borne la MÉMOIRE, pas le TEMPS — un catalogue dont le push
-            // dépasse le budget reste "partial" et se termine au run suivant (les pages
-            // non poussées ne sont alors même pas lues).
+            // dépasse le budget reste "partial" (les pages non poussées ne sont même pas lues).
+            // Il ne « se termine » au run suivant QUE si la reprise A5 est active (flag
+            // `FEED_RESUME_CURSOR=1` : on démarre au-delà de `startCursor`) : SANS reprise, le run
+            // suivant repart de la TÊTE → la QUEUE ne serait jamais atteinte (famine — cf. A5 ci-dessus).
             //
             // DÉRIVE OFFSET FERMÉE (keyset) : la lecture s'étale sur toute la durée du push
             // (~270 s) ; l'ancienne pagination OFFSET (`.range()`) laissait une écriture concurrente
@@ -144,6 +204,11 @@ export async function POST(req: NextRequest) {
                         .is("archived_at", null)
                         .is("variant_of", null)
                         .order("id", { ascending: true }),
+                    // A5 : reprise keyset au-delà du dernier produit couvert (null = début).
+                    // Le filtre d'éligibilité s'applique APRÈS lecture → un produit devenu
+                    // éligible dans la tête déjà couverte sera repris au prochain cycle complet
+                    // (curseur remis à null), jamais perdu.
+                    { startAfter: startCursor },
                 )) {
                     yield filterEligibleProducts(page as any, allowMissingImage);
                 }
@@ -180,6 +245,12 @@ export async function POST(req: NextRequest) {
                             cron: "google-feed",
                         });
                         return false;
+                    } finally {
+                        // A5 — repère de progression posé APRÈS chaque action (succès OU échec).
+                        // Les produits sont traités en ordre d'`id` croissant (keyset) ; à
+                        // l'interruption, la boucle s'arrête AVANT l'item suivant → `lastProcessedId`
+                        // = dernier item réellement traité = borne de reprise exacte.
+                        lastProcessedId = product.id as string;
                     }
                 },
                 { now: Date.now, deadlineMs },
@@ -207,12 +278,20 @@ export async function POST(req: NextRequest) {
                 feedError = null;
             }
 
+            // A5 — reprise : interrompu → mémoriser le dernier produit traité (avancer la
+            // queue au prochain run) ; cycle complet (non interrompu) → curseur remis à
+            // NULL pour ré-affirmer le feed depuis la tête. Un fallback sur `startCursor`
+            // évite de PERDRE la progression si l'interruption survient avant tout push
+            // (deadline atteint dès la 1re page → lastProcessedId null → on garde le départ).
+            const resumeCursor = pushResult.interrupted ? (lastProcessedId ?? startCursor) : null;
+
             await writeMerchantStatus(conn.merchant_id, {
                 products_pushed: pushed,
                 last_feed_at: new Date().toISOString(),
                 last_feed_status: feedStatus,
                 last_feed_error: feedError,
             });
+            await persistResumeCursor(conn.merchant_id, resumeCursor);
 
             totalPushed += pushed;
 
@@ -227,11 +306,16 @@ export async function POST(req: NextRequest) {
             // Une lecture de page ULTÉRIEURE qui échoue (streamRows lève) peut arriver APRÈS que
             // des produits ont déjà été poussés à Google ce run (insert idempotent → re-complétés
             // au prochain run). On reporte le nombre réellement poussé, pas le stale du run passé.
+            // A5 — une lecture de page qui échoue (blip DB) APRÈS des push réussis ne doit
+            // pas faire perdre la progression : on mémorise le dernier produit traité (ou le
+            // curseur de départ si l'échec précède tout push) → le prochain run reprend après,
+            // jamais un re-push complet de la tête déjà couverte.
             await writeMerchantStatus(conn.merchant_id, {
                 products_pushed: pushedThisMerchant,
                 last_feed_status: "error",
                 last_feed_error: err instanceof Error ? err.message : String(err),
             });
+            await persistResumeCursor(conn.merchant_id, lastProcessedId ?? startCursor);
 
             // Le résumé de réponse reflète les produits RÉELLEMENT poussés avant l'échec
             // (chemin succès et catch mutuellement exclusifs par marchand → jamais compté 2×).

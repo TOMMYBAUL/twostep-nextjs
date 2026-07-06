@@ -350,6 +350,28 @@ describe("streamRows — pagination STREAMING KEYSET (mémoire bornée à une pa
         expect(calls).toHaveLength(2); // la 2e seulement à la 2e demande
     });
 
+    it("startAfter : DÉMARRE au-delà du curseur donné (reprise A5 — ne re-lit pas la tête)", async () => {
+        // Reprise à `startAfter: 1999` sur 2500 lignes → seules 2000..2499 sont émises ;
+        // la tête (0..1999) n'est jamais re-lue. La 1re requête porte déjà `.gt("id", 1999)`.
+        const { make, calls } = makeQueryFactory(2500, 1000);
+        const seen: number[] = [];
+        for await (const page of streamRows<Row>(make, { pageSize: 1000, startAfter: 1999 })) {
+            for (const r of page) seen.push(r.id);
+        }
+        expect(seen).toEqual(Array.from({ length: 500 }, (_, i) => 2000 + i)); // que la queue
+        expect(calls[0].after).toBe(1999); // 1re page déjà bornée par le curseur de reprise
+    });
+
+    it("startAfter null (défaut) : comportement historique inchangé (début du dataset)", async () => {
+        const { make, calls } = makeQueryFactory(1500, 1000);
+        const seen: number[] = [];
+        for await (const page of streamRows<Row>(make, { pageSize: 1000, startAfter: null })) {
+            for (const r of page) seen.push(r.id);
+        }
+        expect(seen).toEqual(Array.from({ length: 1500 }, (_, i) => i)); // tout, depuis 0
+        expect(calls[0].after).toBeNull(); // 1re page sans borne = début
+    });
+
     it("multiple EXACT de pageSize : page vide finale pour confirmer la fin", async () => {
         const { make, calls } = makeQueryFactory(2000, 1000);
         const pageSizes: number[] = [];

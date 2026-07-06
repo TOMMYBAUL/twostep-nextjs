@@ -38,11 +38,18 @@ export const DEFAULT_MAX_PAGES = 200;
  *  - `maxPages` : borne de sécurité anti-boucle (défaut `DEFAULT_MAX_PAGES` = 200).
  *    Dépassée → THROW (jamais un résultat partiel). Une lecture légitimement plus
  *    volumineuse (≥ maxPages × pageSize lignes) doit la relever EXPLICITEMENT.
+ *  - `startAfter` : curseur INITIAL (borne basse EXCLUSIVE) — la pagination démarre à
+ *    `WHERE column > startAfter` au lieu du tout début. Défaut `null` (= début du
+ *    catalogue = comportement historique). Sert à REPRENDRE un balayage keyset là où
+ *    un run précédent s'est arrêté (checkpoint/reprise A5 du push feed Google) sans
+ *    re-lire ni re-traiter la tête déjà couverte. La valeur DOIT être du même type
+ *    ordonné que `column` (id texte/uuid ou numérique).
  */
 export interface KeysetOptions {
     pageSize?: number;
     column?: string;
     maxPages?: number;
+    startAfter?: string | number | null;
 }
 
 /** Message d'erreur commun au dépassement de `maxPages` (fetchAllRows/streamRows). */
@@ -123,7 +130,7 @@ export async function fetchAllRows<T>(
     makeQuery: () => KeysetQuery<T>,
     options: KeysetOptions = {},
 ): Promise<{ data: T[] | null; error: PostgrestError | null }> {
-    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES } = options;
+    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES, startAfter = null } = options;
     if (pageSize < 1) {
         throw new Error(`fetchAllRows: pageSize doit être >= 1 (reçu ${pageSize})`);
     }
@@ -132,7 +139,8 @@ export async function fetchAllRows<T>(
     }
 
     const all: T[] = [];
-    let cursor: string | number | null = null;
+    // `startAfter` (défaut null) = reprise à `WHERE column > startAfter` ; null = début.
+    let cursor: string | number | null = startAfter;
     let pages = 0;
 
     for (;;) {
@@ -203,7 +211,7 @@ export async function* streamRows<T>(
     makeQuery: () => KeysetQuery<T>,
     options: KeysetOptions = {},
 ): AsyncGenerator<T[]> {
-    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES } = options;
+    const { pageSize = SUPABASE_MAX_ROWS, column = "id", maxPages = DEFAULT_MAX_PAGES, startAfter = null } = options;
     if (pageSize < 1) {
         throw new Error(`streamRows: pageSize doit être >= 1 (reçu ${pageSize})`);
     }
@@ -211,7 +219,8 @@ export async function* streamRows<T>(
         throw new Error(`streamRows: maxPages doit être >= 1 (reçu ${maxPages})`);
     }
 
-    let cursor: string | number | null = null;
+    // `startAfter` (défaut null) = reprise à `WHERE column > startAfter` ; null = début.
+    let cursor: string | number | null = startAfter;
     let pages = 0;
 
     for (;;) {

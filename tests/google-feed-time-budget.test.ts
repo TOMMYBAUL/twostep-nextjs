@@ -96,6 +96,12 @@ function makeClient() {
             if (table === "google_merchant_connections") {
                 if (st.op === "update") {
                     h.updates.push({ id: st.eqId ?? "?", payload: st.payload ?? {} });
+                    // A5 : persiste le curseur dans h.connections → un callCron ULTÉRIEUR reprend
+                    // là où le précédent s'est arrêté (preuve que la queue AVANCE d'un run à l'autre).
+                    const c = h.connections.find((x) => x.merchant_id === st.eqId);
+                    if (c && st.payload && "last_feed_cursor" in st.payload) {
+                        c.last_feed_cursor = st.payload.last_feed_cursor;
+                    }
                     return { data: null, error: null };
                 }
                 return { data: h.connections, error: null };
@@ -124,6 +130,12 @@ function makeClient() {
             st.limitN = n;
             return b;
         };
+        // A5 : lecture du curseur de reprise (`.select("last_feed_cursor").eq(...).maybeSingle()`)
+        // → renvoie la connexion unique du marchand (avec son last_feed_cursor), ou null.
+        b.maybeSingle = () => {
+            const c = h.connections.find((x) => x.merchant_id === st.eqId) ?? null;
+            return Promise.resolve({ data: c, error: null });
+        };
         b.then = (ok: (v: unknown) => unknown, err: (e: unknown) => unknown) =>
             Promise.resolve(resolve()).then(ok, err);
         return b;
@@ -143,6 +155,9 @@ beforeEach(() => {
     virtualNow = 1_000_000;
     captureErrorMock.mockClear();
     process.env.CRON_SECRET = "secret";
+    // A5 : flag de reprise OFF par défaut → les tests existants gardent le comportement actuel
+    // (curseur jamais lu/écrit). Les tests A5 le posent explicitement.
+    delete process.env.FEED_RESUME_CURSOR;
     // Horloge contrôlée : ne « passe » que via h.msPerPush (dans googleMerchantFetch).
     vi.spyOn(Date, "now").mockImplementation(() => virtualNow);
 });
@@ -313,5 +328,136 @@ describe("google-feed — budget temps (anti-troncature silencieuse Vercel)", ()
 
         // La lecture incomplète est rendue VISIBLE (Sentry), jamais un feed silencieusement périmé.
         expect(captureErrorMock).toHaveBeenCalled();
+    });
+});
+
+/**
+ * A5 — CHECKPOINT / REPRISE (flag `FEED_RESUME_CURSOR=1`). SANS reprise, un catalogue dont
+ * le push complet dépasse le budget temps redémarre à `id=0` à chaque run → la QUEUE n'est
+ * JAMAIS atteinte = famine silencieuse (perte n°1 du north-star). Avec reprise : le run
+ * suivant démarre AU-DELÀ du dernier produit poussé → la queue avance ; un cycle bouclé remet
+ * le curseur à NULL (ré-affirmation depuis la tête). Le flag OFF ne référence JAMAIS la colonne
+ * `last_feed_cursor` (sûr avant la migration 111).
+ */
+describe("google-feed — reprise A5 (anti-famine de la queue, checkpoint curseur)", () => {
+    it("flag OFF → colonne last_feed_cursor JAMAIS écrite (sûr avant migration 111)", async () => {
+        // Régression : sans le flag, le statut écrit ne doit contenir AUCUNE clé last_feed_cursor
+        // (la migration 111 n'est pas appliquée en prod → référencer la colonne casserait l'UPDATE).
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111" }];
+        h.catalogSize = 3;
+        h.msPerPush = 0;
+
+        await callCron();
+
+        // Le curseur est écrit dans un UPDATE SÉPARÉ (isolé du statut) — flag OFF → AUCUN update
+        // ne doit référencer la colonne (sûr avant la migration 111 : la référencer casserait l'UPDATE).
+        expect(h.updates.some((u) => "last_feed_cursor" in u.payload)).toBe(false);
+        // Le write de statut, lui, a bien eu lieu (observabilité intacte).
+        expect(h.updates.some((u) => u.id === "m-1" && u.payload.last_feed_status === "success")).toBe(true);
+    });
+
+    it("flag ON, cycle complet → curseur remis à NULL (ré-affirmation depuis la tête)", async () => {
+        process.env.FEED_RESUME_CURSOR = "1";
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111", last_feed_cursor: null }];
+        h.catalogSize = 5;
+        h.msPerPush = 0; // pas d'interruption → tout poussé → cycle bouclé
+
+        const json = await callCron();
+
+        expect(h.googleFetchCount).toBe(5);
+        expect(json.time_budget_exhausted).toBe(false);
+        // Statut et curseur = 2 UPDATE distincts (isolation observabilité / curseur).
+        const statusUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_status" in u.payload)!;
+        expect(statusUpd.payload.last_feed_status).toBe("success");
+        const cursorUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_cursor" in u.payload)!;
+        // Cycle complet → curseur remis à NULL (le prochain run ré-affirme depuis la tête).
+        expect(cursorUpd.payload.last_feed_cursor).toBeNull();
+    });
+
+    it("flag ON, curseur de départ non-null → REPREND au-delà (ne re-pousse pas la tête)", async () => {
+        process.env.FEED_RESUME_CURSOR = "1";
+        // Départ après p00002 → seuls p00003, p00004 restent à pousser (la tête n'est PAS re-lue).
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111", last_feed_cursor: "p00002" }];
+        h.catalogSize = 5;
+        h.msPerPush = 0;
+
+        const json = await callCron();
+
+        // 2 push seulement (p00003, p00004) — la tête déjà couverte n'est pas re-poussée.
+        expect(h.googleFetchCount).toBe(2);
+        expect(json.products_pushed).toBe(2);
+        // La 1re page a démarré au keyset "p00002" (reprise, pas depuis le début).
+        expect(h.pageCursors[0]).toBe("p00002");
+        const cursorUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_cursor" in u.payload)!;
+        // Reste du catalogue poussé sans interruption → cycle bouclé → curseur remis à NULL.
+        expect(cursorUpd.payload.last_feed_cursor).toBeNull();
+    });
+
+    it("flag ON, interruption → curseur = dernier produit traité (persisté pour le prochain run)", async () => {
+        process.env.FEED_RESUME_CURSOR = "1";
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111", last_feed_cursor: null }];
+        h.catalogSize = 5;
+        h.msPerPush = 100_000; // interrompt après 3 push (comme la suite budget)
+
+        const json = await callCron();
+
+        expect(h.googleFetchCount).toBe(3);
+        expect(json.time_budget_exhausted).toBe(true);
+        const statusUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_status" in u.payload)!;
+        expect(statusUpd.payload.last_feed_status).toBe("partial");
+        const cursorUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_cursor" in u.payload)!;
+        // 3 poussés = p00000..p00002 → curseur = p00002 (dernier traité) pour reprendre après.
+        expect(cursorUpd.payload.last_feed_cursor).toBe("p00002");
+    });
+
+    it("flag ON, blip de lecture mi-stream → curseur = poussés AVANT l'échec (progression préservée)", async () => {
+        // Une erreur DB sur la 2e page (après p00999) LÈVE (streamRows fail-loud) APRÈS que la
+        // page 0 (1000 produits) a été poussée. Statut "error", MAIS le curseur mémorise p00999 →
+        // le prochain run reprend après, sans re-pousser les 1000 déjà publiés (blip ≠ perte).
+        process.env.FEED_RESUME_CURSOR = "1";
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111", last_feed_cursor: null }];
+        h.catalogSize = 2500;
+        h.msPerPush = 0;
+        h.errorAtCursor = "p00999";
+
+        await callCron();
+
+        expect(h.googleFetchCount).toBe(1000);
+        const statusUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_status" in u.payload)!;
+        expect(statusUpd.payload.last_feed_status).toBe("error");
+        const cursorUpd = h.updates.find((u) => u.id === "m-1" && "last_feed_cursor" in u.payload)!;
+        expect(cursorUpd.payload.last_feed_cursor).toBe("p00999"); // reprise après les 1000 poussés
+    });
+
+    it("flag ON, DEUX runs → la QUEUE est atteinte (famine cassée : tout le catalogue publié)", async () => {
+        // LE test north-star : un catalogue trop gros pour un run est ENTIÈREMENT publié sur
+        // plusieurs runs grâce au curseur — la tête n'est plus re-poussée en boucle, la queue avance.
+        process.env.FEED_RESUME_CURSOR = "1";
+        h.connections = [{ merchant_id: "m-1", store_code: "twostep-aaaa1111", last_feed_cursor: null }];
+        h.catalogSize = 5;
+        h.msPerPush = 100_000;
+
+        // Run 1 : pousse p00000..p00002, interrompu, persiste le curseur dans h.connections.
+        await callCron();
+        expect(h.googleFetchCount).toBe(3);
+        expect(h.connections[0].last_feed_cursor).toBe("p00002");
+
+        // Reset des compteurs/horloge, mais on GARDE h.connections (curseur persisté = état DB).
+        h.googleFetchCount = 0;
+        h.updates = [];
+        h.pageCursors = [];
+        virtualNow = 1_000_000;
+
+        // Run 2 : REPREND à p00002 → pousse p00003, p00004 (la QUEUE), termine le cycle.
+        await callCron();
+        expect(h.pageCursors[0]).toBe("p00002"); // a bien repris, pas recommencé à zéro
+        expect(h.googleFetchCount).toBe(2); // seulement la queue, jamais re-pousser la tête
+        // Cycle bouclé → curseur remis à NULL (ré-affirmation au prochain cycle).
+        expect(h.connections[0].last_feed_cursor).toBeNull();
+
+        // Invariant famine cassée : run 1 a poussé la tête (p00000..p00002 = 3), run 2 la queue
+        // (p00003, p00004 = 2) → 5 produits distincts = catalogue entier atteint sur 2 runs
+        // (SANS reprise, run 2 aurait re-poussé p00000..p00002 et jamais atteint la queue).
+        expect(3 + 2).toBe(h.catalogSize);
     });
 });
