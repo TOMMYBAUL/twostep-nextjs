@@ -1,16 +1,52 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-04 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-06 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 196
+- Total leads : 206
 - NOUVEAU : 61
 - CONTACTE : 1
-- BROUILLON : 108
+- BROUILLON : 118
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-06 (L'Eclaireur) — Capitole zone étendue (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
+
+**Note de session :** Capitole top-prospects-centre.json épuisé (75/75 — depuis 22/06). Poursuite de l'exploration toulouse-merchants-full.json zone Capitole (rues Pomme/Metz/Alsace/Tourneurs/Capitole/Bayard/Taur/Astorg/Arts) — suite de la session 30/06 (10 investigués sur 31 candidats identifiés). Batch 2 : 47 candidats restants filtrés → **10 emails confirmés via sites officiels, pages de contact et annuaires.** Segments : mode homme (1), optique créateur (2), bijouterie/accessoires (4), concept store (1), chaussures/mode (1), arts de la table (1). Notion MCP non activé (23e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| L'OBSERVATOIRE | Capitole/Arts | Mode homme multi-marques | Jonnhy Dunal | lobservatoire31@sfr.fr ✅ | 491278156 | 9/10 | BROUILLON | Email confirmé via lobservatoire.net/nous-contacter. 4 rue des Arts. Ralph Lauren, Stone Island, Hogan, Fay, Pal Zileri — sélection haut de gamme homme. Site actif. |
+| DO MY SHOES | Capitole/Arts | Chaussures/Mode confort | Dominique Grosjean | domyshoes@gmail.com ✅ | 531697514 | 8/10 | BROUILLON | Email confirmé via domyshoes.com/contact. 7 rue des Arts. Chaussures et vêtements confort tendance femme. Mar-Sam 10h45-19h30. |
+| L'OPTICIEN | Capitole/Tourneurs | Optique créateur | Maud Heran | lopticien.toulouse@gmail.com ✅ | 789195575 | 8/10 | BROUILLON | Email confirmé via lopticien-toulouse.fr. 16 rue des Tourneurs. Opticien créateur depuis 2012, quartier Carmes. Revendeur Izipizi. |
+| MAISON DIDIER (CLUK OPTIC) | Capitole/Metz | Optique historique | Jean Fabre | maisondidier31@gmail.com ✅ | 478475791 | 8/10 | BROUILLON | Email confirmé via didieropticien.com. 29 rue de Metz. Maison fondée en 1937 — opticien indépendant historique Toulouse. |
+| SILLAGE ETHNIQUE | Capitole/Taur | Bijouterie ethnique | Charles-Henri Andre de la Porte | sillage.toulouse@free.fr ✅ | 521674895 | 7/10 | BROUILLON | Email confirmé via allbiz.fr + site artisanat-ethnique-sillage.com. 36 rue du Taur. Bijoux et accessoires ethniques (Inde, Amérique du Sud…). Lun-Ven 10h-20h30, Sam 10h-21h. |
+| LES PIPELETTES | Capitole/Tourneurs | Bijouterie fantaisie | Isabelle Grimaudo | lespipelettestoulouse31@gmail.com ✅ | 800846347 | 7/10 | BROUILLON | Email confirmé via lespipelettestoulouse.com. 43 rue des Tourneurs. Bijoux acier inoxydable. Yelp mis à jour jan 2026. |
+| L'AMAZONE | Capitole/Tourneurs | Bijoux de caractère | Marion Gaudin | contact.lamazonebijoux@gmail.com ✅ | 981882020 | 7/10 | BROUILLON | Email confirmé via thegoldenhour.fr + headtopics. 38 rue des Tourneurs. 5000 pièces, 7 marques, ouverte jan 2024. IG @lamazone.bijoux 2 173 abonnés. |
+| CARPE DIEM | Capitole/Astorg | Concept store déco/mode | Valérie Nguyen (goryl) | valerie.nguyen6@orange.fr ✅ | 521088344 | 7/10 | BROUILLON | Email confirmé via cylex-locale.fr. 18 rue d'Astorg. Marques scandinaves, créateurs français, déco et mode. Site carpediemdeco.com. ⚠️ email personnel orange.fr. |
+| L'ESTAMPILLE | Capitole/Astorg | Porcelaine / Arts de la table | Valery Alber | estampille.sarl@free.fr ✅ | 410709307 | 6/10 | BROUILLON | Email confirmé via estampille-limoges.fr/contact. 4 rue d'Astorg. Porcelaine Limoges haut de gamme, grandes maisons + chefs étoilés. Yelp mis à jour avr 2026. ⚠️ arts de la table — pertinence Two-Step à confirmer (EAN probable sur pièces de marque). |
+| KOUMAL | Capitole/Pomme | Bijouterie fantaisie/accessoires | Julien Wiart | hellokoumal@gmail.com ✅ | 843977919 | 6/10 | BROUILLON | Email confirmé via koumalbijoux.com/nous-contacter. 30 rue de la Pomme. Bijoux fantaisie + accessoires mode. ⚠️ site multi-boutiques — vérifier si <5 établissements (critère indépendant). |
+
+**Écartées session 06/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| MARTHA FILLIPSON | 381431667 | Siège Pau — redressement judiciaire juin 2018. Boutique Toulouse fermée. ÉCARTÉE DÉFINITIF. |
+| JOLAN 31 | 817786874 | Liquidation judiciaire juillet 2021 — clôture pour insuffisance d'actif. ÉCARTÉE DÉFINITIF. |
+| CREA CONCEPT EUROPE | 451827141 | Liquidation judiciaire 2023. ÉCARTÉE DÉFINITIF. |
+| AA2L OPTIC | 943337733 | 65 rue Alsace-Lorraine = Alain Afflelou (franchise nationale). ÉCARTÉE DÉFINITIF. |
+| M.S.OPTIQUE | 424291268 | Lié réseau Mutuelles du Soleil (mutuellesdusoleil.fr) — franchise/réseau. ÉCARTÉE. |
+| CROSSOVER | 898069190 | Manga/geek/épicerie japonaise — hors cible Two-Step. ÉCARTÉE. |
+| TILL (TILLAMY) | 401862255 | Bellamy chaussures enfant — fondée 1950, chaîne nationale. ÉCARTÉE DÉFINITIF. |
+
+**⚠️ Notion MCP non activé (23e session consécutive) — résultats consignés dans le tracker uniquement.**
+
+*Note session 06/07 (L'Eclaireur) : Suite batch 2 zone Capitole toulouse-merchants-full.json. 10 emails confirmés sur 10 investigués (100% taux de réussite vs ~32% habituellement — sélection qualitative préalable par segment). L'OBSERVATOIRE = score 9/10, priorité envoi (Ralph Lauren/Stone Island/Hogan/Fay en stock = cas d'usage Two-Step idéal). DO MY SHOES + L'OPTICIEN + MAISON DIDIER = 8/10. CARPE DIEM = email personnel orange.fr (Valérie Nguyen confirme sur cylex). KOUMAL = à vérifier nb boutiques avant envoi. L'ESTAMPILLE = pertinence borderline (porcelaine de marque avec EAN probable). Zone Capitole non épuisée — candidats restants batch 3 à explorer session suivante. Titre Notion prévu : "Leads Capitole 2026-07-06".*
+
+---
 
 ### Samedi — 2026-07-04 (L'Eclaireur) — Zone étendue Victor-Hugo suite 27/06 — Gambetta/Bouquières/Rémusat — 5 emails confirmés + 1 probable
 
