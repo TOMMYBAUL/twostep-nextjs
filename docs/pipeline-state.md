@@ -8,11 +8,11 @@ step_total: 9
 step_name: "Audit d'optimisation 9 maillons + re-challenge complétude + carte NearSt FAIT → exécution P0/clusters"
 status: in_progress
 blocked_on: "thomas:arbitrage M10 plateforme/transactionnel (hors-wedge?) + GO fixes P0 pilote-bloquants + jugement visuel UI + M1 pilote+caisse"
-next_action: "Cluster A publication Google avancé : A1 FAIT (6641034) ; A2/A6/A7 FAITS (run 2026-07-05, merchant.ts, layer HTTP durci retry+timeout+révoqué-vs-blip, revue SF-hunter 1 HIGH anti-troncature + 3 corrigés). PROCHAIN [R] in-scope : A3 (pool concurrence push) / A4 (diff incrémental) / A5 (checkpoint reprise) ou P0-10+C3 (convergence multi-source morte + double cascade coût). GATED/EXTERNE : migrations 108/109 non appliquées (GO Thomas) ; preuve charge 10k→50k + e2e Google live (env live) ; arbitrage M10 plateforme/transactionnel."
+next_action: "P0-6 FAIT (run 2026-07-06) : feed_events fantômes + push « de retour en stock » mensongères fermés (RPC `written`, migration 110 préparée NON appliquée, SUBSUME 109, +RE-REVOKE ACL). P0-1/P0-7 vérifiés DÉJÀ FAITS (6641034). PROCHAIN [R] in-scope : A3 (pool concurrence push) / A4 (diff incrémental) / A5 (checkpoint) ou C3 (cascade unifiée coût). GATED/EXTERNE : migrations 108/109/110 non appliquées (GO Thomas — 110 escaladée, ferme aussi un trou ACL CRITIQUE) ; P0-4 M5 conso = VISUEL (Thomas) ; preuve charge 10k→50k + e2e Google live (env live) ; arbitrage M10."
 branch: feat/pipeline-v1-handoff-2026-06-12
-gate: green               # green|red|unknown  (tsc 0 + 1232/1232 tests verts, vérifiés par l'orchestrateur au run 2026-07-05)
-last_run: 2026-07-05
-last_commit: 81b8d7e      # feat(google/publication): A2/A6/A7 — durcir le layer HTTP Google (run 2026-07-05)
+gate: green               # green|red|unknown  (tsc 0 + 1269/1269 tests verts, run 2026-07-06)
+last_run: 2026-07-06
+last_commit: PENDING      # fix(P0-6): feed_events fantômes — RPC written flag + migration 110 (NON appliquée) (run 2026-07-06)
 ---
 
 # État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)

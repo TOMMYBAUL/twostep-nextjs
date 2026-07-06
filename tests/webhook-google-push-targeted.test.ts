@@ -24,7 +24,7 @@ import { NextRequest } from "next/server";
 const captureMock = vi.fn();
 vi.mock("@/lib/error", () => ({ captureError: (...a: unknown[]) => captureMock(...a) }));
 
-const updateStockAtomic = vi.fn(async () => 5);
+const updateStockAtomic = vi.fn(async () => ({ previous: 5, written: true }));
 vi.mock("@/lib/pos/update-stock", () => ({ updateStockAtomic: (...a: unknown[]) => updateStockAtomic(...a) }));
 
 // Résolution par pos_item_id → produit (configurable par test)
@@ -133,7 +133,7 @@ function makeReq(p: ProviderCase): NextRequest {
 
 beforeEach(() => {
     vi.clearAllMocks();
-    updateStockAtomic.mockResolvedValue(5);
+    updateStockAtomic.mockResolvedValue({ previous: 5, written: true });
     shopifyVerify.mockReturnValue(true);
     lsVerify.mockReturnValue(true);
     squareVerify.mockReturnValue(true);

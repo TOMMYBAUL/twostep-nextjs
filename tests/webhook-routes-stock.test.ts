@@ -25,7 +25,10 @@ import { NextRequest } from "next/server";
 const captureMock = vi.fn();
 vi.mock("@/lib/error", () => ({ captureError: (...a: unknown[]) => captureMock(...a) }));
 
-const updateStockAtomic = vi.fn(async () => 5);
+// Contrat post-110 : le wrapper renvoie {previous, written}. `written=true` par défaut = le
+// stock a changé (comportement nominal). Les cas `written:false` (no-op / rejet temporel) sont
+// couverts par le bloc P0-6 ci-dessous.
+const updateStockAtomic = vi.fn(async () => ({ previous: 5, written: true }));
 vi.mock("@/lib/pos/update-stock", () => ({ updateStockAtomic: (...a: unknown[]) => updateStockAtomic(...a) }));
 
 const resolveWebhookProduct = vi.fn(async () => ({ id: "prod-1", merchant_id: "merch-1" }));
@@ -128,7 +131,7 @@ function makeReq(p: ProviderCase, opts: { sig?: string | null; id?: string | nul
 
 beforeEach(() => {
     vi.clearAllMocks();
-    updateStockAtomic.mockResolvedValue(5);
+    updateStockAtomic.mockResolvedValue({ previous: 5, written: true });
     resolveWebhookProduct.mockResolvedValue({ id: "prod-1", merchant_id: "merch-1" });
     shopifyVerify.mockReturnValue(true);
     lsVerify.mockReturnValue(true);
@@ -243,5 +246,17 @@ describe.each(PROVIDERS)("webhook route stock contract — $name", (p) => {
         const res = await p.POST(makeReq(p, { id: null, body: "not json" }));
         expect(res.status).toBe(400);
         expect(updateStockAtomic).not.toHaveBeenCalled();
+    });
+
+    // ─── P0-6 : written=false (delta no-op, ex. stock déjà à 0) → AUCUN feed_event fantôme ──
+    it("P0-6 — écriture no-op (written:false) → stock touché mais AUCUN feed_event/notify fantôme", async () => {
+        updateStockAtomic.mockResolvedValue({ previous: 0, written: false });
+        // Delta positif sur un stock resté à 0 (clampé) = no-op : pas de « restock » mensonger.
+        p.parse.mockReturnValue([{ pos_item_id: "v-1", quantity: 4, updated_at: EVENT_TS }]);
+        const res = await p.POST(makeReq(p));
+        expect(res.status).toBe(200);
+        expect(updateStockAtomic).toHaveBeenCalledTimes(1); // le stock est bien passé par la RPC
+        expect(feedInserts).toHaveLength(0); // pas d'événement fantôme
+        expect(notifyFav).not.toHaveBeenCalled(); // pas de notif « de retour en stock » mensongère
     });
 });

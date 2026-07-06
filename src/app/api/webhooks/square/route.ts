@@ -47,7 +47,10 @@ export async function POST(request: Request) {
             // On transmet l'horodatage RÉEL de l'événement (calculated_at Square) comme
             // source_ts → active la garde anti-régression de la 104 : un webhook périmé
             // (livré dans le désordre / retry tardif) n'écrase plus une vérité plus fraîche.
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
+            // `written` = le stock a RÉELLEMENT changé (P0-6). Un absolu périmé rejeté par la garde
+            // temporelle 104 (webhook out-of-order : DB fraîche épuisée, événement périmé positif)
+            // renverrait previousQty=0 → sans ce garde, on émettrait un « restock »/notif FANTÔME.
+            const { previous: previousQty, written } = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             // Recalculate available_sizes on the group principal.
             // Le stock absolu est déjà committé ; recalc = métadonnée d'affichage DÉRIVÉE → un
@@ -60,8 +63,9 @@ export async function POST(request: Request) {
                 captureError(recalcErr, { route: "webhooks/square", phase: "recalc-sizes", productId: product.id });
             }
 
-            // Emit restock feed_event only when stock goes from 0 to positive
-            if (previousQty === 0 && update.quantity > 0) {
+            // Emit restock feed_event only when stock goes from 0 to positive AND the write happened
+            // (`written` : jamais sur un absolu périmé rejeté = restock fantôme, P0-6).
+            if (written && previousQty === 0 && update.quantity > 0) {
                 const { error: feedErr } = await supabase.from("feed_events").insert({
                     merchant_id: product.merchant_id,
                     product_id: product.id,
@@ -70,8 +74,8 @@ export async function POST(request: Request) {
                 if (feedErr) captureError(feedErr, { route: "webhooks/square", phase: "feed-event", productId: product.id });
             }
 
-            // Push notification only when back in stock (was 0, now positive)
-            if (previousQty === 0 && update.quantity > 0) {
+            // Push notification only when back in stock (was 0, now positive) AND the write happened
+            if (written && previousQty === 0 && update.quantity > 0) {
                 const { data: productInfo } = await supabase
                     .from("products")
                     .select("name")

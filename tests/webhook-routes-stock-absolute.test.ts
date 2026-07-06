@@ -21,7 +21,8 @@ import { NextRequest } from "next/server";
 const captureMock = vi.fn();
 vi.mock("@/lib/error", () => ({ captureError: (...a: unknown[]) => captureMock(...a) }));
 
-const updateStockAtomic = vi.fn(async () => 5);
+// Contrat post-110 : {previous, written}. `written=true` = le stock a changé (nominal).
+const updateStockAtomic = vi.fn(async () => ({ previous: 5, written: true }));
 vi.mock("@/lib/pos/update-stock", () => ({ updateStockAtomic: (...a: unknown[]) => updateStockAtomic(...a) }));
 
 const resolveWebhookProduct = vi.fn(async () => ({ id: "prod-1", merchant_id: "merch-1" }));
@@ -218,7 +219,7 @@ describe.each(PROVIDERS)("webhook route stock contract (ABSOLU) — $name", (p) 
 // ─── Sémantiques de feed_event propres à chaque provider (divergentes) ────────
 describe("feed_event — sémantique Square (restock UNIQUEMENT sur 0→positif)", () => {
     it("retour en stock (previousQty 0 → quantity 8) → feed_event 'restock' + notify", async () => {
-        updateStockAtomic.mockResolvedValue(0); // était à 0
+        updateStockAtomic.mockResolvedValue({ previous: 0, written: true }); // était à 0
         squareParse.mockReturnValue([{ pos_item_id: "v-1", quantity: 8, updated_at: EVENT_TS }]);
         const res = await squarePOST(makeReq(PROVIDERS[0]));
         expect(res.status).toBe(200);
@@ -228,7 +229,7 @@ describe("feed_event — sémantique Square (restock UNIQUEMENT sur 0→positif)
     });
 
     it("vente (previousQty 5 → quantity 3) → AUCUN feed_event (Square n'émet pas de 'sale')", async () => {
-        updateStockAtomic.mockResolvedValue(5);
+        updateStockAtomic.mockResolvedValue({ previous: 5, written: true });
         squareParse.mockReturnValue([{ pos_item_id: "v-1", quantity: 3, updated_at: EVENT_TS }]);
         const res = await squarePOST(makeReq(PROVIDERS[0]));
         expect(res.status).toBe(200);
@@ -239,7 +240,7 @@ describe("feed_event — sémantique Square (restock UNIQUEMENT sur 0→positif)
 
 describe("feed_event — sémantique Zettle (toujours émis : restock si qty monte, sinon sale)", () => {
     it("vente (previousQty 5 → quantity 3) → feed_event 'sale', pas de notify", async () => {
-        updateStockAtomic.mockResolvedValue(5);
+        updateStockAtomic.mockResolvedValue({ previous: 5, written: true });
         zettleParse.mockReturnValue([{ pos_item_id: "v-1", quantity: 3, updated_at: EVENT_TS }]);
         const res = await zettlePOST(makeReq(PROVIDERS[1]));
         expect(res.status).toBe(200);
@@ -249,12 +250,33 @@ describe("feed_event — sémantique Zettle (toujours émis : restock si qty mon
     });
 
     it("retour en stock (previousQty 0 → quantity 8) → feed_event 'restock' + notify", async () => {
-        updateStockAtomic.mockResolvedValue(0);
+        updateStockAtomic.mockResolvedValue({ previous: 0, written: true });
         zettleParse.mockReturnValue([{ pos_item_id: "v-1", quantity: 8, updated_at: EVENT_TS }]);
         const res = await zettlePOST(makeReq(PROVIDERS[1]));
         expect(res.status).toBe(200);
         expect(feedInserts).toHaveLength(1);
         expect(feedInserts[0]).toMatchObject({ event_type: "restock" });
         expect(notifyFav).toHaveBeenCalledTimes(1);
+    });
+});
+
+// ─── P0-6 : absolu PÉRIMÉ rejeté par la garde temporelle 104 (written=false) ────
+// LE cas central : DB fraîche = épuisé (previous 0), mais un webhook LIVRÉ EN RETARD annonce
+// un stock positif (quantity 8) avec un source_ts ANCIEN → la RPC rejette l'écriture (le stock
+// reste 0) et renvoie written=false. Sans le garde, la route voyait previous===0 && quantity>0
+// → émettait un « restock » MENSONGER + notifiait « de retour en stock » les favoris sur un
+// produit RÉELLEMENT épuisé. On prouve les DEUX jumeaux absolus.
+describe.each([
+    { name: "square", POST: squarePOST, parse: squareParse, provider: PROVIDERS[0] },
+    { name: "zettle", POST: zettlePOST, parse: zettleParse, provider: PROVIDERS[1] },
+])("P0-6 — feed_event/notif fantôme sur absolu périmé rejeté ($name)", (c) => {
+    it("stale-reject (written:false, previous 0, événement périmé qty 8) → AUCUN restock, AUCUNE notif", async () => {
+        updateStockAtomic.mockResolvedValue({ previous: 0, written: false });
+        c.parse.mockReturnValue([{ pos_item_id: "v-1", quantity: 8, updated_at: EVENT_TS }]);
+        const res = await c.POST(makeReq(c.provider));
+        expect(res.status).toBe(200);
+        expect(updateStockAtomic).toHaveBeenCalledTimes(1); // la RPC a bien tranché
+        expect(feedInserts).toHaveLength(0); // pas de « restock » mensonger
+        expect(notifyFav).not.toHaveBeenCalled(); // pas de spam « de retour en stock »
     });
 });

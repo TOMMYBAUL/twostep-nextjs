@@ -43,7 +43,11 @@ export async function POST(request: Request) {
             // Atomic stock update — eliminates TOCTOU race condition.
             // source_ts = horodatage RÉEL de l'événement (timestamp Zettle) → active la
             // garde anti-régression de la 104 sur ce flux absolu (anti-dérive out-of-order).
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
+            // `written` = le stock a RÉELLEMENT changé (ni rejet temporel de la garde 104 sur un
+            // absolu périmé, ni no-op). On ne dérive feed_event/notification QUE si `written` :
+            // sinon un webhook livré DANS LE DÉSORDRE (DB fraîche épuisée, événement périmé positif)
+            // émettrait un « restock »/notif FANTÔME (P0-6). Le stock lui-même est déjà géré par la RPC.
+            const { previous: previousQty, written } = await updateStockAtomic(supabase, product.id, update.quantity, "absolute", "webhook", update.updated_at);
 
             // Stock absolu déjà committé ; recalc = métadonnée d'affichage DÉRIVÉE → un throw
             // réseau ne doit PAS faire 500 (échec d'affichage ≠ échec du canal stock + retry POS
@@ -54,15 +58,17 @@ export async function POST(request: Request) {
                 captureError(recalcErr, { route: "webhooks/zettle", phase: "recalc-sizes", productId: product.id });
             }
 
-            const { error: feedErr } = await supabase.from("feed_events").insert({
-                merchant_id: product.merchant_id,
-                product_id: product.id,
-                event_type: update.quantity > previousQty ? "restock" : "sale",
-            });
-            if (feedErr) captureError(feedErr, { route: "webhooks/zettle", phase: "feed-event", productId: product.id });
+            if (written) {
+                const { error: feedErr } = await supabase.from("feed_events").insert({
+                    merchant_id: product.merchant_id,
+                    product_id: product.id,
+                    event_type: update.quantity > previousQty ? "restock" : "sale",
+                });
+                if (feedErr) captureError(feedErr, { route: "webhooks/zettle", phase: "feed-event", productId: product.id });
+            }
 
             // Notify favorites when product comes back in stock
-            if (update.quantity > 0 && previousQty === 0) {
+            if (written && update.quantity > 0 && previousQty === 0) {
                 const { data: productInfo } = await supabase
                     .from("products")
                     .select("name")

@@ -7,6 +7,23 @@ Ce fichier est la mémoire long-terme de Claude Code sur ce projet.
 Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
 
 ## Supabase
+- ❌ **`DROP FUNCTION` + `CREATE FUNCTION` réinitialise l'ACL au défaut PUBLIC — un REVOKE antérieur ne « suit »
+  PAS.** La 092 avait `REVOKE EXECUTE ... FROM anon, authenticated` sur `update_stock_atomic(uuid,int,text)` ;
+  la 104 l'a recréée en **signature 5-args** (objet DISTINCT) → REVOKE jamais ré-appliqué → RPC admin d'écriture
+  stock (SECURITY DEFINER) potentiellement appelable par anon/authenticated depuis le 17/06. **Règle : toute
+  migration qui DROP+CREATE (ou change la signature d')une fonction admin doit RE-REVOKE EXECUTE FROM anon,
+  authenticated dans la même transaction — et grep les REVOKE historiques par NOM pour vérifier qu'ils couvrent
+  la signature COURANTE.** Fermé par la 110. Trouvé par database-reviewer + silent-failure-hunter. (2026-07-06)
+- ⚠️ **DDL `DROP FUNCTION` sur une fonction chaude = risque de pile-up de la file de verrous** : le DROP se met
+  en file derrière tout appel en cours, puis TOUT nouvel appel se met derrière le DROP jusqu'au COMMIT (FIFO) ;
+  un appelant bloqué (FOR UPDATE ligne chaude) fait exploser la file (classe incident 097). **Règle : `SET LOCAL
+  lock_timeout = '3s'` en tête de migration + apply en heure creuse.** (2026-07-06)
+- ✅ **P0-6 RÉSOLU (2026-07-06)** : « un effet de bord dérivé d'un write conditionnel (garde 104) doit savoir
+  si le write a VRAIMENT eu lieu » (noté Rang 2 gated le 23/06). `update_stock_atomic` renvoie désormais
+  `(previous, written)` ; les 4 webhooks + /api/stock gatent feed_event + notif sur `written` → plus de `restock`
+  fantôme ni de push « de retour en stock » sur un absolu périmé rejeté (produit réellement épuisé). Wrapper
+  dual-shape → code sûr AVANT la migration 110 (written=true par défaut = comportement actuel). Migration 110
+  (subsume 109) préparée NON appliquée, escaladée. (voir migration ACL ci-dessus)
 - ❌ **Une colonne posée par un backfill one-shot (057 `inbound_email_slug=slug`) SANS trigger/défaut = NULL pour
   toute ligne future** → email-in mort pour tout marchand créé après (P0-2 : `inbound-address` → `{address:null}`,
   routage inbound impossible). **Règle : toute migration qui backfill une colonne dérivée doit AUSSI couvrir les

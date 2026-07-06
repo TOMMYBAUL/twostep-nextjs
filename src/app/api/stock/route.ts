@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { updateStockAtomic } from "@/lib/pos/update-stock";
 import { rateLimit } from "@/lib/rate-limit";
+import { captureError } from "@/lib/error";
 
 export async function PATCH(request: NextRequest) {
     try {
@@ -53,11 +54,12 @@ export async function PATCH(request: NextRequest) {
 
         if (delta !== undefined) {
             // Atomic delta update — no TOCTOU race condition
-            const previousQty = await updateStockAtomic(admin, product_id, delta, "delta", "manual");
+            const { previous: previousQty, written } = await updateStockAtomic(admin, product_id, delta, "delta", "manual");
             const newQty = Math.max(0, previousQty + delta);
 
-            // Restock event: produit remis en stock (0 → N)
-            if (previousQty === 0 && newQty > 0) {
+            // Restock event: produit remis en stock (0 → N), seulement si le stock a changé
+            // (`written` : pas de restock fantôme sur un delta no-op, P0-6).
+            if (written && previousQty === 0 && newQty > 0) {
                 await admin.from("feed_events").insert({
                     merchant_id: (product as any).merchant_id,
                     product_id,
@@ -70,11 +72,12 @@ export async function PATCH(request: NextRequest) {
 
         if (quantity !== undefined) {
             // Absolute update
-            const previousQty = await updateStockAtomic(admin, product_id, quantity as number, "absolute", "manual");
+            const { previous: previousQty, written } = await updateStockAtomic(admin, product_id, quantity as number, "absolute", "manual");
             const newQty = Math.max(0, quantity as number);
 
-            // Restock event: produit remis en stock (0 → N)
-            if (previousQty === 0 && newQty > 0) {
+            // Restock event: produit remis en stock (0 → N), seulement si le stock a changé
+            // (`written` : pas de restock fantôme sur un no-op / rejet temporel, P0-6).
+            if (written && previousQty === 0 && newQty > 0) {
                 await admin.from("feed_events").insert({
                     merchant_id: (product as any).merchant_id,
                     product_id,
@@ -86,7 +89,10 @@ export async function PATCH(request: NextRequest) {
         }
 
         return NextResponse.json({ error: "quantity or delta required" }, { status: 400 });
-    } catch {
+    } catch (e) {
+        // Ne pas avaler en silence (cohérent avec les 4 routes webhook) : ce canal écrit du
+        // stock via updateStockAtomic → une erreur RPC/DB doit être VISIBLE (enjeu n°1).
+        captureError(e, { route: "api/stock", method: "PATCH" });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

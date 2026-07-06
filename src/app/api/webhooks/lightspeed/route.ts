@@ -70,7 +70,9 @@ export async function POST(request: NextRequest) {
             // Atomic delta stock update — eliminates TOCTOU race condition.
             // source_ts = horodatage de la vente (timeStamp Lightspeed) plutôt que l'heure
             // de réception serveur → confidence "vu il y a X" honnête.
-            const previousQty = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook", update.updated_at);
+            // `written` = le stock a RÉELLEMENT changé (P0-6). Un delta clampé à zéro (stock déjà
+            // à 0) est un no-op → on n'émet ni « sale » fantôme ni notification.
+            const { previous: previousQty, written } = await updateStockAtomic(supabase, product.id, update.quantity, "delta", "webhook", update.updated_at);
             const newQty = Math.max(0, previousQty + update.quantity);
 
             // Le stock autoritaire est DÉJÀ committé par updateStockAtomic ci-dessus ; recalc
@@ -84,15 +86,18 @@ export async function POST(request: NextRequest) {
                 captureError(e, { route: "webhooks/lightspeed", phase: "recalc-sizes", productId: product.id });
             }
 
-            const { error: feedErr } = await supabase.from("feed_events").insert({
-                merchant_id: product.merchant_id,
-                product_id: product.id,
-                event_type: "sale",
-            });
-            if (feedErr) captureError(feedErr, { route: "webhooks/lightspeed", phase: "feed-event", productId: product.id });
+            // `written` gate : pas d'événement sur un delta no-op (stock déjà à 0), P0-6.
+            if (written) {
+                const { error: feedErr } = await supabase.from("feed_events").insert({
+                    merchant_id: product.merchant_id,
+                    product_id: product.id,
+                    event_type: "sale",
+                });
+                if (feedErr) captureError(feedErr, { route: "webhooks/lightspeed", phase: "feed-event", productId: product.id });
+            }
 
             // Notify favorites when product restocked (quantity went up)
-            if (update.quantity > 0 && newQty > 0 && previousQty === 0) {
+            if (written && update.quantity > 0 && newQty > 0 && previousQty === 0) {
                 const { data: productInfo } = await supabase
                     .from("products")
                     .select("name")

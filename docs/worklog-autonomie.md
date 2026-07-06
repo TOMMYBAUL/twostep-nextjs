@@ -5,6 +5,68 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-06 (run autonome) · P0-6 — fin des feed_events fantômes + push « de retour en stock » MENSONGÈRES (GATED, migration 110 préparée)
+
+**Pourquoi (sourcing §6 — backlog priorisé)** : audit `audit-optimisation-2026-07-04.md`. J'ai d'abord
+VÉRIFIÉ le backlog au code réel (LESSONS : ~70 % des findings à re-confronter) — **P0-1 (wizard POS 404)
+et P0-7 (pos-resync non paginé) étaient DÉJÀ FAITS** par le commit `6641034` (table d'audit non barrée) ;
+F2 (cross-marchand pos_item_id) est **déjà gardé** (`pickUniqueProduct` → null+Sentry sur collision).
+**P0-4 (M5 sur surfaces conso)** est réel mais touche le VISUEL /discover (cap OUT-OF-SCOPE) + les RPC
+discover (migration) → pas un [R] autonome propre. **Prochain [R] backend, in-scope, haute valeur =
+P0-6** `[CONFIRMÉ]` : chemin stock temps réel (pilier 1) + honnêteté d'affichage/consommateur (pilier 2).
+
+**Le bug (vérifié au code réel)** : `update_stock_atomic` renvoie `v_previous` INDISTINCTEMENT que
+l'écriture ait eu lieu ou non. Sur un webhook ABSOLU livré DANS LE DÉSORDRE (DB fraîche = 0/épuisé,
+événement PÉRIMÉ = 5 avec source_ts ancien), la garde temporelle 104 REJETTE l'écriture (stock reste 0)
+— mais la route voyait `previousQty=0 && quantity=5>0` → émettait un `restock` FANTÔME + **notifiait les
+favoris « De retour en stock ! » sur un produit RÉELLEMENT épuisé** (anti north-star : spam + mensonge).
+Zettle (feed_event INCONDITIONNEL) ré-émettait aussi un « sale » fantôme sur un retry no-op.
+
+**Fait (branche, réversible)** : contrat de sortie de la RPC → `(previous, written)`, `written` = le stock
+a RÉELLEMENT changé (ni rejet temporel, ni no-op via `v_new IS DISTINCT FROM v_previous`). Les 5 appelants
+(`update-stock.ts` wrapper + 4 webhooks + `/api/stock`) gatent feed_event + notification sur `written`.
+- **Migration 110 PRÉPARÉE, NON APPLIQUÉE** (`110_stock_written_flag.sql`) : `RETURNS TABLE(previous,
+  written)`, DROP+CREATE (changement de type de retour). **SUBSUME la 109** (intègre le GREATEST(source_ts)
+  delta de P0-5). Idempotente, transaction-wrappée, rollback documenté.
+- **Wrapper DUAL-SHAPE** (`normalizeStockWriteResult`) : tolère l'ancienne forme scalaire (pré-110 →
+  `written=true` = comportement ACTUEL) ET la nouvelle → **code déployable AVANT la migration, 0 régression**.
+  Le fix ne s'active qu'à l'application de la 110 (pattern gated : prépare + escalade).
+
+**Testé (méthode §1bis, sans DB réelle)** : `tests/migration-110-written-flag.test.ts` (modèle plpgsql :
+stale-reject→false, no-op→false, changement→true, insert→true, subsomption 109 + assertions FICHIER SQL) ;
+`tests/lib/pos/update-stock-wrapper.test.ts` (dual-shape + forme inconnue OBSERVABLE) ; **régressions P0-6**
+dans `webhook-routes-stock*.test.ts` (written:false → 0 feed_event, 0 notify fantôme, sur les 2 jumeaux
+absolus + delta). tsc OK. `npm run test:run` **1232→1269** (120 fichiers).
+
+**Revues spécialistes OBLIGATOIRES (§11.3)** — silent-failure-hunter + database-reviewer :
+- Cœur du fix **SOUND** des deux côtés (garde written ne supprime jamais un événement réel ; stock écrit
+  inconditionnellement ; `previous` toujours int pour l'arithmétique /api/stock ; plpgsql/RETURN QUERY corrects).
+- **HIGH (DB, corrigé)** : DROP FUNCTION peut jammer la file d'appels RPC pendant l'apply → `SET LOCAL
+  lock_timeout='3s'` (échoue vite, retry) + note « heure creuse ».
+- **CRITIQUE (les 2 revues, corrigé)** : la 092 avait révoqué EXECUTE anon/authenticated sur la signature
+  3-args ; la recréation 5-args de la 104 a laissé l'ACL à **PUBLIC depuis le 17/06** → RPC admin d'écriture
+  stock potentiellement appelable par anon/authenticated. Mon DROP+CREATE réinitialisait aussi l'ACL → **RE-REVOKE
+  ajouté à la 110** (ferme le trou pré-existant + évite que ma migration le perpétue). ⚠️ Thomas : vérifier
+  get_advisors avant apply.
+- **MED (SF, corrigé)** : le fallback `normalizeStockWriteResult` sur forme inconnue (lag cache schéma
+  PostgREST après DROP/CREATE) était SILENCIEUX → le garde P0-6 pouvait s'éteindre sans signal → `captureError`
+  ajouté (défaut conservateur written=true CONSERVÉ, mais observable). Testé.
+- **LOW (SF, corrigé)** : `/api/stock` avait un `catch {}` sans captureError (≠ 4 webhooks) → `captureError` ajouté.
+
+**Escalade (notify-extra)** : DÉCISION BINAIRE = appliquer la 110 (§4 branche test d'abord) OUI/NON.
+Inerte tant que NON (0 régression). Item marqué GATED.
+
+**Reste** : après apply → P0-4 (M5 conso, VISUEL Thomas) ; A3/A4/A5 (perf publication) ; C3 (cascade unifiée).
+
+**Scorecard** : Preuve 8/10 (modèle plpgsql + dual-shape + régressions fantôme testés sans DB ; le
+comportement RPC réel reste non prouvé = pas de DB live, borné honnêtement) · Sécu north-star 10/10 (ferme
+un faux positif consommateur direct + 2 findings CRITIQUE/HIGH + MED/LOW des revues) · Réversibilité 10/10
+(0 migration appliquée, code sûr pré-migration, `git revert`) · Scope 8/10 (12 fichiers = 1 unité cohérente
+RPC+callers+tests) · Align 9/10 (pilier 1 pipeline + pilier 2 honnêteté, P0 Thomas-priorisé). 0 bug laissé.
+tests 1232→1269. CFR run = 100 % (0 revert).
+
+---
+
 ## 2026-07-05 (run autonome) · Cluster A — durcir le layer HTTP de PUBLICATION Google (A2 retry / A6 timeout / A7 révoqué-vs-blip)
 
 **Pourquoi (sourcing §6 — backlog priorisé frais)** : l'audit d'optimisation du 2026-07-04
