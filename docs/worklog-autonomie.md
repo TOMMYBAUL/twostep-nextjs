@@ -5,6 +5,64 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-06 (run autonome #2) · A5 — checkpoint/reprise du push feed Google (anti-famine de la queue, GATED migration 111)
+
+**Pourquoi (sourcing §6)** : re-vérifié le backlog audit `2026-07-04` AU CODE RÉEL (LESSONS : ~70 %
+des findings à re-confronter) — **l'audit est ~90 % PÉRIMÉ** : P0-9 (categorize chunk), P0-13 (stats
+paginé), C1 (cache négatif), C2 (Serper short-circuit), P0-12 (google-status dédup), `maxPages` fail-loud
+= **tous DÉJÀ FAITS** (commentaires datés dans le code), la table d'audit juste pas barrée. Signaux prod
+re-vérifiés moi-même (0 marchand réel, google_conns=0, feed_status partial/error=0, 0 quality_alert frais
+24 h — même état synthétique que les runs idle de juin). **Reste in-scope** : A3/A5 (Cluster A, plus haut
+rang), C3, P0-4 (out-of-scope VISUEL). A3 (concurrence) = réécriture invasive du helper le plus critique
++ casse le modèle de timing des tests → trop risqué non supervisé. **A5 = le fix FONDAMENTAL** (A3 n'est
+qu'une mitigation de vitesse).
+
+**Le bug (CONFIRMÉ au code réel)** : le cron `google-feed` redémarre le stream à `id=0` À CHAQUE run.
+Un catalogue dont le push complet dépasse le budget temps (270 s — pilote Deerskin = milliers de SKU) est
+interrompu → statut "partial" honnête, MAIS le run SUIVANT re-pousse la MÊME TÊTE et n'atteint JAMAIS la
+QUEUE = **famine silencieuse** (produits vendables jamais publiés = perte n°1). Le commentaire du code
+« se termine au run suivant » était **FAUX** (corrigé).
+
+**Fait (branche, réversible, flag-gated)** :
+- `streamRows`/`fetchAllRows` : option additive `startAfter` (défaut null = comportement actuel) → reprise
+  keyset `WHERE id > curseur` sans re-lire la tête. Blast LOW (2 callers streamRows, rétro-compat).
+- cron : lit `last_feed_cursor` (read ISOLÉ casté, flag-gated), stream depuis lui, suit `lastProcessedId`
+  (`finally` = repère monotone succès OU échec → forward-progress garanti), persiste sur interruption/erreur,
+  **REMET À NULL sur cycle complet** (ré-affirmation feed depuis la tête au cycle suivant).
+- **Migration 111 GATED** (`ADD COLUMN IF NOT EXISTS last_feed_cursor uuid`) idempotente, transaction-wrappée,
+  rollback documenté, NON APPLIQUÉE. Code DÉPLOYABLE avant (flag OFF → colonne jamais référencée = 0 régression).
+
+**Revues OBLIGATOIRES (§11.3)** — silent-failure-hunter + database-reviewer : **core design SOUND des deux
+côtés**. 2 MED corrigés dans ce commit :
+- **(SF, MED)** : write curseur ISOLÉ du write de statut → un flag posé AVANT la migration ne peut plus faire
+  échouer `products_pushed`/`last_feed_status` (on ne perd plus TOUTE l'observabilité, juste le curseur, best-effort).
+- **(DB, MED)** : colonne **uuid** (pas text) → Postgres rejette une valeur malformée = plus de poison-pill
+  self-perpétuant (curseur corrompu → cast fail → catch ré-écrit la même valeur → coincé).
+- **(SF, HIGH) = trade-off ASSUMÉ** : non-complétion CHRONIQUE (catalogue interrompu à CHAQUE run → curseur
+  jamais reset → un produit en échec ou re-éligible dans la tête attend le prochain cycle complet). DÉJÀ signalé
+  par l'alerte `budgetExhausted` existante (tire à chaque interruption = « catalogue trop gros → chunking »). Vrai
+  fix = **A3 (concurrence, cycle en 1 run)** ou **G2 (feed-quality par produit)** = items séparés. LOW (flag off→on
+  rewind ; read-cursor error répété) documentés.
+
+**Testé (méthode §1bis, sans réseau/DB réelle, horloge injectée)** : `tests/google-feed-time-budget.test.ts`
+(+ reprise au-delà du curseur, persist sur interruption=dernier traité, reset sur cycle complet, blip mi-stream
+→ curseur=poussés-avant-échec, **2 runs → QUEUE atteinte = famine cassée**) + `paginate.test.ts` (startAfter +
+défaut null inchangé). tsc OK. `npm run test:run` **1269→1277**. `detect_changes` : 1 symbole (POST cron),
+risk medium, 0 blast inattendu.
+
+**Escalade (notify-extra)** : DÉCISION BINAIRE = appliquer migration 111 (§4 branche test d'abord) + poser
+`FEED_RESUME_CURSOR=1` en env Vercel, OUI/NON. Inerte tant que NON (0 régression, flag off). Item marqué GATED.
+
+**Reste** : après apply 111 → A3 (concurrence pool = cycle en 1 run pour le pilote) ; A4 (diff incrémental,
+sémantique expiration Google à cadrer) ; G1/G2 (métriques SLA / feed-quality) ; C3 (cascade unifiée, coût).
+
+**Scorecard** : Preuve 8/10 (logique reprise/reset/persist/famine-cassée testée horloge injectée ; comportement
+DB réel non prouvé = pas de DB live) · Sécu north-star 10/10 (ferme une famine = perte n°1 + 2 MED des revues) ·
+Réversibilité 10/10 (0 migration appliquée, flag off = code actuel, `git revert`) · Scope 9/10 (5 fichiers = 1
+unité RPC-free cohérente) · Align 10/10 (Cluster A plus haut rang, pilier « ne rien oublier »). 0 bug laissé. CFR run = 100 %.
+
+---
+
 ## 2026-07-06 (run autonome) · P0-6 — fin des feed_events fantômes + push « de retour en stock » MENSONGÈRES (GATED, migration 110 préparée)
 
 **Pourquoi (sourcing §6 — backlog priorisé)** : audit `audit-optimisation-2026-07-04.md`. J'ai d'abord

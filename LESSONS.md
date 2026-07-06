@@ -150,6 +150,27 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   réécrit (curseurs `[null, id999, id1999]` prouvent le keyset, pas d'offset) + les 4 fakes de charge (snapshot/output/
   stream/budget) modèlent `.gt`/`.limit`. Revue SF-hunter **SOUND, 0 fix** (product_id = PK ref confirmé unique).
   0 migration, réversible. `src/lib/supabase/paginate.ts`. (SCALE/VOLUME, keyset pagination, 2026-07-02)
+- ❌ **Un cron paginé qui redémarre au DÉBUT à chaque run = FAMINE silencieuse de la queue si le push
+  dépasse le budget temps.** `cron/google-feed` (Voie A) streame les produits `ORDER BY id` depuis `id=0`
+  à CHAQUE run ; un catalogue dont le push complet dépasse le budget (270 s — pilote milliers de SKU) est
+  interrompu (statut "partial" honnête) MAIS le run suivant re-pousse la même TÊTE et n'atteint JAMAIS la
+  QUEUE → produits vendables jamais publiés sur Google = perte n°1. Le commentaire « se termine au run
+  suivant » était FAUX : streamer borne la MÉMOIRE, PAS le fait de REPRENDRE. Fix A5 (flag
+  `FEED_RESUME_CURSOR=1` + migration 111 `last_feed_cursor uuid`, GATED) : reprise keyset `startAfter=curseur`
+  (option ADDITIVE de streamRows/fetchAllRows, défaut null = inchangé), repère monotone `lastProcessedId`
+  posé en `finally` (succès OU échec), persist sur interruption/erreur, RESET à null sur cycle complet
+  (ré-affirmation du feed). **Règles** : (1) tout balayage paginé BORNÉ PAR LE TEMPS (pas juste la mémoire)
+  doit PERSISTER un curseur de reprise, sinon la queue famine ; (2) le repère de reprise avance sur succès
+  ET échec (monotone) — sinon un produit en échec permanent re-famine la tête (forward-progress vs
+  re-tentative → on choisit forward-progress, l'échec est re-tenté au prochain CYCLE) ; (3) le write du
+  curseur ISOLÉ du write de statut (un flag posé AVANT la migration ne doit pas faire échouer TOUT l'UPDATE
+  = perte d'observabilité products_pushed/last_feed_status — finding SF-hunter MED) ; (4) colonne curseur =
+  MÊME type que la clé (uuid, pas text) → Postgres rejette une valeur corrompue = pas de poison-pill
+  self-perpétuant qui coince le marchand (finding DB-reviewer MED). Code déployable AVANT migration (flag
+  off → colonne jamais référencée). Preuve `tests/google-feed-time-budget.test.ts` (2 runs → queue atteinte =
+  famine cassée ; blip mi-stream → curseur = poussés avant échec). Revues SF-hunter + database SOUND ; HIGH
+  « non-complétion chronique » = trade-off assumé, déjà signalé par l'alerte `budgetExhausted` (vrai fix = A3
+  concurrence / G2 feed-quality). (SCALE/VOLUME, google-feed reprise A5, 2026-07-06, GATED migration 111)
 - ❌ **L'ALARME de complétude elle-même peut échouer en silence à l'échelle — le sweep SCALE l'avait oubliée.**
   `cron/quality-check` (watchdog stock figé / prix aberrant / ingestion arrêtée / caisse morte = la garantie
   « ne rien perdre silencieusement ») portait 3 défauts de la MÊME classe que tout le thème SCALE, sur l'alarme :
