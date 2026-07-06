@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-04 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-06 (L'Auditeur)*
 
 ## Stats
 - Total leads : 196
@@ -11,6 +11,26 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-07-06 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (23e session consécutive)
+
+**Source leads** : Session L'Eclaireur 04/07 — Zone étendue Victor-Hugo (Gambetta/Bouquières/Rémusat). 5 emails retenus (MA ROBE écarté — pertinence limitée). Fichier brouillons créé : `docs/prospection/brouillons/brouillons-email-2026-07-04.md`
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Jérôme Biaggi (MR BLUE) | mr.blue.france@gmail.com | Mr Blue sur Two-Step — tes Edwin et Veja trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — Edwin, Autry, Birkenstock, Veja, Taion. Multi-marques mode homme. 7 rue Bouquières. Score 9/10. |
+| 2 | Myriam Beraud (TOUK TOUK 2) | toukbijoux@free.fr | Touk Touk sur Two-Step — tes bijoux du monde trouvés par les Toulousaines | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — ambre, turquoises Tibet/Arizona, Rajasthan, bracelets Turkmen. 31 rue Rémusat. Score 8/10. |
+| 3 | Géraldine Freynet (OPTIQUE REMUSAT) | optiqueremusat@orange.fr | Optique Rémusat sur Two-Step — tes Chanel et YSL trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — Chanel, Yves Saint-Laurent. Opticien indépendant. 7 rue Rémusat. Score 8/10. |
+| 4 | Marc Llorens (RENDEZ-VOUS STORE) | eshop@rendez-vous-store.com | Rendez-Vous Store sur Two-Step — ta sélection trouvée par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — 3 boutiques rue Bouquières, ligne RDV maison. Score 8/10. ⚠️ Email eshop. |
+| 5 | Julien Guimon (GUIMON JOAILLERIE) | contact@gjoaillerie.com | G Joaillerie sur Two-Step — tes créations sur-mesure trouvées par les Toulousains | ⚠️ NON CRÉÉ — Gmail token expiré | ACA — Haute École Joaillerie, sur-mesure 3D, pierres certifiées. 12 rue Gambetta. Score 8/10. ⚠️ Email probable. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 23e session consécutive sans création de draft (11/06 → 06/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller dans : `docs/prospection/brouillons/brouillons-email-2026-07-04.md`** Notion MCP indisponible (24e session consécutive).
+
+*Note session 06/07 (L'Auditeur) : 0 lead NOUVEAU avec email (tous terrain-only). 5 leads BROUILLON du 04/07 formalisés dans le fichier brouillons manquant. Récap Notion non créé (MCP indisponible). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Brouillons email 2026-07-06".*
+
+---
 
 ### Samedi — 2026-07-04 (L'Eclaireur) — Zone étendue Victor-Hugo suite 27/06 — Gambetta/Bouquières/Rémusat — 5 emails confirmés + 1 probable
 
