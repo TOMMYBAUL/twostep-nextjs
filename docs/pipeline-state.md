@@ -12,7 +12,7 @@ next_action: "P0-6 FAIT (run 2026-07-06) : feed_events fantômes + push « de re
 branch: feat/pipeline-v1-handoff-2026-06-12
 gate: green               # green|red|unknown  (tsc 0 + 1269/1269 tests verts, run 2026-07-06)
 last_run: 2026-07-06
-last_commit: PENDING      # fix(P0-6): feed_events fantômes — RPC written flag + migration 110 (NON appliquée) (run 2026-07-06)
+last_commit: 75a5cb6      # fix(P0-6): feed_events fantômes — RPC written flag + migration 110 (NON appliquée) (run 2026-07-06)
 ---
 
 # État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)
