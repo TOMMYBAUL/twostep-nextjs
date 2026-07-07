@@ -24,6 +24,8 @@ type State = {
     payload: any;
     filters: Record<string, unknown>;
     single: boolean;
+    gt?: { column: string; value: unknown };
+    limit?: number;
 };
 type Capture = { table: string; op: string; payload: any; filters: Record<string, unknown> };
 type QueryResult = { data: unknown; error: { message: string } | null };
@@ -61,6 +63,19 @@ function makeClient(resolveRead: (table: string, state: State) => QueryResult, w
         b.or = () => b;
         b.in = (c: string, v: unknown) => {
             state.filters[c] = v;
+            return b;
+        };
+        // Chaîne KEYSET de fetchAllRows : `.order()` (no-op ici), `.gt(col,cursor)` (borne
+        // basse exclusive de la page), `.limit(n)` (taille de page). `.limit` reste terminal
+        // (résolu via `.then`). Un resolveRead keyset-aware (test pagination) lit state.gt/limit ;
+        // les autres tests (petits jeux) les IGNORENT et renvoient tout → 1 page < pageSize → fin.
+        b.order = () => b;
+        b.gt = (c: string, v: unknown) => {
+            state.gt = { column: c, value: v };
+            return b;
+        };
+        b.limit = (n: number) => {
+            state.limit = n;
             return b;
         };
         b.single = () => {
@@ -302,6 +317,124 @@ describe("recalculateGroupSizes — recalcul available_sizes + stock du principa
         const writes = (captureError as ReturnType<typeof vi.fn>).mock.calls.map((c) => (c[1] as { write: string }).write);
         expect(writes).toContain("available_sizes");
         expect(writes).toContain("stock_total");
+    });
+});
+
+describe("groupVariantsByEAN — pagination KEYSET (anti-troncature 1000, SCALE)", () => {
+    /**
+     * Régression du trou SCALE oublié : la lecture des principaux (`variant_of IS NULL`)
+     * était NON paginée → tronquée SILENCIEUSEMENT à 1000 lignes par PostgREST. Un
+     * marchand multimarque (Deerskin = milliers de SKU) au-delà de 1000 : produits jamais
+     * rendus visibles (perte vitrine+feed) + groupes EAN coupés → doublons/faux « rupture ».
+     * On PROUVE, avec un faux client keyset-aware modelant la troncature à 1000, que les
+     * 1500 produits sont TOUS traités (dont le #1200, hors des 1000 premiers).
+     */
+    const PAGE_CAP = 1000; // modélise la limite max-rows de PostgREST
+
+    /** Faux client qui PAGINE réellement par keyset (id > curseur, tranché à PAGE_CAP). */
+    function makeKeysetClient(all: any[]) {
+        const captures: Capture[] = [];
+        const gtCursors: unknown[] = []; // curseurs vus par `.gt` = preuve que le keyset s'exécute
+        function builder(table: string) {
+            const state: State = { table, op: "select", payload: undefined, filters: {}, single: false };
+            const b: Record<string, unknown> = {};
+            b.select = () => b;
+            b.update = (p: unknown) => { state.op = "update"; state.payload = p; return b; };
+            b.upsert = (p: unknown) => { state.op = "upsert"; state.payload = p; return b; };
+            b.eq = (c: string, v: unknown) => { state.filters[c] = v; return b; };
+            b.is = () => b;
+            b.order = () => b;
+            b.gt = (c: string, v: unknown) => { state.gt = { column: c, value: v }; gtCursors.push(v); return b; };
+            b.limit = (n: number) => { state.limit = n; return b; };
+            b.in = (c: string, v: unknown) => { state.filters[c] = v; return b; };
+            b.then = (resolve: (v: QueryResult) => unknown, reject: (e: unknown) => unknown) => {
+                let res: QueryResult;
+                if (state.op === "select" && table === "products") {
+                    // Keyset : id STRICTEMENT > curseur, puis tranche à min(limit, PAGE_CAP)
+                    // pour MODÉLISER la troncature max-rows. Sans pagination l'appelant ne
+                    // verrait donc que les 1000 premiers ids.
+                    const cursor = state.gt ? String(state.gt.value) : "";
+                    const page = all.filter((r) => r.id > cursor).slice(0, Math.min(state.limit ?? PAGE_CAP, PAGE_CAP));
+                    res = { data: page, error: null };
+                } else if (state.op === "select") {
+                    res = { data: [], error: null };
+                } else {
+                    captures.push({ table, op: state.op, payload: state.payload, filters: state.filters });
+                    res = { data: null, error: null };
+                }
+                return Promise.resolve(res).then(resolve, reject);
+            };
+            return b;
+        }
+        return { client: { from: (t: string) => builder(t) } as never, captures, gtCursors };
+    }
+
+    it("traite TOUS les principaux au-delà de 1000 (pas seulement les 1000 premiers)", async () => {
+        // 1500 produits sans EAN, validés, stock>0 → chacun devrait recevoir un update de
+        // visibilité (branche noEan). ids zero-padés pour un tri lexicographique = numérique.
+        const all = Array.from({ length: 1500 }, (_, i) => ({
+            id: `p${String(i).padStart(5, "0")}`,
+            name: `Prod ${i}`,
+            ean: null,
+            size: null,
+            photo_url: null,
+            photo_processed_url: null,
+            created_at: "2026-01-01",
+            pos_item_id: null,
+            review_status: "validated",
+            stock: [{ quantity: 3 }],
+        }));
+        const { client, captures, gtCursors } = makeKeysetClient(all);
+
+        const visibleCount = await groupVariantsByEAN(client, "m1");
+
+        // Preuve que le KEYSET s'exécute (non-vacant) : une 2e page a été lue avec
+        // `.gt("id", dernier id de la 1re page)` = "p00999" (les 1000 premiers, 0-indexés).
+        expect(gtCursors).toContain("p00999");
+        // Non-vacant : le #1200 (hors des 1000 premiers) EST traité → visible.
+        const p1200 = updatePayloadFor(captures, "p01200");
+        expect(p1200).toBeDefined();
+        expect(p1200.visible).toBe(true);
+        // Complétude : 1500 updates de visibilité (1 par produit), pas 1000.
+        const visUpdates = captures.filter((c) => c.table === "products" && c.op === "update" && typeof c.filters.id === "string");
+        expect(visUpdates).toHaveLength(1500);
+        // Tous validés + stock>0 → tous visibles.
+        expect(visibleCount).toBe(1500);
+    });
+
+    it("groupe EAN coupé par la frontière 1000 : la variante au-delà EST liée (pas de doublon fantôme)", async () => {
+        // (b) du bug : un principal en page 1 et sa variante (même préfixe EAN) au-delà de
+        // 1000 → sans pagination, la variante n'est jamais lue → jamais marquée variant_of →
+        // reste VISIBLE à côté du principal = doublon fantôme, et totalStock partiel.
+        // On place 1000 produits « bouche-trou » sans EAN (ids p00000..p00999) puis, APRÈS la
+        // frontière, un principal (p01000) et sa variante (p01001) au même préfixe EAN.
+        const filler = Array.from({ length: 1000 }, (_, i) => ({
+            id: `p${String(i).padStart(5, "0")}`,
+            name: `Filler ${i}`, ean: null, size: null, photo_url: null, photo_processed_url: null,
+            created_at: "2026-01-01", pos_item_id: null, review_status: "validated", stock: [{ quantity: 1 }],
+        }));
+        const principal = {
+            id: "p01000", name: "Shoe 42", ean: "3001234567890", size: "42",
+            photo_url: "http://i/p.jpg", photo_processed_url: null, created_at: "2026-01-01",
+            pos_item_id: null, review_status: "validated", stock: [{ quantity: 2 }],
+        };
+        const variant = {
+            id: "p01001", name: "Shoe 43", ean: "3001234567897", size: "43",
+            photo_url: null, photo_processed_url: null, created_at: "2026-02-01",
+            pos_item_id: null, review_status: "validated", stock: [{ quantity: 3 }],
+        };
+        const { client, captures } = makeKeysetClient([...filler, principal, variant]);
+
+        await groupVariantsByEAN(client, "m1");
+
+        // La variante (au-delà de 1000) EST marquée variant_of=principal + invisible.
+        const variantUpd = captures.find(
+            (c) => c.table === "products" && c.op === "update" && Array.isArray(c.filters.id) && (c.filters.id as string[]).includes("p01001"),
+        );
+        expect(variantUpd?.payload).toEqual({ variant_of: "p01000", visible: false });
+        // Le principal reçoit le stock TOTAL du groupe (2+3=5), pas un total partiel.
+        const stockUpsert = captures.find((c) => c.table === "stock" && c.op === "upsert" && c.payload.product_id === "p01000");
+        expect(stockUpsert?.payload.quantity).toBe(5);
     });
 });
 

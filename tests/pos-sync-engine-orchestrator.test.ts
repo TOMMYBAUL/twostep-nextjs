@@ -72,6 +72,12 @@ function makeSupabase(respond: (c: Cap) => { data: unknown; error: unknown }) {
         b.in = (c: string, v: unknown) => { st.filters[c] = v; return b; };
         b.is = (c: string, v: unknown) => { st.filters[c] = v; return b; };
         b.or = () => { st.hasOr = true; return b; };
+        // Chaîne KEYSET de fetchAllRows (groupVariantsByEAN lit désormais les principaux
+        // paginés) : `.order`/`.gt`/`.limit` — le catalogue de test est vide (1 page) donc
+        // ces méthodes n'ont qu'à rester chaînables ; `.limit` reste terminal (via `.then`).
+        b.order = () => b;
+        b.gt = (c: string, v: unknown) => { st.filters[c] = v; return b; };
+        b.limit = () => b;
         b.single = () => { st.single = true; return b; };
         b.then = (resolve: (v: unknown) => unknown, reject: (e: unknown) => unknown) => {
             const snap: Cap = { ...st, filters: { ...st.filters } };

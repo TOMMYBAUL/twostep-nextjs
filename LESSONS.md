@@ -150,6 +150,22 @@ Chaque entrée : contexte minimal, erreur faite, solution correcte, date.
   réécrit (curseurs `[null, id999, id1999]` prouvent le keyset, pas d'offset) + les 4 fakes de charge (snapshot/output/
   stream/budget) modèlent `.gt`/`.limit`. Revue SF-hunter **SOUND, 0 fix** (product_id = PK ref confirmé unique).
   0 migration, réversible. `src/lib/supabase/paginate.ts`. (SCALE/VOLUME, keyset pagination, 2026-07-02)
+- ❌ **Le sweep silent-truncation avait oublié le POST-PASS de REGROUPAGE identité `groupVariantsByEAN`.**
+  Ce post-pass (GATE visibilité « zéro faux positif », appelé par sync POS + ingest fichier + validate facture +
+  PATCH produit) lisait TOUS les principaux d'un marchand (`.eq(merchant_id).is(variant_of,null)`) SANS pagination →
+  tronqué SILENCIEUSEMENT à 1000 par `max-rows`. Sur un multimarque (Deerskin milliers de SKU) : (a) produits au-delà
+  du 1000ᵉ jamais traités → jamais rendus visibles = perte vitrine+feed ; (b) un groupe EAN coupé par la frontière 1000
+  → variante jamais liée = **doublon fantôme visible** + `totalStock` sur groupe PARTIEL → faux « rupture » (principal
+  masqué). La fonction LÈVE pourtant sur erreur de lecture — mais une troncation `max-rows` n'est PAS une erreur, elle
+  passe. Fix : `fetchAllRows` KEYSET (`.order("id")`, lecture ENTIÈREMENT matérialisée avant tout write → 0 interleave ;
+  keyset car appelée depuis des chemins concurrents non-lockés type `/api/catalog/import`). **Règle (extension de la
+  règle quality-check) : quand tu clôtures la troncature silencieuse sur les chemins produit, grep AUSSI les POST-PASS
+  d'identité/regroupage/réconciliation (`groupVariantsByEAN` & co), pas seulement ingest/feed/monitoring — un GATE de
+  visibilité qui tronque sa lecture rend des produits invisibles ET crée des doublons, en silence.** Trouvé par un
+  balayage Explore ciblé (findings vérifiés au code réel). Preuve `tests/pos-group-variants.test.ts` (+2 : 1500 produits →
+  #1200 traité + curseur keyset "p00999" vu ; groupe EAN à cheval sur 1000 → variante liée + stock total 5). Revue
+  SF-hunter **SOUND, 0 finding** (tests confirmés non-vacants par revert). Blast LOW (signature inchangée, 5 callers).
+  0 migration, réversible. `src/lib/pos/sync-engine.ts`. (SCALE/VOLUME, groupVariantsByEAN pagination, 2026-07-07)
 - ❌ **Un cron paginé qui redémarre au DÉBUT à chaque run = FAMINE silencieuse de la queue si le push
   dépasse le budget temps.** `cron/google-feed` (Voie A) streame les produits `ORDER BY id` depuis `id=0`
   à CHAQUE run ; un catalogue dont le push complet dépasse le budget (270 s — pilote milliers de SKU) est

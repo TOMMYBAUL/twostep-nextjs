@@ -5,6 +5,66 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-07 (run autonome) · Troncature silencieuse 1000 OUBLIÉE dans le GATE de visibilité `groupVariantsByEAN`
+
+**Sourcing (§6)** : (1) backlog audit `2026-07-04` re-confronté au CODE RÉEL (LESSON ~70 % findings faux) →
+les items « restants » nommés par les 2 derniers runs sont soit FAITS (P0-9 categorize chunk = présent
+`categorize.ts:19`, P0-13 stats paginé = `google/stats/route.ts:44` fetchAllRows, `maxPages` fail-loud =
+`paginate.ts:30`) soit DORMANTS (C6 KicksDB / C9 vision = court-circuités en prod, `ANTHROPIC_API_KEY`
+absente → `serper.ts:277` return null AVANT tout appel) soit RISQUÉS-faible-Align (C3 = refonte du hot path
+identité pour un gain COÛT, poor risk/reward contre un north-star d'EXACTITUDE). (2) Signaux réels prod
+re-vérifiés MOI-MÊME (execute_sql) : `merchants`=9 (tous seed/test, dernier 25/04), `google_conns`=0,
+`quality_alerts` open=107 mais **dernière 30/06** (0 frais 48h), `pos error`=1 (04/23) → **0 signal frais**.
+(3) → couverture/complétude d'un hot path : le SWEEP silent-truncation (enjeu n°1) n'était PAS clos.
+
+**Trouvé (Explore ciblé, findings VÉRIFIÉS au code réel)** : `groupVariantsByEAN` (`sync-engine.ts:610`) — le
+POST-PASS de regroupage par EAN + GATE de visibilité « zéro faux positif », appelé par **5 chemins** (sync POS,
+ingest fichier, validate facture, PATCH produit EAN, admin) — lisait TOUS les principaux d'un marchand
+(`.eq(merchant_id).is(variant_of,null)`) **NON paginé** → tronqué SILENCIEUSEMENT à 1000 par `max-rows`. La
+fonction LÈVE pourtant sur erreur de lecture — mais une troncation `max-rows` n'EST PAS une erreur, elle passe.
+**Conséquence à l'échelle pilote (Deerskin milliers de SKU)** : (a) produits au-delà du 1000ᵉ jamais traités →
+**jamais rendus visibles** (perte vitrine + feed Google = perte silencieuse n°1) ; (b) un groupe EAN coupé par
+la frontière 1000 → variante jamais liée = **doublon fantôme visible** à côté du principal + `totalStock` calculé
+sur un groupe PARTIEL → faux « rupture » (principal masqué). Le sweep SCALE (ingest + 4 sorties Google +
+quality-check + resync) avait couvert les chemins produit/feed/monitoring mais **oublié ce post-pass identité**.
+L'agent Explore a aussi listé 4 résidus MÊME classe, moins graves (voir RESTE).
+
+**Décidé / Fait** : lecture enveloppée dans `fetchAllRows` KEYSET (`src/lib/supabase/paginate.ts`, `.order("id",
+ascending)`) → marchand >1000 lu ENTIÈREMENT. Keyset (pas offset) car `groupVariantsByEAN` est appelé depuis des
+chemins CONCURRENTS non-lockés (`/api/catalog/import` sans `sync_lock`) → dérive-immune. La lecture est
+ENTIÈREMENT matérialisée AVANT tout write de la fonction → 0 interleave read/write interne. Contrat `{data,error}`
+inchangé → la garde `if (readError) throw` du caller intacte (et couvre EN PLUS le `data=null`-sans-erreur, plus
+fail-loud qu'avant). Signature inchangée → **5 callers non impactés (blast LOW)**. 0 migration, réversible.
+
+**Testé (SANS yeux/env)** : `tests/pos-group-variants.test.ts` (+2, faux client keyset-aware modelant la troncature
+à 1000) : (1) 1500 produits validés → **les 1500 traités** (le #1200 hors des 1000 premiers = visible ; 1500 updates,
+pas 1000 ; curseur keyset `"p00999"` vu = pagination non-vacante) ; (2) **groupe EAN à cheval sur 1000** (principal
+p01000 + variante p01001 après 1000 fillers) → variante liée `variant_of=principal`+invisible, stock total 5 (pas
+partiel). Les 12 tests existants passent désormais AUSSI via `fetchAllRows`. Fake client orchestrateur (+`.order/.gt/
+.limit` chainables, catalogue vide 1 page). `tsc` OK, **`test:run` 1279 verts (120 fichiers, +2)**.
+
+**Revue** : silent-failure-hunter **SOUND, 0 finding** — a REVERTÉ le source et confirmé que les 2 nouveaux tests
+ÉCHOUENT sans le fix (non-vacants, load-bearing) ; contrat/drift/maxPages(200 = 200k lignes, fail-loud)/embed
+`stock(quantity)` tous vérifiés OK. Observation hors-scope (non touchée) : `recalculateGroupSizes` lit aussi non-borné
+mais SCOPÉ à UN groupe EAN (membres d'un principal) → pas la classe troncature-1000 → pas d'action.
+
+**Scorecard** : Preuve 8/10 (complétude prouvée sur faux client non-vacant + revert-confirmé ; synthétique, pas un
+vrai catalogue 1500 en prod) · Sécu north-star 9/10 (ferme une perte silencieuse n°1 + un doublon fantôme sur le GATE
+de visibilité = cœur « ne rien oublier »/« afficher honnêtement » ; SF-hunter SOUND) · Réversibilité 10/10 (0 migration,
+`git revert`) · Scope 9/10 (3 fichiers : 1 source + 2 tests, 169 insertions) · Align 9/10 (complétude/identité = cap
+item 1, enjeu n°1). CFR : 0 revert. NB : GitNexus MCP non connecté ce run → `detect_changes` non joué ; scope vérifié
+par `git diff --stat` (3 fichiers voulus) + callers via grep/GitNexus-hook (5, signature inchangée).
+
+**RESTE (silent-truncation résiduels MÊME classe, trouvés par Explore, non traités ce run — fully-`[R]`)** :
+`merchants/[id]/stats/route.ts:96,120` (KPI dashboard marchand faux >1000 produits — MED) ; `ai/categorize.ts:402`
+(`catCounts` → primary_category sur échantillon tronqué — LOW) ; `images/jobs.ts:36` (jobs image >1000 différés,
+self-healing — LOW-MED) ; `push-send.ts:73,95` (notif >1000 followers/favoriters — LOW). **Reste (backlog)** : C3
+(refonte hot path identité, gain coût, risqué — à peser) ; C6/C9 dormants (clés API absentes). GATED (migration) :
+110 (written-flag+ACL), 111 (feed cursor), E2 UNIQUE `(merchant_id,ean)`, P0-5. YEUX (Thomas) : merge 84+ commits,
+pilote, validation visuelle UI.
+
+---
+
 ## 2026-07-06 (run autonome #2) · A5 — checkpoint/reprise du push feed Google (anti-famine de la queue, GATED migration 111)
 
 **Pourquoi (sourcing §6)** : re-vérifié le backlog audit `2026-07-04` AU CODE RÉEL (LESSONS : ~70 %

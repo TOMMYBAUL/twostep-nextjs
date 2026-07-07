@@ -6,6 +6,7 @@ import { createImageJob } from "@/lib/images/jobs";
 import { resolveProductSize } from "@/lib/pos/extract-size";
 import { pushInventoryToGoogle } from "@/lib/google/inventory";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -607,11 +608,35 @@ export async function groupVariantsByEAN(
     supabase: SupabaseClient,
     merchantId: string,
 ): Promise<number> {
-    const { data: products, error: readError } = await supabase
-        .from("products")
-        .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, review_status, stock(quantity)")
-        .eq("merchant_id", merchantId)
-        .is("variant_of", null);
+    // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué SILENCIEUSEMENT à
+    // 1000 lignes par PostgREST (max-rows), SANS erreur. Or ce post-pass groupe/rend visible
+    // TOUS les principaux (`variant_of IS NULL`) d'un marchand — un multimarque type Deerskin
+    // en a des MILLIERS. Sans pagination, au-delà de 1000 : (a) les produits hors des 1000
+    // premiers ne sont JAMAIS traités → jamais rendus visibles = perte silencieuse (vitrine +
+    // feed) ; (b) un groupe EAN coupé par la frontière 1000 → variante jamais liée = doublon
+    // fantôme visible, et `totalStock` calculé sur un groupe PARTIEL → faux « rupture » (le
+    // principal masqué). C'est EXACTEMENT la classe de troncature n°1 du sweep SCALE, oubliée
+    // sur ce chemin identité/regroupage. `id` (déjà dans le SELECT) = colonne-curseur keyset ;
+    // la lecture se fait ENTIÈREMENT avant toute écriture (materialisée ici) → pas d'interleave.
+    const { data: products, error: readError } = await fetchAllRows<{
+        id: string;
+        name: string;
+        ean: string | null;
+        size: string | null;
+        photo_url: string | null;
+        photo_processed_url: string | null;
+        created_at: string;
+        pos_item_id: string | null;
+        review_status: string | null;
+        stock: { quantity: number }[] | { quantity: number } | null;
+    }>(() =>
+        supabase
+            .from("products")
+            .select("id, name, ean, size, photo_url, photo_processed_url, created_at, pos_item_id, review_status, stock(quantity)")
+            .eq("merchant_id", merchantId)
+            .is("variant_of", null)
+            .order("id", { ascending: true }),
+    );
 
     // Lecture échouée ≠ marchand sans produit : on LÈVE (sinon tout le regroupage est SKIPPÉ
     // en silence → produits jamais rendus visibles / variantes fantômes jamais masquées).
