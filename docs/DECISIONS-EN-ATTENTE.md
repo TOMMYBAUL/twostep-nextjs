@@ -21,6 +21,12 @@
   système est construit et attend ce catalogue. Proposition : bloquer une demi-journée cette
   semaine ; la boucle aura le runbook + la vitrine démo prêts (P1 de la mission).
 
+## 🟢 Prospection (débloqué par le pivot vacances-des-2-boutiques du 07/07)
+
+- [ ] **A. Budget Outscraper ~15-30 $** pour enrichir la base SIRENE (2504 commerces sans email) en emails vérifiés via Google Maps. Sans ça, le « blast à toutes les boutiques » n'a que 17 emails réels. Reco : **OUI** (plus fort levier acquisition, coût dérisoire). Je peux préparer/lancer le run si tu me donnes une clé API.
+- [ ] **B. Domaine d'envoi secondaire** (ex. `go-twostep.fr`, ~10 €/an) + outil cold-email avec warmup (Instantly/Lemlist ~30-50 $/mois) pour envoyer en masse sans cramer contact@twostep.fr. Reco : OUI si tu passes à >40 mails/jour ; sinon envoi artisanal 30/jour d'abord.
+- Détail : `reco-outils-emails-2026-07-07.md`. Email de tri prêt : `email-blast-decouverte-2026-07-07.md`.
+
 ## 🟠 Important (avant/pendant le pilote)
 
 - [ ] **5. Flag `GOOGLE_GTIN_ONLY_TIER`** (D2) : activer au 1er pilote pour que Google enrichisse

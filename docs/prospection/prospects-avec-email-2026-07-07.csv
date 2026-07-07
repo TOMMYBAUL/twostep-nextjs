@@ -1,0 +1,18 @@
+﻿name,address,quartier,category,naf,phone,website,email,email_source,score,dirigeant
+Bijouterie Sandra Nougues,"32 rue de la Pomme, 31000 Toulouse",Capitole / centre-ville,bijouterie,47.77Z,05 61 23 18 80,https://www.bijouterienougues.fr,contact@bijouterienougues.fr,prospection-emails-toulouse.json: https://www.bijouterienougues.fr/contact,,
+Bijouterie Pujol,"7 place Etienne Esquirol, 31000 Toulouse",Esquirol / centre-ville,bijouterie / horlogerie,47.77Z,,http://bijouteriepujol.fr,comptabilite@bijouteriepujol.fr,prospection-toulouse.json,,
+Le Sens de la Marche,"10 rue Rivals, 31000 Toulouse",Victor Hugo / centre-ville,chaussures,47.72A,05 34 33 86 79,https://lesensdelamarche.fr,toulouse@lesensdelamarche.fr,prospection-emails-toulouse.json: https://lesensdelamarche.fr/contact/,,
+Optique du Palais,Toulouse centre (proximité Capitole / métro Capitole),Capitole / centre-ville,optique,47.78A,,https://opticientoulouse.com,contact@opticientoulouse.com,prospection-emails-toulouse.json: https://opticientoulouse.com (footer),,
+Max Optic (Maxoptic),"Place Saint-Georges, 31000 Toulouse",Saint-Georges,optique,47.78A,,https://www.maxoptic.fr,maxoptic@gmail.com,prospection-emails-toulouse.json: https://www.maxoptic.fr (footer),,
+Optique Cayret,"57 avenue des Minimes, 31000 Toulouse",Minimes,optique,47.78A,,https://www.optique-cayret.fr,cayret.optique@free.fr,prospection-emails-toulouse.json: https://www.optique-cayret.fr (footer),,
+L'Interprète Concept Store,"15 rue Sainte Ursule, 31000 Toulouse",Capitole / centre-ville,concept store / accessoires / design,,05 31 22 27 23,https://linterprete-conceptstore.com,contact@linterprete-conceptstore.com,emails-prospection-consolide.json: annuaire,,
+Slow Concept,"10 rue Sainte-Ursule, 31000 Toulouse",Capitole / centre-ville,concept store / accessoires,47.78C,05 81 60 34 12,https://www.slowconcept.fr,contact@slowconcept.fr,prospection-emails-toulouse.json: https://www.slowconcept.fr (footer section contact),,
+Chez Zel,"25 rue de la Pomme, 31000 Toulouse",Capitole / centre-ville,concept store / accessoires / bijoux,47.59B,05 62 19 29 53,https://chez-zel.com,contact@chez-zel.com,emails-prospection-consolide.json: annuaire,85,
+Emilie Prose,Toulouse (atelier local),,Mode / vêtements sur mesure,47.72B,,https://www.emilieprose.com,contact@emilieprose.com,emails-prospection-consolide.json: annuaire,,EMILIE DECOMBAZ
+Miailhes Bijouterie,Toulouse centre,,Bijouterie / joaillerie,47.77Z,05 61 48 05 66,https://miailhes.fr,bijoutier31@free.fr,emails-prospection-consolide.json: annuaire,,
+Mademoiselle Nuage,"15 Rue Jacques Cujas, 31000 Toulouse",,Bijouterie,,05 62 19 02 36,https://www.mademoisellenuage.fr,contact@mademoisellenuage.fr,emails-prospection-consolide.json: annuaire,,
+Maison Marah,Toulouse,,High-tech / accessoires design,,,https://maisonmarah.fr,contact@maisonmarah.fr,emails-prospection-consolide.json: annuaire,,
+Mano Facto,"19 Rue du Coq d'Inde, 31000 Toulouse",,Mode / chaussures / accessoires made in France,,,https://manofacto31.com,info@manofacto31.com,emails-prospection-consolide.json: annuaire,,
+Do My Shoes,"7 Rue des Arts, 31000 Toulouse",,Chaussures,47.72A,05 61 52 60 81,https://www.domyshoes.com,domyshoes@gmail.com,emails-prospection-consolide.json: annuaire,95,
+Le Repère Homme,"3 et 8 Rue Baronie, 31000 Toulouse",,Mode homme / chaussures,47.71Z,05 61 38 16 58,https://lereperehomme.com,contactlereperehomme@gmail.com,emails-prospection-consolide.json: annuaire,,
+Boutique des Arts Martiaux,"143 Route de Blagnac, 31200 Toulouse",,Sport / arts martiaux,47.64Z,06 15 93 24 16,https://boutiquedesartsmartiaux.com,contact@boutiquedesartsmartiaux.com,emails-prospection-consolide.json: annuaire,,
