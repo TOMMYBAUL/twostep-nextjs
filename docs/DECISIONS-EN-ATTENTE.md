@@ -24,7 +24,7 @@
 ## 🟢 Prospection (débloqué par le pivot vacances-des-2-boutiques du 07/07)
 
 - [x] **A. Budget Outscraper** — FAIT le 2026-07-07. Clé fournie, run 9 catégories Google Maps + enrichissement email. **Résultat : 17 → 262 emails** (base `prospects-avec-email-2026-07-08.csv`), 478 prospects au total. **Coût réel : 0 $** (palier gratuit Outscraper, solde 20 $ intact). ~5 chaînes nationales à filtrer au besoin.
-- [ ] **B. Domaine d'envoi secondaire** (ex. `go-twostep.fr`, ~10 €/an) + outil cold-email avec warmup (Instantly/Lemlist ~30-50 $/mois) pour envoyer en masse sans cramer contact@twostep.fr. Reco : OUI si tu passes à >40 mails/jour ; sinon envoi artisanal 30/jour d'abord.
+- [x] **B. Domaine d'envoi** — TRANCHÉ le 2026-07-08 : **PAS de nouveau domaine** (choix Thomas). Solution retenue : envoi depuis `contact@twostep.fr` (via SMTP Infomaniak, déjà autorisé par le SPF/DMARC du domaine) ou Gmail, avec **Mailmeteor** en mail-merge, **35 mails/jour** personnalisés + opt-out. Plan complet : `plan-envoi-adresse-actuelle-2026-07-08.md`, liste prête : `mailmerge-toulouse-2026-07-08.csv` (254 contacts, chaînes retirées).
 - Détail : `reco-outils-emails-2026-07-07.md`. Email de tri prêt : `email-blast-decouverte-2026-07-07.md`.
 
 ## 🟠 Important (avant/pendant le pilote)
