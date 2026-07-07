@@ -1,0 +1,255 @@
+﻿ordre,enseigne,email,categorie,quartier,ville
+1,Bijouterie Sandra Nougues,contact@bijouterienougues.fr,bijouterie,Capitole / centre-ville,Toulouse
+2,L'Interprète Concept Store,contact@linterprete-conceptstore.com,concept store / accessoires / design,Capitole / centre-ville,Toulouse
+3,Slow Concept,contact@slowconcept.fr,concept store / accessoires,Capitole / centre-ville,Toulouse
+4,Chez Zel,contact@chez-zel.com,concept store / accessoires / bijoux,Capitole / centre-ville,Toulouse
+5,Emilie Prose,contact@emilieprose.com,Mode / vêtements sur mesure,,Toulouse
+6,Mademoiselle Nuage,contact@mademoisellenuage.fr,Bijouterie,,Toulouse
+7,Boutique des Arts Martiaux,contact@boutiquedesartsmartiaux.com,Sport / arts martiaux,,Toulouse
+8,Modi In,contact@modi-in.com,Mode / prêt-à-porter / chaussures,,Toulouse
+9,Bijouterie Pujol,contact@bijouteriepujol.fr,Bijouterie,,Toulouse
+10,Bijouterie Joaillerie Mohedano,contact@j-mohedano.com,Joaillier,,Toulouse
+11,LAUJOA,contact@laujoa.com,Joaillier,,Toulouse
+12,Gemmes... & Vous,contact@parenthese-toulou-zen.fr,Bijouterie,,Toulouse
+13,L'Atelier d'Amaya,contact@latelierdamaya.com,Bijouterie,,Toulouse
+14,MUSARDISE,contact@musardise.fr,Bijouterie fantaisie,,Toulouse
+15,Gabriel Joaillier,contact@gabriel-joaillier.com,Bijoutier,,Toulouse
+16,Perlin's,contact@perlins.fr,Bijouterie,,Toulouse
+17,Frayssinet Joaillier Capitole,contact@frayssinet-joaillier.fr,Bijoutier,,Toulouse
+18,Estelle & Gilles Bernadou,contact@estelle-et-gilles-bernadou.com,Bijouterie,,Toulouse
+19,Pied de Biche,contact@pieddebiche-paris.com,Magasin de chaussures,,Toulouse
+20,Boutique Paraboot Toulouse,contact@labonneagence.com,Magasin de chaussures,,Toulouse
+21,"DR SWAG SHOES BASKETBALL, SNEAKERS, CASQUETTES, MAILLOT BASKET, NEW ERA, UNKUT , LA PIRATERIE, AIR JORDAN, NIKE , BASEBALL",contact@prestashop.com,Magasin de chaussures,,Toulouse
+22,Kolector Toulouse,contact@kolector.fr,Magasin de chaussures,,Toulouse
+23,Carpe Diem Déco,contact@carpediemdeco.com,Décorateur d'intérieur,,Toulouse
+24,Cali by Okla,contact@calibyokla.com,Magasin de vêtements pour femmes,,Toulouse
+25,"PUJOL MAISON (Design, Déco, Table)",contact@pujolmaison.com,Magasin d'ameublement et de décoration,,Toulouse
+26,Pure Deco,contact@pure-deco.com,Magasin d'ameublement et de décoration,,Toulouse
+27,VISIONNAIRE,contact@vision-naire.com,Magasin de vêtements,,Toulouse
+28,SPECIMN,contact@specimn.com,Magasin de vêtements,,Toulouse
+29,Maison Carrillo,contact@maison-carrillo.com,Magasin de vêtements,,Toulouse
+30,Midica,contact@midica.fr,Magasin d'ameublement et de décoration,,Toulouse
+31,Minima,hello@minima-shop.com,Décorateur d'intérieur,,Toulouse
+32,Céladon,bonjour@celadon-paris.com,Magasin d'ameublement et de décoration,,Toulouse
+33,Maison Marah,bonjour@maisonmarah.fr,Magasin d'ameublement et de décoration,,Toulouse
+34,MY HOME MY DEAR,contact@myhomemydear.com,Magasin d'ameublement et de décoration,,Toulouse
+35,La Chaise Longue,hello@chaiselongue.com,Magasin d'ameublement et de décoration,,Toulouse
+36,Les Marchandes de Jouets,contact@lesmarchandesdejouets.fr,Magasin de jouets,,Toulouse
+37,Léon Bulle,contact@leonbulle.com,Magasin de jouets,,Toulouse
+38,L'Arbre Enchanté,contact@larbreenchante.fr,Magasin de jouets,,Toulouse
+39,L'Art de la Joie,contact@happybabyparis.fr,Librairie,,Toulouse
+40,Album BD,boutique@album.fr,Librairie de bandes dessinées,,Toulouse
+41,La Librairie.,contact@lalibrairietoulouse.com,Librairie,,Toulouse
+42,nat & nin,contact@nat-nin.fr,Magasin de maroquinerie,,Toulouse
+43,58M,contact@58m.fr,Boutique d'accessoires de mode,,Toulouse
+44,L'Habit Français,boutique@lhabitfrancais.com,Magasin de vêtements,,Toulouse
+45,Lola Jones,contact@lolajones.fr,Magasin de vêtements pour femmes,,Toulouse
+46,MAY Concept Store,contact@mayconceptstore.com,Magasin de vêtements,,Toulouse
+47,Boutique Faubourg 54,contact@faubourg54.com,Boutique d'articles de mode,,Toulouse
+48,L'indien Boutique,contact@indienboutique.fr,Magasin de vêtements,,Toulouse
+49,Harold,contact@harold-paris.com,Magasin de vêtements pour hommes,,Toulouse
+50,Vestiaire des Parisiennes,bonjour@vestiairedesparisiennes.com,Magasin de vêtements pour femmes,,Toulouse
+51,Alaska B.C,contact@alaska-bc.fr,Magasin d'articles de sports,,Toulouse
+52,Compagnons des Cimes,contact@compagnonsdescimes.fr,Magasin d'articles de sports,,Toulouse
+53,Bijouterie Pujol,comptabilite@bijouteriepujol.fr,bijouterie / horlogerie,Esquirol / centre-ville,Toulouse
+54,Le Sens de la Marche,toulouse@lesensdelamarche.fr,chaussures,Victor Hugo / centre-ville,Toulouse
+55,Mano Facto,info@manofacto31.com,Mode / chaussures / accessoires made in France,,Toulouse
+56,TBS Toulouse,frederic.berlie@darty.fr,chaussures / vêtements,Capitole / centre-ville,Toulouse
+57,Joaillerie Zeina Toulouse,serviceclient@zeina.fr,Joaillier,,Toulouse
+58,Dorise Joaillier,gerladine@dorise-joaillier.com,Bijouterie,,Toulouse
+59,Arthus Bertrand,service-client@arthus-bertrand.fr,Bijouterie,,Toulouse
+60,Maison Celinni Diamantaire Toulouse,license@prestashop.com,Bijouterie,,Toulouse
+61,Joaillerie Artisanale Dirty French Girl,info@dirtyfrenchgirl.com,Joaillier,,Toulouse
+62,Marc Deloche,vente@marc-deloche.com,Bijoutier,,Toulouse
+63,Mephisto Toulouse,yourmail@com.com,Magasin de chaussures,,Toulouse
+64,Foot Locker,customercare@footlocker.com,Magasin de chaussures,,Toulouse
+65,Bocage TOULOUSE ALSACE LORRAINE,dthareau@groupeeram.com,Magasin de chaussures,,Toulouse
+66,Finsbury,vincent.di-nino@finsbury.com,Magasin de chaussures,,Toulouse
+67,Courir,s.nguyen@courir.com,Magasin de chaussures,,Toulouse
+68,CHAUSSEA Toulouse Gramont,arnaud.pellegrini@chaussea.fr,Magasin de chaussures,,Toulouse
+69,Gabor Shop,tech@202-ecommerce.com,Magasin de chaussures,,Toulouse
+70,Eram TOULOUSE ROME,rmontin@eram.fr,Magasin de chaussures,,Toulouse
+71,Odaje,rgpd@odaje.com,Magasin de chaussures,,Toulouse
+72,HANDY CHAUSSURES HOMME,serviceclient@maisonhandy.com,Magasin de chaussures,,Toulouse
+73,Mellow Yellow TOULOUSE,coline@lullisurlatoile.com,Magasin de chaussures,,Toulouse
+74,Finsbury Shoes,service.client@finsbury.fr,Magasin de chaussures,,Toulouse
+75,Jonak,bruno.paillard@jonak.fr,Magasin de chaussures,,Toulouse
+76,Salomon,rod.cousens@runescape.com,Magasin d'articles de sports,,Toulouse
+77,Soulery,alain.alter@soulery.com,Magasin de vêtements pour hommes,,Toulouse
+78,NOMAD,marie.pech@icloud.com,Magasin de vêtements,,Toulouse
+79,Trentotto Concept Store,contact-ettt@trentotto.fr,Magasin d'ameublement et de décoration,,Toulouse
+80,Bonnie & Clyde Factory,line.dourneau@bonnieandclydefactory.com,Magasin de vêtements,,Toulouse
+81,YAYA Toulouse,consommation@cmap.fr,Magasin de vêtements pour femmes,,Toulouse
+82,"Punkster, nœud papillon en bois et accessoires pour hommes un peu punk, un peu hipster",info@punkster.fr,Boutique d'accessoires de mode,,Toulouse
+83,muy mucho,postventa@muyimport.com,Magasin d'ameublement et de décoration,,Toulouse
+84,Schmit Decoration,schmitdecoration@live.fr,Magasin d'ameublement et de décoration,,Toulouse
+85,MAAAD Sélection d'objets,aline@maaadboutique.com,Magasin d'ameublement et de décoration,,Toulouse
+86,Siena Décoration,info@sienadecoration.com,Decorador de interiores,,Toulouse
+87,La Grande Récré PARIS,rgpd@ludendo.com,Magasin de jouets,,Toulouse
+88,1.2.3. Famille,diane@123famille.fr,Magasin de jouets,,Toulouse
+89,Pain d'Épices,commande@elephantrose.fr,Magasin de jouets,,Toulouse
+90,King Jouet Paris Gaîté Montparnasse,gaelle.corbeau@king-jouet.fr,Magasin de jouets,,Toulouse
+91,L'Oiseau de Paradis,stgermain@loiseaudeparadis.fr,Magasin de jouets,,Toulouse
+92,King Jouet Paris Rivoli,service-clients@king-jouet.fr,Magasin de jouets,,Toulouse
+93,JouéClub,daniel.topper@cdiscount.com,Magasin de jouets,,Toulouse
+94,Mombini,shop@mombini.com,Magasin de jouets,,Toulouse
+95,Decitre,nick.jackson@unisa.br,Librairie,,Toulouse
+96,BONTON,pvittori@bonton.fr,Vêtements pour enfants,,Toulouse
+97,Librairie Albin Michel,librairie@librairiealbinmichel.fr,Librairie,,Toulouse
+98,Librairie les Beaux Titres,dictionnaire-college@lerobert.com,Librairie,,Toulouse
+99,Book Off Quatre,recrutement@lingon-co.com,Librairie de livres d'occasion,,Toulouse
+100,Librairie Voyageurs du Monde,fdarondeau@vdm.com,Librairie,,Toulouse
+101,Librairie Solidaire,alix.poulin@agglo-compiegne.fr,Librairie,,Toulouse
+102,Gibert,service.client@gibert.com,Librairie,,Toulouse
+103,Librairie Ulysse,ulysse@ulysse.fr,Librairie,,Toulouse
+104,La librairie Canopé,nathalie.ramassamy@reseau-canope.fr,Librairie,,Toulouse
+105,LIBRAIRIE JUIVE JUDAIC STORE,info@judaicstore.com,Librairie religieuse,,Toulouse
+106,La Maison de la Bible Paris,paris@maisonbible.net,Librairie chrétienne,,Toulouse
+107,Ombres Blanches,assistanteweb@ombres-blanches.fr,Librairie,,Toulouse
+108,"Polène, Richelieu",lisa@polene-paris.com,Magasin de maroquinerie,,Toulouse
+109,Rainbow Factory,info@rainbowfactory.shop,Magasin de maroquinerie,,Toulouse
+110,Lancaster,tulipsangel@earthlink.net,Magasin de maroquinerie,,Toulouse
+111,Boutique PAUL MARIUS Toulouse,serviceclient@paulmarius.fr,Magasin de maroquinerie,,Toulouse
+112,Pourchet,sav@pourchet-paris.com,Magasin de maroquinerie,,Toulouse
+113,Bobbies Saint,heart@bobbies.com,Magasin de chaussures,,Toulouse
+114,Maison Goyard,marcelasepulveda@europeandesigns.net,Magasin de maroquinerie,,Toulouse
+115,Negrevergne,service@linkeo.com,Magasin de maroquinerie,,Toulouse
+116,Longchamp,nnicolae@clever-age.com,Magasin de maroquinerie,,Toulouse
+117,Longchamp,kundenservice@eshopping.longchamp.com,Magasin de maroquinerie,,Toulouse
+118,Maison Goyard,mking@admin.hilconet.com,Magasin de maroquinerie,,Toulouse
+119,Jérôme Dreyfuss,eshop@jerome-dreyfuss.com,Magasin de maroquinerie,,Toulouse
+120,Jérôme Dreyfuss,info@jerome-dreyfuss.com,Magasin de maroquinerie,,Toulouse
+121,Christian Louboutin Saint,privacy.europe@ch.christianlouboutin.com,Magasin de chaussures,,Toulouse
+122,LA PETITE ÉTOILE Paris,eshop@lapetiteetoile.com,Boutique d'articles de mode,,Toulouse
+123,Mademoiselle Jeanne,retours@mademoisellejeanne.com,Magasin de vêtements,,Toulouse
+124,Bonnegueule,jordan.maurin@bonnegueule.fr,Magasin de vêtements pour hommes,,Toulouse
+125,BIBA | La Boutique,commande@biba.fr,Magasin de vêtements pour femmes,,Toulouse
+126,Boutique Noë,admin@gallegodesportes.com,Magasin de vêtements,,Toulouse
+127,Mettez,info@mettez.com,Magasin de vêtements,,Toulouse
+128,Promod,frederic.lefebvre@promod.fr,Magasin de vêtements,,Toulouse
+129,Promod,service@promod.fr,Magasin de vêtements,,Toulouse
+130,ZAPA Paris Commerce,alison@zapatastudios.com,Magasin de vêtements pour femmes,,Toulouse
+131,Ulla Popken,lcarbonell@gearup-performance.de,Magasin de vêtements grandes tailles,,Toulouse
+132,Intersport Toulouse Purpan,marie@intersport-tignes.fr,Magasin de vêtements de sport,,Toulouse
+133,Decathlon Toulouse Centre Ville,drh.ouest@oxylane.com,Magasin d'articles de sports,,Toulouse
+134,JD Sports,ensavoirplus@jdsports.com,Magasin de vêtements de sport,,Toulouse
+135,i,celya@i-run.fr,Magasin d'articles de sports,,Toulouse
+136,i,coignieres@alltricks.com,Magasin d'articles de sports,,Toulouse
+137,Millet Toulouse,craig_raubenheimer@millet.com,Magasin de vêtements de sport,,Toulouse
+138,Sports Raquettes,support@ovh.com,Magasin d'articles de sports,,Toulouse
+139,Recovery Toulouse,adressecontact@recoverytls.com,Magasin d'articles de sports,,Toulouse
+140,KDC TOULOUSE,j.pages@kdctoulouse.com,Boutique de produits de nutrition sportive,,Toulouse
+141,11Teamsports France,info@11teamsports.ch,Grossiste en accessoires de sport,,Toulouse
+142,Billabong,privacy.eu@boardriders.com,Sporting goods store,,Toulouse
+143,Boutique Stade Toulousain Rugby,serviceclient@stadetoulousain.fr,Magasin de vêtements,,Toulouse
+144,Foulées Toulouse Balma,33merignac@foulees.com,Magasin d'articles de sports,,Toulouse
+145,Quiksilver Roxy,customerservice@quiksilver.com,Magasin de vêtements,,Toulouse
+146,Running Conseil Toulouse Balma,pierremaistre@domaine.com,Magasin d'articles de sports,,Toulouse
+147,Les Traits Français,bonjour@lestraitsfrancais.com,Mode / accessoires 100% made in France,,Toulouse
+148,Optique du Palais,contact@opticientoulouse.com,optique,Capitole / centre-ville,Toulouse
+149,Miailhes Bijouterie,bijoutier31@free.fr,Bijouterie / joaillerie,,Toulouse
+150,Maison Marah,contact@maisonmarah.fr,High-tech / accessoires design,,Toulouse
+151,Do My Shoes,domyshoes@gmail.com,Chaussures,,Toulouse
+152,Le Repère Homme,contactlereperehomme@gmail.com,Mode homme / chaussures,,Toulouse
+153,BIJOUTERIE DU CAPITOLE,sud-ouest-watch@orange.fr,Bijouterie,,Toulouse
+154,Le Poinçon D'Or,andre.schroun@wanadoo.fr,Bijouterie,,Toulouse
+155,Bijoux D Hier Et D Aujourd Hui,contact@bijouxdhieretdaujourdhui.fr,Marchand d'or,,Toulouse
+156,Nicolas Tourrel,nicolas.tourrel@wanadoo.fr,Joaillier,,Toulouse
+157,NV Joailliers,nvjoailliers@gmail.com,Bijoutier,,Toulouse
+158,Rieunier Joailliers,rieunier.joailliers.horlogers@gmail.com,Joaillier,,Toulouse
+159,Wiroth bijoux contemporains,wiroth@outlook.fr,Bijoutier,,Toulouse
+160,Amatista,amatistatoulouse@gmail.com,Bijouterie,,Toulouse
+161,The Last Step Toulouse,contact@thelaststep.fr,Shoe store,,Toulouse
+162,Pol Le Duff Chaussures,pol-le-duff.chaussures@wanadoo.fr,Magasin de chaussures,,Toulouse
+163,Upper,auparfaitjardinier@orange.fr,Magasin de chaussures,,Toulouse
+164,JB Rodde Toulouse,jetbrodde@free.fr,Magasin de chaussures,,Toulouse
+165,Nat et Nicolas chaussures enfants et mamans,natetnicolas@gmail.com,Magasin de chaussures,,Toulouse
+166,Pompette Sarl,pompette@orange.fr,Magasin de chaussures,,Toulouse
+167,Tout pour la Chaussure,contact@toutpourlachaussure.com,Magasin,,Toulouse
+168,MG Design,mgdesign.store31@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+169,Le Quotidien Concept Store,lequotidienconceptstore@gmail.com,Magasin de vêtements pour femmes,,Toulouse
+170,Les Boutiques Saint Georges,contact@espacesaintgeorges.com,Centre commercial,,Toulouse
+171,Le Kap Shop x PREGO,contact@prego.fr,Magasin,,Toulouse
+172,Créarteur Concept Store,contact@crearteur.fr,Agence événementielle,,Toulouse
+173,CRACRA,cracraboutique@gmail.com,Magasin de vêtements vintage,,Toulouse
+174,Zinc & Toiles,contact@zinc-et-toiles.com,Magasin,,Toulouse
+175,La loge du concierge,lalogeduconcierge@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+176,"BiArts, la boutique",contact@biarts.fr,Friperie,,Toulouse
+177,TRAIT papier,boutique@trait.fr,Papeterie,,Toulouse
+178,L'idée cadeaux,contact@lideetoulouse.fr,Boutique de cadeaux,,Toulouse
+179,La Maison de Malaure,e.lamaisondemalaure@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+180,Deco Design,artdeladeco@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+181,Ginkgo & Paon Curiosités,ginkgoetpaon@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+182,Les Marchandes,contact@lesmarchandes.fr,Magasin de tissus,,Toulouse
+183,Docks des Tissus,contact@docksdestissus.com,Fabric store,,Toulouse
+184,Vana & Co,vanacodecoration@gmail.com,Magasin d'ameublement et de décoration,,Toulouse
+185,Pulp's Toys,pulps.comics@gmail.com,Magasin de jouets,,Toulouse
+186,Le Pestacle de Maëlou,contact@lepestacledemaelou.com,Magasin pour enfants,,Toulouse
+187,L'Acrobate,lacrobateparis@gmail.com,Magasin de jouets,,Toulouse
+188,Rise Of Gunpla,contact@riseofgunpla.com,Magasin d'articles de loisirs,,Toulouse
+189,Les récrés du Bon Marché,bonjour@lesrecresdubonmarche.com,Salle de jeux pour enfants,,Toulouse
+190,Louve et Léopold,contact@louveetleopold.fr,Magasin pour enfants,,Toulouse
+191,L'Écume des Pages,ecumedespages@orange.fr,Librairie,,Toulouse
+192,La Librairie du Canal,lalibrairieducanal@gmail.com,Librairie,,Toulouse
+193,Le Renard Doré,librairielerenarddore@gmail.com,Librairie de bandes dessinées,,Toulouse
+194,Librairie Nordest,vclabenavarre@hotmail.com,Librairie,,Toulouse
+195,Librairie des Abbesses,mrguarnieri@wanadoo.fr,Librairie,,Toulouse
+196,Librairie du Temple,librairiedutemple@gmail.com,Librairie,,Toulouse
+197,Librairie BD 16 : Bandes Dessinées,belhassent@wanadoo.fr,Librairie de bandes dessinées,,Toulouse
+198,La Papéthèque,contact@la-papetheque-enligne.com,Papeterie,,Toulouse
+199,Papeterie Perjac,contact@papeterie-perjac.com,Papeterie,,Toulouse
+200,Sophie Sacs,sophiesacs@hotmail.com,Magasin de maroquinerie,,Toulouse
+201,Rayon d'Or Paris St,contact@rayondor-bagages.fr,Magasin de sacs et bagages,,Toulouse
+202,Hadrien Boulogne,hadrienboulogne@gmail.com,Boutique d'accessoires de mode,,Toulouse
+203,Lipault,hello@lipault.com,Magasin de sacs et bagages,,Toulouse
+204,Gants Veber,maroquinerie.veber@orange.fr,Magasin de maroquinerie,,Toulouse
+205,The Wan Concept store,contact@thewan.eu,Boutique de cadeaux,,Toulouse
+206,L'Épicerie Fille,lepiceriefille@gmail.com,Bijouterie fantaisie,,Toulouse
+207,Atelier Bourgogne,contact@atelierbourgogne.com,Cordonnier,,Toulouse
+208,DRESS BY NK,dressbynk@gmail.com,Magasin de vêtements pour femmes,,Toulouse
+209,Les Pénélopes,lespenelopes@free.fr,Boutique d'articles de mode,,Toulouse
+210,Boutique FIDJI,boutiquefidji@gmail.com,Magasin de vêtements pour femmes,,Toulouse
+211,ALICE DUPRAZ,hello@alicedupraztoulouse.com,Boutique de mariage,,Toulouse
+212,Maison Lou,contact@maisonlou.fr,Service de location de robes et de smokings,,Toulouse
+213,Boutique Aigle Paris Saint,waynealane@gmail.com,Magasin de vêtements,,Toulouse
+214,Intersport TOULOUSE GRAMONT,intersport.digne@orange.fr,Magasin de vêtements de sport,,Toulouse
+215,Go Into Life Sports,contact.gointolife@gmail.com,Magasin d'articles de sports,,Toulouse
+216,OKLA Skate Shop (E.T Alternative),contact@oklashop.com,Magasin de skateboards,,Toulouse
+217,KILOMÈTRES DEHORS,contact@kmdehors.fr,cafés,,Toulouse
+218,Le Comptoir des Nageurs,lecomptoirdesnageurs@gmail.com,Magasin d'articles de sports,,Toulouse
+219,La Fabrica,fabricadebigote@gmail.com,Magasin de vêtements de sport,,Toulouse
+220,Performe,contact@alinotech.fr,Magasin d'alimentation naturelle,,Toulouse
+221,size?,roy.vervloet@jdplc.com,Shoe store,,Toulouse
+222,Pointures,school@pointures.art,Artisanat,,Toulouse
+223,QUÉ FAS?,bonjorn@quefas.fr,Magasin,,Toulouse
+224,Le petit Souk Toulouse,info@lepetitsouk.fr,Magasin pour enfants,,Toulouse
+225,Søstrene Grene,maje@sostrene.dk,Varehus,,Toulouse
+226,Les (Petits) Raffineurs,hubert@leshoublonneurs.com,Boutique de cadeaux,,Toulouse
+227,Flying Tiger Copenhagen Paris Rambuteau,johnny@thobias.dk,Boutique de cadeaux,,Toulouse
+228,Bonhomme de Bois Toulouse,cjaffre@bonhommedebois.com,Toy store,,Toulouse
+229,Nature et Découvertes Boulogne Billancourt,hperpere@nature-et-decouvertes.com,Boutique de cadeaux,,Toulouse
+230,"Passage du Désir, l'anti sex shop",info@anonymagence.com,Boutique de cadeaux,,Toulouse
+231,Recyclivre,david.lorrain@recyclivre.com,Site d'entreprise,,Toulouse
+232,MAJUSCULE,donnees-personnelles@majuscule.com,Magasin de fournitures de bureau,,Toulouse
+233,Relay Paris Gare Montparnasse Hall 1 Voie 24,n.gougeon@press4u.fr,Marchand de journaux,,Toulouse
+234,Carrick,elisabeth.verdenne@carrick.fr,Magasin d'uniformes,,Toulouse
+235,Le Bon Marché Rive Gauche,elefebvre@lebonmarche.fr,Grand magasin,,Toulouse
+236,FitnessBoutique Toulouse Lascrosses,valentin.laforge@netquattro.com,Magasins d'appareil de fitness,,Toulouse
+237,FitnessBoutique Toulouse Balma,rgpd@planet-fitness.com,Magasins d'appareil de fitness,,Toulouse
+238,The Thirsty Monk Pub,info@thirstymonktoulouse.com,bars,,Toulouse
+239,Petites Fripouilles Concept Store,contact@petitesfripouilles.com,Magasin pour enfants,,Toulouse
+240,Max Optic (Maxoptic),maxoptic@gmail.com,optique,Saint-Georges,Toulouse
+241,Optique Cayret,cayret.optique@free.fr,optique,Minimes,Toulouse
+242,Galeries Lafayette Toulouse,bfontenas@galerieslafayette.com,Grand magasin,,Toulouse
+243,Arrow Workshop,benjamin.dula@gmail.com,Mercerie,,Toulouse
+244,Le petit Drugstore,lepetitdrugstore@gmail.com,Boutique de cadeaux,,Toulouse
+245,Fioko.shop,fiokoshop@gmail.com,Boutique de cadeaux,,Toulouse
+246,S.P.L Collections,spl.games.impression@gmail.com,Boutique d'objets à collectionner,,Toulouse
+247,le ciel est à tout le monde,lecielestatoutlemonde@gmail.com,Magasin de puériculture,,Toulouse
+248,Le Monde de Sophie,lemondedesophieparis@gmail.com,Boutique de cadeaux,,Toulouse
+249,HEMA,ardjanschinkelshoek@hotmail.com,Grand magasin,,Toulouse
+250,Maison Moon,lafeegrenadine92@gmail.com,Boutique de cadeaux,,Toulouse
+251,Bagadie Paris 15,contact.bagadie@gmail.com,Magasin de sacs et bagages,,Toulouse
+252,Wilson's Workshop Atelier Cuir,wilsonsworkshop31@gmail.com,Leather goods manufacturer,,Toulouse
+253,Boutique La Bonne Pioche,labonnepioche.paris@gmail.com,Magasin de produits d'occasion,,Toulouse
+254,Centre Commercial Beaugrenelle,bijouxcocobello@gmail.com,attractions,,Toulouse
