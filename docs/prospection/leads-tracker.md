@@ -1,16 +1,51 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-06 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-07 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 196
-- NOUVEAU : 61
+- Total leads : 206
+- NOUVEAU : 71
 - CONTACTE : 1
 - BROUILLON : 108
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-07 (L'Eclaireur) — Capitole (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) | **Statut** : À valider
+
+**Note de session :** top-prospects-centre.json Capitole épuisé (75/75 traités depuis 22/06). Session = toulouse-merchants-full.json filtré par rues Capitole (pomme, metz, alsace lorraine, tourneurs, astorg, arts, taur, esquirol, saint antoine du T). 41 candidats éligibles trouvés. **10 emails confirmés.** 118 candidats restants pour prochaines sessions Capitole.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| BIJOUTERIE NOUGUES | Capitole/Pomme | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr ✅ | 730800612 | 9/10 | NOUVEAU | Email confirmé via bijouterienougues.fr/contact. 32 rue de la Pomme. Bijouterie familiale depuis 1974, Sandra 2012. |
+| MAISON DIDIER (CLUK OPTIC) | Capitole/Metz | Optique luxe | Jean-Pierre Fabre | maisondidier31@gmail.com ✅ | 478475791 | 9/10 | NOUVEAU | Email confirmé via annuaires. 29 rue de Metz. Opticien depuis 1937. Cartier/Chloé/Céline/Gucci/YSL. |
+| VERGNES OPTIC | Capitole/Saint-Antoine | Optique | Elisabeth Poyet (vergnes) | contact@vergnesoptic.com ✅ | 449436906 | 9/10 | NOUVEAU | Email confirmé via vergnesoptic-toulouse.monopticien.com. 26 rue Saint Antoine du T. 2 générations, Saint-Laurent. |
+| L'OPTICIEN | Capitole/Tourneurs | Optique créateur | Maud Héran | lopticien.toulouse@gmail.com ✅ | 789195575 | 8/10 | NOUVEAU | Email confirmé via annuaires. 16 rue des Tourneurs. Opticien créateur, stockiste Izipizi, depuis 2012. |
+| CARPE DIEM DÉCO | Capitole/Astorg | Déco/Concept store | Valérie Nguyen (goryl) | contact@carpediemdeco.com ✅ | 521088344 | 8/10 | NOUVEAU | Email confirmé via carpediemdeco.com. 18 rue d'Astorg. Concept store déco+mode+accessoires, ancienne acheteuse luxe, depuis 2010. |
+| LES PIPELETTES | Capitole/Tourneurs | Bijouterie fantaisie | Isabelle Grimaudo | lespipelettestoulouse31@gmail.com ✅ | 800846347 | 7/10 | NOUVEAU | Email confirmé via annuaires. 43 rue des Tourneurs. Bijouterie haut de gamme créateurs, depuis 2014. |
+| SILLAGE ETHNIQUE | Capitole/Taur | Bijouterie ethnique | Charles-Henri André de la Porte | sillage.artisanat@gmail.com ✅ | 521674895 | 7/10 | NOUVEAU | Email confirmé via annuaires. 36 rue du Taur. Bijoux ethniques, pierres semi-précieuses, depuis 1898. |
+| L'AMAZONE | Capitole/Tourneurs | Bijouterie | Marion Gaudin | contact.lamazonebijoux@gmail.com ✅ | 981882020 | 7/10 | NOUVEAU | Email confirmé via lamazonebijoux.com. 38 rue des Tourneurs. Bijoux de caractère, 5000 pièces, 7 marques. |
+| L'ESTAMPILLE | Capitole/Astorg | Déco/Arts de la table | Valéry Alber | estampille.sarl@free.fr ✅ | 410709307 | 6/10 | NOUVEAU | Email confirmé via annuaires. 4 rue d'Astorg. Porcelaine Limoges, arts de la table, ex-Royal Limoges. |
+| ORMAIN | Capitole/Saint-Antoine | Maroquinerie luxe | Romain Gea | contact@ormain.com ✅ | 989855069 | 5/10 | NOUVEAU | Email confirmé via ormain.com. 14 rue Saint Antoine du T. ⚠️ Dépôt-vente luxe 2e main (Chanel/LV/Dior) — stock tournant, pertinence Two-Step à valider. |
+
+**Écartées session 07/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| AT PLUMETIS | 902323476 | Robes de mariée exclusivement — hors cible Two-Step. ÉCARTÉE. |
+| JOLAN 31 | 817786874 | Liquidée juillet 2021. ÉCARTÉE DÉFINITIF. |
+| MCS/MAJA | 798784906 | Liquidée 2018. ÉCARTÉE DÉFINITIF. |
+| ATM DISTRIBUTION | 488475344 | Téléphonie mobile — hors cible Two-Step. ÉCARTÉE. |
+| KOUMAL | 843977919 | 7 boutiques France = chaîne nationale. ÉCARTÉE. |
+| AA2L OPTIC | 943337733 | Probablement franchise Alain Afflelou. ÉCARTÉE. |
+| MISP BV (POLETTE) | 821354313 | Brand showroom, siège Amsterdam. ÉCARTÉE. |
+| M.S. OPTIQUE | 424291268 | Franchise Optic 2000. ÉCARTÉE. |
+
+*Note session 07/07 (L'Eclaireur) : Capitole JSON épuisé (top-prospects-centre.json). Pivot réussi vers toulouse-merchants-full.json : 41 candidats éligibles trouvés, 10 investigués, 10 emails confirmés (100% de réussite). Bijouteries rue Tourneurs/Pomme très denses. 118 candidats restants pour futures sessions Capitole. BIJOUTERIE NOUGUES (Sandra Nougues) = score 9/10, priorité envoi. MAISON DIDIER (Jean-Pierre Fabre) = opticien luxe depuis 1937, cas d'usage Two-Step parfait. ORMAIN = dépôt-vente luxe seconde main — stock tournant, à valider Thomas pertinence. MCP Notion indisponible (25e session consécutive). Gmail MCP indisponible (24e session consécutive). Titre Notion prévu : "Leads Capitole 2026-07-07".*
+
+---
 
 ## Recap brouillons email — 2026-07-06 (L'Auditeur)
 
