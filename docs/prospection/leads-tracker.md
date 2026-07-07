@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-07 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-07 (L'Auditeur)*
 
 ## Stats
 - Total leads : 206
-- NOUVEAU : 71
+- NOUVEAU : 66
 - CONTACTE : 1
-- BROUILLON : 108
+- BROUILLON : 113
 - Reponses : 0
 - Signes : 0
 
@@ -20,11 +20,11 @@
 
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
 |---|---|---|---|---|---|---|---|---|
-| BIJOUTERIE NOUGUES | Capitole/Pomme | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr ✅ | 730800612 | 9/10 | NOUVEAU | Email confirmé via bijouterienougues.fr/contact. 32 rue de la Pomme. Bijouterie familiale depuis 1974, Sandra 2012. |
-| MAISON DIDIER (CLUK OPTIC) | Capitole/Metz | Optique luxe | Jean-Pierre Fabre | maisondidier31@gmail.com ✅ | 478475791 | 9/10 | NOUVEAU | Email confirmé via annuaires. 29 rue de Metz. Opticien depuis 1937. Cartier/Chloé/Céline/Gucci/YSL. |
-| VERGNES OPTIC | Capitole/Saint-Antoine | Optique | Elisabeth Poyet (vergnes) | contact@vergnesoptic.com ✅ | 449436906 | 9/10 | NOUVEAU | Email confirmé via vergnesoptic-toulouse.monopticien.com. 26 rue Saint Antoine du T. 2 générations, Saint-Laurent. |
-| L'OPTICIEN | Capitole/Tourneurs | Optique créateur | Maud Héran | lopticien.toulouse@gmail.com ✅ | 789195575 | 8/10 | NOUVEAU | Email confirmé via annuaires. 16 rue des Tourneurs. Opticien créateur, stockiste Izipizi, depuis 2012. |
-| CARPE DIEM DÉCO | Capitole/Astorg | Déco/Concept store | Valérie Nguyen (goryl) | contact@carpediemdeco.com ✅ | 521088344 | 8/10 | NOUVEAU | Email confirmé via carpediemdeco.com. 18 rue d'Astorg. Concept store déco+mode+accessoires, ancienne acheteuse luxe, depuis 2010. |
+| BIJOUTERIE NOUGUES | Capitole/Pomme | Bijouterie | Sandra Nougues | contact@bijouterienougues.fr ✅ | 730800612 | 9/10 | BROUILLON | Email confirmé via bijouterienougues.fr/contact. 32 rue de la Pomme. Bijouterie familiale depuis 1974, Sandra 2012. Brouillon rédigé 07/07. |
+| MAISON DIDIER (CLUK OPTIC) | Capitole/Metz | Optique luxe | Jean-Pierre Fabre | maisondidier31@gmail.com ✅ | 478475791 | 9/10 | BROUILLON | Email confirmé via annuaires. 29 rue de Metz. Opticien depuis 1937. Cartier/Chloé/Céline/Gucci/YSL. Brouillon rédigé 07/07. |
+| VERGNES OPTIC | Capitole/Saint-Antoine | Optique | Elisabeth Poyet (vergnes) | contact@vergnesoptic.com ✅ | 449436906 | 9/10 | BROUILLON | Email confirmé via vergnesoptic-toulouse.monopticien.com. 26 rue Saint Antoine du T. 2 générations, Saint-Laurent. Brouillon rédigé 07/07. |
+| L'OPTICIEN | Capitole/Tourneurs | Optique créateur | Maud Héran | lopticien.toulouse@gmail.com ✅ | 789195575 | 8/10 | BROUILLON | Email confirmé via annuaires. 16 rue des Tourneurs. Opticien créateur, stockiste Izipizi, depuis 2012. Brouillon rédigé 07/07. |
+| CARPE DIEM DÉCO | Capitole/Astorg | Déco/Concept store | Valérie Nguyen (goryl) | contact@carpediemdeco.com ✅ | 521088344 | 8/10 | BROUILLON | Email confirmé via carpediemdeco.com. 18 rue d'Astorg. Concept store déco+mode+accessoires, ancienne acheteuse luxe, depuis 2010. Brouillon rédigé 07/07. |
 | LES PIPELETTES | Capitole/Tourneurs | Bijouterie fantaisie | Isabelle Grimaudo | lespipelettestoulouse31@gmail.com ✅ | 800846347 | 7/10 | NOUVEAU | Email confirmé via annuaires. 43 rue des Tourneurs. Bijouterie haut de gamme créateurs, depuis 2014. |
 | SILLAGE ETHNIQUE | Capitole/Taur | Bijouterie ethnique | Charles-Henri André de la Porte | sillage.artisanat@gmail.com ✅ | 521674895 | 7/10 | NOUVEAU | Email confirmé via annuaires. 36 rue du Taur. Bijoux ethniques, pierres semi-précieuses, depuis 1898. |
 | L'AMAZONE | Capitole/Tourneurs | Bijouterie | Marion Gaudin | contact.lamazonebijoux@gmail.com ✅ | 981882020 | 7/10 | NOUVEAU | Email confirmé via lamazonebijoux.com. 38 rue des Tourneurs. Bijoux de caractère, 5000 pièces, 7 marques. |
@@ -44,6 +44,26 @@
 | M.S. OPTIQUE | 424291268 | Franchise Optic 2000. ÉCARTÉE. |
 
 *Note session 07/07 (L'Eclaireur) : Capitole JSON épuisé (top-prospects-centre.json). Pivot réussi vers toulouse-merchants-full.json : 41 candidats éligibles trouvés, 10 investigués, 10 emails confirmés (100% de réussite). Bijouteries rue Tourneurs/Pomme très denses. 118 candidats restants pour futures sessions Capitole. BIJOUTERIE NOUGUES (Sandra Nougues) = score 9/10, priorité envoi. MAISON DIDIER (Jean-Pierre Fabre) = opticien luxe depuis 1937, cas d'usage Two-Step parfait. ORMAIN = dépôt-vente luxe seconde main — stock tournant, à valider Thomas pertinence. MCP Notion indisponible (25e session consécutive). Gmail MCP indisponible (24e session consécutive). Titre Notion prévu : "Leads Capitole 2026-07-07".*
+
+---
+
+## Recap brouillons email — 2026-07-07 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (25e session consécutive)
+
+**Source leads** : Session L'Eclaireur 07/07 — Capitole (toulouse-merchants-full.json). 5 premiers leads retenus (scores 8-9/10). Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-07.md`
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Sandra Nougues (BIJOUTERIE NOUGUES) | contact@bijouterienougues.fr | Bijouterie Nougues sur Two-Step — tes créations trouvées par les Toulousains du quartier | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — 4 générations joailliers depuis 1920, bijoux or sur-mesure, montres marque. 32 rue Pomme. Score 9/10. |
+| 2 | Jean-Pierre Fabre (MAISON DIDIER) | maisondidier31@gmail.com | Maison Didier sur Two-Step — tes Cartier et Saint Laurent vus par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — opticien depuis 1937, Cartier/Gucci/Saint Laurent/Chloé. 29 rue Metz. Score 9/10. |
+| 3 | Elisabeth Poyet (VERGNES OPTIC) | contact@vergnesoptic.com | Vergnes Optic sur Two-Step — ton stock visible aux Toulousains du quartier | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — depuis 1970, 2 générations famille Vergnes, Saint-Laurent. 26 rue Saint Antoine du T. Score 9/10. |
+| 4 | Maud Héran (L'OPTICIEN) | lopticien.toulouse@gmail.com | L'Opticien sur Two-Step — tes créateurs et Izipizi trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — opticien créateur, >50% marques françaises, séries limitées, Izipizi. 16 rue Tourneurs. Score 8/10. |
+| 5 | Valérie Nguyen (CARPE DIEM DÉCO) | contact@carpediemdeco.com | Carpe Diem sur Two-Step — ta sélection vue par les Toulousains du quartier | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — ancienne acheteuse luxe, concept store déco+mode+accessoires, créateurs français/scandinaves. 18 rue Astorg. Score 8/10. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 25e session consécutive sans création de draft (11/06 → 07/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller dans : `docs/prospection/brouillons/brouillons-email-2026-07-07.md`** Notion MCP indisponible (26e session consécutive).
+
+*Note session 07/07 (L'Auditeur) : 5 leads NOUVEAU → BROUILLON (top 5 scores parmi les 10 Eclaireur du jour). Recherches web confirmées pour chaque lead : bijouterienougues.fr (4 générations depuis 1920), didieropticien.com (depuis 1937, Paul Ciceri + Jean-Pierre Fabre 2004), vergnesoptic-toulouse.monopticien.com (depuis 1970, Elisabeth et Armand Poyet), lopticien-toulouse.fr (créateurs fait-main séries limitées, Maud Héran depuis 2012), carpediemdeco.com (ancienne acheteuse luxe, Scandinave/français/Marrakech). Emails ACA personnalisés, max 150 mots, tutoiement, prenom gérant. 5 leads restants (LES PIPELETTES, SILLAGE ETHNIQUE, L'AMAZONE, L'ESTAMPILLE, ORMAIN) pour prochaine session Auditeur. Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré).*
 
 ---
 
