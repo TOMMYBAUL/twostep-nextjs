@@ -151,7 +151,7 @@ export function ArticleLayout({
                                                 Trouvez ce que vous cherchez dans les boutiques près de chez vous.
                                             </p>
                                             <Link
-                                                href="/discover"
+                                                href="/bientot"
                                                 className="block text-center rounded-lg bg-brand-solid text-white text-[13px] font-bold py-2.5 px-4 no-underline hover:bg-brand-solid_hover transition-colors duration-150"
                                             >
                                                 Explorer les boutiques →
@@ -199,7 +199,7 @@ export function ArticleLayout({
                                 : "Découvrez ce qui est disponible dans les boutiques près de chez vous."}
                         </p>
                         <Link
-                            href={isMarchands ? "/onboarding" : "/discover"}
+                            href={isMarchands ? "/onboarding" : "/bientot"}
                             className={[
                                 "inline-block rounded-lg text-[14px] font-bold py-3 px-6 no-underline transition-colors duration-150",
                                 isMarchands
