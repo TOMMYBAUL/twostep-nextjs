@@ -23,7 +23,7 @@ Raise agent completion quality by improving harness configuration, not by rewrit
 
 ## Workflow
 
-1. Run `/harness-audit` and collect baseline score.
+1. Établir l'état des lieux réel : lire `CLAUDE.md`, `.claude/agents/`, `.claude/commands/`, `.claude/skills/`, `.githooks/`, `scripts/autonomy.mcp.json`, et la config globale `~/.claude/settings.json` (hooks, plugins).
 2. Identify top 3 leverage areas (hooks, evals, routing, context, safety).
 3. Propose minimal, reversible configuration changes.
 4. Apply changes and run validation.

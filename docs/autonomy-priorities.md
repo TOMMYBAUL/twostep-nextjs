@@ -63,7 +63,64 @@ plus un mur Google externe.
 
 ---
 
-## 1bis. ⭐ MISSION COURANTE — VALIDER LE WORKFLOW MAILLON PAR MAILLON
+## 1ter. ⭐⭐⭐ MISSION COURANTE (2026-07-07, fixée avec Thomas) — OPÉRATION PILOTE
+
+> **REMPLACE §1bis et §3 pour le CHOIX du travail.** Les garde-fous (§2, §4-§8), la barre de
+> preuve, la règle anti-dérive/idle et la liste OUT-OF-SCOPE de §1bis restent PLEINEMENT en vigueur.
+> §1bis/§3 deviennent ARCHIVE : ne PAS y repiocher d'items sans passer par le filtre ci-dessous.
+
+### Le constat qui fonde cette mission (vérifié en prod le 2026-07-07)
+`merchants`=9 tous seed/test (dernier créé 25/04), `google_connections`=0, 111 produits,
+110 `image_jobs` bloqués depuis avril (clé ANTHROPIC absente), 1277/1277 tests verts, ~90 % de
+l'audit 07-04 exécuté. **Le software n'est plus le goulot — le marché ne nous a jamais vus.**
+La boucle a conclu 13 fois « la valeur est chez Thomas » puis a continué à durcir du code.
+C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un pilote LIVE**.
+
+### Nouvel ordre de priorité (à parcourir dans CET ordre à chaque run)
+
+**P0 — Dernier code pilote-bloquant** (vérifier l'état réel avant : certains sont peut-être déjà clos)
+1. **P0-2** `inbound_email_slug` NULL pour tout marchand créé après migration 057 → le canal
+   email-in (LE wedge caisses FR fermées) est MORT en self-serve. Backfill + trigger : migration
+   idempotente PRÉPARÉE non appliquée + code + tests → escalade GO.
+2. **P0-4** surfaces conso court-circuitent M5 (« Stock vérifié » sur du stock périmé/manuel =
+   3 vérités contradictoires). Préparer le correctif (helper confiance unique côté app) derrière
+   flag ; le rendu final = jugement Thomas.
+3. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
+
+**P1 — ARMEMENT PILOTE (nouveau périmètre AUTORISÉ : livrables non-code dans `docs/prospection/`)**
+> La boucle est explicitement autorisée à produire des documents/fixtures/démos — la barre de
+> preuve s'applique aussi : un runbook se teste À BLANC sur un marchand seed via le VRAI pipeline.
+1. **6a.3 Runbook onboarding pilote** (Deerskin) : de la poignée de main au feed quotidien vert —
+   chaque étape avec la commande/l'écran exact, testé à blanc de bout en bout sur un marchand seed.
+2. **6a.2 Vitrine démo via le PIPELINE RÉEL** : un marchand démo « boutique multimarque Toulouse »
+   dont le catalogue est passé par ingest réel → enrichissement → shadow/preview → vitrine.
+   (Remplace les données hand-fakées ; le jugement visuel final reste Thomas.)
+3. **Adapter Clictill/Fastmag prouvé sur fixtures réelles d'export** (email-in) : la partie du
+   wedge FR jamais testée. Se procurer/synthétiser des exports réalistes, prouver champ par champ.
+4. **6b Kit prospection prêt-à-envoyer** : réactualiser one-pager + séquences email (base :
+   `IA/twostep-content/prospecting/` d'avril) avec l'état produit RÉEL 2026-07. La boucle
+   PRÉPARE, n'ENVOIE JAMAIS (garde-fou email inchangé).
+5. **6c Dossier Trusted** : checklist des 5 marchands vérifiés (GBP lié + >11 offres + feed
+   quotidien), par-marchand, programmatique si possible (réutiliser `pilot-readiness.ts`).
+
+**P2 — La valeur qu'on VEND au pilote (insights NearSt-style)**
+- **G1** métrique SLA fraîcheur par marchand + **G2** historique feed-quality. C'est l'écran
+  qu'on montre à Deerskin pour justifier l'abonnement. Réversible, testable, in-scope.
+
+**P3 — Reste de l'audit 07-04** (A3/A4/C3…) : SEULEMENT si P0-P2 épuisés OU signal réel frais
+(Sentry/quality_alert < 48 h). Le durcissement sans signal réel est INTERDIT (le gate est vert).
+
+### Discipline de décisions (nouveau, obligatoire)
+- **`docs/DECISIONS-EN-ATTENTE.md` = source unique** des GO en attente de Thomas. À chaque run :
+  (a) le LIRE — si Thomas a coché une décision, l'exécuter EN PRIORITÉ ; (b) toute nouvelle
+  escalade s'y AJOUTE (et notify-extra pointe vers le fichier) ; (c) si une décision y dort
+  > 7 jours, UNE re-escalade groupée en digest — jamais de re-notification à l'unité.
+- **M10 (plateforme partenaires / transactionnel) = HORS-WEDGE** jusqu'à arbitrage explicite
+  de Thomas. Ne pas y toucher, ne pas le re-proposer à chaque run.
+
+---
+
+## 1bis. (ARCHIVE — supplanté par §1ter pour le choix du travail) ⭐ MISSION précédente — VALIDER LE WORKFLOW MAILLON PAR MAILLON
 
 ### ⭐⭐ PRIORITÉ N°1 (2026-06-27, Thomas) — MAILLON 9 : ENRICHISSEMENT (photo / marque / catégorie)
 > **CE MAILLON N'A JAMAIS ÉTÉ PROUVÉ EN RÉEL et il est CASSÉ.** Les 8 maillons « prouvés » =

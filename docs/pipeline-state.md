@@ -2,17 +2,30 @@
 # FIL CONDUCTEUR de la boucle autonome — source de vérité sur « où on en est ».
 # La boucle lit CE fichier EN PREMIER (compact) avant les gros docs, et le met à jour
 # EN DERNIER à chaque run. Schéma + enum documentés dans docs/os-architecture.md.
-pipeline: audit-optimisation
-step: F
-step_total: 9
-step_name: "Audit d'optimisation 9 maillons + re-challenge complétude + carte NearSt FAIT → exécution P0/clusters"
+pipeline: operation-pilote
+step: 1
+step_total: 5
+step_name: "OPÉRATION PILOTE (mission 2026-07-07, Thomas) : P0 pilote-bloquants restants → armement pilote (runbook, démo réelle, Clictill, kit prospection, dossier Trusted) → insights G1/G2"
 status: in_progress
-blocked_on: "thomas:arbitrage M10 plateforme/transactionnel (hors-wedge?) + GO fixes P0 pilote-bloquants + jugement visuel UI + M1 pilote+caisse"
-next_action: "A5 FAIT (run 2026-07-06 #2) : checkpoint/reprise du push feed Google — ferme la FAMINE silencieuse de la queue (catalogue > budget temps re-poussait la tête à chaque run, jamais la queue). Flag `FEED_RESUME_CURSOR=1` + migration 111 (`last_feed_cursor uuid`) préparée NON appliquée, escaladée. Revues SF-hunter+database SOUND (2 MED corrigés : write curseur isolé, colonne uuid). Audit 2026-07-04 vérifié ~90 % DÉJÀ FAIT (P0-9/13, C1/C2, P0-12, maxPages). PROCHAIN [R] in-scope : A3 (pool concurrence = cycle en 1 run) / A4 (diff incrémental, sémantique expiration Google à cadrer) / G1-G2 (métriques SLA/feed-quality) / C3 (cascade coût). GATED : migrations 108/110/111 non appliquées (GO Thomas) ; P0-4 M5 conso = VISUEL (Thomas) ; preuve charge 10k→50k + e2e Google live (env live) ; arbitrage M10."
+blocked_on: "thomas: voir docs/DECISIONS-EN-ATTENTE.md (10 décisions consolidées, 4 bloquant-pilote dont clé ANTHROPIC + RDV Deerskin)"
+next_action: "NOUVELLE MISSION — lire autonomy-priorities.md §1ter (OPÉRATION PILOTE, remplace §1bis/§3 pour le choix du travail) + docs/DECISIONS-EN-ATTENTE.md (exécuter en priorité toute décision cochée par Thomas). Ordre : P0-2 inbound_email_slug NULL (email-in self-serve mort — vérifier l'état réel d'abord, préparer migration NON appliquée) → P0-4 surfaces conso vs M5 (derrière flag) → P1 armement pilote (6a.3 runbook testé à blanc, 6a.2 vitrine démo via pipeline RÉEL, adapter Clictill/Fastmag sur fixtures réelles, 6b kit prospection PRÉPARÉ jamais envoyé, 6c dossier Trusted) → P2 G1/G2 (insights vendables). Durcissement sans signal réel frais = INTERDIT (gate vert, 1277 tests). M10 = hors-wedge, ne pas re-proposer."
 branch: feat/pipeline-v1-handoff-2026-06-12
 gate: green               # green|red|unknown  (tsc 0 + 1277/1277 tests verts, run 2026-07-06 #2)
 last_run: 2026-07-06
 last_commit: 220af4e      # feat(google/publication): A5 checkpoint/reprise feed Google + migration 111 (NON appliquée, GATED) (run 2026-07-06 #2)
+---
+
+# État — 2026-07-07 : RÉORIENTATION STRATÉGIQUE → OPÉRATION PILOTE
+
+**Audit stratégique du 2026-07-07 (session Thomas + Fable 5).** Constat vérifié en prod :
+0 marchand réel depuis le 25/04, 0 connexion Google, 110 image_jobs gelés (clé ANTHROPIC),
+pendant que le software atteint 1277 tests et ~90 % de l'audit 07-04 exécuté. **Le goulot n'est
+plus le code.** La boucle passe en mission **OPÉRATION PILOTE** (`autonomy-priorities.md §1ter`) :
+finir les 2 P0 pilote-bloquants, puis produire l'ARMEMENT du pilote (runbook onboarding testé à
+blanc, vitrine démo via pipeline réel, adapter Clictill prouvé, kit prospection, dossier Trusted),
+puis les insights G1/G2. Les décisions en attente de Thomas sont consolidées dans
+`docs/DECISIONS-EN-ATTENTE.md` (lu à chaque run ; décision cochée = exécution prioritaire).
+
 ---
 
 # État resumable — 2026-07-04 : audit d'OPTIMISATION 9 maillons FAIT (complétude re-challengée, carte NearSt à jour)

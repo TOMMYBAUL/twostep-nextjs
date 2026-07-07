@@ -65,7 +65,7 @@ Flag these patterns immediately:
 | Plaintext password comparison | CRITICAL | Use `bcrypt.compare()` |
 | No auth check on route | CRITICAL | Add authentication middleware |
 | Balance check without lock | CRITICAL | Use `FOR UPDATE` in transaction |
-| No rate limiting | HIGH | Add `express-rate-limit` |
+| No rate limiting | HIGH | Add Upstash Ratelimit (`@upstash/ratelimit`, déjà dans le stack) |
 | Logging passwords/secrets | MEDIUM | Sanitize log output |
 
 ## Key Principles
@@ -107,10 +107,6 @@ If you find a CRITICAL vulnerability:
 - No secrets in code
 - Dependencies up to date
 - Security checklist complete
-
-## Reference
-
-For detailed vulnerability patterns, code examples, report templates, and PR review templates, see skill: `security-review`.
 
 ---
 

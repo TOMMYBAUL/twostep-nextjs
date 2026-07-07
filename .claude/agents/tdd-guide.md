@@ -31,7 +31,7 @@ Write a failing test that describes the expected behavior.
 
 ### 2. Run Test -- Verify it FAILS
 ```bash
-npm test
+npm run test:run          # tests DB : npm run test:db
 ```
 
 ### 3. Write Minimal Implementation (GREEN)
@@ -44,7 +44,7 @@ Remove duplication, improve names, optimize -- tests must stay green.
 
 ### 6. Verify Coverage
 ```bash
-npm run test:coverage
+npx vitest run --coverage
 # Required: 80%+ branches, functions, lines, statements
 ```
 
@@ -54,7 +54,7 @@ npm run test:coverage
 |------|-------------|------|
 | **Unit** | Individual functions in isolation | Always |
 | **Integration** | API endpoints, database operations | Always |
-| **E2E** | Critical user flows (Playwright) | Critical paths |
+| **E2E** | Critical user flows — pas d'outillage E2E installé dans ce repo ; valider via chrome-devtools MCP ou manuellement | Critical paths |
 
 ## Edge Cases You MUST Test
 
@@ -86,15 +86,3 @@ npm run test:coverage
 - [ ] Assertions are specific and meaningful
 - [ ] Coverage is 80%+
 
-For detailed mocking patterns and framework-specific examples, see `skill: tdd-workflow`.
-
-## v1.8 Eval-Driven TDD Addendum
-
-Integrate eval-driven development into TDD flow:
-
-1. Define capability + regression evals before implementation.
-2. Run baseline and capture failure signatures.
-3. Implement minimum passing change.
-4. Re-run tests and evals; report pass@1 and pass@3.
-
-Release-critical paths should target pass^3 stability before merge.
