@@ -30,6 +30,7 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 - « verify » : jamais `true` sur erreur ; fail-CLOSED si la donnée serait publiée ; distinguer « pas pu vérifier » de « vérifié OK ».
 - Objet verdict d'une lib émis en JSON : PROJETER les champs publics (un champ debug `reason` fuyait des agrégats RLS sur routes anonymes). Lot RLS vide SANS erreur ≠ « 0 stock » → trip-wire sur lot large 100 % vide.
 - Garde posée au WRITE à rejouer au READ si un opérande peut changer → 1 helper unique traversé par tous.
+- Défauts DB permissifs (visible=true, review_status='validated') : tout `.from("products").insert` doit poser le gate EXPLICITEMENT (grep tous les inserts). Une garde vivant dans le moteur de score (runCascade/D7) ne protège pas un chemin qui adopte l'identité HORS moteur → extraire la garde en helper leaf.
 - N canaux vers le même tiers = MÊME ensemble émis (prédicat partagé, flags inclus) ; un KPI qui prédit un gate réutilise SON prédicat. Push async → read-back du statut.
 - Présence : `!== null && !== ""`. Rollup qui remplace une valeur autoritaire : no-op si entrée vide, jamais 0.
 - Identifiant LOCAL (SKU) : toujours scoper `merchant_id`. Clé de jointure externe (store_code, GTIN canonique) : source UNIQUE — fusionner les doublons.

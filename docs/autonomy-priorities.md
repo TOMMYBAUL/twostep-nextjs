@@ -89,7 +89,15 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    Revue SF-hunter SOUND, 2 MED corrigés (fuite `reason` sur routes anonymes → projection publique
    sur les 8 routes émettrices ; trip-wire RLS anti « tout Épuisé » silencieux). 1279→1304 tests.
    **Reste = GO flag + jugement visuel Thomas (DECISIONS-EN-ATTENTE #11).**
-3. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
+3. ✅ **Audit 07-08 item #2 (M3 CRITIQUE) — moitié D7 FAITE (2026-07-09, commit `6f7a62e`)** : le chemin
+   FACTURE route enfin par la garde D7 — insert gated `visible:false/pending` (parité snapshot ; les
+   défauts DB 027/081 publiaient une identité jamais scorée), adoption pré-insert du nom `fetchEanData`
+   gardée par `evalIdentityConcordance` (extrait en source unique `identity-concordance.ts`), inline
+   `resolveAndEnrich` remplacé par la file `enrichment_jobs` → worker → `runCascade`/D7. Revue SF-hunter
+   SOUND (1 MED corrigé). 1310→1318 tests, non-vacance par revert. **RESTE (2e moitié item #2, M3 HAUT,
+   prochain [R] P0)** : soumettre la **photo OBF/OPF à la vérif vision** (`verifyPhotoWithAI` n'est
+   appelé que sur Serper — une image Open Facts fausse/dos d'emballage passe sans contrôle).
+4. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
    - ✅ **`merchants/[id]/stats` FAIT (2026-07-08, commit `e29c673`)** — KPI dashboard marchand
      (chemin pilote : l'écran de Deerskin) paginé keyset + fail-loud + `.in()` chunké ; revue
      SF-hunter SOUND (tests vérifiés non-vacants par revert). Résidus hors chemin pilote

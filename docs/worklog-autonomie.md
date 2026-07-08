@@ -5,6 +5,63 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-09 (run autonome) · M3 CRITIQUE audit — le chemin FACTURE route enfin par la garde D7 (fin du « Coca sur chaussettes »)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0 mission épuisé
+(P0-2/P0-4 préparés+escaladés, P0-3 fait) MAIS l'audit ultracode du 08/07 (45 findings vérifiés
+adversarialement) a nommé un **CRITIQUE pilote-bloquant** qui prime sur P1 dans l'ordre de la mission :
+item #2 de sa feuille de route. **RE-VÉRIFIÉ au code réel avant d'agir** (LESSONS ~70 %) : confirmé à
+100 % — `invoices/[id]/validate` créait les produits avec les DÉFAUTS DB (`visible=true` migr. 027,
+`review_status='validated'` migr. 081), adoptait le nom résolu par `fetchEanData` SANS concordance, et
+enrichissait INLINE via `resolveAndEnrich`→`lookupEan`→`applyEnrichment` (jamais de `runCascade`, donc
+jamais de D7 ni de score). Une ligne « Chaussettes coton bio » + EAN mal tapé résolu « Coca-Cola Zero »
+→ publiée au feed conso ET éligible Google. LE scénario que la mission interdit, atteignable en prod.
+
+**Fix (commit `6f7a62e`) — 3 verrous, parité avec le chemin JUMEAU `ingestStockSnapshot`** :
+1. **INSERT gated** `visible:false, review_status:"pending"` (miroir snapshot.ts:287) — vérifié que le
+   post-pass `groupVariantsByEAN` (appelé en fin de route) a bien la règle `isPending` → ne ressuscite
+   jamais un pending en visible.
+2. **Adoption pré-insert gardée** par `evalIdentityConcordance` — extraite de `cascade-engine.ts` en
+   SOURCE UNIQUE (`src/lib/enrichment/identity-concordance.ts`, LESSON « 1 helper traversé par tous ») ;
+   `runCascade` byte-identique (vérifié par la revue). Divergence claire → aucune adoption
+   name/brand/category ; l'EAN saisi reste, la review tranche.
+3. **Enrichissement inline REMPLACÉ par l'enfilage `enrichment_jobs`** (chunk 500, repli mono-ligne
+   isolant sur échec de lot — l'index unique partiel rejette le LOT si UN produit matché a déjà un job
+   actif —, 23505 bénin, échec réel → errors[]+Sentry) → worker `enrich-products` = `enrichOneProduct` →
+   `runCascade` (D7 + score + visible/review_status). Produits matchés `validated` : jamais re-scorés ni
+   dépubliés (règle existante), photo manquante complétée — comportement fonctionnel inchangé pour eux
+   (l'enrichissement devient asynchrone : latence cron 5 min, pas de perte).
+
+**Revue SF-hunter : SOUND** (a re-prouvé la non-vacance par revert et relu le diff caractère par
+caractère). **1 MED corrigé** : le catch de `fetchEanData` était un `console.error` perdu → une panne
+systémique (clé/quota/réseau) du pré-enrichissement facture était invisible à Sentry → `captureError`
+`invoices-validate-ean-pre-enrichment` + régression. **Résidu LOW pré-existant nommé (PAS introduit)** :
+`applyEnrichment` écrit `canonical_name` sans D7 sur un produit MATCHÉ déjà publié (EAN + photo
+manquante) — même trou qu'avant le diff, classe item #10 de la feuille de route audit (« downgrade D7
+qui nettoie les attributs + accord multi-sources »). Résidus hors classe vérifiés : `POST /api/products`
+(création MANUELLE = identité tranchée par le marchand) et wizard admin (supervisé) gardent les défauts.
+
+**Preuve** : `tests/invoice-validate-d7-gate.test.ts` (+8) drive la VRAIE route, concordance par le VRAI
+`scoreNameMatch` (seul `fetchEanData` stubbé) — fixture RÉELLE de l'audit (Coca↔chaussettes divergent,
+Nike AF1↔« '07 White » concordant adopté = non-régression enrichissement) + gate à l'insert + enfilage +
+repli 23505/échec réel + panne Sentry. **Non-vacance prouvée par revert : 6/7 rouges sans le fix.**
+tsc OK, **1310→1318** (124 fichiers). GitNexus MCP non connecté → blast par grep : route = entry-point,
+`evalIdentityConcordance` était privé (0 caller), `runCascade` inchangé → LOW. 0 migration, réversible.
+
+**Scorecard** : Preuve 8/10 (vraie route + fixture audit réelle + revert-proof ; pas encore de data
+marchand réelle) · Sécu north-star 9/10 (ferme LA source n°1 de faux positif d'identité côté facture,
+revue SOUND, MED fermé) · Réversibilité 10/10 (0 migration) · Scope 9/10 (5 fichiers, 1 unité) ·
+Align 10/10 (item #2 feuille de route audit, chemin pilote — 1 des 4 voies d'import du runbook).
+CFR 10 derniers runs : 100 % (exit=0 + commit), 0 revert.
+
+**RESTE / prochain [R]** : la 2e moitié de l'item #2 audit = **photo OBF/OPF soumise à la vérif vision**
+(M3 HAUT : image Open Facts publiée sans `verifyPhotoWithAI`) — même périmètre, non fait ici pour tenir
+le scope. Puis P1 6a.2 vitrine démo via pipeline réel (inchangé). GATED inchangés : décisions 1/2/3/5/6/7
+(+ #11 flag conso). Item #10 audit (nettoyage attributs au downgrade + D7 dans `applyEnrichment` pour les
+produits déjà publiés) = candidat [R] moyen, nommé par la revue.
+
+---
+
 ## 2026-07-08 (run autonome #2) · P0-3 KPI dashboard paginé + P1 6a.3 RUNBOOK onboarding pilote testé À BLANC (17/17 VERT)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0-2 (préparé, migration
