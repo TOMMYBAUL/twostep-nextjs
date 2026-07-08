@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-sport-toulouse",
+        title: "Shopping sport à Toulouse : où trouver ton équipement en boutique indépendante",
+        description:
+            "Running, cyclisme, escalade, sports de salle... Guide des meilleures boutiques sport indépendantes à Toulouse et comment éviter le déplacement pour rien.",
+        publishedAt: "2026-07-08",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
