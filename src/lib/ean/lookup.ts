@@ -3,7 +3,7 @@ import { extractKnownBrand } from "@/lib/ean/brand";
 import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
-import { searchProductImage } from "@/lib/images/serper";
+import { searchProductImage, verifyPhotoWithAI } from "@/lib/images/serper";
 import { extractOpenFactsImage } from "@/lib/ean/open-facts-image";
 import { logCacheHit, logCacheMiss } from "@/lib/enrichment/telemetry";
 import { uploadPhotoToR2 } from "@/lib/enrichment/cache-photo-r2";
@@ -936,6 +936,22 @@ async function writeNotFoundMarker(
     }
 }
 
+/**
+ * GATED `VERIFY_OPEN_FACTS_IMAGES=1` (audit 2026-07-08, M3 HAUT — préparé 2026-07-09,
+ * décision Thomas en attente) : soumettre AUSSI les images Open Facts (OBF/OPF, seules
+ * sources EAN à renvoyer une photo) à `verifyPhotoWithAI` avant application.
+ *
+ * OFF (défaut) = comportement 2026-06-28 inchangé : une image GTIN-keyée est appliquée
+ * SANS vérif vision (décision délibérée : même frontière de confiance que le nom accepté
+ * de la même source ; et fail-closed sans clé ANTHROPIC = zéro image OBF du tout).
+ * L'audit conteste (barcode reuse, photo de dos/mauvais produit contribué) → ON route
+ * ces images par la MÊME garde fail-closed que Serper (clé absente → écartée sauf
+ * `PUBLISH_UNVERIFIED_IMAGES=1`). Reco : activer AVEC la clé ANTHROPIC (décision #1).
+ */
+function verifyOpenFactsImages(): boolean {
+    return process.env.VERIFY_OPEN_FACTS_IMAGES === "1";
+}
+
 async function applyEnrichment(
     supabase: ReturnType<typeof createAdminClient>,
     productId: string,
@@ -987,6 +1003,36 @@ async function applyEnrichment(
     // (maillon 9). Serper (recherche par nom) reste le REPLI quand la source n'a pas d'image.
     let photoUrl = data.photo_url;
     let photoSource: "ean" | "serper" = "ean";
+
+    // Garde vision des images EAN-source (OBF/OPF) — GATED, cf. verifyOpenFactsImages().
+    // Évaluée SEULEMENT si l'image serait réellement appliquée (produit sans photo) :
+    // pas de dépense vision pour un no-op. Rejet → on retombe sur le repli Serper
+    // ci-dessous (lui-même déjà vérifié en interne, jamais moins-disant).
+    if (photoUrl && prod && !prod.photo_url && verifyOpenFactsImages()) {
+        const rawExpected = data.name && data.name !== "Unknown" ? data.name : prod.name;
+        const expectedName = typeof rawExpected === "string" ? rawExpected.trim() : "";
+        // Nom vide = aucune base de vérification → fail-closed SANS dépenser l'appel
+        // vision (un verdict Haiku sur « produit attendu : "" » ne prouve rien).
+        const ok = expectedName
+            ? await verifyPhotoWithAI(photoUrl, expectedName, data.brand ?? prod.brand)
+            : false;
+        if (!ok) {
+            // Dégradation VISIBLE (revue SF-hunter, HIGH) : photo OBF rejetée + repli
+            // Serper vide = produit sans photo JAMAIS re-tenté automatiquement
+            // (selectProductsToEnrich filtre sur canonical_name null, posé ci-dessus)
+            // → inéligible feed Google sans signal. On trace CHAQUE rejet par produit
+            // (Sentry dédupe par fingerprint) ; un marqueur persisté + retry borné =
+            // design à trancher avec le GO du flag (décision escaladée).
+            captureError(new Error(`Open Facts image rejected by vision gate`), {
+                module: "ean-lookup",
+                phase: "openfacts-image-verify",
+                productId,
+                ean,
+                expectedName,
+            });
+            photoUrl = null;
+        }
+    }
 
     if (!photoUrl && prod && !prod.photo_url) {
         const serperUrl = await searchProductImage(

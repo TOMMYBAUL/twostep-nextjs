@@ -25,6 +25,8 @@ const captureErrorMock = vi.fn();
 
 vi.mock("@/lib/images/serper", () => ({
     searchProductImage: (...args: unknown[]) => searchProductImageMock(...(args as [])),
+    // lookup.ts importe aussi verifyPhotoWithAI (garde vision OBF gated) — inerte ici.
+    verifyPhotoWithAI: vi.fn(async () => true),
 }));
 vi.mock("@/lib/images/jobs", () => ({ createImageJob: vi.fn(async () => undefined) }));
 vi.mock("@/lib/enrichment/telemetry", () => ({
