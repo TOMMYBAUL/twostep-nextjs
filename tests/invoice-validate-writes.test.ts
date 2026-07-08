@@ -49,11 +49,16 @@ vi.mock("@/lib/enrichment/match-product", () => ({
     matchProduct: (...a: unknown[]) => matchProductMock(...a),
 }));
 
-// Enrichissement / catégorisation / regroupage / lookup EAN : inertes (hors périmètre).
-vi.mock("@/lib/enrichment/resolve-ean", () => ({ resolveAndEnrich: vi.fn(async () => {}) }));
+// Catégorisation / regroupage : inertes (hors périmètre). Lookup EAN : fetchEanData
+// stubbé null (pré-enrichissement inerte) mais le RESTE du module réel est conservé —
+// la route importe désormais evalIdentityConcordance (garde D7) qui s'appuie sur le
+// vrai scoreNameMatch.
 vi.mock("@/lib/ai/categorize", () => ({ categorizeMerchantProducts: vi.fn(async () => {}) }));
 vi.mock("@/lib/pos/sync-engine", () => ({ groupVariantsByEAN: vi.fn(async () => {}) }));
-vi.mock("@/lib/ean/lookup", () => ({ fetchEanData: vi.fn(async () => null) }));
+vi.mock("@/lib/ean/lookup", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/lib/ean/lookup")>();
+    return { ...actual, fetchEanData: vi.fn(async () => null) };
+});
 
 // ─── Faux client Supabase : query-builder thenable + état partagé ───────────
 type WriteRec = { table: string; op: string; payload: unknown };

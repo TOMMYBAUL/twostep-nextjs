@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchEanData } from "@/lib/ean/lookup";
 import { mapEanCategoryToFr } from "@/lib/ean/category";
+import { evalIdentityConcordance } from "@/lib/enrichment/identity-concordance";
+import { chunk } from "@/lib/ingest/reconcile";
 import { categorizeMerchantProducts } from "@/lib/ai/categorize";
 import { extractSize, stripSize } from "@/lib/pos/extract-size";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
@@ -343,16 +345,34 @@ export async function POST(
                 try {
                     const eanData = await fetchEanData(firstEan);
                     if (eanData) {
-                        if (eanData.name && eanData.name !== "Unknown") enrichedName = eanData.name;
-                        enrichedBrand = eanData.brand;
-                        // Twin write-path of applyEnrichment (maillon 9 (d)): the EAN source
-                        // category is raw English ("clothing and fashion"…). Translate it to a
-                        // French L1 slug here too, else invoice-created products would show English
-                        // labels while EAN-enriched ones show French — the same field, inconsistent.
-                        enrichedCategory = mapEanCategoryToFr(eanData.category);
+                        const resolvedName = eanData.name && eanData.name !== "Unknown" ? eanData.name : null;
+                        // Garde D7 (audit 2026-07-08, M3 CRITIQUE) : ce chemin adoptait
+                        // l'identité résolue par l'EAN SANS la croiser avec le nom que le
+                        // marchand a tapé — un EAN mal saisi/réutilisé résolu « Coca-Cola
+                        // Zero » sur une ligne « chaussettes coton » écrivait le mauvais
+                        // canonical_name/brand/category. Même helper que runCascade (source
+                        // unique) : divergence CLAIRE → on n'adopte RIEN de la source (le
+                        // produit garde le nom marchand ; le worker enrich + la review
+                        // trancheront l'identité). Non évaluable (undefined) → adoption
+                        // conservée (comportement historique quand un des noms manque).
+                        const concords = evalIdentityConcordance(cleanName, resolvedName, enrichedBrand);
+                        if (concords !== false) {
+                            if (resolvedName) enrichedName = resolvedName;
+                            enrichedBrand = eanData.brand;
+                            // Twin write-path of applyEnrichment (maillon 9 (d)): the EAN source
+                            // category is raw English ("clothing and fashion"…). Translate it to a
+                            // French L1 slug here too, else invoice-created products would show English
+                            // labels while EAN-enriched ones show French — the same field, inconsistent.
+                            enrichedCategory = mapEanCategoryToFr(eanData.category);
+                        }
                     }
                 } catch (err) {
+                    // Non bloquant (le worker enrich retentera la résolution), mais une
+                    // panne systémique de fetchEanData (clé/quota/réseau) sur le flux
+                    // facture doit être VISIBLE à Sentry, pas un console.error perdu.
+                    // Pas d'entrée errors[] : la création du produit n'est pas affectée.
                     console.error("[validate] EAN pre-enrichment failed:", err);
+                    captureError(err, { context: "invoices-validate-ean-pre-enrichment", merchantId: merchant.id });
                 }
             }
 
@@ -369,6 +389,16 @@ export async function POST(
                     ...(enrichedBrand && { brand: enrichedBrand }),
                     ...(enrichedCategory && { category: enrichedCategory }),
                     ...(allSizes.length > 0 && { available_sizes: groupItems.filter(gi => gi._size).map(gi => ({ size: gi._size!, quantity: gi.quantity })) }),
+                    // GATE « zéro faux positif » — parité avec le chemin JUMEAU
+                    // ingestStockSnapshot (audit 2026-07-08, M3 CRITIQUE) : sans ces 2
+                    // champs, les DÉFAUTS DB s'appliquaient (visible=true migration 027,
+                    // review_status='validated' migration 081) → un produit de facture à
+                    // l'identité jamais scorée était publié au feed conso ET éligible
+                    // Google IMMÉDIATEMENT, en contournant toute la cascade D7. Invisible
+                    // jusqu'au passage du worker enrich (score+concordance) ou à la
+                    // validation 1-tap du marchand — comme tout import fichier.
+                    visible: false,
+                    review_status: "pending",
                 })
                 .select()
                 .single();
@@ -433,11 +463,33 @@ export async function POST(
         captureError(statusErr, { context: "invoices-validate-status", invoiceId: id, merchantId: merchant.id });
     }
 
-    // Enrichment cascade — orchestrated by the unified resolveAndEnrich module.
-    // Cascade: EAN → SKU match → reverse search → Serper photo fallback.
-    const { resolveAndEnrich } = await import("@/lib/enrichment/resolve-ean");
-    for (const { ean, sku, productId } of productsToEnrich) {
-        await resolveAndEnrich({ productId, ean, sku, merchantId: merchant.id });
+    // Enrichissement DÉCOUPLÉ — parité avec le chemin JUMEAU ingestStockSnapshot
+    // (audit 2026-07-08, M3 CRITIQUE) : l'ancien resolveAndEnrich INLINE passait par
+    // lookupEan/applyEnrichment SANS garde D7 ni scoring — l'identité résolue par un
+    // EAN mal saisi s'écrivait telle quelle sur un produit publié par défaut. On
+    // enfile désormais enrichment_jobs, drainée par /api/cron/enrich-products →
+    // enrichOneProduct → runCascade (concordance D7, score, visible/review_status).
+    // Les produits créés restent invisibles/pending jusqu'au verdict ; les produits
+    // matchés déjà `validated` ne sont JAMAIS re-scorés ni dépubliés (règle
+    // enrichOneProduct), seule leur photo manquante est complétée.
+    const enrichIds = [...new Set(productsToEnrich.map((p) => p.productId))];
+    for (const batch of chunk(enrichIds, 500)) {
+        const rows = batch.map((pid) => ({ product_id: pid, merchant_id: merchant.id }));
+        const { error: enqueueErr } = await adminSupabase.from("enrichment_jobs").insert(rows);
+        if (enqueueErr) {
+            // Repli ISOLANT mono-ligne : l'index unique partiel uniq_enrichment_jobs_active
+            // rejette le LOT entier si UN SEUL produit (matché, photo manquante) a déjà un
+            // job actif — les autres ne doivent pas perdre le leur. 23505 (doublon) = bénin
+            // (le job actif existant fera le travail) ; toute autre erreur est VISIBLE
+            // (errors + Sentry) : un job perdu = produit qui reste invisible sans verdict.
+            for (const row of rows) {
+                const { error: rowErr } = await adminSupabase.from("enrichment_jobs").insert(row);
+                if (rowErr && rowErr.code !== "23505") {
+                    errors.push(`Enqueue enrichment ${row.product_id}: ${rowErr.message}`);
+                    captureError(rowErr, { context: "invoices-validate-enqueue-enrichment", merchantId: merchant.id, productId: row.product_id });
+                }
+            }
+        }
     }
 
     // AI categorization — synchronous (must complete before response)
