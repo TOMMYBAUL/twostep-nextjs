@@ -5,6 +5,68 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-08 (run autonome) · P0-4 — surfaces conso branchées M5 (fin du « Stock vérifié » sur compteur brut), derrière flag
+
+**Sourcing (§1ter Opération Pilote)** : `DECISIONS-EN-ATTENTE.md` lu en premier — aucune nouvelle décision cochée
+(A/B prospection déjà exécutées avec Thomas les 07-08/07). Ordre P0 : P0-2 = PRÉPARÉ+ESCALADÉ (migration 108,
+décision 3) → item suivant de plus haut rang = **P0-4**, explicitement autorisé par la mission (« préparer le
+correctif — helper confiance unique côté app — derrière flag ; le rendu final = jugement Thomas »). Prémisse
+`[Fable]` **RE-VÉRIFIÉE au code réel, CONFIRMÉE sur les 5 sites** : `stock-badge.tsx` (« Stock vérifié » sur
+`quantity>0` seul), `api/discover` + `api/favorites` (aucun source/source_ts), `product-card.tsx` (« Plus que X »
+brut), `infinite-product-grid.tsx:130` (quantité FABRIQUÉE `?? 99`).
+
+**Le bug** : les surfaces conso (discover / recherche / favoris / boutique) court-circuitaient M5 → « Stock
+vérifié » (vert) sur du stock `manual`/périmé pendant que la page produit disait « Stock probable » et Google
+« out of stock » = 3 vérités contradictoires. Le mensonge fermé côté Google (03/07) restait ouvert côté app.
+
+**Le fix (100 % derrière flag `CONSUMER_M5_CONFIDENCE=1`, OFF par défaut = prod byte-identique, 0 requête ajoutée)** :
+- `src/lib/stock/consumer-confidence.ts` — helper batch UNIQUE des routes de LISTE : lit `stock`
+  (quantity/source/source_ts/updated_at), `stock_reports` récents et `ingest_credentials` (admin, RLS) en lots
+  de 500 **en parallèle**, délègue le verdict au MÊME cœur pur `productConfidence` que products/[id]/by-ean/
+  by-merchants (anti-divergence). Échec de lecture → « pas pu vérifier » (`confidence: null`), JAMAIS un verdict
+  fabriqué ; ingest KO → dégrade (jamais ne surévalue) ; reports KO → base + Sentry.
+- `src/lib/stock/stock-badge-view.ts` — deriver PUR client : verdict serveur AFFICHÉ tel quel (jamais recalculé,
+  LESSON) ; sans verdict → prudent (`probable`/`out`), **JAMAIS « Disponible » sans preuve**.
+- 5 routes câblées (champ additif `confidence`) : `discover` (2 branches), `products/discover` (2 branches),
+  `search`, `favorites`, `products` (vitrine publique seulement). UI : StockBadge mode M5 (labels honnêtes
+  Disponible/Stock probable/Épuisé + title fraîcheur), ProductCard `stockQuantity` nullable (**fin du `?? 99`**),
+  compteur brut « Plus que X » seulement si `state==="available"` quand un verdict existe.
+
+**Revue silent-failure-hunter : SOUND avec réserves — 2 MED réels CORRIGÉS + 1 perf** :
+1. (MED) **le champ interne `reason` fuyait VERBATIM dans le JSON** (« downgraded by 3 report(s) » = agrégat
+   `stock_reports` RLS owner-only ; « manual source » = marchand sans caisse) — pré-existant sur 3 routes, étendu
+   par ce diff à 3 routes ANONYMES → projection `publicConfidencePayload` (state/label/freshnessLabel seulement)
+   appliquée aux **8 routes émettrices** (les 5 nouvelles + les 3 pré-existantes, classe « chemins jumeaux »).
+2. (MED) **régression RLS indétectable** : une policy `stock_select_public` régressée (classe 097/098) renvoie
+   `{data:[], error:null}` = « tout Épuisé » silencieux sur TOUTES les surfaces → **trip-wire** : lot ≥50 produits
+   100 % vide = échec (« pas pu vérifier ») + Sentry, jamais un verdict.
+3. (perf) lectures séquentielles → chunks ET phases parallélisés (`Promise.all`), risque timeout vitrine réduit.
+   LOW documentés dans le code : fallback `posItemId` inatteignable en prod (104 : source NOT NULL) ; Map par
+   productId correcte (PK mono-marchand). Flag OFF vérifié byte-identique par la revue (y c. équivalence `?? 99`→null).
+
+**Preuve (SANS yeux/env)** : `tests/lib/stock/stock-badge-view.test.ts` (+9 : passthrough serveur jamais recalculé,
+RÉGRESSION « qty>0 sans verdict → jamais available », payload corrompu → prudent sans crash) +
+`tests/lib/stock/consumer-confidence.test.ts` (+16, faux clients NON-VACANTS qui appliquent `.in/.eq/.gte` :
+webhook frais→available, manual→probable, 3 signalements→out + fenêtre 48 h réellement filtrée, stock KO→absent+
+Sentry, ingest KO→jamais surévalué, chunking 1200→500/500/200, trip-wire RLS 60 ids vides→0 verdict+Sentry vs
+10 ids vides→out légitime, `reason` JAMAIS émis, flag OFF par défaut). `tsc` OK, **`test:run` 1279→1304** (+25,
+124 fichiers). 0 migration, réversible (`git revert bcdb1db`).
+
+**Scorecard** : Preuve 8/10 (verdicts+échecs+trip-wire prouvés sur faux clients non-vacants ; rendu visuel non
+jugeable sans yeux → flag) · Sécu north-star 9/10 (ferme LE faux positif conso « Stock vérifié » non prouvé +
+2 MED de revue dont une fuite d'agrégats RLS) · Réversibilité 10/10 (flag OFF par défaut + 0 migration) ·
+Scope 7/10 (24 fichiers — au-dessus du tripwire 20, MAIS 12 = threading une-ligne de prop/type ; pas de refonte) ·
+Align 10/10 (P0-4 = item de plus haut rang de la mission §1ter). CFR : 0 revert. NB : GitNexus MCP non connecté
+→ `detect_changes` non joué ; scope vérifié par `git diff --stat` (24 fichiers tous voulus) + callers par grep.
+
+**Escalade (DECISIONS-EN-ATTENTE #11 + notify)** : poser `CONSUMER_M5_CONFIDENCE=1` (préprod/prod) puis séance
+de jugement visuel (décision 7) — l'app conso est gatée `/bientot` pendant la phase pilote → risque d'exposition
+minimal. **RESTE** : P1 armement pilote (6a.3 runbook onboarding testé à blanc = prochain [R] ; 6a.2 vitrine démo
+via pipeline réel ; adapter Clictill/Fastmag sur fixtures ; 6b kit prospection ; 6c dossier Trusted). GATED :
+migrations 106/107/108/110/111 (décision 3). YEUX : décisions 1/2/4/7.
+
+---
+
 ## 2026-07-07 (run autonome) · Troncature silencieuse 1000 OUBLIÉE dans le GATE de visibilité `groupVariantsByEAN`
 
 **Sourcing (§6)** : (1) backlog audit `2026-07-04` re-confronté au CODE RÉEL (LESSON ~70 % findings faux) →

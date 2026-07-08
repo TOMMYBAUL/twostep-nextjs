@@ -7,12 +7,12 @@ step: 1
 step_total: 5
 step_name: "OPÉRATION PILOTE (mission 2026-07-07, Thomas) : P0 pilote-bloquants restants → armement pilote (runbook, démo réelle, Clictill, kit prospection, dossier Trusted) → insights G1/G2"
 status: in_progress
-blocked_on: "thomas: voir docs/DECISIONS-EN-ATTENTE.md (10 décisions consolidées, 4 bloquant-pilote dont clé ANTHROPIC + RDV Deerskin)"
-next_action: "NOUVELLE MISSION — lire autonomy-priorities.md §1ter (OPÉRATION PILOTE, remplace §1bis/§3 pour le choix du travail) + docs/DECISIONS-EN-ATTENTE.md (exécuter en priorité toute décision cochée par Thomas). Ordre : P0-2 inbound_email_slug NULL (email-in self-serve mort — vérifier l'état réel d'abord, préparer migration NON appliquée) → P0-4 surfaces conso vs M5 (derrière flag) → P1 armement pilote (6a.3 runbook testé à blanc, 6a.2 vitrine démo via pipeline RÉEL, adapter Clictill/Fastmag sur fixtures réelles, 6b kit prospection PRÉPARÉ jamais envoyé, 6c dossier Trusted) → P2 G1/G2 (insights vendables). Durcissement sans signal réel frais = INTERDIT (gate vert, 1277 tests). M10 = hors-wedge, ne pas re-proposer."
+blocked_on: "thomas: voir docs/DECISIONS-EN-ATTENTE.md (11 décisions consolidées, 4 bloquant-pilote dont clé ANTHROPIC + RDV Deerskin ; #11 = flag CONSUMER_M5_CONFIDENCE)"
+next_action: "P0 ÉPUISÉ (P0-2 préparé/escaladé migration 108 ; P0-4 préparé derrière flag, commit bcdb1db) → P1 ARMEMENT PILOTE : 6a.3 runbook onboarding Deerskin testé À BLANC sur un marchand seed via le VRAI pipeline (= prochain [R]), puis 6a.2 vitrine démo via pipeline RÉEL, adapter Clictill/Fastmag sur fixtures réelles, 6b kit prospection PRÉPARÉ jamais envoyé, 6c dossier Trusted, puis P2 G1/G2. Lire DECISIONS-EN-ATTENTE.md à chaque run (décision cochée = exécution prioritaire). Durcissement sans signal réel frais = INTERDIT. M10 = hors-wedge, ne pas re-proposer."
 branch: feat/pipeline-v1-handoff-2026-06-12
-gate: green               # green|red|unknown  (tsc 0 + 1277/1277 tests verts, run 2026-07-06 #2)
-last_run: 2026-07-06
-last_commit: 220af4e      # feat(google/publication): A5 checkpoint/reprise feed Google + migration 111 (NON appliquée, GATED) (run 2026-07-06 #2)
+gate: green               # green|red|unknown  (tsc 0 + 1304/1304 tests verts, run 2026-07-08)
+last_run: 2026-07-08
+last_commit: bcdb1db      # fix(P0-4): surfaces conso branchées M5 derrière flag CONSUMER_M5_CONFIDENCE (run 2026-07-08)
 ---
 
 # État — 2026-07-07 : RÉORIENTATION STRATÉGIQUE → OPÉRATION PILOTE

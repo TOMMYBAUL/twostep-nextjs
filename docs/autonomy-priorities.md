@@ -82,9 +82,13 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
 1. **P0-2** `inbound_email_slug` NULL pour tout marchand créé après migration 057 → le canal
    email-in (LE wedge caisses FR fermées) est MORT en self-serve. Backfill + trigger : migration
    idempotente PRÉPARÉE non appliquée + code + tests → escalade GO.
-2. **P0-4** surfaces conso court-circuitent M5 (« Stock vérifié » sur du stock périmé/manuel =
-   3 vérités contradictoires). Préparer le correctif (helper confiance unique côté app) derrière
-   flag ; le rendu final = jugement Thomas.
+2. ✅ **P0-4 PRÉPARÉ (2026-07-08, commit `bcdb1db`)** — surfaces conso branchées M5 derrière flag
+   `CONSUMER_M5_CONFIDENCE=1` (OFF = prod byte-identique). Helper batch unique
+   `src/lib/stock/consumer-confidence.ts` (même cœur pur que products/[id]) + deriver pur
+   `stock-badge-view.ts` (jamais « Disponible » sans verdict) + 5 routes + UI (fin du `?? 99`).
+   Revue SF-hunter SOUND, 2 MED corrigés (fuite `reason` sur routes anonymes → projection publique
+   sur les 8 routes émettrices ; trip-wire RLS anti « tout Épuisé » silencieux). 1279→1304 tests.
+   **Reste = GO flag + jugement visuel Thomas (DECISIONS-EN-ATTENTE #11).**
 3. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
 
 **P1 — ARMEMENT PILOTE (nouveau périmètre AUTORISÉ : livrables non-code dans `docs/prospection/`)**

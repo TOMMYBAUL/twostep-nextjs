@@ -28,6 +28,7 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 
 ## Gates, feeds & vérification
 - « verify » : jamais `true` sur erreur ; fail-CLOSED si la donnée serait publiée ; distinguer « pas pu vérifier » de « vérifié OK ».
+- Objet verdict d'une lib émis en JSON : PROJETER les champs publics (un champ debug `reason` fuyait des agrégats RLS sur routes anonymes). Lot RLS vide SANS erreur ≠ « 0 stock » → trip-wire sur lot large 100 % vide.
 - Garde posée au WRITE à rejouer au READ si un opérande peut changer → 1 helper unique traversé par tous.
 - N canaux vers le même tiers = MÊME ensemble émis (prédicat partagé, flags inclus) ; un KPI qui prédit un gate réutilise SON prédicat. Push async → read-back du statut.
 - Présence : `!== null && !== ""`. Rollup qui remplace une valeur autoritaire : no-op si entrée vide, jamais 0.

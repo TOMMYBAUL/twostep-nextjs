@@ -35,6 +35,13 @@
   Reco : OUI en même temps que la clé ANTHROPIC.
 - [ ] **7. Séance de jugement visuel UI** (écrans E1-E5 + vitrine + preview feed) : supervisée,
   Thomas + Chrome DevTools MCP. La boucle ne peut pas trancher « pro vs moyen ».
+- [ ] **11. Flag `CONSUMER_M5_CONFIDENCE=1`** (P0-4, préparé le 2026-07-08, commit `bcdb1db`) :
+  les surfaces conso (discover/recherche/favoris/boutique) affichent la confiance M5 honnête
+  (Disponible / Stock probable / Épuisé + fraîcheur) au lieu de « Stock vérifié » sur le seul
+  compteur brut. OFF = comportement actuel inchangé. Reco : **poser le flag en preview et juger
+  le rendu pendant la séance #7** (l'app conso est gatée /bientot pendant la phase pilote →
+  exposition minimale). Coût du retard : les 3 vérités contradictoires restent visibles à
+  quiconque voit une démo de l'app conso.
 - [ ] **8. Cadence de la boucle** : tâche planifiée = 1 run/75 min × 15 h ≈ **12 runs/jour**.
   Avec la mission Opération Pilote il y a à nouveau du travail réel, mais la reco reste
   **4-6 runs/jour** (runs profonds > runs fréquents ; quota partagé avec ton usage perso).
