@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { captureError } from "@/lib/error";
+import { chunk } from "@/lib/ingest/reconcile";
 import { createClient } from "@/lib/supabase/server";
+import { fetchAllRows } from "@/lib/supabase/paginate";
 
 export async function GET(
     request: NextRequest,
@@ -22,13 +25,20 @@ export async function GET(
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Verify merchant belongs to user
-    const { data: merchant } = await supabase
+    const { data: merchant, error: merchantErr } = await supabase
         .from("merchants")
         .select("id, name, photo_url, status, pos_type, description, address, opening_hours, pos_last_sync, instagram_url, tiktok_url, website_url")
         .eq("id", id)
         .eq("user_id", user.id)
         .single();
 
+    // PGRST116 = aucune ligne (pas son marchand) → vrai 404. Toute autre erreur DB
+    // ≠ « not found » : un blip renvoyait un 404 trompeur au dashboard (même garde
+    // que google/stats).
+    if (merchantErr && merchantErr.code !== "PGRST116") {
+        captureError(merchantErr, { route: "merchants/[id]/stats", step: "load-merchant" });
+        return NextResponse.json({ error: "db_error" }, { status: 500 });
+    }
     if (!merchant) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     // Period: last 7 days vs previous 7 days
@@ -93,10 +103,39 @@ export async function GET(
     }
 
     // 4. Products & stock
-    const { data: products } = await supabase
-        .from("products")
-        .select("id, name, photo_url, ean, created_at, stock(quantity, updated_at)")
-        .eq("merchant_id", id);
+    // PAGINÉ (KEYSET, cf. fetchAllRows) : un SELECT non borné est tronqué à 1000 lignes
+    // par PostgREST SANS erreur → au-delà de 1000 produits (pilote multimarque type
+    // Deerskin = des milliers de SKU), les compteurs stock ET le Two-Step Score étaient
+    // calculés sur un sous-ensemble silencieux. Échec de lecture ≠ « 0 produit » : sans
+    // la garde, un blip DB renvoyait des KPI all-zeros (faux « catalogue vide ») — les
+    // 2 consommateurs (use-dashboard-stats, tips) gatent res.ok → 500 honnête.
+    // try/catch : fetchAllRows peut THROW (garde maxPages anti-boucle) et un rejet
+    // transport peut lever hors du contrat {data,error} → même 500 contextualisé.
+    type ProductRow = {
+        id: string;
+        name: string | null;
+        photo_url: string | null;
+        ean: string | null;
+        created_at: string;
+        stock: unknown;
+    };
+    let products: ProductRow[];
+    try {
+        const { data, error: productsErr } = await fetchAllRows<ProductRow>(() =>
+            supabase
+                .from("products")
+                .select("id, name, photo_url, ean, created_at, stock(quantity, updated_at)")
+                .eq("merchant_id", id)
+                .order("id", { ascending: true }),
+        );
+        if (productsErr || !data) {
+            throw productsErr ?? new Error("products null without error — unexpected SDK state");
+        }
+        products = data;
+    } catch (err) {
+        captureError(err, { route: "merchants/[id]/stats", merchantId: id, step: "load-products" });
+        return NextResponse.json({ error: "db_error" }, { status: 500 });
+    }
 
     const totalProducts = products?.length ?? 0;
     const inStock =
@@ -114,26 +153,31 @@ export async function GET(
         ).length ?? 0;
     const withPhoto = products?.filter((p: any) => !!p.photo_url).length ?? 0;
 
-    // 5. Active promos — promotions are linked to products, not directly to merchant
+    // 5. Active promos — promotions are linked to products, not directly to merchant.
+    // Réutilise les produits déjà lus (paginés) au lieu d'une 2e lecture non bornée
+    // (elle aussi tronquée à 1000 → promos des produits au-delà jamais comptées).
+    // `.in()` chunké par 500 : une liste de milliers d'ids dépasse la limite d'URL
+    // PostgREST. Échec d'un lot → captureError + on continue (métrique d'engagement
+    // secondaire : dégrader, jamais bloquer les KPI stock).
     let activePromos = 0;
-    try {
-        const { data: merchantProducts } = await supabase
-            .from("products")
-            .select("id")
-            .eq("merchant_id", id);
-        const productIds = (merchantProducts ?? []).map((p: any) => p.id);
-
-        if (productIds.length > 0) {
-            const { count } = await supabase
+    const productIds = products.map((p) => p.id);
+    for (const ids of chunk(productIds, 500)) {
+        // try/catch par lot : un throw JS (rejet transport hors contrat {data,error})
+        // ne doit pas faire perdre TOUTE la réponse — les KPI stock déjà lus priment.
+        // Résidu assumé : un lot en échec sous-compte activePromos (captureError posé,
+        // métrique d'engagement secondaire — pas un KPI stock).
+        try {
+            const { count, error: promosErr } = await supabase
                 .from("promotions")
                 .select("*", { count: "exact", head: true })
-                .in("product_id", productIds)
+                .in("product_id", ids)
                 .lte("starts_at", now.toISOString())
                 .or(`ends_at.is.null,ends_at.gte.${now.toISOString()}`);
-            activePromos = count ?? 0;
+            if (promosErr) throw promosErr;
+            activePromos += count ?? 0;
+        } catch (err) {
+            captureError(err, { route: "merchants/[id]/stats", merchantId: id, step: "count-promos" });
         }
-    } catch {
-        // table may not exist yet
     }
 
     // 6. Google Merchant connection
