@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveProductId } from "@/lib/slug";
-import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
+import { productConfidence, publicConfidencePayload, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
 import { honestSalePrice } from "@/lib/products/sale-price";
 import { groupVariantsByEAN } from "@/lib/pos/sync-engine";
@@ -130,12 +130,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
                 .gte("created_at", reportsWindowStartIso()),
         ]);
 
-        (data as any).confidence = productConfidence({
+        // Projection publique : `reason` (interne) ne sort pas sur le fil (P0-4, revue SF-hunter).
+        (data as any).confidence = publicConfidencePayload(productConfidence({
             ...stockRowToConfidenceInput(s),
             posItemId: (data as any).pos_item_id ?? null,
             merchantHasIngest: !!ingest,
             recentNotInStoreReports: reportCount ?? 0,
-        });
+        }));
 
         return NextResponse.json({ product: data }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },

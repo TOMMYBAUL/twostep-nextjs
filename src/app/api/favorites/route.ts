@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { favoriteBody, parseBody } from "@/lib/validation";
+import { consumerM5Enabled, resolveConsumerConfidence } from "@/lib/stock/consumer-confidence";
 
 export async function GET(request: NextRequest) {
     try {
@@ -25,7 +26,29 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Failed to fetch favorites" }, { status: 500 });
         }
 
-        return NextResponse.json({ favorites: data ?? [] });
+        let favorites = data ?? [];
+
+        // P0-4 : verdict M5 par produit favori — le badge ne dit plus « Stock
+        // vérifié » sur le seul compteur. Champ additif dans `products`, flag-gaté.
+        if (consumerM5Enabled() && favorites.length > 0) {
+            const confMap = await resolveConsumerConfidence(
+                favorites
+                    .filter((f: any) => f.products?.id)
+                    .map((f: any) => ({
+                        productId: f.products.id as string,
+                        merchantId: (f.products.merchant_id as string | null) ?? null,
+                        posItemId: (f.products.pos_item_id as string | null) ?? null,
+                    })),
+                { supabase },
+            );
+            favorites = favorites.map((f: any) =>
+                f.products?.id
+                    ? { ...f, products: { ...f.products, confidence: confMap.get(f.products.id) ?? null } }
+                    : f,
+            );
+        }
+
+        return NextResponse.json({ favorites });
     } catch {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

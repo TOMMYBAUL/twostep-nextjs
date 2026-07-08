@@ -157,6 +157,7 @@ export function ExplorerFeed({
                                     stockQuantity={p.stock_quantity}
                                     merchantPosType={p.merchant_pos_type}
                                     salePrice={p.sale_price}
+                                    confidence={p.confidence}
                                     isFavorite={favoriteIds.has(p.product_id)}
                                     onToggleFavorite={() => onToggleFav(p.product_id)}
                                 />

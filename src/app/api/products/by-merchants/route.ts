@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
+import { productConfidence, publicConfidencePayload, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
 import { honestSalePrice } from "@/lib/products/sale-price";
 
@@ -95,12 +95,13 @@ export async function GET(request: NextRequest) {
             // Le tri promo_first ci-dessous s'aligne automatiquement (stale promo → null → non-promo).
             sale_price: honestSalePrice(p.price, promoMap.get(p.id) ?? null),
             category: p.category,
-            confidence: productConfidence({
+            // Projection publique : `reason` (interne) ne sort pas sur le fil (P0-4, revue SF-hunter).
+            confidence: publicConfidencePayload(productConfidence({
                 ...stockRowToConfidenceInput(stockMap.get(p.id)),
                 posItemId: p.pos_item_id ?? null,
                 merchantHasIngest: ingestMerchants.has(p.merchant_id),
                 recentNotInStoreReports: reportCounts.get(p.id) ?? 0,
-            }),
+            })),
             _availableSizes: p.available_sizes,
             distance_km: 0,
         }));

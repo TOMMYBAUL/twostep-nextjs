@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { honestSalePrice } from "@/lib/products/sale-price";
+import { attachConsumerConfidence, consumerM5Enabled } from "@/lib/stock/consumer-confidence";
 
 export async function GET(request: NextRequest) {
     const params = request.nextUrl.searchParams;
@@ -87,6 +88,12 @@ export async function GET(request: NextRequest) {
         // Adjust total for tag/price filters (count RPC doesn't know about them)
         const hasTagOrPriceFilter = brand || color || gender || priceMin != null || priceMax != null;
         const total = hasTagOrPriceFilter ? items.length : (countData ?? items.length);
+
+        // P0-4 : verdict M5 par produit (fin du « Stock vérifié » sur compteur brut
+        // et du `?? 99` côté grid). Champ additif, flag-gaté.
+        if (consumerM5Enabled()) {
+            items = await attachConsumerConfidence(items, { supabase });
+        }
 
         return NextResponse.json(
             { products: items, hasMore: hasTagOrPriceFilter ? false : offset + limit < total, total },
@@ -192,7 +199,7 @@ export async function GET(request: NextRequest) {
     const paged = items.slice(offset, offset + limit);
     const hasMore = offset + limit < total;
 
-    const products = paged.map((row: any) => ({
+    let products = paged.map((row: any) => ({
         product_id: row.product_id,
         product_name: row.product_name,
         product_price: row.product_price,
@@ -205,6 +212,11 @@ export async function GET(request: NextRequest) {
         distance_km: row.distance_km,
         sale_price: honestSalePrice(row.product_price, promoMap.get(row.product_id) ?? null),
     }));
+
+    // P0-4 : verdict M5 par produit (parité avec la branche RPC). Additif, flag-gaté.
+    if (consumerM5Enabled()) {
+        products = await attachConsumerConfidence(products, { supabase });
+    }
 
     return NextResponse.json(
         { products, hasMore, total },

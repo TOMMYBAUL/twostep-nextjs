@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import type { ConfidencePayload } from "@/lib/stock/stock-badge-view";
 
 interface SearchResult {
     product_id: string;
@@ -17,6 +18,8 @@ interface SearchResult {
     distance_km: number;
     sale_price: number | null;
     sale_ends_at: string | null;
+    /** Verdict M5 attaché par GET /api/search (flag `CONSUMER_M5_CONFIDENCE=1`). */
+    confidence?: ConfidencePayload | null;
 }
 
 interface AutocompleteSuggestion {

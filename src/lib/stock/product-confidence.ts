@@ -38,6 +38,24 @@ export type ProductConfidence = StockConfidence & {
     label: string;
 };
 
+/** Forme PUBLIQUE du verdict, émise sur le fil (routes API). */
+export type PublicConfidence = {
+    state: ProductConfidence["state"];
+    label: string;
+    freshnessLabel: string | null;
+};
+
+/**
+ * Projection publique d'un verdict : `reason` est documenté « interne
+ * (debug/monitoring), non affiché » (confidence.ts) mais il fuitait VERBATIM dans
+ * le JSON des routes (« downgraded by 3 report(s) » = agrégat de `stock_reports`
+ * RLS owner-only ; « manual source » = ce marchand n'a pas de caisse) — sur des
+ * routes anonymes. Toute route qui émet un verdict passe par CETTE projection.
+ */
+export function publicConfidencePayload(c: ProductConfidence): PublicConfidence {
+    return { state: c.state, label: c.label, freshnessLabel: c.freshnessLabel };
+}
+
 /** Forme minimale d'une ligne `stock` lue en DB (PostgREST renvoie 1 objet ou un tableau). */
 export type StockRowForConfidence = {
     quantity?: number | null;

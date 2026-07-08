@@ -7,6 +7,7 @@ import { resolveMerchantId } from "@/lib/slug";
 import { rateLimit } from "@/lib/rate-limit";
 import { fetchAllRows } from "@/lib/supabase/paginate";
 import { captureError } from "@/lib/error";
+import { consumerM5Enabled, resolveConsumerConfidence } from "@/lib/stock/consumer-confidence";
 
 // Lecture PAGINÉE (keyset) du catalogue : à l'échelle pilote (milliers de SKU) le GET
 // enchaîne ⌈catalogue/1000⌉ allers-retours séquentiels — même budget que les lecteurs
@@ -83,9 +84,24 @@ export async function GET(request: Request) {
 
         // La pagination keyset impose l'ordre par `id` ; on restaure le contrat d'affichage
         // (tri par nom, comme l'ancien `.order("name")`) côté serveur — sans re-troncature.
-        const products = [...(data ?? [])].sort((a, b) =>
+        let products = [...(data ?? [])].sort((a, b) =>
             String(a.name ?? "").localeCompare(String(b.name ?? ""), "fr"),
         );
+
+        // P0-4 : verdict M5 par produit sur la vitrine boutique PUBLIQUE (le listing
+        // `incomplete` est un écran dashboard marchand, pas une surface conso).
+        // Champ additif, flag-gaté.
+        if (consumerM5Enabled() && !incomplete && products.length > 0) {
+            const confMap = await resolveConsumerConfidence(
+                products.map((p) => ({
+                    productId: p.id,
+                    merchantId,
+                    posItemId: (p as { pos_item_id?: string | null }).pos_item_id ?? null,
+                })),
+                { supabase },
+            );
+            products = products.map((p) => ({ ...p, confidence: confMap.get(p.id) ?? null }));
+        }
 
         return NextResponse.json({ products }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },

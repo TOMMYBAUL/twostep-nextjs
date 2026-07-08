@@ -8,6 +8,7 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import { HeartButton } from "./heart-button";
 import { cx } from "@/utils/cx";
 import { generateSlug } from "@/lib/slug";
+import type { ConfidencePayload } from "@/lib/stock/stock-badge-view";
 
 interface ProductCardProps {
     id: string;
@@ -17,7 +18,8 @@ interface ProductCardProps {
     category?: string | null;
     merchantName: string;
     distance: number;
-    stockQuantity: number;
+    /** null = quantité inconnue (jamais fabriquer une valeur — P0-4, ex-`?? 99`). */
+    stockQuantity: number | null;
     merchantPosType?: string | null;
     salePrice?: number | null;
     isFavorite: boolean;
@@ -25,10 +27,17 @@ interface ProductCardProps {
     className?: string;
     compact?: boolean;
     index?: number;
+    /**
+     * Verdict M5 de la route (flag `CONSUMER_M5_CONFIDENCE=1`). Quand il est
+     * fourni, le compteur brut « Plus que X » n'est affiché QUE si la source est
+     * fraîche et forte (`state === "available"`) — un compteur issu d'une saisie
+     * manuelle/périmée est la zone où le système ment le plus (cf. confidence.ts).
+     */
+    confidence?: ConfidencePayload | null;
 }
 
 export function ProductCard({
-    id, name, price, photo, merchantName, distance, stockQuantity, merchantPosType, salePrice, isFavorite, onToggleFavorite, className, compact, index = 0,
+    id, name, price, photo, merchantName, distance, stockQuantity, merchantPosType, salePrice, isFavorite, onToggleFavorite, className, compact, index = 0, confidence,
 }: ProductCardProps) {
     const safeDistance = distance ?? 0;
     const formattedDistance = safeDistance < 1
@@ -36,7 +45,10 @@ export function ProductCard({
         : `${safeDistance.toFixed(1)}km`;
 
     const hasPOS = !!merchantPosType;
-    const isLow = hasPOS && stockQuantity > 0 && stockQuantity <= 3;
+    // Quantité inconnue (null) → pas de badge : on n'affiche jamais un compteur fabriqué.
+    const lowQty = typeof stockQuantity === "number" && stockQuantity > 0 && stockQuantity <= 3;
+    // Verdict M5 fourni (P0-4) : compteur brut seulement sur source fraîche+forte.
+    const isLow = hasPOS && lowQty && (confidence === undefined || confidence?.state === "available");
     const hasPromo = salePrice != null && salePrice < price;
     const ref = useRef<HTMLAnchorElement>(null);
     const prefersReducedMotion = useReducedMotion();

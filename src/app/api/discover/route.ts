@@ -4,6 +4,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { discoverQuery, parseQuery } from "@/lib/validation";
 import { captureError } from "@/lib/error";
 import { honestSalePrice } from "@/lib/products/sale-price";
+import { attachConsumerConfidence, consumerM5Enabled } from "@/lib/stock/consumer-confidence";
 
 export async function GET(request: NextRequest) {
     const limited = await rateLimit(request.headers.get("x-forwarded-for") ?? null, "discover", 60);
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
         // Apply brand/color/gender/price filters
         promoItems = await applyTagAndPriceFilters(supabase, promoItems, brand, color, gender, priceMin, priceMax);
 
-        const products = promoItems
+        let products = promoItems
             .map((row: any) => ({
                 product_id: row.product_id,
                 product_name: row.product_name,
@@ -75,6 +76,12 @@ export async function GET(request: NextRequest) {
             // ≥ prix courant après baisse de prix) ne doit pas apparaître dans l'onglet promos
             // (cohérent avec explorer-feed.tsx:47 qui filtrait déjà côté client).
             .filter((p: any) => p.sale_price != null);
+
+        // P0-4 : verdict M5 (confiance/fraîcheur) par produit — jamais « Stock
+        // vérifié » sur un compteur brut. Champ additif, flag-gaté.
+        if (consumerM5Enabled()) {
+            products = await attachConsumerConfidence(products, { supabase });
+        }
 
         return NextResponse.json({ products }, {
             headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
@@ -131,7 +138,7 @@ export async function GET(request: NextRequest) {
         items = [...items].sort((a: any, b: any) => a.distance_km - b.distance_km);
     }
 
-    const products = items.map((row: any) => ({
+    let products = items.map((row: any) => ({
         product_id: row.product_id,
         product_name: row.product_name,
         product_price: row.product_price,
@@ -144,6 +151,11 @@ export async function GET(request: NextRequest) {
         sale_price: honestSalePrice(row.product_price, row.sale_price ?? promoMap.get(row.product_id) ?? null),
         category: categoryMap.get(row.product_id)?.[0] ?? null,
     }));
+
+    // P0-4 : verdict M5 par produit (voir branche promos). Champ additif, flag-gaté.
+    if (consumerM5Enabled()) {
+        products = await attachConsumerConfidence(products, { supabase });
+    }
 
     return NextResponse.json({ products }, {
         headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },

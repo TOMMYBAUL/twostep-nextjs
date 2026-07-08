@@ -128,6 +128,7 @@ function SearchPageInner() {
                                     distance={r.distance_km}
                                     stockQuantity={r.stock_quantity}
                                     salePrice={r.sale_price}
+                                    confidence={r.confidence}
                                     isFavorite={favoriteIds.has(r.product_id)}
                                     onToggleFavorite={() => {
                                         if (favoriteIds.has(r.product_id)) remove.mutate(r.product_id);

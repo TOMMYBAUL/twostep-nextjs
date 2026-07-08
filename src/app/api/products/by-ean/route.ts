@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
-import { productConfidence, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
+import { productConfidence, publicConfidencePayload, stockRowToConfidenceInput } from "@/lib/stock/product-confidence";
 import { reportsWindowStartIso } from "@/lib/stock/reports";
 
 const EAN_REGEX = /^[0-9]{8,14}$/;
@@ -60,12 +60,13 @@ export async function GET(request: NextRequest) {
                 .eq("reason", "not_in_store")
                 .gte("created_at", reportsWindowStartIso()),
         ]);
-        const confidence = productConfidence({
+        // Projection publique : `reason` (interne) ne sort pas sur le fil (P0-4, revue SF-hunter).
+        const confidence = publicConfidencePayload(productConfidence({
             ...stockInput,
             posItemId: (merchantHit as any).pos_item_id ?? null,
             merchantHasIngest: !!ingest,
             recentNotInStoreReports: reportCount ?? 0,
-        });
+        }));
         return NextResponse.json({ status: "merchant_hit", product: { ...merchantHit, confidence } }, { headers });
     }
 

@@ -3,18 +3,26 @@
  * Derived from Supabase query shapes in the API routes.
  */
 
+import type { ConfidencePayload } from "@/lib/stock/stock-badge-view";
+
 /** Shape returned by GET /api/discover, /api/products/discover, /api/search, etc. */
 export interface ProductResult {
     product_id: string;
     product_name: string;
     product_price: number;
     product_photo: string | null;
-    stock_quantity: number;
+    /** Peut être null côté RPC — ne jamais fabriquer une valeur (P0-4, ex-`?? 99`). */
+    stock_quantity: number | null;
     merchant_id: string;
     merchant_name: string;
     merchant_photo?: string | null;
     distance_km: number;
     sale_price: number | null;
+    /**
+     * Verdict M5 (confiance/fraîcheur) — émis par les routes quand le flag
+     * `CONSUMER_M5_CONFIDENCE=1` est posé. `null` = pas pu vérifier.
+     */
+    confidence?: ConfidencePayload | null;
 }
 
 /**
@@ -36,6 +44,8 @@ export interface FavoriteItem {
         category: string | null;
         stock: { quantity: number }[];
         merchants: { name: string; address: string; city: string } | null;
+        /** Verdict M5 attaché par GET /api/favorites (flag `CONSUMER_M5_CONFIDENCE=1`). */
+        confidence?: ConfidencePayload | null;
     };
 }
 

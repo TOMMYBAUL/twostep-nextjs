@@ -44,6 +44,8 @@ interface Product {
     category: string | null;
     created_at: string;
     stock: { quantity: number } | null;
+    /** Verdict M5 attaché par GET /api/products (flag `CONSUMER_M5_CONFIDENCE=1`). */
+    confidence?: import("@/lib/stock/stock-badge-view").ConfidencePayload | null;
 }
 
 interface Promotion {
@@ -428,6 +430,7 @@ export default function ShopProfileClient() {
                             distance={0}
                             stockQuantity={p.stock?.quantity ?? 0}
                             salePrice={promoMap.get(p.id) ?? null}
+                            confidence={p.confidence}
                             isFavorite={favoriteIds.has(p.id)}
                             onToggleFavorite={() => favoriteIds.has(p.id) ? remove.mutate(p.id) : add.mutate(p.id)}
                         />
