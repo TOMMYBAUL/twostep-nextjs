@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-08 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-08 (L'Auditeur)*
 
 ## Stats
 - Total leads : 211
-- NOUVEAU : 66
+- NOUVEAU : 61
 - CONTACTE : 1
-- BROUILLON : 118
+- BROUILLON : 123
 - Reponses : 0
 - Signes : 0
 
@@ -39,6 +39,26 @@
 
 ---
 
+## Recap brouillons email — 2026-07-08 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (26e session consécutive)
+
+**Source leads** : Session L'Eclaireur 07/07 — Capitole (toulouse-merchants-full.json). 5 leads NOUVEAU restants. Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-08.md`
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Isabelle Grimaudo (LES PIPELETTES) | lespipelettestoulouse31@gmail.com | Les Pipelettes sur Two-Step — tes bijoux créateurs trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — marque bijoux acier créateurs, histoire familiale, depuis 2014. 43 rue des Tourneurs. Score 7/10. |
+| 2 | Charles-Henri André de la Porte (SILLAGE ETHNIQUE) | sillage.artisanat@gmail.com | Sillage Ethnique sur Two-Step — tes pierres semi-précieuses trouvées par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — bijoux ethniques pierres semi-précieuses depuis 1898. 36 rue du Taur. Score 7/10. |
+| 3 | Marion Gaudin (L'AMAZONE) | contact.lamazonebijoux@gmail.com | L'Amazone sur Two-Step — tes 5 000 pièces trouvées par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — bijoux de caractère, 5 000 pièces, 7 marques, reconversion. 38 rue des Tourneurs. Score 7/10. |
+| 4 | Valéry Alber (L'ESTAMPILLE) | estampille.sarl@free.fr | L'Estampille sur Two-Step — ta porcelaine Limoges visible par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — ex-sculpteur Royal Limoges, porcelaine haut de gamme arts de la table. 4 rue d'Astorg. Score 6/10. |
+| 5 | Romain Gea (ORMAIN) | contact@ormain.com | ORMAIN sur Two-Step — ton stock luxe seconde main visible en temps réel | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — dépôt-vente luxe 2e main (Chanel/LV/Dior), 90k visites/mois. ⚠️ Pertinence à valider Thomas. 14 rue Saint Antoine du T. Score 5/10. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 26e session consécutive sans création de draft (11/06 → 08/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller dans : `docs/prospection/brouillons/brouillons-email-2026-07-08.md`** Notion MCP indisponible (27e session consécutive).
+
+*Note session 08/07 (L'Auditeur) : 5 leads NOUVEAU → BROUILLON (LES PIPELETTES, SILLAGE ETHNIQUE, L'AMAZONE, L'ESTAMPILLE, ORMAIN — reliquat Eclaireur 07/07). Recherches web effectuées pour chaque lead. Emails ACA personnalisés, max 150 mots, tutoiement, prenom gérant. ORMAIN : dépôt-vente luxe 2e main, stock tournant — pertinence Two-Step à valider par Thomas. Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré).*
+
+---
+
 ### Lundi — 2026-07-07 (L'Eclaireur) — Capitole (toulouse-merchants-full.json) — 10 emails confirmés
 
 **Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) | **Statut** : À valider
@@ -52,11 +72,11 @@
 | VERGNES OPTIC | Capitole/Saint-Antoine | Optique | Elisabeth Poyet (vergnes) | contact@vergnesoptic.com ✅ | 449436906 | 9/10 | BROUILLON | Email confirmé via vergnesoptic-toulouse.monopticien.com. 26 rue Saint Antoine du T. 2 générations, Saint-Laurent. Brouillon rédigé 07/07. |
 | L'OPTICIEN | Capitole/Tourneurs | Optique créateur | Maud Héran | lopticien.toulouse@gmail.com ✅ | 789195575 | 8/10 | BROUILLON | Email confirmé via annuaires. 16 rue des Tourneurs. Opticien créateur, stockiste Izipizi, depuis 2012. Brouillon rédigé 07/07. |
 | CARPE DIEM DÉCO | Capitole/Astorg | Déco/Concept store | Valérie Nguyen (goryl) | contact@carpediemdeco.com ✅ | 521088344 | 8/10 | BROUILLON | Email confirmé via carpediemdeco.com. 18 rue d'Astorg. Concept store déco+mode+accessoires, ancienne acheteuse luxe, depuis 2010. Brouillon rédigé 07/07. |
-| LES PIPELETTES | Capitole/Tourneurs | Bijouterie fantaisie | Isabelle Grimaudo | lespipelettestoulouse31@gmail.com ✅ | 800846347 | 7/10 | NOUVEAU | Email confirmé via annuaires. 43 rue des Tourneurs. Bijouterie haut de gamme créateurs, depuis 2014. |
-| SILLAGE ETHNIQUE | Capitole/Taur | Bijouterie ethnique | Charles-Henri André de la Porte | sillage.artisanat@gmail.com ✅ | 521674895 | 7/10 | NOUVEAU | Email confirmé via annuaires. 36 rue du Taur. Bijoux ethniques, pierres semi-précieuses, depuis 1898. |
-| L'AMAZONE | Capitole/Tourneurs | Bijouterie | Marion Gaudin | contact.lamazonebijoux@gmail.com ✅ | 981882020 | 7/10 | NOUVEAU | Email confirmé via lamazonebijoux.com. 38 rue des Tourneurs. Bijoux de caractère, 5000 pièces, 7 marques. |
-| L'ESTAMPILLE | Capitole/Astorg | Déco/Arts de la table | Valéry Alber | estampille.sarl@free.fr ✅ | 410709307 | 6/10 | NOUVEAU | Email confirmé via annuaires. 4 rue d'Astorg. Porcelaine Limoges, arts de la table, ex-Royal Limoges. |
-| ORMAIN | Capitole/Saint-Antoine | Maroquinerie luxe | Romain Gea | contact@ormain.com ✅ | 989855069 | 5/10 | NOUVEAU | Email confirmé via ormain.com. 14 rue Saint Antoine du T. ⚠️ Dépôt-vente luxe 2e main (Chanel/LV/Dior) — stock tournant, pertinence Two-Step à valider. |
+| LES PIPELETTES | Capitole/Tourneurs | Bijouterie fantaisie | Isabelle Grimaudo | lespipelettestoulouse31@gmail.com ✅ | 800846347 | 7/10 | BROUILLON | Email confirmé via annuaires. 43 rue des Tourneurs. Bijouterie haut de gamme créateurs, depuis 2014. Brouillon rédigé 08/07. |
+| SILLAGE ETHNIQUE | Capitole/Taur | Bijouterie ethnique | Charles-Henri André de la Porte | sillage.artisanat@gmail.com ✅ | 521674895 | 7/10 | BROUILLON | Email confirmé via annuaires. 36 rue du Taur. Bijoux ethniques, pierres semi-précieuses, depuis 1898. Brouillon rédigé 08/07. |
+| L'AMAZONE | Capitole/Tourneurs | Bijouterie | Marion Gaudin | contact.lamazonebijoux@gmail.com ✅ | 981882020 | 7/10 | BROUILLON | Email confirmé via lamazonebijoux.com. 38 rue des Tourneurs. Bijoux de caractère, 5000 pièces, 7 marques. Brouillon rédigé 08/07. |
+| L'ESTAMPILLE | Capitole/Astorg | Déco/Arts de la table | Valéry Alber | estampille.sarl@free.fr ✅ | 410709307 | 6/10 | BROUILLON | Email confirmé via annuaires. 4 rue d'Astorg. Porcelaine Limoges, arts de la table, ex-Royal Limoges. Brouillon rédigé 08/07. |
+| ORMAIN | Capitole/Saint-Antoine | Maroquinerie luxe | Romain Gea | contact@ormain.com ✅ | 989855069 | 5/10 | BROUILLON | Email confirmé via ormain.com. 14 rue Saint Antoine du T. ⚠️ Dépôt-vente luxe 2e main (Chanel/LV/Dior) — stock tournant, pertinence Two-Step à valider. Brouillon rédigé 08/07. |
 
 **Écartées session 07/07 :**
 | Boutique | SIREN | Motif |
