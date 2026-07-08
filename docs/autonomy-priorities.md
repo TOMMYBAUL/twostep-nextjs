@@ -90,12 +90,21 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    sur les 8 routes émettrices ; trip-wire RLS anti « tout Épuisé » silencieux). 1279→1304 tests.
    **Reste = GO flag + jugement visuel Thomas (DECISIONS-EN-ATTENTE #11).**
 3. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
+   - ✅ **`merchants/[id]/stats` FAIT (2026-07-08, commit `e29c673`)** — KPI dashboard marchand
+     (chemin pilote : l'écran de Deerskin) paginé keyset + fail-loud + `.in()` chunké ; revue
+     SF-hunter SOUND (tests vérifiés non-vacants par revert). Résidus hors chemin pilote
+     restants : `ai/categorize.ts:402` (LOW), `images/jobs.ts:36` (LOW-MED, dormant clé absente),
+     `push-send.ts` (LOW, app conso gatée /bientot).
 
 **P1 — ARMEMENT PILOTE (nouveau périmètre AUTORISÉ : livrables non-code dans `docs/prospection/`)**
 > La boucle est explicitement autorisée à produire des documents/fixtures/démos — la barre de
 > preuve s'applique aussi : un runbook se teste À BLANC sur un marchand seed via le VRAI pipeline.
-1. **6a.3 Runbook onboarding pilote** (Deerskin) : de la poignée de main au feed quotidien vert —
-   chaque étape avec la commande/l'écran exact, testé à blanc de bout en bout sur un marchand seed.
+1. ✅ **6a.3 Runbook onboarding pilote FAIT (2026-07-08)** : `docs/prospection/runbook-onboarding-pilote.md`
+   (7 phases poignée-de-main → feed vert, écrans/commandes exacts, dépannage par symptôme). Testé
+   À BLANC via le VRAI pipeline (`e2e-ingest-preview.mjs` sur dev local, marchand jetable nettoyé) :
+   **17/17 VERT** + vérif D7 en réel (EAN résolu FAUX par source polluée, score 0.965 → `pending`/
+   invisible = rien ne s'auto-publie). Limites honnêtes documentées (fixtures Zettle réelles = item 3 ;
+   rendu écrans = décision #7 ; voies OAuth/email-in non exerçables à blanc).
 2. **6a.2 Vitrine démo via le PIPELINE RÉEL** : un marchand démo « boutique multimarque Toulouse »
    dont le catalogue est passé par ingest réel → enrichissement → shadow/preview → vitrine.
    (Remplace les données hand-fakées ; le jugement visuel final reste Thomas.)

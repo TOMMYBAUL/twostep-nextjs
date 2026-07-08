@@ -53,7 +53,7 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 - Dérivation d'état en helper PUR testable sans RTL ; le rendu visuel = l'œil de Thomas décide.
 
 ## Windows / environnement
-- NetLimiter intercepte le TLS → git en SSH ; pre-push déterministe (tests réseau live isolés dans `test:db`).
+- NetLimiter intercepte le TLS → git en SSH ; pre-push déterministe (tests réseau live isolés dans `test:db`) ; e2e local : le dev server doit HÉRITER du contournement TLS (relancer depuis le shell courant), sinon `fetch failed` côté serveur.
 - winget ET npm installent Claude Code → maj les deux. `.ps1` planifié : ASCII pur ou UTF-8 BOM.
 
 ## Git / workflow / tests

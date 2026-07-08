@@ -20,6 +20,8 @@
   **La seule action que ni la boucle ni personne d'autre ne peut faire.** Tout le reste du
   système est construit et attend ce catalogue. Proposition : bloquer une demi-journée cette
   semaine ; la boucle aura le runbook + la vitrine démo prêts (P1 de la mission).
+  → **Runbook PRÊT (2026-07-08)** : `docs/prospection/runbook-onboarding-pilote.md`, testé à
+  blanc 17/17 vert via le vrai pipeline. Vitrine démo (6a.2) = prochain run.
 
 ## 🟢 Prospection (débloqué par le pivot vacances-des-2-boutiques du 07/07)
 

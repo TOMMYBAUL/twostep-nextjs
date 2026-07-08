@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-08 (run autonome #2) · P0-3 KPI dashboard paginé + P1 6a.3 RUNBOOK onboarding pilote testé À BLANC (17/17 VERT)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0-2 (préparé, migration
+108) et P0-4 (préparé, flag) déjà escaladés → P0-3 reliquat troncature : le finding `merchants/[id]/stats`
+(Explore 07-07) **RE-VÉRIFIÉ au code réel, CONFIRMÉ** (2 lectures products non bornées + erreurs avalées)
+et il touche le chemin pilote (c'est le dashboard que verra Deerskin, milliers de SKU) → fixé. Puis P1 de
+plus haut rang = **6a.3** (le [R] nommé par le run précédent).
+
+**P0-3 (commit `e29c673`)** : `GET /api/merchants/[id]/stats` (KPI stock + Two-Step Score, consommé par
+`use-dashboard-stats` + coach `tips`) — lecture products `fetchAllRows` KEYSET (catalogue >1000 lu ENTIER),
+2e lecture doublon des promos SUPPRIMÉE (réutilise les ids paginés) + `.in()` chunké 500, erreurs honnêtes
+(blip DB → 500 + captureError, jamais des KPI all-zeros ni un faux 404 ; les 2 consommateurs gatent res.ok
+→ blast LOW). **Revue SF-hunter : SOUND** — a vérifié les tests NON-VACANTS en revertant le source (4/4
+échouent sans le fix) ; **MED corrigé** (throw JS d'un lot promos ne perd plus toute la réponse) + **LOW
+corrigé** (throw fetchAllRows → 500 contextualisé). Résidus nommés : sous-compte promos sur lot en échec
+(captureError posé, métrique secondaire) ; **`dashboard/page.tsx` ignore `error` du hook** (pré-existant
+classe E1, désormais exerçable pour la 1re fois → candidat [R] court). Preuve
+`tests/merchant-stats-pagination.test.ts` (+6, faux client keyset cap-1000). tsc OK, **1304→1310**.
+
+**P1 6a.3 (ce commit)** : `docs/prospection/runbook-onboarding-pilote.md` — 7 phases (prérequis env →
+RDV → compte → import [4 voies] → review OBLIGATOIRE → Google/readiness → feed vert J+1 → externes
+Google) avec l'écran/commande EXACT par étape + table de dépannage par symptôme + limites honnêtes.
+**TESTÉ À BLANC via le VRAI pipeline** (`scripts/e2e-ingest-preview.mjs` sur dev local = code branche,
+marchand JETABLE créé puis nettoyé) : **17/17 VERT** — push CSV FR sale → triage 1 GTIN/3 SKU/1 rejet
+motivé → 3 produits créés → tailles 42/43 tracées `file_column` → stock `source=file_push` → 3 jobs
+enrichissement → worker 3/3 → invisible avant review → re-push `unchanged` (idempotence) → jeton
+invalide 401. **+ Vérif D7 sur le chemin réel** (2e marchand jetable) : l'EAN Nutella `3017620422003`
+résolu FAUX par une source polluée (« EAU DU BOUHEUR…FRAGONARD », score brut 0.965) → `review_status:
+pending`, `visible:false` = **rien ne s'auto-publie sur une identité douteuse** ; la garde D7 validée
+VIVANTE en conditions réelles, et la review humaine documentée comme étape non négociable du runbook.
+
+**Env** : un dev server préexistant (PID 15500) sans contournement TLS NetLimiter faisait échouer les
+fetch CÔTÉ SERVEUR (`ingest token resolution failed`) → tué + relancé depuis le shell courant (LESSON
+ajoutée). GitNexus MCP non connecté → scope par `git diff --stat` + callers par grep.
+
+**Scorecard** : Preuve 9/10 (à blanc réel de bout en bout + garde D7 exercée sur donnée sale réelle ;
+reste fixtures Zettle réelles) · Sécu north-star 9/10 (troncature KPI pilote fermée + preuve « zéro
+faux positif » vivante) · Réversibilité 10/10 (0 migration) · Scope 9/10 (fix 2 fichiers + docs) ·
+Align 10/10 (P0 puis P1 top-rang mission). CFR : 0 revert.
+
+**Escalade (notify)** : runbook PRÊT → le RDV Deerskin (**décision #4**) n'attend plus que Thomas ;
+prérequis env = décisions 1/2/3. **RESTE** : P1 6a.2 vitrine démo via pipeline réel (= prochain [R]) ;
+item 3 fixtures réelles Clictill/Fastmag/Zettle ; 6b kit prospection ; 6c dossier Trusted ; [R] court :
+`dashboard/page.tsx` consommer `error` du hook (bannière honnête). GATED inchangés : décisions 1/2/3/5/6/7.
+
+---
+
 ## 2026-07-08 (run autonome) · P0-4 — surfaces conso branchées M5 (fin du « Stock vérifié » sur compteur brut), derrière flag
 
 **Sourcing (§1ter Opération Pilote)** : `DECISIONS-EN-ATTENTE.md` lu en premier — aucune nouvelle décision cochée
