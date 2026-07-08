@@ -1,16 +1,43 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-07 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-08 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 206
+- Total leads : 211
 - NOUVEAU : 66
 - CONTACTE : 1
-- BROUILLON : 113
+- BROUILLON : 118
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Mardi — 2026-07-08 (L'Eclaireur) — Saint-Etienne (toulouse-merchants-full.json) — 5 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi) | **Statut** : À valider
+
+**Note de session :** top-prospects-centre.json Saint-Etienne ÉPUISÉ (27/27 traités depuis 23/06). Pivot vers toulouse-merchants-full.json : recherche dans rues Boulbonne, Croix Baragnon, Languedoc, Sainte-Ursule, Cujas + rues adjacentes (Puits Clos). La majorité des boutiques des rues principales déjà traitées (sessions avril-juin 2026). **5 emails confirmés sur nouveaux candidats** : 3 opticiens indépendants + 1 chaussures multimarques + 1 mode éthique. Nombreuses écartées définitives (liquidations 2009-2026).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| NEIWA | Saint-Etienne/Sainte-Ursule | Mode éco | Jean-Baptiste Mettra | contact@neiwa.fr ✅ | 507442762 | 7/10 | BROUILLON | Email confirmé via neiwa.fr. 7 rue Sainte-Ursule. Mode éthique/durable multimarques. |
+| EXCKLUSIVE | Saint-Etienne/Sainte-Ursule | Chaussures | Kendy Cyrille | contact@excklusive.com ✅ | 828114918 | 8/10 | BROUILLON | Email confirmé via site web. 20 rue Sainte-Ursule. Chaussures multimarques (Adidas/Vans/Puma/Reebok). |
+| MAX OPTIC | Saint-Etienne/Boulbonne | Optique | Maxime Levy | contact@maxoptic.fr ✅ | 452349129 | 7/10 | BROUILLON | Email confirmé. 45 rue Boulbonne. Optique indépendante 3 étab. |
+| OPTIQUE VALES | Saint-Etienne/Boulbonne | Optique | Jacques Vales | magasinboulbonne@optiquevales.fr ✅ | 312826639 | 8/10 | BROUILLON | Email confirmé via optiquevales.fr. 29 rue Boulbonne. Optique famille indépendante. |
+| IMAGIN OPTIQUE (MOLOKO) | Saint-Etienne/Puits Clos | Optique | — | imaginoptique@hotmail.fr ✅ | 840599690 | 8/10 | BROUILLON | Email confirmé via imaginoptique.com/contact. 18 rue des Puits Clos. Optique indépendante créateur. |
+
+**Écartées session 08/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| STRETTO FEMMES (STRETTO 2) | 489099770 | Liquidation judiciaire 2009, radiée décembre 2009 — ÉCARTÉE DÉFINITIF |
+| PULP STORE | 799291141 | Liquidation judiciaire 2015, radiée octobre 2016 — ÉCARTÉE DÉFINITIF |
+| LAMA | 421370651 | Liquidation judiciaire mars 2026 — ÉCARTÉE DÉFINITIF |
+| FUTURWARE LAB | 410238703 | Société inactive depuis 2011, établissement Toulouse fermé — ÉCARTÉE DÉFINITIF |
+| TRIBECA VILLAGE | 448067231 | Fermée octobre 2014, radiée — ÉCARTÉE DÉFINITIF |
+
+*Note session 08/07 (L'Eclaireur) : Saint-Etienne ÉPUISÉ JSON top-prospects-centre.json (27/27 depuis 23/06). Pivot toulouse-merchants-full.json : zone principale (Boulbonne, Croix Baragnon, Languedoc, Sainte-Ursule, Cujas) largement traitée lors des sessions avril-juin. 5 emails confirmés : OPTIQUE VALES (Jacques Vales, 8/10), IMAGIN OPTIQUE (Imagin Optique MOLOKO, 8/10), EXCKLUSIVE (Kendy Cyrille, 8/10), MAX OPTIC (Maxime Levy, 7/10), NEIWA (Jean-Baptiste Mettra, 7/10). LES CIGALES (441927951) déjà dans tracker BROUILLON (21/05). LES FEES DE LA CREATION (493678122) déjà BROUILLON. CONCEPT TOULOUSE (949677249) déjà ÉCARTÉ (cessation 21/03/2025). HANNAH (799219837) déjà ÉCARTÉ (session 16/06). 5 nouvelles ÉCARTÉES DÉFINITIF (liquidations 2009-2026). Notion MCP indisponible (27e session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-08".*
+
+---
 
 ### Lundi — 2026-07-07 (L'Eclaireur) — Capitole (toulouse-merchants-full.json) — 10 emails confirmés
 
