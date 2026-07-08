@@ -54,11 +54,24 @@ revue SOUND, MED fermé) · Réversibilité 10/10 (0 migration) · Scope 9/10 (5
 Align 10/10 (item #2 feuille de route audit, chemin pilote — 1 des 4 voies d'import du runbook).
 CFR 10 derniers runs : 100 % (exit=0 + commit), 0 revert.
 
-**RESTE / prochain [R]** : la 2e moitié de l'item #2 audit = **photo OBF/OPF soumise à la vérif vision**
-(M3 HAUT : image Open Facts publiée sans `verifyPhotoWithAI`) — même périmètre, non fait ici pour tenir
-le scope. Puis P1 6a.2 vitrine démo via pipeline réel (inchangé). GATED inchangés : décisions 1/2/3/5/6/7
-(+ #11 flag conso). Item #10 audit (nettoyage attributs au downgrade + D7 dans `applyEnrichment` pour les
-produits déjà publiés) = candidat [R] moyen, nommé par la revue.
+**2e unité (même run, commit `0f6695c`) — M3 HAUT PRÉPARÉ+ESCALADÉ : images OBF/OPF sous vérif vision,
+GATED `VERIFY_OPEN_FACTS_IMAGES=1`.** Le bypass était une décision DÉLIBÉRÉE documentée (06-28 :
+« GTIN-keyée = fiable », posée parce que fail-closed sans clé = zéro image OBF) que l'audit conteste →
+cas §2 verifiability : préparé derrière flag (OFF = prod BYTE-IDENTIQUE, prouvé : garde court-circuitée
+avant tout await), jamais activé seul. ON = image OBF routée par la MÊME garde fail-closed que Serper,
+uniquement quand elle serait réellement posée (0 dépense no-op) ; rejet → repli Serper (vérifié).
+**2e revue SF-hunter : SOUND pour l'OFF-défaut ; HIGH corrigé** (photo rejetée + Serper vide = produit
+JAMAIS re-tenté — `canonical_name` posé le sort de `selectProductsToEnrich` — donc inéligible feed en
+silence → désormais `captureError` PAR rejet, phase `openfacts-image-verify`) **+ LOW corrigé** (nom
+vide → fail-closed sans appel vision). Résidus documentés dans la décision #12 : activer sans clé
+ANTHROPIC = zéro photo ; `PUBLISH_UNVERIFIED_IMAGES=1` annule la vérif ; wizard admin hors garde (revue
+humaine) ; marqueur persisté + retry borné = design à trancher au GO. Preuve
+`tests/ean-openfacts-image-verify.test.ts` (+7) via le VRAI `lookupEan`. **1318→1324**, tsc OK.
+
+**RESTE / prochain [R]** : P1 6a.2 vitrine démo via pipeline réel (inchangé), OU item #3 feuille de
+route audit (file_push via `update_stock_atomic` + vrai `source_ts` — M4 CRITIQUE, à vérifier au code
+réel d'abord). GATED : décisions 1/2/3/5/6/7 + #11 + **#12 (nouveau)**. Item #10 audit (nettoyage
+attributs au downgrade + D7 dans `applyEnrichment` pour produits déjà publiés) = candidat [R] moyen.
 
 ---
 

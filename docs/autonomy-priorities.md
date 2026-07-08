@@ -94,9 +94,11 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    défauts DB 027/081 publiaient une identité jamais scorée), adoption pré-insert du nom `fetchEanData`
    gardée par `evalIdentityConcordance` (extrait en source unique `identity-concordance.ts`), inline
    `resolveAndEnrich` remplacé par la file `enrichment_jobs` → worker → `runCascade`/D7. Revue SF-hunter
-   SOUND (1 MED corrigé). 1310→1318 tests, non-vacance par revert. **RESTE (2e moitié item #2, M3 HAUT,
-   prochain [R] P0)** : soumettre la **photo OBF/OPF à la vérif vision** (`verifyPhotoWithAI` n'est
-   appelé que sur Serper — une image Open Facts fausse/dos d'emballage passe sans contrôle).
+   SOUND (1 MED corrigé). 1310→1318 tests, non-vacance par revert. **2e moitié (M3 HAUT) PRÉPARÉE+
+   ESCALADÉE le même run (commit `0f6695c`)** : photo OBF/OPF sous vérif vision derrière flag
+   `VERIFY_OPEN_FACTS_IMAGES=1` (OFF = prod byte-identique ; revue SF-hunter SOUND, HIGH « rejet
+   invisible » + LOW « nom vide » corrigés ; 1318→1324). **→ item #2 audit COMPLET côté boucle ;
+   GO = décision #12** (couplée clé ANTHROPIC #1).
 4. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
    - ✅ **`merchants/[id]/stats` FAIT (2026-07-08, commit `e29c673`)** — KPI dashboard marchand
      (chemin pilote : l'écran de Deerskin) paginé keyset + fail-loud + `.in()` chunké ; revue

@@ -44,6 +44,14 @@
   le rendu pendant la séance #7** (l'app conso est gatée /bientot pendant la phase pilote →
   exposition minimale). Coût du retard : les 3 vérités contradictoires restent visibles à
   quiconque voit une démo de l'app conso.
+- [ ] **12. Flag `VERIFY_OPEN_FACTS_IMAGES=1`** (audit M3 HAUT, préparé le 2026-07-09, commit `0f6695c`) :
+  soumettre les images Open Facts (OBF/OPF) à la vérif vision Haiku avant publication, comme Serper.
+  Aujourd'hui elles passent SANS contrôle (décision 06-28 « GTIN-keyée = fiable » — l'audit conteste :
+  barcode reuse, photo de dos). OFF = comportement actuel inchangé. Reco : **ON en même temps que la
+  clé ANTHROPIC (décision 1)** — l'activer SANS la clé = zéro photo du tout (fail-closed). Limites
+  honnêtes : une photo rejetée n'est PAS re-tentée automatiquement (tracée Sentry par produit ;
+  marqueur+retry = design à trancher si besoin) ; `PUBLISH_UNVERIFIED_IMAGES=1` annule la vérif ;
+  le wizard admin (cascade-suggest) reste hors garde (revue humaine).
 - [ ] **8. Cadence de la boucle** : tâche planifiée = 1 run/75 min × 15 h ≈ **12 runs/jour**.
   Avec la mission Opération Pilote il y a à nouveau du travail réel, mais la reco reste
   **4-6 runs/jour** (runs profonds > runs fréquents ; quota partagé avec ton usage perso).
