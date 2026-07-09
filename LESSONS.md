@@ -28,6 +28,7 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 
 ## Gates, feeds & vérification
 - « verify » : jamais `true` sur erreur ; fail-CLOSED si la donnée serait publiée ; distinguer « pas pu vérifier » de « vérifié OK ».
+- Garde ajoutée à l'APPLY → la rejouer dans le comptage du PREVIEW/dryRun (parité wizard) ; comparer des timestamps DB en EPOCH (PostgREST rend « +00:00 », pas « Z ») ; 100 % rejeté-par-garde ≠ statut ok. Horodatage déclaré (export, email) : sanitiser + clamp futur, jamais cru sur parole.
 - Objet verdict d'une lib émis en JSON : PROJETER les champs publics (un champ debug `reason` fuyait des agrégats RLS sur routes anonymes). Lot RLS vide SANS erreur ≠ « 0 stock » → trip-wire sur lot large 100 % vide.
 - Garde posée au WRITE à rejouer au READ si un opérande peut changer → 1 helper unique traversé par tous.
 - Défauts DB permissifs (visible=true, review_status='validated') : tout `.from("products").insert` doit poser le gate EXPLICITEMENT (grep tous les inserts). Une garde vivant dans le moteur de score (runCascade/D7) ne protège pas un chemin qui adopte l'identité HORS moteur → extraire la garde en helper leaf.

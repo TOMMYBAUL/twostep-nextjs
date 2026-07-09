@@ -5,6 +5,80 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-09 (run autonome #2) · M4 CRITIQUE audit — vrai source_ts file_push + garde temporelle (fin de « l'export périmé écrase la vente webhook »)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0 mission épuisé
+côté boucle → item #3 de la feuille de route audit 07-08 (M4 CRITIQUE), nommé par le run précédent.
+**RE-VÉRIFIÉ au code réel avant d'agir** (LESSONS ~70 %) : confirmé à 100 % — `snapshot.ts` écrivait
+le stock en upsert direct (flush par lots) + `.update()` (réconciliation) avec `source_ts: nowIso`,
+sans jamais passer par `update_stock_atomic`. Un export généré à 02:00 uploadé à 09:00 écrasait une
+vente webhook de 08:00 (faux « en stock » n°1) ET empoisonnait la fraîcheur M5 (« vu à l'instant »
+pour une observation de 7 h). Constat clé : les 2 moitiés sont COUPLÉES — la garde sans vrai
+source_ts est inerte (now bat tout), le vrai source_ts sans garde ne protège rien.
+
+**Fix (commit `c7b56ef`) — [R] actif + [G] préparé** :
+1. **[R] Vrai `source_ts`** : `sanitizeSourceTs` pur (`src/lib/ingest/source-ts.ts` — ISO/epoch-ms,
+   clamp futur→now [une horloge en avance ne fabrique jamais une vérité imbattable], <2000→null,
+   invalide→null + Sentry `source-ts-invalid`) ; `opts.sourceTs` sanitisé en un seul point dans
+   `ingestStockSnapshot`, threadé par les 3 canaux : `generated_at` (push jeton, query/multipart),
+   `created_at` de l'email (email-in — un retry Resend des heures plus tard ne rajeunit plus la
+   vérité ; absence = dérive de schéma SIGNALÉE), `file.lastModified` (wizard — LE cas de l'audit ;
+   champ multipart `file_last_modified`, le mtime ne transite pas sinon ; UI non-visuelle : 2 lignes
+   FormData).
+2. **[R] Réconciliation GARDÉE, race-free SANS migration** : le `.lte("source_ts", exportTs)` est
+   porté par l'UPDATE lui-même (atomique côté Postgres, zéro fenêtre read-then-write) → un produit
+   restocké par webhook APRÈS la génération de l'export n'est JAMAIS passé à 0. `.select` → effets
+   dérivés (feed_events `out_of_stock`, vidage tailles) UNIQUEMENT sur les lignes réellement à 0,
+   compteurs honnêtes (`stock_zeroed`, nouveau `stock_stale_skipped`). Sans sourceTs explicite :
+   chemin historique byte-identique.
+3. **[G] REPLACE gardé = migration 112 (NON appliquée) + flag `FILE_PUSH_ATOMIC_STOCK=1`** (OFF =
+   upsert actuel byte-identique) : PostgREST ne sait pas conditionner un upsert → RPC batch
+   `ingest_stock_batch` = garde 104 EN SET (`WHERE EXCLUDED.source_ts >= stock.source_ts`), 1 appel
+   par lot de 500 (l'invariant scale-ingest-batch est préservé, jamais O(N) RPC), retour
+   `(product_id, written)` par ligne → rejets stale COMPTÉS, jamais silencieux. RPC en échec (ex.
+   flag sans migration) → repli upsert direct signalé Sentry (jamais un push perdu pour une garde).
+
+**Revues OBLIGATOIRES : SF-hunter + database-reviewer (migration), 5 findings corrigés** :
+- SF **HIGH** : le preview (dryRun) comptait TOUS les candidats au 0 sans la garde → le wizard
+  aurait SUR-ANNONCÉ les ruptures (le client envoie toujours `file_last_modified`) → parité
+  preview↔apply (comptage par EPOCH — PostgREST rend « +00:00 », pas « Z » : comparaison de chaînes
+  fausse). SF **MED** : push 100 % rejeté-stale restait `ok` → `last_status` gelé indétectable →
+  statut `partial` + Sentry `stock-push-all-stale` (skip PONCTUEL avec écritures OK reste `ok`,
+  anti alarm-fatigue). SF **MED** : `created_at` absent → repli silencieux → signal `source-ts-absent`.
+- DB **HIGH** : un cast nu sur une ligne malformée (qty « 3.5 », uuid cassé) avortait TOUT le lot
+  de 500 → format validé AVANT cast (ligne invalide = filtrée = « non confirmée » signalée, décimal
+  arrondi ::numeric::int). DB **MED** : `ORDER BY pid` avant l'INSERT (ordre de verrouillage
+  déterministe anti-deadlock). Concurrence validée SOUND (ON CONFLICT évalue la garde post-verrou,
+  pas de TOCTOU vs `update_stock_atomic` FOR UPDATE).
+- SF **CRITIQUE (cadrage, pas un bug)** : le REPLACE par défaut reste NON gardé tant que 112+flag
+  ne sont pas actifs → **M4 n'est clos qu'À MOITIÉ côté prod**, consigné en toutes lettres dans la
+  décision #13 (jamais « M4 fermé » sur ce seul commit). Résidu gaté assumé : preview du REPLACE
+  stale (flag ON) non simulé en dryRun — même classe, à traiter au GO #13 si besoin.
+
+**Preuve** : `tests/ingest-snapshot-source-ts.test.ts` (+12 : sanitizer adversarial, threading
+créées+màj, webhook 08:00 protégé vs vérité ancienne zéroée [fixture de l'audit], parité preview,
+flag ON garde+borne 3 RPC/1200+repli signalé, flag OFF byte-identique) + `ingest-stock-file` (+2 :
+all-stale→partial+Sentry, ponctuel→ok) + email-in (+1 : threading `created_at` + absence signalée).
+**Non-vacance par revert : 8/11 rouges sans le fix.** tsc OK, **1324→1339** (126 fichiers).
+GitNexus MCP non connecté → blast par grep : `ingestStockSnapshot` 2 callers directs + cœur partagé
+(3 routes), signatures additives-only, `SnapshotResult` étalé en JSON (champ additif sûr) → LOW.
+0 migration appliquée, réversible.
+
+**Scorecard** : Preuve 9/10 (fixture audit réelle, garde exercée des 2 côtés, revert-proof ; reste
+la preuve DB réelle de la 112 à l'application) · Sécu north-star 9/10 (ferme le faux « en stock »
+n°1 côté réconciliation MAINTENANT + prépare le REPLACE ; 5 findings revues corrigés) ·
+Réversibilité 10/10 (0 migration appliquée, flag OFF) · Scope 9/10 (11 fichiers, 1 unité) ·
+Align 10/10 (item #3 feuille de route audit, chemin pilote — les 4 voies d'import du runbook).
+CFR 10 derniers runs : 100 % (exit=0 + commit), 0 revert.
+
+**Escalade (notify + DECISIONS #13)** : GO migration 112 + flag, reco groupé avec la décision #3
+(même fenêtre). **RESTE / prochain [R]** : P1 6a.2 vitrine démo via pipeline réel (inchangé, nommé
+depuis 2 runs), OU item #4 audit (validateur GTIN unique — S-M, à re-vérifier au code réel).
+Item #10 audit (D7 dans `applyEnrichment` produits publiés) = candidat [R] moyen. GATED en attente :
+décisions 1/2/3/5/6/7/11/12 + **#13 (nouveau)**.
+
+---
+
 ## 2026-07-09 (run autonome) · M3 CRITIQUE audit — le chemin FACTURE route enfin par la garde D7 (fin du « Coca sur chaussettes »)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0 mission épuisé

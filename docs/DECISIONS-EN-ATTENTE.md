@@ -52,6 +52,16 @@
   honnêtes : une photo rejetée n'est PAS re-tentée automatiquement (tracée Sentry par produit ;
   marqueur+retry = design à trancher si besoin) ; `PUBLISH_UNVERIFIED_IMAGES=1` annule la vérif ;
   le wizard admin (cascade-suggest) reste hors garde (revue humaine).
+- [ ] **13. GO migration 112 + flag `FILE_PUSH_ATOMIC_STOCK=1`** (audit M4 CRITIQUE item #3,
+  préparé le 2026-07-09, commit `c7b56ef`) : le REPLACE stock du file_push passe par la RPC batch
+  `ingest_stock_batch` = même garde temporelle que les webhooks (un export périmé n'écrase plus
+  une vente webhook plus fraîche), en 1 appel par lot de 500. **Déjà actif sans GO** : vrai
+  `source_ts` (heure de génération de l'export) sur les 3 canaux + réconciliation gardée (un
+  produit restocké par webhook n'est plus zéroé par un export antérieur). **Reste gaté** : le
+  REPLACE (produit PRÉSENT dans le fichier) reste écrasant tant que 112+flag ne sont pas actifs
+  — M4 n'est clos qu'à moitié. Ordre STRICT : appliquer 112 (protocole §4, groupable avec la
+  décision #3) PUIS poser le flag (flag sans migration = repli upsert signalé Sentry, sans perte).
+  Reco : **GO groupé avec #3** (même fenêtre supervisée ~15 min).
 - [ ] **8. Cadence de la boucle** : tâche planifiée = 1 run/75 min × 15 h ≈ **12 runs/jour**.
   Avec la mission Opération Pilote il y a à nouveau du travail réel, mais la reco reste
   **4-6 runs/jour** (runs profonds > runs fréquents ; quota partagé avec ton usage perso).

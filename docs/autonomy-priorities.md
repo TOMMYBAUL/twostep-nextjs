@@ -99,6 +99,15 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    `VERIFY_OPEN_FACTS_IMAGES=1` (OFF = prod byte-identique ; revue SF-hunter SOUND, HIGH « rejet
    invisible » + LOW « nom vide » corrigés ; 1318→1324). **→ item #2 audit COMPLET côté boucle ;
    GO = décision #12** (couplée clé ANTHROPIC #1).
+3bis. 🔶 **Audit 07-08 item #3 (M4 CRITIQUE) — moitié [R] FAITE + moitié [G] PRÉPARÉE/ESCALADÉE
+   (2026-07-09 run #2, commit `c7b56ef`)** : vrai `source_ts` file_push (heure de GÉNÉRATION de
+   l'export — `generated_at` jeton / `created_at` email / `file.lastModified` wizard, sanitizer
+   unique clamp-futur) + **réconciliation gardée race-free** (`.lte` porté par l'UPDATE : un
+   restock webhook n'est plus zéroé par un export antérieur) + compteur `stock_stale_skipped` +
+   statut `partial` sur push 100 % stale. **Reste gaté (décision #13, groupable avec #3)** :
+   le REPLACE (produit présent au fichier) via RPC batch `ingest_stock_batch` = migration 112
+   NON appliquée + flag `FILE_PUSH_ATOMIC_STOCK` OFF — **M4 clos à moitié tant que pas de GO**.
+   2 revues (SF-hunter + database-reviewer), 5 findings corrigés. 1324→1339 tests.
 4. Reliquat sweep troncature (Cluster B) UNIQUEMENT s'il touche le chemin pilote.
    - ✅ **`merchants/[id]/stats` FAIT (2026-07-08, commit `e29c673`)** — KPI dashboard marchand
      (chemin pilote : l'écran de Deerskin) paginé keyset + fail-loud + `.in()` chunké ; revue
