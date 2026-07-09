@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-08 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-09 (L'Auditeur)*
 
 ## Stats
 - Total leads : 211
@@ -11,6 +11,26 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-07-09 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : À valider — Gmail MCP indisponible (27e session consécutive)
+
+**Source leads** : Session L'Eclaireur 08/07 — Saint-Etienne/Puits Clos (toulouse-merchants-full.json). 5 leads BROUILLON. Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-09.md`
+
+| # | Destinataire | Email | Objet | Gmail Draft ID | Résumé |
+|---|---|---|---|---|---|
+| 1 | Jean-Baptiste Mettra (NEIWA) | contact@neiwa.fr | Neiwa sur Two-Step — tes Veja et Patagonia trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — mode éthique/durable multimarques (Veja, Patagonia, Faguo, Maison Labiche). 7 rue Sainte-Ursule. Score 7/10. |
+| 2 | Kendy Cyrille (EXCKLUSIVE) | contact@excklusive.com | Excklusive sur Two-Step — tes Adidas et Vans trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — chaussures sneakers multimarques (Adidas, Vans, Puma, Reebok). 20 rue Sainte-Ursule. Score 8/10. |
+| 3 | Maxime Levy (MAX OPTIC) | contact@maxoptic.fr | Max Optic sur Two-Step — tes montures visibles aux Toulousains du quartier | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — opticien indépendant 3 établissements. 45 rue Boulbonne. Score 7/10. |
+| 4 | Jacques Vales (OPTIQUE VALES) | magasinboulbonne@optiquevales.fr | Optique Vales sur Two-Step — tes montures vues par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — opticien famille depuis 1964, 5 boutiques Toulouse. 29 rue Boulbonne. Score 8/10. |
+| 5 | Lucie Lesurf (IMAGIN OPTIQUE) | imaginoptique@hotmail.fr | Imagin Optique sur Two-Step — tes Moscot et Masunaga trouvés par les Toulousains | ⚠️ NON CRÉÉ — Gmail OAuth expiré | ACA — opticien créateur depuis 2008, Moscot/Masunaga/Caroline Abram, exclusivités Toulouse. 18 rue Puits Clos. Score 8/10. |
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 27e session consécutive sans création de draft (11/06 → 09/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons complets prêts à copier-coller dans : `docs/prospection/brouillons/brouillons-email-2026-07-09.md`** Notion MCP indisponible (28e session consécutive).
+
+*Note session 09/07 (L'Auditeur) : 5 leads BROUILLON traités (NEIWA, EXCKLUSIVE, MAX OPTIC, OPTIQUE VALES, IMAGIN OPTIQUE — session Eclaireur 08/07). Recherches web effectuées pour chaque lead. Emails ACA personnalisés, max 150 mots, tutoiement, prenom gérant. IMAGIN OPTIQUE : gérant Lucie Lesurf (MOLOKO) identifié via Infonet — absent dans tracker Eclaireur. Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré).*
+
+---
 
 ### Mardi — 2026-07-08 (L'Eclaireur) — Saint-Etienne (toulouse-merchants-full.json) — 5 emails confirmés
 
