@@ -23,22 +23,61 @@ const DESCRIPTION_HEADERS = [
 
 const EAN_HEADERS = [
     "ean", "code-barres", "barcode", "gtin", "code ean", "code barre", "ean13",
-    "gencode", "upc", "code-barre",
+    // « Gencod » (SANS e final) = l'orthographe DOCUMENTÉE des exports Fastmag
+    // (docs EDI fastmag.fr) ; « gencode » seul ne la matchait pas → EAN perdu.
+    "gencode", "gencod", "upc", "code-barre",
 ];
 
 const SKU_HEADERS = [
     "reference", "référence", "ref", "réf", "sku", "code article",
     "art.", "code produit", "ref fournisseur", "ref article",
+    // « Codemag » = code article interne Fastmag (docs EDI) — une réf marchand.
+    "codemag",
 ];
 
 const QUANTITY_HEADERS = [
     "quantite", "quantité", "qte", "qté", "qty", "quantity", "nb", "nombre",
 ];
 
+// P1-3 (2026-07-10) : les états de stock POS FR (Clictill « état du stock »,
+// Fastmag Boutique) titrent la colonne quantité « Stock » — absente d'ici, la
+// quantité retombait SILENCIEUSEMENT sur 1 « présence » (coverage la signale,
+// mais le stock publié restait faux). Famille « stock » admise UNIQUEMENT en
+// contexte "stock" (revue SF-hunter HIGH : sur une FACTURE, une colonne
+// « Stock » informative volerait la quantité livrée — le parseur factures
+// garde son vocabulaire d'origine par construction).
+const STOCK_QUANTITY_HEADERS = [
+    "stock", "en stock", "stock dispo", "stock disponible", "stock physique",
+    "stock reel", "qte en stock",
+];
+
+// JAMAIS les colonnes DÉRIVÉES d'un état de stock : seuils (mini/maxi/
+// sécurité), réservé (resa), valorisation € (valeur) — capter l'une d'elles =
+// publier un stock FAUX (pire que pas de colonne : le défaut 1 est signalé
+// par coverage, un « Stock mini » capté ne l'est pas). S'applique aux DEUX
+// contextes : ferme aussi le pré-existant « Qté mini » happé par « qte ».
+const QUANTITY_EXCLUDE_HEADERS = [
+    "mini", "maxi", "resa", "reserv", "alerte", "seuil", "secur", "valeur", "valoris",
+];
+
 const UNIT_PRICE_HEADERS = [
     "prix", "pu", "prix unitaire", "unit price", "p.u.", "puht",
     "pu ht", "prix ht", "prix unit", "price", "tarif",
 ];
+
+// « PV » = prix de VENTE (exports Fastmag PA/PV) — contexte "stock" SEULEMENT
+// (revue SF-hunter HIGH : sur une facture, « PVC »/« PV conseillé » volerait le
+// prix réellement facturé) et en MOT ENTIER (« pvc » ne contient pas le mot
+// « pv »). « PA » (prix d'achat) n'est volontairement JAMAIS listé.
+const STOCK_PRICE_WORD = "pv";
+const STOCK_PRICE_HEADERS = ["prix de vente", "prix vente"];
+
+function matchesStockPrice(header: string): boolean {
+    const norm = normalizeHeader(header);
+    if (!norm) return false;
+    if (` ${norm} `.includes(` ${STOCK_PRICE_WORD} `)) return true;
+    return matchesAny(header, STOCK_PRICE_HEADERS);
+}
 
 const BRAND_HEADERS = [
     "marque", "brand", "fabricant", "fournisseur", "manufacturer",
@@ -80,7 +119,15 @@ function matchesAny(header: string, candidates: string[]): boolean {
     });
 }
 
-export function detectColumns(headers: string[]): ColumnMapping {
+/**
+ * Contexte d'appel : "invoice" (défaut — parseur factures, vocabulaire historique
+ * inchangé) ou "stock" (parse-stock : admet en plus la famille « Stock » comme
+ * quantité et « PV »/« prix de vente » comme prix, vocabulaire des états de stock
+ * POS FR prouvé sur fixtures Clictill/Fastmag).
+ */
+export type DetectColumnsContext = "invoice" | "stock";
+
+export function detectColumns(headers: string[], context: DetectColumnsContext = "invoice"): ColumnMapping {
     const mapping: ColumnMapping = {
         name: null,
         ean: null,
@@ -109,9 +156,18 @@ export function detectColumns(headers: string[]): ColumnMapping {
             mapping.ean = i;
         } else if (mapping.brand === null && matchesAny(h, BRAND_HEADERS)) {
             mapping.brand = i;
-        } else if (mapping.quantity === null && matchesAny(h, QUANTITY_HEADERS)) {
+        } else if (
+            mapping.quantity === null &&
+            (matchesAny(h, QUANTITY_HEADERS) ||
+                (context === "stock" && matchesAny(h, STOCK_QUANTITY_HEADERS))) &&
+            !matchesAny(h, QUANTITY_EXCLUDE_HEADERS)
+        ) {
             mapping.quantity = i;
-        } else if (mapping.unit_price === null && matchesAny(h, UNIT_PRICE_HEADERS)) {
+        } else if (
+            mapping.unit_price === null &&
+            (matchesAny(h, UNIT_PRICE_HEADERS) ||
+                (context === "stock" && matchesStockPrice(h)))
+        ) {
             mapping.unit_price = i;
         } else if (mapping.description === null && matchesAny(h, DESCRIPTION_HEADERS)) {
             // Captured but not used as name — protects against catalog/import faux positifs.

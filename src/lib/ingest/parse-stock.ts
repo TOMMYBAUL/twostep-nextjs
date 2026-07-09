@@ -104,7 +104,7 @@ export function parseStockFile(buffer: Buffer): { items: ParsedInvoiceItem[]; co
     if (rows.length < 2) return { items: [], coverage: { quantity: false, identifier: false, price: false } };
 
     const headers = rows[0].map((h) => String(h ?? ""));
-    const mapping = detectColumns(headers);
+    const mapping = detectColumns(headers, "stock");
     const coverage: ColumnCoverage = {
         quantity: mapping.quantity !== null,
         identifier: mapping.ean !== null || mapping.sku !== null,
