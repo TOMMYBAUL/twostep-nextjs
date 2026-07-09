@@ -133,8 +133,11 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    `scripts/demo-vitrine-pipeline.mjs` rejouable. **Découverte escaladée (décision #14)** : le cron
    enrich-products PROD (main stale, fail-open images) consomme les jobs de la DB partagée → fausse
    photo publiable en ≤5 min ; reco = clé ANTHROPIC prod (décision #1). **Reste** : jugement visuel
-   Thomas (#7) + [R] court nommé : allow-list `brand.ts` (L'Occitane manquante, casse WELEDA,
-   `La Roche-Posay, loreal` brut OBF).
+   Thomas (#7). ✅ **[R] brand.ts FAIT (2026-07-10, commit `83de4d1`)** : `canonicalizeBrand`
+   (parse liste-virgule OBF, tag primaire, casse canonique allow-list, zéro invention) traversé
+   par les 3 writers (applyEnrichment / resolve-ean / invoice validate) + 13 marques beauté FR
+   (SVR écarté : faux positif acronyme, revue SF-hunter SOUND 2 MED corrigés). Non-vacance par
+   revert (12 rouges). 1352→1366.
 3. **Adapter Clictill/Fastmag prouvé sur fixtures réelles d'export** (email-in) : la partie du
    wedge FR jamais testée. Se procurer/synthétiser des exports réalistes, prouver champ par champ.
 4. **6b Kit prospection prêt-à-envoyer** : réactualiser one-pager + séquences email (base :

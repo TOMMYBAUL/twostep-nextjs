@@ -41,6 +41,7 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 - CSV POS FR legacy = Windows-1252 → TextDecoder utf-8 `{fatal:true}` puis repli. Regex XML : décoder les entités (`&amp;` en dernier). Match SKU en lowercase des 2 côtés.
 - Parseur LLM : LÈVE sur malformé (`Array.isArray`) ; marquer « tenté » sinon retry payant infini ; ne re-tenter que l'échec transitoire gratuit.
 - EAN = IDENTITÉ seulement (jamais taille/qté, jamais terme de recherche image). Brand/catégorie : allow-list (0 invention), taxo externe → slugs FR, inconnu → null.
+- Champ multi-valeur d'une source (OBF `brands` = liste virgule) : parser le FORMAT (tag primaire seul, jamais verbatim, jamais promouvoir le tag parent) via un helper unique traversé par TOUS les writers. Pas d'acronyme ≤3 lettres en allow-list (« SVR » matchait « Range Rover SVR »).
 - Coût API : cache négatif TTL pour les not-found (écrit AVANT le spend) ; si un gate aval rejette 100 %, court-circuiter EN AMONT de l'achat.
 
 ## Next.js / Vercel

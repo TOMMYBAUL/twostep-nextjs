@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-10 (run autonome) · [R] nommé vitrine — canonicalisation de la marque source OBF/OPF (commit `83de4d1`)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché par Thomas (A/B déjà faits). P0 épuisé/escaladé
+(P0-2 = migration 108 dans la décision #3, vérifié : fichier + tests existent). P1 top non-fait = le **[R] court NOMMÉ
+par le run 6a.2** : allow-list `brand.ts`. Prémisse re-vérifiée dans le rapport RÉEL `vitrine-demo-2026-07-09.md` :
+3 défauts confirmés ligne par ligne — `La Roche-Posay, loreal` (champ `brands` OBF = liste de tags à virgules écrite
+VERBATIM sur le produit), `WELEDA` (casse contributeur), marque ∅ sur « L'Occitane Crème Mains Karité » (L'Occitane
+absente de l'allow-list). Cause structurelle : les 3 writers d'une marque source (`applyEnrichment`, `resolve-ean`
+reverse, `invoices/validate` pré-insert) écrivaient `sourceBrand` brut — aucun ne traversait l'allow-list.
+
+**FAIT** : helper pur `canonicalizeBrand(raw)` (`brand.ts`) = parse du FORMAT de champ OBF (liste virgule, tag
+PRIMAIRE seul — jamais le tag ultérieur, souvent le groupe parent « …, loreal »), casse canonique via
+`extractKnownBrand`, sinon tag primaire verbatim. **Zéro invention** : la sortie est toujours soit une marque
+allow-list PRÉSENTE dans le tag primaire, soit le tag primaire tel quel. Traversé par les 3 writers (chokepoint
+unique, LESSON chemins jumeaux). + 13 marques beauté FR ajoutées (L'Occitane, Nuxe, Klorane, Weleda, Uriage,
+Mustela, A-Derma, Ducray, Embryolisse, Filorga, Payot, Melvita, Roger & Gallet).
+
+**Revue silent-failure-hunter : SOUND, 2 MED corrigés** : (MED-2) « SVR » RETIRÉ de l'allow-list — acronyme 3
+lettres matchait « Range Rover Sport SVR » en mot entier = le faux positif exact que la liste doit interdire (la
+casse officielle de la marque EST « SVR » → verbatim ne perd rien) + test adversarial ; (MED-1) durcissement
+ASSUMÉ+testé : un tag primaire incohérent avec le nom produit → l'enregistrement source est suspect → sa catégorie
+est retenue (l'AI-categorize autoritaire remplira) et la marque est RÉCUPÉRÉE propre par la voie maillon 9(c) —
+avant, la chaîne sale passait la garde par COÏNCIDENCE (2e tag en substring). LOW documentés : `ean_lookups.brand`
+reste brut en cache (tous les lecteurs produit repassent par le chokepoint — dette défense-en-profondeur, pas un
+bug) ; `resolveBrand` = 0 caller prod (commentaire corrigé).
+
+**Preuve** : `brand.test.ts` étendu (fixtures = les lignes RÉELLES du rapport vitrine) + NOUVEAU
+`ean-brand-canonicalize.test.ts` sur la VRAIE chaîne `lookupEan` cache-hit → `applyEnrichment` (harnais
+ean-openfacts réutilisé) : liste-virgule → « La Roche-Posay », WELEDA → Weleda, ligne ∅ → récupérée « L'Occitane »,
+verbatim inconnu préservé, compromis MED-1. **Non-vacance par revert : 12 tests rouges sans le fix.**
+`tsc` OK, **1352→1366** (+14, 129 fichiers). Blast LOW (helper additif ; 3 call-sites inline ; signature
+`resolveBrand` inchangée). 0 migration, réversible. GitNexus MCP non connecté → scope par `git diff` (6 fichiers voulus).
+
+**Scorecard** : Preuve 8/10 (fixtures issues d'un run prod RÉEL + vraie chaîne + revert-proof ; pas de re-run
+pipeline live) · Sécu north-star 9/10 (SOUND ; retire un vecteur de faux positif (SVR) ; zéro invention prouvée
+adversarialement) · Réversibilité 10/10 (0 migration) · Scope 9/10 (4 fichiers code ciblés + 2 tests) · Align 8/10
+(qualité `g:brand` du feed + vitrine démo présentable = chemin pilote, mais pas un bloqueur). CFR 10 runs : 100 %
+exit=0+commit, 0 revert.
+
+**PROCHAIN [R] (P1-3, cadré ce run)** : adapter **Clictill/Fastmag sur fixtures réalistes d'export** (le wedge
+email-in FR jamais testé en réel). État vérifié : `src/lib/pos/clictill.ts` + `fastmag.ts` + `parse-stock.ts`
+existent avec tests SYNTHÉTIQUES minimaux (`parse-stock-encoding-formats`, `ingest-maillon8-email-in`) ; le travail
+= synthétiser des exports RÉALISTES (colonnes/encodage/séparateurs réels des 2 logiciels) et prouver champ par
+champ. Ensuite : P1-4 kit prospection, P1-5 dossier Trusted, P2 G1/G2.
+
+---
+
 ## 2026-07-09 (run autonome #3) · P1 6a.2 — VITRINE DÉMO via le PIPELINE RÉEL + 2 découvertes majeures (photo convergée fixée ; cron prod fail-open prouvé)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché. P0 épuisé/escaladé (P0-2 = migration
