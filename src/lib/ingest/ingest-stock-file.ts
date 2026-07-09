@@ -3,6 +3,7 @@ import type { createAdminClient } from "@/lib/supabase/admin";
 import { isSpreadsheetFile } from "@/lib/parser";
 import { parseStockFile } from "@/lib/ingest/parse-stock";
 import { ingestStockSnapshot } from "@/lib/ingest/snapshot";
+import { captureError } from "@/lib/error";
 
 type AdminClient = ReturnType<typeof createAdminClient>;
 
@@ -52,6 +53,15 @@ export async function ingestStockFileForMerchant(
     merchantId: string,
     buffer: Buffer,
     filename: string,
+    opts: {
+        /**
+         * Horodatage de VÉRITÉ SOURCE du snapshot (heure de génération de l'export),
+         * transmis tel quel à `ingestStockSnapshot` qui le sanitise (source unique).
+         * Canaux : `generated_at` (push jeton), date de l'email (email-in — un retry
+         * Resend des heures après ne rajeunit pas la vérité). Absent → heure du push.
+         */
+        sourceTs?: string | number | null;
+    } = {},
 ): Promise<IngestStockFileResult> {
     if (buffer.length === 0) return { outcome: "empty" };
     if (buffer.length > STOCK_FILE_MAX_SIZE) return { outcome: "too_large" };
@@ -99,6 +109,7 @@ export async function ingestStockFileForMerchant(
         const result = await ingestStockSnapshot(merchantId, parsed.items, admin, {
             reconcile: true,
             coverage: parsed.coverage,
+            sourceTs: opts.sourceTs,
         });
 
         // Aucune ligne exploitable (ni GTIN valide ni SKU) → échec explicite, pas un faux succès.
@@ -111,12 +122,27 @@ export async function ingestStockFileForMerchant(
             return { outcome: "no_exploitable", triage: result.triage };
         }
 
-        const status: "ok" | "partial" | "error" =
+        let status: "ok" | "partial" | "error" =
             result.reconcile_skipped || result.errors.length > 0 || result.triage.rejected_lines > 0
                 ? result.stock_replaced > 0
                     ? "partial"
                     : "error"
                 : "ok";
+        // Push 100 % rejeté-stale (garde temporelle : TOUTES les écritures refusées car
+        // une vérité plus fraîche existe, 0 remplacée) : la garde fait son travail, mais
+        // un push STRUCTURELLEMENT inefficace (horloge caisse déréglée, `generated_at`
+        // figé) resterait `ok` indéfiniment → feed gelé indétectable (finding revue SF).
+        // Un skip stale PONCTUEL avec des écritures réussies reste `ok` (fonctionnement
+        // normal : une vente webhook a simplement gagné — pas d'alarm fatigue).
+        if (status === "ok" && result.stock_stale_skipped > 0 && result.stock_replaced === 0) {
+            status = "partial";
+            captureError(new Error("Push stock 100 % rejeté-stale : source_ts déclaré plus ancien que toutes les vérités en base (horloge caisse / generated_at à vérifier)"), {
+                lib: "ingest/ingest-stock-file",
+                phase: "stock-push-all-stale",
+                merchantId,
+                stale_skipped: result.stock_stale_skipped,
+            });
+        }
 
         // last_file_hash uniquement si abouti → un fichier en erreur reste re-poussable.
         await admin

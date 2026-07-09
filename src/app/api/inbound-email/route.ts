@@ -156,10 +156,30 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({ ok: true, ignored: "multiple stock files; single snapshot expected" });
             }
 
+            // Vérité source = date de l'email (l'export est généré juste avant
+            // l'envoi) : un webhook Resend REJOUÉ des heures plus tard (500 + retry)
+            // ne doit pas horodater le snapshot « maintenant » — il passerait devant
+            // des ventes webhook plus fraîches (garde temporelle M4) et mentirait
+            // sur la fraîcheur M5. Le champ `created_at` fait partie du schéma des
+            // événements Resend ; son ABSENCE = dérive de schéma → SIGNALÉE (sinon le
+            // canal email entier retomberait EN SILENCE sur l'heure de traitement et
+            // la garde resterait inerte — finding revue SF). L'ingestion continue
+            // (repli = comportement historique, jamais un email stock perdu pour ça).
+            const emailCreatedAt = (emailData as { created_at?: string }).created_at ?? null;
+            if (!emailCreatedAt) {
+                captureError(new Error("email stock sans created_at (schéma Resend ?) — sourceTs = heure de traitement, garde temporelle inactive"), {
+                    route: "inbound-email",
+                    channel: "stock",
+                    step: "source-ts-absent",
+                    merchantId,
+                });
+            }
             const results: Array<{ file: string; outcome: string; status?: string }> = [];
             for (const att of stockAttachments) {
                 const buffer = Buffer.from(att.content, "base64");
-                const outcome = await ingestStockFileForMerchant(supabase, merchantId, buffer, att.filename);
+                const outcome = await ingestStockFileForMerchant(supabase, merchantId, buffer, att.filename, {
+                    sourceTs: emailCreatedAt,
+                });
                 results.push({
                     file: att.filename,
                     outcome: outcome.outcome,

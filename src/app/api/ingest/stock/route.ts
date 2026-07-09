@@ -44,6 +44,13 @@ export async function POST(request: NextRequest) {
         const contentType = request.headers.get("content-type") ?? "";
         let buffer: Buffer;
         let filename: string;
+        // Heure de GÉNÉRATION de l'export, déclarée par la caisse/le cron marchand
+        // (`?generated_at=` ISO 8601, ou champ multipart). Optionnelle. Sanitisée en
+        // aval (`sanitizeSourceTs` : clamp futur, aberrant ignoré) — sert la garde
+        // temporelle (un export périmé n'écrase pas une vente webhook plus fraîche)
+        // et la fraîcheur M5 honnête. Absente → heure du push (comportement historique,
+        // correct pour un push émis juste après la génération).
+        let generatedAt: string | null = url.searchParams.get("generated_at");
 
         if (contentType.includes("multipart/form-data")) {
             const formData = await request.formData();
@@ -51,6 +58,8 @@ export async function POST(request: NextRequest) {
             if (!file) return NextResponse.json({ error: "No file in form-data" }, { status: 400 });
             buffer = Buffer.from(await file.arrayBuffer());
             filename = file.name || "stock.csv";
+            const field = formData.get("generated_at");
+            if (typeof field === "string" && field) generatedAt = field;
         } else {
             buffer = Buffer.from(await request.arrayBuffer());
             filename =
@@ -60,7 +69,7 @@ export async function POST(request: NextRequest) {
                     : "stock.csv");
         }
 
-        const outcome = await ingestStockFileForMerchant(admin, merchantId, buffer, filename);
+        const outcome = await ingestStockFileForMerchant(admin, merchantId, buffer, filename, { sourceTs: generatedAt });
 
         switch (outcome.outcome) {
             case "empty":

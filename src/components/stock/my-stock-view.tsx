@@ -83,6 +83,9 @@ export function MyStockView() {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("mode", "preview");
+        // mtime de l'export = heure de génération par la caisse (le multipart ne
+        // transporte pas lastModified) → garde temporelle + fraîcheur honnête (M4).
+        if (Number.isFinite(file.lastModified)) formData.append("file_last_modified", String(file.lastModified));
 
         try {
             const res = await fetch("/api/catalog/import", { method: "POST", body: formData });
@@ -103,6 +106,8 @@ export function MyStockView() {
         setApplying(true);
         const formData = new FormData();
         formData.append("file", wizardFile);
+        // Même vérité source qu'au preview (parité simulation ↔ application).
+        if (Number.isFinite(wizardFile.lastModified)) formData.append("file_last_modified", String(wizardFile.lastModified));
 
         try {
             const res = await fetch("/api/catalog/import", { method: "POST", body: formData });

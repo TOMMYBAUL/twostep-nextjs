@@ -113,10 +113,21 @@ function makeRequest(body: object, sign = true) {
 
 // La route récupère les pièces jointes via resend.emails.get(emailId) (stub resendGet),
 // PAS depuis ce payload webhook — d'où l'absence d'attachments ici.
-function emailReceived(to: string) {
+// `created_at` = date de réception (schéma des événements Resend) : transmise comme
+// VÉRITÉ SOURCE du snapshot (garde temporelle M4 — un retry webhook des heures plus
+// tard ne rajeunit pas l'observation). Son absence = dérive de schéma SIGNALÉE (testée
+// séparément) — les payloads nominaux la portent donc, comme le vrai Resend.
+const EMAIL_CREATED_AT = "2026-07-09T02:00:00.000Z";
+function emailReceived(to: string, opts: { createdAt?: string | null } = {}) {
+    const createdAt = opts.createdAt === undefined ? EMAIL_CREATED_AT : opts.createdAt;
     return {
         type: "email.received",
-        data: { id: "email_abc123", from: "caisse@boutique.fr", to: [to] },
+        data: {
+            id: "email_abc123",
+            from: "caisse@boutique.fr",
+            to: [to],
+            ...(createdAt ? { created_at: createdAt } : {}),
+        },
     };
 }
 
@@ -186,6 +197,29 @@ describe("Maillon 8 — canal stock : routage + contrat snapshot-unique + décod
         // octet pour octet (un base64 corrompu perdrait silencieusement le fichier).
         expect(Buffer.isBuffer(buffer)).toBe(true);
         expect((buffer as Buffer).toString("utf-8")).toBe(DIRTY_CSV);
+        // VÉRITÉ SOURCE threadée (M4) : la date de l'email est transmise à l'ingestion
+        // (source_ts honnête + garde temporelle), jamais l'heure de traitement.
+        const opts = ingestMock.mock.calls[0][4] as { sourceTs?: string | null };
+        expect(opts).toMatchObject({ sourceTs: EMAIL_CREATED_AT });
+    });
+
+    it("payload SANS created_at (dérive de schéma Resend) → ingestion INTACTE + signal Sentry (garde temporelle inactive, jamais en silence)", async () => {
+        resendGet.mockResolvedValue({ data: { attachments: [makeAttachment("stock.csv", DIRTY_CSV)] } });
+        ingestMock.mockResolvedValue({ outcome: "ingested", status: "ok" });
+
+        const res = await POST(makeRequest(emailReceived(`stock-boutique@${DOMAIN}`, { createdAt: null })));
+
+        expect(res.status).toBe(200);
+        // L'email stock n'est JAMAIS perdu pour une métadonnée absente…
+        expect(ingestMock).toHaveBeenCalledTimes(1);
+        const opts = ingestMock.mock.calls[0][4] as { sourceTs?: string | null };
+        expect(opts.sourceTs).toBeNull();
+        // …mais le repli silencieux sur « heure de traitement » est SIGNALÉ (sinon le
+        // canal email entier perdrait la garde temporelle sans aucun symptôme).
+        expect(captureMock).toHaveBeenCalledWith(
+            expect.objectContaining({ message: expect.stringContaining("sans created_at") }),
+            expect.objectContaining({ route: "inbound-email", step: "source-ts-absent" }),
+        );
     });
 
     it("récupération Resend en ERREUR (data nulle) → 500 + captureError, JAMAIS un 200 « pas de pièce jointe » (l'email contenait pourtant le CSV)", async () => {

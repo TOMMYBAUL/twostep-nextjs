@@ -3,6 +3,8 @@ import crypto from "node:crypto";
 
 vi.mock("@/lib/ingest/parse-stock", () => ({ parseStockFile: vi.fn() }));
 vi.mock("@/lib/ingest/snapshot", () => ({ ingestStockSnapshot: vi.fn() }));
+vi.mock("@/lib/error", () => ({ captureError: vi.fn() }));
+import { captureError } from "@/lib/error";
 
 import { ingestStockFileForMerchant } from "@/lib/ingest/ingest-stock-file";
 import { parseStockFile } from "@/lib/ingest/parse-stock";
@@ -133,6 +135,39 @@ describe("ingestStockFileForMerchant — parse & snapshot", () => {
         expect(finalUpd?.payload.last_file_hash).toBeTruthy();
         expect(finalUpd?.payload.last_status).toBe("ok");
         expect(updates.some((u) => u.payload.ingesting_since === null)).toBe(true);
+    });
+
+    it("push 100 % rejeté-stale (garde temporelle, 0 écrit) → status partial + Sentry, jamais un faux « ok »", async () => {
+        // Horloge caisse déréglée / generated_at figé : TOUTES les écritures refusées
+        // par la garde. Un « ok » perpétuel = feed gelé indétectable (finding revue SF).
+        vi.mocked(captureError).mockClear();
+        vi.mocked(parseStockFile).mockReturnValue({ items: [{ ean: "123" }] } as never);
+        vi.mocked(ingestStockSnapshot).mockResolvedValue({
+            ...okSnapshot,
+            stock_replaced: 0,
+            stock_stale_skipped: 2,
+        } as never);
+        const { client } = makeAdmin();
+        const r = await ingestStockFileForMerchant(client, "m1", Buffer.from("ean;qty\n123;5"), "stock.csv");
+        expect(r.outcome).toBe("ingested");
+        if (r.outcome === "ingested") expect(r.status).toBe("partial");
+        expect(captureError).toHaveBeenCalledWith(
+            expect.objectContaining({ message: expect.stringContaining("100 % rejeté-stale") }),
+            expect.objectContaining({ phase: "stock-push-all-stale", merchantId: "m1" }),
+        );
+    });
+
+    it("skip stale PONCTUEL avec écritures réussies → reste ok (pas d'alarm fatigue)", async () => {
+        vi.mocked(parseStockFile).mockReturnValue({ items: [{ ean: "123" }] } as never);
+        vi.mocked(ingestStockSnapshot).mockResolvedValue({
+            ...okSnapshot,
+            stock_replaced: 5,
+            stock_stale_skipped: 1,
+        } as never);
+        const { client } = makeAdmin();
+        const r = await ingestStockFileForMerchant(client, "m1", Buffer.from("ean;qty\n123;5"), "stock.csv");
+        expect(r.outcome).toBe("ingested");
+        if (r.outcome === "ingested") expect(r.status).toBe("ok");
     });
 
     it("réconciliation partielle (reconcile_skipped + stock écrit) → status partial", async () => {

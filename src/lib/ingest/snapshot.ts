@@ -8,6 +8,21 @@ import { triageStockItems, type TriageReport } from "@/lib/ingest/triage";
 import type { ColumnCoverage } from "@/lib/ingest/parse-stock";
 import { captureError } from "@/lib/error";
 import { fetchAllRows } from "@/lib/supabase/paginate";
+import { sanitizeSourceTs } from "@/lib/ingest/source-ts";
+
+/**
+ * GATED `FILE_PUSH_ATOMIC_STOCK=1` (audit 2026-07-08, M4 CRITIQUE — préparé 2026-07-09,
+ * migration 112 NON appliquée) : route le REPLACE stock du flush par la RPC batch
+ * `ingest_stock_batch`, qui applique la garde temporelle de la 104 EN SET (une vérité
+ * plus ancienne n'écrase jamais une plus fraîche — ex. export nocturne uploadé à 09:00
+ * vs vente webhook de 08:00) en 1 aller-retour par lot de 500 (jamais O(N) RPC).
+ * OFF (défaut) = upsert direct actuel, byte-identique. Ne PAS activer avant
+ * l'application de la migration 112 (sinon chaque lot retombe en upsert non gardé,
+ * signalé Sentry). Décision #13.
+ */
+function filePushAtomicStockEnabled(): boolean {
+    return process.env.FILE_PUSH_ATOMIC_STOCK === "1";
+}
 
 export type SnapshotResult = {
     products_created: number;
@@ -15,6 +30,14 @@ export type SnapshotResult = {
     stock_replaced: number;
     /** Produits passés à 0 par réconciliation (présents avant, absents du push). */
     stock_zeroed: number;
+    /**
+     * Écritures file_push REFUSÉES parce qu'une vérité PLUS FRAÎCHE existe déjà
+     * (garde temporelle — ex. vente webhook postérieure à la génération de l'export).
+     * Ce n'est PAS une erreur : c'est la garde qui protège le stock réel. Compté pour
+     * ne jamais être silencieux. Toujours 0 tant que l'appelant ne fournit pas de
+     * `sourceTs` explicite (et, pour le REPLACE, tant que la 112/flag n'est pas active).
+     */
+    stock_stale_skipped: number;
     /** true si la réconciliation a été annulée par le garde-fou (push partiel suspect). */
     reconcile_skipped: boolean;
     total_items: number;
@@ -50,6 +73,18 @@ export type SnapshotOptions = {
      * Sert à SIGNALER une colonne quantité non reconnue (sinon qty=1 muet sur tout le fichier).
      */
     coverage?: ColumnCoverage;
+    /**
+     * Horodatage de VÉRITÉ SOURCE du snapshot (heure de GÉNÉRATION de l'export par la
+     * caisse), tel que déclaré par le canal : `generated_at` (push jeton), date de
+     * l'email (email-in), `file.lastModified` (wizard). Sanitisé ICI (source unique,
+     * `sanitizeSourceTs`) : ISO ou epoch-ms, clampé au présent, aberrant → ignoré.
+     * Absent/invalide → now = comportement historique (source_ts = heure du push).
+     * Quand il est FOURNI : (a) `stock.source_ts` porte la vraie heure d'observation
+     * (fraîcheur M5 honnête), (b) la réconciliation ne passe à 0 QUE les lignes dont
+     * la vérité courante est ≤ à celle de l'export (une vente webhook plus fraîche
+     * n'est jamais écrasée par un export périmé — audit M4 CRITIQUE).
+     */
+    sourceTs?: string | number | null;
 };
 
 /**
@@ -184,6 +219,21 @@ export async function ingestStockSnapshot(
     // On ACCUMULE ici (boucle quasi-pure pour les créations) puis on FLUSH par LOTS
     // de 500 (comme la réconciliation `chunk()`), ce qui borne les aller-retours.
     const nowIso = new Date().toISOString();
+    // Vérité source du snapshot (voir SnapshotOptions.sourceTs). Sanitisée en un seul
+    // point ; fournie mais inutilisable → SIGNALÉE (la garde temporelle resterait
+    // inerte en silence sinon) puis repli sur now (comportement historique).
+    const sourceTsIso = sanitizeSourceTs(opts.sourceTs, Date.now());
+    if (opts.sourceTs != null && sourceTsIso === null && !dryRun) {
+        captureError(new Error("Stock ingest: sourceTs fourni mais inutilisable (garde temporelle inactive sur ce push)"), {
+            lib: "ingest/snapshot",
+            phase: "source-ts-invalid",
+            merchantId,
+            raw: String(opts.sourceTs).slice(0, 64),
+        });
+    }
+    const stockTs = sourceTsIso ?? nowIso;
+    const hasExplicitSourceTs = sourceTsIso !== null;
+    let stockStaleSkipped = 0;
     // Lignes d'insert des produits NEUFS (id pré-assigné ; available_sizes plié dans
     // l'insert → 1 write de moins que l'ancien insert+update séparé).
     const productInserts: Array<Record<string, unknown>> = [];
@@ -268,8 +318,11 @@ export async function ingestStockSnapshot(
                     productUpdates.push({ id: productId, name: cleanName, updates });
                 }
             }
-            // REPLACE le stock (dédup par product_id, dernier gagne).
-            stockByProduct.set(productId, { product_id: productId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso });
+            // REPLACE le stock (dédup par product_id, dernier gagne). `source_ts` =
+            // vérité source (heure de génération de l'export si déclarée), `updated_at`
+            // = heure d'écriture DB — les deux rôles sont distincts (fraîcheur M5 lit
+            // le plus ANCIEN des deux via freshnessTs, jamais un artefact rajeuni).
+            stockByProduct.set(productId, { product_id: productId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: stockTs });
             touched.add(productId);
             productsUpdated++;
         } else {
@@ -290,7 +343,7 @@ export async function ingestStockSnapshot(
             if (availableSizes.length > 0) insertRow.available_sizes = availableSizes;
             productInserts.push(insertRow);
             insertRowById.set(newId, insertRow);
-            stockByProduct.set(newId, { product_id: newId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: nowIso });
+            stockByProduct.set(newId, { product_id: newId, quantity: totalStock, updated_at: nowIso, source: "file_push", source_ts: stockTs });
             newProductFeedEvents.push({ merchant_id: merchantId, product_id: newId, event_type: "new_product" });
             plannedNewIds.push(newId);
 
@@ -381,6 +434,40 @@ export async function ingestStockSnapshot(
             return plannedNewIdSet.has(pid) ? createdOkIds.has(pid) : true;
         });
         for (const batch of chunk(stockRows, 500)) {
+            // GATED (flag + migration 112, décision #13) : REPLACE via la RPC batch
+            // `ingest_stock_batch` = même garde temporelle que la 104 (une ligne dont
+            // la vérité courante est PLUS FRAÎCHE que l'export n'est PAS écrasée),
+            // appliquée EN SET (1 aller-retour par lot, jamais O(N) RPC — invariant
+            // scale-ingest-batch préservé). `written=false` = rejet stale, compté
+            // (jamais silencieux), PAS une erreur.
+            if (filePushAtomicStockEnabled()) {
+                const { data: rpcData, error: rpcErr } = await admin.rpc("ingest_stock_batch", { p_rows: batch });
+                if (!rpcErr) {
+                    const rows = (Array.isArray(rpcData) ? rpcData : []) as Array<{ product_id: string; written: boolean }>;
+                    const written = rows.filter((r) => r.written === true).length;
+                    stockReplaced += written;
+                    stockStaleSkipped += rows.filter((r) => r.written === false).length;
+                    if (rows.length !== batch.length) {
+                        // Forme de retour inattendue (lag de cache de schéma PostgREST,
+                        // évolution de la RPC) : les lignes manquantes ne sont NI comptées
+                        // écrites NI comptées stale → on le rend VISIBLE au lieu de deviner.
+                        captureError(new Error("ingest_stock_batch: retour incomplet (lignes non confirmées)"), {
+                            lib: "ingest/snapshot",
+                            phase: "stock-batch-rpc-shape",
+                            merchantId,
+                            sent: batch.length,
+                            returned: rows.length,
+                        });
+                        errors.push(`Stock (lot de ${batch.length}): ${batch.length - rows.length} lignes non confirmées par la RPC`);
+                    }
+                    continue;
+                }
+                // RPC en échec (ex. flag ON sans la migration 112) : on NE PERD PAS le
+                // push — repli sur l'upsert direct (sémantique prod actuelle, SANS garde
+                // temporelle), dégradation SIGNALÉE. La RPC est atomique par appel : un
+                // échec = aucune écriture partielle, le repli ne double-écrit pas.
+                captureError(rpcErr, { lib: "ingest/snapshot", phase: "stock-batch-rpc-fallback", merchantId, batch: batch.length });
+            }
             const { error: stockErr } = await admin.from("stock").upsert(batch, { onConflict: "product_id" });
             if (stockErr) {
                 errors.push(`Stock (lot de ${batch.length}): ${stockErr.message}`);
@@ -430,11 +517,15 @@ export async function ingestStockSnapshot(
         const { data: inStockRows, error: inStockErr } = await fetchAllRows<{
             product_id: string;
             quantity: number;
+            source_ts?: string | null;
         }>(
             () =>
                 admin
                     .from("stock")
-                    .select("product_id, quantity, products!inner(merchant_id)")
+                    // `source_ts` sert au COMPTAGE fidèle du preview (dryRun) quand un
+                    // sourceTs explicite est fourni — la garde RÉELLE reste le `.lte`
+                    // porté par l'UPDATE (atomique côté DB), jamais ce read (TOCTOU).
+                    .select("product_id, quantity, source_ts, products!inner(merchant_id)")
                     .eq("products.merchant_id", merchantId)
                     .gt("quantity", 0)
                     .order("product_id", { ascending: true }),
@@ -464,8 +555,30 @@ export async function ingestStockSnapshot(
             errors.push(`Réconciliation annulée: ${decision.reason}`);
         } else if (decision.toZero.length > 0) {
             if (dryRun) {
-                // Preview : on annonce combien de produits PASSERAIENT à 0.
-                stockZeroed = decision.toZero.length;
+                // Preview : on annonce combien de produits PASSERAIENT à 0 — avec la
+                // MÊME garde temporelle que l'apply (parité simulation ↔ application,
+                // finding HIGH revue SF) : un produit protégé (vérité plus fraîche que
+                // l'export, ex. restock webhook) ne sera PAS zéroé à l'apply → il ne
+                // doit pas être annoncé « passera en épuisé » au marchand. Comparaison
+                // par EPOCH (PostgREST rend « +00:00 », stockTs est en « Z » : une
+                // comparaison de chaînes serait fausse) ; source_ts illisible → non
+                // protégé (parité avec l'apply où Postgres compare le vrai timestamptz).
+                let protectedCount = 0;
+                if (hasExplicitSourceTs) {
+                    const stockTsMs = Date.parse(stockTs);
+                    const tsByProduct = new Map(
+                        ((inStockRows ?? []) as { product_id: string; source_ts?: string | null }[]).map((r) => [
+                            r.product_id,
+                            r.source_ts ?? null,
+                        ]),
+                    );
+                    protectedCount = decision.toZero.filter((id) => {
+                        const ts = tsByProduct.get(id);
+                        return ts != null && Date.parse(ts) > stockTsMs;
+                    }).length;
+                }
+                stockZeroed = decision.toZero.length - protectedCount;
+                stockStaleSkipped += protectedCount;
             } else {
                 // Batch : un seul .in() sur des milliers d'UUID dépasse la limite
                 // d'URL PostgREST → échec EN BLOC. On découpe (comme le sync POS).
@@ -474,10 +587,39 @@ export async function ingestStockSnapshot(
                 // au lieu de laisser la source précédente mentir.
                 for (const batch of chunk(decision.toZero, 500)) {
                     const nowIso = new Date().toISOString();
-                    const { error: zeroErr } = await admin
-                        .from("stock")
-                        .update({ quantity: 0, updated_at: nowIso, source: "file_push", source_ts: nowIso })
-                        .in("product_id", batch);
+                    // GARDE TEMPORELLE (audit M4 CRITIQUE) — active dès qu'un `sourceTs`
+                    // explicite est déclaré : ne passe à 0 QUE les lignes dont la vérité
+                    // courante est ≤ celle de l'export (`.lte` porté par l'UPDATE lui-même
+                    // → atomique côté DB, aucune fenêtre read-then-write). Un produit
+                    // restocké par webhook APRÈS la génération de l'export est absent du
+                    // fichier mais sa vérité est plus fraîche → il reste en stock (le
+                    // zéroter serait LE faux « épuisé »). Le `.select` rend le comptage
+                    // honnête : feed_events/available_sizes ne visent que les lignes
+                    // RÉELLEMENT passées à 0 (jamais d'« out_of_stock » fantôme).
+                    // Sans sourceTs explicite (canaux historiques) : chemin d'origine
+                    // inchangé (source_ts=now bat tout → la garde serait un no-op, sauf
+                    // artefact d'horloge future qu'on ne veut pas changer de traitement).
+                    let zeroErr: { message: string } | null = null;
+                    let zeroedIds: string[] = batch;
+                    if (hasExplicitSourceTs) {
+                        const { data: zeroedRows, error } = await admin
+                            .from("stock")
+                            .update({ quantity: 0, updated_at: nowIso, source: "file_push", source_ts: stockTs })
+                            .in("product_id", batch)
+                            .lte("source_ts", stockTs)
+                            .select("product_id");
+                        zeroErr = error;
+                        if (!error) {
+                            zeroedIds = ((zeroedRows ?? []) as { product_id: string }[]).map((r) => r.product_id);
+                            stockStaleSkipped += batch.length - zeroedIds.length;
+                        }
+                    } else {
+                        const { error } = await admin
+                            .from("stock")
+                            .update({ quantity: 0, updated_at: nowIso, source: "file_push", source_ts: nowIso })
+                            .in("product_id", batch);
+                        zeroErr = error;
+                    }
                     if (zeroErr) {
                         // C'est LE write le plus critique de la réconciliation (passage à 0
                         // = « épuisé »). Un échec laisse les produits VENDUS affichés « en
@@ -488,7 +630,10 @@ export async function ingestStockSnapshot(
                         captureError(zeroErr, { lib: "ingest/snapshot", phase: "reconcile-stock-zero", merchantId });
                         continue;
                     }
-                    stockZeroed += batch.length;
+                    stockZeroed += zeroedIds.length;
+                    // Rien n'est passé à 0 sur ce lot (toutes les lignes protégées par la
+                    // garde = vérités plus fraîches) → aucun effet dérivé à émettre.
+                    if (zeroedIds.length === 0) continue;
                     // Honnêteté d'affichage : un produit DÉCRÉMENTÉ à 0 (sorti de
                     // l'export = épuisé) garde sinon son `available_sizes` JSON avec
                     // des quantités positives périmées → la fiche produit afficherait
@@ -502,13 +647,13 @@ export async function ingestStockSnapshot(
                     const { error: sizesZeroErr } = await admin
                         .from("products")
                         .update({ available_sizes: [] })
-                        .in("id", batch);
+                        .in("id", zeroedIds);
                     if (sizesZeroErr) {
-                        errors.push(`Réconciliation available_sizes (lot de ${batch.length}): ${sizesZeroErr.message}`);
+                        errors.push(`Réconciliation available_sizes (lot de ${zeroedIds.length}): ${sizesZeroErr.message}`);
                         captureError(sizesZeroErr, { lib: "ingest/snapshot", phase: "reconcile-available-sizes", merchantId });
                     }
                     const { error: feedErr } = await admin.from("feed_events").insert(
-                        batch.map((pid) => ({
+                        zeroedIds.map((pid) => ({
                             merchant_id: merchantId,
                             product_id: pid,
                             event_type: "out_of_stock",
@@ -517,7 +662,7 @@ export async function ingestStockSnapshot(
                     if (feedErr) {
                         // Non bloquant (le stock=0 est déjà écrit, c'est l'essentiel)
                         // mais on ne l'avale plus silencieusement.
-                        errors.push(`Réconciliation feed_events (lot de ${batch.length}): ${feedErr.message}`);
+                        errors.push(`Réconciliation feed_events (lot de ${zeroedIds.length}): ${feedErr.message}`);
                         captureError(feedErr, { lib: "ingest/snapshot", phase: "reconcile-feed-events", merchantId });
                     }
                 }
@@ -532,6 +677,7 @@ export async function ingestStockSnapshot(
             products_updated: productsUpdated,
             stock_replaced: stockReplaced,
             stock_zeroed: stockZeroed,
+            stock_stale_skipped: stockStaleSkipped,
             reconcile_skipped: reconcileSkipped,
             total_items: items.length,
             errors,
@@ -575,6 +721,7 @@ export async function ingestStockSnapshot(
         products_updated: productsUpdated,
         stock_replaced: stockReplaced,
         stock_zeroed: stockZeroed,
+        stock_stale_skipped: stockStaleSkipped,
         reconcile_skipped: reconcileSkipped,
         total_items: items.length,
         errors,

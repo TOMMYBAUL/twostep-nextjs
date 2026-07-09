@@ -51,6 +51,13 @@ export async function POST(request: NextRequest) {
         if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
         const mode = formData.get("mode") === "preview" ? "preview" : "apply";
+        // Heure de GÉNÉRATION de l'export = `File.lastModified` (epoch ms), envoyée
+        // par le client (le multipart ne transporte PAS le mtime). C'est LE cas de
+        // l'audit M4 : export de la caisse à 02:00, uploadé à 09:00 → sans elle, le
+        // snapshot serait horodaté 09:00 et écraserait une vente webhook de 08:00.
+        // Optionnelle ; sanitisée en aval (clamp futur, aberrant ignoré → heure du push).
+        const lastModifiedField = formData.get("file_last_modified");
+        const fileLastModified = typeof lastModifiedField === "string" && lastModifiedField ? lastModifiedField : null;
 
         if (!ACCEPTED_TYPES.has(file.type)) {
             return NextResponse.json(
@@ -91,6 +98,7 @@ export async function POST(request: NextRequest) {
             reconcile: true,
             dryRun: mode === "preview",
             coverage: parsed.coverage,
+            sourceTs: fileLastModified,
         });
 
         const exploitable = result.triage.gtin_lines + result.triage.sku_lines;
