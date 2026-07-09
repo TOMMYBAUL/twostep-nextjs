@@ -44,11 +44,51 @@ adversarialement) · Réversibilité 10/10 (0 migration) · Scope 9/10 (4 fichie
 (qualité `g:brand` du feed + vitrine démo présentable = chemin pilote, mais pas un bloqueur). CFR 10 runs : 100 %
 exit=0+commit, 0 revert.
 
-**PROCHAIN [R] (P1-3, cadré ce run)** : adapter **Clictill/Fastmag sur fixtures réalistes d'export** (le wedge
-email-in FR jamais testé en réel). État vérifié : `src/lib/pos/clictill.ts` + `fastmag.ts` + `parse-stock.ts`
-existent avec tests SYNTHÉTIQUES minimaux (`parse-stock-encoding-formats`, `ingest-maillon8-email-in`) ; le travail
-= synthétiser des exports RÉALISTES (colonnes/encodage/séparateurs réels des 2 logiciels) et prouver champ par
-champ. Ensuite : P1-4 kit prospection, P1-5 dossier Trusted, P2 G1/G2.
+**PROCHAIN [R] (P1-3, cadré ce run)** : ✅ **FAIT LE MÊME RUN, 2e unité ci-dessous.**
+
+---
+
+## 2026-07-10 (run autonome, 2e unité) · P1-3 — le wedge email-in FR prouvé sur exports POS réalistes (commit `86e17e6`)
+
+**Cadrage vérifié** : « adapter Clictill/Fastmag » du backlog = en réalité le PARSEUR email-in (`parse-stock.ts` →
+`detectColumns`), pas les adapters API REST (`src/lib/pos/*.ts`, voie polling, hors wedge caisses fermées).
+**Formats RÉELS recherchés (docs officielles, pas devinés)** : Fastmag (docs EDI fastmag.fr) = fichiers TEXTE
+**TABULÉS** `.txt`, décimal `.`, champs **« Gencod »** (sans e final — l'orthographe documentée), « Codemag »
+(code article interne), **PA/PV**, « stock »/« stock resa » ; Clictill = export CSV `;` back-office (« état du
+stock »), vocabulaire Référence/Code barre/Désignation/Marque/Prix TTC/Stock/Stock mini/Valeur stock. **Limite
+honnête documentée dans le test** : fixtures SYNTHÉTISÉES du vocabulaire documenté, pas des fichiers capturés —
+validation sur export réel au 1er pilote.
+
+**4 trous RÉELS prouvés par TDD** (8/12 tests rouges AVANT le fix) : « Gencod » → EAN PERDU (fiche sans identité
+GTIN = pas d'enrichissement, pas de feed Google) ; « Codemag » → SKU perdu ; « PV » → prix perdu ; « Stock » →
+**quantité retombait silencieusement à 1 « présence »** (le stock publié était faux, coverage seul le signalait).
++ pré-existant : « Qté mini »/« Stock mini » étaient CAPTABLES comme quantité (publier un seuil d'alerte = faux stock).
+
+**Revue silent-failure-hunter : 2 passes, la 1re a mordu.** Passe 1 **UNSOUND** — 2 HIGH VÉRIFIÉS (exécution
+réelle) : les nouveaux candidats CONTAMINAIENT le chemin FACTURE jumeau (même `detectColumns`) — une facture avec
+colonne « Stock » informative volait la « Qté livrée », « PVC »/« PV conseillé » volait le prix facturé. Fix :
+**candidats CONTEXTUELS** `detectColumns(headers, "invoice"|"stock")` — le parseur factures garde son vocabulaire
+d'origine PAR CONSTRUCTION (défaut inchangé), seul `parse-stock` active la famille Stock + PV (en **MOT ENTIER** :
+« pvc » ne matche jamais) ; garde d'exclusion des dérivés (mini/maxi/resa/secur/valeur…) sur les DEUX contextes.
+Passe 2 (même agent, contexte conservé) : **SOUND, 0 nouveau finding** (2 LOW informationnels : « PV » peut vouloir
+dire point de vente ailleurs — circonscrit au contexte stock ; « PV. » ponctué = faux négatif honnête).
+
+**Preuve** : `tests/parse-stock-pos-fr-exports.test.ts` (17 tests) — fixture Fastmag .txt TAB CP1252 champ par
+champ (Gencod→EAN, Codemag→SKU, PV=29.90 PAS PA=12.50, Stock=4 PAS resa=1, rupture 0 conservée, taille M/40,
+séparateur TAB auto-détecté par XLSX sans changement de readRows) + fixture Clictill CSV `;` CP1252 (Prix TTC
+virgule FR, Stock=7 PAS mini=2 PAS valeur=90,30) + adversarial detectColumns 2 contextes. **Non-vacance par
+revert : 11/17 rouges sans le fix.** `tsc` OK, **1366→1383** (+17, 130 fichiers). Blast : `detectColumns` =
+2 callers prod (spreadsheetParser inchangé par défaut ; parse-stock passe "stock"). 0 migration, réversible.
+
+**Scorecard (2e unité)** : Preuve 7/10 (formats documentés officiels + TDD rouge-d'abord + revert-proof ; MAIS
+fixtures synthétisées, pas un export capturé) · Sécu north-star 9/10 (ferme « stock silencieusement =1 » + interdit
+seuils/valorisation comme quantité ; 2 HIGH de contamination facture attrapés AVANT commit par la revue) ·
+Réversibilité 10/10 · Scope 9/10 (2 fichiers code + 1 test) · Align 9/10 (LE wedge FR = ce qui rend Deerskin/
+boutiques sans API onboardables par email). CFR 10 runs : 100 %.
+
+**RESTE P1** : P1-4 kit prospection (réactualiser one-pager/séquences avec l'état produit réel) ; P1-5 dossier
+Trusted (checklist 5 marchands, réutiliser `pilot-readiness.ts`) ; P2 G1/G2 (SLA fraîcheur + historique feed-quality).
+**Maintenance nommée** : LESSONS.md à 7,9 KB (> 5 KB) → curer (archiver dans docs/) au prochain run.
 
 ---
 

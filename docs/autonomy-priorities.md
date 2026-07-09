@@ -138,8 +138,13 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    par les 3 writers (applyEnrichment / resolve-ean / invoice validate) + 13 marques beauté FR
    (SVR écarté : faux positif acronyme, revue SF-hunter SOUND 2 MED corrigés). Non-vacance par
    revert (12 rouges). 1352→1366.
-3. **Adapter Clictill/Fastmag prouvé sur fixtures réelles d'export** (email-in) : la partie du
-   wedge FR jamais testée. Se procurer/synthétiser des exports réalistes, prouver champ par champ.
+3. ✅ **Adapter Clictill/Fastmag prouvé sur fixtures réalistes d'export FAIT (2026-07-10, commit
+   `86e17e6`)** : 4 trous réels fermés dans `detectColumns` (« Gencod » Fastmag → EAN perdu ;
+   « Codemag » ; « PV » ; « Stock » → qté silencieusement 1) + garde anti-dérivés (Stock mini/resa/
+   valeur ≠ quantité) + candidats CONTEXTUELS invoice/stock (2 HIGH de contamination facture attrapés
+   par la revue SF-hunter avant commit, passe 2 SOUND). Fixtures = vocabulaire DOCUMENTÉ des éditeurs
+   (.txt TAB CP1252 Fastmag, CSV `;` Clictill), 1366→1383 tests. **Limite honnête : synthétisé des
+   docs officielles — à valider sur un export capturé au 1er pilote (runbook).**
 4. **6b Kit prospection prêt-à-envoyer** : réactualiser one-pager + séquences email (base :
    `IA/twostep-content/prospecting/` d'avril) avec l'état produit RÉEL 2026-07. La boucle
    PRÉPARE, n'ENVOIE JAMAIS (garde-fou email inchangé).
