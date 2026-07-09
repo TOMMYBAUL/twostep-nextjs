@@ -1,11 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { lookupEan, searchEanByName } from "@/lib/ean/lookup";
+import { applyConvergedCachedPhoto, lookupEan, searchEanByName } from "@/lib/ean/lookup";
 import { searchProductImage } from "@/lib/images/serper";
 import { createImageJob } from "@/lib/images/jobs";
 import { runCascade } from "@/lib/enrichment/cascade-engine";
 import { SCORE_THRESHOLDS } from "@/lib/enrichment/score-cascade";
 import { isPlaceholderName } from "@/lib/ingest/triage";
 import { findSharedSkuEan } from "@/lib/enrichment/sku-identity";
+import { captureError } from "@/lib/error";
 
 export type EnrichableProduct = {
     id: string;
@@ -105,4 +106,28 @@ export async function enrichOneProduct(product: EnrichableProduct, admin: Supaba
         visible,
         review_status: reviewStatus,
     }).eq("id", product.id);
+
+    // Convergence P0-10 : runCascade a pu découvrir une source plus riche que la
+    // première servie par lookupEan (EAN-Search ne porte jamais de photo) ; son
+    // write-back n'upgrade que le CACHE. Re-projeter la photo GTIN-keyée sur CE
+    // produit, sinon un premier enrichissement sort sans image alors que la source
+    // l'a. Best-effort APRÈS l'écriture du verdict : un hoquet photo ne doit ni
+    // perdre la décision de visibilité déjà prise, ni repasser le job en retry
+    // (re-payer lookupEan + cascade pour un produit déjà correctement scoré).
+    // NB eanGuessed : la photo s'applique aussi à un EAN deviné (masked/pending) —
+    // parité voulue avec le chemin cache-hit pré-existant de lookupEan, qui
+    // l'appliquait déjà ; elle s'affiche en review 1-tap où elle aide autant à
+    // réfuter un faux match qu'à le confirmer (résidu design, cf. worklog 09/07).
+    if (refreshed.ean) {
+        try {
+            await applyConvergedCachedPhoto(refreshed.ean, product.id);
+        } catch (err) {
+            captureError(err, {
+                module: "enrich-product",
+                phase: "apply-converged-photo",
+                productId: product.id,
+                ean: refreshed.ean,
+            });
+        }
+    }
 }

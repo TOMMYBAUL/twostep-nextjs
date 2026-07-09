@@ -910,6 +910,48 @@ export async function lookupEan(ean: string, productId: string): Promise<boolean
 }
 
 /**
+ * Re-projette sur UN produit la photo (et champs fusionnés) du cache `ean_lookups`
+ * APRÈS la cascade de score : `lookupEan` applique la PREMIÈRE source qui répond
+ * (EAN-Search en tête — qui ne porte JAMAIS de photo), puis `collectAllEanSources`
+ * (convergence P0-10) découvre les sources riches (OBF/OPF = photo GTIN-keyée) et
+ * son write-back n'upgrade que le CACHE — jamais le produit courant. Sans cette
+ * re-projection, un catalogue neuf sort de son PREMIER enrichissement sans images
+ * alors que la source les a (prouvé en réel 2026-07-09 : 19/19 produits démo, photo
+ * OBF présente au cache, `products.photo_url` ∅ — vitrine aveugle).
+ *
+ * Gardes :
+ *  - gaté « le cache a une photo » → jamais un 2e passage applyEnrichment à photo
+ *    vide (qui re-déclencherait le repli Serper = double dépense pour rien) ;
+ *  - applique via `applyEnrichment` = MÊMES gardes qu'un cache-hit (photo seulement
+ *    si produit sans photo, garde vision OBF gated `VERIFY_OPEN_FACTS_IMAGES`,
+ *    cohérence marque, catégorie non-écrasante) — jamais moins-disant ;
+ *  - erreur de lecture cache → captureError + no-op SANS lever (l'enrichissement du
+ *    produit a déjà réussi ; la photo se rattrape à un prochain cycle).
+ *
+ * ⚠️ Coût connu si `VERIFY_OPEN_FACTS_IMAGES=1` (décision #12, OFF aujourd'hui) :
+ * une photo OBF rejetée par la garde vision ICI re-déclenche le repli Serper
+ * d'applyEnrichment alors que le 1er passage (lookupEan) l'a possiblement déjà
+ * tenté → jusqu'à 2 recherches Serper/produit/run sur ce chemin. À arbitrer avec
+ * le GO du flag (noté dans DECISIONS-EN-ATTENTE #12).
+ */
+export async function applyConvergedCachedPhoto(ean: string, productId: string): Promise<void> {
+    const supabase = createAdminClient();
+    const { data: cached, error } = await supabase
+        .from("ean_lookups")
+        .select("*")
+        .eq("ean", ean)
+        .maybeSingle();
+    if (error) {
+        captureError(error, { module: "ean-lookup", phase: "apply-converged-photo", ean, productId });
+        return;
+    }
+    if (!cached || isNotFoundMarker(cached)) return;
+    const photo = cached.photo_url_r2 ?? cached.photo_url;
+    if (!photo) return;
+    await applyEnrichment(supabase, productId, { ...cached, photo_url: photo }, ean);
+}
+
+/**
  * Écrit le marqueur négatif `source='not_found'` pour un EAN (upsert sur PK ean).
  * `name=''` (colonne NOT NULL) et `canonical_name_normalized=null` → jamais servi
  * comme donnée produit, jamais matché par la recherche fuzzy (083 filtre IS NOT NULL).
