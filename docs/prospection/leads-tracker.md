@@ -1,16 +1,72 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-08 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-09 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 211
+- Total leads : 219
 - NOUVEAU : 61
 - CONTACTE : 1
-- BROUILLON : 123
+- BROUILLON : 131
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-07-09 (L'Eclaireur) — Saint-Rome (toulouse-merchants-full.json) — 8 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Rome (mercredi) | **Statut** : À valider
+
+**Note de session :** top-prospects-centre.json Saint-Rome ÉPUISÉ DÉFINITIF depuis 25/06 (61/61 prospects traités, 0 email sur 2 passages). Pivot vers toulouse-merchants-full.json : recherche par rues zone Saint-Rome (Colombette, des Arts, Saint-Pantaléon, Trinité, Dalbade, Changes, etc.) — 128 marchands identifiés dans la zone. Rues Saint-Rome et des Changes : faible présence digitale email confirmée. **8 emails confirmés sur rues adjacentes** : 2 opticiens, 1 boutique montres, 1 lingerie multimarques, 2 concept stores enfant/bébé, 1 cadeaux, 1 bijouterie artisane.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| PAUSE | Saint-Rome/Trinité | Horlogerie/Montres | Jonathan Blaise | bonjour@pause-montres.fr ✅ | 985210459 | 9/10 | BROUILLON | Email confirmé via pause-montres.fr. 23 rue de la Trinité. Montres indépendantes (Alpina, Lip, Yema, Orient). Ouvert 2024. |
+| OPTIQUE DES ARTS | Saint-Rome/Arts | Optique | Dorothée Escudié | optiquedesarts@gmail.com ✅ | 822873964 | 8/10 | BROUILLON | Email confirmé via annuaires. 9 rue des Arts. Opticien indépendant. |
+| OLIVIER NARDIN OPTIQUE | Saint-Rome/Colombette | Optique | Olivier Nardin | olivier.nardin@colombette-optique.fr ✅ | 753217140 | 8/10 | BROUILLON | Email confirmé via colombette-optique.fr. 20 rue Colombette. Opticien indépendant. |
+| TENDANCES LINGERIE | Saint-Rome/Colombette | Lingerie multimarques | Johan Bouysse | contact@tendances-lingerie.com ✅ | 851831982 | 7/10 | BROUILLON | Email confirmé via tendances-lingerie.com. 40 rue Colombette. 30+ ans, marques PrimaDonna, Marie Jo, Sarda, Wacoal, Simone Pérèle. |
+| LA MOMERIE | Saint-Rome/Colombette | Concept store bébé | Lou-maite Monjon | contact@la-momerie.com ✅ | 840216766 | 6/10 | BROUILLON | Email confirmé via la-momerie.com. 12 rue Colombette. Concept store bébé éco multimarques (SASU TRIMON). |
+| ETOILE DE SONGE | Saint-Rome/Trinité | Mode enfant | Sophie Pialat | contact@etoiledesonge.fr ✅ | 842073801 | 6/10 | BROUILLON | Email confirmé via etoiledesonge.fr. 9 place de la Trinité. Mode enfant haut de gamme. |
+| VIOLETTES ET PASTELS | Saint-Rome/Saint-Pantaléon | Cadeaux/Souvenirs | Benoit Lhommeau | benoit.lhommeau@gmail.com ✅ | 802889956 | 5/10 | BROUILLON | Email confirmé via annuaires. 10 rue Saint-Pantaléon. Boutique cadeaux/souvenirs violettes Toulouse. ⚠️ Produits locaux artisanaux — pertinence Two-Step à valider. |
+| SUCRE & CANNELLE | Saint-Rome/Saint-Pantaléon | Bijouterie/Maroquinerie | Clémentine Lhommeau | contact@sucre-cannelle.com ✅ | 812874063 | 4/10 | BROUILLON | Email confirmé via sucre-cannelle.fr. 5 rue Saint-Pantaléon. Fabricant bijoux fantaisie + maroquinerie. ⚠️ À valider Thomas — bijoux propre marque (artisan) ; famille Lhommeau (cf. VIOLETTES ET PASTELS). |
+
+**Écartées session 09/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| MIRA MIRA | 928558550 | Chaîne bijoux acier inox espagnole (4 bts Toulouse) — ÉCARTÉE DÉFINITIF |
+| OPTICAL FACTORY | 921992616 | Franchise nationale opticien France/Belgique — ÉCARTÉE DÉFINITIF |
+| POBIEDA | 831015748 | Liquidation judiciaire avril 2024 — ÉCARTÉE DÉFINITIF |
+| ENTRE ELLE ET MOI | 403883119 | Radiée — ÉCARTÉE DÉFINITIF |
+| ILANN FIVE / PMN | 824966022 | Inactive décembre 2023 — ÉCARTÉE DÉFINITIF |
+| ASM | 444108385 | Liquidation judiciaire juillet 2020 — ÉCARTÉE DÉFINITIF |
+| BLEU CERISE | 408176311 | Chaîne nationale — ÉCARTÉE DÉFINITIF |
+| RL.COM / MW&Co | 879698066 | Marque propre horlogère (pas boutique multi-marques) — ÉCARTÉE |
+| V FRAYSSINET | 519018436 | Liée famille Frayssinet, doublon tracker — ÉCARTÉE |
+| CREA CONCEPT | 523075950 | Réseau en déploiement Paris/Toulouse — ÉCARTÉE |
+| SOUL BROTHERS JEWELLERY | 480056209 | Kinésiologie/cristaux, pas marques tiers — ÉCARTÉE |
+| PAUL MARIUS | — | Marque propre maroquinerie — ÉCARTÉE |
+| MADAME MARCHAND | — | Patisavonnerie artisanale (marque propre) — ÉCARTÉE |
+| ROGER GERSON | — | Immobilier (faux positif) — ÉCARTÉE |
+| SAS YOOK | 510352446 | Tissu (pas prêt-à-porter) — ÉCARTÉE |
+| SANTA FE | — | 5 établissements = chaîne — ÉCARTÉE |
+| VIA UNO | — | 5 établissements = chaîne — ÉCARTÉE |
+| MICHAEL DRILHOLE CONCEPT | 819061649 | Immeuble effondré mars 2025, gérant désormais chez SWAP — ÉCARTÉE DÉFINITIF |
+| GAS BIJOUX | 440266765 | Chaîne nationale (Paris, Saint-Tropez, Lyon, New York...) — ÉCARTÉE DÉFINITIF |
+
+**Terrain-only (email non trouvé) :**
+| Boutique | SIREN | Tél / Présence | Notes |
+|---|---|---|---|
+| MARC FREZAL (Montres à la française) | 449858794 | 05 61 62 97 30 | Artisan horloger, site montresalafrancaise.fr sans email public |
+| LINEA MODA | 884782228 | 05 61 21 32 31 | Maroquinerie, FB/IG only |
+| DO MY SHOES | 531697514 | 05 61 52 60 81 | Chaussures créateurs, site sans email public |
+| POINDRELLE | 324454735 | — | Bijouterie 1982, adresse partagée Frayssinet, pas d'email public |
+| COCOTTE | 799338017 | — | Bijouterie/accessoires, tél only |
+| OUTDOOR DIFFUSION SUD OUEST | 102885449 | — | Sport plein air, site 503 |
+| MAKEUP SHOW | 814911608 | — | Cosmétique, tél only |
+| LA CROIZETTE | 503051831 | 08 90 21 17 50 | Bijouterie fantaisie ancienne, tél only |
+
+*Note session 09/07 (L'Eclaireur) : Saint-Rome top-prospects-centre.json ÉPUISÉ DÉFINITIF depuis 25/06 (61/61 traités). Pivot toulouse-merchants-full.json zone Saint-Rome (128 marchands identifiés). 8 emails confirmés : PAUSE (Jonathan Blaise, montres indép. 9/10) = priorité envoi ; OPTIQUE DES ARTS (8/10) + OLIVIER NARDIN (8/10) ; TENDANCES LINGERIE (Johan Bouysse, lingerie 30 ans, 7/10) ; ÉTOILE DE SONGE + LA MOMERIE (concept stores enfant/bébé, 6/10) ; VIOLETTES ET PASTELS + SUCRE & CANNELLE (5/10 + 4/10 — ces deux à valider Thomas). 19 écartées définitives (chaînes nationales, liquidations 2020-2024, marques propres, faux positifs). 8 terrain-only (tél uniquement, no email public). Rue Colombette = zone productive (3 emails). Rues Saint-Rome et des Changes = 0 email public (confirmé). MCP Notion indisponible (28e session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Rome 2026-07-09".*
+
+---
 
 ### Mardi — 2026-07-08 (L'Eclaireur) — Saint-Etienne (toulouse-merchants-full.json) — 5 emails confirmés
 
