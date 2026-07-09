@@ -1,6 +1,7 @@
 import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { canonicalizeBrand } from "@/lib/ean/brand";
 import { fetchEanData } from "@/lib/ean/lookup";
 import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { evalIdentityConcordance } from "@/lib/enrichment/identity-concordance";
@@ -358,7 +359,10 @@ export async function POST(
                         const concords = evalIdentityConcordance(cleanName, resolvedName, enrichedBrand);
                         if (concords !== false) {
                             if (resolvedName) enrichedName = resolvedName;
-                            enrichedBrand = eanData.brand;
+                            // Chemin JUMEAU d'applyEnrichment (vitrine 2026-07-09) : la marque
+                            // source est un champ `brands` brut (liste à virgules, casse
+                            // contributeur) → canonicalisée par le même helper unique.
+                            enrichedBrand = canonicalizeBrand(eanData.brand);
                             // Twin write-path of applyEnrichment (maillon 9 (d)): the EAN source
                             // category is raw English ("clothing and fashion"…). Translate it to a
                             // French L1 slug here too, else invoice-created products would show English

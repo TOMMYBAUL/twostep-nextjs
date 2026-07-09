@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { canonicalizeBrand } from "@/lib/ean/brand";
 import { lookupEan, searchEanByName, verifyEanMatchWithAI } from "@/lib/ean/lookup";
 import { searchProductImage } from "@/lib/images/serper";
 import { createImageJob } from "@/lib/images/jobs";
@@ -84,9 +85,12 @@ export async function resolveAndEnrich(params: {
             if (reverse) {
                 foundEan = reverse.ean;
                 resolvedFrom = "reverse_search";
-                // Save brand/category from reverse search immediately
+                // Save brand/category from reverse search immediately.
+                // Brand canonicalisée (chemin JUMEAU d'applyEnrichment) : les sources
+                // renvoient un champ `brands` brut (liste à virgules, casse contributeur).
+                const reverseBrand = canonicalizeBrand(reverse.brand);
                 const updates: Record<string, unknown> = { ean: reverse.ean };
-                if (reverse.brand) updates.brand = reverse.brand;
+                if (reverseBrand) updates.brand = reverseBrand;
                 if (reverse.category) updates.category = reverse.category;
                 await supabase.from("products").update(updates).eq("id", productId);
             }

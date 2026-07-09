@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { extractKnownBrand } from "@/lib/ean/brand";
+import { canonicalizeBrand, extractKnownBrand } from "@/lib/ean/brand";
 import { mapEanCategoryToFr } from "@/lib/ean/category";
 import { createImageJob } from "@/lib/images/jobs";
 import { createRateLimiter } from "@/lib/ean/rate-limiter";
@@ -1007,6 +1007,12 @@ async function applyEnrichment(
         .select("merchant_id, photo_url, name, brand, sku, category_id")
         .eq("id", productId)
         .single();
+
+    // Marque source canonicalisée AVANT toute garde (vitrine réelle 2026-07-09) : OBF/OPF
+    // renvoient leur champ `brands` brut — liste à virgules ("La Roche-Posay, loreal") et
+    // casse contributeur ("WELEDA") écrites verbatim sur le produit. Chokepoint unique,
+    // zéro invention (allow-list ou tag primaire verbatim) — cf. canonicalizeBrand.
+    if (data.brand) data.brand = canonicalizeBrand(data.brand);
 
     // Validate UPC brand coherence
     if (data.brand && prod?.name) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractKnownBrand, resolveBrand, KNOWN_BRANDS } from "@/lib/ean/brand";
+import { canonicalizeBrand, extractKnownBrand, resolveBrand, KNOWN_BRANDS } from "@/lib/ean/brand";
 
 describe("extractKnownBrand", () => {
     // ── The real-world regression (maillon 9 test of 2026-06-27): brand was null 7/7. ──
@@ -45,6 +45,13 @@ describe("extractKnownBrand", () => {
         expect(extractKnownBrand("sonyclap toy")).toBeNull(); // not Sony
     });
 
+    it("does NOT list 3-letter acronyms that collide with unrelated products (revue SF-hunter 2026-07-10)", () => {
+        // « SVR » (marque pharma) matcherait en mot entier le trim d'un modèle auto —
+        // exactement le faux positif que l'allow-list doit rendre impossible.
+        expect(KNOWN_BRANDS).not.toContain("SVR");
+        expect(extractKnownBrand("Hot Wheels Range Rover Sport SVR Miniature 1:64")).toBe("Hot Wheels");
+    });
+
     it("returns null for an unrecognised brand (never invents)", () => {
         expect(extractKnownBrand("Marque Inconnue Pantalon Bleu")).toBeNull();
         expect(extractKnownBrand("Generic No-Name Hoodie Size M")).toBeNull();
@@ -57,6 +64,43 @@ describe("extractKnownBrand", () => {
         expect(extractKnownBrand("   ")).toBeNull();
         expect(extractKnownBrand("Unknown")).toBeNull(); // the placeholder name from sources
         expect(extractKnownBrand("123456 7890")).toBeNull(); // a bare EAN-ish string
+    });
+});
+
+describe("canonicalizeBrand — marques sources OBF/OPF brutes (vitrine réelle 2026-07-09)", () => {
+    // ── Les 3 défauts RÉELS du rapport vitrine Maison Garonne (champ `brands` OBF brut). ──
+    it("parse la liste à virgules OBF : le tag primaire gagne, jamais le parent en 2e position", () => {
+        // Ligne réelle du rapport : Lipikar Baume AP+M → brand "La Roche-Posay, loreal"
+        expect(canonicalizeBrand("La Roche-Posay, loreal")).toBe("La Roche-Posay");
+    });
+
+    it("réémet la casse canonique d'une marque allow-list (WELEDA → Weleda)", () => {
+        // Ligne réelle : Weleda Déodorant roll-on → brand "WELEDA"
+        expect(canonicalizeBrand("WELEDA")).toBe("Weleda");
+    });
+
+    it("canonicalise un tag primaire qui CONTIENT une marque allow-list", () => {
+        // Ligne réelle : Stick lèvres → brand "L'Occitane en Provence"
+        expect(canonicalizeBrand("L'Occitane en Provence")).toBe("L'Occitane");
+    });
+
+    // ── Contrat zéro-invention. ──
+    it("marque inconnue : tag primaire VERBATIM, jamais inventé ni perdu", () => {
+        expect(canonicalizeBrand("Byredo")).toBe("Byredo");
+        expect(canonicalizeBrand("Marque Privée X, groupe Y")).toBe("Marque Privée X");
+    });
+
+    it("ne promeut JAMAIS un tag ultérieur connu par-dessus le tag primaire inconnu", () => {
+        // Le 2e tag est souvent le groupe parent — l'émettre serait une fausse marque plausible.
+        expect(canonicalizeBrand("Mixa, Nivea")).toBe("Mixa");
+    });
+
+    it("tags vides en tête : premier tag NON vide ; entrée vide/nullish → null", () => {
+        expect(canonicalizeBrand(" , WELEDA")).toBe("Weleda");
+        expect(canonicalizeBrand(null)).toBeNull();
+        expect(canonicalizeBrand(undefined)).toBeNull();
+        expect(canonicalizeBrand("")).toBeNull();
+        expect(canonicalizeBrand(" , , ")).toBeNull();
     });
 });
 
@@ -85,6 +129,13 @@ describe("resolveBrand precedence", () => {
     it("does not let a whitespace-only source brand win", () => {
         expect(resolveBrand("   ", "Nike Air Max 90", null)).toBe("Nike");
     });
+
+    it("canonicalises the source brand instead of trusting it verbatim", () => {
+        expect(resolveBrand("La Roche-Posay, loreal", null, null)).toBe("La Roche-Posay");
+        expect(resolveBrand("WELEDA", null, null)).toBe("Weleda");
+        // Une source « que des virgules » ne gagne pas : repli sur le nom résolu.
+        expect(resolveBrand(" , ", "Nike Air Max 90", null)).toBe("Nike");
+    });
 });
 
 describe("KNOWN_BRANDS allow-list integrity", () => {
@@ -92,6 +143,16 @@ describe("KNOWN_BRANDS allow-list integrity", () => {
         for (const b of ["Nike", "Bose", "Ray-Ban", "Carhartt", "Lego", "VTech", "Coca-Cola"]) {
             expect(KNOWN_BRANDS).toContain(b);
         }
+    });
+
+    it("contains the beauty brands proven missing by the 2026-07-09 vitrine run", () => {
+        for (const b of ["L'Occitane", "Nuxe", "Klorane", "Weleda"]) {
+            expect(KNOWN_BRANDS).toContain(b);
+        }
+        // Ligne réelle du rapport : « L'Occitane Crème Mains Karité 150 ml » → brand ∅.
+        expect(extractKnownBrand("L'Occitane Crème Mains Karité 150 ml")).toBe("L'Occitane");
+        expect(extractKnownBrand("Nuxe Huile Prodigieuse 100 ml")).toBe("Nuxe");
+        expect(extractKnownBrand("Klorane Shampoing sec à l'avoine")).toBe("Klorane");
     });
 
     it("has no empty entries", () => {
