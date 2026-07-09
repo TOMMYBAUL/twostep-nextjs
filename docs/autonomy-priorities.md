@@ -124,9 +124,17 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    **17/17 VERT** + vérif D7 en réel (EAN résolu FAUX par source polluée, score 0.965 → `pending`/
    invisible = rien ne s'auto-publie). Limites honnêtes documentées (fixtures Zettle réelles = item 3 ;
    rendu écrans = décision #7 ; voies OAuth/email-in non exerçables à blanc).
-2. **6a.2 Vitrine démo via le PIPELINE RÉEL** : un marchand démo « boutique multimarque Toulouse »
-   dont le catalogue est passé par ingest réel → enrichissement → shadow/preview → vitrine.
-   (Remplace les données hand-fakées ; le jugement visuel final reste Thomas.)
+2. ✅ **6a.2 Vitrine démo via le PIPELINE RÉEL — FAITE (2026-07-09 run #3)** : marchand « Maison
+   Garonne » (concept-store beauté Toulouse), 19 EAN réels vérifiés OBF + 2 SKU-only, poussés par la
+   VRAIE voie jeton → worker réel → **19/19 auto-validés 0.985 (convergence P0-10 prouvée VIVANTE en
+   réel) + 19/19 photos OBF** après fix « photo convergée » (bug réel : la photo découverte par la
+   convergence n'atteignait jamais le produit au 1er passage → `applyConvergedCachedPhoto`, revue
+   SF-hunter SOUND, 1339→1352). Rapport : `docs/prospection/vitrine-demo-2026-07-09.md` ;
+   `scripts/demo-vitrine-pipeline.mjs` rejouable. **Découverte escaladée (décision #14)** : le cron
+   enrich-products PROD (main stale, fail-open images) consomme les jobs de la DB partagée → fausse
+   photo publiable en ≤5 min ; reco = clé ANTHROPIC prod (décision #1). **Reste** : jugement visuel
+   Thomas (#7) + [R] court nommé : allow-list `brand.ts` (L'Occitane manquante, casse WELEDA,
+   `La Roche-Posay, loreal` brut OBF).
 3. **Adapter Clictill/Fastmag prouvé sur fixtures réelles d'export** (email-in) : la partie du
    wedge FR jamais testée. Se procurer/synthétiser des exports réalistes, prouver champ par champ.
 4. **6b Kit prospection prêt-à-envoyer** : réactualiser one-pager + séquences email (base :

@@ -5,6 +5,67 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-09 (run autonome #3) · P1 6a.2 — VITRINE DÉMO via le PIPELINE RÉEL + 2 découvertes majeures (photo convergée fixée ; cron prod fail-open prouvé)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché. P0 épuisé/escaladé (P0-2 = migration
+108 dans la décision #3) → P1 top-rang = **6a.2 vitrine démo via le pipeline réel** (nommé « prochain run »
+par le run 6a.3). Ledger lu (runs récents 11-33 $ notionnels, tous exit 0 + commit).
+
+**FAIT 1 — la vitrine** : `scripts/demo-vitrine-pipeline.mjs` (idempotent, `--report`/`--cleanup`, marchand
+taggé `launch_cohort=999` conv. seed) : marchand « **Maison Garonne** » (concept-store beauté/lifestyle
+Toulouse) + catalogue de **19 EAN RÉELS vérifiés sur OBF le jour même** (Nuxe/Caudalie/Klorane/Weleda/
+Bioderma/LRP/Avène/L'Occitane) + 2 SKU-only volontaires → poussé par la VRAIE voie jeton
+`POST /api/ingest/stock` (dev local, TLS hérité) → worker cron réel. **Résultat : triage 19 GTIN/2 SKU/0
+rejet ; 19/19 auto-validés à 0.985 (convergence tier2 OBF + tier6 = P0-10 prouvée VIVANTE en réel pour la
+1re fois) ; 2 sans-EAN masked (rien ne s'auto-publie) ; après FAIT 2 : 19/19 AVEC photo OBF GTIN-keyée.**
+Rapport champ-par-champ : `docs/prospection/vitrine-demo-2026-07-09.md`. Vitrine :
+`/shop/maison-garonne-762ad7a0` (dev/preview — prod conso gatée /bientot). Jugement visuel = Thomas (#7).
+
+**TROUVÉ+FIXÉ (bug réel n°1, la vitrine était AVEUGLE)** : au 1er passage, **0/19 photos** alors que le
+cache `ean_lookups` les avait — `lookupEan` applique la PREMIÈRE source de `fetchEanData` (EAN-Search en
+tête, `photo_url: null` par design) ; la convergence P0-10 découvre OBF (photo GTIN-keyée) mais son
+write-back n'upgrade que le CACHE, jamais le produit courant → **tout catalogue pilote sortirait de son
+premier enrichissement SANS images**. Fix : `applyConvergedCachedPhoto(ean, productId)` (lookup.ts) —
+re-projection APRÈS `runCascade` via `applyEnrichment` = mêmes gardes qu'un cache-hit (photo seulement si
+absente, vision OBF gated #12, cohérence marque, catégorie non-écrasante), gaté « cache a une photo »
+(jamais de 2e repli Serper à vide), best-effort try/catch (un hoquet photo ne perd ni le verdict écrit ni
+ne repaye la cascade en retry). Câblé dans `enrichOneProduct` (1 caller route ; blast LOW ; GitNexus MCP
+non connecté → impact par grep callers + git diff). **Revue SF-hunter : SOUND avec réserves — MED-HIGH
+try/catch CORRIGÉ + test ; HIGH « photo sur EAN deviné » requalifié PARITÉ** (le chemin cache-hit
+pré-existant l'appliquait déjà ; gater aurait créé une divergence jumeaux — documenté comme résidu design
+review 1-tap) ; MED latent double-Serper si flag #12 ON → noté dans la décision #12. Preuve :
+`tests/ean-converged-photo.test.ts` (8, vraie chaîne applyEnrichment, fake table-driven) +
+`tests/enrichment-worker-converged-photo.test.ts` (5, câblage+ordre+throw). **1339→1352 (+13)**, tsc OK.
+Preuve RÉELLE : re-run enrichissement démo → 19/19 photos `photo_source=ean` appliquées.
+
+**TROUVÉ+ESCALADÉ (bug réel n°2, north-star, hors de portée de la boucle — décision #14)** : le tote bag
+(masked) a reçu une photo `serper` d'un site tiers alors que la clé ANTHROPIC est VIDE en local (le
+court-circuit C2 aurait dû l'empêcher). Enquête : 21 jobs, mes 2 passes worker = 20 ; aucun log `[serper]`
+côté dev ; `origin/main:src/lib/images/serper.ts` porte encore `if (!apiKey) return true` (fail-open
+d'avant le 27/06) ; le cron `enrich-products` de la PROD Vercel tourne **toutes les 5 min sur la DB
+PARTAGÉE**. → **la prod stale exécute les jobs de la branche avec les gardes d'HIER : tout produit sans
+EAN poussé dans cette DB peut recevoir une FAUSSE photo publiée en ≤ 5 min** (la classe « 6/7 photos
+fausses », toujours vivante en prod). Options A (clé ANTHROPIC prod = décision #1, RECO)/B (couper le cron
+prod)/C (re-merge — divergence mesurée : 114 main-only vs 117 branche-only, ça grossit). Décision #14.
+
+**Métrique** : 1 item P1 fermé (6a.2) + 1 bug réel pipeline fermé (+13 tests) + 1 bug prod prouvé escaladé.
+0 migration, réversible (`git revert` + `--cleanup` du marchand démo). Fichiers : 2 code + 2 tests + 1
+script + 4 docs. Consommation API bornée : 19 EAN-Search (quota essai 100/mois — noté), OBF/OPF gratuits.
+
+**Scorecard** : Preuve **9/10** (pipeline complet exercé en réel de bout en bout, sortie inspectée champ
+par champ, bug découvert PAR la donnée réelle puis fix re-prouvé en réel — reste le jugement visuel photos
+= Thomas) · Sécu north-star 9/10 (ferme « catalogue sans images au 1er enrichissement » sans affaiblir une
+garde ; SF-hunter SOUND, MED-HIGH corrigé ; + le fail-open prod rendu VISIBLE et escaladé) · Réversibilité
+10/10 (0 migration) · Scope 8/10 (2 fichiers code ciblés, mais run large : script démo + enquête prod) ·
+Align 10/10 (P1 top-rang mission pilote + north-star « zéro faux positif »). CFR 10 runs : 100 % exit 0 +
+commit, 0 revert.
+
+**RESTE** : #7 jugement visuel (vitrine + 19 photos, rapport prêt) ; décision #14 (cron prod) ; [R] courts
+nommés : allow-list `brand.ts` (L'Occitane manquante 1/19, `WELEDA` casse, `La Roche-Posay, loreal` brut) ;
+P1 item 3 (fixtures Clictill/Fastmag) ; 6b kit prospection ; 6c dossier Trusted.
+
+---
+
 ## 2026-07-09 (run autonome #2) · M4 CRITIQUE audit — vrai source_ts file_push + garde temporelle (fin de « l'export périmé écrase la vente webhook »)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de nouvellement coché. P0 mission épuisé

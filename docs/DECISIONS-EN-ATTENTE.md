@@ -21,7 +21,20 @@
   système est construit et attend ce catalogue. Proposition : bloquer une demi-journée cette
   semaine ; la boucle aura le runbook + la vitrine démo prêts (P1 de la mission).
   → **Runbook PRÊT (2026-07-08)** : `docs/prospection/runbook-onboarding-pilote.md`, testé à
-  blanc 17/17 vert via le vrai pipeline. Vitrine démo (6a.2) = prochain run.
+  blanc 17/17 vert via le vrai pipeline. → **Vitrine démo PRÊTE (2026-07-09)** : « Maison
+  Garonne », 19 produits réels enrichis+photos via le VRAI pipeline —
+  `docs/prospection/vitrine-demo-2026-07-09.md` (rendu à juger, décision #7).
+- [ ] **14. Fail-open images du cron PROD (découvert+prouvé 2026-07-09)** : le cron
+  `enrich-products` de la prod Vercel (code `main`, AVANT le fix fail-closed du 27/06)
+  tourne toutes les 5 min sur la DB PARTAGÉE et a publié une image Google Images NON
+  vérifiée pendant le run démo (preuve : `vitrine-demo-2026-07-09.md` §finale). Tout
+  produit sans EAN poussé dans cette DB peut recevoir une FAUSSE photo en ≤ 5 min (la
+  classe « 6/7 photos fausses »). **Décision (une des trois, la boucle ne peut faire
+  aucune seule)** : **A.** poser `ANTHROPIC_API_KEY` en prod (= décision #1 ; réactive la
+  vérif vision même sur le code main → ferme le trou ET dégèle les images) — **RECO** ;
+  **B.** hotfix main : retirer le cron `enrich-products` de vercel.json prod en attendant
+  le merge ; **C.** accélérer le re-merge branche→main (⚠️ divergence mesurée ce jour :
+  114 commits main-only / 117 branche-only — ça grossit chaque jour).
 
 ## 🟢 Prospection (débloqué par le pivot vacances-des-2-boutiques du 07/07)
 
@@ -51,7 +64,10 @@
   clé ANTHROPIC (décision 1)** — l'activer SANS la clé = zéro photo du tout (fail-closed). Limites
   honnêtes : une photo rejetée n'est PAS re-tentée automatiquement (tracée Sentry par produit ;
   marqueur+retry = design à trancher si besoin) ; `PUBLISH_UNVERIFIED_IMAGES=1` annule la vérif ;
-  le wizard admin (cascade-suggest) reste hors garde (revue humaine).
+  le wizard admin (cascade-suggest) reste hors garde (revue humaine). **NB coût (09/07,
+  revue SF-hunter)** : avec le flag ON, une photo OBF rejetée par la vision peut re-déclencher
+  le repli Serper une 2e fois dans le même run (chemin « photo convergée ») — jusqu'à 2
+  recherches Serper/produit ; à accepter explicitement ou à mitiger au GO.
 - [ ] **13. GO migration 112 + flag `FILE_PUSH_ATOMIC_STOCK=1`** (audit M4 CRITIQUE item #3,
   préparé le 2026-07-09, commit `c7b56ef`) : le REPLACE stock du file_push passe par la RPC batch
   `ingest_stock_batch` = même garde temporelle que les webhooks (un export périmé n'écrase plus

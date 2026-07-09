@@ -58,6 +58,10 @@ Version curée du 2026-07-07 — archive complète : docs/LESSONS-archive-2026-0
 - NetLimiter intercepte le TLS → git en SSH ; pre-push déterministe (tests réseau live isolés dans `test:db`) ; e2e local : le dev server doit HÉRITER du contournement TLS (relancer depuis le shell courant), sinon `fetch failed` côté serveur.
 - winget ET npm installent Claude Code → maj les deux. `.ps1` planifié : ASCII pur ou UTF-8 BOM.
 
+## Environnements partagés
+- DB PARTAGÉE prod/branche : les crons PROD (code main STALE = les gardes d'HIER) consomment les jobs de queue insérés depuis la branche → preuve locale contaminée + gardes fail-closed contournées. Compter ses jobs traités vs `processed_at` ; divergence = un autre worker a mordu.
+- Write-back au CACHE ≠ entité déjà servie : un champ découvert APRÈS application (convergence multi-source) doit être RE-PROJETÉ explicitement sur le produit, gaté pour ne pas re-payer les replis.
+
 ## Git / workflow / tests
 - Jamais de commit sur main (branche feat/) ; email git = bauland@twostep.fr ; `npm run test:run` avant push.
 - `git add -A` happe les fichiers régénérés par hooks → stager des chemins explicites. Fix de code → grep la valeur dans `tests/`.
