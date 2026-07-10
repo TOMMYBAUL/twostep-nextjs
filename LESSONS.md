@@ -47,6 +47,7 @@ Format : 2-4 lignes par entrée max. Fichier ≤ 5 KB : curer avant d'ajouter.
 ## Windows / environnement
 - NetLimiter intercepte TLS → git SSH ; tests réseau isolés dans `test:db` ; le dev server e2e doit HÉRITER du contournement.
 - winget ET npm installent Claude Code → maj les deux. `.ps1` planifié : ASCII ou UTF-8 BOM.
+- Muter un fichier UTF-8 sans BOM via `Get-Content`/`Set-Content` PS 5.1 = double-encodage (mojibake) → passer par Edit/Write.
 
 ## Environnements partagés
 - DB PARTAGÉE prod/branche : crons PROD (code main STALE) consomment les jobs insérés depuis la branche → preuve contaminée, gardes contournées. Compter ses jobs vs `processed_at`.
