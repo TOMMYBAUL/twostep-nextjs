@@ -2,6 +2,24 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-deco-toulouse",
+        title: "Shopping déco à Toulouse : les meilleures boutiques de décoration indépendantes",
+        description:
+            "Capitole, Carmes, Saint-Cyprien... Les adresses incontournables pour décorer sans passer par les grandes enseignes — et savoir si ce que tu cherches est en stock.",
+        publishedAt: "2026-07-10",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
+        slug: "shopping-bijoux-toulouse",
+        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique (et savoir s'il est en stock)",
+        description:
+            "Capitole, Carmes, Saint-Étienne... Guide des meilleures bijouteries indépendantes et comment éviter le déplacement pour rien.",
+        publishedAt: "2026-05-11",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
