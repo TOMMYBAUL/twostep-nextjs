@@ -2,6 +2,8 @@
 
 > **Principe** : chaque objection est une question déguisée. Le commerçant ne dit pas "non", il dit "convainquez-moi".
 > **Méthode** : Écouter → Valider → Répondre → Rediriger vers l'action.
+> **Réactualisé 2026-07-10** : positionnement Google d'abord, canal export-par-email (caisses FR),
+> offre unifiée (1 mois gratuit, 19€/29€/39€ = paliers réels de l'app).
 
 ---
 
@@ -25,7 +27,7 @@
 > C'est 1 mois gratuit, sans carte bancaire, sans engagement. Ensuite c'est 19€/mois pour les 30 premiers marchands — ce tarif est verrouillé à vie. Si ça ne vous convient pas au bout de 1 mois, vous ne payez rien. On désinstalle tout en 1 clic.
 
 **Si il demande le prix futur** :
-> 19€/mois pour les 30 premiers marchands, verrouillé à vie. C'est moins qu'un post sponsorisé Instagram. Et les 2 premiers mois sont gratuits — vous testez sans risque.
+> 19€/mois pour les 30 premiers marchands, verrouillé à vie. C'est moins qu'un post sponsorisé Instagram. Et le 1er mois est gratuit — vous testez sans risque.
 
 ---
 
@@ -34,7 +36,7 @@
 **Ce qu'il pense vraiment** : "Je fais déjà des efforts en ligne, pourquoi un truc de plus ?"
 
 **Réponse** :
-> Instagram est super pour montrer votre univers et votre image. Mais est-ce que quelqu'un peut chercher "Nike Air Max 42" sur votre Instagram et savoir que vous l'avez en stock ? Non. Two-Step fait exactement ça : le produit exact, la taille exacte, la disponibilité en temps réel. C'est complémentaire à Instagram, pas un remplacement. Et contrairement à Instagram, vous n'avez rien à poster — tout est automatique.
+> Instagram est super pour montrer votre univers et votre image. Mais est-ce que quelqu'un peut chercher "Nike Air Max 42" sur Google et savoir que VOUS l'avez en stock ? Non — il tombe sur Amazon. Two-Step fait exactement ça : le produit exact, la taille exacte, la disponibilité réelle, visibles là où les gens cherchent. C'est complémentaire à Instagram, pas un remplacement. Et contrairement à Instagram, vous n'avez rien à poster — tout est automatique.
 
 ---
 
@@ -42,11 +44,11 @@
 
 **Ce qu'il pense vraiment** : "À quoi ça sert d'être sur une app que personne n'utilise ?"
 
-**Réponse** :
-> Vous avez raison, on démarre. C'est exactement pour ça qu'on cherche des pionniers — les boutiques qui seront là dès le début. On investit massivement sur la communication à Toulouse : réseaux sociaux, contenu, partenariats locaux. Mais surtout : plus il y a de boutiques intéressantes sur Two-Step, plus les consommateurs viennent. C'est un cercle vertueux, et les pionniers sont ceux qui en bénéficient le plus — visibilité prioritaire, 1 mois gratuit, tarif verrouillé à 19€/mois à vie.
+**Réponse (LA réponse depuis le pivot Google — c'est notre meilleur argument)** :
+> Justement : vous n'avez pas besoin que qui que ce soit connaisse Two-Step. Vos produits apparaissent **sur Google** — là où vos clients cherchent déjà, tous les jours. Quand quelqu'un tape "[produit]" près d'ici, il voit que vous l'avez en stock. Two-Step est la tuyauterie derrière ; ce que les gens voient, c'est Google, et votre boutique dessus.
 
 **Argument bonus** :
-> Quand Instagram a lancé en 2010, les premiers créateurs qui ont posté avaient 12 followers. Aujourd'hui, ce sont les plus gros comptes. Être premier, c'est un avantage qu'on ne peut pas rattraper ensuite.
+> Et en plus de Google, les pionniers sont mis en avant dans l'app Two-Step au lancement public à Toulouse — visibilité prioritaire, 1 mois gratuit, tarif verrouillé à 19€/mois à vie. Être premier, c'est un avantage qu'on ne rattrape pas ensuite.
 
 ---
 
@@ -55,7 +57,7 @@
 **Ce qu'il pense vraiment** : "C'est trop technique pour moi."
 
 **Réponse** :
-> Pas de problème du tout. Vous exportez votre catalogue en CSV ou Excel depuis n'importe quel logiciel, et on s'occupe du reste. Même un simple fichier Excel suffit. Compatible avec tous les logiciels de caisse.
+> Pas de problème du tout — c'est même le cas le plus courant. Vous êtes sur Fastmag, Clictill ou une caisse française classique ? Vous envoyez votre export stock par email — le même fichier que vous sortez déjà — et tout se met à jour automatiquement, chaque jour. Sinon, un simple CSV ou Excel suffit, ou on scanne vos produits à la douchette. Compatible avec tous les logiciels de caisse, sans rien installer.
 
 ---
 
@@ -76,7 +78,7 @@
 **Ce qu'il pense vraiment** : "Ça ne marchera pas ici."
 
 **Réponse** :
-> On couvre tout Toulouse. L'app géolocalise les consommateurs et leur montre les boutiques les plus proches. Que vous soyez en centre-ville, à la Colombette, à Saint-Cyprien ou à Lardenne, vos produits seront visibles par tous les Toulousains qui cherchent ce que vous vendez.
+> On couvre tout Toulouse — et surtout, vos produits remontent sur Google auprès des gens qui cherchent près de chez vous. Que vous soyez en centre-ville, à la Colombette, à Saint-Cyprien ou à Lardenne, vos produits seront visibles par tous les Toulousains qui cherchent ce que vous vendez.
 
 ---
 
@@ -94,7 +96,7 @@
 **Ce qu'il pense vraiment** : "J'ai été déçu par des promesses similaires."
 
 **Réponse** :
-> Je comprends, et c'est normal d'être prudent. La différence avec Two-Step, c'est qu'on ne vous demande rien : pas de catalogue à créer, pas de photos à prendre, pas de site à gérer. Tout est automatique via votre caisse. Et si ça ne marche pas en 90 jours, on désinstalle tout — vous n'aurez rien investi, ni temps, ni argent.
+> Je comprends, et c'est normal d'être prudent. La différence avec Two-Step, c'est qu'on ne vous demande rien : pas de catalogue à créer, pas de photos à prendre, pas de site à gérer. Tout est automatique via votre caisse. Et notre règle n°1, c'est de ne JAMAIS afficher un stock faux — les services qui ont déçu avant nous promettaient un stock qu'ils n'avaient pas vraiment. Si ça ne vous convient pas après le mois d'essai, on désinstalle tout — vous n'aurez rien investi, ni temps, ni argent.
 
 **Question pour creuser** :
 > C'était quoi, si ce n'est pas indiscret ? Ça nous aide à comprendre ce qui n'a pas marché pour faire mieux.

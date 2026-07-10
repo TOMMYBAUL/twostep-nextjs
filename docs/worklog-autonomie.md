@@ -5,6 +5,51 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-10 (run autonome #2) · P1-4 — kit prospection réactualisé sur l'état produit RÉEL + curation LESSONS
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché par Thomas. P0 épuisé/escaladé
+(P0-2 = migration 108 dans #3). P1-1/2/3 ✅ → item non-fait de plus haut rang = **P1-4 kit prospection**
+(livrable non-code AUTORISÉ, périmètre §1ter). + maintenance NOMMÉE par le run précédent : LESSONS.md 7,9 KB → curer.
+
+**FAIT 1 — kit réactualisé** (`docs/prospection/kit-prospection/`, 4 fichiers, avril → juillet) :
+- **Pivot Google partout** : le kit d'avril vendait « une app » ; le north-star = feed Google. Conséquence
+  la plus forte : l'objection n°4 « personne ne connaît votre app » a maintenant LA réponse (« vos clients
+  voient Google, pas Two-Step ») au lieu d'un plaidoyer cercle-vertueux faible. Aligné sur les emails 07-07/08
+  déjà validés avec Thomas.
+- **NOUVELLE Séquence 1bis** (le cas le plus fréquent à Toulouse) : caisse FR fermée Fastmag/Clictill →
+  wedge **export envoyé par email** (P1-3 prouvé le 10/07). Le kit d'avril n'avait AUCUNE approche pour ce
+  segment — il supposait Shopify ou CSV manuel.
+- **Claims dé-surpromis (vérifiés au code)** : « connexion automatique » réservée à Zettle/Square/Shopify/
+  Lightspeed — l'adapter Fastmag API est marqué `BEST-GUESS … NOT YET IMPLEMENTED (BOA)` dans le code → la
+  claim sûre = export email. « Temps réel » réservé aux caisses connectées (export = « mis à jour chaque
+  jour »). « Photos e-commerce générées » → « fiches complétées depuis vos codes-barres » (rien n'est généré ;
+  récupéré + vérifié). Notifications/abonnements app conso (gatée /bientot) retirés du recto → remplacés par
+  le différenciateur réel « on n'affiche jamais un stock faux ».
+- **Offre rendue cohérente** : 1 mois gratuit + 19/29/39 € = `src/lib/stripe/plans.ts` réel (1900/2900/3900).
+  Corrigé : « les 2 premiers mois gratuits » (obj. #2) et « 90 jours » (obj. #9) contradictoires.
+- **RGPD** : ligne STOP sur tous les emails à froid (exigence du plan d'envoi 07-08). Articulation explicite :
+  blast de tri 07-07 = touche 0, séquences = relais ; expéditeur aligné SMTP Infomaniak.
+- DA intacte (les 2 one-pagers étaient déjà #4268FF) ; ZÉRO changement de layout — **rendu visuel = Thomas (#7)**.
+
+**FAIT 2 — LESSONS.md curé** : 7,9 → 5,2 KB (−34 %), archive intégrale `docs/LESSONS-archive-2026-07-10.md`.
+Toutes les règles distinctes conservées, exemples/parenthèses déportés en archive. Limite honnête : 5,2 KB
+reste ~2 % au-dessus des 5 KB stricts — couper plus aurait sacrifié des règles, pas du gras.
+
+**Garde-fous** : 0 code produit touché (docs/prospection + LESSONS + docs de pilotage) → pas de revue
+SF-hunter requise (aucun diff pipeline) ; la boucle n'a RIEN envoyé (préparation seule). Gate lancé quand
+même (tsc + test:run) avant push. Réversible git revert, 0 migration.
+
+**Scorecard** : Preuve 7/10 (chaque claim produit vérifiée au code réel — plans.ts, adapters, canal email-in ;
+mais un kit se prouve en RDV, pas en tests) · Sécu north-star 9/10 (retire 4 sur-promesses qui auraient créé
+des attentes fausses chez un pilote = la classe d'erreur qui a tué MVMS ; ne sur-vend jamais la fraîcheur) ·
+Réversibilité 10/10 (0 migration, 0 code) · Scope 9/10 (4 fichiers kit + LESSONS + pilotage) · Align 9/10
+(P1 top-rang : c'est l'outil du RDV pilote — la seule action que Thomas seul peut faire, décision #4).
+
+**RESTE P1** : P1-5 dossier Trusted (checklist 5 marchands GBP+11 offres+feed quotidien, réutiliser
+`pilot-readiness.ts`, programmatique) = prochain [R]. Puis P2 G1/G2 (SLA fraîcheur + historique feed-quality).
+
+---
+
 ## 2026-07-10 (run autonome) · [R] nommé vitrine — canonicalisation de la marque source OBF/OPF (commit `83de4d1`)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché par Thomas (A/B déjà faits). P0 épuisé/escaladé

@@ -145,9 +145,18 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    par la revue SF-hunter avant commit, passe 2 SOUND). Fixtures = vocabulaire DOCUMENTÉ des éditeurs
    (.txt TAB CP1252 Fastmag, CSV `;` Clictill), 1366→1383 tests. **Limite honnête : synthétisé des
    docs officielles — à valider sur un export capturé au 1er pilote (runbook).**
-4. **6b Kit prospection prêt-à-envoyer** : réactualiser one-pager + séquences email (base :
-   `IA/twostep-content/prospecting/` d'avril) avec l'état produit RÉEL 2026-07. La boucle
-   PRÉPARE, n'ENVOIE JAMAIS (garde-fou email inchangé).
+4. ✅ **6b Kit prospection réactualisé FAIT (2026-07-10, run #2)** : les 4 pièces du kit
+   (`docs/prospection/kit-prospection/` — séquences email, one-pager A4 + A5x2, guide
+   objections) réalignées sur l'état produit RÉEL 2026-07 : positionnement **Google d'abord**
+   (l'objection « personne ne connaît votre app » se retourne : les clients voient GOOGLE),
+   **NOUVELLE Séquence 1bis** caisses FR fermées = wedge export-par-email (P1-3 prouvé),
+   claims de fraîcheur HONNÊTES (connecté = temps réel ; export = quotidien — jamais
+   « temps réel » à une boutique Fastmag), offre unifiée 1 mois/19-29-39 € (= `plans.ts`
+   réel ; fin des « 2 mois »/« 90 jours » contradictoires), STOP RGPD sur tout froid,
+   suppression des sur-promesses (notifications app gatée /bientot ; « connexion auto
+   Fastmag » retirée — adapter API best-guess non prouvé). Articulé avec le plan d'envoi
+   07-08 (Mailmeteor 35/j) = touche 0. La boucle PRÉPARE, n'ENVOIE JAMAIS (inchangé).
+   **Rendu visuel des one-pagers = Thomas (#7).**
 5. **6c Dossier Trusted** : checklist des 5 marchands vérifiés (GBP lié + >11 offres + feed
    quotidien), par-marchand, programmatique si possible (réutiliser `pilot-readiness.ts`).
 
