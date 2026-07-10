@@ -9,11 +9,14 @@ import {
     deriveStatsView,
     deriveConnectionView,
     deriveReadinessView,
+    deriveSlaHistoryView,
     type StatsView,
     type ConnectionView,
     type ReadinessView,
     type GoogleStatsData,
     type GoogleConnectionData,
+    type SlaHistoryDay,
+    type SlaHistoryView,
 } from "@/lib/google/dashboard-view";
 
 export default function GooglePage() {
@@ -21,6 +24,7 @@ export default function GooglePage() {
     const [statsView, setStatsView] = useState<StatsView | null>(null);
     const [readinessView, setReadinessView] = useState<ReadinessView | null>(null);
     const [connectionView, setConnectionView] = useState<ConnectionView | null>(null);
+    const [slaHistoryView, setSlaHistoryView] = useState<SlaHistoryView | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
     const [confirmDisconnect, setConfirmDisconnect] = useState(false);
@@ -58,10 +62,23 @@ export default function GooglePage() {
             }
         })();
 
-        const [conn, stats] = await Promise.all([connLoad, statsLoad]);
+        // Historique SLA 7 j (G1) — 4 états distincts (erreur ≠ « pas encore activé » ≠ vide).
+        const slaLoad = (async (): Promise<{ ok: boolean; body: { available?: boolean; days?: SlaHistoryDay[] } | null }> => {
+            try {
+                const r = await fetch("/api/google/sla-history");
+                const body = r.ok ? ((await r.json()) as { available?: boolean; days?: SlaHistoryDay[]; error?: string }) : null;
+                const ok = r.ok && !!body && !body.error;
+                return { ok, body: ok ? body : null };
+            } catch {
+                return { ok: false, body: null };
+            }
+        })();
+
+        const [conn, stats, sla] = await Promise.all([connLoad, statsLoad, slaLoad]);
         setConnectionView(deriveConnectionView(conn));
         setStatsView(deriveStatsView(stats));
         setReadinessView(deriveReadinessView(stats));
+        setSlaHistoryView(deriveSlaHistoryView(sla));
         setLoading(false);
     }, []);
 
@@ -255,6 +272,49 @@ export default function GooglePage() {
                             </div>
                         </div>
 
+                        {/* SLA fraîcheur (G1) : parmi les offres publiables EN STOCK, combien seraient
+                            affichées « Disponible » (source caisse récente + quantité saine). Rendu
+                            UNIQUEMENT si le serveur a fourni les champs (jamais un 0 % inventé). */}
+                        {statsView.freshness && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6">
+                                {statsView.freshness.publishableInStock > 0 ? (
+                                    <>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-tertiary">Fraîcheur du stock</p>
+                                                <p className="mt-0.5 text-xs text-tertiary">
+                                                    {statsView.freshness.fresh} / {statsView.freshness.publishableInStock} offres publiables en stock affichées « Disponible »
+                                                </p>
+                                            </div>
+                                            <p className={`text-3xl font-bold ${statsView.freshness.score >= 70 ? "text-success-primary" : statsView.freshness.score >= 40 ? "text-warning-primary" : "text-error-primary"}`}>
+                                                {statsView.freshness.score}%
+                                            </p>
+                                        </div>
+                                        <div
+                                            className="mt-3 h-2 overflow-hidden rounded-full bg-secondary"
+                                            role="progressbar"
+                                            aria-valuenow={statsView.freshness.score}
+                                            aria-valuemin={0}
+                                            aria-valuemax={100}
+                                            aria-label={`Fraîcheur du stock : ${statsView.freshness.score} %`}
+                                        >
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-500 ${statsView.freshness.score >= 70 ? "bg-success-solid" : statsView.freshness.score >= 40 ? "bg-warning-solid" : "bg-error-solid"}`}
+                                                style={{ width: `${statsView.freshness.score}%` }}
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-sm font-medium text-tertiary">Fraîcheur du stock</p>
+                                        <p className="mt-0.5 text-xs text-tertiary">
+                                            Aucune offre publiable en stock pour le moment — la fraîcheur s'affichera dès que du stock sera disponible.
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+                        )}
+
                         {/* Aperçu avant publication : voir EXACTEMENT ce qui partirait sur Google (démo pilote 6a.2). */}
                         <Link
                             href="/dashboard/google/preview"
@@ -280,6 +340,41 @@ export default function GooglePage() {
                                                 <span className={`font-bold ${s.tone === "error" ? "text-error-primary" : "text-warning-primary"}`}>+{s.count}</span>{" "}
                                                 {s.label}
                                             </p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Historique SLA 7 jours (G1). « unavailable » (migration/flag pas actifs) → rien
+                            (on ne tease pas une feature OFF) ; erreur ≠ vide (jamais confondus). */}
+                        {slaHistoryView?.kind === "error" && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6" role="alert">
+                                <p className="text-sm font-semibold text-primary">Historique de qualité indisponible</p>
+                                <p className="mt-1 text-xs text-tertiary">Impossible de charger l'historique pour le moment. Réessayez dans un instant.</p>
+                            </div>
+                        )}
+                        {slaHistoryView?.kind === "empty" && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6">
+                                <p className="text-sm font-semibold text-primary">Historique de qualité</p>
+                                <p className="mt-1 text-xs text-tertiary">
+                                    Premier relevé cette nuit — votre historique se remplit ensuite chaque jour.
+                                </p>
+                            </div>
+                        )}
+                        {slaHistoryView?.kind === "history" && (
+                            <div className="rounded-2xl border border-secondary bg-primary p-6">
+                                <p className="text-sm font-semibold text-primary">Historique de qualité — 7 derniers jours</p>
+                                <p className="mt-0.5 text-xs text-tertiary">% publiable sur Google · % de stock frais, relevés chaque nuit.</p>
+                                <ul className="mt-3 space-y-2">
+                                    {slaHistoryView.days.map((d) => (
+                                        <li key={d.day} className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
+                                            <span className="text-xs text-tertiary">
+                                                {new Date(`${d.day}T00:00:00Z`).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}
+                                            </span>
+                                            <span className="text-xs font-semibold text-primary">
+                                                {d.publishable_score} % publiable · {d.freshness_score} % frais
+                                            </span>
                                         </li>
                                     ))}
                                 </ul>

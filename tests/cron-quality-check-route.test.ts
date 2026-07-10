@@ -39,6 +39,7 @@ const h = {
     posConns: [] as Row[], // pos_connections mortes
     posOpen: [] as Row[], // alertes pos_disconnected ouvertes (merchant_id)
     inserts: [] as { table: string; rows: Row[] }[],
+    upserts: [] as { table: string; rows: Row[]; onConflict?: string }[],
     productsPageCursors: [] as Array<string | null>,
     openAlertsPageCursors: [] as Array<string | null>,
     errors: {} as Record<string, { message: string } | null>,
@@ -129,6 +130,11 @@ function makeClient() {
             h.inserts.push({ table, rows: Array.isArray(rows) ? rows : [rows] });
             return Promise.resolve({ data: null, error: null });
         };
+        b.upsert = (rows: Row | Row[], opts?: { onConflict?: string }) => {
+            if (h.errors.slaUpsert) return Promise.resolve({ data: null, error: h.errors.slaUpsert });
+            h.upserts.push({ table, rows: Array.isArray(rows) ? rows : [rows], onConflict: opts?.onConflict });
+            return Promise.resolve({ data: null, error: null });
+        };
         b.then = (ok: (v: unknown) => unknown, err?: (e: unknown) => unknown) =>
             Promise.resolve(resolve()).then(ok, err);
         return b;
@@ -198,6 +204,7 @@ describe("cron/quality-check — l'alarme de complétude (route handler)", () =>
             posConns: [],
             posOpen: [],
             inserts: [],
+            upserts: [],
             productsPageCursors: [],
             openAlertsPageCursors: [],
             errors: {},
@@ -206,6 +213,7 @@ describe("cron/quality-check — l'alarme de complétude (route handler)", () =>
         mockAdmin.current = makeClient();
         process.env.CRON_SECRET = "test-secret";
         delete process.env.INVISIBLE_ORPHAN_ALERTS; // watchdog persistance GATED : off par défaut
+        delete process.env.MERCHANT_SLA_HISTORY; // historique SLA G1 GATED : off par défaut
         vi.clearAllMocks();
     });
 
@@ -398,5 +406,94 @@ describe("cron/quality-check — l'alarme de complétude (route handler)", () =>
         expect(body.degraded).toBe(false);
         expect(body.new_alerts).toBe(0);
         expect(h.inserts).toHaveLength(0);
+    });
+
+    // ── G1 — SLA fraîcheur/publiabilité par marchand (historique quotidien GATED) ──
+    // Le calcul (helper pur RÉEL, non mocké → non vacant) tourne à chaque run ; la
+    // persistance exige migration 113 + flag MERCHANT_SLA_HISTORY=1 (chemin séparé).
+
+    /** Produit de la POPULATION FEED (visible+validated+principal) publiable, stock frais
+     *  webhook (updated_at récent → ni stale ni aberrant : isole les assertions SLA). */
+    function feedProduct(i: number, merchantId: string, stock: Row): Row {
+        return {
+            id: `s${String(i).padStart(5, "0")}`,
+            merchant_id: merchantId,
+            category: null,
+            price: 30,
+            visible: true,
+            variant_of: null,
+            review_status: "validated",
+            name: `Produit feed ${i}`,
+            ean: "0884776073143",
+            photo_url: "https://cdn/x.jpg",
+            photo_processed_url: null,
+            stock: [stock],
+        };
+    }
+    const freshStock = (): Row => {
+        const t = new Date(Date.now() - 3_600_000).toISOString(); // 1 h → frais realtime
+        return { quantity: 5, updated_at: t, source: "webhook", source_ts: t };
+    };
+    const manualStock = (): Row => {
+        const t = new Date(Date.now() - 3_600_000).toISOString(); // manuel → jamais « available »
+        return { quantity: 5, updated_at: t, source: "manual", source_ts: t };
+    };
+
+    it("SLA — flag OFF (défaut) : snapshots comptés, AUCUNE écriture d'historique", async () => {
+        h.products = [feedProduct(0, "m-1", freshStock()), staleProduct(1)];
+        const { body } = await run();
+        // staleProduct n'a pas visible=true → hors population feed → 1 seul marchand mesuré.
+        expect(body.sla_merchants).toBe(1);
+        expect(body.sla_history_written).toBe(0);
+        expect(h.upserts).toHaveLength(0);
+        expect(body.ok).toBe(true);
+    });
+
+    it("SLA — flag ON : upsert (merchant_id, day) avec les chiffres du VRAI helper", async () => {
+        process.env.MERCHANT_SLA_HISTORY = "1";
+        h.products = [
+            feedProduct(0, "m-1", freshStock()),
+            feedProduct(1, "m-1", manualStock()),
+            feedProduct(2, "m-2", freshStock()),
+        ];
+        const { body } = await run();
+        expect(body.sla_merchants).toBe(2);
+        expect(body.sla_history_written).toBe(2);
+        const w = h.upserts.filter((u) => u.table === "merchant_sla_history");
+        expect(w).toHaveLength(1);
+        expect(w[0].onConflict).toBe("merchant_id,day");
+        const rows = w[0].rows;
+        expect(rows.map((r) => r.merchant_id)).toEqual(["m-1", "m-2"]);
+        const today = new Date().toISOString().slice(0, 10);
+        // m-1 : 2 publiables en stock, 1 frais (webhook 1 h) / 1 jamais frais (manual) → 50 %.
+        expect(rows[0]).toMatchObject({
+            day: today,
+            total: 2,
+            publishable: 2,
+            publishable_score: 100,
+            in_stock: 2,
+            publishable_in_stock: 2,
+            fresh_available: 1,
+            freshness_score: 50,
+        });
+        expect(rows[1]).toMatchObject({ day: today, total: 1, fresh_available: 1, freshness_score: 100 });
+        // Projection stricte colonnes table : jamais la ventilation missing_* du summary.
+        expect(Object.keys(rows[0])).not.toContain("missing_ean");
+        expect(body.ok).toBe(true);
+    });
+
+    it("SLA — flag ON + échec upsert → dégradé + compteur 0, les ALERTES restent intactes", async () => {
+        process.env.MERCHANT_SLA_HISTORY = "1";
+        h.errors.slaUpsert = { message: "table absente (migration 113 non appliquée)" };
+        h.products = [feedProduct(0, "m-1", freshStock()), staleProduct(1)];
+        const { body } = await run();
+        expect(body.degraded).toBe(true);
+        expect(body.errors).toContain("sla-history-write-failed");
+        expect(body.sla_history_written).toBe(0);
+        expect(mockCapture).toHaveBeenCalled();
+        // Chemin séparé : l'échec SLA n'empoisonne PAS le batch d'alertes produits.
+        expect(body.stock_stale).toBe(1);
+        expect(insertedTypes("stock_stale")).toHaveLength(1);
+        expect(body.new_alerts).toBe(1);
     });
 });

@@ -31,6 +31,12 @@ export type GoogleStatsData = {
     lfp_offer_shortfall: number;
     google_connected: boolean;
     lfp_feed_ready: boolean;
+    // SLA fraîcheur G1 (champs ADDITIFS de /api/google/stats — optionnels pour ne pas
+    // casser un payload d'ancienne version : absents → la tuile fraîcheur ne s'affiche pas).
+    in_stock?: number;
+    publishable_in_stock?: number;
+    fresh_available?: number;
+    freshness_score?: number;
 };
 
 export type GoogleConnectionData = {
@@ -44,6 +50,20 @@ export type GoogleConnectionData = {
 
 export type StatsSuggestion = { count: number; label: string; tone: "warning" | "error" };
 
+/**
+ * SLA fraîcheur (G1) affichable : parmi les offres publiables EN STOCK, combien seraient
+ * affichées « Disponible » (source caisse récente + quantité saine). `null` quand le serveur
+ * ne fournit pas les champs (ancienne version) → la tuile ne s'affiche pas (jamais un 0 % inventé).
+ */
+export type StatsFreshness = {
+    /** % d'offres fraîches parmi les publiables en stock (0-100). */
+    score: number;
+    /** Numérateur : offres publiables en stock affichées « Disponible ». */
+    fresh: number;
+    /** Dénominateur : offres publiables avec quantité > 0. */
+    publishableInStock: number;
+};
+
 export type StatsView =
     /** Un chargement a échoué (HTTP !ok, corps `{error}`, réseau) → erreur honnête, pas un faux « vide ». */
     | { kind: "error" }
@@ -56,6 +76,7 @@ export type StatsView =
           eligible: number;
           total: number;
           suggestions: StatsSuggestion[];
+          freshness: StatsFreshness | null;
       };
 
 export type ConnectionView =
@@ -172,7 +193,58 @@ export function deriveStatsView(load: { ok: boolean; stats: GoogleStatsData | nu
     if (s.missing_price > 0)
         suggestions.push({ count: s.missing_price, label: "produits sans prix — ajoutez un prix pour les rendre visibles", tone: "warning" });
 
-    return { kind: "stats", score: s.score, eligible: s.eligible_google, total: s.total_visible, suggestions };
+    // SLA fraîcheur : uniquement si le serveur a FOURNI les 3 champs (nombres finis).
+    // Champs absents/invalides → null (pas de tuile), jamais un « 0 % frais » inventé.
+    const freshness: StatsFreshness | null =
+        Number.isFinite(s.freshness_score) && Number.isFinite(s.fresh_available) && Number.isFinite(s.publishable_in_stock)
+            ? {
+                  score: s.freshness_score as number,
+                  fresh: s.fresh_available as number,
+                  publishableInStock: s.publishable_in_stock as number,
+              }
+            : null;
+
+    return { kind: "stats", score: s.score, eligible: s.eligible_google, total: s.total_visible, suggestions, freshness };
+}
+
+/** Une journée d'historique SLA (ligne `merchant_sla_history`, servie par `/api/google/sla-history`). */
+export type SlaHistoryDay = {
+    day: string;
+    total: number;
+    publishable: number;
+    publishable_score: number;
+    in_stock: number;
+    publishable_in_stock: number;
+    fresh_available: number;
+    freshness_score: number;
+};
+
+export type SlaHistoryView =
+    /** Le fetch a échoué (HTTP !ok, réseau) → erreur honnête, jamais un faux « pas d'historique ». */
+    | { kind: "error" }
+    /** 200 `available:false` = migration/flag pas encore actifs → « bientôt », PAS « vide ». */
+    | { kind: "unavailable" }
+    /** Historique actif mais encore aucune journée écrite (flag posé aujourd'hui). */
+    | { kind: "empty" }
+    /** Jusqu'à 7 jours, du plus récent au plus ancien (ordre serveur conservé). */
+    | { kind: "history"; days: SlaHistoryDay[] };
+
+/**
+ * Vue de l'historique SLA 7 jours (G1). Pure — 4 états DISTINCTS : une erreur de chargement,
+ * une feature pas encore activée et un historique réellement vide sont trois choses
+ * différentes ; les confondre = exactement le mensonge que la Phase E interdit.
+ * @param load.ok   `false` si le fetch a échoué (statut HTTP non-2xx, corps `{error}`, réseau).
+ * @param load.body le corps parsé quand `ok` ; sinon `null`.
+ */
+export function deriveSlaHistoryView(load: {
+    ok: boolean;
+    body: { available?: boolean; days?: SlaHistoryDay[] } | null;
+}): SlaHistoryView {
+    if (!load.ok || !load.body) return { kind: "error" };
+    if (load.body.available !== true) return { kind: "unavailable" };
+    const days = Array.isArray(load.body.days) ? load.body.days : [];
+    if (days.length === 0) return { kind: "empty" };
+    return { kind: "history", days: days.slice(0, 7) };
 }
 
 /**

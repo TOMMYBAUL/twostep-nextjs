@@ -3,6 +3,7 @@ import {
     deriveStatsView,
     deriveConnectionView,
     deriveReadinessView,
+    deriveSlaHistoryView,
     type GoogleStatsData,
     type GoogleConnectionData,
 } from "@/lib/google/dashboard-view";
@@ -180,5 +181,81 @@ describe("deriveConnectionView — un blip de lecture ≠ « pas connecté »", 
     it("pas d'error, ligne présente → connected avec la connexion", () => {
         const view = deriveConnectionView({ error: false, connection: baseConnection });
         expect(view).toEqual({ kind: "connected", connection: baseConnection });
+    });
+});
+
+describe("deriveStatsView — SLA fraîcheur (G1, champs additifs)", () => {
+    it("champs fraîcheur présents → freshness rempli (score + numérateur/dénominateur)", () => {
+        const view = deriveStatsView({
+            ok: true,
+            stats: { ...baseStats, in_stock: 8, publishable_in_stock: 6, fresh_available: 3, freshness_score: 50 },
+        });
+        expect(view).toMatchObject({ kind: "stats", freshness: { score: 50, fresh: 3, publishableInStock: 6 } });
+    });
+
+    it("champs absents (ancienne version serveur) → freshness null, JAMAIS un 0 % inventé", () => {
+        const view = deriveStatsView({ ok: true, stats: baseStats });
+        expect(view).toMatchObject({ kind: "stats", freshness: null });
+    });
+
+    it("champs non numériques (payload corrompu) → freshness null", () => {
+        const view = deriveStatsView({
+            ok: true,
+            stats: { ...baseStats, freshness_score: NaN, fresh_available: 3, publishable_in_stock: 6 },
+        });
+        expect(view).toMatchObject({ kind: "stats", freshness: null });
+    });
+
+    it("0 offre publiable en stock → freshness PRÉSENT avec dénominateur 0 (l'UI affiche l'état neutre, pas 0 % rouge)", () => {
+        const view = deriveStatsView({
+            ok: true,
+            stats: { ...baseStats, in_stock: 0, publishable_in_stock: 0, fresh_available: 0, freshness_score: 0 },
+        });
+        expect(view).toMatchObject({ kind: "stats", freshness: { score: 0, fresh: 0, publishableInStock: 0 } });
+    });
+});
+
+describe("deriveSlaHistoryView — 4 états DISTINCTS (erreur ≠ pas activé ≠ vide)", () => {
+    const day = (d: string, pub = 80, fresh = 60) => ({
+        day: d,
+        total: 10,
+        publishable: 8,
+        publishable_score: pub,
+        in_stock: 7,
+        publishable_in_stock: 6,
+        fresh_available: 4,
+        freshness_score: fresh,
+    });
+
+    it("fetch échoué / corps nul → error (jamais un faux « pas d'historique »)", () => {
+        expect(deriveSlaHistoryView({ ok: false, body: null })).toEqual({ kind: "error" });
+        expect(deriveSlaHistoryView({ ok: true, body: null })).toEqual({ kind: "error" });
+    });
+
+    it("available:false (migration 113 / flag pas actifs) → unavailable, PAS empty", () => {
+        expect(deriveSlaHistoryView({ ok: true, body: { available: false, days: [] } })).toEqual({ kind: "unavailable" });
+        // available absent (contrat inattendu) → prudence : unavailable, pas un historique vide affirmé.
+        expect(deriveSlaHistoryView({ ok: true, body: {} })).toEqual({ kind: "unavailable" });
+    });
+
+    it("available:true + 0 jour → empty (vide RÉEL, distinct de unavailable)", () => {
+        expect(deriveSlaHistoryView({ ok: true, body: { available: true, days: [] } })).toEqual({ kind: "empty" });
+    });
+
+    it("available:true + jours → history plafonné à 7, ordre serveur conservé", () => {
+        const days = Array.from({ length: 10 }, (_, i) => day(`2026-07-${String(10 - i).padStart(2, "0")}`));
+        const view = deriveSlaHistoryView({ ok: true, body: { available: true, days } });
+        expect(view.kind).toBe("history");
+        if (view.kind === "history") {
+            expect(view.days).toHaveLength(7);
+            expect(view.days[0].day).toBe("2026-07-10"); // plus récent en premier (ordre serveur desc)
+            expect(view.days[6].day).toBe("2026-07-04");
+        }
+    });
+
+    it("days non-tableau (contrat cassé) → empty prudent, pas un crash", () => {
+        expect(
+            deriveSlaHistoryView({ ok: true, body: { available: true, days: "oops" as unknown as [] } }),
+        ).toEqual({ kind: "empty" });
     });
 });

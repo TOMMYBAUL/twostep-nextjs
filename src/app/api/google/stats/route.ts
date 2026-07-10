@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { summarizePublishability, gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
+import { gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
 import { evaluateFeedReadiness } from "@/lib/google/pilot-readiness";
 import { captureError } from "@/lib/error";
 import { fetchAllRows } from "@/lib/supabase/paginate";
+import { computeSlaForPopulation, type SlaProductRow } from "@/lib/monitoring/merchant-sla";
 
 export async function GET() {
     try {
@@ -41,16 +42,14 @@ export async function GET() {
         // silencieux (faux compteurs sur l'écran pilote). `id` ajouté au SELECT :
         // colonne-curseur du keyset. Population INCHANGÉE (parité feed : visible +
         // validated + non archivé + non variante).
-        const { data: products, error: productsErr } = await fetchAllRows<{
-            id: string;
-            ean: string | null;
-            price: number | null;
-            photo_url: string | null;
-            photo_processed_url: string | null;
-        }>(() =>
+        const { data: products, error: productsErr } = await fetchAllRows<
+            SlaProductRow & { id: string }
+        >(() =>
             supabase
                 .from("products")
-                .select("id, ean, price, photo_url, photo_processed_url")
+                // `stock(...)` : dimension FRAÎCHEUR du SLA G1 (source réelle + source_ts
+                // honnête, migration 104) — même helper pur que le cron quality-check.
+                .select("id, ean, price, photo_url, photo_processed_url, stock(quantity, updated_at, source, source_ts)")
                 .eq("merchant_id", merchant.id)
                 .eq("visible", true)
                 .eq("review_status", "validated")
@@ -78,12 +77,15 @@ export async function GET() {
         }
 
         // `eligible_google`/`score` réutilisent le VRAI gate du feed (`isFeedEligible` via
-        // summarizePublishability) — image + prix>0 + GTIN≥8 inclus. L'ancien proxy
-        // `ean && price !== null` comptait comme « éligibles » des produits sans photo / au
-        // prix 0 / au GTIN tronqué que le feed rejette → KPI menteur (faux positif pilote).
-        // Parité avec le feed réel : si le tier GTIN-only est actif, un produit GTIN+prix sans image
-        // EST publié → il doit compter comme publiable ici aussi (sinon readiness sous-évaluée).
-        const s = summarizePublishability(products, { allowMissingImage: gtinOnlyTierEnabled() });
+        // summarizePublishability, embarqué dans le SLA) — image + prix>0 + GTIN≥8 inclus.
+        // L'ancien proxy `ean && price !== null` comptait comme « éligibles » des produits sans
+        // photo / au prix 0 / au GTIN tronqué que le feed rejette → KPI menteur (faux positif
+        // pilote). Parité avec le feed réel : si le tier GTIN-only est actif, un produit
+        // GTIN+prix sans image EST publié → il doit compter comme publiable ici aussi.
+        // G1 : `computeSlaForPopulation` = summary publiabilité + dimension FRAÎCHEUR
+        // (`computeStockConfidence` sur la source réelle) — MÊME helper que l'historique
+        // quotidien du cron quality-check → la tuile et l'historique ne peuvent pas diverger.
+        const s = computeSlaForPopulation(products, { allowMissingImage: gtinOnlyTierEnabled() });
 
         // Connexion Google Merchant : 2e signal (avec le seuil d'offres) de la readiness LFP.
         // `maybeSingle` → data=null SANS error sur 0 ligne (pas connecté), error sur vrai échec.
@@ -117,6 +119,13 @@ export async function GET() {
             missing_price: s.missing_price,
             blocked_only_by_image: s.blocked_only_by_image,
             score: s.score,
+            // SLA fraîcheur G1 (additif — les consommateurs existants ignorent ces champs) :
+            // combien d'offres publiables EN STOCK, et combien sont « fraîches » (= seraient
+            // affichées « Disponible » : source caisse récente + quantité saine).
+            in_stock: s.in_stock,
+            publishable_in_stock: s.publishable_in_stock,
+            fresh_available: s.fresh_available,
+            freshness_score: s.freshness_score,
             // Readiness LFP (item READINESS du backlog) — la checklist go-live lit ces champs.
             lfp_offers_threshold: readiness.threshold,
             lfp_meets_offer_threshold: readiness.meetsOfferThreshold,

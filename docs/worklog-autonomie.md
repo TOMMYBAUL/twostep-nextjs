@@ -5,6 +5,70 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-10 (run autonome #3) · P2-G1 — métrique SLA fraîcheur/publiabilité par marchand (l'écran qu'on VEND au pilote)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché. Signal réel vérifié en prod :
+1 quality_alert fraîche (<48 h) = `price_aberrant` sur « Two-Step Test » (produit « Article » 449 €,
+données de seed avril) → détecteur qui fait son travail, BÉNIN, pas un bug. P0 épuisé/escaladé
+(P0-2 = 108 dans #3), P1 1-5 tous ✅ → prochain [R] de plus haut rang = **P2-G1** (audit 07-04
+Cluster G, H×M) : la métrique SLA NearSt-style qu'on montre à Deerskin pour justifier l'abonnement.
+Critère « fait » de l'audit : « Dashboard affiche “X % de ton stock est publiable in-stock” +
+historique 7 j ; test parité avec computeStockConfidence ».
+
+**FAIT** (branche, commit ci-dessous) :
+- **Helper PUR** `src/lib/monitoring/merchant-sla.ts` — `computeSlaForPopulation` (une population
+  → PublishabilitySummary + `in_stock`/`publishable_in_stock`/`fresh_available`/`freshness_score`)
+  + `computeMerchantSlaSnapshots` (groupage marchand sur la lecture globale du cron). **PARITÉ =
+  la propriété** : publiable = `isFeedEligible`/`summarizePublishability` (le VRAI gate feed, même
+  option tier GTIN-only D2) ; frais = `computeStockConfidence` sur `stockRowToConfidenceInput`
+  (source_ts honnête plafonné, source réelle 104) = EXACTEMENT ce que le conso voit « Disponible ».
+  Jamais une 2ᵉ logique. Sans `downgradeForReports`, choix documenté (SLA = fraîcheur de la DATA).
+- **Cron quality-check** : SELECT étendu (ean/photos + stock source/source_ts), snapshots calculés
+  chaque run (coût ~0, lignes déjà en mémoire), **persistance GATED** (migration **113 PRÉPARÉE NON
+  appliquée** + flag `MERCHANT_SLA_HISTORY=1`) en upsert (merchant_id, day) lots de 500, chemin
+  d'écriture SÉPARÉ des alertes (anti batch-poisoning) + bloc isolé try/catch (durcissement
+  post-revue : une exception SLA ne 500-ise pas l'alarme dont les alertes sont déjà écrites).
+- **`/api/google/stats`** : + stock join, `computeSlaForPopulation` remplace l'appel direct
+  summary (l'embarque) → 4 champs ADDITIFS (`in_stock`, `publishable_in_stock`, `fresh_available`,
+  `freshness_score`). Vivant DÈS MAINTENANT sans migration ni flag.
+- **`/api/google/sla-history`** (nouvelle route RLS) : 3 états JAMAIS confondus — table absente
+  42P01/PGRST205 (113 pas appliquée) → 200 `available:false` SANS Sentry (état attendu du gated) ;
+  vraie erreur DB → 500+Sentry ; table vide → `available:true, days:[]`. Lecture bornée (limit 30).
+- **UI dashboard/google** : tuile « Fraîcheur du stock » (X/Y affichées « Disponible », progressbar
+  ARIA, état neutre si 0 en stock — jamais un 0 % rouge trompeur) + section « Historique 7 jours »
+  (deriver pur `deriveSlaHistoryView`, 4 états : error ≠ unavailable (rien affiché pré-GO) ≠ empty
+  ≠ history). `deriveStatsView.freshness` par `Number.isFinite` : champ absent → null, jamais un
+  0 % inventé.
+
+**Preuve** (sans yeux/env) : +33 tests (**1404→1437**, 133 fichiers) — 13 pur (batterie parité
+confidence 8 sources/fraîcheurs + parité gate/flag D2 + population feed + artefact source_ts futur),
++3 cron (flag OFF byte-identique writes, flag ON chiffres du VRAI helper + onConflict, échec upsert
+→ degraded + alertes INTACTES), 8 route historique (les 3 états + scope/ordre/limit), +9 deriver.
+**Non-vacance par MUTATION** : prédicat fraîcheur inversé → rouges ; filtre population sans
+`visible` → rouges. tsc OK, suite complète verte ×2.
+
+**Revues (§11.3) : 2/2.** SF-hunter **SOUND** (0 CRIT/HIGH/MED sur 7 axes ; parité 6 call-sites
+`gtinOnlyTierEnabled` vérifiée ; LOW « bloc SLA non isolé » → durci try/catch). database-reviewer
+**SOUND + 1 MED corrigé** : index `(merchant_id, day DESC)` REDONDANT avec l'index implicite de
+la contrainte UNIQUE (Index Scan Backward suffit) → supprimé (double coût d'écriture évité) ;
+RLS/idempotence/onConflict/ACL conformes 092/110/112. NB : GitNexus MCP non connecté ce run →
+scope vérifié par `git diff` (11 fichiers code/tests, tous voulus) + suite + tsc.
+
+**Escalade** : décision **#15** ajoutée (GO 113 + flag, groupable #3). Tuile fraîcheur = déjà
+vivante au prochain déploiement de la branche ; rendu visuel = séance #7.
+
+**Scorecard** : Preuve 7/10 (parité prouvée sur helpers réels + mutation ; synthétique — jamais
+exercé contre une vraie table ni un vrai marchand) · Sécu north-star 8/10 (2 revues SOUND, états
+honnêtes 3-voies testés, 0 faux positif introduit ; le SLA peut être optimiste vs signalements
+conso — documenté) · Réversibilité 10/10 (0 migration appliquée, git revert propre) · Scope 8/10
+(11 fichiers code/tests + 4 docs, 1 feature cohérente) · Align 9/10 (P2 = la valeur VENDUE au
+pilote, critère audit rempli côté boucle). CFR 10 derniers runs : 10/10 exit=0 avec commit, 0 revert.
+
+**RESTE (re-priorisé)** : **G2** (historique feed-quality `google_feed_runs`) = prochain [R] du
+rang P2. GATED : #15 (113+flag), #3 (106-111), #12, #13. YEUX (Thomas) : #7 (+ tuile/historique G1).
+
+---
+
 ## 2026-07-10 (run autonome #2, 2e unité) · P1-5 — dossier Trusted programmatique (commit ci-dessous)
 
 **Sourcing** : P1-4 fermé la même run (unité 1 ci-dessous) → item suivant = P1-5 « dossier Trusted »

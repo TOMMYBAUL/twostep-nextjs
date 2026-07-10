@@ -78,6 +78,15 @@
   — M4 n'est clos qu'à moitié. Ordre STRICT : appliquer 112 (protocole §4, groupable avec la
   décision #3) PUIS poser le flag (flag sans migration = repli upsert signalé Sentry, sans perte).
   Reco : **GO groupé avec #3** (même fenêtre supervisée ~15 min).
+- [ ] **15. GO migration 113 + flag `MERCHANT_SLA_HISTORY=1`** (G1, préparé le 2026-07-10) :
+  historique QUOTIDIEN du SLA qualité par marchand (table `merchant_sla_history`, écrite par le
+  cron quality-check 05:00, lue par l'écran Google du dashboard — l'argument commercial NearSt
+  « X % de ton stock est publiable et frais + courbe 7 j » qu'on montre à Deerskin). **Déjà actif
+  sans GO** : la tuile « Fraîcheur du stock » temps réel sur `/dashboard/google` (champs additifs
+  de `/api/google/stats`, aucun flag requis). **Reste gaté** : la persistance de l'historique.
+  Ordre STRICT : appliquer 113 (protocole §4) PUIS poser le flag (flag sans migration = écriture
+  échoue proprement, capturée Sentry + statut degraded, alertes intactes). 2 revues SOUND
+  (SF-hunter + database-reviewer). Reco : **GO groupé avec #3** (même fenêtre supervisée).
 - [ ] **8. Cadence de la boucle** : tâche planifiée = 1 run/75 min × 15 h ≈ **12 runs/jour**.
   Avec la mission Opération Pilote il y a à nouveau du travail réel, mais la reco reste
   **4-6 runs/jour** (runs profonds > runs fréquents ; quota partagé avec ton usage perso).

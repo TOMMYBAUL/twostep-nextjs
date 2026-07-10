@@ -170,8 +170,18 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    réel — pas d'UI d'avance) ; consommation = au 1er onboarding.
 
 **P2 — La valeur qu'on VEND au pilote (insights NearSt-style)**
-- **G1** métrique SLA fraîcheur par marchand + **G2** historique feed-quality. C'est l'écran
-  qu'on montre à Deerskin pour justifier l'abonnement. Réversible, testable, in-scope.
+- ✅ **G1 FAIT (2026-07-10, run #3)** : métrique SLA « % offres fraîches/publiables » par
+  marchand — helper PUR `src/lib/monitoring/merchant-sla.ts` (parité STRICTE : gate feed
+  `isFeedEligible` + confiance conso `computeStockConfidence`, jamais une 2ᵉ logique),
+  tuile « Fraîcheur du stock » + champs additifs `/api/google/stats` (live dès maintenant),
+  historique quotidien GATED : migration 113 PRÉPARÉE non appliquée + flag
+  `MERCHANT_SLA_HISTORY=1` (cron quality-check, chemin séparé anti-poisoning) + route
+  `/api/google/sla-history` (table absente → `available:false` honnête ≠ vide) + section
+  7 j dashboard. 2 revues (SF-hunter SOUND ; database-reviewer 1 MED corrigé : index
+  redondant). 1404→1437 tests, non-vacance par mutation (2 rouges). **GO = décision #15
+  (groupable #3). Rendu visuel tuile/historique = Thomas (#7).**
+- **G2** historique feed-quality (`google_feed_runs` : served/pending/disapproved/top-N,
+  aujourd'hui jeté dans la réponse HTTP de `cron/google-status`). Prochain [R] de ce rang.
 
 **P3 — Reste de l'audit 07-04** (A3/A4/C3…) : SEULEMENT si P0-P2 épuisés OU signal réel frais
 (Sentry/quality_alert < 48 h). Le durcissement sans signal réel est INTERDIT (le gate est vert).

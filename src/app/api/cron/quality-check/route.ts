@@ -10,6 +10,8 @@ import {
 import { captureError } from "@/lib/error";
 import { fetchAllRows } from "@/lib/supabase/paginate";
 import { chunk } from "@/lib/ingest/reconcile";
+import { computeMerchantSlaSnapshots, type MerchantSlaRow } from "@/lib/monitoring/merchant-sla";
+import { gtinOnlyTierEnabled } from "@/lib/google/feed-eligibility";
 
 /**
  * Cron monitoring qualité : détecte stock figé + prix aberrant + PRODUIT VENDABLE RENDU
@@ -46,6 +48,15 @@ import { chunk } from "@/lib/ingest/reconcile";
  */
 export const maxDuration = 300;
 
+type StockRow = {
+    quantity: number;
+    updated_at: string | null;
+    // Source RÉELLE + horodatage source (migration 104) — SLA fraîcheur G1 uniquement
+    // (les watchdogs stale/aberrant continuent de lire quantity/updated_at).
+    source?: string | null;
+    source_ts?: string | null;
+};
+
 type ProductRow = {
     id: string;
     merchant_id: string;
@@ -57,10 +68,14 @@ type ProductRow = {
     variant_of: string | null;
     review_status: string | null;
     name: string | null;
-    stock: { quantity: number; updated_at: string | null } | { quantity: number; updated_at: string | null }[] | null;
+    // Publiabilité feed (SLA G1) — mêmes colonnes que le gate `isFeedEligible`.
+    ean: string | null;
+    photo_url: string | null;
+    photo_processed_url: string | null;
+    stock: StockRow | StockRow[] | null;
 };
 
-function stockOf(row: ProductRow): { quantity: number; updated_at: string | null } | null {
+function stockOf(row: ProductRow): StockRow | null {
     if (!row.stock) return null;
     return Array.isArray(row.stock) ? (row.stock[0] ?? null) : row.stock;
 }
@@ -84,7 +99,9 @@ export async function GET(request: Request) {
         const { data: products, error: productsErr } = await fetchAllRows<ProductRow>(() =>
             admin
                 .from("products")
-                .select("id, merchant_id, category, price, visible, variant_of, review_status, name, stock(quantity, updated_at)")
+                .select(
+                    "id, merchant_id, category, price, visible, variant_of, review_status, name, ean, photo_url, photo_processed_url, stock(quantity, updated_at, source, source_ts)",
+                )
                 .is("archived_at", null)
                 .order("id", { ascending: true }),
         );
@@ -378,6 +395,62 @@ export async function GET(request: Request) {
             }
         }
 
+        // ── G1 — SLA fraîcheur/publiabilité par marchand (historique quotidien) ─────
+        // Snapshots calculés à CHAQUE run (coût ~0 : les lignes produits sont déjà en
+        // mémoire pour les watchdogs) via le helper PUR `computeMerchantSlaSnapshots`
+        // (parité stricte : gate feed `isFeedEligible` + confiance `computeStockConfidence`,
+        // même option tier GTIN-only que les feeds live). La PERSISTANCE est GATED
+        // (migration 113 + flag MERCHANT_SLA_HISTORY=1) sur un chemin d'écriture SÉPARÉ
+        // des alertes (anti batch-poisoning) et fail-VISIBLE (captureError + degraded) :
+        // un jour manquant dans l'historique doit se VOIR, pas se déduire.
+        // Bloc ISOLÉ comme les autres watchdogs (revue SF-hunter) : une exception ici ne doit
+        // pas transformer tout le cron en 500 alors que les alertes sont DÉJÀ écrites en DB —
+        // elle dégrade CE bloc (captureError + degraded), le statut des watchdogs reste honnête.
+        let slaMerchants = 0;
+        let slaHistoryWritten = 0;
+        try {
+            const slaSnapshots = computeMerchantSlaSnapshots(
+                rows as unknown as MerchantSlaRow[],
+                { allowMissingImage: gtinOnlyTierEnabled() },
+                now,
+            );
+            slaMerchants = slaSnapshots.length;
+            const slaHistoryEnabled = process.env.MERCHANT_SLA_HISTORY === "1";
+            if (slaHistoryEnabled && slaSnapshots.length > 0) {
+                const day = now.toISOString().slice(0, 10);
+                // Projection EXPLICITE vers les colonnes de la table (le snapshot porte aussi la
+                // ventilation missing_* de PublishabilitySummary, qui n'est pas persistée) —
+                // forme UNIFORME sur toutes les lignes → jamais de null injecté par l'upsert.
+                const slaRows = slaSnapshots.map((s) => ({
+                    merchant_id: s.merchant_id,
+                    day,
+                    total: s.total,
+                    publishable: s.publishable,
+                    publishable_score: s.score,
+                    in_stock: s.in_stock,
+                    publishable_in_stock: s.publishable_in_stock,
+                    fresh_available: s.fresh_available,
+                    freshness_score: s.freshness_score,
+                }));
+                for (const batch of chunk(slaRows, 500)) {
+                    // Upsert (merchant_id, day) : un re-run du même jour REMPLACE la ligne du jour
+                    // (dernier état), jamais de doublon ni de violation d'unique.
+                    const { error: slaErr } = await admin
+                        .from("merchant_sla_history")
+                        .upsert(batch, { onConflict: "merchant_id,day" });
+                    if (slaErr) {
+                        captureError(slaErr, { route: "cron/quality-check", phase: "sla-history-write" });
+                        errors.push("sla-history-write-failed");
+                    } else {
+                        slaHistoryWritten += batch.length;
+                    }
+                }
+            }
+        } catch (slaEx) {
+            captureError(slaEx, { route: "cron/quality-check", phase: "sla-snapshots" });
+            errors.push("sla-snapshots-failed");
+        }
+
         // Statut HONNÊTE : `ok:false`/`degraded` si un watchdog a échoué (surfacé Sentry),
         // jamais un faux "tout va bien". La lecture produit (cœur) a réussi ici (sinon throw).
         return NextResponse.json({
@@ -391,6 +464,9 @@ export async function GET(request: Request) {
             invisible_orphan_new: invisibleOrphanNew,
             ingest_silent_new: ingestSilentNew,
             pos_disconnected_new: posDisconnectedNew,
+            // SLA G1 : marchands mesurés ce run + lignes d'historique écrites (0 si flag OFF).
+            sla_merchants: slaMerchants,
+            sla_history_written: slaHistoryWritten,
             ...(errors.length > 0 ? { errors } : {}),
         });
     } catch (e) {
