@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-09 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-10 (L'Auditeur)*
 
 ## Stats
 - Total leads : 211
@@ -11,6 +11,23 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-07-10 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Aucun lead traité — 0 NOUVEAU avec email
+
+**Bilan session 10/07 :**
+- **0 lead NOUVEAU avec email** — les 61 NOUVEAU sont tous terrain-only (sans email trouvé).
+- **Gmail MCP indisponible** (29e session consécutive depuis 11/06) — création de drafts impossible.
+- **Notion MCP indisponible** (29e session consécutive) — aucun recap Notion créé.
+- **123 brouillons en attente** de création Gmail depuis jusqu'à 6 semaines.
+- Derniers emails prêts à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-09.md`
+
+**⚠️ ACTION URGENTE THOMAS — 29e session bloquée** : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Sans cette action, aucun brouillon ne peut être créé en session automatique.
+
+*Note session 10/07 (L'Auditeur) : 0 lead NOUVEAU avec email. Les 61 NOUVEAU sont terrain-only. Aucun email rédigé. Gmail OAuth expiré (29e session). Notion MCP indisponible (29e session). Aucune action possible sur les leads jusqu'à ré-autorisation OAuth Thomas.*
+
+---
 
 ## Recap brouillons email — 2026-07-09 (L'Auditeur)
 
