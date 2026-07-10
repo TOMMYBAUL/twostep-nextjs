@@ -1,16 +1,69 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-09 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-10 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 211
-- NOUVEAU : 61
+- Total leads : 217
+- NOUVEAU : 63
 - CONTACTE : 1
-- BROUILLON : 123
+- BROUILLON : 127
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-10 (L'Eclaireur) — Carmes (toulouse-merchants-full.json) rues étendues — 4 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi) | **Statut** : À valider
+
+**Note de session :** Carmes ÉPUISÉ dans top-prospects-centre.json (26/26 — confirmé 19/06) et dans les rues principales de toulouse-merchants-full.json (session 03/07). Session = exploration des **rues adjacentes Carmes** non encore couvertes : rue de la Baronie, rue Bouquières (partie nord), rue du Mage, rue des Couteliers, rue Sainte-Ursule (extrémité sud). 90+ candidats NAF 47.* filtrés. **4 emails confirmés** : sneakers premium (1), chaussures cuir Europe (1), déco concept (1), coutellerie marques (1). 20+ boutiques écartées (CBD ×2, galeries d'art ×3, disquaires ×2, artisans, liquidations, tech/vape, B2B). Note : KOLECTOR (Antoine CHARIERAS) = indépendant confirmé (≤5 boutiques), email principal contact@kolector.fr. MA COUTELLERIE : email de l'exploitant Hugues Bouterigebrivady (bbox.fr), pas du gérant titre Gilles Gassou — à vérifier terrain. Notion MCP indisponible (29e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| KOLECTOR BY LES 2 ZEBRES | Carmes/Baronie | Sneakers premium | Antoine CHARIERAS (Président) | contact@kolector.fr ✅ | 421213687 | 8/10 | BROUILLON | Email confirmé via kolector.fr (FAQ). 5 rue Baronie. Sneakers premium depuis 1999, tél 05 61 29 88 30. Alt email: kolector.tls@gmail.com. |
+| LA LOGE DU CONCIERGE | Carmes/Languedoc | Déco/Concept store | Peggy Delater | lalogeduconcierge@gmail.com ✅ | 949308993 | 7/10 | BROUILLON | Email confirmé via site Shopify + annuaires. 14 rue Languedoc. Miroirs, luminaires, vaisselle, déco. Créée 2023. |
+| ARABESQUE | Carmes/Baronie | Chaussures cuir | Pierre Izard (JULIA IZARD) | arabesqueizard@gmail.com ✅ | 800066508 | 7/10 | BROUILLON | Email confirmé via annuaires. 12 rue Baronie. Chaussures cuir espagnol/italien manufacturées Europe, tél 05 34 33 22 02. |
+| MA COUTELLERIE TOULOUSE | Carmes/Boulbonne | Coutellerie/Marques | Gilles Gassou | hugues-bouterigebrivady@bbox.fr ✅ | 382251627 | 6/10 | BROUILLON | Email exploitant Hugues Bouterigebrivady (bbox.fr), gérant titre = Gilles Gassou. 4 rue Boulbonne. Victorinox, Laguiole, Opinel, Zwilling depuis 1993. ⚠️ Email à confirmer terrain. |
+
+**Écartées session 10/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| TRONG NGUYEN | 440307817 | O'CD disquaire (vinyles) — hors cible Two-Step. ÉCARTÉ. |
+| SOURILLAN INTERNATIONAL | 325875326 | Galerie d'art — hors cible Two-Step. ÉCARTÉ. |
+| 31KARA | 937554509 | Boutique CBD — hors cible Two-Step. ÉCARTÉ. |
+| ROBERTO GIANNELLI (pers. physique) | 788804342 | Fermé mai 2022. ÉCARTÉ DÉFINITIF. |
+| MADE IN | 833552136 | Disquaire (vinyles) — hors cible Two-Step. ÉCARTÉ. |
+| HICOLOR | 538359274 | Liquidation judiciaire. ÉCARTÉ DÉFINITIF. |
+| FIZZY CRÉATION | 877595041 | Bijoux fait main artisan — hors cible Two-Step. ÉCARTÉ. |
+| VITTORIA | 380099200 | Fermée probable (aucune présence active détectée). ÉCARTÉ. |
+| SABRETACHE | 798755617 | Jeux de rôle/figurines — hors cible Two-Step. ÉCARTÉ. |
+| GALERIE FABRICE GALVANI | 511577603 | Galerie d'art — hors cible Two-Step. ÉCARTÉ. |
+| CIGARITUDE | 792469249 | Tabac/cigares — hors cible Two-Step. ÉCARTÉ. |
+| CENTRAKOR | 791893357 | Chaîne nationale discount — ÉCARTÉ. |
+| BOUTIQUE DU COMPOSANT | 403280456 | Composants électroniques — hors cible Two-Step. ÉCARTÉ. |
+| PHOTO SIGNE DES TEMPS | 882453095 | Studio photographie — hors cible Two-Step. ÉCARTÉ. |
+| PCPRIX | 479806200 | Tech/électronique — hors cible Two-Step. ÉCARTÉ. |
+| VAP FOR ALL | 802395467 | Vape/e-cigarettes — hors cible Two-Step. ÉCARTÉ. |
+| STREET SHOP | 799048558 | Boutique CBD/smoke — hors cible Two-Step. ÉCARTÉ. |
+| ADIENZ-SOLUTIONS | 908777089 | B2B gestion environnementale — hors cible Two-Step. ÉCARTÉ. |
+| LA BOUTIQUE GALERIE L'ARMAZEM SATHIG | 878516111 | Objets d'artisans/galerie déco artisanale — hors cible Two-Step. ÉCARTÉ. |
+| LE SABBLIER | 481827939 | Dissous décembre 2023, liquidation juin 2024. ÉCARTÉ DÉFINITIF. |
+| SARL KDO BEBES | 881207179 | Cadeaux bébés/puériculture — hors cible Two-Step. ÉCARTÉ. |
+| MERIC CONCEPT STORE | 938673183 | Magasin jouets/bébés — hors cible Two-Step. ÉCARTÉ. |
+| ATELIER 31 | 500841184 | En liquidation (liquidatrice = M.-C. Husseini). ÉCARTÉ. |
+| MY GALLERY | 928432996 | Galerie d'art — hors cible Two-Step. ÉCARTÉ. |
+
+**NOUVEAU terrain (aucun email public trouvé) :**
+| Boutique | SIREN | Notes |
+|---|---|---|
+| BOUTIQUE BARONY (DISCREA) | 812530509 | Mode femme, 6 rue Baronie (Cyril Marin). Présence Facebook + Instagram uniquement, aucun email public identifié. Visite terrain. |
+| LE TROUSSEAU DE COLETTE | 989979281 | Art de la table, 21 rue Bouquières (Adeline Babouche). Aucun site/email public identifié. Visite terrain. |
+
+**⚠️ Carmes numérique DÉFINITIVEMENT ÉPUISÉ** (top-prospects-centre.json 26/26 + toulouse-merchants-full.json rues principales 03/07 + rues adjacentes Baronie/Bouquières/Mage/Couteliers 10/07). Bilan Carmes total : 14 emails trouvés numériquement (03/07 : 10 + 10/07 : 4). Visite terrain recommandée : BOUTIQUE BARONY (6 rue Baronie), LE TROUSSEAU DE COLETTE (21 rue Bouquières), BROCK'NROLL (16 rue Cujas), STEDIF (46 rue Filatiers), LE VICTORY (2 rue Rempart Villeneuve).
+
+*Note session 10/07 (L'Eclaireur) : 4 emails confirmés, 2 NOUVEAU terrain, 24 écartées. Carmes désormais ÉPUISÉ numériquement. Prochaines sessions jeudi → pivoter vers nouvelle zone (Saint-Etienne étendu, ou quartier Compans). Brouillons emails à rédiger par L'Auditeur (prochaine session). Notion MCP indisponible (29e session consécutive). Gmail MCP indisponible (28e session consécutive). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-10".*
+
+---
 
 ## Recap brouillons email — 2026-07-09 (L'Auditeur)
 
