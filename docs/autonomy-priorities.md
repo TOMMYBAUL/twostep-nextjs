@@ -157,8 +157,17 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
    Fastmag » retirée — adapter API best-guess non prouvé). Articulé avec le plan d'envoi
    07-08 (Mailmeteor 35/j) = touche 0. La boucle PRÉPARE, n'ENVOIE JAMAIS (inchangé).
    **Rendu visuel des one-pagers = Thomas (#7).**
-5. **6c Dossier Trusted** : checklist des 5 marchands vérifiés (GBP lié + >11 offres + feed
-   quotidien), par-marchand, programmatique si possible (réutiliser `pilot-readiness.ts`).
+5. ✅ **6c Dossier Trusted FAIT (2026-07-10, run #2, 3e unité)** : checklist par-marchand
+   `docs/prospection/dossier-trusted.md` (6 conditions : 3 observables + 3 attestations
+   externes Thomas, roll-up X/5, tickets Google à relancer au 5/5) + helper PUR
+   `src/lib/google/trusted-readiness.ts` (`evaluateTrustedMerchant`/`evaluateTrustedDossier`,
+   réutilise `evaluateFeedReadiness` = source unique ; sémantique « feed quotidien » vérifiée
+   au cron réel : `last_feed_at` = heure de TENTATIVE → exige `success` + ≤30 h). Revue
+   SF-hunter **SOUND, 2 findings corrigés** : dédup doublons → **le pire gagne** (une ligne
+   périmée « prête » ne gonfle plus le compte des 5) ; skew futur **borné 15 min** →
+   au-delà `feed_timestamp_invalid` fail-closed. 21 tests (1383→1404), non-vacance par
+   mutation (prédicat fraîcheur cassé → rouge). 0 caller câblé VOLONTAIREMENT (0 marchand
+   réel — pas d'UI d'avance) ; consommation = au 1er onboarding.
 
 **P2 — La valeur qu'on VEND au pilote (insights NearSt-style)**
 - **G1** métrique SLA fraîcheur par marchand + **G2** historique feed-quality. C'est l'écran

@@ -5,6 +5,53 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-10 (run autonome #2, 2e unité) · P1-5 — dossier Trusted programmatique (commit ci-dessous)
+
+**Sourcing** : P1-4 fermé la même run (unité 1 ci-dessous) → item suivant = P1-5 « dossier Trusted »
+(checklist 5 marchands vérifiés, programmatique via `pilot-readiness.ts`).
+
+**FAIT** : helper PUR `src/lib/google/trusted-readiness.ts` — readiness Trusted PAR marchand
+(3 signaux observables : offres publiables + connexion via `evaluateFeedReadiness` réutilisé tel
+quel = source unique anti-dérive ; fraîcheur du feed quotidien) + 3 prérequis EXTERNES en
+ATTESTATIONS humaines fail-closed (GBP vérifié, GBP↔MC, inventory verification) + roll-up X/5
+(`TRUSTED_MIN_VERIFIED_MERCHANTS`). **Sémantique vérifiée au code réel avant d'écrire** :
+`last_feed_at` est écrit par le cron à CHAQUE tentative (037+103) → « feed quotidien » exige
+`last_feed_status='success'` ET âge ≤ 30 h (24 h + marge cron) — un `partial`/`error` frais ne
+compte pas. + livrable `docs/prospection/dossier-trusted.md` : checklist par-marchand à cocher
+(6 conditions, mapping signal↔colonne DB↔phase runbook), roll-up, tickets Google à relancer au
+5/5. **Volontairement 0 caller câblé** (0 marchand réel : pas d'UI d'avance — la logique est
+prête et testée pour le 1er onboarding).
+
+**Revue silent-failure-hunter : SOUND, 2 findings VRAIS corrigés** (le module était fail-closed
+partout sauf 2 trous) : (MED-HIGH) dédup doublons « premier gagne » → un doublon DIVERGENT (ligne
+périmée « prête » + état réel cassé, ex. jointure post-reconnexion) comptait le marchand PRÊT =
+la classe interdite « KPI qui surévalue » → **le pire gagne** (max blockers) + 2 tests adversariaux
+ordre/désordre ; (MED) skew futur non borné → un `success` daté +1 an (bug d'unité/backfill)
+restait « frais » à vie → **borne 15 min** (`FUTURE_SKEW_TOLERANCE_MS`), au-delà = nouveau blocker
+`feed_timestamp_invalid` (corrompu ≠ frais ≠ stale) + test +1 an. (LOW) test `attested` absent
+ajouté. LOW/info documenté : un catalogue perpétuellement > budget cron resterait `partial` → jamais
+« quotidien » (signal honnête ; à surveiller au scale, pas un défaut du module).
+
+**Preuve** : 21 tests (`tests/lib/google/trusted-readiness.test.ts`), dont EPOCH « +00:00 »,
+borne exacte 30 h, jamais-poussé sans double-peine, doublons divergents 2 ordres. **Non-vacance
+par MUTATION** (prédicat de fraîcheur forcé à `true` → 1 rouge attendu, restauré). `tsc` OK,
+**1383→1404** (+21 : 17 initiaux + 4 revue). Blast NUL (module additif, 0 caller ; import de
+`pilot-readiness` inchangé). 0 migration, réversible. Incident bénin : la mutation via
+`Get-Content`/`Set-Content` PS 5.1 a double-encodé l'UTF-8 du fichier → réécrit proprement via
+Write (leçon : muter avec un outil UTF-8-sûr, pas PowerShell 5.1 sans BOM).
+
+**Scorecard (2e unité)** : Preuve 7/10 (sémantique vérifiée au cron réel + mutation-proof + revue
+2 passes ; plafonné : jamais exercé sur un vrai marchand — il n'y en a pas) · Sécu north-star 9/10
+(2 vecteurs de surévaluation fermés AVANT tout caller ; fail-closed prouvé sur tous les bords) ·
+Réversibilité 10/10 (0 migration, additif) · Scope 10/10 (2 fichiers code/test + 1 doc) ·
+Align 8/10 (P1-5 = l'outil de pilotage vers Trusted ; utile dès le 1er marchand, dormant d'ici là).
+
+**RESTE P1** : P1-4 ✅ / P1-5 ✅ → P1 ÉPUISÉ côté boucle. Prochain rang : **P2 G1/G2** (SLA
+fraîcheur par marchand + historique feed-quality = l'écran qu'on VEND à Deerskin). P3 interdit
+sans signal réel frais.
+
+---
+
 ## 2026-07-10 (run autonome #2) · P1-4 — kit prospection réactualisé sur l'état produit RÉEL + curation LESSONS
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché par Thomas. P0 épuisé/escaladé
