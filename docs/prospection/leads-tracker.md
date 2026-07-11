@@ -1,16 +1,46 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-10 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-11 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 211
-- NOUVEAU : 61
+- Total leads : 221
+- NOUVEAU : 65
 - CONTACTE : 1
-- BROUILLON : 123
+- BROUILLON : 127
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Samedi — 2026-07-11 (L'Eclaireur) — Victor-Hugo (toulouse-merchants-full.json) — rues des Lois / d'Austerlitz / Colombette / Wilson — 4 emails confirmés + 2 écartées
+
+**Agent** : L'Eclaireur | **Quartier** : Victor-Hugo (samedi) → zone secondaire rues des Lois / d'Austerlitz / Colombette / place Wilson
+**Statut** : À valider | **Notion** : Non créé (MCP indisponible — 30e session consécutive)
+
+**Note de session :** Victor-Hugo JSON épuisé (9/9). Zone étendue Gambetta/Bouquières/Rémusat/Wilson/Peyrolières ÉPUISÉE DÉFINITIVEMENT (session 04/07). Session = investigation des candidats JAMAIS traités sur rues adjacentes non couvertes (rue des Lois, rue d'Austerlitz, rue de la Colombette, place Wilson) dans toulouse-merchants-full.json. **4 emails confirmés : OPTIQUE AUSTERLITZ (optique.austerlitz@gmail.com ✅), OLIVIER NARDIN OPTIQUE (olivie.nardin@colombette-optique.fr ✅), LE SENS DE LA MARCHE (toulouse@lesensdelamarche.fr ✅), BOUTIQUE ORLY (toulouse@orlyplacewilson.com ✅).** 4 NOUVEAU sans email (terrain). 2 ÉCARTÉES définitives (liquidations 2016-2018). Notion MCP indisponible (30e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| OPTIQUE AUSTERLITZ | Victor-Hugo/Austerlitz | Optique | Charlene Biau | optique.austerlitz@gmail.com ✅ | 523928174 | 8/10 | BROUILLON | Email confirmé via optiqueausterlitz.com. 5 rue d'Austerlitz. Tél : 05 61 21 70 84. Opticien indépendant. |
+| OLIVIER NARDIN OPTIQUE | Victor-Hugo/Colombette | Optique | Olivier Nardin | olivie.nardin@colombette-optique.fr ✅ | 753217140 | 8/10 | BROUILLON | Email confirmé via lopticien.net/annuaires. 20 rue de la Colombette. Tél : 05 61 62 71 52. ⚠️ Vérifier typo "olivie" vs "olivier" dans email. |
+| LE SENS DE LA MARCHE | Victor-Hugo/Rivals | Chaussures | Isabelle Coulomb-mauviere | toulouse@lesensdelamarche.fr ✅ | 524677457 | 7/10 | BROUILLON | Email confirmé via lesensdelamarche.fr. 10 rue Rivals. Tél : 05 34 33 86 79. Chaussures marche/confort (MBT). |
+| BOUTIQUE ORLY | Victor-Hugo/Wilson | Mode homme | Daniel Ben yahia | toulouse@orlyplacewilson.com ✅ | 383867330 | 7/10 | BROUILLON | Email confirmé via orlyplacewilson.com. 9 place Wilson. Mode homme depuis 1963. Tél : 05 62 27 77 77. |
+| CHATEIGNE (le Shop) | Victor-Hugo/Lois | Mode/Bijoux | Sarah Gueguen | — | 879968402 | 7/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — IG @chateigne_le_shop, tél : 0766822723. 7 rue des Lois. Mode femme + bébé + bijoux créateurs. Visite terrain. |
+| HOT-COUTURE | Victor-Hugo/Lois | Mode | Arielle Bonneville | — | 531001709 | 5/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — aucune présence digitale confirmée. 5 rue des Lois. Visite terrain. |
+| FABIENNE | Victor-Hugo/Austerlitz | Mode | Elisabeth Malet | — | 630800316 | 5/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — aucune présence digitale identifiable. 10 rue d'Austerlitz. Visite terrain. |
+| SARL PARIS SEPTIEME | Victor-Hugo/Bouquières | Mode | Emilie Carpentier | — | 750521759 | 6/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — aucune présence digitale confirmée. 13 rue Bouquières. Visite terrain. |
+
+**Écartées session 11/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| LA SCARPETTA | 811598770 | Liquidation judiciaire 2017, procédure clôturée novembre 2018 pour insuffisance d'actif — ÉCARTÉE DÉFINITIF |
+| YSABELLE ROSE | 805216108 | Société radiée, liquidation judiciaire prononcée 2016 — ÉCARTÉE DÉFINITIF |
+
+**⚠️ Notion MCP indisponible (30e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-07-11".
+
+*Note session 11/07 (L'Eclaireur) : Zone étendue Victor-Hugo ÉPUISÉE (04/07). Pivot vers rues secondaires adjacentes (rue des Lois, rue d'Austerlitz, rue de la Colombette, place Wilson) via toulouse-merchants-full.json. 10 candidats investigués, 10 recherches web effectuées. 4 emails confirmés (2 opticiens + 1 chaussures confort + 1 mode homme). 2 ÉCARTÉES définitives (LA SCARPETTA liquidée 2018, YSABELLE ROSE liquidée 2016). 4 NOUVEAU sans email (terrain). OPTIQUE AUSTERLITZ et OLIVIER NARDIN OPTIQUE : 2 opticiens indépendants — cas d'usage parfait Two-Step (stock montures en temps réel). LE SENS DE LA MARCHE : chaussures marche/confort MBT, angle spécialisé. BOUTIQUE ORLY : mode homme depuis 1963, high-end. Gmail MCP indisponible (30e session consécutive). Notion MCP indisponible (30e session consécutive).*
+
+---
 
 ## Recap brouillons email — 2026-07-10 (L'Auditeur)
 
