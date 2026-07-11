@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-11 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-11 (L'Auditeur)*
 
 ## Stats
 - Total leads : 221
@@ -22,7 +22,7 @@
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
 |---|---|---|---|---|---|---|---|---|
 | OPTIQUE AUSTERLITZ | Victor-Hugo/Austerlitz | Optique | Charlene Biau | optique.austerlitz@gmail.com ✅ | 523928174 | 8/10 | BROUILLON | Email confirmé via optiqueausterlitz.com. 5 rue d'Austerlitz. Tél : 05 61 21 70 84. Opticien indépendant. |
-| OLIVIER NARDIN OPTIQUE | Victor-Hugo/Colombette | Optique | Olivier Nardin | olivie.nardin@colombette-optique.fr ✅ | 753217140 | 8/10 | BROUILLON | Email confirmé via lopticien.net/annuaires. 20 rue de la Colombette. Tél : 05 61 62 71 52. ⚠️ Vérifier typo "olivie" vs "olivier" dans email. |
+| OLIVIER NARDIN OPTIQUE | Victor-Hugo/Colombette | Optique | Olivier Nardin | olivier.nardin@colombette-optique.fr ✅ | 753217140 | 8/10 | BROUILLON | Email confirmé via colombette-optique.fr (recherche web 11/07 confirme "olivier.nardin", typo "olivie" corrigée). 20 rue de la Colombette. Tél : 05 61 62 71 52. |
 | LE SENS DE LA MARCHE | Victor-Hugo/Rivals | Chaussures | Isabelle Coulomb-mauviere | toulouse@lesensdelamarche.fr ✅ | 524677457 | 7/10 | BROUILLON | Email confirmé via lesensdelamarche.fr. 10 rue Rivals. Tél : 05 34 33 86 79. Chaussures marche/confort (MBT). |
 | BOUTIQUE ORLY | Victor-Hugo/Wilson | Mode homme | Daniel Ben yahia | toulouse@orlyplacewilson.com ✅ | 383867330 | 7/10 | BROUILLON | Email confirmé via orlyplacewilson.com. 9 place Wilson. Mode homme depuis 1963. Tél : 05 62 27 77 77. |
 | CHATEIGNE (le Shop) | Victor-Hugo/Lois | Mode/Bijoux | Sarah Gueguen | — | 879968402 | 7/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — IG @chateigne_le_shop, tél : 0766822723. 7 rue des Lois. Mode femme + bébé + bijoux créateurs. Visite terrain. |
@@ -39,6 +39,29 @@
 **⚠️ Notion MCP indisponible (30e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-07-11".
 
 *Note session 11/07 (L'Eclaireur) : Zone étendue Victor-Hugo ÉPUISÉE (04/07). Pivot vers rues secondaires adjacentes (rue des Lois, rue d'Austerlitz, rue de la Colombette, place Wilson) via toulouse-merchants-full.json. 10 candidats investigués, 10 recherches web effectuées. 4 emails confirmés (2 opticiens + 1 chaussures confort + 1 mode homme). 2 ÉCARTÉES définitives (LA SCARPETTA liquidée 2018, YSABELLE ROSE liquidée 2016). 4 NOUVEAU sans email (terrain). OPTIQUE AUSTERLITZ et OLIVIER NARDIN OPTIQUE : 2 opticiens indépendants — cas d'usage parfait Two-Step (stock montures en temps réel). LE SENS DE LA MARCHE : chaussures marche/confort MBT, angle spécialisé. BOUTIQUE ORLY : mode homme depuis 1963, high-end. Gmail MCP indisponible (30e session consécutive). Notion MCP indisponible (30e session consécutive).*
+
+---
+
+## Recap brouillons email — 2026-07-11 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (30e session consécutive) | **Notion** : NON CRÉÉ (30e session)
+
+**Source leads** : Session L'Eclaireur 11/07 — 4 leads BROUILLON frais avec email confirmé (rues Austerlitz / Colombette / Rivals / Wilson).
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | OPTIQUE AUSTERLITZ | Charlène Biau | optique.austerlitz@gmail.com | Charlène, tes montures visibles sur Google en temps réel ? | brouillons-email-2026-07-11.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | COLOMBETTE OPTIQUE | Olivier Nardin | olivier.nardin@colombette-optique.fr | Olivier, ton stock de montures visible sur Google en temps réel ? | brouillons-email-2026-07-11.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | LE SENS DE LA MARCHE | Isabelle Coulomb-mauviere | toulouse@lesensdelamarche.fr | Isabelle, tes chaussures MBT trouvables sur Google en temps réel ? | brouillons-email-2026-07-11.md | ⚠️ NON CRÉÉ Gmail |
+| 4 | BOUTIQUE ORLY | Daniel Ben yahia | toulouse@orlyplacewilson.com | Daniel, tes collections visibles sur Google en temps réel ? | brouillons-email-2026-07-11.md | ⚠️ NON CRÉÉ Gmail ⚠️ Vérifier interlocuteur (Sandrine BEN YAHIA = présidente actuelle) |
+
+**Corrections session 11/07 :**
+- OLIVIER NARDIN OPTIQUE : email corrigé en "olivier.nardin@colombette-optique.fr" (faute de frappe "olivie" dans le tracker confirmée par recherche web colombette-optique.fr)
+- BOUTIQUE ORLY : présidente actuelle = Sandrine BEN YAHIA (web), tracker = Daniel Ben yahia — à valider par Thomas
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 30e session consécutive sans création de draft (11/06 → 11/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. 131 brouillons en attente. Brouillons complets à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-11.md`** Notion MCP indisponible (30e session consécutive).
+
+*Note session 11/07 (L'Auditeur) : 4 leads BROUILLON frais traités (Eclaireur 11/07). Recherches web effectuées pour chaque lead. Emails ACA personnalisés, max 150 mots, tutoiement, prénom gérant. Email Olivier Nardin corrigé après vérification web. BOUTIQUE ORLY : ambiguïté interlocuteur (Daniel vs Sandrine) — signalée. Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré 30e session).*
 
 ---
 
