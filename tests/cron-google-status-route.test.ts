@@ -20,13 +20,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  */
 
 type Row = Record<string, unknown>;
-type TableData = { rows: Row[]; error: { message: string } | null; insertError?: { message: string } | null };
+type TableData = {
+    rows: Row[];
+    error: { message: string } | null;
+    insertError?: { message: string } | null;
+    upsertError?: { message: string } | null;
+};
 
 /** Plafond `max-rows` PostgREST simulé : un SELECT rend AU PLUS 1000 lignes, sans erreur. */
 const MAX_ROWS = 1000;
 
 function makeReadClient(tables: Record<string, TableData>) {
     const writes: Array<{ table: string; payload: Row }> = [];
+    const upserts: Array<{ table: string; payload: Row; opts?: Record<string, unknown> }> = [];
 
     function builder(table: string) {
         const filters: Array<{ col: string; val: unknown }> = [];
@@ -79,12 +85,17 @@ function makeReadClient(tables: Record<string, TableData>) {
                 writes.push({ table, payload });
                 return Promise.resolve({ data: null, error: null });
             },
+            upsert: (payload: Row, opts?: Record<string, unknown>) => {
+                if (td.upsertError) return Promise.resolve({ data: null, error: td.upsertError });
+                upserts.push({ table, payload, opts });
+                return Promise.resolve({ data: null, error: null });
+            },
             then: (onfulfilled: (v: { data: Row[] | null; error: unknown }) => unknown) =>
                 Promise.resolve(resolve()).then(onfulfilled),
         };
         return api;
     }
-    return { from: (table: string) => builder(table), __writes: writes };
+    return { from: (table: string) => builder(table), __writes: writes, __upserts: upserts };
 }
 
 const mockAdmin = { current: null as ReturnType<typeof makeReadClient> | null };
@@ -100,10 +111,24 @@ vi.mock("@/lib/google/merchant", () => ({
 const fetchProcessedProducts = vi.fn();
 const summarizeProductStatuses = vi.fn();
 const buildDisapprovalAlerts = vi.fn(() => []);
+// Miroir fidèle de la vraie projection (la logique complète — top-10, troncature — est
+// prouvée dans tests/lib/google/product-status.test.ts ; ici on vérifie le CÂBLAGE route).
+const buildFeedRunRow = vi.fn((summary: Record<string, unknown>, merchantId: string, runAt: Date) => ({
+    merchant_id: merchantId,
+    day: runAt.toISOString().slice(0, 10),
+    run_at: runAt.toISOString(),
+    total: summary.total ?? 0,
+    served: summary.served ?? 0,
+    pending: summary.pending ?? 0,
+    disapproved: summary.disapproved ?? 0,
+    unknown: summary.unknown ?? 0,
+    top_issues: [],
+}));
 vi.mock("@/lib/google/product-status", () => ({
     fetchProcessedProducts: (...a: unknown[]) => fetchProcessedProducts(...a),
     summarizeProductStatuses: (...a: unknown[]) => summarizeProductStatuses(...a),
     buildDisapprovalAlerts: (...a: unknown[]) => buildDisapprovalAlerts(...a),
+    buildFeedRunRow: (...a: unknown[]) => buildFeedRunRow(...(a as [Record<string, unknown>, string, Date])),
 }));
 
 vi.mock("@/lib/error", () => ({ captureError: vi.fn() }));
@@ -133,6 +158,7 @@ describe("cron/google-status — read-back du statut Google (route handler)", ()
         mockAdmin.current = null;
         process.env.CRON_SECRET = "test-secret";
         delete process.env.GOOGLE_DISAPPROVAL_ALERTS;
+        delete process.env.GOOGLE_FEED_RUNS_HISTORY;
         vi.clearAllMocks();
         getGoogleAccessToken.mockResolvedValue({
             accessToken: "tok",
@@ -364,5 +390,72 @@ describe("cron/google-status — read-back du statut Google (route handler)", ()
         // Dédup COMPLÈTE (2 pages keyset) → l'alerte déjà ouverte n'est jamais ré-insérée
         // (une dédup tronquée à 1000 l'aurait crue « neuve » → violation d'unique → lot perdu).
         expect(mockAdmin.current!.__writes).toHaveLength(0);
+    });
+
+    // ── G2 — historique feed-quality `google_feed_runs` (gated migration 114 + flag) ──
+
+    it("G2 flag OFF (défaut) : AUCUNE écriture google_feed_runs — prod byte-identique", async () => {
+        summarizeProductStatuses.mockReturnValue(emptySummary({ total: 5, served: 5 }));
+        fetchProcessedProducts.mockResolvedValue([{ id: "ok" }]);
+        mockAdmin.current = makeReadClient({
+            google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+        });
+
+        const { POST } = await import("@/app/api/cron/google-status/route");
+        const res = await POST(authedReq());
+        const body = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(body.feed_runs_written).toBe(0);
+        expect(mockAdmin.current!.__upserts).toHaveLength(0);
+        expect(buildFeedRunRow).not.toHaveBeenCalled();
+    });
+
+    it("G2 flag ON : CHAQUE marchand relu OK écrit sa ligne — MÊME un run 100 % sain (0 rejet est une donnée d'historique)", async () => {
+        process.env.GOOGLE_FEED_RUNS_HISTORY = "1";
+        summarizeProductStatuses.mockReturnValue(emptySummary({ total: 8, served: 8 }));
+        fetchProcessedProducts.mockResolvedValue([{ id: "ok" }]);
+        mockAdmin.current = makeReadClient({
+            google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+        });
+
+        const { POST } = await import("@/app/api/cron/google-status/route");
+        const res = await POST(authedReq());
+        const body = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(body.feed_runs_written).toBe(1);
+        expect(mockAdmin.current!.__upserts).toHaveLength(1);
+        const up = mockAdmin.current!.__upserts[0];
+        expect(up.table).toBe("google_feed_runs");
+        expect(up.payload.merchant_id).toBe(MERCHANT_ID);
+        expect(up.payload.total).toBe(8);
+        expect(up.payload.served).toBe(8);
+        // Upsert (merchant_id, day) : un re-run du même jour REMPLACE la ligne, jamais de doublon.
+        expect(up.opts).toEqual({ onConflict: "merchant_id,day" });
+    });
+
+    it("G2 flag ON : échec d'upsert (ex. migration 114 absente) → captureError step feed-run-write, marchand PAS en erreur, run intact", async () => {
+        process.env.GOOGLE_FEED_RUNS_HISTORY = "1";
+        summarizeProductStatuses.mockReturnValue(emptySummary({ total: 3, served: 3 }));
+        fetchProcessedProducts.mockResolvedValue([{ id: "ok" }]);
+        mockAdmin.current = makeReadClient({
+            google_merchant_connections: { rows: [{ merchant_id: MERCHANT_ID }], error: null },
+            google_feed_runs: { rows: [], error: null, upsertError: { message: 'relation "google_feed_runs" does not exist' } },
+        });
+
+        const { captureError } = await import("@/lib/error");
+        const { POST } = await import("@/app/api/cron/google-status/route");
+        const res = await POST(authedReq());
+        const body = await res.json();
+
+        // La persistance secondaire ne casse NI le marchand NI le run : statut honnête,
+        // per_merchant intact, l'échec est VISIBLE (Sentry) au lieu d'un jour manquant muet.
+        expect(res.status).toBe(200);
+        expect(body.errors).toBe(0);
+        expect(body.feed_runs_written).toBe(0);
+        expect(body.per_merchant).toHaveLength(1);
+        const calls = vi.mocked(captureError).mock.calls.map((c) => (c[1] as { step?: string })?.step);
+        expect(calls).toContain("feed-run-write");
     });
 });

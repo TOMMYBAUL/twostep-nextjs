@@ -247,6 +247,73 @@ export function deriveSlaHistoryView(load: {
     return { kind: "history", days: days.slice(0, 7) };
 }
 
+/** Une cause agrégée d'un run (top_issues de `google_feed_runs`). */
+export type FeedRunIssue = {
+    code: string;
+    severity: string;
+    description: string;
+    count: number;
+};
+
+/** Un run de read-back Google (ligne `google_feed_runs`, servie par `/api/google/feed-runs`). */
+export type FeedRunDay = {
+    day: string;
+    run_at: string;
+    total: number;
+    served: number;
+    pending: number;
+    disapproved: number;
+    unknown: number;
+    top_issues: FeedRunIssue[];
+};
+
+export type FeedRunsView =
+    /** Le fetch a échoué (HTTP !ok, réseau) → erreur honnête, jamais un faux « pas d'historique ». */
+    | { kind: "error" }
+    /** 200 `available:false` = migration/flag pas encore actifs → rien à afficher (feature OFF). */
+    | { kind: "unavailable" }
+    /** Historique actif mais encore aucun run écrit (flag posé aujourd'hui). */
+    | { kind: "empty" }
+    /**
+     * Jusqu'à 7 runs, du plus récent au plus ancien (ordre serveur conservé).
+     * `latest` = le run le plus récent (ses causes sont celles qu'on LISTE au marchand).
+     */
+    | { kind: "runs"; runs: FeedRunDay[]; latest: FeedRunDay };
+
+/**
+ * Libellé affichable d'une cause Google : la `description` renvoyée par Google quand elle
+ * existe, sinon le `code` brut. On n'INVENTE jamais une traduction (un mapping FR partiel
+ * qui se trompe = pire qu'un code anglais exact — même politique zéro-invention que
+ * brand/category). Pure.
+ */
+export function formatFeedIssueLabel(issue: FeedRunIssue): string {
+    const desc = issue.description?.trim();
+    return desc && desc.length > 0 ? desc : issue.code;
+}
+
+/**
+ * Vue de l'historique feed-quality (G2). Pure — 4 états DISTINCTS, même contrat que
+ * deriveSlaHistoryView : une erreur de chargement, une feature pas encore activée et un
+ * historique réellement vide sont trois choses différentes.
+ * Défensif sur `top_issues` (vieille ligne / champ absent → []), jamais un crash de rendu.
+ * @param load.ok   `false` si le fetch a échoué (statut HTTP non-2xx, corps `{error}`, réseau).
+ * @param load.body le corps parsé quand `ok` ; sinon `null`.
+ */
+export function deriveFeedRunsView(load: {
+    ok: boolean;
+    body: { available?: boolean; runs?: FeedRunDay[] } | null;
+}): FeedRunsView {
+    if (!load.ok || !load.body) return { kind: "error" };
+    if (load.body.available !== true) return { kind: "unavailable" };
+    const raw = Array.isArray(load.body.runs) ? load.body.runs : [];
+    if (raw.length === 0) return { kind: "empty" };
+    const runs = raw.slice(0, 7).map((r) => ({
+        ...r,
+        top_issues: Array.isArray(r.top_issues) ? r.top_issues : [],
+    }));
+    return { kind: "runs", runs, latest: runs[0] };
+}
+
 /**
  * @param load.error `true` si la lecture connexion a échoué (≠ « pas connecté »).
  * @param load.connection la ligne quand présente ; `null` = vraiment pas connecté.

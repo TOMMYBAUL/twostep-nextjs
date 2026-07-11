@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getGoogleAccessToken } from "@/lib/google/merchant";
-import { fetchProcessedProducts, summarizeProductStatuses, buildDisapprovalAlerts } from "@/lib/google/product-status";
+import { fetchProcessedProducts, summarizeProductStatuses, buildDisapprovalAlerts, buildFeedRunRow } from "@/lib/google/product-status";
 import { chunk } from "@/lib/ingest/reconcile";
 import { captureError } from "@/lib/error";
 import { fetchAllRows } from "@/lib/supabase/paginate";
@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
 
     let disapprovedTotal = 0;
     let errors = 0;
+    let feedRunsWritten = 0;
     const perMerchant: Array<{
         merchant_id: string;
         total: number;
@@ -161,6 +162,29 @@ export async function POST(req: NextRequest) {
                     }
                 }
             }
+
+            // ── G2 — historique feed-quality (`google_feed_runs`) — GATED ──────────
+            // Le résumé ci-dessus était jusqu'ici JETÉ dans la réponse HTTP (que
+            // personne ne lit). Persisté 1 ligne/(marchand, jour) pour l'écran
+            // marchand (feed-quality report type NearSt). Inerte tant que la
+            // migration 114 n'est pas appliquée ET GOOGLE_FEED_RUNS_HISTORY=1.
+            // Placé APRÈS le bloc Sentry/alertes : une persistance secondaire qui
+            // lève ne doit JAMAIS empêcher le signal de rejet d'être émis. Chaque
+            // marchand read-back OK écrit sa ligne (un run sain — 0 rejet — est
+            // une donnée d'historique, pas un non-événement). Échec d'écriture =
+            // fail-VISIBLE (captureError) sans throw : un jour manquant doit se
+            // VOIR dans Sentry, pas faire échouer le marchand ni le run.
+            if (process.env.GOOGLE_FEED_RUNS_HISTORY === "1") {
+                const row = buildFeedRunRow(summary, conn.merchant_id, new Date());
+                const { error: runErr } = await supabase
+                    .from("google_feed_runs")
+                    .upsert(row, { onConflict: "merchant_id,day" });
+                if (runErr) {
+                    captureError(runErr, { cron: "google-status", merchantId: conn.merchant_id, step: "feed-run-write" });
+                } else {
+                    feedRunsWritten++;
+                }
+            }
         } catch (err) {
             errors++;
             captureError(err, { cron: "google-status", merchantId: conn.merchant_id });
@@ -171,6 +195,7 @@ export async function POST(req: NextRequest) {
         merchants: connections.length,
         disapproved_total: disapprovedTotal,
         errors,
+        feed_runs_written: feedRunsWritten,
         per_merchant: perMerchant,
     });
 }

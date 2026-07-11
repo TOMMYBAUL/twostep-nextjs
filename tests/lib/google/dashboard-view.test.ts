@@ -4,8 +4,11 @@ import {
     deriveConnectionView,
     deriveReadinessView,
     deriveSlaHistoryView,
+    deriveFeedRunsView,
+    formatFeedIssueLabel,
     type GoogleStatsData,
     type GoogleConnectionData,
+    type FeedRunDay,
 } from "@/lib/google/dashboard-view";
 
 const baseStats: GoogleStatsData = {
@@ -257,5 +260,74 @@ describe("deriveSlaHistoryView — 4 états DISTINCTS (erreur ≠ pas activé �
         expect(
             deriveSlaHistoryView({ ok: true, body: { available: true, days: "oops" as unknown as [] } }),
         ).toEqual({ kind: "empty" });
+    });
+});
+
+describe("deriveFeedRunsView — 4 états DISTINCTS (erreur ≠ pas activé ≠ vide) + top_issues défensif", () => {
+    const run = (d: string, over: Partial<FeedRunDay> = {}): FeedRunDay => ({
+        day: d,
+        run_at: `${d}T06:00:00.000Z`,
+        total: 10,
+        served: 7,
+        pending: 1,
+        disapproved: 2,
+        unknown: 0,
+        top_issues: [{ code: "image_link_problem", severity: "DISAPPROVED", description: "Image inaccessible", count: 2 }],
+        ...over,
+    });
+
+    it("fetch échoué / corps nul → error (jamais un faux « pas d'historique »)", () => {
+        expect(deriveFeedRunsView({ ok: false, body: null })).toEqual({ kind: "error" });
+        expect(deriveFeedRunsView({ ok: true, body: null })).toEqual({ kind: "error" });
+    });
+
+    it("available:false (migration 114 / flag pas actifs) → unavailable, PAS empty", () => {
+        expect(deriveFeedRunsView({ ok: true, body: { available: false, runs: [] } })).toEqual({ kind: "unavailable" });
+        // available absent (contrat inattendu) → prudence : unavailable, pas un vide affirmé.
+        expect(deriveFeedRunsView({ ok: true, body: {} })).toEqual({ kind: "unavailable" });
+    });
+
+    it("available:true + 0 run → empty (vide RÉEL, distinct de unavailable)", () => {
+        expect(deriveFeedRunsView({ ok: true, body: { available: true, runs: [] } })).toEqual({ kind: "empty" });
+    });
+
+    it("available:true + runs → plafonné à 7, ordre serveur conservé, latest = le plus récent", () => {
+        const runs = Array.from({ length: 10 }, (_, i) => run(`2026-07-${String(10 - i).padStart(2, "0")}`));
+        const view = deriveFeedRunsView({ ok: true, body: { available: true, runs } });
+        expect(view.kind).toBe("runs");
+        if (view.kind === "runs") {
+            expect(view.runs).toHaveLength(7);
+            expect(view.runs[0].day).toBe("2026-07-10"); // plus récent en premier (ordre serveur desc)
+            expect(view.runs[6].day).toBe("2026-07-04");
+            expect(view.latest).toBe(view.runs[0]);
+        }
+    });
+
+    it("top_issues absent/non-tableau sur une ligne → normalisé en [] (jamais un crash de rendu)", () => {
+        const broken = run("2026-07-10", { top_issues: undefined as unknown as [] });
+        const view = deriveFeedRunsView({ ok: true, body: { available: true, runs: [broken] } });
+        expect(view.kind).toBe("runs");
+        if (view.kind === "runs") {
+            expect(view.latest.top_issues).toEqual([]);
+        }
+    });
+
+    it("runs non-tableau (contrat cassé) → empty prudent, pas un crash", () => {
+        expect(
+            deriveFeedRunsView({ ok: true, body: { available: true, runs: "oops" as unknown as [] } }),
+        ).toEqual({ kind: "empty" });
+    });
+});
+
+describe("formatFeedIssueLabel — zéro invention (description Google sinon code brut)", () => {
+    it("description présente → description (pas de traduction inventée)", () => {
+        expect(
+            formatFeedIssueLabel({ code: "image_link_problem", severity: "DISAPPROVED", description: "Image inaccessible", count: 2 }),
+        ).toBe("Image inaccessible");
+    });
+
+    it("description vide/blanche → code brut (exact > joli)", () => {
+        expect(formatFeedIssueLabel({ code: "gtin_mismatch", severity: "DISAPPROVED", description: "", count: 1 })).toBe("gtin_mismatch");
+        expect(formatFeedIssueLabel({ code: "gtin_mismatch", severity: "DISAPPROVED", description: "   ", count: 1 })).toBe("gtin_mismatch");
     });
 });

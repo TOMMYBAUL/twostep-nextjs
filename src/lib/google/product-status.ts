@@ -178,6 +178,60 @@ export function buildDisapprovalAlerts(
     return alerts;
 }
 
+/** Top-N des causes persistées par run (le reste vit dans Sentry, borné pour le jsonb). */
+export const FEED_RUN_TOP_ISSUES = 10;
+/** Les descriptions Google peuvent être longues — bornées pour garder la ligne jsonb saine. */
+const FEED_RUN_ISSUE_DESCRIPTION_MAX = 200;
+
+/**
+ * Ligne `google_feed_runs` (historique feed-quality G2, migration 114) : le résumé
+ * du read-back que le cron `google-status` calculait déjà puis JETAIT dans sa réponse
+ * HTTP. 1 ligne par (marchand, jour) — un re-run du même jour remplace (upsert).
+ */
+export type FeedRunRow = {
+    merchant_id: string;
+    /** Jour UTC du run (clé d'upsert avec merchant_id). */
+    day: string;
+    /** Horodatage exact du run (dernier run du jour si re-run). */
+    run_at: string;
+    total: number;
+    served: number;
+    pending: number;
+    disapproved: number;
+    unknown: number;
+    /** Top-N causes (itemLevelIssues agrégées), déjà triées par fréquence décroissante. */
+    top_issues: Array<{ code: string; severity: string; description: string; count: number }>;
+};
+
+/**
+ * Projette un `ProductStatusSummary` vers la ligne `google_feed_runs`. Pure, forme
+ * UNIFORME (toutes les colonnes toujours présentes → jamais de null injecté par
+ * l'upsert, cf. LESSONS « upsert écrit l'UNION des colonnes »). `runAt` injecté
+ * (déterministe en test) ; `day` dérivé du MÊME instant (jamais deux horloges).
+ */
+export function buildFeedRunRow(summary: ProductStatusSummary, merchantId: string, runAt: Date): FeedRunRow {
+    const iso = runAt.toISOString();
+    return {
+        merchant_id: merchantId,
+        day: iso.slice(0, 10),
+        run_at: iso,
+        total: summary.total,
+        served: summary.served,
+        pending: summary.pending,
+        disapproved: summary.disapproved,
+        unknown: summary.unknown,
+        top_issues: summary.issues.slice(0, FEED_RUN_TOP_ISSUES).map((i) => ({
+            code: i.code,
+            severity: i.severity,
+            description:
+                i.description.length > FEED_RUN_ISSUE_DESCRIPTION_MAX
+                    ? i.description.slice(0, FEED_RUN_ISSUE_DESCRIPTION_MAX)
+                    : i.description,
+            count: i.count,
+        })),
+    };
+}
+
 /** Page size max conseillé par l'API Merchant pour products.list. */
 const PAGE_SIZE = 250;
 /** Borne anti-boucle (cf. LESSONS : un curseur qui se répète = run cloud qui hang). */

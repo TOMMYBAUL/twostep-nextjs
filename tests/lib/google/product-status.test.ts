@@ -4,6 +4,7 @@ import {
     summarizeProductStatuses,
     fetchProcessedProducts,
     buildDisapprovalAlerts,
+    buildFeedRunRow,
     type GoogleProcessedProduct,
     type GoogleProductStatus,
 } from "@/lib/google/product-status";
@@ -181,5 +182,72 @@ describe("buildDisapprovalAlerts", () => {
         ];
         const alerts = buildDisapprovalAlerts(products, "m");
         expect(alerts[0].detail.issues).toEqual([]);
+    });
+});
+
+describe("buildFeedRunRow (G2 — ligne google_feed_runs)", () => {
+    const summary = (over: Partial<ReturnType<typeof summarizeProductStatuses>> = {}) => ({
+        total: 10,
+        served: 6,
+        pending: 2,
+        disapproved: 1,
+        unknown: 1,
+        disapprovedOfferIds: ["p-1"],
+        issues: [] as Array<{ code: string; severity: string; description: string; count: number }>,
+        ...over,
+    });
+    const RUN_AT = new Date("2026-07-11T06:00:23.000Z");
+
+    it("projette les compteurs du summary, day + run_at dérivés du MÊME instant (UTC)", () => {
+        const row = buildFeedRunRow(summary(), "m-1", RUN_AT);
+        expect(row).toEqual({
+            merchant_id: "m-1",
+            day: "2026-07-11",
+            run_at: "2026-07-11T06:00:23.000Z",
+            total: 10,
+            served: 6,
+            pending: 2,
+            disapproved: 1,
+            unknown: 1,
+            top_issues: [],
+        });
+    });
+
+    it("borne top_issues au top-10 (ordre du summary = fréquence décroissante, conservé)", () => {
+        const issues = Array.from({ length: 14 }, (_, i) => ({
+            code: `issue_${i}`,
+            severity: "DISAPPROVED",
+            description: `desc ${i}`,
+            count: 14 - i,
+        }));
+        const row = buildFeedRunRow(summary({ issues }), "m-1", RUN_AT);
+        expect(row.top_issues).toHaveLength(10);
+        expect(row.top_issues[0].code).toBe("issue_0");
+        expect(row.top_issues[9].code).toBe("issue_9");
+    });
+
+    it("tronque les descriptions Google trop longues (jsonb borné), sans toucher les courtes", () => {
+        const long = "x".repeat(500);
+        const row = buildFeedRunRow(
+            summary({
+                issues: [
+                    { code: "long", severity: "DISAPPROVED", description: long, count: 3 },
+                    { code: "short", severity: "DEMOTED", description: "image floue", count: 1 },
+                ],
+            }),
+            "m-1",
+            RUN_AT,
+        );
+        expect(row.top_issues[0].description).toHaveLength(200);
+        expect(row.top_issues[1].description).toBe("image floue");
+    });
+
+    it("forme UNIFORME : toutes les colonnes présentes même sur un run 100 % sain (0 issue)", () => {
+        // Un upsert PostgREST écrit l'UNION des colonnes du lot — une forme variable
+        // injecterait des null (cf. LESSONS). Toutes les clés doivent toujours exister.
+        const row = buildFeedRunRow(summary({ disapproved: 0, served: 10, pending: 0, unknown: 0 }), "m-2", RUN_AT);
+        expect(Object.keys(row).sort()).toEqual(
+            ["day", "disapproved", "merchant_id", "pending", "run_at", "served", "top_issues", "total", "unknown"].sort(),
+        );
     });
 });

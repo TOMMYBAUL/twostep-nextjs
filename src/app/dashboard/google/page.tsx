@@ -10,6 +10,8 @@ import {
     deriveConnectionView,
     deriveReadinessView,
     deriveSlaHistoryView,
+    deriveFeedRunsView,
+    formatFeedIssueLabel,
     type StatsView,
     type ConnectionView,
     type ReadinessView,
@@ -17,6 +19,8 @@ import {
     type GoogleConnectionData,
     type SlaHistoryDay,
     type SlaHistoryView,
+    type FeedRunDay,
+    type FeedRunsView,
 } from "@/lib/google/dashboard-view";
 
 export default function GooglePage() {
@@ -25,6 +29,7 @@ export default function GooglePage() {
     const [readinessView, setReadinessView] = useState<ReadinessView | null>(null);
     const [connectionView, setConnectionView] = useState<ConnectionView | null>(null);
     const [slaHistoryView, setSlaHistoryView] = useState<SlaHistoryView | null>(null);
+    const [feedRunsView, setFeedRunsView] = useState<FeedRunsView | null>(null);
     const [loading, setLoading] = useState(true);
     const [disconnecting, setDisconnecting] = useState(false);
     const [confirmDisconnect, setConfirmDisconnect] = useState(false);
@@ -74,11 +79,24 @@ export default function GooglePage() {
             }
         })();
 
-        const [conn, stats, sla] = await Promise.all([connLoad, statsLoad, slaLoad]);
+        // Historique feed-quality G2 — mêmes 4 états (erreur ≠ « pas encore activé » ≠ vide).
+        const feedRunsLoad = (async (): Promise<{ ok: boolean; body: { available?: boolean; runs?: FeedRunDay[] } | null }> => {
+            try {
+                const r = await fetch("/api/google/feed-runs");
+                const body = r.ok ? ((await r.json()) as { available?: boolean; runs?: FeedRunDay[]; error?: string }) : null;
+                const ok = r.ok && !!body && !body.error;
+                return { ok, body: ok ? body : null };
+            } catch {
+                return { ok: false, body: null };
+            }
+        })();
+
+        const [conn, stats, sla, feedRuns] = await Promise.all([connLoad, statsLoad, slaLoad, feedRunsLoad]);
         setConnectionView(deriveConnectionView(conn));
         setStatsView(deriveStatsView(stats));
         setReadinessView(deriveReadinessView(stats));
         setSlaHistoryView(deriveSlaHistoryView(sla));
+        setFeedRunsView(deriveFeedRunsView(feedRuns));
         setLoading(false);
     }, []);
 
@@ -497,6 +515,59 @@ export default function GooglePage() {
                         )}
                     </div>
                 ) : null}
+
+                {/* Historique feed-quality G2 (read-back Google : servies / en attente / refusées + causes).
+                    Rendu UNIQUEMENT si connecté à Google (sans connexion il n'y a pas de feed à relire —
+                    afficher « premier relevé bientôt » à un marchand non connecté serait un mensonge).
+                    « unavailable » (migration 114/flag pas actifs) → rien ; erreur ≠ vide (jamais confondus). */}
+                {connectionView?.kind === "connected" && feedRunsView?.kind === "error" && (
+                    <div className="rounded-2xl border border-secondary bg-primary p-6" role="alert">
+                        <p className="text-sm font-semibold text-primary">Qualité du feed Google indisponible</p>
+                        <p className="mt-1 text-xs text-tertiary">Impossible de charger l'historique pour le moment. Réessayez dans un instant.</p>
+                    </div>
+                )}
+                {connectionView?.kind === "connected" && feedRunsView?.kind === "empty" && (
+                    <div className="rounded-2xl border border-secondary bg-primary p-6">
+                        <p className="text-sm font-semibold text-primary">Qualité du feed Google</p>
+                        <p className="mt-1 text-xs text-tertiary">
+                            Premier relevé après la prochaine synchronisation — l'historique se remplit ensuite chaque jour.
+                        </p>
+                    </div>
+                )}
+                {connectionView?.kind === "connected" && feedRunsView?.kind === "runs" && (
+                    <div className="rounded-2xl border border-secondary bg-primary p-6">
+                        <p className="text-sm font-semibold text-primary">Qualité du feed Google — 7 derniers relevés</p>
+                        <p className="mt-0.5 text-xs text-tertiary">Ce que Google dit de vos offres après chaque envoi.</p>
+                        <ul className="mt-3 space-y-2">
+                            {feedRunsView.runs.map((r) => (
+                                <li key={r.day} className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
+                                    <span className="text-xs text-tertiary">
+                                        {new Date(`${r.day}T00:00:00Z`).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}
+                                    </span>
+                                    <span className="text-xs font-semibold text-primary">
+                                        {r.served} servie{r.served > 1 ? "s" : ""} · {r.pending + r.unknown} en attente ·{" "}
+                                        <span className={r.disapproved > 0 ? "text-error-primary" : undefined}>
+                                            {r.disapproved} refusée{r.disapproved > 1 ? "s" : ""}
+                                        </span>
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                        {feedRunsView.latest.top_issues.length > 0 && (
+                            <div className="mt-4">
+                                <p className="text-xs font-semibold text-primary">Problèmes signalés par Google (dernier relevé)</p>
+                                <ul className="mt-2 space-y-1.5">
+                                    {feedRunsView.latest.top_issues.map((issue) => (
+                                        <li key={issue.code} className="rounded-lg bg-warning-secondary px-3 py-2 text-xs text-primary">
+                                            <span className="font-bold text-warning-primary">×{issue.count}</span>{" "}
+                                            {formatFeedIssueLabel(issue)}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </>
     );

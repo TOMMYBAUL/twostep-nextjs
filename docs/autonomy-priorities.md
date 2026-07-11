@@ -180,8 +180,19 @@ C'est fini : la capacité de la boucle se réoriente vers **ce qui rapproche un 
   7 j dashboard. 2 revues (SF-hunter SOUND ; database-reviewer 1 MED corrigé : index
   redondant). 1404→1437 tests, non-vacance par mutation (2 rouges). **GO = décision #15
   (groupable #3). Rendu visuel tuile/historique = Thomas (#7).**
-- **G2** historique feed-quality (`google_feed_runs` : served/pending/disapproved/top-N,
-  aujourd'hui jeté dans la réponse HTTP de `cron/google-status`). Prochain [R] de ce rang.
+- ✅ **G2 FAIT (2026-07-11, run autonome)** : historique feed-quality `google_feed_runs`
+  (served/pending/disapproved/top-10 causes par marchand/jour — le résumé que `cron/google-status`
+  calculait déjà puis JETAIT dans sa réponse HTTP). Helper PUR `buildFeedRunRow` (forme uniforme
+  anti null-injection, top-10 borné, descriptions tronquées 200) ; écriture GATED : migration
+  **114 PRÉPARÉE non appliquée** (+2 CHECK trip-wire, reco database-reviewer) + flag
+  `GOOGLE_FEED_RUNS_HISTORY=1`, upsert (merchant_id, day) APRÈS le bloc Sentry/alertes (la
+  persistance secondaire ne peut jamais tuer le signal de rejet) ; route `/api/google/feed-runs`
+  (3 états jamais confondus, jumeau strict de sla-history) + section UI dashboard (rendue
+  UNIQUEMENT si connecté Google — 4 états, causes listées SANS traduction inventée). 2 revues
+  SOUND (SF-hunter 2 LOW hérités documentés ; database-reviewer SOUND). 1437→1460 tests,
+  non-vacance par mutation (2 rouges). **GO = décision #16 (groupable #3/#13/#15). Rendu
+  visuel = Thomas (#7).** → Critère audit « un run persiste served/pending/disapproved/top-N ;
+  écran marchand liste les rejets » rempli côté boucle. **Cluster G ÉPUISÉ côté boucle.**
 
 **P3 — Reste de l'audit 07-04** (A3/A4/C3…) : SEULEMENT si P0-P2 épuisés OU signal réel frais
 (Sentry/quality_alert < 48 h). Le durcissement sans signal réel est INTERDIT (le gate est vert).

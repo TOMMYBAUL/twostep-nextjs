@@ -5,6 +5,77 @@ Format par entrée : date · sous-étape · fait · trouvé · décidé · test�
 
 ---
 
+## 2026-07-11 (run autonome) · P2-G2 — historique feed-quality `google_feed_runs` (le feed-quality report type NearSt)
+
+**Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché. Signal réel vérifié en prod
+(SQL live) : 1 seule quality_alert fraîche <48 h = la `price_aberrant` bénigne du 2026-07-10 déjà
+diagnostiquée (seed de test) ; `merchants`=10, `google_connections`=0 → aucun signal frais → backlog.
+P0 épuisé/escaladé, P1 1-5 ✅, P2-G1 ✅ (run précédent) → prochain [R] de plus haut rang = **G2**
+(audit 07-04 Cluster G, M×M). Critère audit : « un run persiste served/pending/disapproved/top-N ;
+écran marchand liste les rejets ». Prémisse vérifiée au code réel : `cron/google-status` calcule
+bien `summarizeProductStatuses` par marchand puis JETTE le résumé dans sa réponse HTTP (0 lecteur).
+
+**FAIT** (branche, commit ci-dessous) — clone méthodologique du pattern G1 :
+- **Helper PUR** `buildFeedRunRow` (`src/lib/google/product-status.ts`) : projection
+  `ProductStatusSummary` → ligne `google_feed_runs` — forme UNIFORME (toutes colonnes toujours
+  présentes, anti null-injection upsert), top-10 causes borné, descriptions Google tronquées 200,
+  `day`+`run_at` dérivés du MÊME instant injecté (déterministe).
+- **Cron `google-status`** : écriture GATED (migration **114 PRÉPARÉE NON appliquée** + flag
+  `GOOGLE_FEED_RUNS_HISTORY=1`) en upsert (merchant_id, day). Placée **APRÈS** le bloc
+  Sentry/quality_alerts dans le try par-marchand : la persistance secondaire ne peut JAMAIS
+  empêcher le signal de rejet d'être émis. Échec d'upsert → captureError `feed-run-write` sans
+  throw (un jour manquant se VOIT, ne casse ni le marchand ni le run). CHAQUE marchand relu OK
+  écrit sa ligne (un run 100 % sain = une donnée d'historique, pas un non-événement).
+- **Route `GET /api/google/feed-runs`** (RLS, jumeau STRICT de sla-history) : 3 états jamais
+  confondus — 42P01/PGRST205 (114 non appliquée) → 200 `available:false` SANS Sentry ; vraie
+  erreur DB → 500+Sentry ; vide réel → `available:true, runs:[]`. Lecture bornée limit 30.
+- **UI dashboard/google** : deriver PUR `deriveFeedRunsView` (4 états, `top_issues` normalisé
+  défensivement) + `formatFeedIssueLabel` (description Google sinon code brut — ZÉRO traduction
+  inventée, même politique que brand/category) + section « Qualité du feed Google » rendue
+  UNIQUEMENT si connecté Google (afficher « premier relevé bientôt » à un non-connecté serait
+  un mensonge) : 7 derniers relevés (servies / en attente / refusées) + causes du dernier relevé.
+- **Migration 114** : table + RLS lecture-marchand (écriture service-role only) + UNIQUE
+  (merchant_id, day) servant la lecture en Index Scan Backward (pas d'index redondant, leçon 113)
+  + **2 CHECK trip-wire** ajoutés sur reco database-reviewer (`total = served+pending+disapproved+
+  unknown`, `top_issues ≤ 10`) : une dérive future du helper fait ÉCHOUER l'écriture (visible
+  Sentry) au lieu de persister un historique incohérent.
+
+**Preuve** (sans yeux/env) : +23 tests (**1437→1460**, 134 fichiers) — 4 helper pur (projection,
+top-10, troncature, forme uniforme), 3 cron (flag OFF byte-identique + 0 appel helper ; flag ON
+écrit CHAQUE marchand même 0 rejet, onConflict exact ; échec upsert → Sentry, errors=0,
+per_merchant intact), 8 route (les 3 états + scope/ordre/limit), 8 deriver/label. **Non-vacance
+par MUTATION** : gate « n'écrire que si disapproved>0 » injecté → 2 rouges attendus, restauré.
+tsc OK, suite complète verte.
+
+**Revues (§11.3) : 2/2 SOUND.** SF-hunter **SOUND, 0 CRIT/HIGH/MED** (ordre Sentry-avant-write
+vérifié par construction ; jumeau sla-history identique ligne à ligne ; flag OFF prouvé
+byte-identique) + 2 LOW hérités documentés SANS fix (catch par-marchand sans `step` = structurel
+pré-existant ; libellé « en attente » agrège pending+unknown = sémantique héritée de
+classifyProductStatus, honnête). database-reviewer **SOUND** (idempotence, `unknown` non réservé
+OK, RLS/ACL parité 092/113, index suffisant, rollback complet) + LOW optionnel PRIS (2 CHECK
+ci-dessus). NB : GitNexus MCP non connecté ce run → scope vérifié par `git diff` (10 fichiers,
+tous voulus) + suite + tsc.
+
+**Escalade** : décision **#16** ajoutée (GO 114 + flag, groupable #3/#13/#15 — même fenêtre
+~15 min). Dormant tant que 0 marchand connecté Google (coût nul, à activer avec le lot).
+
+**Scorecard** : Preuve 7/10 (câblage prouvé sur faux clients non vacants + mutation ; synthétique —
+0 marchand Google réel pour l'exercer) · Sécu north-star 9/10 (2 revues SOUND ; ordre
+signal-avant-persistance testé ; 3 états jamais confondus ; zéro traduction inventée ; CHECK
+trip-wire) · Réversibilité 10/10 (0 migration appliquée, git revert propre) · Scope 9/10
+(10 fichiers code/tests, 1 feature cohérente, clone d'un pattern déjà validé) · Align 8/10
+(P2 = la valeur vendue au pilote ; dormant jusqu'au 1er marchand connecté). CFR 10 derniers
+runs : 10/10 exit=0 avec commit, 0 revert.
+
+**RESTE (re-priorisé)** : **P0-P2 ÉPUISÉS côté boucle** (Cluster G clos). Par la règle §1ter,
+P3 (reste audit 07-04 : A3/A4/C3, C6/C9 fuites coût enrichissement…) devient éligible — MAIS
+chaque item devra être re-vérifié au code réel (la table d'audit s'est déjà révélée périmée
+2×). GATED en attente : #16 (114+flag), #15 (113+flag), #13 (112+flag), #3 (106-111), #12, #1/#2
+(clés). YEUX (Thomas) : #7 (+ section feed-quality G2). Le goulot redevient les DÉCISIONS, pas
+le code : 6 GO groupables en UNE fenêtre supervisée de ~15 min.
+
+---
+
 ## 2026-07-10 (run autonome #3) · P2-G1 — métrique SLA fraîcheur/publiabilité par marchand (l'écran qu'on VEND au pilote)
 
 **Sourcing (§1ter)** : `DECISIONS-EN-ATTENTE.md` lu — rien de coché. Signal réel vérifié en prod :

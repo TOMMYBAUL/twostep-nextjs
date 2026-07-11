@@ -87,6 +87,16 @@
   Ordre STRICT : appliquer 113 (protocole §4) PUIS poser le flag (flag sans migration = écriture
   échoue proprement, capturée Sentry + statut degraded, alertes intactes). 2 revues SOUND
   (SF-hunter + database-reviewer). Reco : **GO groupé avec #3** (même fenêtre supervisée).
+- [ ] **16. GO migration 114 + flag `GOOGLE_FEED_RUNS_HISTORY=1`** (G2, préparé le 2026-07-11) :
+  historique de QUALITÉ du feed Google par marchand (table `google_feed_runs`, écrite par le cron
+  `google-status` 06:00 — served/pending/refusées + top-10 causes par jour, lue par l'écran Google
+  du dashboard = le feed-quality report type NearSt qu'on montre au pilote avec la courbe SLA G1).
+  Le cron calculait déjà tout et le JETAIT dans sa réponse HTTP. **Sans GO, rien ne change** (flag
+  OFF = prod byte-identique, testé). Ordre STRICT : appliquer 114 (protocole §4) PUIS poser le flag
+  (flag sans migration = écriture échoue proprement, capturée Sentry, signal de rejet intact).
+  2 revues SOUND (SF-hunter + database-reviewer ; 2 CHECK trip-wire ajoutés sur reco). Reco :
+  **GO groupé avec #3/#13/#15** (même fenêtre supervisée ~15 min). NB : ne devient VIVANT qu'avec
+  ≥1 marchand connecté Google (aujourd'hui 0) — à activer en même temps que le reste, coût nul.
 - [ ] **8. Cadence de la boucle** : tâche planifiée = 1 run/75 min × 15 h ≈ **12 runs/jour**.
   Avec la mission Opération Pilote il y a à nouveau du travail réel, mais la reco reste
   **4-6 runs/jour** (runs profonds > runs fréquents ; quota partagé avec ton usage perso).
