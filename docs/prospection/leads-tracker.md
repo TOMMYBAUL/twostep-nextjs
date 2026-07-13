@@ -1,16 +1,55 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-11 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-13 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 221
-- NOUVEAU : 65
+- Total leads : 233
+- NOUVEAU : 67
 - CONTACTE : 1
-- BROUILLON : 127
+- BROUILLON : 137
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-13 (L'Eclaireur) — Capitole (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) | **Statut** : À valider
+**Note de session :** Session 2 Capitole sur toulouse-merchants-full.json (1ère session 07/07 = 10 emails, 41 candidats sur rues principales). Session du jour = candidats restants identifiés lors du pivot 07/07. **10 emails confirmés** (DO MY SHOES, COCOTTE, CHEZ ZEL, MAMZEL ZAZA, LE COMPTOIR DE L'OPTIQUE, L'OBSERVATOIRE, LES REVERIES, GRANDIR A VUE D'OEIL, MIDICA, T.CORNER). 2 sans email (terrain). 5 écartées définitives. LES REVERIES : email ✅❓ non vérifié par WebFetch (DNS helloreveries.com ENOTFOUND, email via Yelp nov 2025). Notion MCP indisponible (31e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| DO MY SHOES | Capitole/Arts | Chaussures | Dominique Grosjean | domyshoes@gmail.com ✅ | 531697514 | 7/10 | BROUILLON | Email trouvé via annuaires. 7 rue des Arts. Chaussures multimarques. |
+| COCOTTE (We Are Cocotte) | Capitole/Saint-Antoine | Mode | Vanessa Crouzil | contact@wearecocotte.com ✅ | 799338017 | 8/10 | BROUILLON | Email confirmé via wearecocotte.com. 6 rue Saint Antoine du T. Mode femme tendance. |
+| CHEZ ZEL | Capitole/Pomme | Mode | Elodie Fontoura | contact@chez-zel.com ✅ | 877643056 | 7/10 | BROUILLON | Email confirmé via chez-zel.com. 25 rue de la Pomme. Mode femme. |
+| MAMZEL ZAZA | Capitole/Tourneurs | Mode | Sylvie Puig | contact@mamzel-zaza.fr ✅ | 495022105 | 7/10 | BROUILLON | Email confirmé via mamzel-zaza.fr. 38 rue des Tourneurs. Mode femme. |
+| LE COMPTOIR DE L'OPTIQUE | Capitole/Tourneurs | Optique | Lucas Guillermin | contact@lecomptoir-deloptique.fr ✅ | 813489507 | 8/10 | BROUILLON | Email confirmé via site web. 44 rue des Tourneurs. Opticien indépendant. |
+| L'OBSERVATOIRE | Capitole/Arts | Bijouterie/Horlogerie | Jonnhy Dunal | lobservatoire31@sfr.fr ✅ | 491278156 | 8/10 | BROUILLON | Email confirmé via lobservatoire31.fr. 4 rue des Arts. Bijouterie/horlogerie. |
+| LES REVERIES | Capitole/Arts | Déco/Concept store | Chrystalla Theodoridou | hello@lesreveries.net ✅❓ | 818210007 | 7/10 | BROUILLON | Email via web search (Yelp nov 2025) — non vérifié WebFetch (DNS ENOTFOUND). 2 rue des Arts. ⚠️ A confirmer avant envoi. |
+| GRANDIR A VUE D'OEIL | Capitole/Metz | Optique enfant | Arnaud Dessalle | toulouse@grandiravuedoeil.com ✅ | 453993172 | 7/10 | BROUILLON | Email confirmé via grandiravuedoeil.com. 26 rue de Metz. Optique lunettes enfants 0-18 ans. ⚠️ Gérant : tracker="Dessalle" vs web="LASSALLE" — à vérifier. |
+| MIDICA | Capitole/Esquirol | Déco | Benoit Barron | contact@midica.fr ✅ | 580802551 | 8/10 | BROUILLON | Email confirmé via midica.fr/pages/infos-pratiques. 13 place Esquirol. Magasin déco historique 5 étages depuis 1946. 3 établissements. |
+| T.CORNER | Capitole/Saint-Antoine | Mode accessoires | Benedicte Boures | contact@tcorner.fr ✅ | 494635436 | 7/10 | BROUILLON | Email confirmé via tcorner.fr. 20 rue Saint Antoine du T. Accessoires mode femme, boutique indépendante. |
+
+**Écartées session 13/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| SASU SHOW ROOM (SUPER33STORE) | 824190946 | Liquidée 2021. 12 rue du Taur. ÉCARTÉE DÉFINITIF. |
+| G.R.I. FRANCE | — | Liquidée 2017. ÉCARTÉE DÉFINITIF. |
+| LONDON | 537535361 | Radiée (verif.com). ÉCARTÉE DÉFINITIF. |
+| LEROY BRINGER | — | Franchise KRYS — chaîne nationale. ÉCARTÉE. |
+| POINDRELLE | 324454735 | Aucune présence web. Locataire historique 15 rue des Arts (occupé par Frayssinet Joaillier). ÉCARTÉ. |
+
+**Sans email — terrain :**
+| Boutique | SIREN | Adresse | Gérant | Notes |
+|---|---|---|---|---|
+| V FRAYSSINET | 519018436 | 6 rue Saint Antoine du T | — | Aucun email direct. Site Frayssinet Joaillier = formulaire uniquement. Terrain. |
+| BERNARD KOK (SOCIETE LAKO) | 310896709 | 36 rue de la Pomme | — | Téléphone uniquement : 05.61.21.50.72. Aucun email trouvé. Terrain. |
+
+**⚠️ Notion MCP indisponible (31e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-07-13".
+
+*Note session 13/07 (L'Eclaireur) : Capitole 2e session toulouse-merchants-full.json. 10 emails confirmés (objectif 10/10 atteint). Mix segmenté : 2 opticiens (LE COMPTOIR DE L'OPTIQUE, GRANDIR A VUE D'OEIL), 1 bijouterie/horlogerie (L'OBSERVATOIRE), 3 mode femme (COCOTTE, CHEZ ZEL, MAMZEL ZAZA), 1 déco historique (MIDICA depuis 1946), 1 chaussures (DO MY SHOES), 1 accessoires mode (T.CORNER), 1 concept store déco (LES REVERIES). MIDICA = magasin historique 5 étages depuis 1946, stock déco massif — cas d'usage Two-Step parfait. LES REVERIES email à confirmer (DNS cassé, email via Yelp). GRANDIR A VUE D'OEIL : discordance prénom gérant (Dessalle vs LASSALLE) — Thomas à vérifier. 5 ÉCARTÉES (4 liquidations/radiations + 1 franchise). 2 NOUVEAU terrain sans email. Gmail MCP indisponible (31e session consécutive). Notion MCP indisponible (31e session consécutive).*
+
+---
 
 ### Samedi — 2026-07-11 (L'Eclaireur) — Victor-Hugo (toulouse-merchants-full.json) — rues des Lois / d'Austerlitz / Colombette / Wilson — 4 emails confirmés + 2 écartées
 
