@@ -81,6 +81,32 @@
 
 ---
 
+## Recap brouillons email — 2026-07-13 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (32e session consécutive) | **Notion** : NON CRÉÉ (32e session)
+
+**Source leads** : Session L'Eclaireur 13/07 — Capitole (2e session). 5 leads traités parmi les 10 BROUILLON frais avec email confirmé (scores 7-8/10).
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | COCOTTE (We Are Cocotte) | Vanessa Crouzil | contact@wearecocotte.com | Vanessa, tes bijoux et pièces créateurs trouvés par les Toulousains ? | brouillons-email-2026-07-13.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | LE COMPTOIR DE L'OPTIQUE | Lucas Guillermin | contact@lecomptoir-deloptique.fr | Lucas, ton stock de montures créateurs visible sur Google en temps réel ? | brouillons-email-2026-07-13.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | L'OBSERVATOIRE | Jonnhy Dunal | lobservatoire31@sfr.fr | Jonnhy, tes Stone Island et C.P. Company trouvés par les Toulousains ? | brouillons-email-2026-07-13.md | ⚠️ NON CRÉÉ Gmail ⚠️ Segment à confirmer (mode homme, pas bijouterie) |
+| 4 | MIDICA | Benoit Barron | contact@midica.fr | Benoit, tes 50 000 articles déco trouvables sur Google en temps réel ? | brouillons-email-2026-07-13.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | DO MY SHOES | Dominique Grosjean | domyshoes@gmail.com | Dominique, tes Hunter et Pas de Rouge trouvés par les Toulousains ? | brouillons-email-2026-07-13.md | ⚠️ NON CRÉÉ Gmail |
+
+**Points à valider Thomas :**
+- L'OBSERVATOIRE : tracker = "Bijouterie/Horlogerie", web = boutique mode homme premium (Stone Island, C.P. Company, Ralph Lauren, Hogan). Email rédigé côté mode homme — confirme avant envoi.
+- MIDICA : 3 établissements (sous seuil 5 — inclus). Vérifier si Benoit Barron est le bon interlocuteur.
+
+**5 leads restants de la session 13/07 à traiter en session suivante :** CHEZ ZEL, MAMZEL ZAZA, LES REVERIES, GRANDIR A VUE D'OEIL, T.CORNER.
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 32e session consécutive sans création de draft (11/06 → 13/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. ~136 brouillons en attente. Brouillons complets à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-13.md`** Notion MCP indisponible (32e session consécutive).
+
+*Note session 13/07 (L'Auditeur) : 5 leads BROUILLON traités parmi les 10 de l'Eclaireur 13/07 (Capitole 2e session). Recherches web effectuées pour chaque lead. Emails ACA personnalisés, max 150 mots, tutoiement, prénom gérant. L'OBSERVATOIRE : segment divergent entre tracker (bijouterie) et web (mode homme) — signalé. MIDICA : institution toulousaine depuis 1946, 5 étages, 50 000 produits. Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré 32e session).*
+
+---
+
 ## Recap brouillons email — 2026-07-11 (L'Auditeur)
 
 **Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (30e session consécutive) | **Notion** : NON CRÉÉ (30e session)
