@@ -1,12 +1,13 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-13 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-14 (L'Auditeur)*
 
 ## Stats
 - Total leads : 233
 - NOUVEAU : 67
 - CONTACTE : 1
-- BROUILLON : 137
+- BROUILLON : 135
+- ÉCARTÉ : 2 (MAMZEL ZAZA, LES REVERIES — boutiques fermées/liquidées)
 - Reponses : 0
 - Signes : 0
 
@@ -22,11 +23,11 @@
 | DO MY SHOES | Capitole/Arts | Chaussures | Dominique Grosjean | domyshoes@gmail.com ✅ | 531697514 | 7/10 | BROUILLON | Email trouvé via annuaires. 7 rue des Arts. Chaussures multimarques. |
 | COCOTTE (We Are Cocotte) | Capitole/Saint-Antoine | Mode | Vanessa Crouzil | contact@wearecocotte.com ✅ | 799338017 | 8/10 | BROUILLON | Email confirmé via wearecocotte.com. 6 rue Saint Antoine du T. Mode femme tendance. |
 | CHEZ ZEL | Capitole/Pomme | Mode | Elodie Fontoura | contact@chez-zel.com ✅ | 877643056 | 7/10 | BROUILLON | Email confirmé via chez-zel.com. 25 rue de la Pomme. Mode femme. |
-| MAMZEL ZAZA | Capitole/Tourneurs | Mode | Sylvie Puig | contact@mamzel-zaza.fr ✅ | 495022105 | 7/10 | BROUILLON | Email confirmé via mamzel-zaza.fr. 38 rue des Tourneurs. Mode femme. |
+| MAMZEL ZAZA | Capitole/Tourneurs | Mode | Sylvie Puig | contact@mamzel-zaza.fr ❌ | 495022105 | —/10 | ÉCARTÉ | Liquidation judiciaire clôturée déc. 2021 — boutique fermée. Email invalide. ÉCARTÉ DÉFINITIF (vérifié Auditeur 14/07). |
 | LE COMPTOIR DE L'OPTIQUE | Capitole/Tourneurs | Optique | Lucas Guillermin | contact@lecomptoir-deloptique.fr ✅ | 813489507 | 8/10 | BROUILLON | Email confirmé via site web. 44 rue des Tourneurs. Opticien indépendant. |
 | L'OBSERVATOIRE | Capitole/Arts | Bijouterie/Horlogerie | Jonnhy Dunal | lobservatoire31@sfr.fr ✅ | 491278156 | 8/10 | BROUILLON | Email confirmé via lobservatoire31.fr. 4 rue des Arts. Bijouterie/horlogerie. |
-| LES REVERIES | Capitole/Arts | Déco/Concept store | Chrystalla Theodoridou | hello@lesreveries.net ✅❓ | 818210007 | 7/10 | BROUILLON | Email via web search (Yelp nov 2025) — non vérifié WebFetch (DNS ENOTFOUND). 2 rue des Arts. ⚠️ A confirmer avant envoi. |
-| GRANDIR A VUE D'OEIL | Capitole/Metz | Optique enfant | Arnaud Dessalle | toulouse@grandiravuedoeil.com ✅ | 453993172 | 7/10 | BROUILLON | Email confirmé via grandiravuedoeil.com. 26 rue de Metz. Optique lunettes enfants 0-18 ans. ⚠️ Gérant : tracker="Dessalle" vs web="LASSALLE" — à vérifier. |
+| LES REVERIES | Capitole/Arts | Déco/Concept store | Chrystalla Theodoridou | hello@lesreveries.net ❌ | 818210007 | —/10 | ÉCARTÉ | Liquidation judiciaire clôturée déc. 2020 — boutique fermée. DNS ENOTFOUND confirmé. ÉCARTÉ DÉFINITIF (vérifié Auditeur 14/07). |
+| GRANDIR A VUE D'OEIL | Capitole/Metz | Optique enfant | Arnaud Dessalle | toulouse@grandiravuedoeil.com ✅ | 453993172 | 7/10 | BROUILLON | Email confirmé via grandiravuedoeil.com. 26 rue de Metz. Optique lunettes enfants 0-18 ans. Gérant confirmé : Arnaud Dessalle (mentions légales + registre EURL SCAPAD + SILMO). Brouillon rédigé 14/07. |
 | MIDICA | Capitole/Esquirol | Déco | Benoit Barron | contact@midica.fr ✅ | 580802551 | 8/10 | BROUILLON | Email confirmé via midica.fr/pages/infos-pratiques. 13 place Esquirol. Magasin déco historique 5 étages depuis 1946. 3 établissements. |
 | T.CORNER | Capitole/Saint-Antoine | Mode accessoires | Benedicte Boures | contact@tcorner.fr ✅ | 494635436 | 7/10 | BROUILLON | Email confirmé via tcorner.fr. 20 rue Saint Antoine du T. Accessoires mode femme, boutique indépendante. |
 
@@ -78,6 +79,24 @@
 **⚠️ Notion MCP indisponible (30e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-07-11".
 
 *Note session 11/07 (L'Eclaireur) : Zone étendue Victor-Hugo ÉPUISÉE (04/07). Pivot vers rues secondaires adjacentes (rue des Lois, rue d'Austerlitz, rue de la Colombette, place Wilson) via toulouse-merchants-full.json. 10 candidats investigués, 10 recherches web effectuées. 4 emails confirmés (2 opticiens + 1 chaussures confort + 1 mode homme). 2 ÉCARTÉES définitives (LA SCARPETTA liquidée 2018, YSABELLE ROSE liquidée 2016). 4 NOUVEAU sans email (terrain). OPTIQUE AUSTERLITZ et OLIVIER NARDIN OPTIQUE : 2 opticiens indépendants — cas d'usage parfait Two-Step (stock montures en temps réel). LE SENS DE LA MARCHE : chaussures marche/confort MBT, angle spécialisé. BOUTIQUE ORLY : mode homme depuis 1963, high-end. Gmail MCP indisponible (30e session consécutive). Notion MCP indisponible (30e session consécutive).*
+
+---
+
+## Recap brouillons email — 2026-07-14 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (33e session consécutive) | **Notion** : NON CRÉÉ (33e session)
+
+**Source leads** : Session L'Eclaireur 13/07 — Capitole (2e session). 3 leads valides parmi les 5 restants. 2 ÉCARTÉS (boutiques fermées/liquidées). Fichier : `docs/prospection/brouillons/brouillons-email-2026-07-14.md`
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | CHEZ ZEL | Elodie Fontoura | contact@chez-zel.com | Elodie, tes créateurs français trouvés par les Toulousains du quartier ? | brouillons-email-2026-07-14.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | T.CORNER | Benedicte Boures | contact@tcorner.fr | Benedicte, tes Epice Paris et Maison Fabre trouvés par les Toulousaines ? | brouillons-email-2026-07-14.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | GRANDIR A VUE D'OEIL | Arnaud Dessalle | toulouse@grandiravuedoeil.com | Arnaud, tes montures enfant trouvées par les parents toulousains ? | brouillons-email-2026-07-14.md | ⚠️ NON CRÉÉ Gmail |
+| — | MAMZEL ZAZA | Sylvie Puig | — | — | — | ÉCARTÉ DÉFINITIF — liquidée déc. 2021 |
+| — | LES REVERIES | Chrystalla Theodoridou | — | — | — | ÉCARTÉ DÉFINITIF — liquidée déc. 2020, email mort |
+
+*Note session 14/07 (L'Auditeur) : 3 leads BROUILLON traités sur les 5 restants de l'Eclaireur 13/07. Recherches web effectuées pour chaque lead. CHEZ ZEL : concept store créateurs français depuis 2020, 4.8/5 Google, 2 boutiques (Toulouse + Biarritz). T.CORNER : accessoires mode femme haut de gamme (Epice Paris, Maison Fabre, Castaner, Flabelus). GRANDIR A VUE D'OEIL : opticien pédiatrique pionnier depuis 2008, gérant Arnaud Dessalle confirmé (typo "Lassalle" dans le tracker était erronée — corrigée). 2 ÉCARTÉS définitifs : MAMZEL ZAZA (liquidation jud. déc. 2021) et LES REVERIES (liquidation jud. déc. 2020, email invalide). Gmail non créé (OAuth expiré — 33e session). Notion non créé (MCP indisponible — 33e session).*
 
 ---
 
