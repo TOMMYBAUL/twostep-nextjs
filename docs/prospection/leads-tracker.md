@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-13 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-14 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 233
+- Total leads : 239
 - NOUVEAU : 67
 - CONTACTE : 1
-- BROUILLON : 137
+- BROUILLON : 143
 - Reponses : 0
 - Signes : 0
 
@@ -48,6 +48,59 @@
 **⚠️ Notion MCP indisponible (31e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-07-13".
 
 *Note session 13/07 (L'Eclaireur) : Capitole 2e session toulouse-merchants-full.json. 10 emails confirmés (objectif 10/10 atteint). Mix segmenté : 2 opticiens (LE COMPTOIR DE L'OPTIQUE, GRANDIR A VUE D'OEIL), 1 bijouterie/horlogerie (L'OBSERVATOIRE), 3 mode femme (COCOTTE, CHEZ ZEL, MAMZEL ZAZA), 1 déco historique (MIDICA depuis 1946), 1 chaussures (DO MY SHOES), 1 accessoires mode (T.CORNER), 1 concept store déco (LES REVERIES). MIDICA = magasin historique 5 étages depuis 1946, stock déco massif — cas d'usage Two-Step parfait. LES REVERIES email à confirmer (DNS cassé, email via Yelp). GRANDIR A VUE D'OEIL : discordance prénom gérant (Dessalle vs LASSALLE) — Thomas à vérifier. 5 ÉCARTÉES (4 liquidations/radiations + 1 franchise). 2 NOUVEAU terrain sans email. Gmail MCP indisponible (31e session consécutive). Notion MCP indisponible (31e session consécutive).*
+
+---
+
+### Mardi — 2026-07-14 (L'Eclaireur) — Saint-Etienne (toulouse-merchants-full.json) — 6 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi) | **Statut** : À valider
+**Note de session :** Saint-Etienne QUASI-ÉPUISÉ. top-prospects-centre.json: 27/27 depuis 23/06. Sessions précédentes (01/07 et 08/07) avaient couvert rues Croix Baragnon/Sainte-Ursule/Cujas/Boulbonne/Languedoc/Puits Clos. Session du jour = rues non couvertes: Changes, Temponières, Tourneurs, Couteliers, Ninau, Peyras, Rempart Saint-Etienne, de la Dalbade. **6 emails confirmés** sur 10 requis. Notion MCP indisponible (33e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ONLY GOLD (YA'V GOLD) | Saint-Etienne/Couteliers | Bijouterie | Yannis VALERY | onlygold.31@gmail.com ✅ | 822115895 | 6/10 | BROUILLON | 44 rue des Couteliers. ⚠️ Plan redressement judiciaire jan 2024. |
+| NI VU NI CONNU | Saint-Etienne/Ninau | Mode/Bijoux artisans | Sabine Gaichies | contact@nivuniconnu.fr ✅ | 987479342 | 5/10 | BROUILLON | 5 rue Ninau. Galerie artisans Occitanie, créée 2024. Borderline Two-Step. |
+| BÖW ATELIER-BOUTIQUE | Saint-Etienne/Couteliers | Mode/Accessoires | Collectif créateurs | bowatelier@gmail.com ✅ | — | 5/10 | BROUILLON | 33 rue des Couteliers. Atelier mode + loisirs créatifs. Borderline artisan. |
+| CREATIVE PINK | Saint-Etienne/Cujas | Mode/Bijoux/Maroquinerie | Collectif créateurs | composites@outlook.fr ✅ | — | 5/10 | BROUILLON | 10 rue Cujas. Boutique 8 créateurs. Borderline artisan. |
+| SPECIMN | Saint-Etienne/Temponières | Sneakers/Streetwear | Jean-Baptiste ("JB") | contact@specimn.com ✅ | 507442762 | 8/10 | BROUILLON | 4 rue Temponières. Multimarques: Asics, Salomon, Arte, Norda, On Running, Arc'teryx. Excellent fit Two-Step. |
+| LILI LEONE | Saint-Etienne/Tourneurs | Mode femme | Stéphanie ROUX | lilileone@live.fr ✅ | — | 8/10 | BROUILLON | 16 rue des Tourneurs. Mode femme multimarques depuis 24 ans. 2e boutique Lili Leone en Famille. Excellent fit Two-Step. |
+
+**Écartées session 14/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| MONSIEUR MADAME | 792236440 | Entreprise fermée (Manageo). ÉCARTÉ DÉFINITIF. |
+| HERITAJE | 898587910 | Marque propre (SAS Maison Carrillo). Pas multimarques. ÉCARTÉ. |
+| GALERIE SAINT-ETIENNE | 100494251 | Galerie d'art. Hors cible. ÉCARTÉ. |
+| CORTADE'ART | 522428135 | Galerie d'art. Hors cible. ÉCARTÉ. |
+| GALERIE OCTOBRE | 827455536 | Galerie d'art. Hors cible. ÉCARTÉ. |
+| MY HOME MY DEAR | 978485787 | Dans CCIAL Les Boutiques Saint-Georges. Hors cible. ÉCARTÉ. |
+| ILANN FIVE | 824966022 | Franchise marque propre. Pas multimarques. ÉCARTÉ. |
+| SOLEIL SUCRÉ | — | Chaîne nationale (Blagnac, Portet-sur-Garonne…). ÉCARTÉ. |
+| COEXIST STORE | — | Liquidation 2019/2021. ÉCARTÉ DÉFINITIF. |
+| HS & TG | 829202886 | Fermé 2021. ÉCARTÉ DÉFINITIF. |
+| L'OISEAU MOQUEUR | 850352535 | Liquidation judiciaire oct 2024. ÉCARTÉ DÉFINITIF. |
+| ENTRE ELLE ET MOI | 403883119 | Fermée depuis 2017. ÉCARTÉ DÉFINITIF. |
+| MAISON DE VILLE | 530830793 | Fermée 2016. ÉCARTÉ DÉFINITIF. |
+| CASH COOL 31 | 909284051 | Associé à Cash Express (revendeur occasion). Hors cible. ÉCARTÉ. |
+| SUNNY RAINBOW JEWELLERS | — | Artisan bijouterie importation Inde. Hors cible. ÉCARTÉ. |
+| NICOLAS NAON | — | Artisan joaillier-créateur. Hors cible. ÉCARTÉ. |
+| BIJOUX D'HIER ET D'AUJOURD'HUI | 752027961 | Achat/revente or et bijoux anciens (dépôt-vente). Hors cible. ÉCARTÉ. |
+| NAMASTE BOUTIQUE | 841093982 | Artisan importation indienne. Hors cible. ÉCARTÉ. |
+| NAF NAF | — | Chaîne nationale. ÉCARTÉ. |
+| STRADIVARIUS | — | Chaîne internationale. ÉCARTÉ. |
+| THE NORTH FACE | — | Chaîne internationale. ÉCARTÉ. |
+| NAPAPIJRI | — | Chaîne internationale. ÉCARTÉ. |
+
+**Sans email — terrain (à tenter en porte-à-porte) :**
+| Boutique | SIREN | Adresse | Gérant | Notes |
+|---|---|---|---|---|
+| KEED (ELLE AND SHE) | — | 28 rue des Changes | — | Mode homme multimarques (Kaporal, G-Star). Aucun email public. Site inexistant. Terrain. |
+| BELLA MODE | 813115987 | 39 rue des Changes | Yinqiu JIANG | Mode femme. Site 503. Aucun email trouvé. Terrain. |
+| ADEPTE | — | 11 rue Lt Col Pélissier | — | Bijouterie créateurs. Site contact form uniquement. Terrain. |
+
+**⚠️ Notion MCP indisponible (33e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-14".
+
+*Note session 14/07 (L'Eclaireur) : Saint-Etienne 3e session (1ère 01/07, 2e 08/07). Quartier QUASI-ÉPUISÉ — rues principales et secondaires couvertes. 6 emails confirmés sur 10 requis. Highlights : SPECIMN (sneakers multimarques, JB gérant, contact@specimn.com — score 8/10, meilleur lead session) + LILI LEONE (mode femme multimarques 24 ans, Stéphanie ROUX, lilileone@live.fr — score 8/10). 4 leads borderline artisan/collectif (ONLY GOLD, NI VU NI CONNU, BÖW ATELIER, CREATIVE PINK — scores 5-6/10). 22 boutiques écartées (galeries d'art, chaines, artisans, liquidations). 3 sans email pour terrain. Prochaine session Saint-Etienne : explorer rues périphériques (Mage, Croix, Romiguières adjacentes) ou basculer sur autre quartier.*
 
 ---
 
