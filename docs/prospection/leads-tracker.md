@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-15 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-15 (L'Auditeur)*
 
 ## Stats
 - Total leads : 244
@@ -170,6 +170,29 @@
 **⚠️ Notion MCP indisponible (30e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-07-11".
 
 *Note session 11/07 (L'Eclaireur) : Zone étendue Victor-Hugo ÉPUISÉE (04/07). Pivot vers rues secondaires adjacentes (rue des Lois, rue d'Austerlitz, rue de la Colombette, place Wilson) via toulouse-merchants-full.json. 10 candidats investigués, 10 recherches web effectuées. 4 emails confirmés (2 opticiens + 1 chaussures confort + 1 mode homme). 2 ÉCARTÉES définitives (LA SCARPETTA liquidée 2018, YSABELLE ROSE liquidée 2016). 4 NOUVEAU sans email (terrain). OPTIQUE AUSTERLITZ et OLIVIER NARDIN OPTIQUE : 2 opticiens indépendants — cas d'usage parfait Two-Step (stock montures en temps réel). LE SENS DE LA MARCHE : chaussures marche/confort MBT, angle spécialisé. BOUTIQUE ORLY : mode homme depuis 1963, high-end. Gmail MCP indisponible (30e session consécutive). Notion MCP indisponible (30e session consécutive).*
+
+---
+
+## Recap brouillons email — 2026-07-15 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (35e session consécutive) | **Notion** : NON CRÉÉ (35e session)
+
+**Source leads** : Sessions L'Eclaireur 14/07 et 15/07 — Saint-Etienne + périmètre Capitole. 5 leads BROUILLON frais avec email confirmé (scores 7-8/10).
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | SPECIMN | Jean-Baptiste (JB) | contact@specimn.com | Jean-Baptiste, ton stock Asics et Arc'teryx trouvable sur Google en temps réel ? | brouillons-email-2026-07-15.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | LILI LEONE | Stéphanie Roux | lilileone@live.fr | Stéphanie, tes Sessùn et Canada Goose trouvées par les Toulousaines en quelques secondes ? | brouillons-email-2026-07-15.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | M'ELLE BOUTIQUE | Tony Boutros el khoury | contact@melleboutique-toulouse.fr | Tony, tes collections franco-italiennes visibles sur Google en temps réel ? | brouillons-email-2026-07-15.md | ⚠️ NON CRÉÉ Gmail |
+| 4 | NESS BOUTIQUE | Ines Akki | nesseboutik@gmail.com | Ines, tes 200 robes de soirée trouvées par les Toulousaines avant qu'elles cherchent ailleurs ? | brouillons-email-2026-07-15.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | L'INTERPRETE CONCEPT STORE | Karen (à confirmer) | contact@linterprete-conceptstore.com | Karen, ton concept store trouvable par les Toulousains qui cherchent mode et déco en stock ? | brouillons-email-2026-07-15.md | ⚠️ NON CRÉÉ Gmail |
+
+**Leads restants des sessions 14/07 et 15/07 à traiter en session suivante :** ONLY GOLD (Yannis, 6/10 — ⚠️ redressement judiciaire), LILI LEONE traitée, NI VU NI CONNU (Sabine, 5/10), BÖW ATELIER (collectif, 5/10), ANDY'S ETHIC (gérant inconnu — impossible sans prénom), TRENTOTTO (gérant inconnu — impossible sans prénom).
+**Leads restants de la session 13/07 (non traités) :** CHEZ ZEL, MAMZEL ZAZA, LES REVERIES, GRANDIR A VUE D'OEIL, T.CORNER.
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 35e session consécutive sans création de draft (11/06 → 15/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. ~141 brouillons en attente. Brouillons complets à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-15.md`** Notion MCP indisponible (35e session consécutive).
+
+*Note session 15/07 (L'Auditeur) : 5 leads BROUILLON traités parmi les plus récents (Eclaireur 14/07 + 15/07). Recherches web effectuées pour chaque lead. Emails ACA personnalisés, max 150 mots, tutoiement, prénom gérant. SPECIMN : Arc'teryx/Norda/On Running/Salomon/Arte — sélection sneakers premium unique à Toulouse. LILI LEONE : 24 ans de sélection mode femme (Sessùn, Canada Goose, Pyrenex). M'ELLE : franco-italien haut de gamme depuis 2012. NESS : lancée nov. 2024, 15K abonnés Instagram, 200 robes soirée. L'INTERPRETE : concept store 10 ans, mode+déco+bijoux créateurs — prénom "Karen" à confirmer (source Yelp). ANDY'S ETHIC et TRENTOTTO skippés (gérant inconnu). Notion non créé (MCP indisponible). Gmail non créé (OAuth expiré 35e session).*
 
 ---
 
