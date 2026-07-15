@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-14 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-15 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 239
+- Total leads : 244
 - NOUVEAU : 67
 - CONTACTE : 1
-- BROUILLON : 143
+- BROUILLON : 148
 - Reponses : 0
 - Signes : 0
 
@@ -101,6 +101,45 @@
 **⚠️ Notion MCP indisponible (33e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-14".
 
 *Note session 14/07 (L'Eclaireur) : Saint-Etienne 3e session (1ère 01/07, 2e 08/07). Quartier QUASI-ÉPUISÉ — rues principales et secondaires couvertes. 6 emails confirmés sur 10 requis. Highlights : SPECIMN (sneakers multimarques, JB gérant, contact@specimn.com — score 8/10, meilleur lead session) + LILI LEONE (mode femme multimarques 24 ans, Stéphanie ROUX, lilileone@live.fr — score 8/10). 4 leads borderline artisan/collectif (ONLY GOLD, NI VU NI CONNU, BÖW ATELIER, CREATIVE PINK — scores 5-6/10). 22 boutiques écartées (galeries d'art, chaines, artisans, liquidations). 3 sans email pour terrain. Prochaine session Saint-Etienne : explorer rues périphériques (Mage, Croix, Romiguières adjacentes) ou basculer sur autre quartier.*
+
+---
+
+### Mercredi — 2026-07-15 (L'Eclaireur) — Saint-Etienne périphérique (toulouse-merchants-full.json) — 4 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Etienne (mardi → mercredi) | **Statut** : À valider
+**Note de session :** Saint-Etienne QUASI-ÉPUISÉ. Rues périphériques explorées : Romiguières + Sainte-Ursule (hors EXCKLUSIVE/NEIWA déjà tracker). **4 emails confirmés** sur 10 requis. Bonus : 1 lead Capitole (TRENTOTTO) découvert incidentellement. Notion MCP indisponible (34e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| M'ELLE BOUTIQUE | Saint-Etienne/Romiguières | Mode femme | Tony Boutros el khoury | contact@melleboutique-toulouse.fr ✅ | 749907531 | 8/10 | BROUILLON | 9 rue Romiguières. Mode femme multimarques franco-italienne haut de gamme. Excellent fit Two-Step. |
+| NESS BOUTIQUE | Saint-Etienne/Romiguières | Mode femme | Ines Akki | nesseboutik@gmail.com ✅ | 938340478 | 7/10 | BROUILLON | 5 rue Romiguières. Mode femme récente (créée nov. 2024). Bonne présence digitale. |
+| L'INTERPRETE CONCEPT STORE | Saint-Etienne/Sainte-Ursule | Concept store mode/déco | Karen (inconnu) | contact@linterprete-conceptstore.com ✅ | — | 7/10 | BROUILLON | 15 rue Sainte-Ursule. Concept store ~10 ans, mode/déco/design. Gérant "Karen" (Yelp — à confirmer). |
+| ANDY'S ETHIC | Saint-Etienne/Sainte-Ursule | Mode éthique | Gérant inconnu (femme) | contact@andysethic.com ✅ | — | 7/10 | BROUILLON | 24 rue Sainte-Ursule. Mode éthique/éco-responsable. Gérant à confirmer. |
+
+**Bonus lead Capitole (à traiter lundi) :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| TRENTOTTO | Capitole/Paul Vidal | Concept store mode/maison | — | contact@trentotto.fr ✅ | — | 7/10 | BROUILLON | 14 rue Paul Vidal. 1 000m², concept store design/mode/maison haut de gamme depuis 1986. Gérant à confirmer. |
+
+**Écartées session 15/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| GRUNGE MAMA | — | Chaîne nationale 6+ établissements (Marseille, Lyon, Bordeaux, Lille, Saint-Jean-de-Luz). ÉCARTÉ. |
+| SYBARITE VINTAGE | — | Boutique fermée (Instagram 🚧). ÉCARTÉ DÉFINITIF. |
+| COMPTOIR DE L'OR ET DU BIJOU | — | Achat/vente or — pas de stock multimarques. Hors cible. ÉCARTÉ. |
+| DEAR SKIN / MC BEAUTY FRANCE | — | Déjà tracker Carmes (DEAR SKIN SHOP NOUVEAU). Skip. |
+| LA BOUTIQUE GALERIE L'ARMAZEM | — | Artisanat/déco/occasion. Hors cible. ÉCARTÉ. |
+| ADIENZ | — | Franchise IDS ENVIRONNEMENT. Hors cible. ÉCARTÉ. |
+
+**Sans email — terrain :**
+| Boutique | Adresse | Notes |
+|---|---|---|
+| KALI YOG | 22 rue Sainte-Ursule | Mode femme Inde. Site kaliyog.com — formulaire uniquement, 0 email public. |
+| ANAHITA | 5 Place Saint-Etienne | Chaussures/mode femme haut de gamme. Site anahita-toulouse.com — téléphone uniquement (05 34 31 67 44). |
+
+**⚠️ Notion MCP indisponible (34e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Etienne 2026-07-15".
+
+*Note session 15/07 (L'Eclaireur) : Saint-Etienne 4e session (01/07, 08/07, 14/07, 15/07). Quartier QUASI-ÉPUISÉ. Rues périphériques: Romiguières (M'ELLE BOUTIQUE + NESS BOUTIQUE ✅) + Sainte-Ursule hors déjà-tracker (L'INTERPRETE + ANDY'S ETHIC ✅). 4/10 emails trouvés. KALI YOG (formulaire) et ANAHITA (tél uniquement) : terrain. 6 boutiques écartées. Bonus : TRENTOTTO (Capitole, 14 rue Paul Vidal, contact@trentotto.fr — à traiter lundi). DÉCISION : Saint-Etienne ÉPUISÉ DÉFINITIF — basculer vers Wilson/Compans-Caffarelli. Gmail MCP indisponible (34e session consécutive).*
 
 ---
 
