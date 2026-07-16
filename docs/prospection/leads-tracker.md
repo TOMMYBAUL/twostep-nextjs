@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-15 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-16 (L'Auditeur)*
 
 ## Stats
 - Total leads : 244
@@ -11,6 +11,28 @@
 - Signes : 0
 
 ## Leads actifs
+
+## Recap brouillons email — 2026-07-16 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (35e session consécutive) | **Notion** : NON CRÉÉ (35e session)
+
+**Source leads** : Reliquat session 13/07 (MAMZEL ZAZA, LES REVERIES, T.CORNER) + meilleurs leads session 14/07 (SPECIMN, LILI LEONE). Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-16.md`
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | MAMZEL ZAZA | Sylvie Puig | contact@mamzel-zaza.fr | Sylvie, tes objets design trouvés par les Toulousains avant même qu'ils cherchent ? | brouillons-email-2026-07-16.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | T.CORNER | Benedicte Boures | contact@tcorner.fr | Benedicte, tes Castaner et Maison Fabre trouvés par les Toulousaines ? | brouillons-email-2026-07-16.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | LES REVERIES | Chrystalla Theodoridou | hello@lesreveries.net | Chrystalla, tes Aperlaï et LOQ trouvés par les Toulousains ? | brouillons-email-2026-07-16.md | ⚠️ NON CRÉÉ Gmail ⚠️ email à confirmer |
+| 4 | SPECIMN | Jean-Baptiste | contact@specimn.com | Jean-Baptiste, ton Norda et ton Arc'teryx trouvés par les Toulousains ? | brouillons-email-2026-07-16.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | LILI LEONE | Stéphanie ROUX | lilileone@live.fr | Stéphanie, tes Newtone et Leon & Harper trouvés par les Toulousaines ? | brouillons-email-2026-07-16.md | ⚠️ NON CRÉÉ Gmail |
+
+**Note session :** CHEZ ZEL et GRANDIR A VUE D'OEIL (restants 07/13) ont déjà des brouillons dans brouillons-email-2026-06-30.md — non redraftés. MAMZEL ZAZA : segment réel = concept store déco/cadeau/design (pas mode femme). Email adapté. LES REVERIES : email à confirmer avant envoi (DNS ENOTFOUND) — fallback Instagram @helloreveries.
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 35e session consécutive sans création de draft (11/06 → 16/07). Gmail MCP nécessite authentification OAuth — session non-interactive. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. ~141 brouillons en attente. Brouillons complets à copier-coller : `docs/prospection/brouillons/brouillons-email-2026-07-16.md`** Notion MCP indisponible (35e session consécutive).
+
+*Note session 16/07 (L'Auditeur) : 5 leads BROUILLON traités (MAMZEL ZAZA, T.CORNER, LES REVERIES reliquat 07/13 + SPECIMN, LILI LEONE session 07/14). Recherches web effectuées : MAMZEL ZAZA = déco/cadeau/design (pas mode femme — tracker corrigé mentalement), T.CORNER = accessoires artisanaux Castaner/Maison Fabre/Herbert Frère Soeur, LES REVERIES = chaussures créateurs Aperlaï/Malone Souliers/LOQ/Robert Clergerie sur Garmentory, SPECIMN = outdoor-premium Arc'teryx/Norda/On Running/New Balance 12 ans mode, LILI LEONE = mode femme multimarques 24 ans Newtone/Des Petits Hauts/Sessun/Leon & Harper. Gmail OAuth expiré (35e session). Notion MCP indisponible (35e session).*
+
+---
 
 ### Lundi — 2026-07-13 (L'Eclaireur) — Capitole (toulouse-merchants-full.json) — 10 emails confirmés
 
