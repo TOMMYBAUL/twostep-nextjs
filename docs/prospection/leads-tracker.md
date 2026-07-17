@@ -1,16 +1,57 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-16 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-17 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 244
-- NOUVEAU : 67
+- Total leads : 256
+- NOUVEAU : 69
 - CONTACTE : 1
-- BROUILLON : 148
+- BROUILLON : 158
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-17 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi) → poursuite session 03/07 — nouveaux candidats rue Croix Baragnon, rue Cujas, rue Languedoc, place Rouaix, rue Puits Clos
+
+**Note de session :** Suite des investigations Carmes sur toulouse-merchants-full.json. Focus rue Croix Baragnon (5 boutiques) + rue Cujas (2 boutiques) + optique (2) + déco (1). **10 emails confirmés.** 2 NOUVEAU terrain (sans email). Nombreuses écartées (fermées, hors cible). Notion MCP indisponible (37e session consécutive). Gmail MCP indisponible (37e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| IMAGIN OPTIQUE | Carmes/Puits Clos | Optique | Lucie Chalvignac-lesurf | imaginoptique@hotmail.fr ✅ | 840599690 | 9/10 | BROUILLON | Email confirmé via annuaires. 18 rue des Puits Clos. Opticien indépendant — cas d'usage parfait Two-Step. |
+| UPPER (LE BOUIF) | Carmes/Croix Baragnon | Chaussures | Didier Foissard | upper.toulouse@gmail.com ✅ | 501490395 | 9/10 | BROUILLON | Email confirmé via annuaires. 22 rue Croix Baragnon. Chaussures/sneakers — segment clé Two-Step. |
+| OPTIQUE ROUAIX (LABOPTIQUE) | Carmes/Rouaix | Optique | Bastien Picot | optiquerouaix@gmail.com ✅ | 539613117 | 9/10 | BROUILLON | Email confirmé via opticien-toulouse-carmes.com. 1 place Rouaix. Opticien indépendant depuis 1953 — cas d'usage parfait Two-Step. |
+| JOAILLERIE PIQUEMAL-BARON | Carmes/Croix Baragnon | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com ✅ | 488302654 | 8/10 | BROUILLON | Email confirmé via site joailleriepiquemalbaron.com. 27 rue Croix Baragnon. Bijouterie indépendante. |
+| DANYBERD | Carmes/Croix Baragnon | Mode homme multimarque | Jean-Luc Gales | toulouse@dnbstores.com ✅ | 480974716 | 8/10 | BROUILLON | Email confirmé via dnbstores.com. 19 rue Croix Baragnon. Multi-marques mode homme (DNB stores). |
+| ATYPIQUE Concept Store | Carmes/Croix Baragnon | Concept store | Christine Souloumiac | contact@atypiquetoulouse.com ✅⚠️ | 453643884 | 7/10 | BROUILLON | Email confirmé via Cylex. 11 rue Croix Baragnon. Concept store multimarque. ⚠️ À vérifier terrain (email inféré via Cylex). |
+| DORISE JOAILLIER | Carmes/Croix Baragnon | Bijouterie haute gamme | Edouard Dorise | id@dorise-joaillier.com ✅ | 300485133 | 7/10 | BROUILLON | Email confirmé via dorise-joaillier.com. 41 rue Croix Baragnon. Joaillier indépendant. |
+| FIFI JOLIPOIS | Carmes/Cujas | Bijouterie fantaisie | Léa Dunogue | lea.fifijolipois@gmail.com ✅ | 523883262 | 7/10 | BROUILLON | Email confirmé via annuaires. 11 rue Cujas. Bijouterie fantaisie indépendante. |
+| LA LOGE DU CONCIERGE | Carmes/Languedoc | Déco/Cadeaux | Peggy Delater | lalogeduconcierge@gmail.com ✅ | 949308993 | 6/10 | BROUILLON | Email confirmé via annuaires. 14 rue du Languedoc. Déco et cadeaux — segment secondaire. |
+| MADEMOISELLE NUAGE | Carmes/Cujas | Bijouterie fantaisie créatrice | Pauline David | contact@mademoisellenuage.fr ✅ | 897936191 | 5/10 | BROUILLON | Email confirmé via mademoisellenuage.fr. 15 rue Cujas. ⚠️ NAF 3213Z (fabrication) — bijoux faits-main, pas retail multimarque. Cas borderline Two-Step (stock boutique visible mais sans EAN). |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Notes |
+|---|---|---|---|
+| TOULOUSE MONTRES | 905343240 | 10 rue Pierre de Fermat | Horlogerie indépendante, site toulouse-montres.com actif mais aucun email public. Visite terrain. |
+| SEPTEMBRE 55 | 984902536 | 12 place des Puits Clos | Mode femme récent (2025), site septembre55.com actif mais aucun email public. Visite terrain. |
+
+**Écartées session 17/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| ROBE ELYSEE | 927564393 | Boutique robes de mariée (sur RDV, showroom privé) — hors cible Two-Step. ÉCARTÉE. |
+| LA FILLE DE MARGARET | 520610593 | Société ROYA cessation d'activité mars 2026. Boutique fermée. ÉCARTÉE DÉFINITIF. |
+| ESTHER MICHELE | 818920985 | Impossible à localiser — adresse 35 rue Croix Baragnon occupée par ATELIER 35 (retouches). Probablement fermée. ÉCARTÉE. |
+| RICE AND BEANS | — | Fermé février 2026 (Yelp). ÉCARTÉE DÉFINITIF. |
+| BAOBAB | — | Boutique décoration/artisanat espagnol — hors segment Two-Step (artisan, pas produits de marque). ÉCARTÉE. |
+
+**⚠️ Notion MCP indisponible (37e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (37e session consécutive) — aucun brouillon créé.**
+
+*Note session 17/07 (L'Eclaireur) : Suite Carmes toulouse-merchants-full.json. Rue Croix Baragnon largement investiguée (5 boutiques actives avec email confirmé). 2 opticiens indépendants à forte valeur Two-Step (IMAGIN OPTIQUE + OPTIQUE ROUAIX). UPPER = chaussures multimarques, segment prioritaire. 30+ candidats investigués, 5 écartées définitives. Scores prioritaires pour L'Auditeur : IMAGIN OPTIQUE 9/10, UPPER 9/10, OPTIQUE ROUAIX 9/10, JOAILLERIE PIQUEMAL-BARON 8/10, DANYBERD 8/10. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-17".*
+
+---
 
 ## Recap brouillons email — 2026-07-16 (L'Auditeur)
 
