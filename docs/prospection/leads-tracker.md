@@ -1,16 +1,55 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-17 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-18 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 256
-- NOUVEAU : 69
+- Total leads : 262
+- NOUVEAU : 72
 - CONTACTE : 1
-- BROUILLON : 158
+- BROUILLON : 161
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Vendredi — 2026-07-18 (L'Eclaireur) — Saint-Cyprien ÉPUISÉ → Rattrapage Wilson/Lafayette/Carmes — 3 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Cyprien (vendredi) ÉPUISÉ DÉFINITIF → rattrapage zone Wilson/Lafayette/bd Strasbourg/rue des Puits Clos
+
+**Note de session :** Saint-Cyprien épuisé définitivement depuis le 15/05. Rattrapage sur toulouse-merchants-full.json, zone Wilson/Lafayette/Strasbourg/Carnot — territoire partiellement couvert lors des sessions Capitole. Zone très épuisée : la majorité des candidats JSON déjà présents dans le tracker ou radiés/fermés. **3 emails confirmés.** 3 NOUVEAU terrain (sans email). 9 écartées (radiées, fermées, hors cible). Notion MCP indisponible (38e session consécutive). Gmail MCP indisponible (38e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| C'PIERRE STYLE | Lafayette | Mode multimarque | Pierre Sportouch | cpierrestyle@gmail.com ✅ | 445242027 | 7/10 | BROUILLON | Email confirmé via annuaires. 20 rue Lafayette. Mode multimarque indépendant. |
+| L'IDEE (LIDÉ) | Carmes/Puits Clos | Concept store cadeaux/design/déco | [gérant non identifié] | contact@lideetoulouse.fr ✅ | 514495159 | 7/10 | BROUILLON | Email confirmé via lideetoulouse.fr. 21 rue des Puits Clos. Concept store cadeaux/déco/design. Gérant non identifié publiquement. |
+| OPTIC DU CAP (R.E.J.L OPTIQUE) | Lafayette | Optique | Akil Manjoo | contact@opticducap.fr ✅ | 502251531 | 7/10 | BROUILLON | Email confirmé via opticducap.fr/contact/. 5 rue Lafayette. Opticien indépendant spécialité progressifs. |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Notes |
+|---|---|---|---|
+| BIJOUTERIE MEDINA | 901661793 | 47 bd de Strasbourg | Bijouterie indépendante. Tél 06 02 85 84 31 / 09 81 07 34 19. Site bijouteriemedina.com actif, WhatsApp actif. Aucun email public. 1er passage. |
+| MERIC CONCEPT STORE (EJL) | 938673183 | 24 place des Carmes | Mode bébé/enfants, gérant Marc Lemire. Tél 05 61 14 15 01. @mericboutique Instagram. Aucun email public. 1er passage. |
+| LA PLUME ROSE (SARL AMBIANCE ET DECORATION) | 424874147 | 2 rue Rémusat | Stylos/couteaux/maroquinerie/montres, gérant Emmanuel Grosset. Tél 05 62 89 55 58. Site laplumerose-31.com (503 actuellement). 1er passage. |
+
+**Écartées session 18/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| TULIPE ROSE | 899938310 | Dissoute juin 2025 (TUP absorbée NELLE SAS). ÉCARTÉE DÉFINITIF. 7 rue Lafayette. |
+| VINGT ET UN GRAMMES / 21G | 519251425 | Radiée octobre 2024. ÉCARTÉE DÉFINITIF. 21 rue Lafayette. |
+| LE SHOWROOM | 517797288 | Radiée, fermée depuis 2012. ÉCARTÉE DÉFINITIF. Place Rouaix. |
+| SA POMME | 660802703 | Franchise KENZO, dissoute 2014, radiée 2018. ÉCARTÉE DÉFINITIF. 31 rue Lafayette. |
+| QUETZAL | 805369113 | Radiée novembre 2017. ÉCARTÉE DÉFINITIF. 38 rue du Taur. |
+| AMNESYA / EJL UNITED | 905349072 | Boutique CBD/CBG — hors cible Two-Step. ÉCARTÉE. 12 bd Lazare Carnot. |
+| CITY SPORT | 447649898 | FERMÉE (Yelp mis à jour fév 2025). ÉCARTÉE DÉFINITIF. 10 bd Strasbourg. |
+| O TOULOUSE | 994111961 | Boutique souvenirs occitans — hors cible Two-Step. ÉCARTÉE. 13 rue du Taur. |
+| CRISTAL BIJOUX | 487544553 | Rachat d'or/réparation bijoux — hors cible Two-Step. ÉCARTÉE. 61 bd Strasbourg. |
+
+**⚠️ Notion MCP indisponible (38e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (38e session consécutive) — aucun brouillon créé.**
+
+*Note session 18/07 (L'Eclaireur) : Saint-Cyprien ÉPUISÉ DÉFINITIF depuis 15/05. Zone Wilson/Lafayette/Strasbourg très épuisée — majorité des candidats JSON déjà dans le tracker ou radiés. 3 emails confirmés sur ~30 candidats investigués. C'PIERRE STYLE (mode multimarque), OPTIC DU CAP (optique, cas d'usage fort), L'IDEE (concept store). 3 NOUVEAU terrain sans email. 9 écartées dont 6 radiées/fermées définitivement. Territoire du vendredi à repenser — envisager extension vers Guilhemery, Bonnefoy ou Roseraie pour les prochaines sessions. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Wilson-Lafayette 2026-07-18".*
+
+---
 
 ### Jeudi — 2026-07-17 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
 
