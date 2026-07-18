@@ -92,6 +92,28 @@
 
 ---
 
+## Recap brouillons email — 2026-07-18 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (38e session consécutive) | **Notion** : NON CRÉÉ (38e session)
+
+**Source leads** : Session L'Eclaireur 17/07 — Carmes. Top 5 traités (scores 7-9/10). Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-18.md`
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | IMAGIN OPTIQUE | Lucie Chalvignac-lesurf | imaginoptique@hotmail.fr | Lucie, tes Moscot et Caroline Abram trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | UPPER (LE BOUIF) | Didier Foissard | upper.toulouse@gmail.com | Didier, tes Church's et Crockett & Jones trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | OPTIQUE ROUAIX | Bastien Picot | optiquerouaix@gmail.com | Bastien, tes montures Shelter et Emmanuelle Khanh trouvées par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 4 | JOAILLERIE PIQUEMAL-BARON | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | Catherine, tes Rolex et Patek d'occasion trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | DORISE JOAILLIER | Edouard Dorise | id@dorise-joaillier.com | Edouard, ton stock de joaillerie visible sur Google en temps réel ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+
+⚠️ **DANYBERD écarté** : Recherche web confirme marque propre nationale (DNB Stores — 9+ établissements FR + Genève + e-commerce Shopify actif). Hors cible Two-Step (chaîne >5 établissements, marque propre). Remplacé par DORISE JOAILLIER (7/10, email id@dorise-joaillier.com confirmé).
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 38e session consécutive sans création de draft (11/06 → 18/07). ~146 brouillons en attente. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons du jour : `docs/prospection/brouillons/brouillons-email-2026-07-18.md`** Notion MCP indisponible (38e session consécutive).
+
+*Note session 18/07 (L'Auditeur) : 5 leads BROUILLON traités depuis session 17/07 (IMAGIN OPTIQUE, UPPER, OPTIQUE ROUAIX, JOAILLERIE PIQUEMAL-BARON, DORISE JOAILLIER). Recherches web effectuées : IMAGIN OPTIQUE = opticien créateurs haut de gamme (Moscot/Thierry Lasry/Masunaga/Caroline Abram — aucun concurrent direct centre-ville), UPPER = chaussures masculines premium (Church's/Crockett & Jones/Santoni — cordonnerie agréée), OPTIQUE ROUAIX = 70 ans place Rouaix, membres "Opticiens par Conviction" (Shelter/Emmanuelle Khanh/Vanni — éco-responsable), JOAILLERIE PIQUEMAL-BARON = 40 ans, spécialiste montres luxe d'occasion (Rolex/Patek/AP/VC — listées sur Chrono24), DORISE JOAILLIER = joaillier indépendant rue Croix Baragnon (email id@ confirmé). Gmail OAuth expiré (38e session). Notion MCP indisponible (38e session).*
+
+---
+
 ## Recap brouillons email — 2026-07-16 (L'Auditeur)
 
 **Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (35e session consécutive) | **Notion** : NON CRÉÉ (35e session)
