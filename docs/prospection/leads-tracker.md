@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-20 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-20 (L'Eclaireur + L'Auditeur)*
 
 ## Stats
 - Total leads : 272
@@ -129,6 +129,28 @@
 **⚠️ Gmail MCP indisponible (37e session consécutive) — aucun brouillon créé.**
 
 *Note session 17/07 (L'Eclaireur) : Suite Carmes toulouse-merchants-full.json. Rue Croix Baragnon largement investiguée (5 boutiques actives avec email confirmé). 2 opticiens indépendants à forte valeur Two-Step (IMAGIN OPTIQUE + OPTIQUE ROUAIX). UPPER = chaussures multimarques, segment prioritaire. 30+ candidats investigués, 5 écartées définitives. Scores prioritaires pour L'Auditeur : IMAGIN OPTIQUE 9/10, UPPER 9/10, OPTIQUE ROUAIX 9/10, JOAILLERIE PIQUEMAL-BARON 8/10, DANYBERD 8/10. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-17".*
+
+---
+
+## Recap brouillons email — 2026-07-20 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (40e session consécutive) | **Notion** : NON CRÉÉ (40e session)
+
+**Source leads** : Session L'Eclaireur 20/07 — Capitole reliquat. Top 5 traités (scores 7-9/10). Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-20.md`
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | BIJOUTERIE DU CAPITOLE | Gaston Gayet | sud-ouest-watch@orange.fr | Gaston, tes Glycine et Saint Honoré trouvées par les Toulousains ? | brouillons-email-2026-07-20.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | IMAGINE | Nathalie Ghenassia | imaginefantaisie@orange.fr | Nathalie, tes bijoux fantaisie trouvés par les Toulousaines ? | brouillons-email-2026-07-20.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | SARL PERLIN'S | Sylvie Schmitt | perlin-s@orange.fr | Sylvie, ta joaillerie Perlin's visible sur Google en temps réel ? | brouillons-email-2026-07-20.md | ⚠️ NON CRÉÉ Gmail |
+| 4 | SAOYA | Arnaud Turbe | saoyatoulouse@orange.fr | Arnaud, tes bijoux Saoya trouvés par les Toulousains ? | brouillons-email-2026-07-20.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | LES CUIRS DU SUD | Eric Gautrand | lescuirsdusud@aol.com | Eric, tes Nat & Nin et LTB trouvés par les Toulousains ? | brouillons-email-2026-07-20.md | ⚠️ NON CRÉÉ Gmail |
+
+⚠️ **L'ISLA NOVA et ARSENE ET LES PIPELETTES non traités** (scores 7/10 et 6/10) — à intégrer prochaine session Auditeur.
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 40e session consécutive sans création de draft (11/06 → 20/07). ~151 brouillons en attente. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons du jour : `docs/prospection/brouillons/brouillons-email-2026-07-20.md`** Notion MCP indisponible (40e session consécutive).
+
+*Note session 20/07 (L'Auditeur) : 5 leads BROUILLON traités depuis session 20/07 Eclaireur (BIJOUTERIE DU CAPITOLE, IMAGINE, PERLIN'S, SAOYA, LES CUIRS DU SUD). Recherches web : Bijouterie du Capitole = institution 1840, 5 générations, marques Glycine/Saint Honoré/Maserati ; Imagine = 25+ ans rue de la Pomme, bijoux fantaisie ; Perlin's = formation Besançon 1983, diamant/pierres précieuses ; Saoya = 1991 rue d'Alsace Lorraine, bijouterie fantaisie longévité ; Les Cuirs du Sud = maroquinerie Nat & Nin/Antonyme/Jean-Louis Fernandez + PAP LTB/Antony Morato. Gmail OAuth expiré (40e session). Notion MCP indisponible (40e session).*
 
 ---
 
