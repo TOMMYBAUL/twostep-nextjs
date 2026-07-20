@@ -1,16 +1,158 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-16 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-20 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 244
-- NOUVEAU : 67
+- Total leads : 272
+- NOUVEAU : 75
 - CONTACTE : 1
-- BROUILLON : 148
+- BROUILLON : 168
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-20 (L'Eclaireur) — Capitole reliquat (top-prospects-centre.json) — 7 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) — reliquat top-prospects-centre.json (entrées non tracées individuellement lors des passes précédentes malgré flag "épuisé 75/75")
+
+**Note de session :** Capitole rouvert malgré flag "épuisé 75/75" depuis 22/06 — analyse croisée JSON/tracker révèle ~20 entrées jamais investiguées individuellement. **7 emails confirmés.** 3 NOUVEAU terrain (sans email). 5 écartées + 1 doublon potentiel. Notion MCP indisponible (39e session consécutive). Gmail MCP indisponible (39e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| SUD OUEST WATCH SA (BIJOUTERIE DU CAPITOLE) | Capitole | Horlogerie-bijouterie | Gaston Gayet | sud-ouest-watch@orange.fr ✅ | 319722302 | 9/10 | BROUILLON | Email confirmé via bijouterie-du-capitole.fr. 12 place du Capitole. Horlogerie-bijouterie indépendante depuis 1840, place iconique. |
+| IMAGINE | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | imaginefantaisie@orange.fr ✅ | 393981394 | 8/10 | BROUILLON | Email confirmé via imaginebijoux.fr. 40 rue de la Pomme. Bijouterie fantaisie indépendante depuis >25 ans. |
+| SARL PERLIN'S | Capitole | Bijouterie-joaillerie | Sylvie Schmitt | perlin-s@orange.fr ✅ | 326727633 | 8/10 | BROUILLON | Email confirmé via perlins.fr. 49 rue de la Pomme. Bijouterie-joaillerie indépendante depuis 1983. |
+| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr ✅ | 823051180 | 7/10 | BROUILLON | Email confirmé via saoya.fr. 17 rue d'Alsace Lorraine. Bijouterie fantaisie indépendante depuis 1991. |
+| LES CUIRS DU SUD | Capitole | Maroquinerie / Prêt-à-porter | Eric Gautrand | lescuirsdusud@aol.com ✅ | 419643291 | 7/10 | BROUILLON | Email confirmé via annuaires. 45 rue des Tourneurs. Maroquinerie/cuirs/prêt-à-porter indépendant depuis plusieurs décennies. |
+| L'ISLA NOVA | Capitole | Concept store multimarques | Léa Palacin-Noblet | contact@lisla-nova.fr ✅ | 819913187 | 7/10 | BROUILLON | Email confirmé via lisla-nova.fr. 36 rue des Tourneurs. Concept store créateurs français et locaux. ⚠️ Adresse légale gérant = L'Isle-en-Dodon — boutique physique à confirmer terrain. |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfant multimarques | Helene Rieunier | sav@arseneetlespipelettes.com ✅ | 809552359 | 6/10 | BROUILLON | Email confirmé via arseneetlespipelettes.com. 25 rue de Metz. Mode enfant multimarques. ⚠️ Email SAV — à confirmer si contact direct gérant. |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Gérant | Notes |
+|---|---|---|---|---|
+| NEGREVERGNE | 540800240 | 27 rue de Metz | Geraldine Casanovas | Maroquinerie/bagages depuis 1954. Site negrevergne.fr — formulaire uniquement (page /contact 404). Score 7/10. Visite terrain prioritaire. |
+| KATHY.B / BOUTIQUE AU 44 | 882609688 | 44 rue de Metz | Catherine Ballias | Mode femme créateurs, site boutiqueau44.fr — formulaire uniquement. Score 6/10. Visite terrain. |
+| MANOUSHKA | 814281812 | 53 rue de la Pomme | Dominique Sellem | Mode femme (aussi listée "Noushka"). FB "Magasin Éphémère" ⚠️ — active en 2025. Score 5/10. Visite terrain. |
+
+**Écartées session 20/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| PAYOTE | 912767100 | Mono-marque espadrilles Payote Made in France — hors cible Two-Step. ÉCARTÉE. 58 rue des Tourneurs. |
+| COMEBACK | 901868729 | Introuvable au 47 rue de la Pomme (JB Martin à cette adresse). Boutique fermée ou déménagée. ÉCARTÉE DÉFINITIF. |
+| TILL/TILLAMY | 401862255 | Mono-marque chaussures enfants Bellamy — hors cible Two-Step. ÉCARTÉE. |
+| TOVLI | 751393331 | Société fermée en avril 2015. ÉCARTÉE DÉFINITIF. |
+| RECOVERY PROJECT | 940957483 | Opposition commerciale déclarée sur pappers.fr. ÉCARTÉE DÉFINITIF. |
+| N À L'INFINI | 817911969 | Website bijouterie-toulouse-nougues.fr DOWN (ENOTFOUND). Partage contact avec BIJOUTERIE NOUGUES déjà dans le tracker — risque doublon. À investiguer terrain si contact NOUGUES ne répond pas. |
+
+**⚠️ Notion MCP indisponible (39e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (39e session consécutive) — aucun brouillon créé.**
+
+*Note session 20/07 (L'Eclaireur) : Capitole rouvert malgré flag "épuisé 75/75" — analyse croisée JSON/tracker révèle des entrées jamais vérifiées individuellement (rejet groupé sans investigation). 7 emails confirmés sur ~16 candidats. Top : SUD OUEST WATCH SA (horlogerie 1840, place du Capitole, 9/10). Segment bijouterie/joaillerie surreprésenté (4/7) — L'Auditeur diversifiera. Terrain prioritaire : NEGREVERGNE (maroquinerie depuis 1954, 7/10). 5 écartées définitives dont TOVLI (fermé 2015) et RECOVERY PROJECT (opposition commerciale). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-07-20".*
+
+---
+
+### Vendredi — 2026-07-18 (L'Eclaireur) — Saint-Cyprien ÉPUISÉ → Rattrapage Wilson/Lafayette/Carmes — 3 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Cyprien (vendredi) ÉPUISÉ DÉFINITIF → rattrapage zone Wilson/Lafayette/bd Strasbourg/rue des Puits Clos
+
+**Note de session :** Saint-Cyprien épuisé définitivement depuis le 15/05. Rattrapage sur toulouse-merchants-full.json, zone Wilson/Lafayette/Strasbourg/Carnot — territoire partiellement couvert lors des sessions Capitole. Zone très épuisée : la majorité des candidats JSON déjà présents dans le tracker ou radiés/fermés. **3 emails confirmés.** 3 NOUVEAU terrain (sans email). 9 écartées (radiées, fermées, hors cible). Notion MCP indisponible (38e session consécutive). Gmail MCP indisponible (38e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| C'PIERRE STYLE | Lafayette | Mode multimarque | Pierre Sportouch | cpierrestyle@gmail.com ✅ | 445242027 | 7/10 | BROUILLON | Email confirmé via annuaires. 20 rue Lafayette. Mode multimarque indépendant. |
+| L'IDEE (LIDÉ) | Carmes/Puits Clos | Concept store cadeaux/design/déco | [gérant non identifié] | contact@lideetoulouse.fr ✅ | 514495159 | 7/10 | BROUILLON | Email confirmé via lideetoulouse.fr. 21 rue des Puits Clos. Concept store cadeaux/déco/design. Gérant non identifié publiquement. |
+| OPTIC DU CAP (R.E.J.L OPTIQUE) | Lafayette | Optique | Akil Manjoo | contact@opticducap.fr ✅ | 502251531 | 7/10 | BROUILLON | Email confirmé via opticducap.fr/contact/. 5 rue Lafayette. Opticien indépendant spécialité progressifs. |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Notes |
+|---|---|---|---|
+| BIJOUTERIE MEDINA | 901661793 | 47 bd de Strasbourg | Bijouterie indépendante. Tél 06 02 85 84 31 / 09 81 07 34 19. Site bijouteriemedina.com actif, WhatsApp actif. Aucun email public. 1er passage. |
+| MERIC CONCEPT STORE (EJL) | 938673183 | 24 place des Carmes | Mode bébé/enfants, gérant Marc Lemire. Tél 05 61 14 15 01. @mericboutique Instagram. Aucun email public. 1er passage. |
+| LA PLUME ROSE (SARL AMBIANCE ET DECORATION) | 424874147 | 2 rue Rémusat | Stylos/couteaux/maroquinerie/montres, gérant Emmanuel Grosset. Tél 05 62 89 55 58. Site laplumerose-31.com (503 actuellement). 1er passage. |
+
+**Écartées session 18/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| TULIPE ROSE | 899938310 | Dissoute juin 2025 (TUP absorbée NELLE SAS). ÉCARTÉE DÉFINITIF. 7 rue Lafayette. |
+| VINGT ET UN GRAMMES / 21G | 519251425 | Radiée octobre 2024. ÉCARTÉE DÉFINITIF. 21 rue Lafayette. |
+| LE SHOWROOM | 517797288 | Radiée, fermée depuis 2012. ÉCARTÉE DÉFINITIF. Place Rouaix. |
+| SA POMME | 660802703 | Franchise KENZO, dissoute 2014, radiée 2018. ÉCARTÉE DÉFINITIF. 31 rue Lafayette. |
+| QUETZAL | 805369113 | Radiée novembre 2017. ÉCARTÉE DÉFINITIF. 38 rue du Taur. |
+| AMNESYA / EJL UNITED | 905349072 | Boutique CBD/CBG — hors cible Two-Step. ÉCARTÉE. 12 bd Lazare Carnot. |
+| CITY SPORT | 447649898 | FERMÉE (Yelp mis à jour fév 2025). ÉCARTÉE DÉFINITIF. 10 bd Strasbourg. |
+| O TOULOUSE | 994111961 | Boutique souvenirs occitans — hors cible Two-Step. ÉCARTÉE. 13 rue du Taur. |
+| CRISTAL BIJOUX | 487544553 | Rachat d'or/réparation bijoux — hors cible Two-Step. ÉCARTÉE. 61 bd Strasbourg. |
+
+**⚠️ Notion MCP indisponible (38e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (38e session consécutive) — aucun brouillon créé.**
+
+*Note session 18/07 (L'Eclaireur) : Saint-Cyprien ÉPUISÉ DÉFINITIF depuis 15/05. Zone Wilson/Lafayette/Strasbourg très épuisée — majorité des candidats JSON déjà dans le tracker ou radiés. 3 emails confirmés sur ~30 candidats investigués. C'PIERRE STYLE (mode multimarque), OPTIC DU CAP (optique, cas d'usage fort), L'IDEE (concept store). 3 NOUVEAU terrain sans email. 9 écartées dont 6 radiées/fermées définitivement. Territoire du vendredi à repenser — envisager extension vers Guilhemery, Bonnefoy ou Roseraie pour les prochaines sessions. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Wilson-Lafayette 2026-07-18".*
+
+---
+
+### Jeudi — 2026-07-17 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi) → poursuite session 03/07 — nouveaux candidats rue Croix Baragnon, rue Cujas, rue Languedoc, place Rouaix, rue Puits Clos
+
+**Note de session :** Suite des investigations Carmes sur toulouse-merchants-full.json. Focus rue Croix Baragnon (5 boutiques) + rue Cujas (2 boutiques) + optique (2) + déco (1). **10 emails confirmés.** 2 NOUVEAU terrain (sans email). Nombreuses écartées (fermées, hors cible). Notion MCP indisponible (37e session consécutive). Gmail MCP indisponible (37e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| IMAGIN OPTIQUE | Carmes/Puits Clos | Optique | Lucie Chalvignac-lesurf | imaginoptique@hotmail.fr ✅ | 840599690 | 9/10 | BROUILLON | Email confirmé via annuaires. 18 rue des Puits Clos. Opticien indépendant — cas d'usage parfait Two-Step. |
+| UPPER (LE BOUIF) | Carmes/Croix Baragnon | Chaussures | Didier Foissard | upper.toulouse@gmail.com ✅ | 501490395 | 9/10 | BROUILLON | Email confirmé via annuaires. 22 rue Croix Baragnon. Chaussures/sneakers — segment clé Two-Step. |
+| OPTIQUE ROUAIX (LABOPTIQUE) | Carmes/Rouaix | Optique | Bastien Picot | optiquerouaix@gmail.com ✅ | 539613117 | 9/10 | BROUILLON | Email confirmé via opticien-toulouse-carmes.com. 1 place Rouaix. Opticien indépendant depuis 1953 — cas d'usage parfait Two-Step. |
+| JOAILLERIE PIQUEMAL-BARON | Carmes/Croix Baragnon | Bijouterie | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com ✅ | 488302654 | 8/10 | BROUILLON | Email confirmé via site joailleriepiquemalbaron.com. 27 rue Croix Baragnon. Bijouterie indépendante. |
+| DANYBERD | Carmes/Croix Baragnon | Mode homme multimarque | Jean-Luc Gales | toulouse@dnbstores.com ✅ | 480974716 | 8/10 | BROUILLON | Email confirmé via dnbstores.com. 19 rue Croix Baragnon. Multi-marques mode homme (DNB stores). |
+| ATYPIQUE Concept Store | Carmes/Croix Baragnon | Concept store | Christine Souloumiac | contact@atypiquetoulouse.com ✅⚠️ | 453643884 | 7/10 | BROUILLON | Email confirmé via Cylex. 11 rue Croix Baragnon. Concept store multimarque. ⚠️ À vérifier terrain (email inféré via Cylex). |
+| DORISE JOAILLIER | Carmes/Croix Baragnon | Bijouterie haute gamme | Edouard Dorise | id@dorise-joaillier.com ✅ | 300485133 | 7/10 | BROUILLON | Email confirmé via dorise-joaillier.com. 41 rue Croix Baragnon. Joaillier indépendant. |
+| FIFI JOLIPOIS | Carmes/Cujas | Bijouterie fantaisie | Léa Dunogue | lea.fifijolipois@gmail.com ✅ | 523883262 | 7/10 | BROUILLON | Email confirmé via annuaires. 11 rue Cujas. Bijouterie fantaisie indépendante. |
+| LA LOGE DU CONCIERGE | Carmes/Languedoc | Déco/Cadeaux | Peggy Delater | lalogeduconcierge@gmail.com ✅ | 949308993 | 6/10 | BROUILLON | Email confirmé via annuaires. 14 rue du Languedoc. Déco et cadeaux — segment secondaire. |
+| MADEMOISELLE NUAGE | Carmes/Cujas | Bijouterie fantaisie créatrice | Pauline David | contact@mademoisellenuage.fr ✅ | 897936191 | 5/10 | BROUILLON | Email confirmé via mademoisellenuage.fr. 15 rue Cujas. ⚠️ NAF 3213Z (fabrication) — bijoux faits-main, pas retail multimarque. Cas borderline Two-Step (stock boutique visible mais sans EAN). |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Notes |
+|---|---|---|---|
+| TOULOUSE MONTRES | 905343240 | 10 rue Pierre de Fermat | Horlogerie indépendante, site toulouse-montres.com actif mais aucun email public. Visite terrain. |
+| SEPTEMBRE 55 | 984902536 | 12 place des Puits Clos | Mode femme récent (2025), site septembre55.com actif mais aucun email public. Visite terrain. |
+
+**Écartées session 17/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| ROBE ELYSEE | 927564393 | Boutique robes de mariée (sur RDV, showroom privé) — hors cible Two-Step. ÉCARTÉE. |
+| LA FILLE DE MARGARET | 520610593 | Société ROYA cessation d'activité mars 2026. Boutique fermée. ÉCARTÉE DÉFINITIF. |
+| ESTHER MICHELE | 818920985 | Impossible à localiser — adresse 35 rue Croix Baragnon occupée par ATELIER 35 (retouches). Probablement fermée. ÉCARTÉE. |
+| RICE AND BEANS | — | Fermé février 2026 (Yelp). ÉCARTÉE DÉFINITIF. |
+| BAOBAB | — | Boutique décoration/artisanat espagnol — hors segment Two-Step (artisan, pas produits de marque). ÉCARTÉE. |
+
+**⚠️ Notion MCP indisponible (37e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (37e session consécutive) — aucun brouillon créé.**
+
+*Note session 17/07 (L'Eclaireur) : Suite Carmes toulouse-merchants-full.json. Rue Croix Baragnon largement investiguée (5 boutiques actives avec email confirmé). 2 opticiens indépendants à forte valeur Two-Step (IMAGIN OPTIQUE + OPTIQUE ROUAIX). UPPER = chaussures multimarques, segment prioritaire. 30+ candidats investigués, 5 écartées définitives. Scores prioritaires pour L'Auditeur : IMAGIN OPTIQUE 9/10, UPPER 9/10, OPTIQUE ROUAIX 9/10, JOAILLERIE PIQUEMAL-BARON 8/10, DANYBERD 8/10. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-17".*
+
+---
+
+## Recap brouillons email — 2026-07-18 (L'Auditeur)
+
+**Agent** : L'Auditeur | **Statut** : ⚠️ Brouillons rédigés — NON CRÉÉS Gmail (38e session consécutive) | **Notion** : NON CRÉÉ (38e session)
+
+**Source leads** : Session L'Eclaireur 17/07 — Carmes. Top 5 traités (scores 7-9/10). Fichier brouillons : `docs/prospection/brouillons/brouillons-email-2026-07-18.md`
+
+| # | Boutique | Gérant | Email | Objet | Fichier | Statut |
+|---|---|---|---|---|---|---|
+| 1 | IMAGIN OPTIQUE | Lucie Chalvignac-lesurf | imaginoptique@hotmail.fr | Lucie, tes Moscot et Caroline Abram trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 2 | UPPER (LE BOUIF) | Didier Foissard | upper.toulouse@gmail.com | Didier, tes Church's et Crockett & Jones trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 3 | OPTIQUE ROUAIX | Bastien Picot | optiquerouaix@gmail.com | Bastien, tes montures Shelter et Emmanuelle Khanh trouvées par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 4 | JOAILLERIE PIQUEMAL-BARON | Catherine Piquemal-baron | contact@joailleriepiquemalbaron.com | Catherine, tes Rolex et Patek d'occasion trouvés par les Toulousains ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+| 5 | DORISE JOAILLIER | Edouard Dorise | id@dorise-joaillier.com | Edouard, ton stock de joaillerie visible sur Google en temps réel ? | brouillons-email-2026-07-18.md | ⚠️ NON CRÉÉ Gmail |
+
+⚠️ **DANYBERD écarté** : Recherche web confirme marque propre nationale (DNB Stores — 9+ établissements FR + Genève + e-commerce Shopify actif). Hors cible Two-Step (chaîne >5 établissements, marque propre). Remplacé par DORISE JOAILLIER (7/10, email id@dorise-joaillier.com confirmé).
+
+**⚠️ BLOCAGE CRITIQUE TOKEN GMAIL : 38e session consécutive sans création de draft (11/06 → 18/07). ~146 brouillons en attente. ACTION URGENTE THOMAS : Settings → Integrations → Gmail → re-autoriser l'accès OAuth. Brouillons du jour : `docs/prospection/brouillons/brouillons-email-2026-07-18.md`** Notion MCP indisponible (38e session consécutive).
+
+*Note session 18/07 (L'Auditeur) : 5 leads BROUILLON traités depuis session 17/07 (IMAGIN OPTIQUE, UPPER, OPTIQUE ROUAIX, JOAILLERIE PIQUEMAL-BARON, DORISE JOAILLIER). Recherches web effectuées : IMAGIN OPTIQUE = opticien créateurs haut de gamme (Moscot/Thierry Lasry/Masunaga/Caroline Abram — aucun concurrent direct centre-ville), UPPER = chaussures masculines premium (Church's/Crockett & Jones/Santoni — cordonnerie agréée), OPTIQUE ROUAIX = 70 ans place Rouaix, membres "Opticiens par Conviction" (Shelter/Emmanuelle Khanh/Vanni — éco-responsable), JOAILLERIE PIQUEMAL-BARON = 40 ans, spécialiste montres luxe d'occasion (Rolex/Patek/AP/VC — listées sur Chrono24), DORISE JOAILLIER = joaillier indépendant rue Croix Baragnon (email id@ confirmé). Gmail OAuth expiré (38e session). Notion MCP indisponible (38e session).*
+
+---
 
 ## Recap brouillons email — 2026-07-16 (L'Auditeur)
 
