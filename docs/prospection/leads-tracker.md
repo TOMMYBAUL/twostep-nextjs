@@ -1,16 +1,56 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-18 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-20 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 262
-- NOUVEAU : 72
+- Total leads : 272
+- NOUVEAU : 75
 - CONTACTE : 1
-- BROUILLON : 161
+- BROUILLON : 168
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-20 (L'Eclaireur) — Capitole reliquat (top-prospects-centre.json) — 7 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) — reliquat top-prospects-centre.json (entrées non tracées individuellement lors des passes précédentes malgré flag "épuisé 75/75")
+
+**Note de session :** Capitole rouvert malgré flag "épuisé 75/75" depuis 22/06 — analyse croisée JSON/tracker révèle ~20 entrées jamais investiguées individuellement. **7 emails confirmés.** 3 NOUVEAU terrain (sans email). 5 écartées + 1 doublon potentiel. Notion MCP indisponible (39e session consécutive). Gmail MCP indisponible (39e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| SUD OUEST WATCH SA (BIJOUTERIE DU CAPITOLE) | Capitole | Horlogerie-bijouterie | Gaston Gayet | sud-ouest-watch@orange.fr ✅ | 319722302 | 9/10 | BROUILLON | Email confirmé via bijouterie-du-capitole.fr. 12 place du Capitole. Horlogerie-bijouterie indépendante depuis 1840, place iconique. |
+| IMAGINE | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | imaginefantaisie@orange.fr ✅ | 393981394 | 8/10 | BROUILLON | Email confirmé via imaginebijoux.fr. 40 rue de la Pomme. Bijouterie fantaisie indépendante depuis >25 ans. |
+| SARL PERLIN'S | Capitole | Bijouterie-joaillerie | Sylvie Schmitt | perlin-s@orange.fr ✅ | 326727633 | 8/10 | BROUILLON | Email confirmé via perlins.fr. 49 rue de la Pomme. Bijouterie-joaillerie indépendante depuis 1983. |
+| SAOYA | Capitole | Bijouterie fantaisie | Arnaud Turbe | saoyatoulouse@orange.fr ✅ | 823051180 | 7/10 | BROUILLON | Email confirmé via saoya.fr. 17 rue d'Alsace Lorraine. Bijouterie fantaisie indépendante depuis 1991. |
+| LES CUIRS DU SUD | Capitole | Maroquinerie / Prêt-à-porter | Eric Gautrand | lescuirsdusud@aol.com ✅ | 419643291 | 7/10 | BROUILLON | Email confirmé via annuaires. 45 rue des Tourneurs. Maroquinerie/cuirs/prêt-à-porter indépendant depuis plusieurs décennies. |
+| L'ISLA NOVA | Capitole | Concept store multimarques | Léa Palacin-Noblet | contact@lisla-nova.fr ✅ | 819913187 | 7/10 | BROUILLON | Email confirmé via lisla-nova.fr. 36 rue des Tourneurs. Concept store créateurs français et locaux. ⚠️ Adresse légale gérant = L'Isle-en-Dodon — boutique physique à confirmer terrain. |
+| ARSENE ET LES PIPELETTES | Capitole | Mode enfant multimarques | Helene Rieunier | sav@arseneetlespipelettes.com ✅ | 809552359 | 6/10 | BROUILLON | Email confirmé via arseneetlespipelettes.com. 25 rue de Metz. Mode enfant multimarques. ⚠️ Email SAV — à confirmer si contact direct gérant. |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Gérant | Notes |
+|---|---|---|---|---|
+| NEGREVERGNE | 540800240 | 27 rue de Metz | Geraldine Casanovas | Maroquinerie/bagages depuis 1954. Site negrevergne.fr — formulaire uniquement (page /contact 404). Score 7/10. Visite terrain prioritaire. |
+| KATHY.B / BOUTIQUE AU 44 | 882609688 | 44 rue de Metz | Catherine Ballias | Mode femme créateurs, site boutiqueau44.fr — formulaire uniquement. Score 6/10. Visite terrain. |
+| MANOUSHKA | 814281812 | 53 rue de la Pomme | Dominique Sellem | Mode femme (aussi listée "Noushka"). FB "Magasin Éphémère" ⚠️ — active en 2025. Score 5/10. Visite terrain. |
+
+**Écartées session 20/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| PAYOTE | 912767100 | Mono-marque espadrilles Payote Made in France — hors cible Two-Step. ÉCARTÉE. 58 rue des Tourneurs. |
+| COMEBACK | 901868729 | Introuvable au 47 rue de la Pomme (JB Martin à cette adresse). Boutique fermée ou déménagée. ÉCARTÉE DÉFINITIF. |
+| TILL/TILLAMY | 401862255 | Mono-marque chaussures enfants Bellamy — hors cible Two-Step. ÉCARTÉE. |
+| TOVLI | 751393331 | Société fermée en avril 2015. ÉCARTÉE DÉFINITIF. |
+| RECOVERY PROJECT | 940957483 | Opposition commerciale déclarée sur pappers.fr. ÉCARTÉE DÉFINITIF. |
+| N À L'INFINI | 817911969 | Website bijouterie-toulouse-nougues.fr DOWN (ENOTFOUND). Partage contact avec BIJOUTERIE NOUGUES déjà dans le tracker — risque doublon. À investiguer terrain si contact NOUGUES ne répond pas. |
+
+**⚠️ Notion MCP indisponible (39e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (39e session consécutive) — aucun brouillon créé.**
+
+*Note session 20/07 (L'Eclaireur) : Capitole rouvert malgré flag "épuisé 75/75" — analyse croisée JSON/tracker révèle des entrées jamais vérifiées individuellement (rejet groupé sans investigation). 7 emails confirmés sur ~16 candidats. Top : SUD OUEST WATCH SA (horlogerie 1840, place du Capitole, 9/10). Segment bijouterie/joaillerie surreprésenté (4/7) — L'Auditeur diversifiera. Terrain prioritaire : NEGREVERGNE (maroquinerie depuis 1954, 7/10). 5 écartées définitives dont TOVLI (fermé 2015) et RECOVERY PROJECT (opposition commerciale). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-07-20".*
+
+---
 
 ### Vendredi — 2026-07-18 (L'Eclaireur) — Saint-Cyprien ÉPUISÉ → Rattrapage Wilson/Lafayette/Carmes — 3 emails confirmés
 
