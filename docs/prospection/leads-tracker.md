@@ -1,16 +1,64 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-20 (L'Eclaireur + L'Auditeur)*
+*Derniere mise a jour : 2026-07-21 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 272
-- NOUVEAU : 75
+- Total leads : 286
+- NOUVEAU : 84
 - CONTACTE : 1
-- BROUILLON : 168
+- BROUILLON : 173
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-21 (L'Eclaireur) — Capitole reliquat suite (top-prospects-centre.json) — 5 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi) — poursuite reliquat top-prospects-centre.json (entrées non tracées depuis sessions précédentes)
+
+**Note de session :** Continuation de la passe Capitole du 20/07. ~25 candidats investigués. **5 emails confirmés** via sites officiels, annuaires, page contact et répertoires stockistes. 10 ÉCARTÉES (liquidées, chaînes, hors cible). 9 NOUVEAU terrain (aucun email public trouvé). Segments : chaussures de marque (2), mode/concept store (2), maroquinerie/accessoires (1). Notion MCP indisponible (40e session consécutive). Gmail MCP indisponible (40e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| MEPHISTO (DEJEAN) | Capitole | Chaussures | Isabelle Dejean | contact@mephisto-chaussures-dejean.com ✅ | 690801311 | 8/10 | BROUILLON | Email confirmé via mephisto-chaussures-dejean.com. 30 rue de Metz. Revendeur multimarques chaussures (Mephisto, etc.) indépendant. |
+| MODI-IN | Capitole | Mode/Vêtements | Celine Tobalaim | contact@modi-in.com ✅ | 404952335 | 7/10 | BROUILLON | Email confirmé via modi-in.com. 36 rue d'Alsace Lorraine. Mode multimarques indépendant. |
+| LE QUOTIDIEN STORE | Capitole | Concept store | Fatima Meric | lequotidienconceptstore@gmail.com ✅ | 831045687 | 7/10 | BROUILLON | Email confirmé via annuaires/search. 47 rue de la Pomme. Concept store mode/accessoires indépendant. |
+| BIAS | Capitole | Mode/Déco concept store | Laura Noailles | laura.noailles@bias-conceptstore.fr ✅ | 980131718 | 7/10 | BROUILLON | Email confirmé via maisonsactuelle.com article + annuaires. 2 rue Paul Vidal. Concept store expérientiel mode+déco, ouvert 2026. Site bias-conceptstore.fr. IG @bias.cst. |
+| LEWIS | Capitole | Maroquinerie/Accessoires luxe | Thierry Chan | contact@lewisconcept.com ✅ | 947856100 | 6/10 | BROUILLON | Email confirmé via lewisconcept.com (page contact). 21 rue d'Alsace Lorraine. Concept store maroquinerie + objets d'exception (S.T. Dupont, Lancel, Lancaster). |
+
+**NOUVEAU terrain (sans email) :**
+| Boutique | SIREN | Adresse | Gérant | Notes |
+|---|---|---|---|---|
+| CHAUSSURES MANIK | 730801248 | 33 rue d'Alsace Lorraine | Pierre Lacabanne | Chaussures multimarques. Site manik.fr actif — tél uniquement (05 61 21 52 08). Aucun email public. Visite terrain. |
+| SERHA | 532946712 | 37 rue de Metz | Nathalie Serfati | Chaussures (Hoodspot confirmé). Tél 05 31 15 02 34. Aucun email public, aucun site. Visite terrain. |
+| EDEN | 810994947 | 42 rue de la Pomme | Jean-Jacques Ghebali | Chaussures (Yelp déc. 2025 actif). Tél 09 75 95 09 25. Aucun email public. Visite terrain. |
+| PAMPY | 997769906 | 11 rue de la Pomme | Juliette Marciano | Mode femme. pampy.com = domaine à vendre. Aucun email public. Visite terrain. |
+| SIENNE | 428969711 | 44 rue des Tourneurs | Simon Benlolo | Mode femme (Yelp juil. 2025 actif). IG @sienne.boutique uniquement. Aucun email public. Visite terrain. |
+| AMA LUNA | 812259299 | 66 rue de la Pomme | Judith Soustiel | Mode femme (co-gérante depuis janv. 2025). FB @almalunaboutique uniquement. Aucun email public. Visite terrain. |
+| BAGWOOD / ALFRED WOOD | 408176311 | 75 rue d'Alsace Lorraine | Thérèse Wood | Mode homme (ex-maroquinerie, enseigne Alfred Wood). Tél 05 61 12 14 46. Aucun email public. Visite terrain. |
+| SADIA | 918125394 | 39 rue de Bayard | Sadia Belkelfa | Mode. FB @Sadias-Boutique uniquement (sadia-boutique.com = boutique Bangladesh, hors sujet). Aucun email public. Visite terrain. |
+| BANANA-POMME | 911842607 | 28 rue de la Pomme | Eric Bitoun | Mode/Vêtements (gérant depuis avril 2022). Aucun site, aucun email public. Visite terrain. |
+
+**Écartées session 21/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| SUPER33STORE | 791020936 | Liquidée 2021. ÉCARTÉE DÉFINITIF. |
+| HERO SEVEN | 917987125 | Chaîne nationale >5 établissements (108 boutiques France). ÉCARTÉE DÉFINITIF. |
+| SHILTON | 483038006 | Marque propre rugby (28 boutiques France) — monomarque. ÉCARTÉE DÉFINITIF. |
+| LA MAISON DE L'HOMME | 890507932 | Chaîne nationale (Paris, Lyon, Strasbourg, Toulouse, Lille = ≥5 établissements). ÉCARTÉE DÉFINITIF. |
+| LEMAN | 794917666 | En redressement judiciaire depuis mars 2026 — prospect trop risqué. ÉCARTÉE. |
+| MOSQUITOS | 444997753 | Monomarque portugais (chaussures Mosquitos) — réseau propre. ÉCARTÉE DÉFINITIF. |
+| SARL ANDRIK (LAST MILE SHOP) | 789487246 | Mobilité électrique (vélos/trottinettes) — hors cible Two-Step. ÉCARTÉE DÉFINITIF. |
+| VERSO | 453313181 | Société dissoute janvier 2016. ÉCARTÉE DÉFINITIF. |
+| COMPAGNIE MERIDIONALE DE PARFUMERIE | 318908100 | Établissement Toulouse fermé mars 2026. ÉCARTÉE DÉFINITIF. |
+| DUO BOUTIQUE | 429906761 | Établissement Toulouse (12 place Esquirol) fermé — siège Agde. ÉCARTÉE DÉFINITIF. |
+
+**⚠️ Notion MCP indisponible (40e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (40e session consécutive) — aucun brouillon créé.**
+
+*Note session 21/07 (L'Eclaireur) : Suite Capitole reliquat. 5 emails confirmés sur ~25 candidats investigués. Top : MEPHISTO/DEJEAN (chaussures de marque, 8/10). BIAS concept store remarquable (ouverture 2026, article Maisons Actuelle, 7/10). LEWIS maroquinerie/objets luxe (S.T. Dupont, 6/10). 9 NOUVEAU terrain (visite physique recommandée : MANIK, SERHA, EDEN, SIENNE, AMA LUNA). 10 écartées dont 5 définitives (liquidées/dissoutes/chaînes). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-07-21".*
+
+---
 
 ### Lundi — 2026-07-20 (L'Eclaireur) — Capitole reliquat (top-prospects-centre.json) — 7 emails confirmés
 
