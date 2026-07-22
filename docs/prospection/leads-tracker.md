@@ -1,16 +1,44 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-21 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-22 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 286
-- NOUVEAU : 84
+- NOUVEAU : 82
 - CONTACTE : 1
 - BROUILLON : 173
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-07-22 (L'Eclaireur) — Saint-Rome ÉPUISÉ confirmé — 0 nouveau email
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Rome (mercredi)
+
+**Note de session :** Saint-Rome ÉPUISÉ DÉFINITIF reconfirmé. 25+ boutiques investigées, budget web subagent épuisé (200 appels). **0 nouveau email.** Tous les 6 emails identifiés aujourd'hui (ÉTOILE DE SONGE, L'ANNEXE, PAUSE, SWAP, PASSION FILLE, MW&Co/RL.COM) étaient déjà dans le tracker depuis les sessions de mai-juin 2026 — tous au statut BROUILLON. Patterns inchangés : boutiques mode/chaussures rue Saint-Rome et rue des Changes sans email public, communication exclusivement par téléphone et Instagram. Maison de la Sapp (m2lsapp.com) toujours 503. **2 nouvelles écartées découvertes** (voir ci-dessous). Notion MCP indisponible (41e session consécutive). Gmail MCP indisponible.
+
+**Écartées confirmées session 22/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| CREA CONCEPT EUROPE | 451827141 | Établissement Toulouse fermé depuis ~2010, entité mère liquidée 2023 — ÉCARTÉE DÉFINITIF. |
+| DRESSING ROSE AND KIDS | 883705923 | Signalé "Définitivement fermé" sur Hoodspot/petitesaffiches — À CONFIRMER terrain (était NOUVEAU 7/10). |
+
+**Rappel emails Saint-Rome déjà en BROUILLON (non renvoyés) :**
+| Boutique | Gérant | Email | SIREN | Score |
+|---|---|---|---|---|
+| ÉTOILE DE SONGE | Sophie Pialat | contact@etoiledesonge.fr | 842073801 | 7/10 |
+| L'ANNEXE | Nicole Busato | Busato.nicole1@gmail.com | 832046767 | 7/10 |
+| PAUSE | Jonathan Blaise | bonjour@pause-montres.fr | 985210459 | 7/10 |
+| SWAP (MICHAEL DRILHOLE CONCEPT) | Michaël Drilhole | boutiqueswap@gmail.com | 819061649 | 7/10 |
+| PASSION FILLE (LES QUATRE FILLES) | Kangle Wang | yanyun411@gmail.com | 522655141 | 6/10 |
+| RL.COM / MW&Co | Romain Mussato | contact@mwandco.com | 879698066 | 7/10 |
+
+*Ces 6 leads sont en BROUILLON — Gmail token expiré bloque l'envoi. Action requise : renouveler le token Gmail ou envoyer manuellement.*
+
+*Note : KATOUNI, FC2 BOUTIQUE, GLAM SHOES BK vérifiés 3e+ fois — aucun email public (résultats agents en cours de confirmation). Saint-Rome = ÉPUISÉ DÉFINITIF, recommandation : passage terrain pour les NOUVEAU restants.*
+
+---
 
 ### Lundi — 2026-07-21 (L'Eclaireur) — Capitole reliquat suite (top-prospects-centre.json) — 5 emails confirmés
 
