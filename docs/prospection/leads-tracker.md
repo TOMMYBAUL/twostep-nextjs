@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-21 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-22 (L'Auditeur)*
 
 ## Stats
 - Total leads : 286
@@ -11,6 +11,25 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-07-22 (L'Auditeur) — 5 brouillons email rédigés
+
+**Agent** : L'Auditeur | **Mission** : Rédaction emails personnalisés pour leads BROUILLON avec email confirmé
+
+**Note de session :** 5 emails ACA rédigés et sauvegardés dans `docs/prospection/brouillons/brouillons-2026-07-22.md`. Leads sélectionnés sur critère score + email confirmé + pas de brouillon Gmail existant (sessions 20-22/07). Gmail MCP indisponible (41e session consécutive) — brouillons à envoyer manuellement depuis bauland@twostep.fr. Notion MCP indisponible (41e session consécutive).
+
+| Boutique | Gérant | Email | Objet | Score | Action |
+|---|---|---|---|---|---|
+| SUD OUEST WATCH SA | Gaston Gayet | sud-ouest-watch@orange.fr | Ton stock Lalique visible sur Google | 9/10 | À envoyer |
+| UPPER (Le Bouif) | Didier Foissard | upper.toulouse@gmail.com | Ton Santoni et Church's visible sur Google | 9/10 | À envoyer |
+| IMAGIN OPTIQUE | Lucie Chalvignac-lesurf | imaginoptique@hotmail.fr | Tes Moscot et Thierry Lasry visibles sur Google | 9/10 | À envoyer |
+| BIAS | Laura Noailles | laura.noailles@bias-conceptstore.fr | Ton stock de créateurs visible sur Google | 7/10 | À envoyer |
+| LEWIS | Thierry Chan | contact@lewisconcept.com | Ton stock S.T. Dupont visible sur Google | 6/10 | À envoyer |
+
+**⚠️ Gmail MCP indisponible (41e session consécutive) — brouillons dans le fichier, à envoyer manuellement.**
+**⚠️ Notion MCP indisponible (41e session consécutive) — récap dans le tracker uniquement.**
+
+---
 
 ### Lundi — 2026-07-21 (L'Eclaireur) — Capitole reliquat suite (top-prospects-centre.json) — 5 emails confirmés
 
