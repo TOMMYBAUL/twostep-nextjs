@@ -1,16 +1,54 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-22 (L'Auditeur)*
+*Derniere mise a jour : 2026-07-23 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 286
+- Total leads : 296
 - NOUVEAU : 84
 - CONTACTE : 1
-- BROUILLON : 173
+- BROUILLON : 183
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-23 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi) → 4e session Carmes — nouveaux candidats rues Filatiers, Croix Baragnon, Boulbonne, Perchepinte, Puits Clos (toulouse-merchants-full.json)
+
+**Note de session :** Carmes épuisé depuis le 19/06 dans top-prospects-centre.json (26/26 traités). Session 23/07 poursuit l'exploitation de toulouse-merchants-full.json, filtré sur noms de rues Carmes + NAF 47.* + gérant identifié. 4 vagues de recherches sur ~26 candidats. **10 emails confirmés.** Zone fortement épuisée — nombreuses boutiques fermées/liquidées retrouvées. 5 écartées définitives (fermetures 2013-2022). Notion MCP indisponible (42e session consécutive). Gmail MCP indisponible (42e session consécutive).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| L.R.B.J (RIEUNIER JOAILLIERS HORLOGERS) | Carmes | Bijouterie/Horlogerie | Laurent Rieunier | rieunier.joailliers.horlogers@gmail.com ✅ | 483989182 | 10/10 | BROUILLON | Email confirmé via rieunier-joailliers.com/contact/. 22 rue Croix Baragnon. Joaillier-horloger indépendant, présence multi-marques confirmée. |
+| MINIMA | Carmes | Déco/Maison | Marie Perez | hello@minima-shop.com ✅ | 989365747 | 10/10 | BROUILLON | Email confirmé via minima-shop.com. 32 rue des Filatiers. Boutique déco/maison multi-marques indépendante. |
+| LE MAITRE MESURE | Carmes | Mode homme sur-mesure | Gregory Baron | contact@maitremesure.com ✅ | 890241078 | 9/10 | BROUILLON | Email confirmé via maitremesure.com/contact. 10 rue Croix Baragnon. Tailleur sur-mesure indépendant, stocks de marques tissu/confection. |
+| MAX OPTIC | Carmes | Optique | Maxime Levy | contact@maxoptic.fr ✅ | 452349129 | 9/10 | BROUILLON | Email confirmé via maxoptic.fr. 45 rue Boulbonne. Opticien indépendant multimarques. |
+| LILITH (LILYAKÉ) | Carmes | Mode femme multimarque | Gilles Andre | contact@lilyake.com ✅ | 831401260 | 9/10 | BROUILLON | Email confirmé via lilyake.com/contact/. 15 rue Croix Baragnon. Mode femme multimarque indépendant. |
+| MASKOTTE | Carmes | Animalerie haut de gamme | Flovia Busato | contact@maskotte-store.fr ✅ | 948385398 | 9/10 | BROUILLON | Email confirmé via maskotte-store.fr/contact. 12 rue Perchepinte. ⚠️ HORS SEGMENT CIBLE (animalerie) — à valider Thomas avant contact. |
+| MATSAI MARA | Carmes | Bijoux marque propre | Mathilde Careil | hello@matsai-mara.com ✅ | 504776931 | 8/10 | BROUILLON | Email confirmé via matsai-mara.com. 25 rue Boulbonne. ⚠️ Marque propre (créatrice Bordeaux), tenu par employée à Toulouse — confirmation physique recommandée. |
+| OPTIQUE VALES | Carmes | Optique | Jacques Vales | magasinboulbonne@optiquevales.fr ✅ | 312826639 | 7/10 | BROUILLON | Email confirmé via toulouseproximite.fr. 29 rue Boulbonne. Opticien indépendant depuis 1963. |
+| BAOBAB | Carmes | Mode/Déco | Christophe Chopin | contact@baobab-home.fr ✅ | 811166578 | 6/10 | BROUILLON | Email confirmé via baobab-home.fr. 15 rue Croix Baragnon. ⚠️ Marque belge, siège Paris — établissement Toulouse à confirmer. |
+| EMPIRE | Carmes | Sport/Streetwear | Remi Maurieres | hello@empr.store ✅ | 507442788 | 6/10 | BROUILLON | Email confirmé via empr.store. 4 rue des Puits Clos. ⚠️ Siège Pau, établissement secondaire Toulouse — indépendant local à confirmer. |
+
+**NOUVEAU terrain (sans email) :**
+Aucun candidat actif sans email identifié cette session — zone Carmes très épuisée sur toulouse-merchants-full.json. Prochaine session Carmes à orienter vers rues périphériques (Languedoc nord, Pharaon, Ozenne).
+
+**Écartées session 23/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| APOSTROPHE RJC | — | Boutique fermée depuis 2013. ÉCARTÉE DÉFINITIF. Rue Filatiers. |
+| AGATHE ET ZOE | — | Boutique fermée ~2015. ÉCARTÉE DÉFINITIF. Carmes. |
+| CONTACT'O | — | Boutique fermée 2017. ÉCARTÉE DÉFINITIF. Carmes. |
+| ROBERTO GIANNELLI | — | Boutique Toulouse fermée mai 2022. ÉCARTÉE DÉFINITIF. |
+| HERVE MARIAGE | — | Liquidation judiciaire juin 2022. ÉCARTÉE DÉFINITIF. |
+
+**⚠️ Notion MCP indisponible (42e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (42e session consécutive) — aucun brouillon créé.**
+
+*Note session 23/07 (L'Eclaireur) : 4e session Carmes, 2e sur toulouse-merchants-full.json. 10 emails confirmés sur ~26 candidats investigués (4 vagues). Top : RIEUNIER JOAILLIERS (bijouterie/horlogerie, 10/10) et MINIMA (déco, 10/10). Optique bien représenté (MAX OPTIC + OPTIQUE VALES). ⚠️ MASKOTTE (animalerie) hors segment cible — à valider Thomas avant que L'Auditeur rédige. Zone Carmes très épuisée — prévoir extension vers rues périphériques ou basculer quartier. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-23".*
+
+---
 
 ### Mercredi — 2026-07-22 (L'Auditeur) — 5 brouillons email rédigés
 
