@@ -48,6 +48,8 @@ GLORIEUX LUNETIERS (34 rue Languedoc), GREELOO CONCEPT (43 rue Pharaon), LES DES
 
 *Note session 24/07 (L'Eclaireur) : 5e session Carmes — ÉPUISEMENT TOTAL CONFIRMÉ. ~50 candidats investigués sur 8 rues (Languedoc, Pharaon, Ozenne, Croix Baragnon, Bouquières, Saint-Pantaléon, Polinaires, Arts). Quasi-totalité déjà tracés depuis mai-juillet. 1 seul vrai nouveau : VIOLETTES ET PASTELS (cadeaux/Esteban, 5/10). **RECOMMANDATION FORTE : abandonner Carmes pour le jeudi, pivoter sur Guilhemery, Bonnefoy, ou Roseraie.** Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-24".*
 
+*Note session 24/07 (L'Auditeur) : 5 brouillons email rédigés sur leads BROUILLON sessions 23-24/07 (scores 9-10/10). Recherche web effectuée : Laurent Rieunier (expert judiciaire, Rolex/Patek pré-owned), Marie Perez/Minima (artisans espagnols, ouverture fin 2025), Gregory Baron/Maître Mesure (Loro Piana/Dormeuil/Scabal, 3000+ tissus), Maxime Levy/Max Optic (Tom Ford/Lesca/Izipizi), Gilles Andre/Lilyaké (RAGA Designs, anti-fast fashion). Fichier : docs/prospection/brouillons/brouillons-email-2026-07-24.md. Gmail MCP indisponible (43e session consécutive). Notion MCP indisponible (43e session consécutive).*
+
 ---
 
 ### Jeudi — 2026-07-23 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
