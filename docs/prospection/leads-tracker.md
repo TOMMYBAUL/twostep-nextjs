@@ -1,16 +1,54 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-23 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-24 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 296
+- Total leads : 297
 - NOUVEAU : 84
 - CONTACTE : 1
-- BROUILLON : 183
+- BROUILLON : 184
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-24 (L'Eclaireur) — Carmes 5e session ZONE ÉPUISÉE — 1 email confirmé
+
+**Agent** : L'Eclaireur | **Quartier** : Carmes (jeudi) → 5e session Carmes — rues Languedoc (nord), Pharaon, Ozenne, Croix Baragnon (périphérique), Bouquières, Saint-Pantaléon, des Arts (toulouse-merchants-full.json)
+
+**Note de session :** ZONE CARMES ÉPUISÉE DÉFINITIVEMENT. ~50 candidats investigués sur 8 rues périphériques. Résultat : quasi-totalité des boutiques trouvées DÉJÀ DANS LE TRACKER depuis des sessions antérieures (17/07, sessions mai-juin) — GLORIEUX LUNETIERS, GREELOO CONCEPT, LES DESSOUS CHICS, DO MY SHOES, DORYANN, LE BOUDOIR DE PAULETTE, PIQUEMAL-BARON, DORISE, RIEUNIER, UPPER, MAISON ET CHIFFONS tous déjà présents. **1 seul email réellement nouveau : VIOLETTES ET PASTELS.** Nombreuses boutiques fermées/liquidées/galeries d'art. Notion MCP indisponible (43e session consécutive). Gmail MCP indisponible (43e session consécutive). **→ DÉCISION : basculer le jeudi sur un autre quartier dès la semaine prochaine.**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| VIOLETTES ET PASTELS | Carmes/Saint-Pantaléon | Cadeaux/Art de vivre | Benoit Lhommeau | violettesetpastels@orange.fr ✅ | 802889956 | 5/10 | BROUILLON | Email confirmé via revendeurs.esteban.fr. 10 rue Saint-Pantaléon. Boutique cadeaux/parfums d'ambiance, revendeur Esteban (marque). 1 ét., actif depuis 2014. |
+
+**Boutiques redécouvertes (déjà dans tracker — non comptabilisées) :**
+GLORIEUX LUNETIERS (34 rue Languedoc), GREELOO CONCEPT (43 rue Pharaon), LES DESSOUS CHICS (29 rue Languedoc), DO MY SHOES (7 rue des Arts), DORYANN (19 rue Bouquières), LE BOUDOIR DE PAULETTE (27 rue Languedoc), JOAILLERIE PIQUEMAL-BARON (27 rue Croix Baragnon), DORISE JOAILLIER (41 rue Croix Baragnon), RIEUNIER JOAILLIERS (22 rue Croix Baragnon), UPPER (22 rue Croix Baragnon), MAISON ET CHIFFONS (41 rue Languedoc — ÉCARTÉE), POINTURE (23 rue Boulbonne — ÉCARTÉE).
+
+**Écartées session 24/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| MJ CONCEPT STORE / UNION STYLE | — | Liquidation judiciaire 2021. ÉCARTÉE DÉFINITIF. Rue Ozenne. |
+| 31KARA | — | CBD/cannabis légal — hors cible Two-Step. Rue Ozenne. |
+| EIGHT BALL / OMEA | — | Fournitures graffiti/peinture — hors cible Two-Step. Rue Pharaon. |
+| DCVD / V DE VINSTER | — | Monomarque, 46 boutiques France (chaîne). ÉCARTÉE DÉFINITIF. |
+| LE CONFORT DES ETRANGES | 447640194 | Galerie d'art. ÉCARTÉE DÉFINITIF. 33 rue des Polinaires. |
+| E.MATHIEU | 421115817 | Articles religieux (croix, statues, santons) — hors cible. 13 rue Croix Baragnon. |
+| GALERIE SCHANEWALD | 833402118 | Galerie d'art. ÉCARTÉE. 15 rue Croix Baragnon. |
+| SAKAH GALERIE | 510802770 | Galerie d'art. ÉCARTÉE. 7 rue Croix Baragnon. |
+| ASSAS JP | 313455909 | Fermée depuis 1999. ÉCARTÉE DÉFINITIF. 28 rue Croix Baragnon. |
+| LE SABBLIER | 481827939 | Liquidée juin 2024. ÉCARTÉE DÉFINITIF. 24 rue Sainte-Ursule. |
+| UNBOTTLED TOULOUSE | 987834645 | Franchise corporate (holding UNBOTTLED) — chaîne. ÉCARTÉE. |
+| POINDRELLE | 324454735 | Liquidateur. ÉCARTÉE DÉFINITIF. 15 rue des Arts. |
+| CREA CONCEPT EUROPE | 451827141 | Liquidation 2023 (siège Paris). ÉCARTÉE DÉFINITIF. |
+| ANNE BARON CASSIN DÉCORATIONS | 509553087 | Administrateur provisoire — liquidation en cours. ÉCARTÉE. |
+
+**⚠️ Notion MCP indisponible (43e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (43e session consécutive) — aucun brouillon créé.**
+
+*Note session 24/07 (L'Eclaireur) : 5e session Carmes — ÉPUISEMENT TOTAL CONFIRMÉ. ~50 candidats investigués sur 8 rues (Languedoc, Pharaon, Ozenne, Croix Baragnon, Bouquières, Saint-Pantaléon, Polinaires, Arts). Quasi-totalité déjà tracés depuis mai-juillet. 1 seul vrai nouveau : VIOLETTES ET PASTELS (cadeaux/Esteban, 5/10). **RECOMMANDATION FORTE : abandonner Carmes pour le jeudi, pivoter sur Guilhemery, Bonnefoy, ou Roseraie.** Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Carmes 2026-07-24".*
+
+---
 
 ### Jeudi — 2026-07-23 (L'Eclaireur) — Carmes suite (toulouse-merchants-full.json) — 10 emails confirmés
 
