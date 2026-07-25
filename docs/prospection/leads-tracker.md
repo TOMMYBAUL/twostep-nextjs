@@ -1,16 +1,53 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-24 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-25 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 297
+- Total leads : 307
 - NOUVEAU : 84
 - CONTACTE : 1
-- BROUILLON : 184
+- BROUILLON : 194
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Vendredi — 2026-07-25 (L'Eclaireur) — Bonnefoy/Minimes (pivot Saint-Cyprien ÉPUISÉ) — 10 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Bonnefoy + Minimes (vendredi → Saint-Cyprien ÉPUISÉ DÉFINITIF depuis 15/05, pivot recommandé par sessions précédentes) → rue du Faubourg Bonnefoy (31500) + avenue des Minimes (31200)
+
+**Note de session :** Saint-Cyprien ÉPUISÉ → pivot Bonnefoy/Minimes. Candidats filtrés depuis toulouse-merchants-full.json (NAF 47.*) + recherches web directes sur l'axe rue du Faubourg Bonnefoy / avenue des Minimes. **10 emails confirmés sur ~20 candidats investigués.** 7 candidats écartés (franchise Optic 2000, franchise Atol, adresse Montauban, agence pub, liquidation 2004, brasserie à l'adresse, absence web totale). Notion MCP indisponible (44e session consécutive). Gmail MCP indisponible (44e session consécutive).
+
+| Boutique | Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ESPACE OPTIQUE BONNEFOY | 21 rue du Faubourg Bonnefoy | Optique | Alain Abecassis | contact@centre-vision.fr ✅ | 484167192 | 9/10 | BROUILLON | Opticien indépendant. Site centre-vision.fr. Email via site contact. |
+| OPTIQUE CAYRET | 57 av des Minimes | Optique | Olivier Cayret | cayret.optique@free.fr ✅ | 423501303 | 9/10 | BROUILLON | Opticien indépendant, gérant éponyme. Email via annuaires. |
+| MJ OPTIC (MJ LABRUNE) | 53 rue du Faubourg Bonnefoy | Optique | MJ Labrune | contact@mjoptictendance.com ✅ | 477637391 | 9/10 | BROUILLON | Indépendant depuis 1982. Site mjoptictendance.com. |
+| FB OPTIQUE | 148 av des Minimes | Optique | François Fauvel | fboptique@orange.fr ✅ | 491647574 | 8/10 | BROUILLON | Opticien indépendant. Site fb-optique.fr. Email via annuaires. |
+| POL LE DUFF CHAUSSURES | 83 rue du Faubourg Bonnefoy | Chaussures | Laurent Le Duff | pol-le-duff.chaussures@wanadoo.fr ✅ | 327059531 | 7/10 | BROUILLON | Magasin chaussures indépendant. Site leduffchaussures.fr. |
+| GAUFRETTE ET CREATIONS | 12 av des Minimes | Mode/Bijoux/Déco | Sandrine Fraigneau | gaufrette.et.creations@gmail.com ✅ | 490174190 | 7/10 | BROUILLON | Bijoux fantaisie, vêtements femme, accessoires, déco, cadeaux. Site gaufretteetcreations.com. |
+| NAÏS (ROND'LET) | 54 rue du Faubourg Bonnefoy | Mode femme grande taille | Carole Dray | contact@nais-boutique.fr ✅ | 791034945 | 6/10 | BROUILLON | Prêt-à-porter grande taille. Site nais-boutique.fr. Spécialiste tailles 44-60. |
+| JACK'N ROLL | 28 av des Minimes | Mode/Sport | Gerard Fourcade | contact@jacknroll.fr ✅ | 839081965 | 6/10 | BROUILLON | Site jacknroll.fr. Mode urbaine/sportswear. |
+| HORTY'S FASHION | 13 rue du Faubourg Bonnefoy | Mode africaine/Cosmétiques | non identifié | hortysfashionboutique@gmail.com ✅ | 829838242 | 4/10 | BROUILLON | Wax fashion + cosmétiques + accessoires. Facebook actif. |
+| MARIAGE HARMONYA | 60 av des Minimes | Mode/Mariage | Fahima Cheurfa | contact@mariageharmonya.fr ✅ | 801362567 | 4/10 | BROUILLON | Robes de mariée + accessoires. Site mariageharmonya.fr. Niche mariage. |
+
+**Écartées session 25/07 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| CC OPTIQUE | 423043459 | Franchise Optic 2000. ÉCARTÉE DÉFINITIF. 35 av des Minimes. |
+| MCD OPTIQUE | — | Franchise Atol. ÉCARTÉE DÉFINITIF. 44 av des Minimes. |
+| CARALIS | 401732839 | Adresse réelle Montauban, pas Toulouse. ÉCARTÉE. 53 rue du Faubourg Bonnefoy. |
+| CÔTE MARQUE / MAJESTY GARDEN | — | Brasserie à l'adresse — boutique fermée/déplacée. ÉCARTÉE. 65 av des Minimes. |
+| COMPAGNIE DES CARAIBES | — | Fermée/transférée 2004. ÉCARTÉE DÉFINITIF. 131 rue du Faubourg Bonnefoy. |
+| COMEPRIMA | — | Agence publicitaire, pas boutique. ÉCARTÉE DÉFINITIF. 113 rue du Faubourg Bonnefoy. |
+| RUDYSTORE | — | Aucune présence web trouvée. ÉCARTÉE (à revisiter terrain). 46 bd des Minimes. |
+
+**⚠️ Notion MCP indisponible (44e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (44e session consécutive) — aucun brouillon créé.**
+
+*Note session 25/07 (L'Eclaireur) : Pivot Bonnefoy/Minimes réussi. 10 emails trouvés sur rue du Faubourg Bonnefoy + avenue des Minimes. Zone bien moins épuisée que Carmes/Saint-Cyprien. 4 opticiens indépendants (fort score Two-Step = stock montures/lentilles searchable sur Google), 1 chaussures, 1 mode+bijoux+déco, 1 grande taille, 1 sportswear, 1 wax, 1 mariage. Zone Bonnefoy/Minimes encore exploitable pour sessions futures (candidats DOMINIQUE CASSAN, MINIMES OPTIQUE, LAM COLLECTION'S, FREEKULT non conclusifs cette session). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Bonnefoy/Minimes 2026-07-25".*
+
+---
 
 ### Jeudi — 2026-07-24 (L'Eclaireur) — Carmes 5e session ZONE ÉPUISÉE — 1 email confirmé
 
