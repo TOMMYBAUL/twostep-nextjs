@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-25 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-27 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -46,6 +46,8 @@
 **⚠️ Gmail MCP indisponible (44e session consécutive) — aucun brouillon créé.**
 
 *Note session 25/07 (L'Eclaireur) : Pivot Bonnefoy/Minimes réussi. 10 emails trouvés sur rue du Faubourg Bonnefoy + avenue des Minimes. Zone bien moins épuisée que Carmes/Saint-Cyprien. 4 opticiens indépendants (fort score Two-Step = stock montures/lentilles searchable sur Google), 1 chaussures, 1 mode+bijoux+déco, 1 grande taille, 1 sportswear, 1 wax, 1 mariage. Zone Bonnefoy/Minimes encore exploitable pour sessions futures (candidats DOMINIQUE CASSAN, MINIMES OPTIQUE, LAM COLLECTION'S, FREEKULT non conclusifs cette session). Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Bonnefoy/Minimes 2026-07-25".*
+
+*Note session 27/07 (L'Auditeur) : 5 brouillons email rédigés sur leads BROUILLON session 25/07 (scores 7-9/10 — Bonnefoy/Minimes). Recherches web effectuées : Alain Abecassis/Espace Optique Bonnefoy (optométriste ex-prof universitaire, basse vision, posturologie), Olivier Cayret/Optique Cayret (23+ ans indépendant, Minimes), Véronique Chevreton/MJ Optic (3 000 montures créateurs depuis 1982 — CORRECTION : "MJ Labrune" = nom de la société EURL, pas une personne ; gérant réel = Véronique Chevreton), François Fauvel/FB Optique (visagiste certifié, 3 opticiens), Laurent Le Duff/Pol Le Duff Chaussures (spécialiste confort/ortho). Fichier : docs/prospection/brouillons/brouillons-email-2026-07-27.md. Gmail MCP indisponible (45e session consécutive). Notion MCP indisponible (45e session consécutive).*
 
 ---
 
