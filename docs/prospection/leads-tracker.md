@@ -1,16 +1,35 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-25 (L'Eclaireur)*
+*Derniere mise a jour : 2026-07-27 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 307
-- NOUVEAU : 84
+- Total leads : 312
+- NOUVEAU : 87
 - CONTACTE : 1
-- BROUILLON : 194
+- BROUILLON : 196
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Dimanche — 2026-07-27 (L'Eclaireur) — Capitole reliquat (pivot dimanche sans quartier assigné) — 2 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (dimanche → pas de quartier assigné, pivot sur reliquat Capitole — 10 candidats restants sur 75 du JSON après épuisement progressif des sessions précédentes)
+
+**Note de session :** Dimanche sans quartier assigné → pivot reliquat Capitole. 10 candidats investigués (tous les Capitole non encore traités). Résultat : 2 BROUILLON (emails confirmés), 5 ÉCARTÉ (chaînes/fermées/artisan), 3 NOUVEAU terrain (pas d'email, visites requises). AZED confirmée dissoute avril 2026. ALPHABET nouvellement installée Toulouse depuis Biarritz (décembre 2024), sans présence digitale. COLETTE SAINT MLEUX possiblement derrière "LE LIEU" (boutique chaussures multimarque, 2 adresses Toulouse). Notion MCP indisponible (45e session consécutive). Gmail MCP indisponible.
+
+| Boutique | Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| MAISON HANDY | 14-16 rue des Arts | Luxe multimarque | Lauren Handy | serviceclient@maisonhandy.com ✅ | 334991056 | 10/10 | BROUILLON | Dior/Balenciaga/Saint Laurent/Moncler/Prada/Church's. ~250m², depuis 1986. 3 boutiques Toulouse uniquement. Site maisonhandy.com. ⚠️ Adresse JSON "4 rue de la Pomme" = siège — boutique principale 14-16 rue des Arts. |
+| L'EMPLACEMENT | 40 rue Alsace Lorraine | Mode femme | Eric Bitoun | contact.lemplacement@gmail.com ✅ | 893038257 | 8/10 | BROUILLON | Ouvert été 2020. Instagram @lemplacement_toulouse (3400+ abonnés). Site boutique-lemplacement.fr. |
+| ALPHABET | 39 rue de Metz | Mode femme | Patricia Delchet | AUCUN | 392739900 | 7/10 | NOUVEAU | SARL active, capital 400k€. Siège transféré Biarritz→Toulouse décembre 2024. Nouvellement installée, quasi-invisible en ligne. Tél : 05 61 22 10 93. NB : alphabets-toulouse.com = ancienne mercerie Françoise Prax (fermée 2013), sans lien. |
+| COLETTE SAINT MLEUX (LE LIEU ?) | 14 rue de la Pomme | Chaussures multimarques | Colette Saint-Mleux | AUCUN | 347463473 | 7/10 | NOUVEAU | EI active depuis 1988. L'adresse 14 rue de la Pomme est aujourd'hui "LE LIEU" (Saucony, Clarks, On Running) + 2e boutique 37 rue de Metz. Instagram @lelieu_toulouse. Lien SIREN→nom commercial à confirmer. Tél : 05 31 15 02 34. |
+| SOCIETE LAKO (KOKO) | 1 rue Croix Baragnon | Mode homme | Bernard Kok | AUCUN | 310896709 | 6/10 | NOUVEAU | Depuis 1977. Marques Nino Loretti/Barutti/Meyer/Seidensticker. Zéro présence digitale. Gérant ~79 ans. Tél : 05 61 21 50 72. Approche terrain recommandée. |
+| DIKA | 38 rue Alsace Lorraine | Mode femme | Marta Miroglio | — | 848415857 | — | ÉCARTÉ | Chaîne bulgaro-française (groupe Miroglio, ~30 boutiques France). En liquidation depuis sept. 2025. Boutique physiquement fermée. ÉCARTÉ CHAÎNE + FERMÉE. |
+| N À L'INFINI | — | Bijouterie | — | — | 817911969 | — | ÉCARTÉ | Liquidée 2021. ÉCARTÉ DÉFINITIF. |
+| SAGA COSMETIQUES (GLOW UP DEVELOPMENT) | — | Cosmétique | — | — | 492557004 | — | ÉCARTÉ | Franchise nationale ~35 magasins. Liquidée juin 2025. ÉCARTÉ CHAÎNE + FERMÉE. |
+| AZED | 54 rue de Metz | Mode | Patricia Delchet | — | 751884123 | — | ÉCARTÉ | SARL dissoute — décision du 30 avril 2026, annonce légale 16 juillet 2026. Patrimoine transmis à TAM & COMPANY FRANCE. ÉCARTÉ DÉFINITIF. |
+| MONPARFUMMASIGNATURE | — | Parfumerie | — | — | 831969860 | — | ÉCARTÉ | Artisan olfactif / parfums sur mesure. Hors cible Two-Step (service, pas revente de marques). Email trouvé (contact@monparfummasignature.fr) mais ÉCARTÉ ARTISAN. |
 
 ### Vendredi — 2026-07-25 (L'Eclaireur) — Bonnefoy/Minimes (pivot Saint-Cyprien ÉPUISÉ) — 10 emails confirmés
 
