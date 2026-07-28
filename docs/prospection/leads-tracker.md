@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Derniere mise a jour : 2026-07-25 (L'Eclaireur)*
+*Dernière mise à jour : 2026-07-28 (L'Éclaireur)*
 
 ## Stats
 - Total leads : 307
@@ -3372,3 +3372,20 @@ Objet : DR SWAG sur Two-Step — tes Jordan et New Era trouvés par les Toulousa
 - [ ] **Orus RC Pro + Cyber** — email envoyé `YYYY-MM-DD`, devis attendu `YYYY-MM-DD`
 
 Drafts : `docs/juridique/drafts-emails-phase0.md`
+
+---
+
+## Recap leads — 2026-07-28 (L'Éclaireur)
+
+**Agent** : L'Éclaireur | **Quartier** : Saint-Étienne | **Statut** : BROUILLON
+
+| # | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | SOULERY | Saint-Étienne | Mode homme multimarques | (à confirmer) | contact@soulery.com ✅ | 570802975 | 9/10 | BROUILLON | Indépendant depuis 1957. Hugo Boss, Armani, Paul Smith, Kenzo, Burberry. 10 rue Lapeyrouse. 1 seul établissement. |
+| 2 | DUCHESS | Saint-Étienne | Mode femme multimarques | Biba (email) | biba.toulouse@orange.fr ✅ | (à confirmer) | 7/10 | BROUILLON | Concept store prêt-à-porter femme. Scotch & Soda, Hartford, Léon&Harper, Red Legend, Acquaverde. 10 rue Lapeyrouse. |
+| 3 | LES TRAITS FRANÇAIS | Saint-Étienne | Mode mixte marques FR | (à confirmer) | bonjour@lestraitsfrancais.com ✅ | (à confirmer) | 8/10 | BROUILLON | ~40 marques françaises sélectionnées, style décalé urbain. 8 rue Jules Chalande. les-traits-francais.fr. |
+| 4 | TOUK-TOUK BIJOUX | Saint-Étienne | Bijoux | (à confirmer) | toukbijoux@free.fr ✅ | 951762012 | 7/10 | BROUILLON | SASU. Bijoux argent, pierres, fantaisie vintage importés. 31 rue de Rémusat. |
+| 5 | AU BONHEUR DES DAMES | Saint-Étienne | Bijoux / Mode | (à confirmer) | Info@abdd31.com ✅ | (à confirmer) | 7/10 | BROUILLON | Boutique familiale indépendante depuis 1976. Bijoux art déco, baroque, fantaisie + vintage. 8 rue d'Astorg. abdd31.com. |
+| 6 | LA PÉPITE | Saint-Étienne | Bijoux fantaisie | (à confirmer) | contact@la-pepite.fr ✅ | 822459921 | 8/10 | BROUILLON | SARL. 4e génération Bijouterie Pujol (1920). Bijoux fantaisie, argent, pierres. 8 Place Roger Salengro. la-pepite.fr. |
+
+*Note session 28/07 (L'Éclaireur) : Saint-Étienne quasi-épuisé (top-prospects-centre.json exhausted depuis 23/06, sessions juillet couvrant Croix Baragnon, Sainte-Ursule, Cujas, Boulbonne, Languedoc, Puits Clos, Changes, Temponières, Tourneurs, Couteliers, Ninau, Peyras, Rempart Saint-Étienne, de la Dalbade, Romiguières, Saint-Antoine-du-T). Nouvelles rues explorées ce jour : rue Lapeyrouse, rue Jules Chalande, rue de Rémusat, rue d'Astorg, Place Roger Salengro. 6 nouveaux emails confirmés. Chaînes écartées : L'Atelier d'Amaya (82 boutiques), NACH Bijoux (25), Weill (25), Courbettes & Galipettes, Gérard Darel, Mauboussin, Benetton. Re-découvertes déjà trackées : WE ARE COCOTTE, ORMAIN, DO MY SHOES, BOUTIQUE AU 44. SOULERY = priorité absolue (mode homme haut de gamme indépendant depuis 1957, score 9/10). Notion MCP indisponible (45e session consécutive). Titre Notion prévu : "Leads Saint-Étienne 2026-07-28".*
