@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-28 (L'Éclaireur)*
+*Dernière mise à jour : 2026-07-28 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,24 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-07-28 (L'Auditeur) — 5 brouillons email rédigés
+
+**Agent** : L'Auditeur | **Mission** : Rédaction emails personnalisés pour leads BROUILLON session 25/07 (Bonnefoy/Minimes)
+
+**Note de session :** 5 emails ACA rédigés et sauvegardés dans `docs/prospection/brouillons/brouillons-email-2026-07-28.md`. Leads sélectionnés : top 5 scores (7-9/10) parmi les 10 BROUILLON de la session Eclaireur 25/07. Recherches web effectuées pour chaque lead : Alain Abecassis/Espace Optique Bonnefoy (ancien prof fac, spécialiste basse vision — Ray-Ban, Nina Ricci), Olivier Cayret/Optique Cayret (Opticiens par Conviction, 23 ans — Saint Laurent, Chloé, Bottega Veneta), Marie-José Labrune/MJ Optic (visagisme depuis 1982 — Dior, Caroline Abram, Monokol ⚠️ gérant légal FRAVER HOLDING depuis 2021 — à confirmer terrain), François Fauvel/FB Optique (visagiste, masques plongée, lentilles couleur — Gucci, Ray-Ban), Laurent Le Duff/Pol Le Duff (famille 1979, 2e génération depuis 2023 — Birkenstock, Mephisto, Pikolinos). Gmail MCP indisponible (45e session consécutive). Notion MCP indisponible (45e session consécutive).
+
+| Boutique | Gérant | Email | Objet | Score | Action |
+|---|---|---|---|---|---|
+| ESPACE OPTIQUE BONNEFOY | Alain Abecassis | contact@centre-vision.fr | Alain, ton expertise basse vision visible sur Google ? | 9/10 | À envoyer |
+| OPTIQUE CAYRET | Olivier Cayret | cayret.optique@free.fr | Olivier, tes Saint Laurent et Chloé trouvés par les Toulousains ? | 9/10 | À envoyer |
+| MJ OPTIC (MJ LABRUNE) | Marie-José Labrune ⚠️ | contact@mjoptictendance.com | Marie-José, tes Dior et Caroline Abram trouvés par les Toulousains ? | 9/10 | À valider Thomas avant envoi |
+| FB OPTIQUE | François Fauvel | fboptique@orange.fr | François, tes Gucci et Ray-Ban trouvés par les Toulousains des Minimes ? | 8/10 | À envoyer |
+| POL LE DUFF CHAUSSURES | Laurent Le Duff | pol-le-duff.chaussures@wanadoo.fr | Laurent, tes Birkenstock et Mephisto trouvés par les Toulousains ? | 7/10 | À envoyer |
+
+*Note session 28/07 (L'Auditeur) : 5 leads BROUILLON → emails rédigés (session Eclaireur 25/07 Bonnefoy/Minimes). Recherches web confirment : 4 opticiens indépendants (3 × 9/10 dont MJ Optic depuis 1982 et Optique Cayret avec Opticiens par Conviction) + 1 chaussures confort famille 1979. ⚠️ MJ OPTIC : gérant légal FRAVER HOLDING depuis 2021 — Marie-José Labrune confirmée via LinkedIn mais vérification terrain recommandée avant envoi. Gmail MCP indisponible (45e session consécutive) — brouillons à envoyer manuellement depuis bauland@twostep.fr. Notion MCP indisponible (45e session consécutive). Fichier : docs/prospection/brouillons/brouillons-email-2026-07-28.md. Leads 25/07 restants non traités : GAUFRETTE ET CREATIONS (7/10), NAÏS (6/10), JACK'N ROLL (6/10), MARIAGE HARMONYA (4/10). HORTY'S FASHION (4/10) bloqué — gérant non identifié.*
+
+---
 
 ### Vendredi — 2026-07-25 (L'Eclaireur) — Bonnefoy/Minimes (pivot Saint-Cyprien ÉPUISÉ) — 10 emails confirmés
 
