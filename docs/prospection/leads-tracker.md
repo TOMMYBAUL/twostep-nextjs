@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-28 (L'Éclaireur)*
+*Dernière mise à jour : 2026-07-29 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,22 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-07-29 (L'Auditeur) — 5 brouillons email rédigés
+
+**Agent** : L'Auditeur | **Mission** : Rédaction emails personnalisés pour leads BROUILLON avec email confirmé
+
+**Note de session :** 5 emails ACA rédigés et sauvegardés dans `docs/prospection/brouillons/brouillons-email-2026-07-29.md`. Leads sélectionnés : top 5 session L'Eclaireur 25/07 (Bonnefoy/Minimes), scores 7-9/10. Gmail MCP indisponible (48e session consécutive) — brouillons à envoyer manuellement depuis bauland@twostep.fr. Notion MCP indisponible (48e session consécutive).
+
+| Boutique | Gérant | Email | Objet email | Score | Statut |
+|---|---|---|---|---|---|
+| ESPACE OPTIQUE BONNEFOY | Alain Abecassis | contact@centre-vision.fr | Alain, tes spécialités basse vision trouvées par les Toulousains ? | 9/10 | À envoyer |
+| OPTIQUE CAYRET | Olivier Cayret | cayret.optique@free.fr | Olivier, tes Fendi et Maui Jim trouvés par les Toulousains ? | 9/10 | À envoyer |
+| MJ OPTIC | MJ Labrune | contact@mjoptictendance.com | MJ, tes créateurs Dior et Persol trouvés par les Toulousains ? | 9/10 | À envoyer |
+| FB OPTIQUE | François Fauvel | fboptique@orange.fr | François, tes montures visagiste aux Minimes trouvées par les Toulousains ? | 8/10 | À envoyer |
+| POL LE DUFF CHAUSSURES | Laurent Le Duff | pol-le-duff.chaussures@wanadoo.fr | Laurent, tes Rieker et Pikolinos trouvés par les Toulousaines ? | 7/10 | À envoyer |
+
+---
 
 ### Vendredi — 2026-07-25 (L'Eclaireur) — Bonnefoy/Minimes (pivot Saint-Cyprien ÉPUISÉ) — 10 emails confirmés
 
