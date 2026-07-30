@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-28 (L'Éclaireur)*
+*Dernière mise à jour : 2026-07-30 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,27 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-07-30 (L'Auditeur) — Bonnefoy/Minimes — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON session 25/07 (Espace Optique Bonnefoy, Optique Cayret, MJ Optic, FB Optique, Pol Le Duff Chaussures)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-07-30.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| ESPACE OPTIQUE BONNEFOY | Alain Abecassis | contact@centre-vision.fr | Alain, tes montures et lentilles trouvables sur Google "près de chez moi" ? | 9/10 |
+| OPTIQUE CAYRET | Olivier Cayret | cayret.optique@free.fr | Olivier, 23 ans aux Minimes — et si tes clients te trouvaient sur Google ? | 9/10 |
+| MJ OPTIC | MJ Labrune | contact@mjoptictendance.com | MJ, tes lunettes créateurs méritent d'être trouvées en ligne | 9/10 |
+| FB OPTIQUE | François Fauvel | fboptique@orange.fr | François, tes clients des Minimes te trouvent-ils sur Google avant de choisir ? | 8/10 |
+| POL LE DUFF CHAUSSURES | Laurent Le Duff | pol-le-duff.chaussures@wanadoo.fr | Laurent, tes marques de chaussures confort trouvables sur Google Toulouse ? | 7/10 |
+
+**⚠️ Gmail MCP indisponible (45e session consécutive)** — brouillons à copier-coller manuellement dans Gmail.  
+**⚠️ Notion MCP indisponible (45e session consécutive)** — récap tracker uniquement.  
+
+*Note session 30/07 (L'Auditeur) : 5 emails ACA rédigés (session Bonnefoy/Minimes 25/07). 4 opticiens indépendants + 1 chaussures multimarque. Emails personnalisés : basse vision (Alain), 23 ans quartier (Olivier), institution 1982 créateurs (MJ), visagiste conseil (François), Salon S.E.S.O 2026 (Laurent). Gmail MCP hors service 45e session — copier-coller requis. Restants 25/07 non traités : Gaufrette et Créations (7/10), Naïs Rond'let (6/10), Jack'n Roll (6/10), Horty's Fashion (4/10 — gérant inconnu), Mariage Harmonya (4/10), Violettes et Pastels 24/07 (5/10). Notion MCP hors service — récap tracker uniquement.*
+
+---
 
 ### Vendredi — 2026-07-25 (L'Eclaireur) — Bonnefoy/Minimes (pivot Saint-Cyprien ÉPUISÉ) — 10 emails confirmés
 
