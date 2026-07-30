@@ -3389,3 +3389,48 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 | 6 | LA PÉPITE | Saint-Étienne | Bijoux fantaisie | (à confirmer) | contact@la-pepite.fr ✅ | 822459921 | 8/10 | BROUILLON | SARL. 4e génération Bijouterie Pujol (1920). Bijoux fantaisie, argent, pierres. 8 Place Roger Salengro. la-pepite.fr. |
 
 *Note session 28/07 (L'Éclaireur) : Saint-Étienne quasi-épuisé (top-prospects-centre.json exhausted depuis 23/06, sessions juillet couvrant Croix Baragnon, Sainte-Ursule, Cujas, Boulbonne, Languedoc, Puits Clos, Changes, Temponières, Tourneurs, Couteliers, Ninau, Peyras, Rempart Saint-Étienne, de la Dalbade, Romiguières, Saint-Antoine-du-T). Nouvelles rues explorées ce jour : rue Lapeyrouse, rue Jules Chalande, rue de Rémusat, rue d'Astorg, Place Roger Salengro. 6 nouveaux emails confirmés. Chaînes écartées : L'Atelier d'Amaya (82 boutiques), NACH Bijoux (25), Weill (25), Courbettes & Galipettes, Gérard Darel, Mauboussin, Benetton. Re-découvertes déjà trackées : WE ARE COCOTTE, ORMAIN, DO MY SHOES, BOUTIQUE AU 44. SOULERY = priorité absolue (mode homme haut de gamme indépendant depuis 1957, score 9/10). Notion MCP indisponible (45e session consécutive). Titre Notion prévu : "Leads Saint-Étienne 2026-07-28".*
+
+---
+
+## Recap leads — 2026-07-30 (L'Éclaireur) — Pivot Jeudi : Arnaud-Bernard + Guilhemery (Carmes ÉPUISÉ) — 4 NOUVEAU emails + 1 mise à jour terrain→email
+
+**Agent** : L'Éclaireur | **Quartier** : Arnaud-Bernard (pivot jeudi — Carmes épuisé depuis 24/07) + extension Guilhemery (W31 zone vierge) | **Statut** : À valider | **Notion** : Non créé (MCP indisponible — 46e session consécutive)
+
+**Note de session :** Zone du jeudi = Carmes ÉPUISÉE DÉFINITIVEMENT (24/07). Pivot vers Arnaud-Bernard + Guilhemery (0 sessions W31, priorité rapport W30). 5 emails réellement nouveaux (4 NOUVEAU + 1 mise à jour terrain). 5 redécouvertes déjà trackées (COLOMBETTE OPTIQUE, TENDANCES LINGERIE, LA MOMERIE, ETOILE DE SONGE, SLOW CONCEPT — toutes BROUILLON). **⚠️ Discordance email COLOMBETTE OPTIQUE : tracker = `olivier.nardin@colombette-optique.fr` (session 11/07), footer site ce jour = `colombette.optique@gmail.com` — À VALIDER Thomas (les deux emails existent peut-être).**
+
+**Mise à jour terrain → email :**
+| Boutique | SIREN | Email trouvé | Action |
+|---|---|---|---|
+| LOJO (LES BELLES BRANCHES) | 982720153 | bonjour@lesbellesbranches.fr ✅ | Mettre à jour entrée NOUVEAU→BROUILLON (voir ligne tracker ~951) |
+
+**4 NOUVEAU leads avec email (zone Arnaud-Bernard + Guilhemery) :**
+
+| # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | LA MISSTINGUETTE EN SALOPETTE | Arnaud-Bernard / 33 rue de la Colombette | Cosmétique naturelle/zéro déchet | Andrea Salvi | contact@lamisstinguettensalopette.com ✅ | 848182606 | 7/10 | BROUILLON | Épicerie cosmétique bio, vrac, couches lavables. Créée 2019. Tél 09 82 39 14 19. lamisstinguettensalopette.com. |
+| 2 | BÔÈMBIO | Arnaud-Bernard / 9 rue Arnaud Bernard | Cosmétique bio/zéro déchet | (gérant inconnu) | boembio@gmail.com ✅ | — | 6/10 | BROUILLON | Concept store zéro déchet : cosmétique bio, compléments, maquillage naturel, vegan. Tél 05 62 30 36 60. boembio.com. |
+| 3 | BAMBINOU.COM | Arnaud-Bernard / 21 rue de la Trinité | Puériculture (marques) | Thierry Boronat | sc@bambinou.com ✅ | — | 5/10 | BROUILLON | Boutique puériculture (Bugaboo, BabyBjörn, Ergobaby…). 2 boutiques (Paris + Toulouse) + e-commerce. Tél 05 62 26 47 05. bambinou.com. |
+| 4 | PURE DECO | Guilhemery / 111 avenue Camille Pujol | Décoration design | (gérant inconnu) | contact@pure-deco.com ✅ | — | 5/10 | BROUILLON | Boutique déco 70m², lampes/meubles/objets design. Présente en ligne depuis 2005. Tél 05 62 57 19 49. pure-deco.com. |
+
+**Éliminées session 30/07 :**
+| Boutique | Adresse | Motif |
+|---|---|---|
+| THE CRAZY STORE | 22 rue Arnaud Bernard | Vape + bière + CBD → hors cible. ÉCARTÉ. |
+| LA JUPONNERIE | 7 rue Arnaud Bernard | Artisan 100% fait à Toulouse (confection) → hors cible. ÉCARTÉ. |
+| VERA ABERGEL | 9 rue des Pénitents Blancs | Établissement secondaire fermé (radiée). ÉCARTÉ. |
+| PLUMETIS | Zone Dalbade | Robes de mariée uniquement → hors cible. ÉCARTÉ. |
+| MEDINA | 75 rue du Taur | Artisanat oriental (tapis, lanternes, bijoux berbères) — 0 email public, tél uniquement. ÉCARTÉ. |
+| MR SUNBELL STORE | 17 rue Cujas | Mode/chaussures/bijoux MAIS site mrsunbellstore.com 503, 0 email public. Terrain. |
+| PAUSE (horlogerie) | 23 rue de la Trinité | Horlogerie/montres indépendant — site formulaire uniquement, 0 email direct. Terrain. |
+| LES CHEMINS BUISSONNIERS | 43 av. de la Gloire | Association cinéma documentaire → hors cible. ÉCARTÉ. |
+| FIL ROUGE | 43 av. de la Gloire | Collectif cinéastes documentaristes → hors cible. ÉCARTÉ. |
+
+**Sans email — terrain (Arnaud-Bernard/Guilhemery) :**
+| Boutique | Adresse | Notes |
+|---|---|---|
+| MR SUNBELL STORE | 17 rue Cujas | Mode/bijoux/chaussures. Site 503. Tél 05 61 23 12 62. Terrain. |
+| PAUSE Montres | 23 rue de la Trinité | Horlogerie passionnée, boutique récente (2024). Formulaire uniquement. Tél 09 79 34 68 81. Terrain. |
+
+**⚠️ Notion MCP indisponible (46e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Arnaud-Bernard 2026-07-30".
+
+*Note session 30/07 (L'Éclaireur) : Pivot jeudi obligatoire (Carmes ÉPUISÉ 24/07, Bonnefoy/Minimes couvert 25/07). Zone Arnaud-Bernard + Guilhemery sélectionnée (0 sessions W31). 5 résultats effectifs : 4 NOUVEAU emails + 1 mise à jour terrain→email (LES BELLES BRANCHES bonjour@lesbellesbranches.fr). 5 redécouvertes déjà trackées (non recomptées). Zone partiellement épuisée : nombreuses boutiques sans email public (formulaires, téléphone uniquement, Facebook uniquement) ou hors cible (CBD, artisans, associations). BÔÈMBIO + LA MISSTINGUETTE = cosmétique bio/zéro déchet (segment cosmétique Two-Step ✅). LES BELLES BRANCHES (optique éco-éthique, LOJO) = 9/10, priorité envoi brouillon. MR SUNBELL STORE + PAUSE = terrain recommandé. ⚠️ Email COLOMBETTE OPTIQUE discordant à vérifier. Notion MCP indisponible (46e session).*
