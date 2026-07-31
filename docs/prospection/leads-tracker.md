@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-30 (L'Auditeur)*
+*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,27 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON issus des sessions Eclaireur 18/07 (C'Pierre Style, Optic du Cap) + 21/07 (Mephisto, Modi-In, Le Quotidien Store)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-07-31.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| MEPHISTO CHAUSSURES DEJEAN | Isabelle Dejean | contact@mephisto-chaussures-dejean.com | Isabelle, tes Mephisto et Allrounder trouvés par les Toulousains ? | 8/10 |
+| C'PIERRE STYLE | Pierre Sportouch | cpierrestyle@gmail.com | Pierre, tes Bugatti et Dario Beltran trouvés par les Toulousains ? | 7/10 |
+| OPTIC DU CAP | Akil Manjoo | contact@opticducap.fr | Akil, tes montures Burberry trouvées par les Toulousains sur Google ? | 7/10 |
+| MODI-IN | Céline Tobalaim | contact@modi-in.com | Céline, tes New Balance et Birkenstock visibles sur Google Toulouse ? | 7/10 |
+| LE QUOTIDIEN STORE | Fatima Meric | lequotidienconceptstore@gmail.com | Fatima, tes nouvelles arrivées visibles sur Google dès qu'elles arrivent ? | 7/10 |
+
+**⚠️ Gmail MCP indisponible (46e session consécutive)** — brouillons à copier-coller manuellement dans Gmail.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.  
+
+*Note session 31/07 (L'Auditeur) : 5 emails ACA rédigés sur backlog non traité sessions 18/07 + 21/07. Recherches web effectuées : Isabelle/Mephisto Dejean (depuis 1995, Allrounder/Mobils confort 35-48), Pierre/C'Pierre Style (mode masculine, Bugatti/Dario Beltran/Seidensticker, spécialiste cérémonie), Akil/Optic du Cap (progressifs, Opticiens par Conviction, Burberry/Carrera), Céline/Modi-In (New Balance/Birkenstock/No Name/Grace&Mila, 2e boutique Ibiza), Fatima/Le Quotidien Store (capsules bi-hebdo, mode+bijoux+déco+lifestyle). Gmail MCP hors service 46e session — copier-coller requis. Notion MCP hors service. Backlog restant : L'Isla Nova (7/10), Optique Vales (7/10), Gaufrette et Créations (7/10), Arsène et les Pipelettes (6/10), Naïs Rond'let (6/10), Jack'n Roll (6/10), Matsai Mara (8/10 ⚠️ marque propre à confirmer).*
+
+---
 
 ### Mercredi — 2026-07-30 (L'Auditeur) — Bonnefoy/Minimes — 5 brouillons rédigés
 
