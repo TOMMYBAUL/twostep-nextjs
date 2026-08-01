@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-01 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,29 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Vendredi — 2026-08-01 (L'Auditeur) — Backlog Bonnefoy/Carmes — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON issus du backlog sessions Eclaireur 23/07 (Optique Vales) + 25/07 (Gaufrette et Créations, Jack'n Roll, Naïs Rond'let) + 21/07 (Arsène et les Pipelettes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-01.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| OPTIQUE VALES | Jacques Vales | magasinboulbonne@optiquevales.fr | Jacques, tes montures trouvées par les Toulousains sur Google ? | 7/10 |
+| GAUFRETTE ET CRÉATIONS | Sandrine Fraigneau | gaufrette.et.creations@gmail.com | Sandrine, ta boutique vue par les Toulousains des Minimes sur Google ? | 7/10 |
+| JACK'N ROLL | Gérard Fourcade | contact@jacknroll.fr | Gérard, tes trottinettes et rollers trouvés par les riders Toulousains ? | 6/10 |
+| ARSÈNE ET LES PIPELETTES | Hélène Rieunier | sav@arseneetlespipelettes.com | Hélène, tes marques enfants trouvées par les parents Toulousains ? | 6/10 ⚠️ |
+| NAÏS (ROND'LET) | Carole Dray | contact@nais-boutique.fr | Carole, tes 2000 pièces grande taille trouvées par les Toulousaines sur Google ? | 6/10 |
+
+**⚠️ Gmail MCP indisponible (47e session consécutive)** — brouillons à copier-coller manuellement dans Gmail.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.  
+**⚠️ Arsène et les Pipelettes** : email SAV — confirmer que Hélène consulte cette boîte avant envoi.  
+**⚠️ L'Isla Nova** : écartée (adresse légale L'Isle-en-Dodon — boutique 36 rue des Tourneurs à confirmer terrain).
+
+*Note session 01/08 (L'Auditeur) : 5 emails ACA rédigés sur backlog non traité sessions 23-25/07. Recherches web effectuées : Jacques/Optique Vales (institution 1963, 5 magasins Toulouse, Jacques Antoine fils gérant actuel, spé sport/plongée/lentilles couleur), Sandrine/Gaufrette et Créations (depuis 2006, bijoux+mode+déco+cadeaux, boutique de quartier canal des Minimes), Gérard/Jack'n Roll (référence glisse urbaine Toulouse, trott freestyle/longboard/roller/quad + réparation, métro Canal du Midi), Hélène/Arsène et les Pipelettes (mode enfant 2 niveaux bébé-ado, rue de Metz), Carole/Naïs (25 ans stylisme grande taille, 2000 pièces tailles 42-60). Gmail MCP hors service 47e session — copier-coller requis. Notion MCP hors service. Backlog restant : MATSAI MARA (8/10 ⚠️), VIOLETTES ET PASTELS (5/10), HORTY'S FASHION (4/10 gérant inconnu), MARIAGE HARMONYA (4/10).*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
