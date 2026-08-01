@@ -808,7 +808,7 @@ Aucun candidat actif sans email identifié cette session — zone Carmes très �
 | FOOTCONNECT (C2M) | Victor-Hugo/Gambetta | Sport/Sneakers | Marc Nortier | — | 822056974 | 8/10 | NOUVEAU | Email non trouvé — Instagram @footconnect.off uniquement. 32 rue Gambetta. Nike/Adidas/Puma revendeur. Visite terrain. |
 | ALICE ET LES GARCONS (KIDS STORE) | Victor-Hugo/Bouquières | Mode enfant | Benoit Mabille de poncheville | — | 819294117 | 7/10 | NOUVEAU | Email non trouvé — site 503 lors de la recherche. 15 rue Bouquières. Mode enfant multi-marques. Visite terrain. |
 | MINI JU (FEELING) | Victor-Hugo/Gambetta | Mode | Sophie Chakri | — | 813670197 | 6/10 | NOUVEAU | Email non trouvé — aucune présence digitale publique avec email. 8 rue Gambetta. Visite terrain. |
-| QUE FAS ? (SAS QUE FAS) | Victor-Hugo/Gambetta | Déco/Concept store | Mathias Marty-Palomar | — | 901585646 | 7/10 | NOUVEAU | Email non trouvé — site quefas.fr sans email visible, IG @quefas.concept. 20 rue Gambetta. Concept store déco mère-fils. Visite terrain. |
+| QUE FAS ? (SAS QUE FAS) | Victor-Hugo/Gambetta | Déco/Concept store | Mathias Marty-Palomar | quefas@quefas.fr | 901585646 | 7/10 | BROUILLON | Email trouvé 01/08/26 — quefas@quefas.fr (contact principal). Site quefas.fr, IG @quefas.concept. 20 rue Gambetta. Concept store déco mère-fils ouvert 7j/7. |
 | DORYANN (MATIERE NOBLE) | Victor-Hugo/Bouquières | Chaussures | Stéphanie Dah-okimba | — | 981803620 | 7/10 | NOUVEAU | Email non trouvé — IG @doryannstore uniquement. 19 rue Bouquières. Créée 2024. Visite terrain. |
 | THEIA | Victor-Hugo/Rémusat | Mode | Shan Huang | — | — | 5/10 | NOUVEAU | Email non trouvé — aucune présence digitale identifiable (très récente 2024). 7 rue Rémusat. Visite terrain si active. |
 
