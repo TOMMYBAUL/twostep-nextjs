@@ -3476,3 +3476,37 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 **⚠️ Notion MCP indisponible (46e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Arnaud-Bernard 2026-07-30".
 
 *Note session 30/07 (L'Éclaireur) : Pivot jeudi obligatoire (Carmes ÉPUISÉ 24/07, Bonnefoy/Minimes couvert 25/07). Zone Arnaud-Bernard + Guilhemery sélectionnée (0 sessions W31). 5 résultats effectifs : 4 NOUVEAU emails + 1 mise à jour terrain→email (LES BELLES BRANCHES bonjour@lesbellesbranches.fr). 5 redécouvertes déjà trackées (non recomptées). Zone partiellement épuisée : nombreuses boutiques sans email public (formulaires, téléphone uniquement, Facebook uniquement) ou hors cible (CBD, artisans, associations). BÔÈMBIO + LA MISSTINGUETTE = cosmétique bio/zéro déchet (segment cosmétique Two-Step ✅). LES BELLES BRANCHES (optique éco-éthique, LOJO) = 9/10, priorité envoi brouillon. MR SUNBELL STORE + PAUSE = terrain recommandé. ⚠️ Email COLOMBETTE OPTIQUE discordant à vérifier. Notion MCP indisponible (46e session).*
+
+---
+
+## Session Éclaireur — Lundi 03/08/2026 (Capitole — 2ème passage + hors-JSON)
+
+**Contexte :** Zone Capitole épuisée dans top-prospects-centre.json (75/75 entrées traitées depuis avril 2026). Session axée sur : (1) 2ème passage sur les entrées NOUVEAU terrain sans email ; (2) découverte de nouvelles boutiques hors-JSON.
+
+**Résultats 2ème passage terrain (sans email confirmé) :**
+- SIENNE (44 rue des Tourneurs) → toujours 0 email public. Instagram @sienne.boutique.
+- AMA LUNA (66 rue de la Pomme) → toujours 0 email. A fait opt-out prospection commerciale.
+- CHAUSSURES MANIK (33 rue Alsace-Lorraine) → 0 email. Site formulaire uniquement.
+- ALFRED WOOD / BAGWOOD (75 rue Alsace-Lorraine) → 0 email, 0 site web. Tél : 05 61 12 14 46.
+- MANOUSHKA (adresse Capitole) → 0 email. Page contact manoushka.fr sans email.
+- SERHA (14 rue de la Pomme / 37 rue de Metz) → 0 email, 0 site. Tél : 05 31 15 02 34. Gérant : Nathalie Serfati.
+- PAMPY (11 rue de la Pomme) → OUVERTE (Juliette Marciano, SAS, SIREN 997769906). 0 email, site pampy.com parking. Tél : 05 61 23 37 46.
+- SADIA / SADEA (39 rue de Bayard) → site sadea.fr, formulaire uniquement, 0 email direct.
+
+**Écarté définitif (confirmés fermés cette session) :**
+- BANANA-POMME (28 rue de la Pomme) → cessation d'activité 31/12/2024. ÉCARTÉ.
+- DESERT BLEU (7 rue de la Pomme) → liquidé juillet 2007. ÉCARTÉ.
+- N°DIX8 (18 rue de la Pomme) → dissous octobre 2022. ÉCARTÉ. *(rappel session précédente)*
+
+**Nouveaux leads avec email confirmé (hors top-prospects-centre.json) :**
+
+| # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | NEGREVERGNE | Capitole / 27 rue de Metz | Maroquinerie/Bagages | Géraldine Casanovas | ste-negrevergne@hotmail.fr ✅ | (à confirmer) | 7/10 | BROUILLON | Email confirmé via Cylex/annuaires (2ème passage). Maroquinerie artisanale et bagages de marque depuis 1954. Stock diversifié identifiable. |
+| 2 | KOLECTOR / LES 2 ZÈBRES | Capitole adj. / 5 rue Baronie | Sneakers premium | (à confirmer) | kolector.tls@gmail.com ✅ | (à confirmer) | 9/10 | BROUILLON | Boutique sneakers premium/rares indépendante fondée 1999. Site kolector.fr. Stock très identifiable = excellent fit Two-Step. |
+| 3 | LE PETIT LUNETIER | Saint-Rome / 21 rue Saint-Rome | Optique | (à confirmer) | contact@lepetitlunetier.com ✅ | (à confirmer) | 8/10 | BROUILLON | Concept store optique indépendant, montures créateurs designées en France. Tél 05 61 32 90 75. ⚠️ Vérifier nb établissements (présence Bordeaux/Nice possible). |
+| 4 | L'ART OSE | Capitole / 67 rue Alsace-Lorraine | Cosmétique/Parfumerie | Sarah (fondatrice 2015) | contact@lart-ose.fr ✅ | (à confirmer) | 6/10 | BROUILLON | Parfumerie artisanale indépendante. Ateliers parfum sur mesure. Visites sur RV. Tél 06 88 40 97 75. Stock moins indexable (sur-mesure dominant). |
+
+**⚠️ Notion MCP indisponible (48e session consécutive)** — résultats consignés dans le tracker uniquement. Titre prévu : "Leads Capitole 2026-08-03".
+
+*Note session 03/08 (L'Éclaireur) : Capitole JSON épuisé (75/75). 2ème passage sur terrain = 0 email supplémentaire, 2 clôtures confirmées (BANANA-POMME, DESERT BLEU). Hors-JSON : 4 NOUVEAUX emails confirmés (NEGREVERGNE mise à jour terrain→email, KOLECTOR sneakers 9/10, PETIT LUNETIER optique 8/10, L'ART OSE cosmétique 6/10). Prochaine session Capitole : zéro prospect JSON restant — pivoter vers Saint-Etienne (mardi) ou nouvelle zone. Notion MCP indisponible (48e session).*
