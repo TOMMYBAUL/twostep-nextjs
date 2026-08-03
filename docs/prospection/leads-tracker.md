@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-03 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,28 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-08-03 (L'Auditeur) — Backlog Bonnefoy/Minimes + Capitole — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON issus du backlog sessions 20/07 (L'Isla Nova) + 25/07 (Gaufrette et Créations, Naïs Rond'let, Jack'n Roll, Arsène et les Pipelettes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-03.md`  
+**Matsai Mara** : ÉCARTÉE — marque propre exclusive (bijoux faits-main Bègles, 100% maison). Hors cible Two-Step.
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| L'ISLA NOVA | Léa Palacin-Noblet | contact@lisla-nova.fr | Léa, tes créateurs trouvés par les Toulousains sur Google ? | 7/10 |
+| GAUFRETTE ET CRÉATIONS | Sandrine Fraigneau | gaufrette.et.creations@gmail.com | Sandrine, tes Sobral et Zag trouvés par les Toulousains ? | 7/10 |
+| NAÏS ROND'LET | Carole Dray | contact@nais-boutique.fr | Carole, tes marques grande taille trouvées par les Toulousaines ? | 6/10 |
+| JACK'N ROLL | Gerard Fourcade | contact@jacknroll.fr | Gérard, tes K2 et Powerslide trouvés par les passionnés toulousains ? | 6/10 |
+| ARSÈNE ET LES PIPELETTES | Hélène Rieunier | sav@arseneetlespipelettes.com | Hélène, tes Jellycat et Maileg trouvés par les parents toulousains ? | 6/10 |
+
+**⚠️ Gmail MCP indisponible (47e session consécutive)** — brouillons à copier-coller manuellement dans Gmail.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.
+
+*Note session 03/08 (L'Auditeur) : 5 emails ACA rédigés sur backlog non traité sessions 20/07 + 25/07. Matsai Mara ÉCARTÉE (marque propre exclusive — bijoux 100% créatrice Bègles, pas multimarques). Recherches web effectuées : Léa/L'Isla Nova (créateurs FR/locaux, Via Doli, Tsaey, Colibri Papeterie, Tambour Battant — concept store éco-conscient), Sandrine/Gaufrette et Créations (Sobral, Zag, Batuccada, La Fiancée du Mékong, 4,8/5 Google), Carole/Naïs (grande taille 44-60, spécialiste Bonnefoy), Gérard/Jack'n Roll (275+ marques roller/scooter urbain : K2, Powerslide, ETHIC, Blunt — excellent fit Two-Step), Hélène/Arsène et les Pipelettes (mode enfant, Jellycat/Maileg/Liewood — email SAV, à confirmer). Gmail MCP hors service 47e session — copier-coller requis. Notion MCP hors service. Backlog restant : Optique Vales (7/10) — déjà drafté 09/07, à vérifier si envoi Thomas.*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
