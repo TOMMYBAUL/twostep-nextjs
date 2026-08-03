@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { ArticleLayout } from "../components/article-layout";
 
 export const metadata: Metadata = {
-    title: "Boutique cosmétique à Toulouse : trouver le bon produit en stock, près de chez toi",
+    title: "Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité",
     description:
-        "Tu cherches une crème, un sérum ou un fond de teint précis à Toulouse ? Guide des meilleures boutiques cosmétiques indépendantes par quartier — et comment vérifier le stock avant de te déplacer.",
+        "Tu gères une boutique de cosmétique indépendante à Toulouse ? Découvre comment rendre tes 300+ références visibles sur Google sans créer de site e-commerce — et attirer des clients qui cherchent exactement ce que tu as.",
     openGraph: {
-        title: "Boutique cosmétique à Toulouse : trouver le bon produit en stock, près de chez toi",
+        title: "Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité",
         description:
-            "Tu cherches une crème, un sérum ou un fond de teint précis à Toulouse ? Guide des meilleures boutiques cosmétiques indépendantes par quartier — et comment vérifier le stock avant de te déplacer.",
+            "Tu gères une boutique de cosmétique indépendante à Toulouse ? Découvre comment rendre tes 300+ références visibles sur Google sans créer de site e-commerce.",
     },
     alternates: {
         canonical: "https://www.twostep.fr/blog/boutique-cosmetique-toulouse",
@@ -26,9 +26,9 @@ export default function BoutiqueCosmetiqueToulousePage() {
                             "@context": "https://schema.org",
                             "@type": "BlogPosting",
                             headline:
-                                "Boutique cosmétique à Toulouse : trouver le bon produit en stock, près de chez toi",
+                                "Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité",
                             description:
-                                "Tu cherches une crème, un sérum ou un fond de teint précis à Toulouse ? Guide des meilleures boutiques cosmétiques indépendantes par quartier — et comment vérifier le stock avant de te déplacer.",
+                                "Tu gères une boutique de cosmétique indépendante à Toulouse ? Découvre comment rendre tes 300+ références visibles sur Google sans créer de site e-commerce — et attirer des clients qui cherchent exactement ce que tu as.",
                             author: {
                                 "@type": "Organization",
                                 name: "Two-Step",
@@ -43,7 +43,7 @@ export default function BoutiqueCosmetiqueToulousePage() {
                                     url: "https://www.twostep.fr/logo-icon.webp",
                                 },
                             },
-                            datePublished: "2026-05-18",
+                            datePublished: "2026-08-03",
                             mainEntityOfPage:
                                 "https://www.twostep.fr/blog/boutique-cosmetique-toulouse",
                         },
@@ -66,7 +66,7 @@ export default function BoutiqueCosmetiqueToulousePage() {
                                 {
                                     "@type": "ListItem",
                                     position: 3,
-                                    name: "Boutique cosmétique à Toulouse : trouver le bon produit en stock",
+                                    name: "Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité",
                                     item: "https://www.twostep.fr/blog/boutique-cosmetique-toulouse",
                                 },
                             ],
@@ -76,324 +76,300 @@ export default function BoutiqueCosmetiqueToulousePage() {
             />
 
             <ArticleLayout
-                title="Boutique cosmétique à Toulouse : trouver le bon produit en stock, près de chez toi"
-                description="Tu cherches une crème, un sérum ou un fond de teint précis à Toulouse ? Guide des meilleures boutiques cosmétiques indépendantes par quartier — et comment vérifier le stock avant de te déplacer."
+                title="Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité"
+                description="Tu gères une boutique de cosmétique indépendante à Toulouse ? Découvre comment rendre tes 300+ références visibles sur Google sans créer de site e-commerce — et attirer des clients qui cherchent exactement ce que tu as."
                 slug="boutique-cosmetique-toulouse"
-                publishedAt="2026-05-18"
-                readingTime="6 min"
-                category="consommateurs"
+                publishedAt="2026-08-03"
+                readingTime="7 min"
+                category="marchands"
             >
                 <p>
-                    Tu as repéré une crème dont tu as lu les bienfaits, un sérum
-                    recommandé par une amie, ou une teinte de fond de teint que tu
-                    veux tester avant d&apos;acheter. Tu sais que Toulouse a des
-                    boutiques qui proposent exactement ça — mais laquelle a le
-                    produit en stock aujourd&apos;hui, dans la bonne variante, et
-                    est ouverte à l&apos;heure où tu peux y passer ? Ce guide
-                    recense les adresses cosmétiques à connaître à Toulouse,
-                    quartier par quartier, et t&apos;explique comment éviter le
-                    déplacement pour rien.
-                </p>
-
-                <h2>Boutique indépendante vs grande enseigne : ce que tu gagnes vraiment</h2>
-
-                <p>
-                    Dans une parapharmacie de chaîne ou un supermarché, tu trouves
-                    ce que tout le monde connaît — les références les plus vendues,
-                    les mêmes dans toutes les villes. Dans une boutique indépendante
-                    toulousaine, la sélection est souvent bien plus pointue : marques
-                    coréennes (K-beauty), cosmétiques naturels et bio sans compromis
-                    sur l&apos;efficacité, parfumerie de niche, soins formulés pour
-                    des peaux spécifiques.
+                    Tu as des centaines de références en rayon. Des marques que
+                    les gens recherchent vraiment — Nuxe, La Roche-Posay,
+                    Drunk Elephant, Glossier, Caudalie, NYX. Tu connais tes
+                    produits, tu conseilles bien, et tes clients réguliers
+                    repartent satisfaits. Pourtant, chaque jour, des
+                    Toulousains qui cherchent exactement ce que tu as en stock
+                    ne te trouvent pas. Ils passent à côté de ta boutique —
+                    parfois littéralement — sans savoir que tu existes.
                 </p>
 
                 <p>
-                    Et surtout, la vendeuse qui te reçoit connaît ses produits. Elle
-                    peut analyser ta carnation, te recommander un soin adapté à ton
-                    type de peau, ou t&apos;expliquer pourquoi telle formule convient
-                    mieux à ta routine. Ce niveau de conseil, aucune fiche produit
-                    sur internet ne peut le remplacer.
+                    Ce n&apos;est pas un problème de qualité. C&apos;est un
+                    problème de visibilité.
+                </p>
+
+                <h2>Comment les clients cherchent des cosmétiques aujourd&apos;hui</h2>
+
+                <p>
+                    Le parcours d&apos;achat cosmétique a profondément changé.
+                    Avant, un client qui voulait une crème hydratante ou un
+                    fond de teint précis allait directement en boutique. Aujourd&apos;hui,{" "}
+                    <strong>72 % des consommateurs font une recherche en
+                    ligne avant de se déplacer en magasin</strong> (source :
+                    Think with Google). Et dans la cosmétique, ce chiffre est
+                    encore plus élevé — les produits sont souvent recherchés
+                    par nom de marque, référence exacte, ou type de formule.
                 </p>
 
                 <p>
-                    Toulouse compte plus de{" "}
-                    <strong>1 500 commerces indépendants</strong> dans les segments
-                    beauté, mode et lifestyle. La ville a un tissu de boutiques
-                    cosmétiques dense et varié — encore faut-il savoir où chercher.
+                    Une cliente qui cherche un sérum à la vitamine C de la
+                    marque The Ordinary va taper exactement ça sur Google.
+                    Elle ne va pas taper "boutique cosmétique Toulouse". Elle
+                    cherche <em>un produit</em>. Et si ton stock n&apos;est pas
+                    visible en ligne, elle ne saura jamais que tu l&apos;as
+                    en rayon — à 500 mètres de chez elle.
                 </p>
 
-                <h2>Quartier par quartier : où trouver des cosmétiques à Toulouse</h2>
-
-                <h3>Capitole et rue Saint-Rome</h3>
-
                 <p>
-                    Le cœur commerçant de Toulouse concentre plusieurs boutiques
-                    beauté indépendantes sur un périmètre réduit. La rue Saint-Rome,
-                    la rue des Changes et les rues adjacentes au Capitole abritent
-                    des concept stores beauté, des parfumeries multimarques et
-                    quelques boutiques spécialisées en cosmétiques naturels.
-                    C&apos;est la zone idéale pour une session shopping beauté
-                    complète — plusieurs adresses en quelques minutes à pied.
+                    Le résultat : elle commande sur internet en deux clics,
+                    attend 48 heures, et n&apos;a jamais eu l&apos;occasion de
+                    découvrir ta boutique, de se faire conseiller, ou
+                    d&apos;acheter trois autres produits qu&apos;elle
+                    n&apos;avait pas prévus.
                 </p>
 
-                <h3>Les Carmes</h3>
+                <h2>Le paradoxe du rayon invisible</h2>
 
                 <p>
-                    Le quartier des Carmes est le territoire des boutiques cosmétiques
-                    les plus pointues de Toulouse. Entre soins bio formulés en France,
-                    cosmétiques coréens et parfumerie de créateurs, tu y trouves des
-                    références que personne d&apos;autre ne propose en ville. Les
-                    boutiques sont petites, les vendeurs passionnés, et les
-                    recommandations valent de l&apos;or. Un incontournable si tu
-                    cherches quelque chose que les grandes enseignes ne font pas.
+                    Une boutique cosmétique indépendante bien achalandée de
+                    Toulouse compte généralement entre 300 et 800 références.
+                    Des soins visage, du maquillage, des compléments beauté,
+                    des parfums, des accessoires. Chaque référence est une
+                    opportunité d&apos;attirer un client qui la cherche
+                    spécifiquement.
                 </p>
 
-                <h3>Wilson et centre élargi</h3>
-
                 <p>
-                    Le secteur autour de la place Wilson et des allées Jean-Jaurès
-                    regroupe plusieurs boutiques de cosmétiques accessibles et bien
-                    achalandées — soins du corps, maquillage, soins capillaires.
-                    Une zone pratique et centrale si tu n&apos;as pas beaucoup de
-                    temps devant toi.
+                    Mais voilà le paradoxe : <strong>95 % de ce stock est
+                    invisible sur Google</strong>. Pas parce que tu ne fais
+                    pas bien ton travail — mais parce que la visibilité
+                    produit en ligne nécessite des outils techniques que la
+                    plupart des boutiques indépendantes ne possèdent pas.
                 </p>
 
-                <h3>Saint-Cyprien</h3>
-
                 <p>
-                    La rive gauche monte en gamme depuis quelques années.
-                    Saint-Cyprien accueille désormais plusieurs boutiques de
-                    cosmétiques naturels et artisanaux — savons, huiles végétales,
-                    produits sans packaging superflu. Si tu cherches des soins à
-                    impact minimal, c&apos;est une adresse à explorer.
+                    Les grandes parapharmacies et les enseignes nationales
+                    ont des équipes entières dédiées au référencement produit.
+                    Elles alimentent Google Shopping avec leurs catalogues en
+                    temps réel, apparaissent en première position sur toutes
+                    les recherches de marques, et captent le trafic de
+                    clients qui auraient pu venir chez toi.
                 </p>
 
-                <h3>Les Minimes et Borderouge</h3>
-
                 <p>
-                    Pour les Toulousains qui habitent au nord, ces quartiers ont vu
-                    s&apos;installer des boutiques beauté indépendantes qui couvrent
-                    autant la parapharmacie que le maquillage naturel. Des adresses
-                    de quartier qui méritent d&apos;être connues même si elles ne
-                    font pas la une des magazines beauté.
+                    Résultat : quand quelqu&apos;un cherche "La Roche-Posay
+                    Effaclar Toulouse", il voit les grandes enseignes. Pas ta
+                    boutique, même si tu as exactement le produit qu&apos;il
+                    cherche à deux rues de chez lui.
                 </p>
 
-                <h2>Quels types de boutiques cosmétiques indépendantes à Toulouse ?</h2>
+                <h2>Trois avantages que les grandes enseignes ne peuvent pas te prendre</h2>
 
                 <p>
-                    Le marché toulousain de la cosmétique indépendante est varié.
-                    Voici les principaux créneaux représentés :
+                    Avant de parler de solution, posons un constat important :
+                    les boutiques cosmétiques indépendantes ont des atouts
+                    structurels que les chaînes ne peuvent pas reproduire.
+                </p>
+
+                <p>
+                    <strong>Le conseil personnalisé.</strong> Tu connais tes
+                    produits en profondeur. Une cliente avec une peau sensible
+                    qui réagit aux parfums de synthèse, tu sais exactement
+                    quoi lui conseiller. Aucun algorithme, aucune fiche
+                    produit en ligne ne peut remplacer ça.
+                </p>
+
+                <p>
+                    <strong>La sélection pointue.</strong> Tu ne vends pas
+                    tout — tu sélectionnes. Des marques que tu as testées,
+                    des formules que tu crois, des produits pour lesquels tu
+                    peux te porter garant. Cette curation a de la valeur pour
+                    les clients qui ne veulent pas se perdre dans des milliers
+                    d&apos;options.
+                </p>
+
+                <p>
+                    <strong>L&apos;achat immédiat.</strong> Pas de délai de
+                    livraison. Le client a le produit dans les mains,
+                    maintenant. Pour la cosmétique — où on a souvent besoin
+                    d&apos;un produit parce qu&apos;on a fini le sien — cette
+                    immédiateté vaut de l&apos;or.
+                </p>
+
+                <p>
+                    Le problème, ce n&apos;est pas que tu n&apos;aies pas
+                    d&apos;arguments. C&apos;est que les clients ne
+                    t&apos;atteignent pas avant d&apos;avoir déjà commandé
+                    ailleurs.
+                </p>
+
+                <h2>Rendre son catalogue cosmétique visible sans créer de site e-commerce</h2>
+
+                <p>
+                    La solution n&apos;est pas de te transformer en boutique
+                    en ligne. La logistique, les retours, les frais
+                    d&apos;envoi — ce n&apos;est pas ton métier, et ça ne
+                    doit pas le devenir. Ce que tu as besoin, c&apos;est que
+                    les clients qui cherchent tes produits te trouvent
+                    en ligne — et viennent les acheter chez toi, en boutique,
+                    comme avant.
+                </p>
+
+                <p>
+                    C&apos;est exactement ce que Two-Step permet. En quelques
+                    minutes, ton catalogue est en ligne avec photos,
+                    descriptions et disponibilité en temps réel. Un client
+                    qui cherche "Drunk Elephant Protini Toulouse" ou
+                    "crème Avène SPF 50 disponible centre-ville" peut
+                    te trouver directement — voir que tu as le produit en
+                    stock, voir ta distance, et décider de venir.
+                </p>
+
+                <p>
+                    Le processus est simple :
                 </p>
 
                 <ul>
                     <li>
-                        <strong>Cosmétiques naturels et bio</strong> : formules clean,
-                        ingrédients traçables, souvent locaux ou européens. En forte
-                        croissance à Toulouse depuis 2020.
+                        Tu exportes ton catalogue depuis ton logiciel de
+                        caisse (Square, Lightspeed, Shopify POS, ou un simple
+                        Excel)
                     </li>
                     <li>
-                        <strong>K-beauty (cosmétiques coréens)</strong> : soins
-                        multi-étapes, textures innovantes, marques que tu ne trouves
-                        pas en grande surface. Quelques boutiques spécialisées se sont
-                        installées à Toulouse ces dernières années.
+                        Two-Step enrichit automatiquement chaque produit avec
+                        une photo et une description optimisée
                     </li>
                     <li>
-                        <strong>Parfumerie de niche</strong> : maisons de parfum
-                        indépendantes, extraits de parfum, fragrances sans additifs
-                        inutiles — un segment en pleine expansion.
-                    </li>
-                    <li>
-                        <strong>Cosmétiques pour peaux de couleur</strong> : teintes
-                        inclusives, soins adaptés à des types de peau sous-représentés
-                        dans les gammes grand public.
-                    </li>
-                    <li>
-                        <strong>Soins capillaires spécialisés</strong> : boutiques
-                        dédiées aux cheveux bouclés, crépus ou très secs — un créneau
-                        où les indépendants font largement mieux que les grandes
-                        enseignes.
+                        Ton stock devient visible en ligne — sans que tu aies
+                        à gérer quoi que ce soit au quotidien
                     </li>
                 </ul>
 
-                <h2>Le problème : comment savoir si le produit est disponible avant de se déplacer ?</h2>
-
                 <p>
-                    Voilà le nœud du problème. Tu veux un sérum précis — une
-                    formule vitamine C d&apos;une marque coréenne, ou un soin
-                    correcteur sans silicones. Tu sais que ça existe à Toulouse.
-                    Mais tu ne sais pas :
-                </p>
-
-                <ul>
-                    <li>Si la boutique qui le propose est encore approvisionnée</li>
-                    <li>
-                        Si elle a ta variante (parfum, taille du conditionnement,
-                        version sans parfum)
-                    </li>
-                    <li>Si elle est ouverte aujourd&apos;hui</li>
-                </ul>
-
-                <p>
-                    Appeler chaque boutique une par une prend du temps. Les sites
-                    des boutiques indépendantes, quand ils existent, sont rarement
-                    à jour sur le stock réel. Et faire le tour à pied ne s&apos;improvise
-                    pas quand tu as deux heures devant toi.
-                </p>
-
-                <p>
-                    Résultat :{" "}
-                    <strong>
-                        34 % des consommateurs abandonnent un achat en magasin parce
-                        qu&apos;ils ne savent pas si le produit est disponible
-                    </strong>{" "}
-                    (étude FEVAD 2024). Ces ventes vont ailleurs — alors que le
-                    produit était peut-être à 10 minutes à pied.
-                </p>
-
-                <p>
-                    Two-Step a été créé pour résoudre exactement ce problème.
-                    L&apos;application répertorie le stock des boutiques indépendantes
-                    toulousaines en temps réel : tu cherches un produit, tu vois
-                    quelles boutiques l&apos;ont en stock près de chez toi, et tu
-                    y vas. Pas de commande, pas de livraison — tu trouves, tu y vas,
-                    tu l&apos;as aujourd&apos;hui.
+                    Pour les marques cosmétiques connues, le taux
+                    d&apos;enrichissement automatique dépasse 95 %. Les
+                    photos produit, les noms canoniques, les descriptions —
+                    tout est récupéré et mis en forme.
                 </p>
 
                 <p>
                     <a
-                        href="https://twostep.fr/marchands?utm_source=blog&utm_medium=article&utm_campaign=cosmetique-toulouse"
+                        href="https://twostep.fr/marchands?utm_source=blog&utm_medium=article&utm_campaign=boutique-cosmetique-toulouse"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Tu gères une boutique cosmétique à Toulouse ? Rejoins Two-Step
-                        et rends ton catalogue visible aux acheteurs du quartier —
-                        1 mois gratuit, sans engagement
+                        Référence ta boutique cosmétique sur Two-Step — 1 mois
+                        gratuit, sans engagement
                     </a>
                 </p>
 
-                <h2>Pour les boutiques cosmétiques : pourquoi rejoindre Two-Step ?</h2>
+                <h2>Toulouse : un marché beauté dynamique et mal exploité en ligne</h2>
 
                 <p>
-                    Si tu es propriétaire ou gérant d&apos;une boutique cosmétique
-                    à Toulouse, tu sais que le principal défi n&apos;est pas la
-                    qualité de tes produits — c&apos;est la visibilité. Un
-                    consommateur qui cherche &quot;sérum hydratant Toulouse&quot; sur
-                    son téléphone ne tombera probablement pas sur ta boutique. Il
-                    verra les grandes chaînes ou des boutiques en ligne, et passera
-                    à côté d&apos;une adresse locale qui a exactement ce qu&apos;il
-                    veut.
+                    Toulouse, c&apos;est 500 000 habitants en ville et
+                    1,5 million dans l&apos;agglomération. Une population
+                    jeune, étudiante et active, avec un fort pouvoir
+                    d&apos;achat dans la cosmétique. Les quartiers Carmes,
+                    Saint-Étienne, Capitole, Wilson et Victor Hugo concentrent
+                    une clientèle habituée aux marques et prête à dépenser
+                    dans des produits de qualité.
                 </p>
 
                 <p>
-                    Two-Step change ça. En quelques minutes, ton catalogue est
-                    visible pour tous les Toulousains qui cherchent ce que tu vends.
-                    Quand ils trouvent ton produit en stock sur Two-Step, ils viennent
-                    te voir — pas sur internet.
+                    Pourtant, les boutiques cosmétiques indépendantes de
+                    Toulouse sont quasi absentes des résultats Google sur les
+                    recherches produit. Quand une étudiante de Jean-Jaurès
+                    cherche "Fenty Beauty Toulouse" ou "huile de jojoba bio
+                    disponible à Toulouse", elle ne trouve ni toi, ni les
+                    autres boutiques indépendantes.
                 </p>
 
                 <p>
-                    Ce que tu n&apos;auras pas à gérer :
+                    C&apos;est un terrain pratiquement vierge. Les premières
+                    boutiques locales qui vont y apparaître vont capter un
+                    trafic que personne ne capte aujourd&apos;hui. Et
+                    contrairement aux grandes enseignes, les boutiques
+                    indépendantes ont la capacité de convertir ce trafic en
+                    clients fidèles — grâce au conseil, à l&apos;expérience
+                    en boutique, et à une relation qui n&apos;existe pas dans
+                    les grandes surfaces.
+                </p>
+
+                <h2>Ce que ça change concrètement</h2>
+
+                <p>
+                    Quand ton catalogue est visible en ligne, plusieurs choses
+                    se produisent :
                 </p>
 
                 <ul>
-                    <li>Pas de site e-commerce à maintenir</li>
-                    <li>Pas de livraison à organiser</li>
-                    <li>Pas de commission sur les ventes</li>
                     <li>
-                        Pas de photos à refaire (l&apos;enrichissement produit est
-                        automatique via le pipeline Two-Step)
+                        <strong>Tu attires des clients qui ne te
+                        connaissaient pas.</strong> Ils cherchaient un produit,
+                        pas une boutique. Ils te trouvent parce que tu as
+                        exactement ce qu&apos;ils cherchent.
+                    </li>
+                    <li>
+                        <strong>Tu réduis les déplacements pour
+                        rien.</strong> Les clients qui viennent après avoir vu
+                        ton stock en ligne savent déjà ce qu&apos;ils veulent.
+                        Moins de "vous avez ça ?", plus d&apos;achat direct.
+                    </li>
+                    <li>
+                        <strong>Tu gardes tes marges.</strong> Tu ne vends pas
+                        en ligne avec ses frais de livraison, de retour et de
+                        plateforme. Tu vends en boutique, comme avant — mais
+                        à plus de monde.
+                    </li>
+                    <li>
+                        <strong>Tu fidélises plus facilement.</strong> Un
+                        client qui vient te trouver après avoir vu ton stock
+                        en ligne et été bien conseillé a de fortes chances de
+                        revenir directement sans passer par Google la prochaine
+                        fois.
                     </li>
                 </ul>
 
-                <p>Les chiffres à retenir :</p>
-
-                <ul>
-                    <li>
-                        <strong>19 €/mois</strong> pour les 30 premières boutiques
-                        (prix garanti à vie)
-                    </li>
-                    <li>
-                        <strong>1 mois gratuit</strong>, sans engagement, résiliable
-                        à tout moment
-                    </li>
-                    <li>
-                        Synchronisation automatique avec Square, Shopify, Lightspeed,
-                        Zettle
-                    </li>
-                    <li>Onboarding en moins de 2 minutes</li>
-                </ul>
+                <h2>Par où commencer</h2>
 
                 <p>
-                    Plus de{" "}
-                    <strong>80 % des achats de cosmétiques se font encore en magasin</strong>{" "}
-                    en France. Le problème, c&apos;est que les consommateurs ne savent
-                    pas où aller. Two-Step les guide vers toi.
+                    Si tu as un logiciel de caisse, tu as déjà 80 % du travail
+                    de fait. Il te faut juste exporter ton catalogue — c&apos;est
+                    une fonction standard dans tous les logiciels du marché,
+                    accessible en quelques clics dans les paramètres de ton
+                    inventaire.
+                </p>
+
+                <p>
+                    Si tu n&apos;as pas de logiciel de caisse ou que ton
+                    catalogue est sur papier, Two-Step accepte aussi les
+                    fichiers Excel ou CSV faits à la main, et même les factures
+                    fournisseur en PDF — le système extrait les références
+                    automatiquement.
+                </p>
+
+                <p>
+                    L&apos;onboarding prend moins de 10 minutes. Le premier
+                    mois est gratuit, sans engagement. Après, c&apos;est
+                    19 EUR/mois pour les premières boutiques — un tarif bloqué
+                    à vie pour les pionniers.
+                </p>
+
+                <p>
+                    Ton stock est déjà là. Les clients qui le cherchent aussi.
+                    Il manque juste le lien entre les deux.
                 </p>
 
                 <p>
                     <a
-                        href="https://twostep.fr/marchands?utm_source=blog&utm_medium=article&utm_campaign=cosmetique-toulouse-fin"
+                        href="https://twostep.fr/marchands?utm_source=blog&utm_medium=article&utm_campaign=boutique-cosmetique-toulouse"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Inscrire ma boutique sur Two-Step — 1 mois gratuit
+                        Mets ta boutique cosmétique sur Two-Step — 1 mois
+                        gratuit, 19 EUR/mois ensuite
                     </a>
-                </p>
-
-                <h2>Quelques réflexes pour bien acheter des cosmétiques en boutique</h2>
-
-                <p>
-                    Avant de te déplacer, quelques habitudes qui font la différence :
-                </p>
-
-                <ul>
-                    <li>
-                        <strong>Précise ce que tu cherches</strong> : une routine matin
-                        ou soir, un problème de peau spécifique (acné, déshydratation,
-                        hyperpigmentation), une marque précise. Plus tu es précis, plus
-                        la vendeuse peut t&apos;orienter efficacement.
-                    </li>
-                    <li>
-                        <strong>Demande les testeurs</strong> : une boutique sérieuse
-                        propose toujours de tester sur la peau. La texture, l&apos;odeur
-                        et l&apos;absorption, ça ne se juge pas sur une photo.
-                    </li>
-                    <li>
-                        <strong>Renseigne-toi sur la composition</strong> : les boutiques
-                        indépendantes spécialisées connaissent leurs formules. Si tu as
-                        une allergie ou une préférence (sans parfum, sans huile minérale),
-                        dis-le d&apos;emblée.
-                    </li>
-                    <li>
-                        <strong>Vérifie le stock avant de venir</strong> : appelle la
-                        boutique, ou utilise Two-Step si elle y est référencée —
-                        ça t&apos;évitera un déplacement pour rien.
-                    </li>
-                    <li>
-                        <strong>Explore plusieurs boutiques dans le même secteur</strong> :
-                        les Carmes et le secteur Capitole regroupent plusieurs adresses
-                        à 5 minutes à pied. Prévois une heure pour comparer et prendre
-                        le temps d&apos;être bien conseillé.
-                    </li>
-                </ul>
-
-                <h2>En résumé</h2>
-
-                <p>
-                    Toulouse a tout ce qu&apos;il faut pour faire ses achats cosmétiques
-                    en boutique indépendante — soins naturels aux Carmes, K-beauty
-                    en centre-ville, parfumerie de niche à Saint-Cyprien. L&apos;offre
-                    est riche et variée. Le problème historique, c&apos;était
-                    l&apos;opacité du stock : impossible de savoir ce qui est disponible
-                    avant de se déplacer.
-                </p>
-
-                <p>
-                    C&apos;est ce fossé que Two-Step comble. Les boutiques qui rejoignent
-                    la plateforme voient leur catalogue devenir visible aux acheteurs
-                    locaux avant même qu&apos;ils décident où aller. Si tu cherches
-                    un produit précis à Toulouse, ou si tu gères une boutique cosmétique
-                    qui mérite d&apos;être trouvée, Two-Step est fait pour toi.
                 </p>
             </ArticleLayout>
         </>
