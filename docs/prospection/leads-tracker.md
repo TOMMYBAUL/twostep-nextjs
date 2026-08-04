@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-04 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,29 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mardi — 2026-08-04 (L'Auditeur) — Backlog 31/07 (L'Isla Nova, Optique Vales, Gaufrette, Arsène, Naïs) — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON du backlog sessions 20/07 (L'Isla Nova, Arsène et les Pipelettes) + 23/07 (Optique Vales) + 25/07 (Gaufrette et Créations, Naïs Rond'let)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-04.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| L'ISLA NOVA | Léa Palacin-Noblet | contact@lisla-nova.fr | Léa, tes créateurs locaux visibles sur Google Toulouse ? | 7/10 |
+| OPTIQUE VALES | Jacques Vales | magasinboulbonne@optiquevales.fr | Jacques, tes montures trouvées par les Toulousains sur Google ? | 7/10 |
+| GAUFRETTE ET CRÉATIONS | Sandrine Fraigneau | gaufrette.et.creations@gmail.com | Sandrine, tes bijoux et créations trouvés par les Toulousains ? | 7/10 |
+| ARSÈNE ET LES PIPELETTES | Hélène Rieunier | sav@arseneetlespipelettes.com | Hélène, tes marques enfant visibles sur Google Toulouse ? | 6/10 |
+| NAÏS (ROND'LET) | Carole Dray | contact@nais-boutique.fr | Carole, tes 2 000 pièces grande taille visibles sur Google ? | 6/10 |
+
+**⚠️ Gmail MCP indisponible (47e session consécutive)** — brouillons à copier-coller manuellement dans Gmail.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.  
+**⚠️ L'Isla Nova** : confirmer présence boutique terrain avant envoi (adresse légale gérant = L'Isle-en-Dodon).  
+**⚠️ Arsène et les Pipelettes** : email SAV — vérifier que Hélène consulte cette boîte.
+
+*Note session 04/08 (L'Auditeur) : 5 emails ACA rédigés sur backlog non traité identifié en 31/07. Recherches web effectuées : Léa/L'Isla Nova (concept store créateurs locaux/français, 36 rue des Tourneurs — ⚠️ présence terrain à confirmer), Jacques/Optique Vales (opticien famille depuis 1963/64, indépendant, tiers payant, rue Boulbonne), Sandrine/Gaufrette et Créations (bijoux+mode+déco+cadeaux, 4,8/5 Google, av. des Minimes, fondée 2006), Hélène/Arsène et les Pipelettes (mode enfant 2 niveaux, rue de Metz — ⚠️ email SAV), Carole/Naïs Rond'let (grande taille 42-60, 2000+ pièces, 25 ans expertise, Bonnefoy). Gmail MCP hors service 47e session — copier-coller requis. Notion MCP hors service. Backlog restant : JACK'N ROLL (6/10), MATSAI MARA (8/10 ⚠️ marque propre), VIOLETTES ET PASTELS (5/10), IMAGINE (8/10 ⚠️ non traité depuis 20/07), SARL PERLIN'S (8/10 ⚠️), SAOYA (7/10 ⚠️), LES CUIRS DU SUD (7/10 ⚠️).*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
