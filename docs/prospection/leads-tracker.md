@@ -1,16 +1,41 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-04 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 307
-- NOUVEAU : 84
+- Total leads : 311
+- NOUVEAU : 86
 - CONTACTE : 1
-- BROUILLON : 194
+- BROUILLON : 195
 - Reponses : 0
 - Signes : 0
 
 ## Leads actifs
+
+### Lundi — 2026-08-04 (L'Éclaireur) — Capitole (toulouse-merchants-full.json épuisé) — 2 emails confirmés
+
+**Agent** : L'Éclaireur | **Quartier** : Capitole (lundi) → ÉPUISÉ DÉFINITIF top-prospects-centre.json (75/75). Session en mode extension toulouse-merchants-full.json — rues Vidal, Tourneurs, Saint-Antoine du T.
+
+**Note de session :** Capitole ÉPUISÉ DÉFINITIF dans top-prospects-centre.json (75/75 depuis 18/05, confirmé 15/06). Session 2026-08-04 : pivot extension via toulouse-merchants-full.json — ~49 candidats filtrés sur rues Capitole. Résultat : quasi-totalité déjà tracés (NEGREVERGNE, KATHY.B, OPTIQUE REMUSAT, COMBO, BIJOUTERIE DU CAPITOLE, PARALLELE, AMA LUNA, MANOUSHKA, SIENNE, MANIK, SERHA, BAGWOOD) ou écartés (YSABELLE ROSE liquidation 2016, LA FILLE DE MARGARET fermée 2024, TOULOUSE TIME ART ventes aux enchères, COURBETTES & GALIPETTES chaîne). **2 emails réellement nouveaux : ARABESQUE + NAT ET NICOLAS/ELLE BOUTIQUE.** 2 NOUVEAU terrain sans email : OUPS, LA CROIZETTE. Notion MCP indisponible (47e session consécutive). Gmail MCP indisponible (47e session consécutive).
+
+| Boutique | Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ARABESQUE (KARINE IZARD) | 11 rue Paul Vidal | Bijouterie fantaisie | Karine Izard | arabesqueizard@gmail.com ✅ | 480793199 | 7/10 | BROUILLON | Email confirmé via arabesqueizard.fr. Bijoux fantaisie créateur. Boutique active. |
+| NAT ET NICOLAS / ELLE BOUTIQUE | 5 rue Paul Vidal | Mode femme | Nataliya Kravchuk → Elodie Rochereau | natetnicolas@gmail.com ✅ | 830845533 | 5/10 | NOUVEAU | ⚠️ Société transférée à ELLE BOUTIQUE (Elodie Rochereau) avril 2025. natetnicolas.com encore actif, email probablement encore opérationnel. À contacter avec précaution — vérifier si boutique toujours en activité sous ce nom. |
+
+**NOUVEAU terrain (sans email) :**
+
+| Boutique | Adresse | Segment | Gérant | Contact connu | SIREN | Score | Notes |
+|---|---|---|---|---|---|---|---|
+| OUPS (Objets Uniques Petites Séries) | 54 rue des Tourneurs | Bijouterie fantaisie | Fabienne Le Guen | IG @oups_tlse | 519488837 | 6/10 | Pas d'email trouvé. IG actif. À visiter terrain. |
+| LA CROIZETTE | 22 rue Saint-Antoine du T | Bijouterie fantaisie | Ghislaine Capdeville | Tél 05 61 23 49 77 | 503051831 | 5/10 | Pas d'email trouvé. À visiter terrain. |
+
+**⚠️ Notion MCP indisponible (47e session consécutive) — résultats consignés dans le tracker uniquement.**
+**⚠️ Gmail MCP indisponible (47e session consécutive) — aucun brouillon créé.**
+
+*Note session 04/08 (L'Éclaireur) : Capitole ÉPUISÉ (75/75 top-prospects-centre.json). Extension toulouse-merchants-full.json très épuisée aussi. ~49 candidats investigués : 2 vrais nouveaux emails (ARABESQUE 7/10, NAT ET NICOLAS 5/10 avec réserve transfert), 2 NOUVEAU terrain sans email (OUPS, LA CROIZETTE). Résidu SEUIL ATTEINT confirmé : PARALLELE (6+ passages), AMA LUNA (6 passages), MANOUSHKA (6 passages). Seuil approchant : SIENNE (5 passages), MANIK (5 passages), SERHA (5 passages), BAGWOOD (4-5 passages). Recommandation : le lundi Capitole ne peut plus produire d'emails en mode digital — orienter vers terrain (porte-à-porte) ou basculer sur un nouveau quartier. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-08-04".*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
