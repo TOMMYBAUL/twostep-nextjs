@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-05 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -11,6 +11,27 @@
 - Signes : 0
 
 ## Leads actifs
+
+### Mercredi — 2026-08-05 (L'Auditeur) — Backlog Bonnefoy/Minimes/Carmes — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
+**Leads traités** : 5 BROUILLON issus du backlog non traité sessions Eclaireur 24-25/07 (Gaufrette et Créations, Naïs Rond'let, Jack'n Roll, Violettes et Pastels, Horty's Fashion)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-05.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| GAUFRETTE ET CREATIONS | Sandrine Fraigneau | gaufrette.et.creations@gmail.com | Sandrine, tes bijoux et cadeaux visibles sur Google Toulouse ? | 7/10 |
+| NAÏS (ROND'LET) | Carole Dray | contact@nais-boutique.fr | Carole, tes 2000 pièces grande taille visibles sur Google Toulouse ? | 6/10 |
+| JACK'N ROLL | Gerard Fourcade | contact@jacknroll.fr | Gérard, tes trottinettes et longboards trouvés par les riders Toulousains ? | 6/10 |
+| VIOLETTES ET PASTELS | Benoît Lhommeau | violettesetpastels@orange.fr | Benoît, tes parfums Esteban visibles sur Google à Toulouse ? | 5/10 |
+| HORTY'S FASHION | Ahou Beugre | hortysfashionboutique@gmail.com | Ahou, ta mode africaine et tes cosmétiques trouvés sur Google Toulouse ? | 4/10 |
+
+**⚠️ Gmail MCP indisponible (47e session consécutive)** — brouillons à copier-coller manuellement depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.  
+
+*Note session 05/08 (L'Auditeur) : 5 emails ACA rédigés sur backlog non traité sessions 24-25/07 (Gaufrette et Créations, Naïs Rond'let, Jack'n Roll, Violettes et Pastels, Horty's Fashion — gérant Ahou Beugre identifié via societe.com). Recherches web effectuées : Sandrine/Gaufrette (4,8/5 Google, bijoux fantaisie+accessoires+déco depuis 2006), Carole/Naïs (25 ans expertise, 2000 pièces 42-60), Gérard/Jack'n Roll (glisse urbaine depuis 2018, trottinettes+longboards+rollers+quads), Benoît/Violettes et Pastels (gérant confirmé mai 2026, parfums Esteban+violettes+pastel), Ahou/Horty's Fashion (mode africaine wax/bazin/cosmétiques depuis 2015). Mariage Harmonya (Fahima Cheurfa) non traité — RDV uniquement, faible pertinence Two-Step. Gmail MCP hors service 47e session — copier-coller requis. Notion MCP hors service.*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
