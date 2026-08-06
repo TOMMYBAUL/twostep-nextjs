@@ -53,6 +53,29 @@
 
 ---
 
+### Mercredi — 2026-08-06 (L'Auditeur) — Backlog Bonnefoy/Minimes/Carmes — 5 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible (47e session), envoi manuel requis  
+**Leads traités** : 5 BROUILLON issus du backlog sessions Eclaireur 20/07 (L'Isla Nova), 23/07 (Violettes et Pastels), 25/07 (Gaufrette et Créations, Naïs Rond'let, Jack'n Roll)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-06.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| L'ISLA NOVA | Léa Palacin-Noblet | contact@lisla-nova.fr | Léa, tes créatrices françaises trouvées par les Toulousaines sur Google ? | 7/10 |
+| GAUFRETTE ET CRÉATIONS | Sandrine Fraigneau | gaufrette.et.creations@gmail.com | Sandrine, tes Sobral et La Fiancée du Mékong trouvés par les Toulousaines ? | 7/10 |
+| NAÏS (ROND'LET) | Carole Dray | contact@nais-boutique.fr | Carole, tes tailles 44-60 trouvées par les Toulousaines sur Google ? | 6/10 |
+| JACK'N ROLL | Gerard Fourcade | contact@jacknroll.fr | Gérard, ton matos glisse trouvé par les Toulousains sur Google en temps réel ? | 6/10 |
+| VIOLETTES ET PASTELS | Benoit Lhommeau | violettesetpastels@orange.fr | Benoit, tes bougies et parfums Esteban trouvés par les Toulousains sur Google ? | 5/10 |
+
+**Décisions** : Optique Vales non redrafté (déjà dans brouillons-email-2026-07-09.md). Arsène et les Pipelettes ÉCARTÉ (monomarque national 7+ boutiques + email SAV). Matsai Mara ÉCARTÉ (marque propre créatrice — monomarque).
+
+**⚠️ Gmail MCP indisponible (47e session consécutive)** — brouillons à copier-coller manuellement dans Gmail depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.
+
+*Note session 06/08 (L'Auditeur) : 5 leads BROUILLON backlog traités (L'Isla Nova, Gaufrette et Créations, Naïs Rond'let, Jack'n Roll, Violettes et Pastels). Recherches web effectuées : L'Isla Nova = créatrices françaises/locales made in France, sélection femme style+territoire (Toulouse ou L'Isle-en-Dodon ⚠️ à confirmer terrain) ; Gaufrette et Créations = bijoux Sobral/Ernesto/La Fiancée du Mékong, 4,8/5 Google, boutique canal Minimes depuis années ; Naïs Rond'let = prêt-à-porter grande taille 44-60, seule spécialiste quartier Bonnefoy ; Jack'n Roll = glisse urbaine (trottinette freestyle, longboard, roller, quad), produits de marque, 2 boutiques (Toulouse + Bordeaux) ; Violettes et Pastels = cadeaux/parfums d'ambiance revendeur Esteban, rue Saint-Pantaléon depuis 2014. Gmail MCP hors service 47e session — copier-coller requis. Notion MCP hors service.*
+
+---
+
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
 **Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible, envoi manuel requis  
