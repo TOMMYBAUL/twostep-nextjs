@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-07-31 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-06 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 307
@@ -9,8 +9,49 @@
 - BROUILLON : 194
 - Reponses : 0
 - Signes : 0
+- ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 
 ## Leads actifs
+
+### Mercredi — 2026-08-06 (L'Eclaireur) — Saint-Rome ÉPUISÉ DÉFINITIVEMENT (3e confirmation) — 0 email trouvé
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Rome (mercredi)  
+**Note de session :** Zone Saint-Rome exhaustivement ré-explorée. Tous les candidats non encore tracés sont soit fermés/liquidés (majorité), soit chaînes nationales, soit gérant = entité juridique sans individu identifiable. 0 email confirmé. Zone confirmée ÉPUISÉE pour la 3e fois. **Recommandation : pivoter mercredi vers un nouveau quartier (Esquirol, Daurade, ou autre secteur non couvert).**
+
+**Écartés session 06/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| COEXIST STORE | 831741268 | Fermée définitivement (2019). ÉCARTÉ DÉFINITIF. |
+| ENTRE ELLE ET MOI | 794386282 | Liquidation judiciaire 2016. ÉCARTÉ DÉFINITIF. |
+| ASM | 509226296 | Liquidation judiciaire 2020. ÉCARTÉ DÉFINITIF. |
+| BODY ONE LINGERIE | 442388046 | Fermée définitivement (liquidation 2015). ÉCARTÉ DÉFINITIF. |
+| CREA CONCEPT | 484882725 | Fermée définitivement (2010). ÉCARTÉ DÉFINITIF. |
+| SANTA FE (Groupe Fridman) | 511820453 | Liquidée mai 2024. ÉCARTÉ DÉFINITIF. |
+| MAKEUP SHOW | 803726832 | Fermée définitivement (décembre 2016). ÉCARTÉ DÉFINITIF. |
+| SARL TROPIQUE SUD | 521736100 | Liquidation judiciaire 2022. ÉCARTÉ DÉFINITIF. |
+| SDQ 31 | 844413483 | Liquidation judiciaire 2023. ÉCARTÉ DÉFINITIF. |
+| BLEU CERISE | — | Chaîne nationale (33 magasins). ÉCARTÉ DÉFINITIF. |
+| CALZEDONIA | — | Franchise internationale. ÉCARTÉ DÉFINITIF. |
+| TRANS-SHIRT ATELIER | 981147358 | Déjà ÉCARTÉ tracker (artisan sérigraphie — hors cible). |
+| POBIEDA | 831015748 | Déjà ÉCARTÉ tracker (liquidation judiciaire 2024). |
+| GAME TIME | 432706513 | Déjà ÉCARTÉ tracker (fermeture définitive confirmée). |
+
+**Candidats actifs sans email — visite terrain uniquement :**
+| Boutique | Gérant | Adresse | Segment | Notes |
+|---|---|---|---|---|
+| OUTDOOR DIFFUSION SUD OUEST | Clovis Houdart | 45 rue Saint-Rome | Sport | Site outdoordiffusion.com actif — email inféré non confirmé. Visite terrain. |
+| MIRA MIRA | Arnaud Turbe | 23 rue Saint-Rome | Bijouterie | Active (4.6★ Google, IG @official.miramira) — aucun email public. Visite terrain. |
+| BODY ONE | Joy Amsellem | 41 rue des Changes | Mode | Site bodyone.fr actif — contact@bodyone.fr = siège. Visite terrain. |
+| SO GLAM | Huu Bui | 16 rue des Changes | Mode | Sites boutique-soglam.com actif, IG @soglambtq31 — aucun email. Visite terrain. |
+| VIA UNO | Jadir Bergonsi | 9 rue Saint-Rome | Chaussures | Active (5 établissements, limite cible) — aucun email. Visite terrain. |
+| JO SCOOP | Olivier Judkiewicz | 31 rue Saint-Rome | Mode | Active — aucun email public. Visite terrain. |
+| BARONS PAPILLOM BY B&B | Amine Britel | 14 rue Temponières | Chaussures | Active — aucun email. Visite terrain. |
+
+**⚠️ RECOMMANDATION : Saint-Rome ÉPUISÉ — 3e confirmation (sessions 05/2026 → 25/06 → 06/08). Pivoter mercredi vers Esquirol/Daurade ou un quartier non encore couvert.**
+
+*Note session 06/08 (L'Eclaireur) : 14 candidats non trackés passés en revue → 14 ÉCARTÉ (liquidations 2010-2024 + chaînes) + 7 boutiques actives sans email identifiable (terrain uniquement). Notion MCP indisponible — mise à jour tracker local uniquement. Gmail MCP indisponible.*
+
+---
 
 ### Jeudi — 2026-07-31 (L'Auditeur) — Backlog Capitole/Lafayette — 5 brouillons rédigés
 
