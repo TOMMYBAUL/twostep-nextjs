@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-06 (L'Eclaireur)*
+*Dernière mise à jour : 2026-08-07 (L'Auditeur)*
 
 ## Stats
 - Total leads : 307
@@ -12,6 +12,33 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 
 ## Leads actifs
+
+### Vendredi — 2026-08-07 (L'Auditeur) — Backlog Carmes — 4 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (48e session), envoi manuel requis  
+**Leads traités** : 4 BROUILLON backlog Carmes non encore rédigés (ATYPIQUE, FIFI JOLIPOIS, LA LOGE DU CONCIERGE, EMPR.Store)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-07.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| ATYPIQUE Concept Store | Christine Souloumiac | contact@atypiquetoulouse.com | Christine, tes Cabaia et Studio Roof trouvés par les Toulousains ? | 7/10 |
+| FIFI JOLIPOIS | Léa Dunogue | lea.fifijolipois@gmail.com | Léa, tes perles et bijoux fantaisie trouvés par les Toulousaines ? | 7/10 |
+| LA LOGE DU CONCIERGE | Peggy Delater | lalogeduconcierge@gmail.com | Peggy, tes luminaires et céramiques trouvés par les Toulousains sur Google ? | 6/10 |
+| EMPR.Store (Empire) | Remi Maurieres | hello@empr.store | Remi, ton stock Nike SB et Asics visible sur Google Toulouse ? | 6/10 |
+
+**Décisions** :
+- BAOBAB (Christophe Chopin, contact@baobab-home.fr) → **ÉCARTÉ** — marque propre belge (Baobab brand), boutiques mondiales = monomarque, hors cible Two-Step
+- L'IDEE (Carmes/Puits Clos) → SKIP — gérant non identifié publiquement
+- HORTY'S FASHION → SKIP — gérant non identifié
+- MARIAGE HARMONYA (4/10) → SKIP — niche mariage, faible pertinence Two-Step
+
+**⚠️ Gmail MCP indisponible (48e session consécutive)** — brouillons à copier-coller manuellement dans Gmail depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker uniquement.  
+**⚠️ 0 lead NOUVEAU avec email** — Saint-Rome épuisé (3e confirmation), tous les 84 NOUVEAU restants sont terrain-only. Recommandation : L'Eclaireur doit pivoter vers Esquirol/Daurade.
+
+*Note session 07/08 (L'Auditeur) : 4 emails ACA rédigés sur backlog Carmes non traité. Recherches web effectuées : Christine/Atypique (sacs Cabaia, déco Studio Roof, Gangzai — concept store 11 rue Croix Baragnon) ; Léa/Fifi Jolipois (perlerie 120m², bijoux fantaisie, Miyuki, institution Carmes depuis 2010) ; Peggy/La Loge du Concierge (5300 abonnés IG, luminaires/céramiques/déco sens, créée mars 2023, 14 rue Languedoc) ; Remi/EMPR.Store (Nike SB Orange Label + Asics Skate + New Balance Numeric, boutique Toulouse 4 rue des Puits Clos — siège Pau, à confirmer terrain). BAOBAB écarté (marque belge propre). Gmail MCP hors service 48e session — copier-coller requis. Notion MCP hors service.*
+
+---
 
 ### Mercredi — 2026-08-06 (L'Eclaireur) — Saint-Rome ÉPUISÉ DÉFINITIVEMENT (3e confirmation) — 0 email trouvé
 
