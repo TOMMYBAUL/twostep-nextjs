@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-07 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-08 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 307
@@ -12,6 +12,32 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 
 ## Leads actifs
+
+### Samedi — 2026-08-08 (L'Eclaireur) — Victor-Hugo (10 NOUVEAU 2e/3e passage) — 0 email confirmé
+
+**Agent** : L'Eclaireur | **Quartier** : Victor-Hugo (samedi)
+**Note de session :** 10 leads NOUVEAU Victor-Hugo re-passés en revue (2e ou 3e passage pour la plupart). Aucun email confirmé. Zone confirmée épuisée pour les emails accessibles en ligne — présences digitales trop faibles ou absentes pour tous ces candidats. CHATEIGNE a un site web (chateigneleshop.com) mais serveur bloque les accès automatisés (429) — email contact@chateigneleshop.com probable mais non confirmé. **Recommandation : pivoter samedi vers un nouveau quartier (Wilson/Compans-Caffarelli ou Esquirol/Daurade) ou traiter le backlog BROUILLON en attente.**
+
+**Leads re-passés — aucun email trouvé :**
+| Boutique | Gérant | Adresse | Notes | Statut |
+|---|---|---|---|---|
+| CHATEIGNE (le Shop) | Sarah Gueguen | 7 rue des Lois | Site chateigneleshop.com (429 bloqué). Email probable contact@chateigneleshop.com ❓ non confirmé. IG @chateigne_le_shop. Tél 07 66 82 27 23. | NOUVEAU |
+| HOT-COUTURE | Arielle Bonneville | 5 rue des Lois | SARL 2011. Aucun site, aucune présence digitale. Visite terrain. | NOUVEAU |
+| SARL PARIS SEPTIEME | Emilie Carpentier | 13 rue Bouquières | Aucune présence digitale. Visite terrain. | NOUVEAU |
+| ALICE ET LES GARCONS | Benoit Mabille de poncheville | 15 rue Bouquières | Facebook @aliceetlesgarcons + LinkedIn. Aucun email public. | NOUVEAU |
+| MINI JU (FEELING) | Sophie Chakri | 8 rue Gambetta | Tél 09 67 47 74 15. Aucun email. | NOUVEAU |
+| DORYANN (MATIERE NOBLE) | Stéphanie Dah-okimba | 19 rue Bouquières | IG @doryannstore. Tél 09 55 92 93 99. Chaussures haut de gamme EU. | NOUVEAU |
+| THEIA | Shan Huang | 7 rue Rémusat | Aucune présence digitale (très récente 2024). Visite terrain. | NOUVEAU |
+| SAINT PAULIN | Catherine Jimenez | 40 rue Rémusat | Bijouterie fév 2023. Tél 06 37 77 64 23. Aucun email. | NOUVEAU |
+| CASA AZUL | Emilie Devin | 19 rue Peyrolières | ⚠️ Opposition Pappers. IG @casa_azul_toulouse. Aucun email. | NOUVEAU |
+| AD VINTAGE | Adrien Ioualalen | 4 rue Bouquières | ⚠️ Opposition Pappers. ⚠️ Friperie vintage — hors cible Two-Step. IG @ads.vintage.toulouse. | NOUVEAU |
+
+**⚠️ Notion MCP indisponible (49e session consécutive)** — récap tracker local uniquement. Cible Notion manquée : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-08-08".
+**⚠️ Victor-Hugo ÉPUISÉ** pour les emails en ligne — tous les candidats NOUVEAU ont été passés au moins 2× sans résultat. Recommandation : sortir Victor-Hugo de la rotation ou pivoter vers Wilson/Compans-Caffarelli.
+
+*Note session 08/08 (L'Eclaireur) : 15+ recherches web + fetches effectuées sur 10 NOUVEAU VH. CHATEIGNE a un site Shopify actif (chateigneleshop.com) mais serveur anti-bot (429). Les autres n'ont ni site, ni email public. HOT-COUTURE = SARL 2011, aucune trace en ligne. PARIS SEPTIEME = 0 présence. ALICE ET LES GARCONS = Facebook/LinkedIn uniquement. MINI JU = tél seulement. DORYANN = IG @doryannstore uniquement (chaussures EU haut de gamme, bien qualifiée Two-Step mais terrain only). THEIA = 0 présence. SAINT PAULIN = bijouterie 2023, tél. CASA AZUL + AD VINTAGE = opposition Pappers. Notion MCP hors service 49e session.*
+
+---
 
 ### Vendredi — 2026-08-07 (L'Auditeur) — Backlog Carmes — 4 brouillons rédigés
 
