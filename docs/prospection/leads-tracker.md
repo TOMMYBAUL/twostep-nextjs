@@ -1,17 +1,45 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-08 (L'Eclaireur)*
+*Dernière mise à jour : 2026-08-10 (L'Eclaireur)*
 
 ## Stats
-- Total leads : 307
-- NOUVEAU : 84
+- Total leads : 310 (+3 : AZED, ANY DANSE, MONPARFUMMASIGNATURE)
+- NOUVEAU : 82 (NEGREVERGNE + BIJOUTERIE NOUGUES upgradés BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 194
+- BROUILLON : 199 (+5 session 10/08)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 
 ## Leads actifs
+
+### Lundi — 2026-08-10 (L'Eclaireur) — Capitole (reliquat JSON non tracé) — 4 emails confirmés
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
+**Note de session :** Poursuite investigation Capitole sur entrées JSON top-prospects-centre.json non tracées individuellement lors des passes antérieures. 10 candidats investigués. **4 emails confirmés** (+ 1 MONPARFUMMASIGNATURE ⚠️ hors cible probable). 4 sans email (terrain). 1 ÉCARTÉ (boutiques éphémères). Notion MCP indisponible (50e session consécutive). Gmail MCP indisponible.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| BIJOUTERIE NOUGUES | Capitole | Bijouterie/Joaillerie | Sandra Nougues | contact@bijouterienougues.fr ✅ | 730800612 | 8/10 | BROUILLON | Email confirmé via bijouterienougues.fr/contact. 32 rue de la Pomme. Joaillerie or/diamant/pierres depuis 2012. Mise à jour entrée existante (sans email → BROUILLON). |
+| NEGREVERGNE | Capitole | Maroquinerie/Bagages | Geraldine Casanovas | ste-negrevergne@hotmail.fr ✅ | 540800240 | 7/10 | BROUILLON | Email confirmé via Hoodspot/Cylex annuaires. 27 rue de Metz. Institution 1954, bagages multimarques. Upgrade NOUVEAU terrain → BROUILLON. |
+| AZED (Échappé Douce) | Capitole | Mode femme | Patricia Delchet | contact@echapedouce.fr ✅ | 751884123 | 6/10 | BROUILLON | Email confirmé via echapedouce.fr. 54 rue de Metz. Mode femme PAP multimarques. AZED (JSON) opère sous enseigne Échappé Douce. |
+| ANY DANSE (Freed of London Paris) | Capitole | Sport/Danse | Osamu Suzuki | toulouse@attitude-diffusion.com ✅ | 393744750 | 5/10 | BROUILLON | Email confirmé via attitude-diffusion.com/magasin-toulouse. 15 place du Capitole. Danse multimarques (Bloch, Capezio, Freed). Segment niche. |
+| MONPARFUMMASIGNATURE | Capitole | Cosmétique/Parfumerie | Sylvie Roubach | contact@monparfummasignature.fr ⚠️ | 831969860 | 3/10 | BROUILLON | Email confirmé via FCEM community. 42 rue de la Pomme. ⚠️ Service olfactif sur-mesure — hors cible Two-Step (pas de stock produits de marque). À valider Thomas avant contact Auditeur. |
+
+**ÉCARTÉ session 10/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| L'EMPLACEMENT (AMIE) | 893038257 | Espace boutiques éphémères / pop-up rotation — pas de stock stable. ÉCARTÉ. 40 rue d'Alsace Lorraine. |
+
+**Sans email (déjà NOUVEAU terrain tracker — re-passés, aucun nouvel email) :**
+CHAUSSURES MANIK (Pierre Lacabanne, 33 rue d'Alsace Lorraine — tél 05 61 21 52 08, site manik.fr sans email) ; SERHA (Nathalie Serfati, 37 rue de Metz — tél 05 31 15 02 34, aucun site) ; SIENNE (Simon Benlolo, 44 rue des Tourneurs — aucune présence web) ; AMA LUNA (Judith Soustiel, 66 rue de la Pomme — Facebook uniquement).
+
+**⚠️ Notion MCP indisponible (50e session consécutive)** — résultats tracker local uniquement. Cible : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-08-10".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé. 4 BROUILLON prioritaires pour L'Auditeur : BIJOUTERIE NOUGUES (8/10), NEGREVERGNE (7/10), AZED/Échappé Douce (6/10), ANY DANSE (5/10, niche danse à vérifier).
+
+*Note session 10/08 (L'Eclaireur) : 10 candidats Capitole investiguées depuis top-prospects-centre.json. BIJOUTERIE NOUGUES : joaillerie or/diamant/pierres, Sandra Nougues depuis 2012, bijouterienougues.fr actif — contact@bijouterienougues.fr. NEGREVERGNE : institution 1954, bagages/maroquinerie multimarques — ste-negrevergne@hotmail.fr via Hoodspot/Cylex. AZED : opère sous enseigne Échappé Douce (mode femme PAP, marques) — contact@echapedouce.fr. ANY DANSE = Freed of London Paris (Osamu Suzuki), 15 place du Capitole, dance multimarques — toulouse@attitude-diffusion.com via site officiel. MONPARFUMMASIGNATURE (Sylvie Roubach) = ateliers parfum sur-mesure, service — hors cible probable, à valider. L'EMPLACEMENT = boutiques éphémères pop-up → ÉCARTÉ. Capitole confirme épuisement avancé : recommandation focus terrain pour MANIK/SERHA/SIENNE/AMA LUNA lors passage Thomas. Notion MCP hors service 50e session.*
+
+---
 
 ### Samedi — 2026-08-08 (L'Eclaireur) — Victor-Hugo (10 NOUVEAU 2e/3e passage) — 0 email confirmé
 
