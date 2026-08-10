@@ -1,15 +1,39 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-10 (L'Eclaireur)*
+*Dernière mise à jour : 2026-08-10 (L'Auditeur)*
 
 ## Stats
-- Total leads : 310 (+3 : AZED, ANY DANSE, MONPARFUMMASIGNATURE)
-- NOUVEAU : 82 (NEGREVERGNE + BIJOUTERIE NOUGUES upgradés BROUILLON)
+- Total leads : 310
+- NOUVEAU : 82
 - CONTACTE : 1
-- BROUILLON : 199 (+5 session 10/08)
+- BROUILLON : 199 (4 brouillons rédigés session Auditeur 10/08 — copier-coller Gmail requis)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
+
+---
+
+### Dimanche — 2026-08-10 (L'Auditeur) — Backlog Capitole — 4 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (51e session), envoi manuel requis  
+**Leads traités** : 4 BROUILLON Capitole session Eclaireur 10/08 (BIJOUTERIE NOUGUES, NEGREVERGNE, AZED/Échappé Douce, ANY DANSE)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-10.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| BIJOUTERIE NOUGUES | Sandra Nougues | contact@bijouterienougues.fr | Sandra, tes bijoux or et diamants trouvés par les Toulousains sur Google ? | 8/10 |
+| NEGREVERGNE | Géraldine Casanovas | ste-negrevergne@hotmail.fr | Géraldine, tes Rimowa et Delsey trouvés par les Toulousains sur Google ? | 7/10 |
+| AZED / ÉCHAPPÉ DOUCE | Patricia Delchet | contact@echapedouce.fr | Patricia, ta sélection mode femme visible sur Google Toulouse en temps réel ? | 6/10 |
+| ANY DANSE (Freed of London) | Osamu Suzuki | toulouse@attitude-diffusion.com | Osamu, ton stock Freed of London visible sur Google Toulouse ? | 5/10 |
+
+**Décisions** : MONPARFUMMASIGNATURE (Sylvie Roubach) SKIPPÉE — hors cible Two-Step (service olfactif sur-mesure, pas de stock produits de marque). À valider Thomas avant contact éventuel.
+
+**⚠️ Gmail MCP indisponible (51e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement.
+
+*Note session 10/08 (L'Auditeur) : 4 emails ACA rédigés sur leads BROUILLON Capitole identifiés le matin même par l'Eclaireur. Recherches web : Sandra/Bijouterie Nougues (4 générations, joaillerie or/diamant/pierres précieuses, 2 boutiques Pomme depuis 1920, Sandra gérante depuis 2012) ; Géraldine/Négrevergne (institution 1954, Delsey/Rimowa/Tumi/Lipault/Capomagni multimarques) ; Patricia/Échappé Douce (PAP femme élégant intemporel, marques non confirmées en ligne — site non accessible) ; Osamu/Any Danse (Freed of London Paris = Attitude Diffusion SAS, 15 pl. Capitole, Bloch/Capezio/Freed multimarques danse). Gmail MCP hors service 51e session — copier-coller requis. Notion MCP hors service.*
+
+---
 
 ## Leads actifs
 
