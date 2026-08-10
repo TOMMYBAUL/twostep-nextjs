@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-cosmetiques-toulouse",
+        title: "Shopping cosmétiques à Toulouse : les boutiques indépendantes beauté à découvrir",
+        description:
+            "Parfums de niche, soins naturels, K-Beauty, cosmétiques bio… Le guide des boutiques beauté indépendantes de Toulouse, quartier par quartier.",
+        publishedAt: "2026-08-10",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
