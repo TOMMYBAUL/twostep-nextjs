@@ -1,15 +1,46 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-10 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-11 (L'Auditeur)*
 
 ## Stats
 - Total leads : 310
-- NOUVEAU : 82
+- NOUVEAU : 81 (-1 : LOJO → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 199 (4 brouillons rédigés session Auditeur 10/08 — copier-coller Gmail requis)
+- BROUILLON : 201 (+3 : LOJO 9/10, LA MISSTINGUETTE 7/10, BAMBINOU 5/10 — copier-coller Gmail requis)
+- ECARTES : +1 (BÔÈMBIO — fermée juillet 2024)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
+
+---
+
+### Mardi — 2026-08-11 (L'Auditeur) — Backlog Arnaud-Bernard + LOJO — 3 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 3 brouillons rédigés — Gmail MCP indisponible (52e session), envoi manuel requis  
+**Leads traités** : 1 NOUVEAU avec email (LOJO/LES BELLES BRANCHES) + 2 BROUILLON backlog Arnaud-Bernard session 30/07 (LA MISSTINGUETTE, BAMBINOU)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-11.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LOJO / LES BELLES BRANCHES | Joël Guillaumin | bonjour@lesbellesbranches.fr | Joël, tes montures françaises trouvées par les Toulousains sur Google ? | 9/10 |
+| LA MISSTINGUETTE EN SALOPETTE | Andrea Salvi | contact@lamisstinguettensalopette.com | Andrea, tes soins solides et cosmétiques naturels trouvés par les Toulousaines ? | 7/10 |
+| BAMBINOU.COM | Thierry Boronat | sc@bambinou.com | Thierry, tes Bugaboo et Stokke trouvés par les parents toulousains sur Google ? | 5/10 |
+
+**Écarté session 11/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| BÔÈMBIO | 532174299 | Radiée RCS le 18/07/2024 — fermée définitivement. Email boembio@gmail.com invalide. |
+
+**⚠️ Notes Thomas :**
+- **LOJO** : priorité envoi (9/10, opticien indépendant, montures françaises, Opticiens par Conviction). Gérant : Joël Guillaumin.
+- **La Misstinguette** : produits principalement en vrac (sans marque EAN) → pertinence Two-Step à valider avant envoi.
+- **Bambinou** : email sc@bambinou.com est SAV/service commercial (pas le gérant direct) → à confirmer terrain. 2 boutiques (Toulouse + Paris).
+- **BÔÈMBIO** → mettre à jour entrée existante tracker (ligne ~3622) → ÉCARTÉ.
+
+**⚠️ Gmail MCP indisponible (52e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement.
+
+*Note session 11/08 (L'Auditeur) : 0 lead NOUVEAU avec email standard (82 NOUVEAU tous terrain-only). Exception : LOJO (LES BELLES BRANCHES) — entrée NOUVEAU à 1162 non mise à jour lors session Eclaireur 30/07, email bonjour@lesbellesbranches.fr confirmé — gérant identifié Joël Guillaumin (LOJO SARL, SIREN 982720153), opticien éco-éthique, montures françaises <100km, Opticiens par Conviction — brouillon rédigé 9/10. 2 leads backlog Arnaud-Bernard (session 30/07) sans draft rédigé : LA MISSTINGUETTE (Andrea Salvi, cosmétique naturelle/zéro déchet, 4,8/5, ⚠️ vrac sans marques EAN) et BAMBINOU (Thierry Boronat, puériculture premium 34 marques, 11K IG, ⚠️ email SAV). BÔÈMBIO ÉCARTÉ — radiation RCS 18/07/2024. Gmail MCP hors service 52e session. Notion MCP hors service.*
 
 ---
 
@@ -1159,7 +1190,7 @@ Objet : G Joaillerie sur Two-Step — tes créations sur-mesure trouvées par le
 | BROCK'NROLL | 494671316 | Aucun email public. NOUVEAU — terrain. |
 | LE VICTORY | 852451061 | Aucun email public (IG @victorytoulouse, tél 05 61 21 92 06). NOUVEAU — terrain. |
 | BY LILOU | 913874947 | Contact via DM Instagram @by.lilou.toulouse uniquement. NOUVEAU — terrain. |
-| LOJO (LES BELLES BRANCHES) | 982720153 | Opticien récent, tél uniquement. NOUVEAU — terrain. |
+| LOJO (LES BELLES BRANCHES) | 982720153 | bonjour@lesbellesbranches.fr ✅ | Gérant : Joël Guillaumin. Opticien éco-éthique, montures françaises, Opticiens par Conviction. 15 rue du Rempart Saint-Étienne. BROUILLON — brouillon rédigé 11/08 (9/10). |
 | MERIC BOUTIQUE | 424777449 | Site web hors ligne, aucun email public. NOUVEAU — terrain. |
 | LE BOUDOIR DE PAULETTE | 818418311 | Bijouterie fantaisie, tél uniquement. NOUVEAU — terrain. |
 | MINIMA | 989365747 | Déco espagnole récente 2025, aucun email public (IG @minimatoulouse). NOUVEAU — terrain. |
@@ -3619,7 +3650,7 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 | # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | LA MISSTINGUETTE EN SALOPETTE | Arnaud-Bernard / 33 rue de la Colombette | Cosmétique naturelle/zéro déchet | Andrea Salvi | contact@lamisstinguettensalopette.com ✅ | 848182606 | 7/10 | BROUILLON | Épicerie cosmétique bio, vrac, couches lavables. Créée 2019. Tél 09 82 39 14 19. lamisstinguettensalopette.com. |
-| 2 | BÔÈMBIO | Arnaud-Bernard / 9 rue Arnaud Bernard | Cosmétique bio/zéro déchet | (gérant inconnu) | boembio@gmail.com ✅ | — | 6/10 | BROUILLON | Concept store zéro déchet : cosmétique bio, compléments, maquillage naturel, vegan. Tél 05 62 30 36 60. boembio.com. |
+| 2 | BÔÈMBIO | Arnaud-Bernard / 9 rue Arnaud Bernard | Cosmétique bio/zéro déchet | Evelyne Gerard | boembio@gmail.com | 532174299 | 0/10 | ÉCARTÉ | Radiation RCS le 18/07/2024 — fermée définitivement. Email invalide. |
 | 3 | BAMBINOU.COM | Arnaud-Bernard / 21 rue de la Trinité | Puériculture (marques) | Thierry Boronat | sc@bambinou.com ✅ | — | 5/10 | BROUILLON | Boutique puériculture (Bugaboo, BabyBjörn, Ergobaby…). 2 boutiques (Paris + Toulouse) + e-commerce. Tél 05 62 26 47 05. bambinou.com. |
 | 4 | PURE DECO | Guilhemery / 111 avenue Camille Pujol | Décoration design | (gérant inconnu) | contact@pure-deco.com ✅ | — | 5/10 | BROUILLON | Boutique déco 70m², lampes/meubles/objets design. Présente en ligne depuis 2005. Tél 05 62 57 19 49. pure-deco.com. |
 
