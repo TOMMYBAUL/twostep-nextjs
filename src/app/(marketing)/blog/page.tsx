@@ -2,6 +2,24 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-maroquinerie-toulouse",
+        title: "Shopping maroquinerie à Toulouse : les meilleures boutiques de sacs et accessoires cuir",
+        description:
+            "Sacs, portefeuilles, ceintures, petite maroquinerie… Guide des boutiques indépendantes à Toulouse, avec l'astuce pour vérifier le stock avant de te déplacer.",
+        publishedAt: "2026-08-12",
+        readingTime: "7 min",
+        category: "consommateurs" as const,
+    },
+    {
+        slug: "shopping-bijoux-toulouse",
+        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique",
+        description:
+            "Tu cherches un bijou à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes et comment éviter le déplacement pour rien.",
+        publishedAt: "2026-05-20",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "shopping-cosmetique-toulouse",
         title: "Shopping cosmétique à Toulouse : trouver tes produits beauté en boutique",
         description:
