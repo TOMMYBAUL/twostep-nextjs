@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-11 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-12 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 310
@@ -11,6 +11,38 @@
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
+- ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mercredi — 2026-08-12 (L'Eclaireur) — Saint-Rome 4e confirmation ÉPUISÉ — 0 email trouvé, 6 nouveaux ÉCARTÉ
+
+**Agent** : L'Eclaireur | **Quartier** : Saint-Rome (mercredi)
+**Note de session :** 10 candidats Saint-Rome non trackés individuellement investigués. 0 email confirmé. 6 nouvelles liquidations/fermetures découvertes. 4 boutiques actives sans email (terrain uniquement). Saint-Rome confirmé ÉPUISÉ pour la 4e fois. Notion MCP indisponible (53e session consécutive).
+
+**Écartés session 12/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| I LOVE SCARPE (SCARPE) | 811924067 | En cours de dissolution — fermeture définitive. ÉCARTÉ. |
+| TRANS-SHIRT TOULOUSE | 802468355 | Inactive depuis le 10/10/2025. 10 rue Temponières. ÉCARTÉ. |
+| PAUL MARIUS TOULOUSE (SAS PM1) | 814932943 | Établissement secondaire marque Paul Marius (siège Saint-Jean-de-Luz) — mono-marque, hors cible Two-Step (comme BAOBAB). ÉCARTÉ. |
+| MADAME MARCHAND (CELU & CIE) | 828890442 | Liquidation judiciaire simplifiée prononcée le 04/12/2018. ÉCARTÉ. |
+| GLAM SHOES BK (GLAMCO31) | 808299044 | Liquidation clôturée le 31/07/2020. ÉCARTÉ. |
+| SYSTER'S (DAC) | 538812199 | Cessation d'activité le 24/11/2014. ÉCARTÉ. |
+
+**Actifs sans email — visite terrain uniquement :**
+| Boutique | Gérant | Adresse | Segment | Notes |
+|---|---|---|---|---|
+| LINEA MODA | Veronique Notte (choplin) | 31 rue Saint-Rome | Maroquinerie | Active (Yelp avril 2026). IG @linea.moda.toulouse. FB Linea Moda Toulouse. Tél 05 61 21 32 31 / 06 52 86 33 00. Aucun email public. Visite terrain. |
+| MICHAEL DRILHOLE CONCEPT | Michael Drilhole | 31 rue Saint-Rome | Mode | Active (transféré 4→31 rue Saint-Rome juil 2024). LinkedIn + FB présents. Aucun email public. Visite terrain. |
+| STOCK COMPANY | Hadda Ouikou | 24 rue Saint-Rome | Mode | Active. Tél 05 34 33 88 49. Aucun email public. Visite terrain. |
+| PASSION FILLE | Kangle Wang | 14 rue Saint-Rome | Mode | Active. Aucun site, aucun email public. Visite terrain. |
+
+**⚠️ RECOMMANDATION DÉFINITIVE : Saint-Rome ÉPUISÉ — 4e confirmation (sessions 05/2026 → 25/06 → 06/08 → 12/08). Pivoter impérativement mercredi vers Esquirol/Daurade ou autre secteur non encore couvert.**
+**⚠️ Notion MCP indisponible (53e session consécutive)** — récap tracker local uniquement. Cible Notion manquée : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Rome 2026-08-12".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 12/08 (L'Eclaireur) : 10 candidats Saint-Rome non trackés individuellement investiguées depuis top-prospects-centre.json. I LOVE SCARPE (SCARPE/Alienor Lacroix) : dissolution en cours, fermeture définitive. TRANS-SHIRT TOULOUSE (David Metout, SIREN 802468355 ≠ SIREN tracker 411604408) : inactive depuis 10/10/2025. PAUL MARIUS TOULOUSE (SAS PM1/Tiffany Loubeyre) : établissement secondaire de la marque Paul Marius — mono-marque maroquinerie, écarté comme BAOBAB. MADAME MARCHAND (CELU & CIE/Karim Djeffal) : liquidation judiciaire simplifiée 04/12/2018. GLAM SHOES BK (GLAMCO31/Chadli Hambli) : liquidation clôturée 31/07/2020. SYSTER'S (DAC/Alex Dai) : cessation d'activité 24/11/2014. LINEA MODA (V.A MODA/Veronique Notte) : active (Yelp avril 2026), IG @linea.moda.toulouse, tél 05 61 21 32 31 — aucun email public. MICHAEL DRILHOLE CONCEPT (Michael Drilhole) : active (transféré juil 2024 au 31 rue Saint-Rome) — LinkedIn/Facebook, aucun email. STOCK COMPANY (Hadda Ouikou) : active, tél 05 34 33 88 49 uniquement. PASSION FILLE (LES QUATRE FILLES/Kangle Wang) : active, aucune présence digitale email. Notion MCP hors service 53e session. Gmail MCP hors service.*
 
 ---
 
