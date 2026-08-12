@@ -1,17 +1,40 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-12 (L'Eclaireur)*
+*Dernière mise à jour : 2026-08-12 (L'Auditeur)*
 
 ## Stats
 - Total leads : 310
-- NOUVEAU : 81 (-1 : LOJO → BROUILLON)
+- NOUVEAU : 80 (-2 : LOJO → BROUILLON, CHATEIGNE → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 201 (+3 : LOJO 9/10, LA MISSTINGUETTE 7/10, BAMBINOU 5/10 — copier-coller Gmail requis)
+- BROUILLON : 202 (+4 : LOJO 9/10, LA MISSTINGUETTE 7/10, BAMBINOU 5/10, CHATEIGNE 7/10 — copier-coller Gmail requis)
 - ECARTES : +1 (BÔÈMBIO — fermée juillet 2024)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mercredi — 2026-08-12 (L'Auditeur) — CHATEIGNE + PURE DECO — 2 brouillons rédigés
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 2 brouillons rédigés — Gmail MCP indisponible (54e session), envoi manuel requis  
+**Leads traités** : 1 NOUVEAU confirmé (CHATEIGNE — email ❓ → ✅ chateigneleshop@gmail.com) + 1 BROUILLON gérant identifié (PURE DECO — gérant inconnu → Corinne Badia Piot)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-12.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| CHATEIGNE (le Shop) | Sarah Gueguen | chateigneleshop@gmail.com ✅ | Sarah, tes bijoux créateurs trouvés par les Toulousaines sur Google ? | 7/10 |
+| PURE DECO | Corinne Badia Piot | contact@pure-deco.com ✅ | Corinne, tes Broste Copenhagen et Ferm Living trouvés par les Toulousains sur Google ? | 5/10 |
+
+**Décisions** :
+- CHATEIGNE : email ❓ non confirmé → confirmé cette session via chateigneleshop.com/pages/contact (adresse réelle : chateigneleshop@gmail.com, différent de l'email inféré contact@chateigneleshop.com). NOUVEAU → BROUILLON.
+- PURE DECO : gérant inconnu depuis session 30/07 → Corinne Badia Piot (gérant confirmé LinkedIn + societe.com). Multimarque confirmé : Broste Copenhagen, Ferm Living, Umbra, Bensimon Maison. Email contact@pure-deco.com déjà confirmé.
+- HORTY'S FASHION (hortysfashionboutique@gmail.com, 4/10) → SKIP — score trop faible + gérant non identifié.
+
+**⚠️ Gmail MCP indisponible (54e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-12".
+
+*Note session 12/08 (L'Auditeur) : 0 lead NOUVEAU avec email confirmé au départ (80 NOUVEAU tous terrain-only). Investigation CHATEIGNE (le Shop) via WebFetch chateigneleshop.com/pages/contact → email chateigneleshop@gmail.com confirmé (tracker indiquait contact@chateigneleshop.com ❓). PURE DECO : gérant inconnu depuis 30/07 → recherche web → Corinne Badia Piot (gérant, 111 av Camille Pujol, déco multimarque Broste/Ferm Living/Umbra). 2 emails ACA rédigés. Gmail MCP hors service 54e session — copier-coller requis. Notion MCP hors service.*
 
 ---
 
@@ -798,7 +821,7 @@ Aucun candidat actif sans email identifié cette session — zone Carmes très �
 | OLIVIER NARDIN OPTIQUE | Victor-Hugo/Colombette | Optique | Olivier Nardin | olivier.nardin@colombette-optique.fr ✅ | 753217140 | 8/10 | BROUILLON | Email confirmé via colombette-optique.fr (recherche web 11/07 confirme "olivier.nardin", typo "olivie" corrigée). 20 rue de la Colombette. Tél : 05 61 62 71 52. |
 | LE SENS DE LA MARCHE | Victor-Hugo/Rivals | Chaussures | Isabelle Coulomb-mauviere | toulouse@lesensdelamarche.fr ✅ | 524677457 | 7/10 | BROUILLON | Email confirmé via lesensdelamarche.fr. 10 rue Rivals. Tél : 05 34 33 86 79. Chaussures marche/confort (MBT). |
 | BOUTIQUE ORLY | Victor-Hugo/Wilson | Mode homme | Daniel Ben yahia | toulouse@orlyplacewilson.com ✅ | 383867330 | 7/10 | BROUILLON | Email confirmé via orlyplacewilson.com. 9 place Wilson. Mode homme depuis 1963. Tél : 05 62 27 77 77. |
-| CHATEIGNE (le Shop) | Victor-Hugo/Lois | Mode/Bijoux | Sarah Gueguen | — | 879968402 | 7/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — IG @chateigne_le_shop, tél : 0766822723. 7 rue des Lois. Mode femme + bébé + bijoux créateurs. Visite terrain. |
+| CHATEIGNE (le Shop) | Victor-Hugo/Lois | Mode/Bijoux | Sarah Gueguen | chateigneleshop@gmail.com ✅ | 879968402 | 7/10 | BROUILLON | Email confirmé 12/08 via chateigneleshop.com/pages/contact. IG @chateigne_le_shop, tél : 0766822723. 7 rue des Lois. Mode femme boho + bébé + bijoux argent/laiton créateurs. Brouillon rédigé 12/08. |
 | HOT-COUTURE | Victor-Hugo/Lois | Mode | Arielle Bonneville | — | 531001709 | 5/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — aucune présence digitale confirmée. 5 rue des Lois. Visite terrain. |
 | FABIENNE (S.A. PERRY) | Victor-Hugo/Austerlitz | Mode | Elisabeth Malet | infos.perry@gmail.com | 630800316 | 5/10 | BROUILLON | Email trouvé 01/08/26 — infos.perry@gmail.com (entité S.A. PERRY, source Solocal). FABIENNE = établissement secondaire de PERRY (5 pl. Trinité). 10 rue d'Austerlitz. |
 | SARL PARIS SEPTIEME | Victor-Hugo/Bouquières | Mode | Emilie Carpentier | — | 750521759 | 6/10 | NOUVEAU | Email non trouvé (1er passage 11/07) — aucune présence digitale confirmée. 13 rue Bouquières. Visite terrain. |
@@ -3684,7 +3707,7 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 | 1 | LA MISSTINGUETTE EN SALOPETTE | Arnaud-Bernard / 33 rue de la Colombette | Cosmétique naturelle/zéro déchet | Andrea Salvi | contact@lamisstinguettensalopette.com ✅ | 848182606 | 7/10 | BROUILLON | Épicerie cosmétique bio, vrac, couches lavables. Créée 2019. Tél 09 82 39 14 19. lamisstinguettensalopette.com. |
 | 2 | BÔÈMBIO | Arnaud-Bernard / 9 rue Arnaud Bernard | Cosmétique bio/zéro déchet | Evelyne Gerard | boembio@gmail.com | 532174299 | 0/10 | ÉCARTÉ | Radiation RCS le 18/07/2024 — fermée définitivement. Email invalide. |
 | 3 | BAMBINOU.COM | Arnaud-Bernard / 21 rue de la Trinité | Puériculture (marques) | Thierry Boronat | sc@bambinou.com ✅ | — | 5/10 | BROUILLON | Boutique puériculture (Bugaboo, BabyBjörn, Ergobaby…). 2 boutiques (Paris + Toulouse) + e-commerce. Tél 05 62 26 47 05. bambinou.com. |
-| 4 | PURE DECO | Guilhemery / 111 avenue Camille Pujol | Décoration design | (gérant inconnu) | contact@pure-deco.com ✅ | — | 5/10 | BROUILLON | Boutique déco 70m², lampes/meubles/objets design. Présente en ligne depuis 2005. Tél 05 62 57 19 49. pure-deco.com. |
+| 4 | PURE DECO | Guilhemery / 111 avenue Camille Pujol | Décoration design | Corinne Badia Piot | contact@pure-deco.com ✅ | 480357367 | 5/10 | BROUILLON | Gérant identifié 12/08 (LinkedIn + societe.com). Multimarque : Broste Copenhagen, Ferm Living, Umbra, Bensimon Maison. Boutique déco 70m², en ligne depuis 2005. Tél 05 62 57 19 49. Brouillon rédigé 12/08. |
 
 **Éliminées session 30/07 :**
 | Boutique | Adresse | Motif |
