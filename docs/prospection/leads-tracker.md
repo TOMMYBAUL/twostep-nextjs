@@ -3730,4 +3730,37 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 
 **⚠️ Notion MCP indisponible (46e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Arnaud-Bernard 2026-07-30".
 
+---
+
+## Recap leads — 2026-08-13 (L'Éclaireur) — Multi-zones (Guilhemery + centre-ville élargi) — 10 NOUVEAU emails
+
+**Agent** : L'Éclaireur | **Quartier** : Multi-zones (Guilhemery + Lapeyrouse + Genty Magré + Colombette + Jaurès + Saint-Exupéry + Pélissier) — jeudi = Carmes ÉPUISÉ DÉFINITIVEMENT depuis 24/07 | **Statut** : À valider | **Notion** : Non créé (MCP indisponible — 47e session consécutive)
+
+**Note de session :** Zone du jeudi = Carmes ÉPUISÉE DÉFINITIVEMENT (24/07). Extension multi-zones : Guilhemery (avenue Camille Pujol), puis centre-ville élargi (rue Lapeyrouse, rue Genty Magré, rue de la Colombette, allées Jean Jaurès, avenue Saint-Exupéry, rue Lt Col Pélissier). Forte concentration optique indépendante cette session (8/10 leads) — vague "Opticiens par Conviction" + indépendants Toulouse non encore trackés. 10 emails nouveaux confirmés SIREN présents dans toulouse-merchants-full.json et absents du tracker. Nombreuses redécouvertes écartées : COLOMBETTE OPTIQUE (BROUILLON 11/07), OPTIQUE AUSTERLITZ (BROUILLON 04/07), IMAGIN OPTIQUE (BROUILLON 11/07), ESPACE OPTIQUE BONNEFOY (BROUILLON 04/07), LES BELLES BRANCHES (mise à jour 30/07), OPTIQUE RÉMUSAT (BROUILLON 11/08). Éliminées : BOOTSHOP (dissoute 2017), OPTICAL FACTORY (liquidée 2025), MOD'OPTIC (liquidée 2020), RAW (liquidée 2021), OPTIC ABARET (franchise ATOL → hors cible).
+
+| # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | OKLA (E.T. ALTERNATIVE) | Carmes / 4 rue des Puits Clos | Sport/skate multimarques | Tom Terrisse | contact@oklashop.com ✅ | 387981079 | 8/10 | À valider | Skate/streetwear/snowboard. Marques : Vans, DC, Volcom, Billabong, Element. 1 seul établissement. oklashop.com actif. |
+| 2 | RIQUIER OPTIQUE | Guilhemery / 62 av. Camille Pujol | Optique indépendant | Benjamin Riquier | riquieroptique@gmail.com ✅ | 513632588 | 9/10 | À valider | Opticien indépendant. Email direct gérant. 1 seul établissement. |
+| 3 | SOUL BROTHERS JEWELLERY | Colombette / 44 rue de la Colombette | Bijouterie / Minéraux | Olivier Fraysse | sbj@bijouxmineraux.com ✅ | 480056209 | 7/10 | À valider | Bijoux, pierres, minéraux. bijouxmineraux.com actif. 1 établissement. |
+| 4 | CHATEAUVIEUX OPTICIENS | Saint-Étienne / 10 rue Lapeyrouse | Optique indépendant | Emmanuel Chateauvieux | chateauvieux.opticiens@gmail.com ✅ | 392148128 | 8/10 | À valider | Opticien indépendant historique. 1 seul établissement. |
+| 5 | MONIQUE + MARCEL | Saint-Étienne / 4 rue Genty Magré | Optique indépendant | Aurore Perrot | moniqueplusmarcel@gmail.com ✅ | 952459782 | 9/10 | À valider | Concept optique "nouvelle génération", monture sur mesure. Instagram actif. 1 établissement. |
+| 6 | OPTIQUE DU PALAIS | Centre / 5 place Lafourcade | Optique indépendant | Ali Dellal | contact.optiquedupalais@gmail.com ✅ | 802316786 | 8/10 | À valider | Membre réseau "Opticiens par Conviction". Indépendant confirmé. 1 établissement. |
+| 7 | CLAIRE & FRANCOIS OPTIQUE | Centre / 6 rue du Sale | Optique indépendant | Claire Contie | claireetfrancois@gmail.com ✅ | 538103953 | 8/10 | À valider | Opticien de quartier indépendant. Email direct gérant. 1 établissement. |
+| 8 | OPTIQUE JEAN JAURÈS | Jaurès / 76 allées Jean Jaurès | Optique indépendant | Jean-Christophe Mopty | optiquejeanjaures@hotmail.fr ✅ | 499015501 | 7/10 | À valider | Opticien indépendant. 1 seul établissement. |
+| 9 | OPTIQUE PONT DES DEMOISELLES | Bonnefoy / 4 av. Antoine de Saint-Exupéry | Optique indépendant | Jérémi Pasturel | optique-pont-demoiselles@orange.fr ✅ | 910352046 | 7/10 | À valider | Opticien indépendant. Orange pro email. 1 établissement. |
+| 10 | LE COMPTOIR DE L'OPTIQUE (BCGA) | Centre / 11 rue Lt Col Pélissier | Optique indépendant | Julien Panicali | contact@lecomptoir-deloptique.fr ✅ | 829655851 | 9/10 | À valider | Duo jeunes opticiens indépendants (Julien Panicali + Lucas Guillermin). Cité ToulEco 2024. lecomptoir-deloptique.fr actif. Score 9/10. |
+
+**Éliminées session 2026-08-13 :**
+| Boutique | Adresse | Motif |
+|---|---|---|
+| BOOTSHOP | Centre-ville | Dissoute 2017 — fermée définitivement. ÉCARTÉ. |
+| OPTICAL FACTORY | Centre-ville | Liquidée judiciaire 2025. ÉCARTÉ. |
+| MOD'OPTIC | Centre-ville | Liquidée 2020. ÉCARTÉ. |
+| RAW | Centre-ville | Liquidée 2021. ÉCARTÉ. |
+| OPTIC ABARET | Centre-ville | Franchise ATOL confirmée (web search) → chaîne nationale. HORS CIBLE. |
+| OLIVIER NARDIN OPTIQUE | 20 rue Colombette | Même enseigne que COLOMBETTE OPTIQUE déjà BROUILLON (11/07). Adresse identique. DOUBLON. |
+
+**⚠️ Notion MCP indisponible (47e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Multi-zones 2026-08-13".
+
 *Note session 30/07 (L'Éclaireur) : Pivot jeudi obligatoire (Carmes ÉPUISÉ 24/07, Bonnefoy/Minimes couvert 25/07). Zone Arnaud-Bernard + Guilhemery sélectionnée (0 sessions W31). 5 résultats effectifs : 4 NOUVEAU emails + 1 mise à jour terrain→email (LES BELLES BRANCHES bonjour@lesbellesbranches.fr). 5 redécouvertes déjà trackées (non recomptées). Zone partiellement épuisée : nombreuses boutiques sans email public (formulaires, téléphone uniquement, Facebook uniquement) ou hors cible (CBD, artisans, associations). BÔÈMBIO + LA MISSTINGUETTE = cosmétique bio/zéro déchet (segment cosmétique Two-Step ✅). LES BELLES BRANCHES (optique éco-éthique, LOJO) = 9/10, priorité envoi brouillon. MR SUNBELL STORE + PAUSE = terrain recommandé. ⚠️ Email COLOMBETTE OPTIQUE discordant à vérifier. Notion MCP indisponible (46e session).*
