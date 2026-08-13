@@ -1,17 +1,44 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-12 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-13 (L'Auditeur)*
 
 ## Stats
 - Total leads : 310
 - NOUVEAU : 80 (-2 : LOJO → BROUILLON, CHATEIGNE → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 202 (+4 : LOJO 9/10, LA MISSTINGUETTE 7/10, BAMBINOU 5/10, CHATEIGNE 7/10 — copier-coller Gmail requis)
+- BROUILLON : 207 (+5 session 13/08 : COMPTOIR DE L'OPTIQUE BCGA 9/10, MONIQUE+MARCEL 9/10, CHATEAUVIEUX 8/10, OKLA 8/10, SOUL BROTHERS 7/10 — copier-coller Gmail requis)
 - ECARTES : +1 (BÔÈMBIO — fermée juillet 2024)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-13 (L'Auditeur) — 5 brouillons rédigés (leads Eclaireur 13/08)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible (55e session), envoi manuel requis  
+**Leads traités** : 5 leads issus de la session L'Éclaireur 2026-08-13 (Multi-zones Guilhemery + centre-ville élargi) — scores 7-9/10 — tous "À valider" → BROUILLON  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-13.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LE COMPTOIR DE L'OPTIQUE (BCGA) | Julien Panicali | contact@lecomptoir-deloptique.fr ✅ | Julien, tes créateurs de lunettes trouvés par les Toulousains sur Google ? | 9/10 |
+| MONIQUE + MARCEL | Aurore Perrot | moniqueplusmarcel@gmail.com ✅ | Aurore, tes Kuboraum et créateurs trouvés par les Toulousains sur Google ? | 9/10 |
+| CHATEAUVIEUX OPTICIENS | Emmanuel Chateauvieux | chateauvieux.opticiens@gmail.com ✅ | Emmanuel, tes Cartier et Dita Eyewear trouvés par les Toulousains sur Google ? | 8/10 |
+| OKLA (E.T. ALTERNATIVE) | Tom Terrisse ⚠️ | contact@oklashop.com ✅ | Tom, ton stock Vans et Santa Cruz visible sur Google Toulouse en temps réel ? | 8/10 |
+| SOUL BROTHERS JEWELLERY | Olivier Fraysse | sbj@bijouxmineraux.com ✅ | Olivier, tes minéraux et bijoux lithothérapie trouvés par les Toulousains sur Google ? | 7/10 |
+
+**Décisions** :
+- 5 leads sélectionnés parmi les 10 de la session Éclaireur 13/08 (scores 7-9/10, mix segments : 3 optique + 1 skate + 1 bijouterie/minéraux).
+- LE COMPTOIR DE L'OPTIQUE (BCGA) : boutique Julien Panicali (11 rue Lt Col Pélissier) — DISTINCTE de la boutique Lucas Guillermin (44 rue des Tourneurs, déjà BROUILLON depuis 13/07). Même raison sociale BCGA, deux associés cofondateurs, deux adresses. Email contact@lecomptoir-deloptique.fr = email général de l'enseigne — brouillon adressé à Julien Panicali.
+- OKLA : ⚠️ prénom "Tom Terrisse" non confirmé publiquement (fondateur original = Eric Terrisse, possiblement décédé ou retraité). À vérifier terrain avant envoi.
+- 5 leads restants session 13/08 non traités → prochaine session Auditeur : RIQUIER OPTIQUE (Benjamin, 9/10), OPTIQUE DU PALAIS (Ali, 8/10), CLAIRE & FRANCOIS OPTIQUE (Claire, 8/10), OPTIQUE JEAN JAURÈS (Jean-Christophe, 7/10), OPTIQUE PONT DES DEMOISELLES (Jérémi, 7/10).
+
+**⚠️ Gmail MCP indisponible (55e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-13".
+
+*Note session 13/08 (L'Auditeur) : 0 lead NOUVEAU avec email confirmé au départ (80 NOUVEAU tous terrain-only). Pivot vers les 10 leads "À valider" de la session Éclaireur 13/08 (multi-zones). 5 emails ACA rédigés, 5 laissés pour prochaine session. OKLA : prénom gérant à confirmer. Gmail MCP hors service 55e session — copier-coller requis. Notion MCP hors service.*
 
 ---
 
@@ -3740,16 +3767,16 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 
 | # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | OKLA (E.T. ALTERNATIVE) | Carmes / 4 rue des Puits Clos | Sport/skate multimarques | Tom Terrisse | contact@oklashop.com ✅ | 387981079 | 8/10 | À valider | Skate/streetwear/snowboard. Marques : Vans, DC, Volcom, Billabong, Element. 1 seul établissement. oklashop.com actif. |
-| 2 | RIQUIER OPTIQUE | Guilhemery / 62 av. Camille Pujol | Optique indépendant | Benjamin Riquier | riquieroptique@gmail.com ✅ | 513632588 | 9/10 | À valider | Opticien indépendant. Email direct gérant. 1 seul établissement. |
-| 3 | SOUL BROTHERS JEWELLERY | Colombette / 44 rue de la Colombette | Bijouterie / Minéraux | Olivier Fraysse | sbj@bijouxmineraux.com ✅ | 480056209 | 7/10 | À valider | Bijoux, pierres, minéraux. bijouxmineraux.com actif. 1 établissement. |
-| 4 | CHATEAUVIEUX OPTICIENS | Saint-Étienne / 10 rue Lapeyrouse | Optique indépendant | Emmanuel Chateauvieux | chateauvieux.opticiens@gmail.com ✅ | 392148128 | 8/10 | À valider | Opticien indépendant historique. 1 seul établissement. |
-| 5 | MONIQUE + MARCEL | Saint-Étienne / 4 rue Genty Magré | Optique indépendant | Aurore Perrot | moniqueplusmarcel@gmail.com ✅ | 952459782 | 9/10 | À valider | Concept optique "nouvelle génération", monture sur mesure. Instagram actif. 1 établissement. |
-| 6 | OPTIQUE DU PALAIS | Centre / 5 place Lafourcade | Optique indépendant | Ali Dellal | contact.optiquedupalais@gmail.com ✅ | 802316786 | 8/10 | À valider | Membre réseau "Opticiens par Conviction". Indépendant confirmé. 1 établissement. |
-| 7 | CLAIRE & FRANCOIS OPTIQUE | Centre / 6 rue du Sale | Optique indépendant | Claire Contie | claireetfrancois@gmail.com ✅ | 538103953 | 8/10 | À valider | Opticien de quartier indépendant. Email direct gérant. 1 établissement. |
-| 8 | OPTIQUE JEAN JAURÈS | Jaurès / 76 allées Jean Jaurès | Optique indépendant | Jean-Christophe Mopty | optiquejeanjaures@hotmail.fr ✅ | 499015501 | 7/10 | À valider | Opticien indépendant. 1 seul établissement. |
-| 9 | OPTIQUE PONT DES DEMOISELLES | Bonnefoy / 4 av. Antoine de Saint-Exupéry | Optique indépendant | Jérémi Pasturel | optique-pont-demoiselles@orange.fr ✅ | 910352046 | 7/10 | À valider | Opticien indépendant. Orange pro email. 1 établissement. |
-| 10 | LE COMPTOIR DE L'OPTIQUE (BCGA) | Centre / 11 rue Lt Col Pélissier | Optique indépendant | Julien Panicali | contact@lecomptoir-deloptique.fr ✅ | 829655851 | 9/10 | À valider | Duo jeunes opticiens indépendants (Julien Panicali + Lucas Guillermin). Cité ToulEco 2024. lecomptoir-deloptique.fr actif. Score 9/10. |
+| 1 | OKLA (E.T. ALTERNATIVE) | Carmes / 4 rue des Puits Clos | Sport/skate multimarques | Tom Terrisse | contact@oklashop.com ✅ | 387981079 | 8/10 | BROUILLON | Skate/streetwear/snowboard. Marques : Vans, DC, Volcom, Billabong, Element. 1 seul établissement. oklashop.com actif. Brouillon rédigé 13/08. ⚠️ Prénom gérant à confirmer terrain avant envoi. |
+| 2 | RIQUIER OPTIQUE | Guilhemery / 62 av. Camille Pujol | Optique indépendant | Benjamin Riquier | riquieroptique@gmail.com ✅ | 513632588 | 9/10 | À valider | Opticien indépendant. Email direct gérant. 1 seul établissement. Brouillon à rédiger (prochaine session Auditeur). |
+| 3 | SOUL BROTHERS JEWELLERY | Colombette / 44 rue de la Colombette | Bijouterie / Minéraux | Olivier Fraysse | sbj@bijouxmineraux.com ✅ | 480056209 | 7/10 | BROUILLON | Bijoux, pierres, minéraux. bijouxmineraux.com actif. 1 établissement. Brouillon rédigé 13/08. |
+| 4 | CHATEAUVIEUX OPTICIENS | Saint-Étienne / 10 rue Lapeyrouse | Optique indépendant | Emmanuel Chateauvieux | chateauvieux.opticiens@gmail.com ✅ | 392148128 | 8/10 | BROUILLON | Opticien indépendant historique. 1 seul établissement. Brouillon rédigé 13/08. |
+| 5 | MONIQUE + MARCEL | Saint-Étienne / 4 rue Genty Magré | Optique indépendant | Aurore Perrot | moniqueplusmarcel@gmail.com ✅ | 952459782 | 9/10 | BROUILLON | Concept optique "nouvelle génération", monture sur mesure. Instagram actif. 1 établissement. Brouillon rédigé 13/08. |
+| 6 | OPTIQUE DU PALAIS | Centre / 5 place Lafourcade | Optique indépendant | Ali Dellal | contact.optiquedupalais@gmail.com ✅ | 802316786 | 8/10 | À valider | Membre réseau "Opticiens par Conviction". Indépendant confirmé. 1 établissement. Brouillon à rédiger (prochaine session Auditeur). |
+| 7 | CLAIRE & FRANCOIS OPTIQUE | Centre / 6 rue du Sale | Optique indépendant | Claire Contie | claireetfrancois@gmail.com ✅ | 538103953 | 8/10 | À valider | Opticien de quartier indépendant. Email direct gérant. 1 établissement. Brouillon à rédiger (prochaine session Auditeur). |
+| 8 | OPTIQUE JEAN JAURÈS | Jaurès / 76 allées Jean Jaurès | Optique indépendant | Jean-Christophe Mopty | optiquejeanjaures@hotmail.fr ✅ | 499015501 | 7/10 | À valider | Opticien indépendant. 1 seul établissement. Brouillon à rédiger (prochaine session Auditeur). |
+| 9 | OPTIQUE PONT DES DEMOISELLES | Bonnefoy / 4 av. Antoine de Saint-Exupéry | Optique indépendant | Jérémi Pasturel | optique-pont-demoiselles@orange.fr ✅ | 910352046 | 7/10 | À valider | Opticien indépendant. Orange pro email. 1 établissement. Brouillon à rédiger (prochaine session Auditeur). |
+| 10 | LE COMPTOIR DE L'OPTIQUE (BCGA) | Centre / 11 rue Lt Col Pélissier | Optique indépendant | Julien Panicali | contact@lecomptoir-deloptique.fr ✅ | 829655851 | 9/10 | BROUILLON | Duo jeunes opticiens indépendants (Julien Panicali + Lucas Guillermin). Cité ToulEco 2024. lecomptoir-deloptique.fr actif. Score 9/10. Brouillon rédigé 13/08. |
 
 **Éliminées session 2026-08-13 :**
 | Boutique | Adresse | Motif |
