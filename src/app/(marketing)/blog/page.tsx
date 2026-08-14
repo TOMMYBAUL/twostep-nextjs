@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "boutique-sport-toulouse",
+        title: "Boutique sport à Toulouse : comment rendre ton stock visible quand tes clients cherchent sur Google",
+        description:
+            "78% de tes clients cherchent le produit en ligne avant de venir. Voici comment apparaître dans leurs résultats sans créer de site e-commerce.",
+        publishedAt: "2026-08-14",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
