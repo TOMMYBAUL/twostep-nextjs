@@ -1,17 +1,43 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-14 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-15 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 310
-- NOUVEAU : 80 (-2 : LOJO → BROUILLON, CHATEIGNE → BROUILLON)
+- NOUVEAU : 80 (inchangé)
 - CONTACTE : 1
-- BROUILLON : 211 (+4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10 — copier-coller Gmail requis)
-- ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
+- BROUILLON : 211 (inchangé)
+- ECARTES : inchangé
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Samedi — 2026-08-15 (L'Eclaireur) — Victor-Hugo ÉPUISÉ (confirmation définitive JSON) — 0 email trouvé
+
+**Agent** : L'Eclaireur | **Quartier** : Victor-Hugo (samedi)
+**Note de session :** Victor-Hugo (top-prospects-centre.json) intégralement vérifié — 9 prospects au total, tous déjà trackés (BROUILLON ou ÉCARTÉ). Aucun nouveau prospect à investiguer. Zone ÉPUISÉE confirmée pour la Néme fois.
+
+**État des 9 prospects Victor-Hugo du JSON :**
+| Boutique | SIREN | Gérant | Email | Statut |
+|---|---|---|---|---|
+| CESARE NORI | 328090410 | Tatiana Nori | service.client@cesarenori.fr | BROUILLON |
+| CYCLARTISANS | 944321488 | Loïc Martin | — | ÉCARTÉ (artisan, hors cible) |
+| FAUR QUINTANA | 534100342 | Benoit Quintana | info@faur-quintana.com | BROUILLON |
+| L'ADRESSE BLANCHE | 901855585 | Magali Aycaguer | bonjour@ladresseblanche.fr | BROUILLON |
+| LA MOMERIE | 840216766 | Lou-maite Monjon | contact@la-momerie.com | BROUILLON |
+| MARC FREZAL | 449858794 | Marc Frezal | — | ÉCARTÉ (artisan horloger, hors cible) |
+| MAUELICLE | 422057927 | Eric Fontaine | — | ÉCARTÉ (liquidation mars 2023) |
+| TENDANCES LINGERIE | 851831982 | Johan Bouysse | contact@tendances-lingerie.com | BROUILLON |
+| VIRAGES | 344626130 | Simon Gerson | — | ÉCARTÉ (radiée 2016) |
+
+**⚠️ RECOMMANDATION DÉFINITIVE : Victor-Hugo ÉPUISÉ (JSON + zones étendues Gambetta/Rémusat/Bouquières/Lois/Austerlitz/Wilson/Peyrolières). Retirer Victor-Hugo de la rotation samedi. Proposer : Esquirol/Daurade ou Wilson/Compans-Caffarelli pour les prochains samedis.**
+**⚠️ Notion MCP indisponible (57e session consécutive)** — récap tracker local uniquement. Cible Notion manquée : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Victor-Hugo 2026-08-15".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 15/08 (L'Eclaireur) : Vérification systématique des 9 prospects Victor-Hugo de top-prospects-centre.json. Tous déjà présents dans le tracker : 5 BROUILLON avec email (CESARE NORI, FAUR QUINTANA, L'ADRESSE BLANCHE, LA MOMERIE, TENDANCES LINGERIE) + 4 ÉCARTÉ (CYCLARTISANS artisan, MARC FREZAL artisan, MAUELICLE liquidation 2023, VIRAGES radiée 2016). Confirmation définitive que Victor-Hugo JSON est épuisé depuis la session du 02/05/2026. Les sessions étendues (27/06, 04/07, 11/07, 08/08) ont également épuisé les zones adjacentes. Action requise Thomas : retirer Victor-Hugo de la rotation samedi et définir un nouveau quartier cible (Esquirol/Daurade ou Wilson/Compans-Caffarelli recommandés). Notion MCP hors service 57e session. Gmail MCP hors service.*
 
 ---
 
