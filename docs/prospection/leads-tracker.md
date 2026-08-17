@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-14 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-17 (L'Eclaireur)*
 
 ## Stats
 - Total leads : 310
@@ -12,6 +12,35 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+- ECARTES session 17/08 : +2 (CAHORS SPORT/INTERSPORT — franchise nationale ; SAGA COSMETIQUES — chaîne nationale ~36 boutiques)
+
+---
+
+### Lundi — 2026-08-17 (L'Eclaireur) — Capitole ÉPUISÉ DÉFINITIF — 0 email nouveau, +2 ÉCARTÉ
+
+**Agent** : L'Eclaireur | **Quartier** : Capitole (lundi)
+**Note de session :** Audit exhaustif de TOUS les prospects Capitole restants du JSON top-prospects-centre.json (75 entrées totales). **Capitole est désormais 100% ÉPUISÉ** — chaque entrée du JSON est documentée dans le tracker (BROUILLON, ÉCARTÉ, ou NOUVEAU-terrain). 0 nouveau email trouvé. 2 nouveaux ÉCARTÉ confirmés. Notion MCP indisponible (57e session consécutive). Gmail MCP indisponible.
+
+**Nouveaux ÉCARTÉ session 17/08 :**
+| Boutique | SIREN(s) | Motif |
+|---|---|---|
+| CAHORS SPORT DISTRIBUTION + SOCIETE DISTRIBUTION CASTRES + SPORT DISTRIBUTION ALBI + SPORT DISTRIBUTION LABEGE + SPORT DISTRIBUTION ROUFFIAC | 420973075 / 404272130 / 437929961 / 351670625 / 529213498 | Franchise INTERSPORT nationale (confirmé via pagesjaunes.fr + societe.com + 118000.fr). Toutes ces entités (gérant Benoît Barron, 11 place Esquirol) correspondent à l'INTERSPORT Esquirol. Chaîne nationale >5 établissements. ÉCARTÉES DÉFINITIF. |
+| SAGA COSMETIQUES (SAGA GRENOBLE) | 492557004 | Chaîne nationale semi-franchise ~36 boutiques France (franchise-magazine.com, confirmé avril 2026). Gérant = GLOW UP DEVELOPMENT (société, pas de contact personnel). 49 rue de la Pomme. ÉCARTÉE DÉFINITIF. |
+
+**Situation complète Capitole au 17/08 :**
+- ✅ BROUILLON (email confirmé) : BIJOUTERIE NOUGUES, NEGREVERGNE, AZED/Échappé Douce, MODI-IN, LE QUOTIDIEN STORE, BIAS, SUD OUEST WATCH SA, IMAGINE, SARL PERLIN'S, SAOYA, ARSENE ET LES PIPELETTES, LILI-LEONE, N A L'INFINI, HANDY, LES CUIRS DU SUD, RACHEL HAIR, MIDICA, MEPHISTO (DEJEAN), MONPARFUMMASIGNATURE ⚠️, ANY DANSE ⚠️ = **20 leads avec email**
+- 🚫 ÉCARTÉ DÉFINITIF : SUPER33STORE, HERO SEVEN, SHILTON, LA MAISON DE L'HOMME, LEMAN, MOSQUITOS, SARL ANDRIK, VERSO, COMPAGNIE MERIDIONALE, DUO BOUTIQUE, L'EMPLACEMENT, THE NORTH FACE, NAPAPIJRI, LEWIS, L'ISLA NOVA, ALPHABET, BANANA-POMME, PAYOTE, COMEBACK, TILL/TILLAMY, TOVLI, RECOVERY PROJECT, ACTURUS/EL GANSO, EDEN/Eden Shoes, GABOR, SAINT JAMES, LANCASTER, CONCEPT STORE TNF, YVES ROCHER, BE UP, SUPERDRY, BURBERRYS, SABON, DIKA, TIMBERLAND, UNBOTTLED, SCDT, CAHORS SPORT/INTERSPORT, SAGA COSMETIQUES = **39 ÉCARTÉ**
+- 🔍 NOUVEAU terrain (email impossible, visite physique uniquement) : CHAUSSURES MANIK, SERHA, SIENNE (x2), AMA LUNA ⚠️ seuil atteint, BAGWOOD/Alfred Wood, SADIA, SOCIETE LAKO, MANOUSHKA ⚠️ seuil atteint, KATHY.B, PAMPY, STOCK AMERICAIN/Andre Lelte, EDEN (PP NEDE déjà ÉCARTÉ) = **~12 terrain**
+
+**⚠️ RECOMMANDATION DÉFINITIVE : Capitole 100% ÉPUISÉ — ROTATION OBLIGATOIRE**
+Chaque entrée du JSON Capitole est désormais traitée. Aucun nouvel email à trouver via web search. Pour les prochains lundis, pivoter vers un secteur non couvert :
+→ Suggéré : **Guilhemery** / **Arnaud-Bernard** / **Minimes** / **Compans-Cafarelli** — quartiers pas encore explorés.
+Ou élargir la base JSON (toulouse-merchants-full.json, 1561 commercants) pour identifier de nouveaux prospects hors centre.
+
+**⚠️ Notion MCP indisponible (57e session consécutive)** — récap tracker local uniquement. Cible Notion manquée : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Capitole 2026-08-17".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 17/08 (L'Eclaireur) : Audit complet Capitole JSON. Restes non trackés : CAHORS SPORT + group (SIRENs multiples Benoît Barron, 11 place Esquirol) = INTERSPORT franchise nationale (pagesjaunes "INTERSPORT SOCIETE DISTRIBUTION CASTRES Toulouse", societe.com confirme affiliés INTERSPORT) → ÉCARTÉ. SAGA COSMETIQUES (SAGA GRENOBLE, 492557004, gérant GLOW UP DEVELOPMENT) = chaîne nationale semi-franchise ~36 boutiques France (franchise-magazine.com, observatoiredelafranchise.fr) → ÉCARTÉ. Tous autres Capitole JSON déjà trackés sessions antérieures (mai→août 2026). Capitole 100% épuisé. Notion MCP hors service 57e session. Gmail MCP hors service.*
 
 ---
 
