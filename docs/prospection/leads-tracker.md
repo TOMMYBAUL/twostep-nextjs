@@ -1,17 +1,43 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-14 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-17 (L'Auditeur)*
 
 ## Stats
 - Total leads : 310
 - NOUVEAU : 80 (-2 : LOJO → BROUILLON, CHATEIGNE → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 211 (+4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10 — copier-coller Gmail requis)
+- BROUILLON : 211 (+4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Lundi — 2026-08-17 (L'Auditeur) — 4 brouillons rédigés (backlog Éclaireur 15/07)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (57e session), envoi manuel requis  
+**Leads traités** : 4 leads BROUILLON issus de la session L'Éclaireur 2026-07-15 (Saint-Etienne périphérique + bonus Capitole) — jamais rédigés jusqu'à ce jour  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-17.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| M'ELLE BOUTIQUE | Tony Boutros El Khoury | contact@melleboutique-toulouse.fr ✅ | Tony, tes Rinascimento et créateurs italiens trouvés par les Toulousaines sur Google ? | 8/10 |
+| NESS BOUTIQUE | Inès Akki | nesseboutik@gmail.com ✅ | Inès, tes nouveaux arrivages trouvés par les Toulousaines sur Google en temps réel ? | 7/10 |
+| TRENTOTTO | Stephan Oddos | contact@trentotto.fr ✅ | Stephan, tes 500 marques design et mode trouvées par les Toulousains sur Google ? | 7/10 |
+| L'INTERPRETE CONCEPT STORE | Karen (⚠️ source Yelp — à confirmer terrain) | contact@linterprete-conceptstore.com ✅ | Karen, ton stock unique trouvé par les Toulousains sur Google en temps réel ? | 7/10 |
+
+**Décisions** :
+- 4 emails ACA rédigés parmi les 5 leads de la session Éclaireur 15/07 (jamais traités par L'Auditeur).
+- TRENTOTTO : gérant = Stephan Oddos confirmé web (fondateur 2004, boutique Toulouse depuis 2008). 3 adresses (sous seuil 5) → inclus.
+- L'INTERPRETE : prénom "Karen" source Yelp uniquement — ⚠️ à confirmer terrain avant envoi.
+- ANDY'S ETHIC : ⚠️ ÉCARTÉ cette session — gérant inconnu (femme, sans prénom confirmé) + risque monomarque Kameha Lane à vérifier. À traiter en session suivante si gérant identifié.
+
+**⚠️ Gmail MCP indisponible (57e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-17".
+
+*Note session 17/08 (L'Auditeur) : 0 lead NOUVEAU avec email (80 NOUVEAU tous terrain-only). Pivot vers backlog BROUILLON non rédigé de la session Éclaireur 15/07. 4 emails ACA rédigés, 1 écarté (ANDY'S ETHIC — gérant inconnu). Gmail MCP hors service 57e session — copier-coller requis. Notion MCP hors service. TRENTOTTO : gérant Stephan Oddos confirmé et mis à jour dans le tracker.*
 
 ---
 
@@ -836,7 +862,7 @@ Aucun candidat actif sans email identifié cette session — zone Carmes très �
 **Bonus lead Capitole (à traiter lundi) :**
 | Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
 |---|---|---|---|---|---|---|---|---|
-| TRENTOTTO | Capitole/Paul Vidal | Concept store mode/maison | — | contact@trentotto.fr ✅ | — | 7/10 | BROUILLON | 14 rue Paul Vidal. 1 000m², concept store design/mode/maison haut de gamme depuis 1986. Gérant à confirmer. |
+| TRENTOTTO | Capitole/Paul Vidal | Concept store mode/maison | Stephan Oddos ✅ | contact@trentotto.fr ✅ | — | 7/10 | BROUILLON | 14 rue Paul Vidal. 1 000m², 500+ marques design/mode/maison, 3 adresses (Toulouse, Quint-Fonsegrives, Isle-Jourdain). Fondé 2004 par Stephan Oddos, Toulouse depuis 2008. Gérant confirmé web session 17/08. |
 
 **Écartées session 15/07 :**
 | Boutique | SIREN | Motif |
