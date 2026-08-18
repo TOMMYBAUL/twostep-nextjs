@@ -1,17 +1,54 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-17 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-18 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 310
-- NOUVEAU : 80 (-2 : LOJO → BROUILLON, CHATEIGNE → BROUILLON)
+- Total leads : 319
+- NOUVEAU : 85 (+5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
-- BROUILLON : 211 (+4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- BROUILLON : 215 (+4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
+- ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mardi — 2026-08-18 (L'Éclaireur) — Saint-Etienne 5e+ session — 4 emails trouvés
+
+**Agent** : L'Éclaireur | **Statut** : 🔍 4 emails trouvés — À valider  
+**Quartier** : Saint-Etienne | **Source** : toulouse-merchants-full.json (top-prospects-centre.json épuisé depuis 4+ sessions pour ce quartier)
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| BOUCLARD | Saint-Etienne | Mode/Vêtements multimarques | Bastien Gonzalez | bouclardstore@gmail.com ✅ | 930668454 | 9/10 | BROUILLON | Mode multimarques créée juin 2024 (Later, Noyoco, Camber USA, Woodbird, Naked & Famous, Novesta, Teva, Saucony). 10 rue Peyras. |
+| ECUME STORE | Saint-Etienne | Mode mixte | Aure-line Cabal | contact@ecumestore.fr ✅ | 835316316 | 8/10 | BROUILLON | Mode mixte (American Vintage, Thinking Mu, Minimum, Pompeii, Edmmond Studios). 16 rue Peyras. |
+| EDMOND L'OPTICIEN | Saint-Etienne | Optique | ⚠️ non confirmé (société "EDMOND", nom gérant "MAX OPTIC" dans données) | maxoptic@gmail.com ✅ | 905229498 | 7/10 | BROUILLON | Opticien indépendant (edmondlopticien.fr). 34 rue Rempart Saint-Etienne. ⚠️ Gérant à confirmer terrain avant envoi. |
+| PETITES FRIPOUILLES | Saint-Etienne | Chaussures/Mode enfants | Vincent Elharar | contact@petitesfripouilles.com ✅ | 839018827 | 6/10 | BROUILLON | Concept store chaussures/vêtements enfants 0-6 ans (marques françaises/européennes). 22 rue Peyras. |
+| EAST SIDE | Saint-Etienne | Mode/Vêtements | Christophe Canitrot | — | 492027966 | 6/10 | NOUVEAU | Email non trouvé — IG @eastsideshop17, tel 05 61 22 09 34. 17 rue Peyras. Visite terrain. |
+| CASA STRADA | Saint-Etienne | Mode/Vêtements | Samir Chnadha | — | 991911280 | 6/10 | NOUVEAU | Email non trouvé — IG @casastrada, lesboutiquessaintgeorges.fr. 51B rue Rempart Saint-Etienne. Visite terrain. |
+| ENTRE VUES | Saint-Etienne | Optique | Stéphanie Lasmolles-Defreyn | — | 493635403 | 5/10 | NOUVEAU | Email non trouvé — tel 05 61 33 02 39. 17 place du Salin. Visite terrain. |
+| HELLADE | Saint-Etienne | Mode/Vêtements | Pantelis Dimitriadis | — | 407941947 | 5/10 | NOUVEAU | Email non trouvé — aucune présence digitale identifiée. 10 rue Saint-Pantaléon. Visite terrain. |
+| MELI / MELINO | Saint-Etienne | Mode/Vêtements | Zhoure Desvergne | — | 822673901 | 4/10 | NOUVEAU | Email non trouvé — chez PARSO, 5 rue Saint-Pantaléon, tel 05 62 30 38 88. Visite terrain. |
+
+**Boutiques écartées** :
+- CAZANOVA CUIR (501911614, Henriette Enyegue Onambele, 13 rue Peyras) — retouches cuir/tissu, artisan, hors cible
+- JPC (751840638, Mickael Cargoles, 14B rue des Puits Clos) — inactive depuis 2017
+- VISION PLUS (538370032, Laura Brasseur, rue Rempart Saint-Etienne) — chaîne nationale
+- ISABELLE KLEIN / GALERIE 7 (438338550, Isabelle Klein, 7 rue Boulbonne) — galerie d'art, hors cible Two-Step
+
+**Décisions** :
+- Saint-Etienne très exhausté : rues Filatiers/Boulbonne/Arts entièrement couvertes depuis sessions Carmes. Scan rues Peyras, Rempart Saint-Etienne, Salin, Saint-Pantaléon pour nouveaux candidats.
+- BOUCLARD : boutique très récente (juin 2024), fort potentiel early-adopter — priorité L'Auditeur.
+- EDMOND L'OPTICIEN : email trouvé via edmondlopticien.fr — gérant non confirmé dans données (nom société = "MAX OPTIC" ≠ gérant physique). ⚠️ À confirmer terrain ou via site avant rédaction.
+- PETITES FRIPOUILLES : segment enfants 0-6 ans — pertinence Two-Step limitée (pas un segment prioritaire), score conservateur.
+
+**⚠️ Notion MCP indisponible (58e+ session consécutive)** — récap tracker local uniquement.  
+**⚠️ Gmail MCP indisponible** — pas de brouillon créé cette session (rôle Éclaireur uniquement).
+
+*Note session 18/08 (L'Éclaireur) : Saint-Etienne 5e+ session. Top-prospects-centre.json épuisé depuis plusieurs sessions. Scan toulouse-merchants-full.json sur rues Peyras/Rempart SE/Salin/Saint-Pantaléon (rues Filatiers/Boulbonne/Arts déjà exhaustées en tracker Carmes). 4 emails trouvés sur 9 prospects scannés (4 écarted + 5 terrain). Notion MCP hors service. Gmail MCP hors service.*
 
 ---
 
