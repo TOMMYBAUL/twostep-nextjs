@@ -52,6 +52,27 @@
 
 ---
 
+### Mardi — 2026-08-18 (L'Auditeur) — 3 brouillons rédigés (session Éclaireur 18/08)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 3 brouillons rédigés — Gmail MCP indisponible (58e+), envoi manuel requis  
+**Leads traités** : 3 leads BROUILLON session L'Éclaireur 2026-08-18 (Saint-Etienne — rues Peyras)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-18.md`
+
+| # | Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|---|
+| 1 | BOUCLARD | Bastien Gonzalez | bouclardstore@gmail.com | Bastien, tes Later et Noyoco trouvés par les Toulousains sur Google ? | 9/10 |
+| 2 | ECUME STORE | Aure-line Cabal | contact@ecumestore.fr | Aure-line, tes American Vintage et Thinking Mu trouvés sur Google en temps réel ? | 8/10 |
+| 3 | PETITES FRIPOUILLES | Vincent Elharar | contact@petitesfripouilles.com | Vincent, tes Veja et Tinycottons enfants trouvés par les parents toulousains sur Google ? | 6/10 |
+
+**Lead écarté** : EDMOND L'OPTICIEN (maxoptic@gmail.com) — gérant non confirmé (⚠️ "MAX OPTIC" dans données ≠ prénom gérant physique). À confirmer terrain avant rédaction.
+
+**⚠️ Gmail MCP indisponible (58e+ session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-18".
+
+*Note session 18/08 (L'Auditeur) : 3 leads BROUILLON issus de la session Éclaireur du jour. EDMOND L'OPTICIEN écarté (gérant non confirmé). Recherches web effectuées (bouclardstore.com, ecumestore.fr, petites-fripouilles.com). Gmail MCP hors service 58e+ session — copier-coller requis. Notion MCP hors service.*
+
+---
+
 ### Lundi — 2026-08-17 (L'Auditeur) — 4 brouillons rédigés (backlog Éclaireur 15/07)
 
 **Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (57e session), envoi manuel requis  
