@@ -1,18 +1,54 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-18 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-19 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 319
-- NOUVEAU : 85 (+5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- Total leads : 328
+- NOUVEAU : 88 (+3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
-- BROUILLON : 215 (+4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- BROUILLON : 219 (+4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
+- ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
 - ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
 - Reponses : 0
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mercredi — 2026-08-19 (L'Éclaireur) — Saint-Rome 5e session (reliquat JSON) — 4 emails trouvés
+
+**Agent** : L'Éclaireur | **Statut** : 🔍 4 emails trouvés — À valider  
+**Quartier** : Saint-Rome | **Source** : top-prospects-centre.json (reliquat — entrées non tracées individuellement lors des 4 sessions précédentes)  
+**Note** : Malgré la 4e confirmation ÉPUISÉ (session 12/08), ~30 entrées JSON Saint-Rome n'avaient jamais été tracées individuellement. Investigation exhaustive des candidats restants. 4 emails confirmés, 3 terrain-only, 2 ÉCARTÉ.
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| DO MY SHOES | Saint-Rome | Chaussures | Dominique Grosjean | domyshoes@gmail.com ✅ | 531697514 | 7/10 | BROUILLON | Chaussures multimarques, site domyshoes.com actif. 7 rue des Arts. Gérant : Dominique Michèle Grosjean. |
+| ILANN FIVE | Saint-Rome | Mode homme | Pierre Assali | contact@ilannfive.com ✅ | 824966022 | 7/10 | BROUILLON | Concept store mode homme, site e-commerce ilannfive.com. 17 rue des Changes. Tél 05 34 44 60 52. |
+| L'ANNEXE | Saint-Rome | Mode femme | Nicole Busato | Busato.nicole1@gmail.com ✅ | 832046767 | 6/10 | BROUILLON | Mode femme PAP indépendant. 38 rue Saint-Rome. IG @lannexe31. ⚠️ Email gmail — à confirmer terrain. |
+| ETOILE DE SONGE | Saint-Rome | Vêtements enfants | Sophie Pialat | contact@etoiledesonge.fr ✅ | 842073801 | 5/10 | BROUILLON | Boutique enfants (vêtements, déco, cadeaux naissance), site etoiledesonge.fr. 9 place de la Trinité. ⚠️ Segment enfants — pertinence Two-Step limitée. |
+| PAUSE | Saint-Rome | Horlogerie | Jonathan Blaise & Théo Pauly | — | 985210459 | 8/10 | NOUVEAU | Horlogerie multimarques premium (Yema, Nivada Grenchen, Orient, ~400 modèles), ouverte mai 2024. Site pause-montres.fr — contact form uniquement, aucun email public. Tél 09 79 34 68 81. Visite terrain prioritaire. |
+| URBAN WEAR | Saint-Rome | Mode | Hichame Ayachi | — | 939563672 | 5/10 | NOUVEAU | Mode, créée jan 2025. 12 rue Saint-Rome. Aucun email public. Visite terrain. |
+| KATOUNI | Saint-Rome | Chaussures | Alain Salimi pak | — | 510259757 | 5/10 | NOUVEAU | Chaussures (New Balance + custom sérigraphie). HQ Paris, étab secondaire 12 rue Saint-Rome. Site magasinchaussures.fr sans email public. Visite terrain. |
+
+**Boutiques écartées** :
+- BODY ONE LINGERIE (420050916, Joy Amsellem, 41 rue des Changes) — fermée définitivement janvier 2015. ÉCARTÉ.
+- REVERIES SARL (818210007, Chrystalla Theodoridou, 2 rue des Arts) — liquidation judiciaire juin–décembre 2020. Site helloreveries.com inactif. ÉCARTÉ.
+
+**Décisions** :
+- DO MY SHOES (7/10) : chaussures multimarques, site actif — priorité L'Auditeur.
+- ILANN FIVE (7/10) : mode homme concept store, site e-commerce — priorité L'Auditeur.
+- PAUSE (8/10) : horlogerie indépendante premium, très fort candidat Two-Step (400 modèles multimarques) — email inaccessible (Shopify contact form). Visite terrain Thomas prioritaire.
+- L'ANNEXE (6/10) : email gmail personnel, à confirmer terrain avant envoi Auditeur.
+- ETOILE DE SONGE (5/10) : segment enfants — pertinence Two-Step limitée. À valider Thomas.
+- ✅ Saint-Rome totalement épuisé côté top-prospects-centre.json — toutes entrées désormais tracées. **PIVOT DÉFINITIF mercredi recommandé → Esquirol/Daurade/Wilson.**
+
+**⚠️ Notion MCP indisponible (59e+ session consécutive)** — récap tracker local uniquement. Cible Notion manquée : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Saint-Rome 2026-08-19".  
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé cette session.
+
+*Note session 19/08 (L'Éclaireur) : Saint-Rome 5e session sur reliquat JSON non tracé individuellement. ~30 entrées top-prospects-centre.json jamais tracées individuellement malgré 4 confirmations ÉPUISÉ. DO MY SHOES : site domyshoes.com actif, email domyshoes@gmail.com confirmé via Cylex/Pages Jaunes. ILANN FIVE : site ilannfive.com, email contact@ilannfive.com confirmé via page contact officielle. L'ANNEXE (Nicole Busato Concept) : email Busato.nicole1@gmail.com trouvé via Ellisphere/annuaires. ETOILE DE SONGE : email contact@etoiledesonge.fr confirmé via page boutique site officiel. PAUSE : horlogerie indépendante premium ouverte mai 2024 (Jonathan Blaise & Théo Pauly), 400 modèles Yema/Nivada Grenchen/Orient — site pause-montres.fr avec form Shopify uniquement, aucun email public accessible. BODY ONE LINGERIE (420050916) : fermée 2015 ÉCARTÉ. REVERIES SARL (818210007) : liquidation 2020, site down ÉCARTÉ. Saint-Rome totalement épuisé côté JSON. Notion MCP hors service 59e session. Gmail MCP hors service.*
 
 ---
 
