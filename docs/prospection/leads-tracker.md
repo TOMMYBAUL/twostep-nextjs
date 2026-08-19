@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-19 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-19 (L'Auditeur)*
 
 ## Stats
 - Total leads : 328
@@ -14,6 +14,33 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mercredi — 2026-08-19 (L'Auditeur) — 5 brouillons rédigés (sessions Éclaireur 18-19/08)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 5 brouillons rédigés — Gmail MCP indisponible (58e session), envoi manuel requis  
+**Leads traités** : 5 leads BROUILLON issus des sessions L'Éclaireur 2026-08-18 (Saint-Etienne) et 2026-08-19 (Saint-Rome)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-19.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| BOUCLARD | Bastien Gonzalez | bouclardstore@gmail.com ✅ | Bastien, ton Noyoco et Camber USA trouvés sur Google Toulouse ? | 9/10 |
+| ECUME STORE | Aure-line Cabal | contact@ecumestore.fr ✅ | Aure-line, ton American Vintage et Edmmond Studios trouvés sur Google ? | 8/10 |
+| DO MY SHOES | Dominique Grosjean | domyshoes@gmail.com ✅ | Dominique, ton Hunter et United Nude trouvés sur Google Toulouse ? | 7/10 |
+| ILANN FIVE | Pierre Assali | contact@ilannfive.com ✅ | Pierre, ton concept store mode homme visible sur Google Toulouse ? | 7/10 |
+| PETITES FRIPOUILLES | Vincent Elharar | contact@petitesfripouilles.com ✅ | Vincent, tes marques enfants trouvées par les parents sur Google Toulouse ? | 6/10 |
+
+**Décisions** :
+- EDMOND L'OPTICIEN (session 18/08) : ⚠️ SKIP — gérant non confirmé dans les données (nom société MAX OPTIC ≠ gérant physique). Visite terrain Thomas prioritaire.
+- ETOILE DE SONGE (session 19/08) : ⚠️ SKIP — segment vêtements/déco enfants, pertinence Two-Step limitée. Score 5/10.
+- L'ANNEXE (session 19/08) : ⚠️ SKIP cette session — email gmail personnel (Busato.nicole1@gmail.com), à confirmer terrain avant envoi Auditeur.
+- Sources web : bouclardstore.com, ecumestore.fr, domyshoes.com, ilannfive.com, petites-fripouilles.com.
+
+**⚠️ Gmail MCP indisponible (58e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-19".
+
+*Note session 19/08 (L'Auditeur) : Pivot vers leads BROUILLON des sessions Éclaireur 18-19/08 (0 NOUVEAU avec email — 88 NOUVEAU tous terrain-only). 5 emails ACA rédigés sur 8 candidats BROUILLON disponibles. EDMOND L'OPTICIEN + ETOILE DE SONGE + L'ANNEXE skippés (voir décisions). Gmail MCP hors service 58e session — copier-coller requis. Notion MCP hors service.*
 
 ---
 
