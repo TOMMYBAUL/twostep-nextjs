@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-19 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-20 (L'Auditeur)*
 
 ## Stats
 - Total leads : 328
 - NOUVEAU : 88 (+3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
-- BROUILLON : 219 (+4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- BROUILLON : 219 (+4 drafts session 20/08 : FOOTCONNECT 8/10, QUE FAS? 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 — leads déjà BROUILLON, brouillons rédigés cette session | +4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
 - ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
@@ -14,6 +14,32 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-20 (L'Auditeur) — 4 brouillons rédigés (backlog BROUILLON non rédigé)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (59e session), envoi manuel requis  
+**Leads traités** : 4 BROUILLON du backlog non encore rédigé (FOOTCONNECT + QUE FAS? session Éclaireur 04/07 ; L'ANNEXE + ETOILE DE SONGE skippés sessions précédentes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-20.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| FOOTCONNECT | Marc Nortier | mn.nortier@gmail.com | Marc, ton Nike et Adidas trouvés par les Toulousains sur Google Gambetta ? | 8/10 |
+| QUE FAS ? | Mathias Marty-Palomar | quefas@quefas.fr | Mathias, tes cadeaux et déco trouvés par les Toulousains sur Google ? | 7/10 |
+| L'ANNEXE | Nicole Busato | Busato.nicole1@gmail.com | Nicole, ta boutique mode femme visible sur Google Saint-Rome ? | 6/10 |
+| ETOILE DE SONGE | Sophie Pialat | contact@etoiledesonge.fr | Sophie, ton Nobodinoz et Konges Slojd trouvés par les parents sur Google ? | 5/10 |
+
+**Décisions** :
+- FOOTCONNECT + QUE FAS? : leads BROUILLON depuis le 01/08/26 (email trouvé session Éclaireur 04/07 zone Victor-Hugo étendue Gambetta) — jamais traités par aucune session Auditeur. Priorité absolue.
+- L'ANNEXE : email gmail personnel (Busato.nicole1@gmail.com) — ⚠️ À confirmer terrain avant envoi Thomas.
+- ETOILE DE SONGE : segment enfants — ⚠️ pertinence Two-Step à valider (marques Nobodinoz/Konges Slojd avec EAN → cas d'usage viable). Score 5/10.
+- ANDY'S ETHIC (7/10, contact@andysethic.com) : ⚠️ SKIP — gérant non identifiable malgré recherche web (femme, sans prénom confirmé). Règle absolue respectée.
+
+**⚠️ Gmail MCP indisponible (59e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-20".
+
+*Note session 20/08 (L'Auditeur) : 0 NOUVEAU avec email (88 NOUVEAU tous terrain-only). Pivot backlog BROUILLON non encore rédigé. 4 emails ACA rédigés. FOOTCONNECT + QUE FAS? = leads jamais draftés de la session Éclaireur 04/07 (emails trouvés 01/08/26). ANDY'S ETHIC skippé (gérant inconnu). Gmail MCP hors service 59e session — copier-coller requis. Notion MCP hors service.*
 
 ---
 
