@@ -1,12 +1,13 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-19 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-20 (L'Éclaireur)*
 
 ## Stats
 - Total leads : 328
 - NOUVEAU : 88 (+3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - BROUILLON : 219 (+4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- ECARTES session 20/08 : +1 (MADAME GEORGES/BOHEMIANS ROOM — fermée définitivement octobre 2024)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
 - ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
@@ -14,6 +15,28 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-20 (L'Éclaireur) — Carmes ÉPUISÉ (zone définitivement épuisée) — 0 email trouvé
+
+**Agent** : L'Éclaireur | **Statut** : ✅ Zone épuisée — 0 nouveau lead  
+**Quartier** : Carmes | **Source** : top-prospects-centre.json (26/26 traités) + reliquat terrain NOUVEAU  
+**Note** : Carmes déclaré épuisé le 19/06/2026 (top-prospects-centre.json 26/26). Sessions juillet 2026 sur toulouse-merchants-full.json également épuisées (4 sessions, dernière le 24/07). Re-vérification des 5 NOUVEAU terrain-seuil restants — 0 email trouvé, 1 nouvelle fermeture confirmée.
+
+| Boutique | Quartier | Statut précédent | Résultat 20/08 | Notes |
+|---|---|---|---|---|
+| MADAME GEORGES (BOHEMIANS ROOM) | Carmes | NOUVEAU seuil atteint | **ÉCARTÉ DÉFINITIF** | Fermée définitivement octobre 2024 (confirmé via annuaires web 20/08). KENTEX/Lionel Prevost. |
+| LOVE (BOSCHERIE PERE ET FILLE) | Carmes | NOUVEAU seuil atteint | NOUVEAU — terrain | Aucun email public (Toulouse Tourisme + marqueetcommunication.fr : aucun email). IG @love.toulouse.store. Visite terrain. |
+| STEDIF | Carmes | NOUVEAU seuil atteint | NOUVEAU — terrain | Aucun email public (0 présence digitale — 7e passage). Visite terrain. |
+| HANNAH | Carmes | NOUVEAU seuil atteint | NOUVEAU — terrain | Aucun email public (IG/FB actifs, Abdelkader Boukenine). Visite terrain. |
+| LB7 | Carmes | NOUVEAU seuil atteint | NOUVEAU — terrain | Aucun email public (Laura Mathieu, créée jan 2026). Visite terrain. |
+
+**Décision** : Zone Carmes 100% épuisée digitalement. **PIVOT DÉFINITIF jeudi → Esquirol/Daurade/Wilson** (recommandation tracker 19/06/2026 confirmée).
+
+**⚠️ Notion MCP indisponible (60e+ session consécutive)** — récap tracker local uniquement. Titre Notion prévu : "Leads Carmes 2026-08-20".  
+
+*Note session 20/08 (L'Éclaireur) : Carmes jeudi rotation. Top-prospects-centre.json 26/26 épuisé depuis 19/06/2026. Re-vérification terrain des 5 NOUVEAU seuil-atteint : MADAME GEORGES/BOHEMIANS ROOM (KENTEX 830672937) — fermée définitivement octobre 2024 confirmé web → ÉCARTÉ DÉFINITIF. LOVE (BOSCHERIE 989923834) — aucun email public, seuil maintenu. STEDIF (835196098) — 0 présence digitale. HANNAH (799219837) — 0 email public. LB7 (100285386) — 0 présence digitale. 0 email trouvé. Zone Carmes définitivement épuisée côté digital. Notion MCP hors service 60e+ session.*
 
 ---
 
