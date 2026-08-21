@@ -2,13 +2,13 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
-        slug: "boutique-cosmetique-toulouse",
-        title: "Boutique cosmétique indépendante à Toulouse : pourquoi ton stock est invisible (et comment changer ça)",
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétique à Toulouse : trouver tes produits de beauté en boutique (et éviter le déplacement pour rien)",
         description:
-            "Tu vends des cosmétiques de marque à Toulouse mais tes clients commandent en ligne sans le savoir ? 95 % du stock local est invisible. Voici comment y remédier.",
-        publishedAt: "2026-06-12",
+            "Tu cherches une crème, un sérum ou un parfum à Toulouse ? Carmes, Capitole, Esquirol... Guide des boutiques indépendantes et comment vérifier le stock avant de te déplacer.",
+        publishedAt: "2026-08-21",
         readingTime: "6 min",
-        category: "marchands" as const,
+        category: "consommateurs" as const,
     },
     {
         slug: "attirer-clients-boutique-toulouse",
