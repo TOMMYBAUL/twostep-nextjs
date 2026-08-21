@@ -1,12 +1,14 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-19 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-21 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 328
-- NOUVEAU : 88 (+3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- Total leads : 330
+- NOUVEAU : 86 (−2 session 21/08 : HANNAH ÉCARTÉ + LB7 ÉCARTÉ)
 - CONTACTE : 1
-- BROUILLON : 219 (+4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- BROUILLON : 221 (+2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- CONTACTE : 1
+- ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
 - ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
@@ -14,6 +16,36 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-21 (L'Éclaireur) — Carmes reliquat NOUVEAU terrain — 2 emails trouvés
+
+**Agent** : L'Éclaireur | **Statut** : 🔍 2 emails trouvés — À valider
+**Quartier** : Carmes (jeudi) — zone top-prospects-centre.json ÉPUISÉE (26/26 depuis 19/06). Session focalisée sur les 6 boutiques NOUVEAU terrain restantes (sans email après 4-5 passages antérieurs).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| BOSCHERIE PERE ET FILLE (LOVE TOULOUSE) | Carmes | Mode/Créatrice toulousaine | Julien Boscherie | lovetoulouse@gmail.com ✅⚠️ | 989923834 | 8/10 | BROUILLON | Concept store Toulouse identity (vêtements homme/femme + accessoires + objets de vie, flocking personnalisé en boutique). 49 rue des Filatiers. IG @love.toulouse.store. Email via Toulouse Tourisme listing. ⚠️ À confirmer — email non trouvé sur site propre (Instagram uniquement). |
+| MADAME GEORGES (BOHEMIANS ROOM) | Carmes | Mode femme multimarques | Lionel Prevost | bohemiansroom@gmail.com ✅ | 830672937 | 7/10 | BROUILLON | Mode femme tendance multimarques. 45 rue Boulbonne (⚠️ JSON dit 35 — à confirmer adresse). Site bohemiansroom.com actif. FB Bohemian's Room. Email confirmé via annuaires (Hoodspot, Bottin, PetitesAffiches). Tél 05 61 76 52 40. |
+
+**Boutiques écartées session 21/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| HANNAH | 799219837 | Établissement Toulouse (SIRET 79921983700025, 31-33 rue Boulbonne) fermé définitivement le 31/01/2018 — annuaire-entreprises.data.gouv.fr. Siège social Carcassonne actif. ÉCARTÉ DÉFINITIF pour Toulouse. |
+| LB7 | 100285386 | 7 rue Boulbonne occupée par "Le Dressing de Lia / Le Dressing de LC" (SIREN 911187854, enseigne @ledressingdelc). LB7 probablement fermée/déménagée. ÉCARTÉ. |
+
+**Boutiques sans email confirmées (terrain obligatoire) :**
+- PARALLELE (FRALTIS, 440867224) — 35 rue Boulbonne, Alain Sanz — chaussures, tél 05 34 44 90 71, aucun email public. 5e passage négatif. Visite terrain.
+- STEDIF (835196098) — 46 rue des Filatiers, Stéphanie Forgeront + Dimitri Lavabre — lingerie/mode, aucun email public. 5e passage négatif. Visite terrain.
+
+**Bilan zone Carmes :**
+Zone top-prospects-centre.json 100% épuisée (26/26 depuis 19/06/2026). Zone toulouse-merchants-full.json épuisée depuis 24/07/2026. RECOMMANDATION : **pivot jeudi définitif** vers Guilhemery ou Wilson/Esquirol.
+
+**⚠️ Notion MCP indisponible (60e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Carmes 2026-08-21".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 21/08 (L'Éclaireur) : Carmes reliquat — 6 boutiques NOUVEAU terrain investigées (BOSCHERIE/LOVE, MADAME GEORGES/BOHEMIANS ROOM, HANNAH, LB7, PARALLELE, STEDIF). 2 emails trouvés : LOVE TOULOUSE via Toulouse Tourisme listing (lovetoulouse@gmail.com, ⚠️ à confirmer), BOHEMIANS ROOM via annuaires multiples (bohemiansroom@gmail.com, ✅ confirmé). HANNAH ÉCARTÉ (Toulouse closed 31/01/2018). LB7 ÉCARTÉ (remplacée @ledressingdelc). PARALLELE + STEDIF toujours sans email public malgré 5 passages. Zone Carmes définitivement épuisée — recommandation pivot jeudi vers Guilhemery.*
 
 ---
 
