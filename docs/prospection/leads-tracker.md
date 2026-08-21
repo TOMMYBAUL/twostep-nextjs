@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-21 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-21 (L'Auditeur)*
 
 ## Stats
 - Total leads : 330
@@ -16,6 +16,24 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-21 (L'Auditeur) — 2 brouillons rédigés (LOVE TOULOUSE, BOHEMIANS ROOM)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 2 brouillons rédigés — Gmail MCP indisponible (61e session), envoi manuel requis  
+**Leads traités** : 2 leads BROUILLON issus de la session L'Éclaireur 2026-08-21 (Carmes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-21.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LOVE TOULOUSE (BOSCHERIE PERE ET FILLE) | Julien Boscherie | lovetoulouse@gmail.com ⚠️ | Julien, ton stock Love Toulouse visible sur Google Toulouse ? | 8/10 |
+| BOHEMIANS ROOM (MADAME GEORGES) | Lionel Prevost | bohemiansroom@gmail.com | Lionel, tes clientes te trouvent sur Google "en stock près de chez moi" ? | 7/10 |
+
+**⚠️ Gmail MCP indisponible (61e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-21".
+
+*Note session 21/08 (L'Auditeur) : 2 emails ACA rédigés sur les 2 leads Carmes trouvés en matinée. LOVE TOULOUSE : marque propre toulousaine, email via Toulouse Tourisme listing (⚠️ à confirmer terrain). BOHEMIANS ROOM : 4,6/5 Google, site down, email confirmé annuaires. Gmail MCP hors service 61e session — copier-coller requis. Rappel : 5 brouillons 19/08 (BOUCLARD, ECUME STORE, DO MY SHOES, ILANN FIVE, PETITES FRIPOUILLES) en attente copier-coller Gmail.*
 
 ---
 
