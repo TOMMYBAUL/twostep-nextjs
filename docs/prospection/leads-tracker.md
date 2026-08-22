@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-22 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-22 (L'Auditeur)*
 
 ## Stats
 - Total leads : 330 (inchangé — 0 nouveau email trouvé session 22/08)
-- NOUVEAU : 86 (inchangé — Victor-Hugo ÉPUISÉ, 0 email email confirmé session 22/08)
+- NOUVEAU : 86 (inchangé — Victor-Hugo ÉPUISÉ, 0 email confirmé session 22/08 Éclaireur)
 - CONTACTE : 1
-- BROUILLON : 221 (+2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 221 (+4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
 - ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
@@ -48,6 +48,26 @@ Zone top-prospects-centre.json 100% épuisée depuis le 02/05/2026 (9/9 boutique
 **⚠️ Gmail MCP indisponible** — aucun brouillon créé.
 
 *Note session 22/08 (L'Éclaireur) : Victor-Hugo 5e session. Top-prospects-centre.json épuisé depuis 02/05 (9/9 boutiques). Zone étendue épuisée depuis 08/08. Recherches web complètes sur les 8 NOUVEAU restants : aucun email trouvé. SAINT PAULIN, ALICE ET LES GARCONS, MINI JU, DORYANN : aucun site web, aucun email public accessible. HOT-COUTURE, SARL PARIS SEPTIÈME, THEIA, CASA AZUL : identique. Seul point nouveau : L'ITINÉRAIRE (534603469, 13 rue Bouquières) confirmé en liquidation juillet 2024 — différent de SARL PARIS SEPTIÈME (750521759) toujours active mais sans email. RECOMMANDATION URGENTE : pivot samedi vers nouveau quartier.*
+
+---
+
+### Samedi — 2026-08-22 (L'Auditeur) — 4 brouillons rédigés (backlog BROUILLON sans draft)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (62e+ session), envoi manuel requis  
+**Leads traités** : 4 leads BROUILLON sans brouillon markdown antérieur (backlog sessions Éclaireur précédentes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-22.md`
+
+| # | Boutique | Gérant | Email | Objet | Score | Notes |
+|---|---|---|---|---|---|---|
+| 1 | EDMOND L'OPTICIEN | Maxime (Levy) | maxoptic@gmail.com | Maxime, tes lunettes Edmond trouvées par les Toulousains sur Google ? | 7/10 | ⚠️ Même gérant + email que MAX OPTIC (Boulbonne) — brouillon 09/07. À vérifier avant envoi. |
+| 2 | ANDY'S ETHIC | Andy | contact@andysethic.com | Andy, tes marques éthiques trouvées par les Toulousains sur Google ? | 7/10 | ⚠️ "Andy" = identité marque. Gérant(e) réel(le) non confirmé(e). Multimarque confirmé (Kameha Lane). |
+| 3 | L'ANNEXE | Nicole Busato | Busato.nicole1@gmail.com | Nicole, ta mode italienne trouvée par les Toulousaines sur Google ? | 6/10 | Email personnel. Collections italiennes chic/bohème. |
+| 4 | ETOILE DE SONGE | Sophie Pialat | contact@etoiledesonge.fr | Sophie, tes Nobodinoz et CamCam trouvés par les parents sur Google Toulouse ? | 5/10 | Segment enfants. Marques premium recherchées (Nobodinoz, CamCam, Fresk). |
+
+**⚠️ Gmail MCP indisponible (62e+ session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-22"
+
+*Note session 22/08 (L'Auditeur) : 0 NOUVEAU avec email (Victor-Hugo 100% épuisé). Pivot vers backlog BROUILLON sans brouillon markdown. 4 emails ACA rédigés. Alertes importantes : (1) EDMOND L'OPTICIEN utilise maxoptic@gmail.com = même email que MAX OPTIC/Maxime Levy (brouillon 09/07) — risque de double contact, à vérifier terrain. (2) ANDY'S ETHIC : prénom "Andy" est identité de marque, gérant(e) réel(le) inconnu(e), email pro confirmé. Gmail MCP hors service 62e+ session. Rappel backlog en attente copier-coller : 7 brouillons des sessions 19/08 (5) et 21/08 (2).*
 
 ---
 
