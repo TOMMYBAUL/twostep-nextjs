@@ -1,13 +1,14 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-21 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-22 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 330
-- NOUVEAU : 86 (−2 session 21/08 : HANNAH ÉCARTÉ + LB7 ÉCARTÉ)
+- Total leads : 330 (inchangé — 0 nouveau email trouvé session 22/08)
+- NOUVEAU : 86 (inchangé — Victor-Hugo ÉPUISÉ, 0 email email confirmé session 22/08)
 - CONTACTE : 1
 - BROUILLON : 221 (+2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
+- ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
 - ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
@@ -16,6 +17,37 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Samedi — 2026-08-22 (L'Éclaireur) — Victor-Hugo 5e session — ÉPUISÉ — 0 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Victor-Hugo (samedi)
+**Statut** : ⚠️ ÉPUISÉ — 0 email trouvé | **Notion** : Non créé (MCP indisponible — 62e+ session consécutive)
+
+Zone top-prospects-centre.json 100% épuisée depuis le 02/05/2026 (9/9 boutiques tracées). Zone étendue épuisée depuis le 08/08/2026 — tous les candidats NOUVEAU passés 3+ fois sans email public trouvé. Searches répétées ce jour sans résultat.
+
+**Candidats NOUVEAU revisités — aucun email trouvé :**
+| Boutique | Gérant | Adresse | Notes | Statut |
+|---|---|---|---|---|
+| SAINT PAULIN | Catherine Jimenez | 40 rue Rémusat | Aucun site web, aucun email public. Tél uniquement. | NOUVEAU |
+| ALICE ET LES GARCONS (KIDS STORE) | Benoit/Victoria Mabille de Poncheville | 15 rue Bouquières | Aucun site web, aucun email public. | NOUVEAU |
+| MINI JU (FEELING) | Sophie Chakri | 8 rue Gambetta | Aucun site web, aucun email public. | NOUVEAU |
+| DORYANN (MATIERE NOBLE) | Stéphanie Dah-okimba | 19 rue Bouquières | IG @doryannstore, tél 09 55 92 93 99. Aucun email. | NOUVEAU |
+| THEIA | Shan Huang | 7 rue Rémusat | Très récente 2024, aucune présence web confirmée. | NOUVEAU |
+| HOT-COUTURE | Arielle Bonneville | 5 rue des Lois | SARL fondée 2011. Aucun site, aucun email. | NOUVEAU |
+| SARL PARIS SEPTIÈME | Emilie Carpentier | 13 rue Bouquières | Active (confirmé societe.com 22/08). L'ITINÉRAIRE (534603469) en liquidation juil 2024 = entité différente. Aucun email public. | NOUVEAU |
+| CASA AZUL | Emilie Devin | 19 rue Peyrolières | ⚠️ Opposition Pappers. IG @casa_azul_toulouse. Ouverte août 2025. Aucun email. | NOUVEAU |
+
+**Écarté contextuel session 22/08 :**
+- L'ITINÉRAIRE (SIREN 534603469, 13 rue Bouquières) — liquidation judiciaire juillet 2024. Entité hors JSON. Écarté définitif.
+
+**⚠️ RECOMMANDATION DÉFINITIVE** : Victor-Hugo doit être retiré de la rotation samedi. Zone JSON + zone étendue totalement épuisées pour les emails en ligne. Pivoter vers Wilson/Compans-Caffarelli ou Guilhemery/Arnaud-Bernard le samedi.
+
+**⚠️ Notion MCP indisponible (62e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Victor-Hugo 2026-08-22".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 22/08 (L'Éclaireur) : Victor-Hugo 5e session. Top-prospects-centre.json épuisé depuis 02/05 (9/9 boutiques). Zone étendue épuisée depuis 08/08. Recherches web complètes sur les 8 NOUVEAU restants : aucun email trouvé. SAINT PAULIN, ALICE ET LES GARCONS, MINI JU, DORYANN : aucun site web, aucun email public accessible. HOT-COUTURE, SARL PARIS SEPTIÈME, THEIA, CASA AZUL : identique. Seul point nouveau : L'ITINÉRAIRE (534603469, 13 rue Bouquières) confirmé en liquidation juillet 2024 — différent de SARL PARIS SEPTIÈME (750521759) toujours active mais sans email. RECOMMANDATION URGENTE : pivot samedi vers nouveau quartier.*
 
 ---
 
