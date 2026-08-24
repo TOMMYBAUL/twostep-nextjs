@@ -1,13 +1,14 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-22 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-24 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 330 (inchangé — 0 nouveau email trouvé session 22/08)
-- NOUVEAU : 86 (inchangé — Victor-Hugo ÉPUISÉ, 0 email confirmé session 22/08 Éclaireur)
+- Total leads : 343 (+13 session 24/08 : +1 BROUILLON LILI-LEONE, +8 NOUVEAU terrain, +4 ÉCARTÉ)
+- NOUVEAU : 94 (+8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
 - CONTACTE : 1
-- BROUILLON : 221 (+4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 222 (+1 session 24/08 : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
+- ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
 - ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
@@ -17,6 +18,43 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Lundi — 2026-08-24 (L'Éclaireur) — Capitole (reliquat JSON) — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Capitole (lundi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP indisponible — 63e+ session consécutive)
+
+**Note de session :** 12 candidats JSON Capitole investigués (entrées non tracées au 23/08). 1 email confirmé (LILI-LEONE). 4 ÉCARTÉ (boutique fermée, chaînes nationales). 8 NOUVEAU terrain sans email public trouvé. Recherches via sites officiels, Pages Jaunes, Hoodspot, Yelp, annuaires. Gmail MCP indisponible (63e+ session consécutive).
+
+**Email confirmé :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| LILI-LEONE (SARL LEONI) | Capitole | Mode femme | Stéphanie Roux | lilileone@live.fr ✅ | 529145161 | 7/10 | BROUILLON | Email confirmé via allbiz.fr. 16 rue des Tourneurs. Mode femme multimarques, 2 boutiques (TLS+1). Site lilileone.com, IG @lilileone_officiel. |
+
+**Sans email — NOUVEAU terrain :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| COMEBACK | Jerome Delgado | 47 rue de la Pomme | 901868729 | Chaussures. Fondée 2021. Aucun site web, aucun email public. Terrain uniquement. | NOUVEAU |
+| KATHY.B | Catherine Ballias | 44 rue de Metz | 882609688 | Mode femme. Site boutiqueau44.com — formulaire seulement, pas d'email affiché. IG @boutique_au_44_rue_de_metz_. | NOUVEAU |
+| MANOUSHKA | Dominique Sellem | 53 rue de la Pomme | 814281812 | Mode. Site manoushka.fr inaccessible (DNS error). Aucun email public trouvé. | NOUVEAU |
+| N À L'INFINI | Patricia Lacombe | 19 rue de la Pomme | 817911969 | Bijouterie fantaisie. Liée à Bijouterie Nougues (Sandra Nougues, 32 rue de la Pomme — déjà BROUILLON contact@bijouterienougues.fr). Doublon probable — site bijouterie-toulouse-nougues.fr down. Pas d'email distinct trouvé. | NOUVEAU |
+| PAMPY | Juliette Marciano (Kouby) | 11 rue de la Pomme | 997769906 | Mode femme/homme. pampy.com = domaine à vendre. Pages Jaunes : tél uniquement. Aucun email trouvé. | NOUVEAU |
+| PAYOTE | Olivier Gelly | 58 rue des Tourneurs | 912767100 | Chaussures (espadrilles marque propre). sav@payote.fr ⚠️ trouvé mais = email SAV. 2 boutiques (TLS+Perp). Non utilisé — email SAV non direct pour prospection. | NOUVEAU |
+| RECOVERY PROJECT | Pierre Bauguil | 48B rue de Metz | 940957483 | Mode/Sport (On Running dealer). Site recoverytls.com — formulaire seulement. IG @recoverytoulouse. Aucun email direct. | NOUVEAU |
+| TOVLI | Robert Fellous | 17 rue de la Pomme | 751393331 | Mode. Siège Paris 75002 (societe.com). Faible présence en ligne. Aucun email trouvé. ⚠️ Siège hors Toulouse — indépendance à confirmer terrain. | NOUVEAU |
+
+**Écarté session 24/08 :**
+- BANANA-POMME (Eric Bitoun, 28 rue de la Pomme, SIREN 901868729) — fermé janvier 2025. ÉCARTÉ définitif.
+- SHILTON (Michael Guedj, 28 rue de la Pomme, SIREN 453428578) — chaîne nationale 28 boutiques. ÉCARTÉ (hors cible >5 établissements).
+- TILL / TILLAMY (Yann Bellamy, 40 rue de Metz, SIREN 401862255) — siège Beaupreau-en-Mauges (Maine-et-Loire). Chaîne chaussures Ouest France. ÉCARTÉ.
+- EDEN / PP NEDE (Jean-Jacques Ghebali, 42 rue de la Pomme, SIREN 533665764) — siège 15 rue du Colisée 75008 Paris. Multi-location. ÉCARTÉ.
+
+**⚠️ Notion MCP indisponible (63e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Capitole 2026-08-24".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé (1 BROUILLON LILI-LEONE en attente rédaction Auditeur).
+
+*Note session 24/08 (L'Éclaireur) : Capitole Nème session. 12 candidats investigués. 1 email confirmé : LILI-LEONE (lilileone@live.fr, Stéphanie Roux, 7/10). 4 ÉCARTÉS : BANANA-POMME (fermé), SHILTON (chaîne 28 boutiques), TILL (chaîne Ouest), EDEN (siège Paris). 8 NOUVEAU sans email : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE (SAV seulement), RECOVERY PROJECT, TOVLI. Sites majoritairement sans email public ou DNS down. PAYOTE a sav@payote.fr mais non retenu (email SAV, pas de contact direct). N À L'INFINI doublon probable avec Bijouterie Nougues déjà tracké. TOVLI siège Paris à vérifier terrain.*
 
 ---
 
