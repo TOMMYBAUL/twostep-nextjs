@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-24 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-24 (L'Auditeur)*
 
 ## Stats
 - Total leads : 343 (+13 session 24/08 : +1 BROUILLON LILI-LEONE, +8 NOUVEAU terrain, +4 ÉCARTÉ)
 - NOUVEAU : 94 (+8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
 - CONTACTE : 1
-- BROUILLON : 222 (+1 session 24/08 : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 222 (+1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
@@ -55,6 +55,21 @@
 **⚠️ Gmail MCP indisponible** — aucun brouillon créé (1 BROUILLON LILI-LEONE en attente rédaction Auditeur).
 
 *Note session 24/08 (L'Éclaireur) : Capitole Nème session. 12 candidats investigués. 1 email confirmé : LILI-LEONE (lilileone@live.fr, Stéphanie Roux, 7/10). 4 ÉCARTÉS : BANANA-POMME (fermé), SHILTON (chaîne 28 boutiques), TILL (chaîne Ouest), EDEN (siège Paris). 8 NOUVEAU sans email : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE (SAV seulement), RECOVERY PROJECT, TOVLI. Sites majoritairement sans email public ou DNS down. PAYOTE a sav@payote.fr mais non retenu (email SAV, pas de contact direct). N À L'INFINI doublon probable avec Bijouterie Nougues déjà tracké. TOVLI siège Paris à vérifier terrain.*
+
+---
+
+### Lundi — 2026-08-24 (L'Auditeur) — 1 brouillon rédigé
+
+**Agent** : L'Auditeur | **Date** : 2026-08-24  
+**Statut** : ✅ 1 brouillon rédigé | **Notion** : Non créé (MCP indisponible — 63e+ session consécutive) | **Gmail** : ⚠️ Indisponible — copier-coller requis
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LILI-LEONE | Stéphanie Roux | lilileone@live.fr | Stéphanie, ton Sessun et Leon & Harper trouvés sur Google Toulouse ? | 8/10 |
+
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-24.md`
+
+*Note session 24/08 (L'Auditeur) : 1 seul lead BROUILLON avec email disponible (LILI-LEONE — seul nouveau de la session Éclaireur 24/08). Email ACA rédigé : 20 ans de boutique, accroche Sessun + Leon & Harper + Des Petits Hauts, angle "en stock près de chez moi" Google. Score 8/10. Gmail MCP indisponible 63e session — copier-coller manuel requis. Notion MCP indisponible. Rappel backlog : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4) jamais envoyés via Gmail.*
 
 ---
 
