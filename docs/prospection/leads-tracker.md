@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-24 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-25 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 343 (+13 session 24/08 : +1 BROUILLON LILI-LEONE, +8 NOUVEAU terrain, +4 ÉCARTÉ)
-- NOUVEAU : 94 (+8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
+- Total leads : 344 (+1 session 25/08 : +1 BROUILLON CASA STRADA)
+- NOUVEAU : 93 (-1 session 25/08 : CASA STRADA → BROUILLON | +8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
 - CONTACTE : 1
-- BROUILLON : 222 (+1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 223 (+1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
@@ -18,6 +18,40 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mardi — 2026-08-25 (L'Éclaireur) — Saint-Etienne (reliquat NOUVEAU) — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Saint-Etienne (mardi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP indisponible — 64e+ session consécutive)
+
+**Note de session :** Zone Saint-Etienne 27/27 épuisée depuis le 23/06 (top-prospects-centre.json + toulouse-merchants-full.json pour toutes les rues du quartier). Cette session a ciblé les ~10 boutiques encore en statut NOUVEAU (1-5 passes précédentes sans email). 1 email confirmé (CASA STRADA via site propre maisonstrada.com). 1 probable ÉCARTÉ (HELLADE — adresse occupée par chaîne opticiens). Remaining NOUVEAU sans email affiché public malgré recherches multi-sources.
+
+**Email confirmé :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| CASA STRADA (MAISON STRADA) | Saint-Etienne | Mode/Créateurs multimarque | Samir Chnadha | contact@maisonstrada.com ✅ | 991911280 | 6/10 | BROUILLON | Email confirmé via homepage maisonstrada.com (pied de page). 51B rue Rempart Saint-Etienne. Site propre + IG. Précédemment tracké "Email non trouvé" — lesboutiquessaintgeorges@terranea.com était email centre commercial (non retenu). |
+
+**Sans email — NOUVEAU terrain :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| EAST SIDE | Nathalie Deschamps | Rue Rempart Saint-Etienne | 504034769 | Streetwear/sneakers. Aucun site officiel trouvé. Pages Jaunes : tél uniquement. 5+ passes sans email. | NOUVEAU |
+| ANAHITA | Razieh Jalali | Rue Rempart Saint-Etienne | — | Mode/accessoires. Facebook boutiqueanahita (login requis). Aucune adresse email publique accessible. | NOUVEAU |
+| ADEPTE | — | Saint-Etienne | — | Mode. Aucune présence web indépendante trouvée. Terrain uniquement. | NOUVEAU |
+| BELLA MODE | — | Saint-Etienne | — | Mode. Aucun site, aucun email public trouvé malgré recherches. | NOUVEAU |
+| KALI YOG | — | Saint-Etienne | — | Yoga/sport. Aucun email public trouvé. | NOUVEAU |
+| ENTRE VUES | — | Rue du Languedoc | — | Opticien indépendant. entrevuesopticiens.fr — DNS ENOTFOUND (site down). Aucun email accessible. | NOUVEAU |
+| MELI / MELINO | — | Saint-Etienne | — | Mode. Aucun site propre trouvé. Pages Jaunes tél uniquement. | NOUVEAU |
+| KEED | — | Saint-Etienne | — | Mode/streetwear. Aucune présence web indépendante identifiée. | NOUVEAU |
+
+**Probable ÉCARTÉ :**
+- HELLADE (SIREN 407941947, 10 rue Saint-Pantaléon) — Recherche Mappy : adresse occupée par "Le Collectif des Lunetiers" (chaîne opticiens). Siège HELLADE confirmé Bordeaux (19 Quai des Salinières). Établissement Toulouse probablement fermé. **Statut : ÉCARTÉ à confirmer terrain** (⚠️ non encore mis à jour dans l'entrée individuelle du tracker).
+
+**⚠️ Notion MCP indisponible (64e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Saint-Etienne 2026-08-25".
+**⚠️ Zone Saint-Etienne quasi-épuisée** — toutes les rues connues traitées. Prochaines sessions mardi : nouveaux quartiers ou angles alternatifs (Instagram DM, LinkedIn, terrain).
+
+*Note session 25/08 (L'Éclaireur) : Saint-Etienne. Zone 27/27 JSON épuisée depuis 23/06 + toutes rues toulouse-merchants-full.json traitées. Focus reliquat NOUVEAU. 1 email confirmé : CASA STRADA (contact@maisonstrada.com, Samir Chnadha, 6/10) — trouvé via maisonstrada.com direct (l'email centre commercial lesboutiquessaintgeorges@terranea.com avait été écarté lors d'une session précédente). HELLADE probable ÉCARTÉ (adresse Toulouse occupée par Le Collectif des Lunetiers, chaîne opticiens ; siège Bordeaux confirmé). 8 NOUVEAU sans email : EAST SIDE, ANAHITA, ADEPTE, BELLA MODE, KALI YOG, ENTRE VUES, MELI/MELINO, KEED — aucun site officiel avec email accessible. Kompass 405, Cylex/Yelp 403, Hoodspot redirige vers 403. Notion MCP indisponible 64e session.*
 
 ---
 
