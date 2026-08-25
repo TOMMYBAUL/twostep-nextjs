@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-25 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-25 (L'Auditeur)*
 
 ## Stats
 - Total leads : 344 (+1 session 25/08 : +1 BROUILLON CASA STRADA)
 - NOUVEAU : 93 (-1 session 25/08 : CASA STRADA → BROUILLON | +8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
 - CONTACTE : 1
-- BROUILLON : 223 (+1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 223 (+1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
@@ -52,6 +52,23 @@
 **⚠️ Zone Saint-Etienne quasi-épuisée** — toutes les rues connues traitées. Prochaines sessions mardi : nouveaux quartiers ou angles alternatifs (Instagram DM, LinkedIn, terrain).
 
 *Note session 25/08 (L'Éclaireur) : Saint-Etienne. Zone 27/27 JSON épuisée depuis 23/06 + toutes rues toulouse-merchants-full.json traitées. Focus reliquat NOUVEAU. 1 email confirmé : CASA STRADA (contact@maisonstrada.com, Samir Chnadha, 6/10) — trouvé via maisonstrada.com direct (l'email centre commercial lesboutiquessaintgeorges@terranea.com avait été écarté lors d'une session précédente). HELLADE probable ÉCARTÉ (adresse Toulouse occupée par Le Collectif des Lunetiers, chaîne opticiens ; siège Bordeaux confirmé). 8 NOUVEAU sans email : EAST SIDE, ANAHITA, ADEPTE, BELLA MODE, KALI YOG, ENTRE VUES, MELI/MELINO, KEED — aucun site officiel avec email accessible. Kompass 405, Cylex/Yelp 403, Hoodspot redirige vers 403. Notion MCP indisponible 64e session.*
+
+---
+
+### Mardi — 2026-08-25 (L'Auditeur) — 1 brouillon rédigé (session Éclaireur 25/08)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 1 brouillon rédigé — Gmail MCP indisponible (64e+ session consécutive), envoi manuel requis  
+**Leads traités** : 1 lead BROUILLON issu de la session L'Éclaireur 2026-08-25 (Saint-Etienne)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-25.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| CASA STRADA (MAISON STRADA) | Samir Chnadha | contact@maisonstrada.com ✅ | Samir, tes créateurs trouvés sur Google Toulouse ? | 6/10 |
+
+**⚠️ Gmail MCP indisponible (64e+ session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-25".
+
+*Note session 25/08 (L'Auditeur) : 1 lead BROUILLON disponible (CASA STRADA — seul email confirmé session Éclaireur 25/08). Email ACA rédigé, 108 mots, tutoiement, prénom Samir, accroche sur sélection créateurs multimarque. Backlog antérieur : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4), 24/08 (×1) jamais envoyés via Gmail (MCP hors service depuis 64+ sessions). Copier-coller manuel requis depuis bauland@twostep.fr.*
 
 ---
 
