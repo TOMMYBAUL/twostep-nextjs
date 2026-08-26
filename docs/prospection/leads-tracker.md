@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-26 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-26 (L'Auditeur)*
 
 ## Stats
 - Total leads : 345 (+1 session 26/08 : PAUSE → BROUILLON)
 - NOUVEAU : 92 (-1 session 26/08 : PAUSE → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 224 (+1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 224 (+1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
@@ -50,6 +50,23 @@
 **⚠️ Zone Saint-Rome ÉPUISÉE (5e confirmation)** — PIVOT DÉFINITIF recommandé mercredi → Esquirol/Daurade/Wilson.
 
 *Note session 26/08 (L'Éclaireur) : Saint-Rome. Zone 100% épuisée (top-prospects-centre.json). Focus reliquat NOUVEAU (10 boutiques sans email). 1 email confirmé : PAUSE (bonjour@pause-montres.fr, Jonathan Blaise, 8/10) — trouvé sur commeuncamion.com, non indexé lors des passes précédentes. 9 NOUVEAU sans email public malgré recherches multi-sources (outdoordiffusion.com TIMEOUT, Mira Mira/Dressing Rose/La Suite/JO/Linea Moda/Michael Drilhole/Urban Wear/Katouni — terrain uniquement). Notion MCP indisponible 65e session.*
+
+---
+
+### Mercredi — 2026-08-26 (L'Auditeur) — 1 brouillon rédigé (PAUSE)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 1 brouillon rédigé — Gmail MCP indisponible (66e session consécutive), envoi manuel requis  
+**Leads traités** : 1 lead BROUILLON issu de la session L'Éclaireur 2026-08-26 (Saint-Rome)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-26.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| PAUSE | Jonathan Blaise | bonjour@pause-montres.fr | Jonathan, tes Yema et Nivada trouvées par les Toulousains sur Google ? | 8/10 |
+
+**⚠️ Gmail MCP indisponible** (66e session consécutive) — copier-coller manuel requis depuis bauland@twostep.fr  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-26"
+
+*Note session 26/08 (L'Auditeur) : 1 lead BROUILLON disponible (PAUSE — seul email confirmé session Éclaireur 26/08). Email ACA rédigé, ~115 mots, tutoiement, prénom Jonathan, accroche sur concept deux amis passionnés + marques Yema/Nivada. Angle "cherche ta montre sur Google → tu ne m'apparais pas en stock". Rappel backlog : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4), 24/08 (×1), 25/08 (×1) jamais envoyés via Gmail (MCP hors service 66e session). Copier-coller manuel requis depuis bauland@twostep.fr.*
 
 ---
 
