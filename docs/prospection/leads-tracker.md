@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-25 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-26 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 344 (+1 session 25/08 : +1 BROUILLON CASA STRADA)
-- NOUVEAU : 93 (-1 session 25/08 : CASA STRADA → BROUILLON | +8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
+- Total leads : 345 (+1 session 26/08 : PAUSE → BROUILLON)
+- NOUVEAU : 92 (-1 session 26/08 : PAUSE → BROUILLON)
 - CONTACTE : 1
-- BROUILLON : 223 (+1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 224 (+1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
@@ -18,6 +18,38 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mercredi — 2026-08-26 (L'Éclaireur) — Saint-Rome (reliquat NOUVEAU) — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Saint-Rome (mercredi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP indisponible — 65e+ session consécutive)
+
+**Note de session :** Zone Saint-Rome 100% épuisée côté top-prospects-centre.json (5e confirmation — sessions 05/2026, 25/06, 06/08, 12/08, 19/08). Toutes entrées tracées. Session focalisée sur les ~10 boutiques encore en statut NOUVEAU (sans email). 1 email confirmé : PAUSE (bonjour@pause-montres.fr — trouvé via commeuncamion.com, non indexé lors de la session 19/08). 9 autres NOUVEAU restent sans email après recherches multi-sources. **Recommandation maintenue : PIVOT DÉFINITIF mercredi → Esquirol/Daurade/Wilson.**
+
+**Email confirmé :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| PAUSE | Saint-Rome | Horlogerie multimarques premium | Jonathan Blaise & Théo Pauly | bonjour@pause-montres.fr ✅ | 985210459 | 8/10 | BROUILLON | Email confirmé via commeuncamion.com (répertoire boutiques Toulouse). 23 rue de la Trinité. Ouverte mai 2024. ~400 modèles (Yema, Nivada Grenchen, Laco, Maurice Lacroix, MU:N). Site pause-montres.fr — contact form + email bonjour@. Précédemment tracké "contact form uniquement" (session 19/08) — email désormais référencé dans annuaires. |
+
+**Sans email — NOUVEAU terrain (investigations session 26/08) :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| OUTDOOR DIFFUSION SUD OUEST | Clovis Houdart | 45 rue Saint-Rome | 102885449 | Sport outdoor multimarques. outdoordiffusion.com TIMEOUT (inaccessible). Email format [first].[last]@outdoordiffusion.com (RocketReach) → clovis.houdart@outdoordiffusion.com inféré, non confirmé. Visite terrain. | NOUVEAU |
+| MIRA MIRA | Arnaud Turbe | 23 rue Saint-Rome | 928558550 | Bijouterie fantaisie (marque espagnole). 4.6★ Google, actif. IG @official.miramira. Tél 05 61 21 95 48. Aucun email public. Visite terrain. | NOUVEAU |
+| DRESSING ROSE AND KIDS | Ameur Gasdallah | 31 rue Saint-Rome | 883705923 | Mode enfants. IG @dressingrosektoulouse. Aucun email public. Visite terrain. | NOUVEAU |
+| LA SUITE... | Anouar-adil Boudraa | 22 rue Saint-Rome | 518036629 | Mode femme. Yelp avril 2026 actif. Aucun email public. Visite terrain. | NOUVEAU |
+| JO (SCOOP) | Olivier Judkiewicz | 31 rue Saint-Rome | 447962358 | Mode. Aucune présence digitale avec email. Visite terrain. | NOUVEAU |
+| LINEA MODA (V.A MODA) | Veronique Notte (choplin) | 31 rue Saint-Rome | 884782228 | Maroquinerie. Yelp avril 2026 actif (autre entité SIREN 441560653 liquidée 2023 — ne pas confondre). IG + FB Linea Moda Toulouse. Tél 05 61 21 32 31. Aucun email public. Visite terrain. | NOUVEAU |
+| MICHAEL DRILHOLE CONCEPT | Michael Drilhole | 31 rue Saint-Rome | 819061649 | Mode. LinkedIn + FB présents. Aucun email public. Visite terrain. | NOUVEAU |
+| URBAN WEAR | Hichame Ayachi | 12 rue Saint-Rome | 939563672 | Mode/streetwear créée jan 2025. Aucun email public. Visite terrain. | NOUVEAU |
+| KATOUNI | Alain Salimi pak | 12 rue Saint-Rome | 510259757 | Chaussures/sneakers, revendeur New Balance. Paris HQ, étab secondaire Toulouse. Aucun email public. Visite terrain. | NOUVEAU |
+
+**⚠️ Notion MCP indisponible (65e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Saint-Rome 2026-08-26".
+**⚠️ Zone Saint-Rome ÉPUISÉE (5e confirmation)** — PIVOT DÉFINITIF recommandé mercredi → Esquirol/Daurade/Wilson.
+
+*Note session 26/08 (L'Éclaireur) : Saint-Rome. Zone 100% épuisée (top-prospects-centre.json). Focus reliquat NOUVEAU (10 boutiques sans email). 1 email confirmé : PAUSE (bonjour@pause-montres.fr, Jonathan Blaise, 8/10) — trouvé sur commeuncamion.com, non indexé lors des passes précédentes. 9 NOUVEAU sans email public malgré recherches multi-sources (outdoordiffusion.com TIMEOUT, Mira Mira/Dressing Rose/La Suite/JO/Linea Moda/Michael Drilhole/Urban Wear/Katouni — terrain uniquement). Notion MCP indisponible 65e session.*
 
 ---
 
