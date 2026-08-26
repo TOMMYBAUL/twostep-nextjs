@@ -1,12 +1,16 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-19 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-25 (L'Auditeur)*
 
 ## Stats
-- Total leads : 328
-- NOUVEAU : 88 (+3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- Total leads : 344 (+1 session 25/08 : +1 BROUILLON CASA STRADA)
+- NOUVEAU : 93 (-1 session 25/08 : CASA STRADA → BROUILLON | +8 session 24/08 Capitole : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE, RECOVERY PROJECT, TOVLI)
 - CONTACTE : 1
-- BROUILLON : 219 (+4 session 19/08 : DO MY SHOES 7/10, ILANN FIVE 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +4 session 18/08 : BOUCLARD 9/10, ECUME STORE 8/10, EDMOND L'OPTICIEN 7/10, PETITES FRIPOUILLES 6/10 | +4 drafts session 17/08 : M'ELLE BOUTIQUE 8/10, NESS BOUTIQUE 7/10, TRENTOTTO 7/10, L'INTERPRETE 7/10 — copier-coller Gmail requis | +4 session 14/08 : RIQUIER OPTIQUE 9/10, OPTIQUE DU PALAIS 8/10, OPTIQUE JEAN JAURÈS 7/10, OPTIQUE PONT DES DEMOISELLES 7/10)
+- BROUILLON : 223 (+1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- CONTACTE : 1
+- ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
+- ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
+- ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
 - ECARTES : +2 (BÔÈMBIO — fermée juillet 2024 ; CLAIRE & FRANCOIS — boutique Toulouse centre définitivement fermée)
 - ECARTES session 19/08 : +2 (BODY ONE LINGERIE — fermée janvier 2015 ; REVERIES SARL — liquidation judiciaire 2020)
 - ECARTES session 18/08 : +4 (CAZANOVA CUIR — artisan retouches ; JPC — inactive 2017 ; VISION PLUS — chaîne ; ISABELLE KLEIN/GALERIE 7 — galerie d'art hors cible)
@@ -14,6 +18,208 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Mardi — 2026-08-25 (L'Éclaireur) — Saint-Etienne (reliquat NOUVEAU) — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Saint-Etienne (mardi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP indisponible — 64e+ session consécutive)
+
+**Note de session :** Zone Saint-Etienne 27/27 épuisée depuis le 23/06 (top-prospects-centre.json + toulouse-merchants-full.json pour toutes les rues du quartier). Cette session a ciblé les ~10 boutiques encore en statut NOUVEAU (1-5 passes précédentes sans email). 1 email confirmé (CASA STRADA via site propre maisonstrada.com). 1 probable ÉCARTÉ (HELLADE — adresse occupée par chaîne opticiens). Remaining NOUVEAU sans email affiché public malgré recherches multi-sources.
+
+**Email confirmé :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| CASA STRADA (MAISON STRADA) | Saint-Etienne | Mode/Créateurs multimarque | Samir Chnadha | contact@maisonstrada.com ✅ | 991911280 | 6/10 | BROUILLON | Email confirmé via homepage maisonstrada.com (pied de page). 51B rue Rempart Saint-Etienne. Site propre + IG. Précédemment tracké "Email non trouvé" — lesboutiquessaintgeorges@terranea.com était email centre commercial (non retenu). |
+
+**Sans email — NOUVEAU terrain :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| EAST SIDE | Nathalie Deschamps | Rue Rempart Saint-Etienne | 504034769 | Streetwear/sneakers. Aucun site officiel trouvé. Pages Jaunes : tél uniquement. 5+ passes sans email. | NOUVEAU |
+| ANAHITA | Razieh Jalali | Rue Rempart Saint-Etienne | — | Mode/accessoires. Facebook boutiqueanahita (login requis). Aucune adresse email publique accessible. | NOUVEAU |
+| ADEPTE | — | Saint-Etienne | — | Mode. Aucune présence web indépendante trouvée. Terrain uniquement. | NOUVEAU |
+| BELLA MODE | — | Saint-Etienne | — | Mode. Aucun site, aucun email public trouvé malgré recherches. | NOUVEAU |
+| KALI YOG | — | Saint-Etienne | — | Yoga/sport. Aucun email public trouvé. | NOUVEAU |
+| ENTRE VUES | — | Rue du Languedoc | — | Opticien indépendant. entrevuesopticiens.fr — DNS ENOTFOUND (site down). Aucun email accessible. | NOUVEAU |
+| MELI / MELINO | — | Saint-Etienne | — | Mode. Aucun site propre trouvé. Pages Jaunes tél uniquement. | NOUVEAU |
+| KEED | — | Saint-Etienne | — | Mode/streetwear. Aucune présence web indépendante identifiée. | NOUVEAU |
+
+**Probable ÉCARTÉ :**
+- HELLADE (SIREN 407941947, 10 rue Saint-Pantaléon) — Recherche Mappy : adresse occupée par "Le Collectif des Lunetiers" (chaîne opticiens). Siège HELLADE confirmé Bordeaux (19 Quai des Salinières). Établissement Toulouse probablement fermé. **Statut : ÉCARTÉ à confirmer terrain** (⚠️ non encore mis à jour dans l'entrée individuelle du tracker).
+
+**⚠️ Notion MCP indisponible (64e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Saint-Etienne 2026-08-25".
+**⚠️ Zone Saint-Etienne quasi-épuisée** — toutes les rues connues traitées. Prochaines sessions mardi : nouveaux quartiers ou angles alternatifs (Instagram DM, LinkedIn, terrain).
+
+*Note session 25/08 (L'Éclaireur) : Saint-Etienne. Zone 27/27 JSON épuisée depuis 23/06 + toutes rues toulouse-merchants-full.json traitées. Focus reliquat NOUVEAU. 1 email confirmé : CASA STRADA (contact@maisonstrada.com, Samir Chnadha, 6/10) — trouvé via maisonstrada.com direct (l'email centre commercial lesboutiquessaintgeorges@terranea.com avait été écarté lors d'une session précédente). HELLADE probable ÉCARTÉ (adresse Toulouse occupée par Le Collectif des Lunetiers, chaîne opticiens ; siège Bordeaux confirmé). 8 NOUVEAU sans email : EAST SIDE, ANAHITA, ADEPTE, BELLA MODE, KALI YOG, ENTRE VUES, MELI/MELINO, KEED — aucun site officiel avec email accessible. Kompass 405, Cylex/Yelp 403, Hoodspot redirige vers 403. Notion MCP indisponible 64e session.*
+
+---
+
+### Mardi — 2026-08-25 (L'Auditeur) — 1 brouillon rédigé (session Éclaireur 25/08)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 1 brouillon rédigé — Gmail MCP indisponible (64e+ session consécutive), envoi manuel requis  
+**Leads traités** : 1 lead BROUILLON issu de la session L'Éclaireur 2026-08-25 (Saint-Etienne)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-25.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| CASA STRADA (MAISON STRADA) | Samir Chnadha | contact@maisonstrada.com ✅ | Samir, tes créateurs trouvés sur Google Toulouse ? | 6/10 |
+
+**⚠️ Gmail MCP indisponible (64e+ session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-25".
+
+*Note session 25/08 (L'Auditeur) : 1 lead BROUILLON disponible (CASA STRADA — seul email confirmé session Éclaireur 25/08). Email ACA rédigé, 108 mots, tutoiement, prénom Samir, accroche sur sélection créateurs multimarque. Backlog antérieur : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4), 24/08 (×1) jamais envoyés via Gmail (MCP hors service depuis 64+ sessions). Copier-coller manuel requis depuis bauland@twostep.fr.*
+
+---
+
+### Lundi — 2026-08-24 (L'Éclaireur) — Capitole (reliquat JSON) — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Capitole (lundi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP indisponible — 63e+ session consécutive)
+
+**Note de session :** 12 candidats JSON Capitole investigués (entrées non tracées au 23/08). 1 email confirmé (LILI-LEONE). 4 ÉCARTÉ (boutique fermée, chaînes nationales). 8 NOUVEAU terrain sans email public trouvé. Recherches via sites officiels, Pages Jaunes, Hoodspot, Yelp, annuaires. Gmail MCP indisponible (63e+ session consécutive).
+
+**Email confirmé :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| LILI-LEONE (SARL LEONI) | Capitole | Mode femme | Stéphanie Roux | lilileone@live.fr ✅ | 529145161 | 7/10 | BROUILLON | Email confirmé via allbiz.fr. 16 rue des Tourneurs. Mode femme multimarques, 2 boutiques (TLS+1). Site lilileone.com, IG @lilileone_officiel. |
+
+**Sans email — NOUVEAU terrain :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| COMEBACK | Jerome Delgado | 47 rue de la Pomme | 901868729 | Chaussures. Fondée 2021. Aucun site web, aucun email public. Terrain uniquement. | NOUVEAU |
+| KATHY.B | Catherine Ballias | 44 rue de Metz | 882609688 | Mode femme. Site boutiqueau44.com — formulaire seulement, pas d'email affiché. IG @boutique_au_44_rue_de_metz_. | NOUVEAU |
+| MANOUSHKA | Dominique Sellem | 53 rue de la Pomme | 814281812 | Mode. Site manoushka.fr inaccessible (DNS error). Aucun email public trouvé. | NOUVEAU |
+| N À L'INFINI | Patricia Lacombe | 19 rue de la Pomme | 817911969 | Bijouterie fantaisie. Liée à Bijouterie Nougues (Sandra Nougues, 32 rue de la Pomme — déjà BROUILLON contact@bijouterienougues.fr). Doublon probable — site bijouterie-toulouse-nougues.fr down. Pas d'email distinct trouvé. | NOUVEAU |
+| PAMPY | Juliette Marciano (Kouby) | 11 rue de la Pomme | 997769906 | Mode femme/homme. pampy.com = domaine à vendre. Pages Jaunes : tél uniquement. Aucun email trouvé. | NOUVEAU |
+| PAYOTE | Olivier Gelly | 58 rue des Tourneurs | 912767100 | Chaussures (espadrilles marque propre). sav@payote.fr ⚠️ trouvé mais = email SAV. 2 boutiques (TLS+Perp). Non utilisé — email SAV non direct pour prospection. | NOUVEAU |
+| RECOVERY PROJECT | Pierre Bauguil | 48B rue de Metz | 940957483 | Mode/Sport (On Running dealer). Site recoverytls.com — formulaire seulement. IG @recoverytoulouse. Aucun email direct. | NOUVEAU |
+| TOVLI | Robert Fellous | 17 rue de la Pomme | 751393331 | Mode. Siège Paris 75002 (societe.com). Faible présence en ligne. Aucun email trouvé. ⚠️ Siège hors Toulouse — indépendance à confirmer terrain. | NOUVEAU |
+
+**Écarté session 24/08 :**
+- BANANA-POMME (Eric Bitoun, 28 rue de la Pomme, SIREN 901868729) — fermé janvier 2025. ÉCARTÉ définitif.
+- SHILTON (Michael Guedj, 28 rue de la Pomme, SIREN 453428578) — chaîne nationale 28 boutiques. ÉCARTÉ (hors cible >5 établissements).
+- TILL / TILLAMY (Yann Bellamy, 40 rue de Metz, SIREN 401862255) — siège Beaupreau-en-Mauges (Maine-et-Loire). Chaîne chaussures Ouest France. ÉCARTÉ.
+- EDEN / PP NEDE (Jean-Jacques Ghebali, 42 rue de la Pomme, SIREN 533665764) — siège 15 rue du Colisée 75008 Paris. Multi-location. ÉCARTÉ.
+
+**⚠️ Notion MCP indisponible (63e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Capitole 2026-08-24".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé (1 BROUILLON LILI-LEONE en attente rédaction Auditeur).
+
+*Note session 24/08 (L'Éclaireur) : Capitole Nème session. 12 candidats investigués. 1 email confirmé : LILI-LEONE (lilileone@live.fr, Stéphanie Roux, 7/10). 4 ÉCARTÉS : BANANA-POMME (fermé), SHILTON (chaîne 28 boutiques), TILL (chaîne Ouest), EDEN (siège Paris). 8 NOUVEAU sans email : COMEBACK, KATHY.B, MANOUSHKA, N À L'INFINI, PAMPY, PAYOTE (SAV seulement), RECOVERY PROJECT, TOVLI. Sites majoritairement sans email public ou DNS down. PAYOTE a sav@payote.fr mais non retenu (email SAV, pas de contact direct). N À L'INFINI doublon probable avec Bijouterie Nougues déjà tracké. TOVLI siège Paris à vérifier terrain.*
+
+---
+
+### Lundi — 2026-08-24 (L'Auditeur) — 1 brouillon rédigé
+
+**Agent** : L'Auditeur | **Date** : 2026-08-24  
+**Statut** : ✅ 1 brouillon rédigé | **Notion** : Non créé (MCP indisponible — 63e+ session consécutive) | **Gmail** : ⚠️ Indisponible — copier-coller requis
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LILI-LEONE | Stéphanie Roux | lilileone@live.fr | Stéphanie, ton Sessun et Leon & Harper trouvés sur Google Toulouse ? | 8/10 |
+
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-24.md`
+
+*Note session 24/08 (L'Auditeur) : 1 seul lead BROUILLON avec email disponible (LILI-LEONE — seul nouveau de la session Éclaireur 24/08). Email ACA rédigé : 20 ans de boutique, accroche Sessun + Leon & Harper + Des Petits Hauts, angle "en stock près de chez moi" Google. Score 8/10. Gmail MCP indisponible 63e session — copier-coller manuel requis. Notion MCP indisponible. Rappel backlog : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4) jamais envoyés via Gmail.*
+
+---
+
+### Samedi — 2026-08-22 (L'Éclaireur) — Victor-Hugo 5e session — ÉPUISÉ — 0 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Victor-Hugo (samedi)
+**Statut** : ⚠️ ÉPUISÉ — 0 email trouvé | **Notion** : Non créé (MCP indisponible — 62e+ session consécutive)
+
+Zone top-prospects-centre.json 100% épuisée depuis le 02/05/2026 (9/9 boutiques tracées). Zone étendue épuisée depuis le 08/08/2026 — tous les candidats NOUVEAU passés 3+ fois sans email public trouvé. Searches répétées ce jour sans résultat.
+
+**Candidats NOUVEAU revisités — aucun email trouvé :**
+| Boutique | Gérant | Adresse | Notes | Statut |
+|---|---|---|---|---|
+| SAINT PAULIN | Catherine Jimenez | 40 rue Rémusat | Aucun site web, aucun email public. Tél uniquement. | NOUVEAU |
+| ALICE ET LES GARCONS (KIDS STORE) | Benoit/Victoria Mabille de Poncheville | 15 rue Bouquières | Aucun site web, aucun email public. | NOUVEAU |
+| MINI JU (FEELING) | Sophie Chakri | 8 rue Gambetta | Aucun site web, aucun email public. | NOUVEAU |
+| DORYANN (MATIERE NOBLE) | Stéphanie Dah-okimba | 19 rue Bouquières | IG @doryannstore, tél 09 55 92 93 99. Aucun email. | NOUVEAU |
+| THEIA | Shan Huang | 7 rue Rémusat | Très récente 2024, aucune présence web confirmée. | NOUVEAU |
+| HOT-COUTURE | Arielle Bonneville | 5 rue des Lois | SARL fondée 2011. Aucun site, aucun email. | NOUVEAU |
+| SARL PARIS SEPTIÈME | Emilie Carpentier | 13 rue Bouquières | Active (confirmé societe.com 22/08). L'ITINÉRAIRE (534603469) en liquidation juil 2024 = entité différente. Aucun email public. | NOUVEAU |
+| CASA AZUL | Emilie Devin | 19 rue Peyrolières | ⚠️ Opposition Pappers. IG @casa_azul_toulouse. Ouverte août 2025. Aucun email. | NOUVEAU |
+
+**Écarté contextuel session 22/08 :**
+- L'ITINÉRAIRE (SIREN 534603469, 13 rue Bouquières) — liquidation judiciaire juillet 2024. Entité hors JSON. Écarté définitif.
+
+**⚠️ RECOMMANDATION DÉFINITIVE** : Victor-Hugo doit être retiré de la rotation samedi. Zone JSON + zone étendue totalement épuisées pour les emails en ligne. Pivoter vers Wilson/Compans-Caffarelli ou Guilhemery/Arnaud-Bernard le samedi.
+
+**⚠️ Notion MCP indisponible (62e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Victor-Hugo 2026-08-22".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 22/08 (L'Éclaireur) : Victor-Hugo 5e session. Top-prospects-centre.json épuisé depuis 02/05 (9/9 boutiques). Zone étendue épuisée depuis 08/08. Recherches web complètes sur les 8 NOUVEAU restants : aucun email trouvé. SAINT PAULIN, ALICE ET LES GARCONS, MINI JU, DORYANN : aucun site web, aucun email public accessible. HOT-COUTURE, SARL PARIS SEPTIÈME, THEIA, CASA AZUL : identique. Seul point nouveau : L'ITINÉRAIRE (534603469, 13 rue Bouquières) confirmé en liquidation juillet 2024 — différent de SARL PARIS SEPTIÈME (750521759) toujours active mais sans email. RECOMMANDATION URGENTE : pivot samedi vers nouveau quartier.*
+
+---
+
+### Samedi — 2026-08-22 (L'Auditeur) — 4 brouillons rédigés (backlog BROUILLON sans draft)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (62e+ session), envoi manuel requis  
+**Leads traités** : 4 leads BROUILLON sans brouillon markdown antérieur (backlog sessions Éclaireur précédentes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-22.md`
+
+| # | Boutique | Gérant | Email | Objet | Score | Notes |
+|---|---|---|---|---|---|---|
+| 1 | EDMOND L'OPTICIEN | Maxime (Levy) | maxoptic@gmail.com | Maxime, tes lunettes Edmond trouvées par les Toulousains sur Google ? | 7/10 | ⚠️ Même gérant + email que MAX OPTIC (Boulbonne) — brouillon 09/07. À vérifier avant envoi. |
+| 2 | ANDY'S ETHIC | Andy | contact@andysethic.com | Andy, tes marques éthiques trouvées par les Toulousains sur Google ? | 7/10 | ⚠️ "Andy" = identité marque. Gérant(e) réel(le) non confirmé(e). Multimarque confirmé (Kameha Lane). |
+| 3 | L'ANNEXE | Nicole Busato | Busato.nicole1@gmail.com | Nicole, ta mode italienne trouvée par les Toulousaines sur Google ? | 6/10 | Email personnel. Collections italiennes chic/bohème. |
+| 4 | ETOILE DE SONGE | Sophie Pialat | contact@etoiledesonge.fr | Sophie, tes Nobodinoz et CamCam trouvés par les parents sur Google Toulouse ? | 5/10 | Segment enfants. Marques premium recherchées (Nobodinoz, CamCam, Fresk). |
+
+**⚠️ Gmail MCP indisponible (62e+ session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-22"
+
+*Note session 22/08 (L'Auditeur) : 0 NOUVEAU avec email (Victor-Hugo 100% épuisé). Pivot vers backlog BROUILLON sans brouillon markdown. 4 emails ACA rédigés. Alertes importantes : (1) EDMOND L'OPTICIEN utilise maxoptic@gmail.com = même email que MAX OPTIC/Maxime Levy (brouillon 09/07) — risque de double contact, à vérifier terrain. (2) ANDY'S ETHIC : prénom "Andy" est identité de marque, gérant(e) réel(le) inconnu(e), email pro confirmé. Gmail MCP hors service 62e+ session. Rappel backlog en attente copier-coller : 7 brouillons des sessions 19/08 (5) et 21/08 (2).*
+
+---
+
+### Jeudi — 2026-08-21 (L'Auditeur) — 2 brouillons rédigés (LOVE TOULOUSE, BOHEMIANS ROOM)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 2 brouillons rédigés — Gmail MCP indisponible (61e session), envoi manuel requis  
+**Leads traités** : 2 leads BROUILLON issus de la session L'Éclaireur 2026-08-21 (Carmes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-21.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| LOVE TOULOUSE (BOSCHERIE PERE ET FILLE) | Julien Boscherie | lovetoulouse@gmail.com ⚠️ | Julien, ton stock Love Toulouse visible sur Google Toulouse ? | 8/10 |
+| BOHEMIANS ROOM (MADAME GEORGES) | Lionel Prevost | bohemiansroom@gmail.com | Lionel, tes clientes te trouvent sur Google "en stock près de chez moi" ? | 7/10 |
+
+**⚠️ Gmail MCP indisponible (61e session consécutive)** — copier-coller manuel requis depuis bauland@twostep.fr.  
+**⚠️ Notion MCP indisponible** — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-21".
+
+*Note session 21/08 (L'Auditeur) : 2 emails ACA rédigés sur les 2 leads Carmes trouvés en matinée. LOVE TOULOUSE : marque propre toulousaine, email via Toulouse Tourisme listing (⚠️ à confirmer terrain). BOHEMIANS ROOM : 4,6/5 Google, site down, email confirmé annuaires. Gmail MCP hors service 61e session — copier-coller requis. Rappel : 5 brouillons 19/08 (BOUCLARD, ECUME STORE, DO MY SHOES, ILANN FIVE, PETITES FRIPOUILLES) en attente copier-coller Gmail.*
+
+---
+
+### Jeudi — 2026-08-21 (L'Éclaireur) — Carmes reliquat NOUVEAU terrain — 2 emails trouvés
+
+**Agent** : L'Éclaireur | **Statut** : 🔍 2 emails trouvés — À valider
+**Quartier** : Carmes (jeudi) — zone top-prospects-centre.json ÉPUISÉE (26/26 depuis 19/06). Session focalisée sur les 6 boutiques NOUVEAU terrain restantes (sans email après 4-5 passages antérieurs).
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| BOSCHERIE PERE ET FILLE (LOVE TOULOUSE) | Carmes | Mode/Créatrice toulousaine | Julien Boscherie | lovetoulouse@gmail.com ✅⚠️ | 989923834 | 8/10 | BROUILLON | Concept store Toulouse identity (vêtements homme/femme + accessoires + objets de vie, flocking personnalisé en boutique). 49 rue des Filatiers. IG @love.toulouse.store. Email via Toulouse Tourisme listing. ⚠️ À confirmer — email non trouvé sur site propre (Instagram uniquement). |
+| MADAME GEORGES (BOHEMIANS ROOM) | Carmes | Mode femme multimarques | Lionel Prevost | bohemiansroom@gmail.com ✅ | 830672937 | 7/10 | BROUILLON | Mode femme tendance multimarques. 45 rue Boulbonne (⚠️ JSON dit 35 — à confirmer adresse). Site bohemiansroom.com actif. FB Bohemian's Room. Email confirmé via annuaires (Hoodspot, Bottin, PetitesAffiches). Tél 05 61 76 52 40. |
+
+**Boutiques écartées session 21/08 :**
+| Boutique | SIREN | Motif |
+|---|---|---|
+| HANNAH | 799219837 | Établissement Toulouse (SIRET 79921983700025, 31-33 rue Boulbonne) fermé définitivement le 31/01/2018 — annuaire-entreprises.data.gouv.fr. Siège social Carcassonne actif. ÉCARTÉ DÉFINITIF pour Toulouse. |
+| LB7 | 100285386 | 7 rue Boulbonne occupée par "Le Dressing de Lia / Le Dressing de LC" (SIREN 911187854, enseigne @ledressingdelc). LB7 probablement fermée/déménagée. ÉCARTÉ. |
+
+**Boutiques sans email confirmées (terrain obligatoire) :**
+- PARALLELE (FRALTIS, 440867224) — 35 rue Boulbonne, Alain Sanz — chaussures, tél 05 34 44 90 71, aucun email public. 5e passage négatif. Visite terrain.
+- STEDIF (835196098) — 46 rue des Filatiers, Stéphanie Forgeront + Dimitri Lavabre — lingerie/mode, aucun email public. 5e passage négatif. Visite terrain.
+
+**Bilan zone Carmes :**
+Zone top-prospects-centre.json 100% épuisée (26/26 depuis 19/06/2026). Zone toulouse-merchants-full.json épuisée depuis 24/07/2026. RECOMMANDATION : **pivot jeudi définitif** vers Guilhemery ou Wilson/Esquirol.
+
+**⚠️ Notion MCP indisponible (60e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Carmes 2026-08-21".
+**⚠️ Gmail MCP indisponible** — aucun brouillon créé.
+
+*Note session 21/08 (L'Éclaireur) : Carmes reliquat — 6 boutiques NOUVEAU terrain investigées (BOSCHERIE/LOVE, MADAME GEORGES/BOHEMIANS ROOM, HANNAH, LB7, PARALLELE, STEDIF). 2 emails trouvés : LOVE TOULOUSE via Toulouse Tourisme listing (lovetoulouse@gmail.com, ⚠️ à confirmer), BOHEMIANS ROOM via annuaires multiples (bohemiansroom@gmail.com, ✅ confirmé). HANNAH ÉCARTÉ (Toulouse closed 31/01/2018). LB7 ÉCARTÉ (remplacée @ledressingdelc). PARALLELE + STEDIF toujours sans email public malgré 5 passages. Zone Carmes définitivement épuisée — recommandation pivot jeudi vers Guilhemery.*
 
 ---
 
