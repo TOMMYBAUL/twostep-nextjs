@@ -1,13 +1,14 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-26 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-27 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 345 (+1 session 26/08 : PAUSE → BROUILLON)
-- NOUVEAU : 92 (-1 session 26/08 : PAUSE → BROUILLON)
+- Total leads : 341 (-4 ÉCARTÉs Carmes session 27/08)
+- NOUVEAU : 83 (-5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 224 (+1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 229 (+5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
+- ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
 - ECARTES session 22/08 : +1 (L'ITINÉRAIRE 534603469 — liquidation judiciaire juillet 2024, hors JSON, info de contexte)
 - ECARTES session 21/08 : +2 (HANNAH — étab Toulouse fermé 31/01/2018, siège Carcassonne ; LB7 — remplacée par Le Dressing de Lia/LC SIREN 911187854)
@@ -18,6 +19,52 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Jeudi — 2026-08-27 (L'Éclaireur) — Carmes (reliquat NOUVEAU) — 5 emails confirmés
+
+**Agent** : L'Éclaireur | **Quartier** : Carmes (jeudi)
+**Statut** : ✅ 5 emails confirmés | **Notion** : Non créé (MCP indisponible — 66e+ session consécutive)
+
+**Note de session :** Zone Carmes 26/26 épuisée depuis le 19/06/2026 (top-prospects-centre.json). Cette session a ciblé les boutiques encore en statut NOUVEAU (sans email) pour tenter une nouvelle passe web multi-sources. 5 emails confirmés via sites officiels et annuaires. 4 nouveaux ÉCARTÉs découverts (liquidations 2020–2023 + chaîne nationale). Les boutiques restantes (SORTILEGE 503, LA FILLE DE MARGARET domaine ENOTFOUND, CONCEPT TOULOUSE sans web, etc.) n'ont aucun email public malgré recherches exhaustives. **Recommandation maintenue : PIVOT DÉFINITIF jeudi → Guilhemery ou Wilson/Esquirol.**
+
+**Emails confirmés :**
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| DR SWAG | Carmes | Mode/Streetwear multimarques | Nicolas Julius | contact@dr-swag.com ✅ | 801794504 | 8/10 | BROUILLON | US streetwear depuis 2014. 13 rue Perchepinte. Sneakers, caps, hoodies. Très bon fit Two-Step. Site dr-swag.com actif. |
+| PLUMETIS | Carmes | Mode (robes de mariée) | Audrey Derouard | contact@plumetis-toulouse.fr ✅ | 840763288 | 5/10 | BROUILLON | Robes de mariée et robe de soirée. 35 rue de la Dalbade. Site plumetis-toulouse.fr actif. Segment niche — fit modéré. |
+| LES CIGALES (SARL) | Carmes | Mode (dépôt-vente) | Olivia Samson | sarllescigales@aol.com ✅ | 441927951 | 5/10 | BROUILLON | Dépôt-vente mode femme. 42 rue Boulbonne. Email AOL confirmé via annuaires. Stock variable (dépôt-vente), fit limité. |
+| ARMURERIE BARRAUD | Carmes | Sport (armurerie) | Olivier Barraud | contact@armureriebarraud.com ✅ | 401784376 | 4/10 | BROUILLON | Armurerie, chasse et tir sportif. 45 rue Pharaon. Site armureriebarraud.com actif. Hors segment cible Two-Step. |
+| LESLIE MONTE-CARLO | Carmes | Mode | Mireille Pietri | contact@lesliemontecarlo.com ⚠️ | 801007428 | 5/10 | BROUILLON | Mode femme. 35 rue Boulbonne. ⚠️ Email = HQ Monaco (marque nationale), pas gérant direct Toulouse — à confirmer si joignable localement. |
+
+**Nouveaux ÉCARTÉs découverts :**
+| Boutique | SIREN | Raison | Date clôture |
+|---|---|---|---|
+| MAITYLA/MAITYKA | 879994192 | Liquidation judiciaire clôturée | 19/01/2023 |
+| FUTURWARE LAB | 410238703 | Inactive depuis 17/01/2023, siège Paris | 17/01/2023 |
+| M.J.H. | 453190092 | Liquidation judiciaire | 17/01/2020 |
+| VICOMTE A/THIERS ALBERT | 534109145 | Chaîne nationale >5 boutiques (Toulouse, Monaco, Bordeaux, Nantes, Deauville…) | — |
+
+**Sans email — NOUVEAU terrain (investigations session 27/08) :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| SORTILEGE | Marie-Bénédicte Guilhem | 7 rue Boulbonne | 448745604 | Site sortilegeboutique.com retourne 503. Aucun email public. Visite terrain. | NOUVEAU |
+| LA FILLE DE MARGARET | Sarah Pelegry | 35 rue Boulbonne | 520610593 | Domaine lafilledemargaret.com ENOTFOUND. Instagram actif @lafilledemargaret. Aucun email public. Visite terrain. | NOUVEAU |
+| CONCEPT TOULOUSE | Mattia Bono | 9 rue Boulbonne | 949677249 | Cosmétique. Aucune présence web avec email. Visite terrain. | NOUVEAU |
+| POINTURE/AG TOULOUSE | Audrey Garcia | 23 rue Boulbonne | 994314177 | Chaussures. Aucun email public. Visite terrain. | NOUVEAU |
+| APOS 33 | Sandra Cremazy | 34 rue Boulbonne | 422970020 | Mode. Aucun email public. Visite terrain. | NOUVEAU |
+| LAMA | Marine Lafitte | 10 rue Boulbonne | 421370651 | Mode femme. Aucun email public. Visite terrain. | NOUVEAU |
+| LAORA VITTORIA | Annick Confuorto | 19 rue Ozenne | 412012395 | Mode femme. Aucun email public. Visite terrain. | NOUVEAU |
+| EQUI-SUD | Françoise Imart | 19 rue des Filatiers | 390134567 | Équipement équestre (hors segment cible). Tél uniquement. Visite terrain si pertinent. | NOUVEAU |
+| AMBIANCES ET SENTEURS | Eric Gras | 39 rue des Filatiers | 808837157 | Cosmétique/parfumerie. Aucun email public. Visite terrain. | NOUVEAU |
+| MICHÈLE CAZAUX | Michèle Louge | 39 rue de la Dalbade | 321727455 | Mode. Aucune présence web. Visite terrain. | NOUVEAU |
+| MATHIS ET SASHA | Clémentine Chiodo | 49 rue des Filatiers | 920475134 | Mode. Aucune présence web. Visite terrain. | NOUVEAU |
+
+**⚠️ Notion MCP indisponible (66e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Carmes 2026-08-27".
+**⚠️ Zone Carmes ÉPUISÉE** — PIVOT DÉFINITIF recommandé jeudi → Guilhemery ou Wilson/Esquirol.
+
+*Note session 27/08 (L'Éclaireur) : Carmes. Zone 26/26 épuisée. 5 emails confirmés via sites officiels (DR SWAG 8/10, PLUMETIS 5/10, LES CIGALES 5/10, ARMURERIE BARRAUD 4/10, LESLIE MONTE-CARLO 5/10⚠️HQ). 4 nouveaux ÉCARTÉs (MAITYLA/FUTURWARE LAB/M.J.H. liquidations, VICOMTE A chaîne nationale). 11 boutiques restent NOUVEAU sans email public. Notion MCP indisponible 66e+ session.*
 
 ---
 
