@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-27 (L'Éclaireur)*
+*Dernière mise à jour : 2026-08-27 (L'Auditeur)*
 
 ## Stats
 - Total leads : 341 (-4 ÉCARTÉs Carmes session 27/08)
@@ -65,6 +65,27 @@
 **⚠️ Zone Carmes ÉPUISÉE** — PIVOT DÉFINITIF recommandé jeudi → Guilhemery ou Wilson/Esquirol.
 
 *Note session 27/08 (L'Éclaireur) : Carmes. Zone 26/26 épuisée. 5 emails confirmés via sites officiels (DR SWAG 8/10, PLUMETIS 5/10, LES CIGALES 5/10, ARMURERIE BARRAUD 4/10, LESLIE MONTE-CARLO 5/10⚠️HQ). 4 nouveaux ÉCARTÉs (MAITYLA/FUTURWARE LAB/M.J.H. liquidations, VICOMTE A chaîne nationale). 11 boutiques restent NOUVEAU sans email public. Notion MCP indisponible 66e+ session.*
+
+---
+
+### Jeudi — 2026-08-27 (L'Auditeur) — 4 brouillons rédigés (DR SWAG, PLUMETIS, LES CIGALES, LESLIE MONTE-CARLO)
+
+**Agent** : L'Auditeur | **Statut** : ✍️ 4 brouillons rédigés — Gmail MCP indisponible (67e session consécutive), envoi manuel requis  
+**Leads traités** : 4 leads BROUILLON issus de la session L'Éclaireur 2026-08-27 (Carmes)  
+**Fichier** : `docs/prospection/brouillons/brouillons-email-2026-08-27.md`
+
+| Boutique | Gérant | Email | Objet | Score |
+|---|---|---|---|---|
+| DR SWAG | Nicolas Julius | contact@dr-swag.com | Nicolas, tes Air Jordan et sneakers US sur Google Toulouse ? | 8/10 |
+| PLUMETIS | Audrey Derouard | contact@plumetis-toulouse.fr | Audrey, tes robes de mariée trouvées par les futures mariées sur Google Toulouse ? | 5/10 |
+| LES CIGALES | Olivia Samson | sarllescigales@aol.com | Olivia, tes pièces de créateurs d'occasion trouvées sur Google Toulouse ? | 5/10 |
+| LESLIE MONTE-CARLO | Mireille Pietri | contact@lesliemontecarlo.com | Mireille, tes collections trouvées par les Toulousaines sur Google ? | 5/10 ⚠️HQ Monaco |
+
+**Non rédigé** : ARMURERIE BARRAUD (contact@armureriebarraud.com, 4/10) — hors segment cible Two-Step (armurerie chasse/tir).  
+**⚠️ Gmail MCP indisponible** (67e session consécutive) — copier-coller manuel requis depuis bauland@twostep.fr  
+**⚠️ Notion MCP indisponible** (404 connexion refusée) — récap tracker local uniquement. Titre prévu : "Brouillons email 2026-08-27"
+
+*Note session 27/08 (L'Auditeur) : 4 brouillons ACA rédigés sur 5 leads BROUILLON Carmes (27/08). ARMURERIE BARRAUD skippé (hors segment Two-Step). DR SWAG accroche Air Jordan/voyages Brooklyn-Atlanta (8/10). PLUMETIS accroche Milla Nova/fiancées cherchent sur Google (5/10). LES CIGALES accroche dépôt-vente créateurs/pièces tournent vite (5/10). LESLIE MONTE-CARLO accroche 35 ans de marque Monaco + Liu Jo (5/10 — ⚠️ email HQ Monaco, décision d'envoi à Thomas). Gmail MCP hors service 67e session — copier-coller requis. Notion MCP 404. Rappel backlog : brouillons 19/08 (×5), 21/08 (×2), 22/08 (×4), 24/08 (×1), 25/08 (×1), 26/08 (×1) jamais envoyés via Gmail.*
 
 ---
 
