@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Boutique cosmétique indépendante à Toulouse : pourquoi ton stock est invisible (et comment changer ça)",
+        slug: "boutique-cosmetique-toulouse",
+        category: "marchands",
+    },
 ];
 
 export function ArticleLayout({
