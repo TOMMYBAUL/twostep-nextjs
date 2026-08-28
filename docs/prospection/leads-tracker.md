@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-27 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-28 (L'Auditeur)*
 
 ## Stats
 - Total leads : 341 (-4 ÉCARTÉs Carmes session 27/08)
@@ -19,6 +19,18 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Vendredi — 2026-08-28 (L'Auditeur) — ⛔ 0 brouillon rédigé — session bloquée
+
+**Agent** : L'Auditeur | **Statut** : ⛔ Bloqué | **Notion** : Non créé (MCP 404 — 67e+ session)
+
+**Raisons :** 0 lead NOUVEAU avec email disponible (83 NOUVEAU tous terrain-only). Gmail MCP indisponible (68e session consécutive — OAuth interactif requis). Notion MCP 404 persistant.
+
+**Backlog non envoyé :** 18 brouillons rédigés entre le 19/08 et le 27/08 en attente de copier-coller manuel depuis bauland@twostep.fr.
+
+**Actions requises :** Débloquer Gmail MCP (claude.ai Connectors) + Notion MCP (vérifier 404) + Lancer Éclaireur Wilson/Esquirol ou Guilhemery pour nouveaux leads avec email.
 
 ---
 
