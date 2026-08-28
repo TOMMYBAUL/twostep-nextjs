@@ -4265,3 +4265,40 @@ Drafts : `docs/juridique/drafts-emails-phase0.md`
 **⚠️ Notion MCP indisponible (47e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads Multi-zones 2026-08-13".
 
 *Note session 30/07 (L'Éclaireur) : Pivot jeudi obligatoire (Carmes ÉPUISÉ 24/07, Bonnefoy/Minimes couvert 25/07). Zone Arnaud-Bernard + Guilhemery sélectionnée (0 sessions W31). 5 résultats effectifs : 4 NOUVEAU emails + 1 mise à jour terrain→email (LES BELLES BRANCHES bonjour@lesbellesbranches.fr). 5 redécouvertes déjà trackées (non recomptées). Zone partiellement épuisée : nombreuses boutiques sans email public (formulaires, téléphone uniquement, Facebook uniquement) ou hors cible (CBD, artisans, associations). BÔÈMBIO + LA MISSTINGUETTE = cosmétique bio/zéro déchet (segment cosmétique Two-Step ✅). LES BELLES BRANCHES (optique éco-éthique, LOJO) = 9/10, priorité envoi brouillon. MR SUNBELL STORE + PAUSE = terrain recommandé. ⚠️ Email COLOMBETTE OPTIQUE discordant à vérifier. Notion MCP indisponible (46e session).*
+
+---
+
+## Recap leads — 2026-08-28 (L'Éclaireur) — Pivot Carmes ÉPUISÉ → Alsace-Lorraine/Compans/Gabriel Péri/Rue des Arts/Cujas — 5 emails
+
+**Agent** : L'Éclaireur | **Quartier** : Pivot — Carmes ÉPUISÉ DÉFINITIVEMENT (26/26 dans tracker) → Alsace-Lorraine/Compans-Caffarelli/Gabriel Péri/Rue des Arts/Rue Cujas | **Statut** : À valider | **Notion** : Non créé (MCP indisponible — 67e session consécutive)
+
+**Note de session :** Zone Carmes 100% épuisée (26/26 prospects top-prospects-centre.json déjà dans le tracker depuis 19/06/2026). Pivot vers territoires périphériques non encore couverts : Alsace-Lorraine (Paul Vidal, Gabriel Péri, Compans-Caffarelli), puis rue des Arts / rue Cujas. Rendement faible — la majorité des boutiques de ces rues est déjà dans le tracker (DO MY SHOES, L'OBSERVATOIRE, PAUSE, ETOILE DE SONGE, BIJOUTERIE NOUGUES, IMAGINE, PERLIN'S, etc.) ou écarté (liquidations, chaînes, pas d'email public). 5 emails nouveaux confirmés : 4 solides ✅ + 1 annuaire non vérifié ⚠️. Nombreuses boutiques sans présence web (BY LILOU — Instagram DM uniquement, BROCK'NROLL — tel uniquement, FC2 BOUTIQUE — site maintenance, LES FEES DE LA CREATION — sans site). Éliminées : LEGEND STORY (franchise Barbour chaîne), VINTAGE PARADISE (3 établissements), COMBO (pas d'email), CREA CONCEPT (liquidation 2010), MR SUNBELL STORE upgrade terrain→⚠️email annuaire.
+
+**Recommandation :** Basculer définitivement le jeudi vers Guilhemery/Wilson ou explorer Saint-Cyprien (vendredi) + Victor-Hugo (samedi) qui semblent non encore couverts en profondeur depuis toulouse-merchants-full.json.
+
+| # | Boutique | Quartier/Adresse | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | OYARATHE (IBHA-INTERNATIONAL) | Compans-Caffarelli / 5 Esplanade Compans-Caffarelli | Cosmétique/Parfumerie | Edwige Hotete | ibha.inter@gmail.com ✅ | 814745519 | 6/10 | BROUILLON | Marque propre OYARATHE PARIS, cosmétiques et parfums indépendants. 1 établissement. |
+| 2 | LES BINOCLES TOULOUSAINES | Gabriel Péri / 12 rue Gabriel Péri | Optique indépendant | Philippe Escaich | lesbinoclestoulousaines@gmail.com ✅ | 899939695 | 9/10 | BROUILLON | Opticien indépendant réseau Opticiens par Conviction. Site lesbinoclestoulousaines.fr actif. Score 9/10 priorité envoi. |
+| 3 | OPTIQUE DES ARTS | Rue des Arts / 9 rue des Arts | Optique indépendant | Dorothée Escudie (Duboureau) | optiquedesarts@gmail.com ✅ | 822873964 | 8/10 | BROUILLON | Email confirmé via FAQ page officielle optiquedesarts.fr. 1 établissement. Mar-Sam 10h-19h. Score 8/10. |
+| 4 | CHOUCHOUTE | Concorde / 57 rue de la Concorde | Cosmétique/Santé spécialisé | Audrey Cortembos (DG) / Véronique Garofalo (pdte) | chouchoute.toulouse@gmail.com ✅ | 884237884 | 6/10 | BROUILLON | Boutique spécialisée pour femmes atteintes de cancer (prothèses mammaires, perruques, turbans, lingerie adaptée, cosmétiques). Stock de produits de marque — cible Two-Step valide mais niche. Score 6/10. ⚠️ Valider pertinence auprès de Thomas avant envoi. |
+| 5 | MR. SUNBELL STORE | Rue Cujas / 17 rue Cujas | Mode/Chaussures | Jérôme Biaggi | MR.SUNBELLSTORE.FRANCE@GMAIL.COM ⚠️ | 821109709 | 6/10 | BROUILLON | Email trouvé via annuaire (403 sur vérification directe — non confirmé officiellement). Précédemment tracké "terrain uniquement" (session 30/07). Facebook + Instagram actifs. Score 6/10. ⚠️ Valider email avant envoi. |
+
+**Éliminées session 2026-08-28 :**
+| Boutique | Adresse | Motif |
+|---|---|---|
+| LEGEND STORY | 5-7 rue Paul Vidal | Franchise Barbour (chaîne internationale) — hors cible. Email toulouse@legendstory.fr trouvé mais écarté. |
+| COMBO | 13 rue Cujas | Maroquinerie active mais 0 email public, 0 site. Tél 05 61 22 08 55. Terrain. |
+| BY LILOU | 6 rue Cujas | 0 email public. Contact uniquement via Instagram DM (@by.lilou.toulouse). Créée 2024. Terrain/Instagram. |
+| BROCK'NROLL (BROCK STORE) | 16 rue Cujas | 0 email public. Contact tél 05 62 27 08 21. Terrain. |
+| FC2 BOUTIQUE (boutiquepilou.com) | 8 rue des Arts | Site en maintenance "bientôt de retour". 0 email accessible. Terrain. |
+| LES FEES DE LA CREATION | 12 rue Cujas | 0 site web, 0 email public. CA 2024 : 121 700 € (en baisse). Terrain. |
+| VINTAGE PARADISE | 2 rue Cujas | 3 établissements (TLS + Bordeaux) — hors cible (>3 etab). |
+| CREA CONCEPT | 5 rue des Arts | Liquidation 2010 — déjà écarté sessions précédentes. ÉCARTÉ DÉFINITIF. |
+| REVERIES SARL | 2 rue des Arts | Liquidation judiciaire 2020 — déjà écarté. ÉCARTÉ DÉFINITIF. |
+| RL.COM (MW&Co) | 17 rue des Arts | Bijouterie montres luxe (site mwandco.com) — contact form uniquement, 0 email public. Terrain. |
+| NATURAL EFFECT (GAZON BENI) | 4 rue Bouquières | CBD shop — hors cible Two-Step. ÉCARTÉ. |
+| MONPARFUMMASIGNATURE | 42 rue de la Pomme | Service olfactif sur-mesure — pas de stock produits de marque. Hors cible. ÉCARTÉ. |
+
+**⚠️ Notion MCP indisponible (67e session consécutive)** — résultats consignés dans le tracker uniquement. Cible Notion : data_source_id e6208e6f-2590-42cf-b25d-ac8e262eaf7c. Titre prévu : "Leads pivot Carmes 2026-08-28".
+
