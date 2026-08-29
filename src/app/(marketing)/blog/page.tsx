@@ -2,6 +2,24 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétique à Toulouse : trouver les bonnes marques en boutique",
+        description:
+            "Où acheter tes cosmétiques préférés à Toulouse sans se déplacer pour rien ? Guide des meilleures boutiques beauté indépendantes, quartier par quartier.",
+        publishedAt: "2026-07-03",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
+        slug: "shopping-bijoux-toulouse",
+        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique",
+        description:
+            "Tu cherches un bijou à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes et comment éviter le déplacement pour rien.",
+        publishedAt: "2026-05-11",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
