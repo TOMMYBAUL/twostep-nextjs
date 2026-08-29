@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "shopping-maroquinerie-toulouse",
+        title: "Shopping maroquinerie à Toulouse : trouver le bon sac en boutique indépendante",
+        description:
+            "Tu cherches un sac, un portefeuille ou une ceinture de qualité à Toulouse ? Capitole, Carmes, Wilson... Guide des meilleures boutiques indépendantes.",
+        publishedAt: "2026-06-03",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
