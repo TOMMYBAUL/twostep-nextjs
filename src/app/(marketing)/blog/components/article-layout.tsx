@@ -39,6 +39,11 @@ const allArticles: { title: string; slug: string; category: "marchands" | "conso
         slug: "shopping-bijoux-toulouse",
         category: "consommateurs",
     },
+    {
+        title: "Shopping maroquinerie à Toulouse : trouver le bon sac en boutique (sans se déplacer pour rien)",
+        slug: "shopping-maroquinerie-toulouse",
+        category: "consommateurs",
+    },
 ];
 
 export function ArticleLayout({
