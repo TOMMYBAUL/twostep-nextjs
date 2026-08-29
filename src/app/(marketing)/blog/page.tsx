@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "boutique-cosmetique-toulouse",
+        title: "Boutique cosmétique à Toulouse : comment ton stock devient ta meilleure publicité",
+        description:
+            "Tu as 300+ références en rayon mais elles sont invisibles sur Google. Voici comment les rendre trouvables sans créer de site e-commerce.",
+        publishedAt: "2026-08-03",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
