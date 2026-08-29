@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-28 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-29 (L'Auditeur)*
 
 ## Stats
 - Total leads : 341 (-4 ÉCARTÉs Carmes session 27/08)
@@ -19,6 +19,26 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+---
+
+### Samedi — 2026-08-29 (L'Auditeur) — 2 brouillons rédigés — backlog BROUILLON épuisé
+
+**Agent** : L'Auditeur | **Statut** : ✅ 2 brouillons rédigés | **Notion** : Non créé (MCP 404 — 68e+ session)
+
+**Contexte :** 0 lead NOUVEAU avec email (83 terrain-only). Croisement exhaustif des 34 fichiers brouillons existants → 2 leads BROUILLON identifiés sans brouillon rédigé.
+
+**Brouillons rédigés :**
+| Boutique | Gérant | Email | Score | Note |
+|---|---|---|---|---|
+| ONLY GOLD | Yannis Valery | onlygold.31@gmail.com | 6/10 | ⚠️ Redressement judiciaire jan 2024 — actif. Bijoux 18K + rachat or. 44 rue des Couteliers. |
+| MADEMOISELLE NUAGE | Pauline David | contact@mademoisellenuage.fr | 5/10 | Créatrice bijoux + sélection designers locaux/français. 15 rue Cujas. |
+
+**Fichier** : brouillons-email-2026-08-29.md | **Backlog total** : 20 brouillons non envoyés
+
+**Statut MCP :** Gmail MCP indisponible (70e session consécutive). Notion MCP 404 (68e+ session). Copier-coller manuel requis.
+
+**Backlog BROUILLON épuisé** — prochaine session Auditeur possible uniquement après nouvelle session Éclaireur (Wilson/Esquirol ou Guilhemery recommandé).
 
 ---
 
