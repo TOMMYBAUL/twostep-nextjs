@@ -2,6 +2,15 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
+        slug: "boutique-cosmetique-toulouse",
+        title: "Boutique cosmétique à Toulouse : comment attirer des clients qui cherchent tes produits en ligne",
+        description:
+            "Tu vends des marques reconnues mais personne ne sait que tu les as en stock ? Rends ton catalogue visible et attire des clients prêts à acheter.",
+        publishedAt: "2026-07-22",
+        readingTime: "7 min",
+        category: "marchands" as const,
+    },
+    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
