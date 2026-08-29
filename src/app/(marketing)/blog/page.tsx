@@ -46,6 +46,15 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétiques à Toulouse : trouver tes produits beauté de marque en boutique",
+        description:
+            "Tu cherches un soin, un parfum ou un maquillage précis ? Carmes, Wilson, Capitole... Guide des boutiques cosméto indépendantes à Toulouse.",
+        publishedAt: "2026-06-01",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
 ];
 
 export default function BlogPage() {
