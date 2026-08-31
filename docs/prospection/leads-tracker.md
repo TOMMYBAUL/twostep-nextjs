@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-28 (L'Auditeur)*
+*Dernière mise à jour : 2026-08-31 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 341 (-4 ÉCARTÉs Carmes session 27/08)
-- NOUVEAU : 83 (-5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- Total leads : 341
+- NOUVEAU : 79 (-1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 229 (+5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 230 (+1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
@@ -19,6 +19,35 @@
 - Signes : 0
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
+
+- ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Lundi — 2026-08-31 (L'Éclaireur) — Capitole reliquat NOUVEAU — ✅ 1 email confirmé
+
+**Agent** : L'Éclaireur | **Statut** : BROUILLON à rédiger | **Notion** : Non créé (MCP 404 — 68e+ session)
+
+**Cible** : 10 prospects Capitole (8 NOUVEAU terrain 08-24 + BE UP + SAGA COSMETIQUES)
+
+**1 email confirmé :**
+
+| Boutique | Gérant | Adresse | Email | Score | Notes |
+|---|---|---|---|---|---|
+| KATHY.B (Boutique Au 44) | Catherine Ballias | 44 rue de Metz | contact@boutiqueau44.com ✅ | 7/10 | Mode femme avant-garde. boutiqueau44.com actif. |
+
+**3 ÉCARTÉ :**
+- COMEBACK (Jerome Delgado, 47 rue de la Pomme, SIREN 901868729) → Fermé définitivement août 2022. ÉCARTÉ DÉFINITIF.
+- PAYOTE (Olivier Gelly, 58 rue des Tourneurs, SIREN 912767100) → Marque propre exclusivement (espadrilles Payote). Pas produits multi-marques. ÉCARTÉ.
+- SAGA COSMETIQUES (SAGA GRENOBLE, 49 rue de la Pomme, SIREN 492557004) → Chaîne nationale multi-sites. ÉCARTÉ.
+
+**6 NOUVEAU terrain (pas d'email public indexé) :**
+- MANOUSHKA (Dominique Sellem, 53 rue de la Pomme, SIREN 814281812) → manoushka.fr actif, contact sans email indexé. Tél 06 09 75 25 46. Terrain.
+- N'À L'INFINI (Patricia Lacombe, 19 rue de la Pomme, SIREN 817911969) → Boutique sœur Bijouterie Nougues. Email probable contact@bijouterienougues.fr (déjà tracké). DOUBLON.
+- PAMPY (Juliette Marciano, 11 rue de la Pomme, SIREN 997769906) → pampy.com actif. Tél 05 61 23 37 46. Pas d'email public. Terrain.
+- RECOVERY PROJECT (Pierre Bauguil, 48B rue de Metz, SIREN 940957483) → recoverytls.com, dealer On Running 10+ ans. Tél 05 61 40 42 94. Pas d'email indexé. Terrain.
+- TOVLI (Robert Fellous, 17 rue de la Pomme, SIREN 751393331) → Siège Paris 75002. Faible présence web locale. Terrain.
+- BE UP (Isabelle Dubois, 21 rue d'Alsace Lorraine, SIREN 800979577) → Aucune présence web trouvée. Terrain / ÉCARTÉ provisoire.
 
 ---
 
