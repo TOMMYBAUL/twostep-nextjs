@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-08-31 (L'Éclaireur)*
+*Dernière mise à jour : 2026-09-01 (L'Auditeur)*
 
 ## Stats
 - Total leads : 347
@@ -20,7 +20,7 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
-- ECARTES session 01/09 : +4 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible)
+- ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
 
 ---
@@ -38,7 +38,7 @@
 | IMAGINE | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | imagine@imagine-bijoux.fr ✅ | 393981394 | 7/10 | BROUILLON | Bijouterie fantaisie 25+ ans. 40 rue de la Pomme. Site imagine-bijoux.fr actif. |
 | NEGREVERGNE | Capitole | Maroquinerie/Bagages | Geraldine Casanovas | ste-negrevergne@hotmail.fr ✅ | 540800240 | 7/10 | BROUILLON | Maroquinerie depuis 1954. 27 rue de Metz. Site negrevergne.fr actif. |
 | SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | sylvie@perlins.fr ✅ | 326727633 | 7/10 | BROUILLON | Bijouterie indépendante. 49 rue de la Pomme. Site perlins.fr actif. |
-| SARL ANDRIK (Last Mile Shop) | Capitole | Mode/Streetwear | Eric Kouby | contact@lastmileshop.com ✅ | 789487246 | 7/10 | BROUILLON | Mode/streetwear, 59 rue de la Pomme. Site lastmileshop.com actif. |
+| SARL ANDRIK (Last Mile Shop) | Capitole | Mobilité électrique | Eric Kouby | contact@lastmileshop.com | 789487246 | — | ÉCARTÉ | ⚠️ Confirmé hors cible L'Auditeur 01/09 : vélos et trottinettes électriques uniquement — pas de produits de marque mode. ÉCARTÉ DÉFINITIF. |
 | LE QUOTIDIEN STORE | Capitole | Concept store/Mode | Fatima Maherouz | lequotidienconceptstore@gmail.com ✅ | 831045687 | 5/10 | BROUILLON | Concept store mode. 47 rue de la Pomme. Site lequotidienstore.com actif. |
 
 **4 ÉCARTÉ :**
@@ -58,6 +58,8 @@
 **⚠️ Notion MCP indisponible (69e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Capitole 2026-09-01".
 
 *Note session 01/09 (L'Éclaireur) : Capitole. 6 emails confirmés : MODI-IN 8/10, IMAGINE 7/10, NEGREVERGNE 7/10, SARL PERLIN'S 7/10, SARL ANDRIK/LAST MILE SHOP 7/10, LE QUOTIDIEN STORE 5/10. 4 ÉCARTÉ (ARSENE ET LES PIPELETTES + HERO SEVEN chaînes nationales, MONPARFUMMASIGNATURE + LA MAISON DE L'HOMME artisans hors cible). 6 NOUVEAU terrain sans email indexé. Notion MCP indisponible 69e+ session.*
+
+*Note session 01/09 (L'Auditeur) : 5 brouillons email rédigés (MODI-IN, IMAGINE, NEGREVERGNE, SARL PERLIN'S, LE QUOTIDIEN STORE). SARL ANDRIK/LAST MILE SHOP confirmé hors cible (mobilité électrique) → ÉCARTÉ. Gmail MCP indisponible (OAuth requis) — brouillons sauvegardés dans docs/prospection/brouillons/brouillons-email-2026-09-01.md. Notion MCP 404 persistant.*
 
 ---
 
