@@ -46,6 +46,24 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "shopping-bijoux-toulouse",
+        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique (et savoir s'il est en stock)",
+        description:
+            "Tu cherches un bijou à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes et comment éviter le déplacement pour rien.",
+        publishedAt: "2026-05-11",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
+    {
+        slug: "boutiques-sport-toulouse",
+        title: "Boutiques sport à Toulouse : où trouver tes équipements sans faire de km",
+        description:
+            "Running, fitness, rugby, natation... Toulouse regorge de boutiques sport indépendantes. Le problème : savoir ce qui est en stock avant de se déplacer.",
+        publishedAt: "2026-08-26",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
 ];
 
 export default function BlogPage() {
