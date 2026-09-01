@@ -3,10 +3,10 @@
 *Dernière mise à jour : 2026-08-31 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 341
-- NOUVEAU : 79 (-1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- Total leads : 347
+- NOUVEAU : 69 (-6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 230 (+1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 236 (+6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
@@ -20,7 +20,44 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
+- ECARTES session 01/09 : +4 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Lundi — 2026-09-01 (L'Éclaireur) — Capitole — 6 emails confirmés
+
+**Agent** : L'Éclaireur | **Quartier** : Capitole (lundi)
+**Statut** : ✅ 6 emails confirmés | **Notion** : Non créé (MCP indisponible — 69e+ session consécutive)
+
+**Emails confirmés :**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| MODI-IN | Capitole | Chaussures multimarques | Celine Tobalaim | contact@modi-in.com ✅ | 404952335 | 8/10 | BROUILLON | Chaussures multimarques. 36 rue d'Alsace Lorraine. Site modi-in.com actif. Yelp actif. |
+| IMAGINE | Capitole | Bijouterie fantaisie | Nathalie Ghenassia | imagine@imagine-bijoux.fr ✅ | 393981394 | 7/10 | BROUILLON | Bijouterie fantaisie 25+ ans. 40 rue de la Pomme. Site imagine-bijoux.fr actif. |
+| NEGREVERGNE | Capitole | Maroquinerie/Bagages | Geraldine Casanovas | ste-negrevergne@hotmail.fr ✅ | 540800240 | 7/10 | BROUILLON | Maroquinerie depuis 1954. 27 rue de Metz. Site negrevergne.fr actif. |
+| SARL PERLIN'S | Capitole | Bijouterie | Sylvie Schmitt | sylvie@perlins.fr ✅ | 326727633 | 7/10 | BROUILLON | Bijouterie indépendante. 49 rue de la Pomme. Site perlins.fr actif. |
+| SARL ANDRIK (Last Mile Shop) | Capitole | Mode/Streetwear | Eric Kouby | contact@lastmileshop.com ✅ | 789487246 | 7/10 | BROUILLON | Mode/streetwear, 59 rue de la Pomme. Site lastmileshop.com actif. |
+| LE QUOTIDIEN STORE | Capitole | Concept store/Mode | Fatima Maherouz | lequotidienconceptstore@gmail.com ✅ | 831045687 | 5/10 | BROUILLON | Concept store mode. 47 rue de la Pomme. Site lequotidienstore.com actif. |
+
+**4 ÉCARTÉ :**
+- ARSENE ET LES PIPELETTES (Helene Rieunier, 25 rue de Metz, SIREN 809552359) → Chaîne nationale mode enfants multi-boutiques France. ÉCARTÉ DÉFINITIF.
+- HERO SEVEN (LIVAM, 22 rue de la Pomme, SIREN 917987125) → Chaîne nationale 108 boutiques France. ÉCARTÉ DÉFINITIF.
+- MONPARFUMMASIGNATURE (Sylvie Roubach, 42 rue de la Pomme, SIREN 831969860) → Atelier parfumerie sur mesure = artisan hors cible Two-Step. Email contact@monparfummasignature.fr trouvé mais non retenu.
+- LA MAISON DE L'HOMME (Erick Haziza, 46 rue de Metz, SIREN 890507932) → Tailleur costume sur mesure = artisan hors cible Two-Step. Email contact@lamdh.fr trouvé mais non retenu.
+
+**Sans email — NOUVEAU terrain :**
+- AMA LUNA (Judith Soustiel, 66 rue de la Pomme) → Pas d'email public trouvé. Terrain.
+- L'ISLA NOVA (Léa Palacin noblet, 36 rue des Tourneurs) → Pas d'email direct boutique Toulouse indexé. Terrain.
+- SADIA (Sadia Belkelfa, 39 rue de Bayard) → Pas d'email public. Terrain.
+- SAOYA (Arnaud Turbe, 17 rue d'Alsace Lorraine) → Site saoyaprovence.com, ~5 boutiques (Aix, Paris, Toulouse, Le Beausset, Marseille) — vérifier si chaîne >5. Pas d'email local. Terrain.
+- SERHA (Nathalie Serfati, 37 rue de Metz) → Pas d'email public. Terrain.
+- SIENNE (Simon Benlolo, 44-46 rue des Tourneurs) → IG @sienne.boutique actif. Pas d'email public. Terrain.
+
+**⚠️ Notion MCP indisponible (69e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Capitole 2026-09-01".
+
+*Note session 01/09 (L'Éclaireur) : Capitole. 6 emails confirmés : MODI-IN 8/10, IMAGINE 7/10, NEGREVERGNE 7/10, SARL PERLIN'S 7/10, SARL ANDRIK/LAST MILE SHOP 7/10, LE QUOTIDIEN STORE 5/10. 4 ÉCARTÉ (ARSENE ET LES PIPELETTES + HERO SEVEN chaînes nationales, MONPARFUMMASIGNATURE + LA MAISON DE L'HOMME artisans hors cible). 6 NOUVEAU terrain sans email indexé. Notion MCP indisponible 69e+ session.*
 
 ---
 
