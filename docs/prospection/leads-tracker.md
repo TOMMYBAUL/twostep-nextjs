@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-01 (L'Auditeur)*
+*Dernière mise à jour : 2026-09-02 (L'Auditeur)*
 
 ## Stats
 - Total leads : 347
 - NOUVEAU : 69 (-6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 236 (+6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 236 (+1 brouillon rédigé session 02/09 Auditeur : KATHY.B 7/10 | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
@@ -22,6 +22,22 @@
 
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Mercredi — 2026-09-02 (L'Auditeur) — 1 brouillon rédigé
+
+**Agent** : L'Auditeur | **Statut** : ✅ 1 brouillon rédigé | **Notion** : Non créé (MCP 404 — 70e+ session)
+
+| # | Boutique | Gérant | Email | Objet | Score |
+|---|----------|--------|-------|-------|-------|
+| 1 | KATHY.B (Boutique Au 44) | Catherine Ballias | contact@boutiqueau44.com | Catherine, tes créateurs français visibles "en stock à Toulouse" sur Google ? | 7/10 |
+
+**Blockers MCP persistants :**
+- ❌ Gmail MCP : indisponible (OAuth interactif requis — 70e+ session consécutive)
+- ❌ Notion MCP : erreur 404 persistante
+
+*Note session 02/09 (L'Auditeur) : 1 brouillon rédigé (KATHY.B — seul lead BROUILLON sans draft au 02/09). Gmail MCP indisponible — brouillon sauvegardé dans docs/prospection/brouillons/brouillons-email-2026-09-02.md. Notion MCP 404 persistant. Backlog total : ~24 brouillons rédigés non envoyés depuis le 19/08 (copier-coller manuel requis depuis bauland@twostep.fr).*
 
 ---
 
