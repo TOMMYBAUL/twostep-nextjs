@@ -2,33 +2,6 @@ import { ArticleCard } from "./components/article-card";
 
 const articles = [
     {
-        slug: "shopping-maroquinerie-toulouse",
-        title: "Shopping maroquinerie à Toulouse : les meilleures boutiques de sacs et accessoires cuir",
-        description:
-            "Sacs, portefeuilles, ceintures, petite maroquinerie… Guide des boutiques indépendantes à Toulouse, avec l'astuce pour vérifier le stock avant de te déplacer.",
-        publishedAt: "2026-08-12",
-        readingTime: "7 min",
-        category: "consommateurs" as const,
-    },
-    {
-        slug: "shopping-bijoux-toulouse",
-        title: "Shopping bijoux à Toulouse : trouver le bon bijou en boutique",
-        description:
-            "Tu cherches un bijou à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes et comment éviter le déplacement pour rien.",
-        publishedAt: "2026-05-20",
-        readingTime: "6 min",
-        category: "consommateurs" as const,
-    },
-    {
-        slug: "shopping-cosmetique-toulouse",
-        title: "Shopping cosmétique à Toulouse : trouver tes produits beauté en boutique",
-        description:
-            "Concept stores, parapharmacies, boutiques bio... Guide pour trouver tes marques préférées en stock avant de traverser la ville pour rien.",
-        publishedAt: "2026-06-08",
-        readingTime: "6 min",
-        category: "consommateurs" as const,
-    },
-    {
         slug: "attirer-clients-boutique-toulouse",
         title: "Comment attirer plus de clients dans ta boutique à Toulouse : 6 actions concrètes en 2026",
         description:
@@ -71,6 +44,15 @@ const articles = [
             "Les spots sneakers toulousains, des shops spécialisés aux multimarques. Plus besoin de commander en ligne.",
         publishedAt: "2026-04-15",
         readingTime: "5 min",
+        category: "consommateurs" as const,
+    },
+    {
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétique à Toulouse : trouver tes produits beauté en boutique",
+        description:
+            "Tu cherches un soin, un parfum ou un produit de maquillage à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes.",
+        publishedAt: "2026-09-02",
+        readingTime: "6 min",
         category: "consommateurs" as const,
     },
 ];
