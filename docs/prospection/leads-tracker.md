@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-01 (L'Auditeur)*
+*Dernière mise à jour : 2026-09-02 (L'Éclaireur)*
 
 ## Stats
 - Total leads : 347
-- NOUVEAU : 69 (-6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- NOUVEAU : 67 (-2 → BROUILLON session 02/09 | -6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 236 (+6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 238 (+2 session 02/09 : DO MY SHOES domyshoes@gmail.com ✅, L'OBSERVATOIRE lobservatoire31@sfr.fr ✅ | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
@@ -20,8 +20,46 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
+- ECARTES session 02/09 : +9 (COEXIST STORE SIREN 825285893 — liquidation judiciaire 25/02/2021 ; ENTRE ELLE ET MOI SIREN 403883119 — liquidation judiciaire avril 2017 ; POBIEDA SIREN 831015748 — liquidation judiciaire avril 2024 ; SARL TROPIQUE SUD SIREN 392540167 — liquidation judiciaire 2022-2023 ; ASM SIREN 444108385 — liquidation judiciaire juillet 2020 ; CREA CONCEPT EUROPE SIREN 451827141 — liquidation judiciaire 2023 ; BLEU CERISE SIREN 491266581 — chaîne nationale 33 magasins ; ROGER GERSON SIREN 570701078 — immobilier hors cible ; ILANN FIVE/PMN SIREN 824966022 — inactive décembre 2023)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Mercredi — 2026-09-02 (L'Éclaireur) — Saint-Rome (6e passe) — ⚠️ 2 emails confirmés — Zone ÉPUISÉE
+
+**Agent** : L'Éclaireur | **Quartier** : Saint-Rome (mercredi)
+**Statut** : ⚠️ 2 emails confirmés seulement | **Notion** : Non créé (MCP 404 — 70e+ session consécutive)
+
+**Note de session :** Zone Saint-Rome 100% épuisée (6e confirmation — sessions 05/2026, 25/06, 06/08, 12/08, 19/08, 26/08). 25+ recherches web effectuées. 2 emails trouvés sur des boutiques non indexées lors des passes précédentes. 9 nouveaux ÉCARTÉs découverts (liquidations 2017–2024, chaîne nationale, immobilier hors cible). **PIVOT DÉFINITIF REQUIS mercredi → Esquirol / Daurade / Wilson.**
+
+**2 Emails confirmés :**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| DO MY SHOES | Saint-Rome | Chaussures | Dominique Grosjean | domyshoes@gmail.com ✅ | 531697514 | 7/10 | BROUILLON | Boutique chaussures tendance femme. 7 rue des Arts. Site domyshoes.com actif. IG @domyshoes (537 followers). Tél 05.61.52.60.81. |
+| L'OBSERVATOIRE | Saint-Rome | Mode homme premium | Jonnhy Dunal | lobservatoire31@sfr.fr ✅ | 491278156 | 8/10 | BROUILLON | Mode homme premium multimarques : Stone Island, C.P. Company, Ralph Lauren, Corneliani, Hogan. 4 rue des Arts. Site lobservatoire.net actif. IG @lobservatoire31. |
+
+**9 Nouveaux ÉCARTÉs découverts :**
+| Boutique | SIREN | Raison | Date clôture |
+|---|---|---|---|
+| COEXIST STORE | 825285893 | Liquidation judiciaire insuffisance d'actif | 25/02/2021 |
+| ENTRE ELLE ET MOI | 403883119 | Liquidation judiciaire | Avril 2017 |
+| POBIEDA | 831015748 | Liquidation judiciaire | Avril 2024 |
+| SARL TROPIQUE SUD | 392540167 | Liquidation judiciaire | 2022–2023 |
+| ASM | 444108385 | Liquidation judiciaire | Juillet 2020 |
+| CREA CONCEPT EUROPE | 451827141 | Liquidation judiciaire | 2023 |
+| BLEU CERISE | 491266581 | Chaîne nationale 33 magasins | — |
+| ROGER GERSON | 570701078 | Immobilier hors cible Two-Step | — |
+| ILANN FIVE (PMN) | 824966022 | Inactive décembre 2023 | Déc. 2023 |
+
+**Sans email — NOUVEAU terrain (reliquat session 26/08, non résolu) :**
+OUTDOOR DIFFUSION, MIRA MIRA, DRESSING ROSE AND KIDS, LA SUITE…, JO (SCOOP), LINEA MODA, MICHAEL DRILHOLE CONCEPT, URBAN WEAR, KATOUNI — aucun email public. Terrain uniquement.
+
+**⚠️ Notion MCP indisponible (70e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Saint-Rome 2026-09-02".
+**⚠️ Zone Saint-Rome ÉPUISÉE (6e confirmation)** — PIVOT DÉFINITIF IMMÉDIAT recommandé mercredi → Esquirol / Daurade / Wilson.
+
+*Note session 02/09 (L'Éclaireur) : Saint-Rome. Zone 100% épuisée (6e confirmation). 25+ recherches web. 2 emails confirmés : DO MY SHOES 7/10 (domyshoes@gmail.com — chaussures tendance, site domyshoes.com actif), L'OBSERVATOIRE 8/10 (lobservatoire31@sfr.fr — mode homme premium Stone Island/CP Company/Ralph Lauren, site lobservatoire.net actif). 9 nouveaux ÉCARTÉs (liquidations 2017–2024 : COEXIST STORE, ENTRE ELLE ET MOI, POBIEDA, SARL TROPIQUE SUD, ASM, CREA CONCEPT EUROPE, ILANN FIVE/PMN ; chaîne : BLEU CERISE 33 magasins ; hors cible : ROGER GERSON immobilier). Notion MCP indisponible 70e session. PIVOT DÉFINITIF mercredi vers nouvelle zone (Esquirol/Daurade/Wilson) requis dès la prochaine session.*
 
 ---
 
