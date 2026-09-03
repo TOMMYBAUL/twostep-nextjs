@@ -1,12 +1,12 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-02 (L'Auditeur)*
+*Dernière mise à jour : 2026-09-03 (L'Éclaireur)*
 
 ## Stats
 - Total leads : 347
-- NOUVEAU : 69 (-6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- NOUVEAU : 67 (-1 → BROUILLON session 03/09 EQUI-SUD | -1 → ÉCARTÉ session 03/09 APOS 33 | -6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
-- BROUILLON : 236 (+1 brouillon rédigé session 02/09 Auditeur : KATHY.B 7/10 | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
+- BROUILLON : 237 (+1 session 03/09 : EQUI-SUD contact@equisud-toulouse.com ✅ | +1 brouillon rédigé session 02/09 Auditeur : KATHY.B 7/10 | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
 - ECARTES session 27/08 : +4 (MAITYLA/MAITYKA — liquidation judiciaire clôturée 19/01/2023 ; FUTURWARE LAB — inactive depuis 17/01/2023, siège Paris ; M.J.H. — liquidation judiciaire 17/01/2020 ; VICOMTE A/THIERS ALBERT — chaîne nationale >5 boutiques)
 - ECARTES session 24/08 : +4 (BANANA-POMME — fermé janvier 2025 ; SHILTON — chaîne nationale 28 boutiques ; TILL/TILLAMY — chaîne Ouest France siège Maine-et-Loire ; EDEN/PP NEDE — siège Paris 75008 multi-location)
@@ -20,8 +20,39 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
+- ECARTES session 03/09 : +1 (APOS 33 SIREN 422970020 — liquidation judiciaire clôturée mars 2019, radiation TC Toulouse 21/03/2019)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Jeudi — 2026-09-03 (L'Éclaireur) — Carmes — 1 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Carmes (jeudi)
+**Statut** : ✅ 1 email confirmé | **Notion** : Non créé (MCP 404 — 71e+ session consécutive)
+
+**Email confirmé :**
+
+| Boutique | Quartier | Segment | Gérant | Email | SIREN | Score | Statut | Notes |
+|---|---|---|---|---|---|---|---|---|
+| EQUI-SUD | Carmes | Sport/Équitation | Francoise Imart | contact@equisud-toulouse.com ✅ | 390134567 | 6/10 | BROUILLON | Équipement équitation indépendant. 19 rue des Filatiers. Site equisud-toulouse.com actif. |
+
+**1 ÉCARTÉ :**
+- APOS 33 (Sandra Cremazy, 34-36 rue Boulbonne, SIREN 422970020) → Liquidation judiciaire clôturée mars 2019, radiée TC Toulouse. ÉCARTÉ DÉFINITIF.
+
+**8 NOUVEAU terrain (pas d'email public indexé) :**
+- AMBIANCES ET SENTEURS (Eric Gras, 39 rue des Filatiers) → Cosmétique/Ambiances. Pas d'email indexé. Terrain.
+- BOSCHERIE PERE ET FILLE / LOVE (Julien Boscherie, 49 rue des Filatiers) → Concept store "LOVE Toulouse" actif. Pas de site e-commerce ni email indexé. Terrain.
+- CONCEPT TOULOUSE (Mattia Bono, 9 rue Boulbonne) → Créé mars 2023, parfumerie/cosmétique/mode. Pas d'email indexé. Terrain.
+- LA FILLE DE MARGARET (Sarah Pelegry, 35 rue Boulbonne) → Site lafilledemargaret.com actif (e-shop). Email non public. Terrain.
+- LAMA (Marine Lafitte, 10 rue Boulbonne) → Prêt-à-porter féminin. Pas d'email indexé. Terrain.
+- LAORA VITTORIA (Annick Confuorto, 19 rue Ozenne) → Mode/vêtements. Pas d'email indexé. Terrain.
+- MADAME GEORGES (Lionel Prevost, 35 rue Boulbonne) → Instagram @madamegeorgestoulouse actif (514 abonnés). Pas d'email public. Tél 0686236424. Terrain.
+- MATHIS ET SASHA (Clementine Chiodo, 49 rue des Filatiers) → Mode femme. Pas d'email indexé. Terrain.
+
+**⚠️ Notion MCP indisponible (71e+ session consécutive)** — récap tracker local uniquement. Titre prévu : "Leads Carmes 2026-09-03".
+
+*Note session 03/09 (L'Éclaireur) : Carmes. 1 email confirmé : EQUI-SUD 6/10. 1 ÉCARTÉ : APOS 33 liquidation judiciaire 2019. 8 NOUVEAU terrain sans email indexé. Notion MCP 404 persistant 71e session.*
 
 ---
 
