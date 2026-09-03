@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-02 (L'Auditeur)*
+*Dernière mise à jour : 2026-09-03 (L'Auditeur)*
 
 ## Stats
 - Total leads : 347
-- NOUVEAU : 69 (-6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- NOUVEAU : 68 (-1 → ÉCARTÉ session 03/09 SAOYA | -6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
 - BROUILLON : 236 (+1 brouillon rédigé session 02/09 Auditeur : KATHY.B 7/10 | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
@@ -20,8 +20,50 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
+- ECARTES session 03/09 : +1 (SAOYA SIREN 823051180 — franchise bijoux fantaisie, 8 boutiques France = chaîne >5. Site saoyaprovence.com. info@saoya.fr trouvé mais non utilisé.)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Jeudi — 2026-09-03 (L'Auditeur) — ⛔ 0 brouillon rédigé — session bloquée
+
+**Agent** : L'Auditeur | **Statut** : ⛔ Bloqué | **Notion** : Non créé (MCP 404 — 71e+ session)
+
+**Raisons :**
+- 0 lead BROUILLON sans draft disponible (KATHY.B était le dernier, rédigé le 02/09 — tous les leads BROUILLON ont un draft)
+- Aucun nouveau lead trouvé par L'Éclaireur depuis le 01/09
+- Gmail MCP : indisponible (OAuth interactif requis — 71e+ session consécutive)
+- Notion MCP : erreur 404 persistante
+
+**Recherches email effectuées sur leads NOUVEAU (11 prospects investigués, 0 email confirmé) :**
+
+| Boutique | Gérant | Motif d'échec |
+|----------|--------|---------------|
+| MANOUSHKA | Dominique Sellem | manoushka.fr = formulaire contact uniquement, pas d'email public |
+| PAMPY | Juliette Marciano | pampy.com = domaine à vendre, aucun email |
+| RECOVERY PROJECT | Pierre Bauguil | recoverytls.com = formulaire uniquement, pas d'email direct |
+| AMA LUNA | Judith Soustiel | Aucune présence web avec email |
+| SIENNE | Simon Benlolo | Instagram uniquement (@sienne.boutique), pas d'email public |
+| MIRA MIRA | Arnaud Turbe | Opposition prospection — aucun email public |
+| DRESSING ROSE AND KIDS | Ameur Gasdallah | Aucun email public indexé |
+| SERHA | Nathalie Serfati | Aucun email public |
+| SADIA | Sadia Belkelfa | Aucun email public |
+| OUTDOOR DIFFUSION SUD OUEST | Clovis Houdart | Réseau franchise multi-villes — potentiellement chaîne >5, à vérifier terrain |
+| L'ISLA NOVA | Léa Palacin-Noblet | contact@lisla-nova.fr trouvé — ⚠️ website lisla-nova.fr est pour L'Isle-en-Dodon (pas Toulouse). Boutique 36 rue des Tourneurs non confirmée en ligne. Terrain prioritaire. |
+
+**1 ÉCARTÉ confirmé session 03/09 :**
+- SAOYA (Arnaud Turbe, 17 rue d'Alsace Lorraine, SIREN 823051180) → Franchise bijoux fantaisie : 8 boutiques (Aix-en-Provence, Paris 6e, Paris 15e, Toulouse, Le Beausset, Marseille, Nice + autres). Chaîne >5 boutiques. info@saoya.fr trouvé mais non utilisé. ÉCARTÉ DÉFINITIF.
+
+**Backlog non envoyé :** 24 brouillons rédigés (19/08→02/09) en attente copier-coller manuel depuis bauland@twostep.fr.
+
+**Actions requises :**
+1. Débloquer Gmail MCP (claude.ai Settings → Connectors — OAuth interactif requis)
+2. Résoudre Notion MCP 404
+3. Lancer L'Éclaireur nouveaux quartiers (Wilson, Guilhemery, Compans-Caffarelli) pour de nouveaux leads avec email
+4. Priorité terrain : MANOUSHKA, RECOVERY PROJECT, SIENNE, AMA LUNA, PAMPY (boutiques sans email mais à fort potentiel)
+
+*Note session 03/09 (L'Auditeur) : 0 lead BROUILLON sans draft. 11 leads NOUVEAU investigués via web search — 0 email confirmé. Tous sont terrain-only confirmés. 1 ÉCARTÉ : SAOYA (franchise 8 boutiques). Gmail MCP indisponible 71e+ session. Notion MCP 404. Backlog : 24 brouillons non envoyés depuis le 19/08.*
 
 ---
 
