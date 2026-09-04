@@ -1,10 +1,10 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-03 (L'Auditeur)*
+*Dernière mise à jour : 2026-09-04 (L'Éclaireur)*
 
 ## Stats
-- Total leads : 347
-- NOUVEAU : 68 (-1 → ÉCARTÉ session 03/09 SAOYA | -6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
+- Total leads : 351
+- NOUVEAU : 70 (+2 session 04/09 MADAME GEORGES + STEDIF | -1 → ÉCARTÉ session 03/09 SAOYA | -6 → BROUILLON session 01/09 | -4 → ÉCARTÉ session 01/09 | -1 → BROUILLON session 31/08 KATHY.B ; -3 → ÉCARTÉ session 31/08 COMEBACK/PAYOTE/SAGA | -5 → BROUILLON session 27/08, -4 → ÉCARTÉ session 27/08)
 - CONTACTE : 1
 - BROUILLON : 236 (+1 brouillon rédigé session 02/09 Auditeur : KATHY.B 7/10 | +6 session 01/09 : MODI-IN contact@modi-in.com ✅, IMAGINE imagine@imagine-bijoux.fr ✅, NEGREVERGNE ste-negrevergne@hotmail.fr ✅, SARL PERLIN'S sylvie@perlins.fr ✅, SARL ANDRIK/LAST MILE SHOP contact@lastmileshop.com ✅, LE QUOTIDIEN STORE lequotidienconceptstore@gmail.com ✅ | +1 session 31/08 : KATHY.B contact@boutiqueau44.com ✅ | +5 session 27/08 : DR SWAG contact@dr-swag.com ✅, PLUMETIS contact@plumetis-toulouse.fr ✅, LES CIGALES sarllescigales@aol.com ✅, ARMURERIE BARRAUD contact@armureriebarraud.com ✅, LESLIE MONTE-CARLO contact@lesliemontecarlo.com ⚠️ | +1 brouillon rédigé session 26/08 Auditeur : PAUSE 8/10 | +1 session 26/08 Éclaireur : PAUSE bonjour@pause-montres.fr ✅ | +1 brouillon rédigé session 25/08 Auditeur : CASA STRADA 6/10 | +1 session 25/08 Éclaireur : CASA STRADA contact@maisonstrada.com ✅ | +1 brouillon rédigé session 24/08 Auditeur : LILI-LEONE 8/10 | +1 session 24/08 Éclaireur : LILI-LEONE lilileone@live.fr ✅ | +4 brouillons rédigés session 22/08 Auditeur : EDMOND L'OPTICIEN 7/10, ANDY'S ETHIC 7/10, L'ANNEXE 6/10, ETOILE DE SONGE 5/10 | +2 session 21/08 : LOVE TOULOUSE 8/10, BOHEMIANS ROOM 7/10 | +3 session 19/08 : PAUSE, URBAN WEAR, KATOUNI — terrain uniquement | +5 session 18/08 : EAST SIDE, CASA STRADA, ENTRE VUES, HELLADE, MELI/MELINO — terrain uniquement)
 - CONTACTE : 1
@@ -20,9 +20,44 @@
 - ECARTES session 06/08 : +14 (liquidations/fermetures/chaînes Saint-Rome)
 - ECARTES session 12/08 : +6 (I LOVE SCARPE, TRANS-SHIRT TLS, PAUL MARIUS, MADAME MARCHAND/CELU&CIE, GLAM SHOES BK, SYSTER'S)
 
+- ECARTES session 04/09 : +2 (BOSCHERIE PERE ET FILLE SIREN 989923834 — boutique LOVE, marque propre exclusivement (vêtements et accessoires personnalisés LOVE Toulouse), hors cible Two-Step comme PAYOTE ; PARALLELE/FRALTIS SIREN 440867224 — cessation d'activité avril 2026, boutique fermée)
 - ECARTES session 03/09 : +1 (SAOYA SIREN 823051180 — franchise bijoux fantaisie, 8 boutiques France = chaîne >5. Site saoyaprovence.com. info@saoya.fr trouvé mais non utilisé.)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Jeudi — 2026-09-04 (L'Éclaireur) — Carmes — ⛔ 0 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Carmes (jeudi) | **Notion** : Non créé (MCP 404 — 72e+ session)
+
+**Contexte** : Zone Carmes épuisée depuis le 19/06/2026 (26/26 prospects traités). Cette session cible les 4 prospects jamais investigués + 6 terrain-NOUVEAU en retry. 0 email confirmé. 2 nouveaux ÉCARTÉs découverts.
+
+**2 ÉCARTÉs session 04/09 :**
+| Boutique | SIREN | Gérant | Raison |
+|---|---|---|---|
+| BOSCHERIE PERE ET FILLE (boutique LOVE) | 989923834 | Julien Boscherie | Marque propre exclusivement — vêtements et accessoires personnalisés "LOVE Toulouse" (pulls, parkas, caps). Hors cible Two-Step (comme PAYOTE). |
+| PARALLELE / FRALTIS | 440867224 | Alain Sanz | Cessation d'activité datée avril 2026 — boutique fermée. |
+
+**2 nouveaux NOUVEAU terrain (jamais investigués) :**
+| Boutique | Gérant | Adresse | SIREN | Notes | Statut |
+|---|---|---|---|---|---|
+| MADAME GEORGES (KENTEX) | Lionel Prevost | 35 rue Boulbonne | 830672937 | Mode femme années 1940. Ouvert depuis 14/05/2024. Nouveau siège : 42 rue de Metz. Pas d'email public. Opposition prospection possible. Terrain. | NOUVEAU |
+| STEDIF | Stephanie Forgeront | 46 rue des Filatiers | 835196098 | Mode/vêtements. Président : Dimitri Lavabre. 2 établissements. Aucune présence web ni social media confirmée. Pas d'email. Terrain. | NOUVEAU |
+
+**6 terrain-NOUVEAU confirmés sans email (retry session 04/09) :**
+| Boutique | Gérant | Adresse | Notes |
+|---|---|---|---|
+| SORTILEGE | Marie-Bénédicte Guilhem | 7 rue Boulbonne | Site sortilegeboutique.com toujours en 503. Boutique active (mardi-samedi 11h-19h). Tél 05 61 53 38 10. Pas d'email public. |
+| LA FILLE DE MARGARET | Sarah Pelegry | 35 rue Boulbonne | Domaine lafilledemargaret.com ENOTFOUND (mort). Instagram @lafilledemargaret actif. 2 boutiques Toulouse (35 rue Boulbonne + rue Baronie). Pas d'email public. |
+| LAMA | Marine Lafitte | 10 rue Boulbonne | Aucune présence web ni social media. SARL créée 1999. Pas d'email. Terrain. |
+| LAORA VITTORIA | Annick Confuorto | 19 rue Ozenne | Shopify vittoria-toulouse.myshopify.com en 404. Instagram @vittoria_fashion actif (554 abonnés). Multimarques luxe (Gucci, Valentino, Prada). Pas d'email public. Fort potentiel terrain. |
+| APOS 33 | Sandra Cremazy | 34 rue Boulbonne | Mode femme. Siège : 82 chemin de Bessayre, 31240 Saint-Jean. Pas d'email public. Terrain. |
+| MATHIS ET SASHA | Clémentine Chiodo | 49 rue des Filatiers | Aucune présence web ni social media. Terrain. |
+
+**Recommandation** : Zone Carmes définitivement épuisée pour recherche email web. PIVOT requis jeudi → Wilson, Guilhemery, ou Compans-Caffarelli. LAORA VITTORIA est priorité terrain (multimarques luxe, fort fit Two-Step, Instagram actif).
+
+*Note session 04/09 (L'Éclaireur) : Carmes. 0 email confirmé sur 10 prospects investigués. 2 ÉCARTÉs : BOSCHERIE/LOVE (marque propre), PARALLELE/FRALTIS (cessation). 2 nouveaux NOUVEAU terrain : MADAME GEORGES, STEDIF. 6 terrain-NOUVEAU confirmés sans email. Notion MCP 404 — 72e session. Backlog inchangé : 24 brouillons non envoyés depuis le 19/08.*
 
 ---
 
