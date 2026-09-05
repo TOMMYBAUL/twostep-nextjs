@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-05 (L'Éclaireur)*
+*Dernière mise à jour : 2026-09-05 (L'Auditeur)*
 
 ## Stats
 - Total leads : 351
@@ -24,6 +24,22 @@
 - ECARTES session 03/09 : +1 (SAOYA SIREN 823051180 — franchise bijoux fantaisie, 8 boutiques France = chaîne >5. Site saoyaprovence.com. info@saoya.fr trouvé mais non utilisé.)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Samedi — 2026-09-05 (L'Auditeur) — ⛔ 0 brouillon rédigé — session bloquée
+
+**Agent** : L'Auditeur | **Statut** : ⛔ Bloqué | **Notion** : Non créé (MCP 404 — 73e+ session)
+
+**Raisons :**
+- 0 lead NOUVEAU avec email (tous les 70 NOUVEAU sont terrain-only, confirmé par grep)
+- 0 lead BROUILLON sans draft (tous les 236 BROUILLON ont un draft)
+- Gmail MCP : indisponible (OAuth interactif requis — 73e+ session consécutive)
+- Notion MCP : erreur 404 persistante
+
+**Backlog non envoyé :** ~24 brouillons rédigés (19/08→02/09) en attente copier-coller manuel depuis bauland@twostep.fr.
+
+*Note session 05/09 (L'Auditeur) : 0 brouillon rédigé. Même blocage que 03/09 et 04/09. 0 NOUVEAU avec email, 0 BROUILLON sans draft. Gmail MCP indisponible (OAuth), Notion MCP 404. Actions requises : (1) débloquer Gmail MCP via claude.ai Settings → Connectors ; (2) L'Éclaireur pivoter vers Wilson/Compans-Caffarelli pour de nouveaux leads avec email.*
 
 ---
 
