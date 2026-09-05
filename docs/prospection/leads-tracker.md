@@ -1,6 +1,6 @@
 # Leads Tracker Two-Step
 
-*Dernière mise à jour : 2026-09-04 (L'Éclaireur)*
+*Dernière mise à jour : 2026-09-05 (L'Éclaireur)*
 
 ## Stats
 - Total leads : 351
@@ -24,6 +24,33 @@
 - ECARTES session 03/09 : +1 (SAOYA SIREN 823051180 — franchise bijoux fantaisie, 8 boutiques France = chaîne >5. Site saoyaprovence.com. info@saoya.fr trouvé mais non utilisé.)
 - ECARTES session 01/09 : +5 (ARSENE ET LES PIPELETTES SIREN 809552359 — chaîne nationale mode enfants ; HERO SEVEN SIREN 917987125 — chaîne nationale 108 boutiques ; MONPARFUMMASIGNATURE SIREN 831969860 — artisan parfumerie sur mesure hors cible ; LA MAISON DE L'HOMME SIREN 890507932 — artisan tailleur sur mesure hors cible ; SARL ANDRIK/LAST MILE SHOP SIREN 789487246 — mobilité électrique vélos/trottinettes, confirmé L'Auditeur 01/09)
 - ECARTES session 31/08 : +3 (COMEBACK SIREN 901868729 — fermé définitivement août 2022 ; PAYOTE SIREN 912767100 — marque propre exclusivement, hors cible ; SAGA COSMETIQUES SIREN 492557004 — chaîne nationale multi-sites)
+
+---
+
+### Samedi — 2026-09-05 (L'Éclaireur) — Victor-Hugo 6e session — ⛔ ÉPUISÉ DÉFINITIF — 0 email confirmé
+
+**Agent** : L'Éclaireur | **Quartier** : Victor-Hugo (samedi) | **Notion** : Non créé (MCP 404 — 73e+ session)
+
+**Contexte** : Zone Victor-Hugo JSON (9/9 prospects traités) + zone étendue totalement épuisées. 9 JSON : 5 BROUILLON avec email (CESARE NORI, FAUR QUINTANA, L'ADRESSE BLANCHE, LA MOMERIE, TENDANCES LINGERIE), 4 ÉCARTÉ (MAUELICLE liquidation, CYCLARTISANS artisan, MARC FREZAL artisan, VIRAGES radiée). Retry 2 semaines après session 22/08 sur 8 NOUVEAU terrain de la zone étendue — 0 email trouvé.
+
+**Prospects investigués (zone étendue) — 0 email confirmé :**
+
+| Boutique | Gérant | Adresse | Notes |
+|---|---|---|---|
+| HOT-COUTURE | Arielle Bonneville | 5 rue des Lois | Listing Kompass trouvé. Aucun email public ni site. Terrain. |
+| SARL PARIS SEPTIEME | Emilie Carpentier | 13 rue Bouquières | Aucune présence web avec email. Terrain. |
+| ALICE ET LES GARCONS | Benoit Mabille de Poncheville | 15 rue Bouquières | Site aliceetlesgarcons.com = agence de communication (autre entité). Pas d'email boutique. Terrain. |
+| MINI JU | Sophie Chakri | 8 rue Gambetta | Listing La Poste. Aucun email public. Terrain. |
+| DORYANN (MATIERE NOBLE) | Stéphanie Dah-Okimba | 19 rue Bouquières | IG @doryannstore. Tél 09.55.92.93.99. Aucun email. Terrain. |
+| SAINT PAULIN | Catherine Jimenez | 40 rue Rémusat | Aucun site ni email public. Terrain. |
+| CASA AZUL | Emilie Devin | 19 rue Peyrolières | Opposition Pappers. IG actif. Aucun email. |
+| AD VINTAGE | Adrien Ioualalen | 4 rue Bouquières | ⚠️ Friperie vintage — hors cible Two-Step. Non investigué. |
+
+**⚠️ RECOMMANDATION DÉFINITIVE (6e session consécutive sans email) :** Victor-Hugo doit être retiré de la rotation samedi. Zone JSON + zone étendue totalement épuisées. **Pivoter immédiatement vers Wilson, Compans-Caffarelli ou Guilhemery/Arnaud-Bernard** le samedi. Ces zones n'ont jamais été couvertes et contiennent des prospects non traités.
+
+**⚠️ Notion MCP 404 (73e+ session consécutive)** — récap tracker local uniquement.
+
+*Note session 05/09 (L'Éclaireur) : Victor-Hugo. 0 email confirmé sur 7 prospects investigués (retry zone étendue). Zone JSON 9/9 traitée. 6e session sans email. ÉPUISÉ DÉFINITIF. Pivot Wilson/Compans-Caffarelli requis samedi prochain.*
 
 ---
 
