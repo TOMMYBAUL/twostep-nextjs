@@ -46,6 +46,15 @@ const articles = [
         readingTime: "5 min",
         category: "consommateurs" as const,
     },
+    {
+        slug: "shopping-cosmetique-toulouse",
+        title: "Shopping cosmétique à Toulouse : trouver tes produits beauté en boutique",
+        description:
+            "Tu cherches un soin, un parfum ou un produit de maquillage à Toulouse ? Capitole, Carmes, Saint-Étienne... Guide des meilleures boutiques indépendantes.",
+        publishedAt: "2026-09-02",
+        readingTime: "6 min",
+        category: "consommateurs" as const,
+    },
 ];
 
 export default function BlogPage() {
